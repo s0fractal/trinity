@@ -75,3 +75,8 @@ Perception -> Action -> Retrospection
 
 Large raw streams can be represented as proof-carrying projections; see
 [PROOF_CARRYING_RAW.md](docs/PROOF_CARRYING_RAW.md).
+
+Repository thought phases are defined in
+[THOUGHT_PHASES.v0.1.md](contracts/THOUGHT_PHASES.v0.1.md). Their system-level
+interpretation lives in
+[COGNITIVE_THERMODYNAMICS.md](docs/COGNITIVE_THERMODYNAMICS.md).

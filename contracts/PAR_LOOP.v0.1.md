@@ -240,3 +240,8 @@ Do store enough evidence to challenge the projection later.
 - PAR does not treat summaries as raw truth.
 - PAR does not require every action to become public.
 - PAR does not replace repository tests, receipts, or human judgment.
+
+## Related Contracts
+
+- `THOUGHT_PHASES.v0.1.md`
+- `docs/COGNITIVE_THERMODYNAMICS.md`

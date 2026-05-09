@@ -51,6 +51,8 @@ See:
 - `contracts/PROCESS_OBJECTS.v0.1.md`
 - `contracts/PAR_LOOP.v0.1.md`
 - `docs/PROOF_CARRYING_RAW.md`
+- `contracts/THOUGHT_PHASES.v0.1.md`
+- `docs/COGNITIVE_THERMODYNAMICS.md`
 
 ## Audit Policy
 

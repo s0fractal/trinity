@@ -19,7 +19,14 @@ import { scanEcosystem, type FileProfile } from "./scanner_core.ts";
  * suggested_commands. Without --execute, the tool computes the *would-be*
  * verdict assuming the action ran but doesn't perform it.
  *
- * Spec: contracts/CHORD_CLAIM.v0.1.md
+ * TRIAL mode (chord frontmatter `mode: TRIAL` plus --execute):
+ *   - requires clean working tree before running
+ *   - if expected_after_running not met → auto-reverts via
+ *     `git stash push --include-untracked` + `git stash drop`
+ *   - implements reversibility-first principle from
+ *     governance chord h.1a8cddefa3dc
+ *
+ * Spec: contracts/CHORD_CLAIM.v0.1.md (TRIAL added in v0.2 amendment)
  */
 
 const CHORDS_DIR = "jazz/chords";
@@ -239,6 +246,54 @@ function compare(
   throw new Error(`unrecognized comparator: ${comparator}`);
 }
 
+async function isWorkingTreeClean(): Promise<boolean> {
+  const out = await new Deno.Command("git", {
+    args: ["status", "--porcelain"],
+    stdout: "piped",
+    stderr: "null",
+  }).output();
+  if (!out.success) return false;
+  return new TextDecoder().decode(out.stdout).trim() === "";
+}
+
+async function revertWorkingTree(): Promise<boolean> {
+  // TRIAL revert: stash everything (incl. untracked) and immediately drop.
+  // Equivalent to "discard all changes since chord started".
+  // Refuses to delete .git or commits — only working-tree state.
+  const stash = await new Deno.Command("git", {
+    args: [
+      "stash",
+      "push",
+      "--include-untracked",
+      "--quiet",
+      "-m",
+      "chord-trial-revert",
+    ],
+    stdout: "null",
+    stderr: "inherit",
+  }).output();
+  if (!stash.success) return false;
+
+  // Check if anything was actually stashed (clean tree → no stash entry).
+  const list = await new Deno.Command("git", {
+    args: ["stash", "list"],
+    stdout: "piped",
+    stderr: "null",
+  }).output();
+  const hasEntry = new TextDecoder().decode(list.stdout)
+    .split("\n")
+    .some((l) => l.includes("chord-trial-revert"));
+
+  if (!hasEntry) return true; // nothing to revert is fine
+
+  const drop = await new Deno.Command("git", {
+    args: ["stash", "drop"],
+    stdout: "null",
+    stderr: "inherit",
+  }).output();
+  return drop.success;
+}
+
 async function runCommands(commands: string[]): Promise<boolean> {
   for (const cmd of commands) {
     console.log(`▶  ${cmd}`);
@@ -268,7 +323,7 @@ async function emitReceiptChord(opts: {
   chordPath: string;
   fm: ChordFrontmatter;
   results: CompareResult[];
-  verdict: "passed" | "failed" | "dormant" | "promoted";
+  verdict: "passed" | "failed" | "dormant" | "promoted" | "trial-reverted";
   pre: Snapshot;
   post: Snapshot;
 }): Promise<string> {
@@ -415,6 +470,17 @@ async function main() {
       console.error("✗ action chord lacks expected_after_running");
       Deno.exit(1);
     }
+    const isTrial = (fm.mode ?? "").toUpperCase() === "TRIAL";
+    if (isTrial && execute) {
+      const clean = await isWorkingTreeClean();
+      if (!clean) {
+        console.error(
+          "✗ TRIAL mode requires clean working tree (commit or stash first)",
+        );
+        Deno.exit(1);
+      }
+      console.log("TRIAL: clean tree confirmed; will revert on negative delta");
+    }
     const commands = fm.suggested_commands ?? [];
     console.log("snapshot pre");
     const pre = await buildSnapshot();
@@ -449,16 +515,34 @@ async function main() {
       );
     }
     console.log("");
+
+    let verdict: "passed" | "failed" | "trial-reverted" = allMet
+      ? "passed"
+      : "failed";
+
+    if (isTrial && execute && !allMet) {
+      console.log("TRIAL: claim missed → reverting working tree…");
+      const reverted = await revertWorkingTree();
+      if (reverted) {
+        console.log("✓ reverted to pre-trial state");
+        verdict = "trial-reverted";
+      } else {
+        console.warn("⚠️  revert failed; manual cleanup required");
+      }
+    }
+
     console.log(
       execute
-        ? (allMet ? "→ CLAIM MET" : "→ CLAIM MISSED → compost candidate")
+        ? (allMet
+          ? "→ CLAIM MET"
+          : (isTrial ? "→ TRIAL REVERTED" : "→ CLAIM MISSED → compost candidate"))
         : (allMet ? "→ would-be-met (dry-run)" : "→ would-be-missed (dry-run)"),
     );
     const receiptPath = await emitReceiptChord({
       chordPath,
       fm,
       results,
-      verdict: allMet ? "passed" : "failed",
+      verdict,
       pre,
       post,
     });

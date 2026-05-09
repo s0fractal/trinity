@@ -40,6 +40,53 @@ Verification:
 is composted with reason. If a `stake_q16` was attached, it may be
 slashed (only for falsifiable misses, never for "I disagree").
 
+### 1.1. mode: "TRIAL" (reversibility-first action)
+
+An action chord with `mode: TRIAL` opts into automatic revert when the
+claim is missed. Implements the reversibility-first principle from
+governance chord `h.1a8cddefa3dc`: cheap action + rollback is preferred
+over expensive deliberation when the action is reversible.
+
+```yaml
+claim_kind: "action"
+mode: "TRIAL"
+suggested_commands:
+  - "some risky local mutation"
+expected_after_running:
+  some_metric: ">=+1"
+```
+
+Verifier behavior under TRIAL:
+
+1. Refuse to run unless working tree is clean (`git status --porcelain`
+   returns empty).
+2. Run `suggested_commands`.
+3. Snapshot post and compare against pre.
+4. If all metrics pass → keep changes, emit receipt with verdict
+   `passed`.
+5. If any metric fails → run `git stash push --include-untracked`
+   then `git stash drop`, restoring the pre-trial state. Emit receipt
+   with verdict `trial-reverted`.
+
+TRIAL is NOT a substitute for thinking. It is appropriate for
+mutations that:
+
+- are local (no submodule, no external services)
+- are reversible by working-tree operations alone
+- have small, computable falsifier (e.g., ecosystem-delta metric)
+- would cost more in deliberation than in attempt + revert
+
+It is NOT appropriate for:
+
+- pushes to remote
+- writes to public surfaces (myc/public/)
+- changes that mutate omega frozen invariants
+- anything outside the local trinity working tree
+
+Trial revert uses `git stash drop` rather than `git reset --hard`
+because stash preserves a momentary backup if the user wants to
+recover.
+
 ## 2. claim_kind: "future-fantasy"
 
 The chord is a present-day raw idea that will become actionable later.

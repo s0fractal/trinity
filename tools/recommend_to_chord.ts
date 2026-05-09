@@ -1,24 +1,27 @@
 import { ensureDir } from "https://deno.land/std@0.224.0/fs/ensure_dir.ts";
 import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { sha256Hex } from "../lib/canon/hash.ts";
 
 /**
  * recommend_to_chord
  *
- * Reads the latest CognitiveRecommendationDescriptor JSON and emits one
- * JAZZ event per recommendation into trinity/jazz/events/.
+ * Reads the latest CognitiveRecommendationDescriptor JSON and writes one
+ * chord per recommendation into jazz/chords/.
  *
- * Dry-run by default: this tool emits chord *events*, not actions. No CLI
- * is invoked, no listener is woken automatically. The events sit on the
- * scene until a listener (or a human) picks them up. This is the
- * minimum-viable JAZZ-meta loop: cognition → chord → scene.
+ * Scene model: a chord is a self-contained sonic gesture. It may have
+ * heard zero, one, or many prior chords (or non-ontological inputs like
+ * dreams, observations, free-form context). The scene is a single flat
+ * stream of chords; causation lives in the `hears:` field, not in the
+ * filesystem layout.
  *
- * Why not auto-execute: per JAZZ §10 (anti-loop) and codex.0006 — daemon
- * hardening must come before automatic invocation. This tool is the
- * conservation-laws-first half of the loop.
+ * Dry-run: this tool only emits chords. No CLI is invoked, no listener
+ * is woken automatically. Other voices (human or model) may add their
+ * own chords in response, in support, in dissonance, or unprompted.
  */
 
 const REC_PATH = "reports/cognition/recommendation.latest.json";
-const EVENTS_DIR = "jazz/events";
+const CHORDS_DIR = "jazz/chords";
+const ACTOR = "trinity-cognition";
 
 const REPO_OCTET: Record<string, string> = {
   trinity: "oct:7.2",
@@ -78,7 +81,7 @@ function slugify(text: string, maxLen = 60): string {
     .replace(/-+$/g, "");
 }
 
-function eventTimestamp(): string {
+function chordTimestamp(): string {
   // YYYYMMDD-HHMMSS in UTC
   const d = new Date();
   const pad = (n: number) => String(n).padStart(2, "0");
@@ -93,15 +96,51 @@ function eventTimestamp(): string {
   ].join("");
 }
 
-function buildEvent(rec: Recommendation, eventId: string): string {
+async function chordFingerprint(
+  rec: Recommendation,
+): Promise<string> {
+  // Stable across runs: same action + same commands → same fingerprint.
+  // Excludes timestamp, pressure, and hears (the snapshot hash changes
+  // each cognition:recommend run even when the recommendation itself is
+  // unchanged).
+  const material = JSON.stringify({
+    actor: ACTOR,
+    repo: rec.repo,
+    vector: rec.vector,
+    action: rec.action,
+    commands: rec.commands,
+  });
+  return `h.${(await sha256Hex(material)).slice(0, 12)}`;
+}
+
+async function findChordByFingerprint(fp: string): Promise<string | null> {
+  try {
+    for await (const entry of Deno.readDir(CHORDS_DIR)) {
+      if (!entry.isFile || !entry.name.endsWith(".md")) continue;
+      const body = await Deno.readTextFile(join(CHORDS_DIR, entry.name));
+      const match = body.match(/^fingerprint:\s*"?([^"\n]+)"?$/m);
+      if (match && match[1] === fp) return entry.name;
+    }
+  } catch (e) {
+    if (!(e instanceof Deno.errors.NotFound)) throw e;
+  }
+  return null;
+}
+
+function buildChord(
+  rec: Recommendation,
+  chordId: string,
+  hears: string[],
+  fingerprint: string,
+): string {
   const primary = REPO_OCTET[rec.repo] ?? "oct:7.2";
   const secondary = REPO_OCTET_SECONDARY[rec.repo] ?? ["oct:5.5"];
   const energy = Math.max(0, Math.min(1, rec.pressure));
   const mode = modeFromPhase(rec.phase_to);
   const tension = slugify(rec.action);
-  const commandsBlock = rec.commands.length > 0
-    ? rec.commands.map((c) => `  - "${c}"`).join("\n")
-    : '  - "(no commands listed)"';
+  const hearsBlock = hears.length > 0
+    ? hears.map((h) => `  - "${h}"`).join("\n")
+    : "  []";
 
   return `---
 chord:
@@ -113,34 +152,31 @@ mode: "${mode}"
 tension: "${tension}"
 confidence: "medium"
 receipt: "none"
-source: "trinity/cognition:recommend"
+actor: "${ACTOR}"
+fingerprint: "${fingerprint}"
+hears:
+${hearsBlock}
 ---
 
-# JAZZ-meta event: ${rec.repo} → ${rec.phase_to}
+# Chord: ${rec.repo} → ${rec.phase_to}
 
-## Origin
-
-This event was auto-emitted from trinity's cognitive recommendation loop.
-
-- event_id: \`${eventId}\`
+- chord_id: \`${chordId}\`
 - emitter: \`tools/recommend_to_chord.ts\`
-- source descriptor: \`${REC_PATH}\`
-- rank: ${rec.rank}
-- pressure: ${rec.pressure.toFixed(3)}
 - vector: ${rec.vector}
 - phase: ${rec.phase_from} → ${rec.phase_to}
+- pressure: ${rec.pressure.toFixed(3)}
 
-## Ask
+## Voice
 
 ${rec.action}
 
-## Rationale
+## Reason
 
 ${rec.rationale}
 
 ## Falsifier (expected_receipt)
 
-This call is not worth action if no path produces:
+This voice is not worth the air it took if no path produces:
 
 > ${rec.expected_receipt}
 
@@ -150,29 +186,24 @@ This call is not worth action if no path produces:
 ${rec.commands.join("\n") || "(no commands listed)"}
 \`\`\`
 
-\`\`\`yaml
-suggested_commands:
-${commandsBlock}
-\`\`\`
-
-## Listener Guidance
-
-This is a **dry-run** chord event:
-
-- listeners MAY read this and propose a response in
-  \`jazz/responses/\` with a chord frontmatter, mode, claim, evidence, and
-  falsifier;
-- listeners MUST NOT auto-execute the suggested commands without explicit
-  warrant from the operator;
-- a response is valid even if it concludes \`COMPOST\` or \`DISSONATE\` with
-  reason.
-
 ## Anti-Loop
 
-If a previous event with the same \`tension\` and same suggested commands
-already exists in this scene without a closing receipt, prefer
-\`mode: REST\` and surface the duplication.
+If a chord with the same \`tension\` and same suggested commands already
+exists in the scene without a closing receipt, prefer \`mode: REST\` and
+surface the duplication.
 `;
+}
+
+async function snapshotHash(): Promise<string> {
+  // Hash the recommendation file we are reading, so other chords can
+  // reference "I heard this exact snapshot of cognition state".
+  try {
+    const text = await Deno.readTextFile(REC_PATH);
+    const sha = await sha256Hex(text);
+    return `h.${sha.slice(0, 12)}`;
+  } catch {
+    return "free:cognition-snapshot-unavailable";
+  }
 }
 
 async function main() {
@@ -192,40 +223,41 @@ async function main() {
     return;
   }
 
-  await ensureDir(EVENTS_DIR);
-  const ts = eventTimestamp();
+  await ensureDir(CHORDS_DIR);
+  const ts = chordTimestamp();
+  const sourceHash = await snapshotHash();
+  const hears = [sourceHash];
 
   let emitted = 0;
+  let skipped = 0;
   for (const rec of descriptor.recommendations) {
-    const eventId = `event-${ts}-${rec.repo}-${slugify(rec.vector, 20)}`;
-    const filename = `${eventId}.md`;
-    const path = join(EVENTS_DIR, filename);
-
-    try {
-      // emit only if not already present (idempotent within a second)
-      await Deno.stat(path);
-      console.log(`↺  exists, skipping: ${path}`);
+    const fp = await chordFingerprint(rec);
+    const existing = await findChordByFingerprint(fp);
+    if (existing) {
+      skipped++;
+      console.log(`↺  fingerprint match: ${existing} (${fp}) — skipping`);
       continue;
-    } catch (e) {
-      if (!(e instanceof Deno.errors.NotFound)) throw e;
     }
 
-    const body = buildEvent(rec, eventId);
+    const topic = `${rec.repo}-${slugify(rec.vector, 24)}`;
+    const chordId = `${ts}-${ACTOR}-${topic}`;
+    const filename = `${chordId}.md`;
+    const path = join(CHORDS_DIR, filename);
+
+    const body = buildChord(rec, chordId, hears, fp);
     await Deno.writeTextFile(path, body);
     emitted++;
-    console.log(`✅ emitted: ${path}`);
+    console.log(`✅ chord: ${path} [fp=${fp}]`);
   }
 
   console.log(
-    `\nSummary: ${emitted} event(s) emitted, ${
-      descriptor.recommendations.length - emitted
-    } skipped`,
+    `\nSummary: ${emitted} chord(s) emitted, ${skipped} skipped (fingerprint match)`,
   );
   console.log(
-    "\nThis is dry-run scene emission. No commands were executed. Listeners",
+    "\nThis is dry-run scene emission. No commands were executed.",
   );
   console.log(
-    "may respond by writing to jazz/responses/ with chord+falsifier+evidence.",
+    "Other voices may add their own chords; causation lives in `hears:`.",
   );
 }
 

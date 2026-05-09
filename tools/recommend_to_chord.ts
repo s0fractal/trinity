@@ -142,6 +142,7 @@ function buildChord(
     ? hears.map((h) => `  - "${h}"`).join("\n")
     : "  []";
 
+  const dateUtc = new Date().toISOString();
   return `---
 chord:
   primary: "${primary}"
@@ -156,6 +157,16 @@ actor: "${ACTOR}"
 fingerprint: "${fingerprint}"
 hears:
 ${hearsBlock}
+transition_receipt:
+  idea_id: "${chordId}"
+  from: "${rec.phase_from}"
+  to: "${rec.phase_to}"
+  decided_at_utc: "${dateUtc}"
+  decided_by:
+    - "${ACTOR}"
+  evidence:
+    - type: "recommendation"
+      ref: "${rec.expected_receipt.replace(/"/g, '\\"')}"
 ---
 
 # Chord: ${rec.repo} → ${rec.phase_to}

@@ -1,7 +1,7 @@
 {
   "type": "CognitiveRecommendationDescriptor",
   "version": "0.1",
-  "timestamp": "2026-05-09T17:42:23.940Z",
+  "timestamp": "2026-05-09T17:58:35.978Z",
   "basis": {
     "scanner": "tools/scanner_core.ts",
     "contract": "contracts/COGNITIVE_RECOMMENDATION.v0.1.md",
@@ -20,6 +20,7 @@
       "L6_recipe": 1,
       "L7_receipt_backed": 54,
       "L8_published": 7,
+      "public_candidate_rows": 2,
       "phases": {
         "raw-fantasy": 0,
         "hypothesis": 7,
@@ -44,6 +45,7 @@
       "L6_recipe": 163,
       "L7_receipt_backed": 3,
       "L8_published": 0,
+      "public_candidate_rows": 0,
       "phases": {
         "raw-fantasy": 0,
         "hypothesis": 98,
@@ -54,9 +56,7 @@
         "crystal": 0,
         "compost": 0
       },
-      "dirtyLines": [
-        "?? tests/resolver_fixture.test.ts"
-      ]
+      "dirtyLines": []
     },
     {
       "repo": "omega",
@@ -70,6 +70,7 @@
       "L6_recipe": 0,
       "L7_receipt_backed": 18,
       "L8_published": 0,
+      "public_candidate_rows": 0,
       "phases": {
         "raw-fantasy": 0,
         "hypothesis": 218,
@@ -81,45 +82,42 @@
         "compost": 0
       },
       "dirtyLines": [
-        "M docs/human/LATENT_THREADS.md",
         "?? omega_test_output.txt"
       ]
     },
     {
       "repo": "trinity",
-      "total": 94,
+      "total": 98,
       "L1_fqdn": 60,
-      "L2_parseable": 60,
+      "L2_parseable": 64,
       "L3_schema_valid": 12,
       "L4a_hash_claimed": 44,
       "L4b_hash_verified": 40,
       "L5_graph_linked": 0,
       "L6_recipe": 0,
-      "L7_receipt_backed": 47,
+      "L7_receipt_backed": 49,
       "L8_published": 0,
+      "public_candidate_rows": 0,
       "phases": {
         "raw-fantasy": 3,
-        "hypothesis": 28,
+        "hypothesis": 30,
         "proposal": 4,
         "experiment": 0,
-        "receipt": 45,
+        "receipt": 47,
         "formula": 14,
         "crystal": 0,
         "compost": 0
       },
       "dirtyLines": [
-        "M deno.jsonc",
-        " ? liquid",
-        " m omega",
-        " M public-candidates/myc/process.ndjson",
+        "? omega",
         " M reports/cognition/recommendation.latest.json",
         " M reports/cognition/recommendation.latest.md",
-        "?? jazz/chords/2026-05-09T172600Z-gemini-myc-candidate-publication.md",
-        "?? jazz/chords/2026-05-09T173300Z-gemini-intent-identity-and-latent.md",
-        "?? jazz/chords/2026-05-09T173800Z-gemini-identity-resolution-and-latent-threads.md",
-        "?? reports/cognition/snapshot.2026-05-09T17:26:29.890Z.json",
-        "?? reports/cognition/snapshot.2026-05-09T17:38:35.593Z.json",
-        "?? reports/cognition/snapshot.2026-05-09T17:42:23.329Z.json"
+        " M tools/cognition_recommend.ts",
+        " M tools/recommend_to_chord.ts",
+        "?? jazz/chords/2026-05-09T174600Z-gemini-resonance-receipts.md",
+        "?? jazz/chords/2026-05-09T175200Z-gemini-omega-deterministic-receipt.md",
+        "?? jazz/chords/2026-05-09T175813Z-codex-recommendation-sees-candidates.md",
+        "?? reports/cognition/snapshot.2026-05-09T17:46:15.792Z.json"
       ]
     }
   ],
@@ -141,21 +139,6 @@
       "rank": 1
     },
     {
-      "repo": "myc",
-      "vector": "publication",
-      "phase_from": "receipt",
-      "phase_to": "crystal",
-      "pressure": 0.8888888888888888,
-      "action": "Promote a tiny verified public candidate set instead of trying to publish the whole knowledge mass.",
-      "rationale": "MYC already has many receipt-like files, so the leverage is to prove a narrow public path from candidate to verified object.",
-      "expected_receipt": "A candidate index where every public object resolves to a hash/FQDN and passes the verification script.",
-      "commands": [
-        "deno task publish:candidates",
-        "deno task publish:verify-candidates"
-      ],
-      "rank": 2
-    },
-    {
       "repo": "omega",
       "vector": "deterministic-execution",
       "phase_from": "hypothesis",
@@ -168,7 +151,7 @@
         "deno task check:omega:rust",
         "deno task check:omega:deno"
       ],
-      "rank": 3
+      "rank": 2
     },
     {
       "repo": "liquid",
@@ -183,7 +166,7 @@
         "deno task check:liquid:doctor",
         "deno task check:liquid:audit"
       ],
-      "rank": 4
+      "rank": 3
     }
   ]
 }

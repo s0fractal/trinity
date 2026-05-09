@@ -1,0 +1,9 @@
+[submodule "myc"]
+	path = myc
+	url = https://github.com/s0fractal/myc.git
+[submodule "omega"]
+	path = omega
+	url = https://github.com/s0fractal/genesis.git
+[submodule "liquid"]
+	path = liquid
+	url = https://github.com/s0fractal/liquid_architecture.git

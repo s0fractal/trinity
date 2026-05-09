@@ -1,0 +1,4 @@
+.DS_Store
+reports/latest-*.md
+reports/*.tmp.md
+

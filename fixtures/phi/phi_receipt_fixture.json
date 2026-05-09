@@ -1,0 +1,9 @@
+{
+  "type": "PHI_RECEIPT",
+  "version": "0.1",
+  "intent_hash": "f6ad91ee19648111896148725cf4b46d7eeaec0124987ff1e50bacef5d5680e5",
+  "status": "ACCEPTED",
+  "derived_phase": 60021,
+  "timestamp": 1715000000001,
+  "receipt_signature": "0b37965372783311319a078b6d331d3029f4c272361651510b1ba9f898c02d6c"
+}

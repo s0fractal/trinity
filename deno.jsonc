@@ -1,0 +1,17 @@
+{
+  "tasks": {
+    "status": "deno run -A scripts/trinity_status.ts",
+    "audit:green": "deno run -A scripts/run_baseline.ts --green",
+    "audit:strict": "deno run -A scripts/run_baseline.ts --strict",
+    "fixture:phi": "deno run -A scripts/phi_roundtrip.ts",
+    "fixture:phi:ingest-myc": "deno run -A scripts/phi_roundtrip.ts --ingest-myc",
+    "submodules:status": "git submodule foreach 'git status --short --branch'",
+    "submodules:update": "git submodule update --init --recursive",
+    "check:myc": "cd myc && deno task check",
+    "check:omega:rust": "cd omega && cargo test --workspace",
+    "check:omega:deno": "cd omega && deno task test:fast",
+    "check:liquid:audit": "cd liquid && deno task audit:strict",
+    "check:liquid:doctor": "cd liquid && deno task ledger:doctor --json",
+    "check:liquid:unit": "cd liquid && deno task test:unit"
+  }
+}

@@ -247,8 +247,10 @@ function compare(
 }
 
 async function isWorkingTreeClean(): Promise<boolean> {
+  // Ignore submodule modifications — trinity's working tree means
+  // trinity's own files. Submodules are sovereign.
   const out = await new Deno.Command("git", {
-    args: ["status", "--porcelain"],
+    args: ["status", "--porcelain", "--ignore-submodules=all"],
     stdout: "piped",
     stderr: "null",
   }).output();

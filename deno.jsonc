@@ -20,6 +20,7 @@
     "cognition:delta": "deno run -A tools/cognition_delta.ts",
     "cognition:recommend": "deno run -A tools/cognition_recommend.ts",
     "cognition:recommend-to-chord": "deno run -A tools/recommend_to_chord.ts",
+    "cognition:cycle": "deno task cognition:snapshot && deno task cognition:delta && deno task cognition:recommend && deno task cognition:recommend-to-chord",
     "canon:verify": "deno run -A lib/canon/verify_vectors.ts",
     "chord:play": "deno run -A tools/chord_play.ts",
     "publish:candidates": "deno run -A tools/publish_candidates.ts",

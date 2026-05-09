@@ -12,6 +12,7 @@
     "check:omega:deno": "cd omega && deno task test:fast",
     "check:liquid:audit": "cd liquid && deno task audit:strict",
     "check:liquid:doctor": "cd liquid && deno task ledger:doctor --json",
-    "check:liquid:unit": "cd liquid && deno task test:unit"
+    "check:liquid:unit": "cd liquid && deno task test:unit",
+    "ontology:coverage": "deno run -A tools/ontology_coverage.ts"
   }
 }

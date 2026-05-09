@@ -34,6 +34,22 @@ liquid latent state
   -> myc SealedReceiptDescriptor / substrate receipt
 ```
 
+## Public Process Trace
+
+Trinity records process, not only final state. Durable ideas, analyses,
+proposals, reviews, decisions, work intents, and verification receipts should
+become immutable process objects when they are worth preserving.
+
+Raw input is treated as evidence, not truth. A copied chat, task note, or model
+answer is often already a compressed or distorted interpretation. Later process
+objects can extract claims, formalize them, review them, and publish verified
+projections to `myc`.
+
+See:
+
+- `docs/PUBLIC_PROCESS_TRACE.md`
+- `contracts/PROCESS_OBJECTS.v0.1.md`
+
 ## Audit Policy
 
 `trinity` distinguishes two gate classes:

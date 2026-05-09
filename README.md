@@ -22,6 +22,7 @@ trinity/
   scripts/      # orchestration and audit helpers
   reports/      # generated or curated audit reports
   docs/         # operator/model guidance
+  intake/       # future raw/object/projection intake pipeline
 ```
 
 ## Bootstrap
@@ -52,3 +53,16 @@ Each layer keeps its own authority:
 - `myc` may publish and audit receipts.
 
 No layer should silently assume the authority of another.
+
+## Process Trace
+
+Trinity is also the place to model public development process:
+
+- raw captures from humans and models;
+- interpretations and extracted claims;
+- proposals, reviews, and decisions;
+- work intents and verification receipts;
+- publication receipts into `myc`.
+
+See [PUBLIC_PROCESS_TRACE.md](docs/PUBLIC_PROCESS_TRACE.md) and
+[PROCESS_OBJECTS.v0.1.md](contracts/PROCESS_OBJECTS.v0.1.md).

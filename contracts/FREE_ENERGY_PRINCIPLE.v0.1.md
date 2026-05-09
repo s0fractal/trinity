@@ -275,7 +275,7 @@ This contract is **DRAFT**. Promotion to **active** requires:
 2. At least one empirical correlation study — F_total computed for
    ≥1000 ticks, correlation against substrate health indicators
 3. Resolution of identified gaps:
-   - `KEYSTONE_RESCUE` mapping (currently unresolved — may not be FEP)
+   - ~~`KEYSTONE_RESCUE` mapping~~ — **resolved 2026-05-09**, see §12
    - exact form of `interaction_term(i, j)` 
    - exact form of `global_field_term(r)` derivation from Kuramoto
 4. Update of `liquid/00_core/causal_events.ts` to add
@@ -312,6 +312,90 @@ may revise. This v0.1 simply **opens** the FEP option.
   may include partial implementation proposal.
 - **RIFF** — propose extensions, alternative mappings, additional
   μ-closures to map.
+
+## 12. Resolved gap: KEYSTONE_RESCUE as FEP-aligned topological proxy
+
+(Resolved 2026-05-09 by reading
+`liquid/00_core/projector/macrophage.ts:76-87` and
+`liquid/00_core/projector/structural_health.ts:124-130`.)
+
+### What KEYSTONE_RESCUE actually does
+
+```ts
+function criticalityOf(neuronId: string): number {
+  return COUNT(DISTINCT target_id) FROM Synapses WHERE source_id = ?
+}
+
+const KEYSTONE_THRESHOLD = 3;
+if (criticality >= KEYSTONE_THRESHOLD) {
+  rescue(neuronId);
+}
+```
+
+The criterion is pure outgoing degree on the synapse graph. No F is
+computed.
+
+### Why this IS FEP-aligned (despite not computing F)
+
+Removing a high-degree node would disrupt N predictions held by the
+N dependents. Aggregate F_total would spike on the next tick because
+those dependents lose a critical observation source. The substrate's
+overall surprise rises sharply, possibly cascading.
+
+So the implementation chooses outgoing-degree as a **cheap proxy for
+F-impact-of-removal**:
+
+```text
+expected_F_spike(remove i) ≈ Σ_{j depends on i} ΔF_j 
+                            ≈ proportional_to(out_degree_of_i)
+```
+
+The proxy is justified when:
+
+1. F-impact estimation is too expensive to compute per neuron per tick
+   (would be O(N) or worse)
+2. Out-degree is O(1) lookup once synapse table is indexed
+3. Variance in actual F-impact within high-degree set is small enough
+   not to matter for the binary "rescue or not" decision
+
+This is **bounded active inference** (FEP × Simon's bounded
+rationality) applied to apoptosis decisions. Same pattern as
+top-k in `computeHungerGradient`. Cheap heuristic stands in for
+expensive optimal rule because the substrate cannot afford optimal.
+
+### Why this matters for the framework
+
+KEYSTONE_RESCUE doesn't fall outside FEP — it falls **within bounded
+FEP**. The framework holds, but with explicit acknowledgment: in
+production, FEP-derived metrics will be implemented as **proxies** more
+often than as direct F computations. This is correct, not a defect.
+
+### Implication for future implementation
+
+When implementing `SUBSTRATE_FREE_ENERGY` as a causal event, do not
+require it to be the **exact** F. Allow proxies with documented bounds:
+
+```yaml
+SUBSTRATE_FREE_ENERGY:
+  computation_kind: "proxy" | "sampled" | "exact"
+  proxy_basis: "degree-weighted | rho-weighted | random-subset"
+  approximation_error_bound: "<float | unavailable>"
+```
+
+The substrate is honest about what it computed and how cheaply. This
+lets future analyzers reason about whether the proxy's drift from true
+F could affect their downstream decisions.
+
+### Open: when does proxy fail?
+
+Hypothesis (untested): KEYSTONE_RESCUE proxy fails when the out-degree
+distribution is heavy-tailed AND most rescued nodes have similar
+criticality near threshold. Then small differences in actual F-impact
+matter but the proxy can't distinguish. Could be tested by computing
+exact F-impact-of-removal for top-k high-degree nodes and seeing if
+the substrate's rescue decisions correlate.
+
+This is a future RIFF, not part of this contract.
 - **DISSONATE** — name a concrete falsifier or argue FEP is the wrong
   lens for trinity (e.g., "Petri net analysis is sufficient and
   simpler"). Must be falsifiable.

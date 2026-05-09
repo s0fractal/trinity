@@ -104,6 +104,36 @@ Required fields:
 - `captured_by`
 - `payload_hash`
 
+`RawCaptureDescriptor` may also point to a larger external or sealed object when
+the payload is too large or too private to embed.
+
+### `PerceptionDescriptor`
+
+Records raw perception as a typed signal. It is a more general form of raw
+capture, suitable for streams and non-text inputs.
+
+Required fields:
+
+- `perception_kind`: `text`, `audio`, `video`, `game-stream`, `terminal`,
+  `repo-state`, `sensor`, `model-message`, `memory`, `projection`
+- `source_fidelity`
+- `observer`
+- `observed_at`
+- `payload_hash`
+
+### `ProjectionDescriptor`
+
+Records a smaller, verifiable representation of a larger raw stream.
+
+Required fields:
+
+- `projects_from`
+- `projection_kind`: `event-log`, `action-log`, `state-trace`, `feature-trace`,
+  `summary`, `snapshot`, `embedding`, `formula`
+- `loss_model`: `lossless`, `bounded-loss`, `lossy`, `interpretive`
+- `reconstruction_claim`
+- `verification_method`
+
 ### `InterpretationDescriptor`
 
 Records an interpretation of one or more raw captures.
@@ -182,6 +212,19 @@ Required fields:
 - `scope`
 - `expected_receipts`
 
+### `ActionDescriptor`
+
+Records an executed or attempted action.
+
+Required fields:
+
+- `action_kind`: `repo-edit`, `command`, `publish`, `test`, `conversation`,
+  `simulation`, `external`
+- `derived_from`
+- `actor`
+- `target`
+- `expected_receipt`
+
 ### `VerificationReceiptDescriptor`
 
 Records the output of a check, audit, test, or reproducible command.
@@ -193,6 +236,31 @@ Required fields:
 - `exit_code`
 - `summary`
 - `artifact_hashes`
+
+### `RetrospectiveDescriptor`
+
+Records analysis after an action, receipt, failure, or surprising observation.
+
+Required fields:
+
+- `retrospects`
+- `observed_outcome`
+- `explanation`
+- `model_delta`
+- `open_questions`
+
+### `ModelUpdateDescriptor`
+
+Records a durable update to the system's model of itself, another system, or the
+world.
+
+Required fields:
+
+- `updates_model`
+- `previous_assumption`
+- `new_assumption`
+- `evidence`
+- `confidence`
 
 ### `PublicationReceiptDescriptor`
 
@@ -234,3 +302,8 @@ can show both:
 - what verified it.
 
 This makes development itself addressable.
+
+## Related Contracts
+
+- `PAR_LOOP.v0.1.md`
+- `docs/PROOF_CARRYING_RAW.md`

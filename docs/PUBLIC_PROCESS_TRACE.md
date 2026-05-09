@@ -170,6 +170,30 @@ The invariant should remain:
 immutable events + verifiable projections + explicit receipts
 ```
 
+## Proof-Carrying Raw
+
+Large raw streams do not always need to remain the primary representation.
+
+If enough proof structure exists, a raw stream can be represented by a smaller
+projection:
+
+```text
+raw stream
+  -> channel split
+  -> action/event/state log
+  -> deterministic replay or verification
+  -> selected raw receipts
+```
+
+For example, a deterministic game video can be represented by the game build
+hash, initial state, input action log, overlay channel hashes, replay engine,
+final state, and selected frame hashes.
+
+See:
+
+- `contracts/PAR_LOOP.v0.1.md`
+- `docs/PROOF_CARRYING_RAW.md`
+
 ## Non-Goals
 
 - Do not publish every token of every private conversation.

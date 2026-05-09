@@ -49,6 +49,8 @@ See:
 
 - `docs/PUBLIC_PROCESS_TRACE.md`
 - `contracts/PROCESS_OBJECTS.v0.1.md`
+- `contracts/PAR_LOOP.v0.1.md`
+- `docs/PROOF_CARRYING_RAW.md`
 
 ## Audit Policy
 

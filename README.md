@@ -66,3 +66,12 @@ Trinity is also the place to model public development process:
 
 See [PUBLIC_PROCESS_TRACE.md](docs/PUBLIC_PROCESS_TRACE.md) and
 [PROCESS_OBJECTS.v0.1.md](contracts/PROCESS_OBJECTS.v0.1.md).
+
+The thinking loop is captured in [PAR_LOOP.v0.1.md](contracts/PAR_LOOP.v0.1.md):
+
+```text
+Perception -> Action -> Retrospection
+```
+
+Large raw streams can be represented as proof-carrying projections; see
+[PROOF_CARRYING_RAW.md](docs/PROOF_CARRYING_RAW.md).

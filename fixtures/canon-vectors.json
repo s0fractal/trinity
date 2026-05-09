@@ -1,0 +1,49 @@
+{
+  "version": "0.1",
+  "spec": "contracts/CANONICAL_HASH.v0.1.md",
+  "note": "Cross-substrate oracle. Each substrate's hash impl MUST reproduce these vectors byte-exact. Drift between substrates is detected by a failing vector in CI, not by code review.",
+  "vectors": [
+    {
+      "name": "empty",
+      "input": "",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fqdn_prefix": "h.e3b0c44298fc"
+    },
+    {
+      "name": "ascii_short",
+      "input": "hello\n",
+      "sha256": "5891b5b522d5df086d0ff0b110fbd9d21bb4fc7163af34d08286a2e846f6be03",
+      "fqdn_prefix": "h.5891b5b522d5"
+    },
+    {
+      "name": "no_trailing_nl",
+      "input": "hello",
+      "sha256": "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+      "fqdn_prefix": "h.2cf24dba5fb0"
+    },
+    {
+      "name": "utf8_cyrillic",
+      "input": "трініті\n",
+      "sha256": "abdd43faaa59e530bc2a3e1ae5bc668d85afbf1b9868bf8db3e59808e587c0df",
+      "fqdn_prefix": "h.abdd43faaa59"
+    },
+    {
+      "name": "frontmatter_min",
+      "input": "---\ntype: \"X\"\n---\n\nbody\n",
+      "sha256": "ce3b8ab3dae4c3376b89999c8cda50b9042b280319411415d2dbcc720ba99255",
+      "fqdn_prefix": "h.ce3b8ab3dae4"
+    },
+    {
+      "name": "spaces_matter",
+      "input": "  hello  \n",
+      "sha256": "8d1cc2de96de5ccff2479114ee9d0219a26260bb86e8f227d4c4ecbeb6d26160",
+      "fqdn_prefix": "h.8d1cc2de96de"
+    },
+    {
+      "name": "crlf_vs_lf",
+      "input": "a\r\nb\n",
+      "sha256": "953bba9ac9726eaea07e844abcf144a0afe998039257c7a88b6665819597f39d",
+      "fqdn_prefix": "h.953bba9ac972"
+    }
+  ]
+}

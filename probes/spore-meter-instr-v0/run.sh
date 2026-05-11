@@ -11,11 +11,16 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$SCRIPT_DIR"
 
 echo "── rust instrumenter ──────────────────────────────────"
-(cd rust && cargo run --release --quiet)
+(cd rust && cargo run --release --quiet --bin instrument)
 
 echo
-echo "── deno runner ────────────────────────────────────────"
-deno run --allow-read ts/runner.ts | tee /tmp/spore-meter-instr-v0.runner.out
+echo "── deno (V8) runner ───────────────────────────────────"
+deno run --allow-read ts/runner.ts | tee /tmp/spore-meter-instr-v0.deno.out
+
+echo
+echo "── wasmtime runner ────────────────────────────────────"
+(cd rust && cargo run --release --quiet --bin wasmtime_runner) \
+  | tee /tmp/spore-meter-instr-v0.wasmtime.out
 
 echo
 echo "── expected (fuel_v1 - 5 from meter #3) ───────────────"
@@ -30,11 +35,32 @@ echo "$EXPECTED" > /tmp/spore-meter-instr-v0.expected.out
 echo "$EXPECTED"
 
 echo
-if diff -q /tmp/spore-meter-instr-v0.runner.out /tmp/spore-meter-instr-v0.expected.out >/dev/null; then
-  echo "PROBE_GREEN — instrumented body_fuel matches meter #3 body_fuel exactly"
+deno_ok=0
+wasmtime_ok=0
+cross_ok=0
+if diff -q /tmp/spore-meter-instr-v0.deno.out /tmp/spore-meter-instr-v0.expected.out >/dev/null; then
+  deno_ok=1
+fi
+if diff -q /tmp/spore-meter-instr-v0.wasmtime.out /tmp/spore-meter-instr-v0.expected.out >/dev/null; then
+  wasmtime_ok=1
+fi
+if diff -q /tmp/spore-meter-instr-v0.deno.out /tmp/spore-meter-instr-v0.wasmtime.out >/dev/null; then
+  cross_ok=1
+fi
+
+if [ $deno_ok -eq 1 ] && [ $wasmtime_ok -eq 1 ] && [ $cross_ok -eq 1 ]; then
+  echo "PROBE_GREEN — V8 ↔ Wasmtime ↔ meter#3 all byte-identical on body_fuel"
   exit 0
 else
-  echo "PROBE_RED — instrumented body_fuel differs from meter #3 body_fuel"
-  diff /tmp/spore-meter-instr-v0.runner.out /tmp/spore-meter-instr-v0.expected.out || true
+  echo "PROBE_RED — instrumented body_fuel disagreement"
+  echo "  deno_matches_expected=$deno_ok"
+  echo "  wasmtime_matches_expected=$wasmtime_ok"
+  echo "  deno_matches_wasmtime=$cross_ok"
+  echo "── deno vs expected ──"
+  diff /tmp/spore-meter-instr-v0.deno.out /tmp/spore-meter-instr-v0.expected.out || true
+  echo "── wasmtime vs expected ──"
+  diff /tmp/spore-meter-instr-v0.wasmtime.out /tmp/spore-meter-instr-v0.expected.out || true
+  echo "── deno vs wasmtime ──"
+  diff /tmp/spore-meter-instr-v0.deno.out /tmp/spore-meter-instr-v0.wasmtime.out || true
   exit 1
 fi

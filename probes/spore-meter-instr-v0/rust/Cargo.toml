@@ -7,10 +7,15 @@ publish = false
 [dependencies]
 wasmparser = "0.218"
 wasm-encoder = "0.218"
+wasmtime = "26"
 
 [[bin]]
 name = "instrument"
 path = "src/main.rs"
+
+[[bin]]
+name = "wasmtime_runner"
+path = "src/bin/wasmtime_runner.rs"
 
 [profile.release]
 opt-level = 3

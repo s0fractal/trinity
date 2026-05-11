@@ -51,6 +51,17 @@ for (const { name, sizes } of MATRIX) {
     if (name === "identity" && outLen !== inLen) {
       throw new Error(`identity returned out_len=${outLen}, expected ${inLen}`);
     }
+    const memAfter = new Uint8Array(memory.buffer);
+    if (name === "identity") {
+      for (let i = 0; i < inLen; i++) {
+        const actual = memAfter[OUT_PTR + i];
+        if (actual !== INPUT_BYTE) {
+          throw new Error(
+            `identity output byte mismatch at ${i}: got ${actual}, expected ${INPUT_BYTE}`,
+          );
+        }
+      }
+    }
     console.log(
       `mutator=${name} in_len=${inLen} body_fuel_instr=${fuelCounter}`,
     );

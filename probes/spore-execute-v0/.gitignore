@@ -1,0 +1,4 @@
+rust/target/
+rust/Cargo.lock
+wat-compile/target/
+wat-compile/Cargo.lock

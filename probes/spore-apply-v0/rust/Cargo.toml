@@ -1,0 +1,16 @@
+[package]
+name = "spore-apply-v0-probe"
+version = "0.0.1"
+edition = "2021"
+publish = false
+
+[dependencies]
+blake3 = "1.5"
+
+[[bin]]
+name = "probe"
+path = "src/main.rs"
+
+[profile.release]
+opt-level = 3
+lto = false

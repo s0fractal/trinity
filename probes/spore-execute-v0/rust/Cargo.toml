@@ -1,0 +1,26 @@
+[package]
+name = "spore-execute-v0-probe"
+version = "0.0.1"
+edition = "2021"
+publish = false
+default-run = "probe"
+
+[dependencies]
+blake3 = "1.5"
+wasmtime = "26"
+
+[[bin]]
+name = "probe"
+path = "src/main.rs"
+
+[[bin]]
+name = "atp"
+path = "src/bin/atp.rs"
+
+[[bin]]
+name = "bench"
+path = "src/bin/bench.rs"
+
+[profile.release]
+opt-level = 3
+lto = false

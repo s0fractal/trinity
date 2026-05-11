@@ -1,5 +1,13 @@
 {
   "version": "5",
+  "specifiers": {
+    "npm:@noble/hashes@1.4.0": "1.4.0"
+  },
+  "npm": {
+    "@noble/hashes@1.4.0": {
+      "integrity": "sha512-V1JJ1WTRUqHHrOSh597hURcMqVKVGL/ea3kv0gSnEdsEZ0/+VyPghM1lMNGc00z7CIQorSvbKpuJkxvuHbvdbg=="
+    }
+  },
   "remote": {
     "https://deno.land/std@0.224.0/assert/_constants.ts": "a271e8ef5a573f1df8e822a6eb9d09df064ad66a4390f21b3e31f820a38e0975",
     "https://deno.land/std@0.224.0/assert/assert.ts": "09d30564c09de846855b7b071e62b5974b001bb72a4b797958fe0660e7849834",

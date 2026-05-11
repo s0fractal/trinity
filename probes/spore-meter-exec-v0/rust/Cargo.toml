@@ -1,0 +1,16 @@
+[package]
+name = "spore-meter-exec-v0"
+version = "0.0.1"
+edition = "2021"
+publish = false
+
+[dependencies]
+blake3 = "1.5"
+wasmparser = "0.218"
+
+[[bin]]
+name = "meter-exec"
+path = "src/main.rs"
+
+[profile.release]
+opt-level = 3

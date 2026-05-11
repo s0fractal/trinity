@@ -1,0 +1,4 @@
+rust/target/
+rust/Cargo.lock
+python/venv/
+python/__pycache__/

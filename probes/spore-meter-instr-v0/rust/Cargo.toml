@@ -17,5 +17,12 @@ path = "src/main.rs"
 name = "wasmtime_runner"
 path = "src/bin/wasmtime_runner.rs"
 
+[[bin]]
+name = "wasmtime_enforce"
+path = "src/bin/wasmtime_enforce.rs"
+
+[dependencies.anyhow]
+version = "1"
+
 [profile.release]
 opt-level = 3

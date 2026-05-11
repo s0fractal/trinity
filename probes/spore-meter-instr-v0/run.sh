@@ -29,6 +29,12 @@ mutator=nop in_len=32 body_fuel_instr=1
 mutator=identity in_len=32 body_fuel_instr=72
 mutator=identity in_len=256 body_fuel_instr=520
 mutator=identity in_len=1024 body_fuel_instr=2056
+mutator=xor_5c in_len=32 body_fuel_instr=679
+mutator=xor_5c in_len=256 body_fuel_instr=5383
+mutator=xor_5c in_len=1024 body_fuel_instr=21511
+mutator=sum_bytes in_len=32 body_fuel_instr=555
+mutator=sum_bytes in_len=256 body_fuel_instr=4363
+mutator=sum_bytes in_len=1024 body_fuel_instr=17419
 EOF
 )
 echo "$EXPECTED" > /tmp/spore-meter-instr-v0.expected.out

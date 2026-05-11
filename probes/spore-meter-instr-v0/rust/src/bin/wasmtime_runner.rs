@@ -24,6 +24,8 @@ const INSTR_DIR: &str = "/tmp/spore-meter-instr-v0";
 const MATRIX: &[(&str, &[usize])] = &[
     ("nop", &[32]),
     ("identity", &[32, 256, 1024]),
+    ("xor_5c", &[32, 256, 1024]),
+    ("sum_bytes", &[32, 256, 1024]),
 ];
 const INPUT_BYTE: u8 = 0xab;
 const IN_PTR: i32 = 0;
@@ -79,7 +81,6 @@ fn run_one(name: &str, in_len: usize) -> Result<u64, Box<dyn Error>> {
                 )
                 .into());
             }
-            // F-INSTR-3: verify output bytes equal input bytes.
             let data = memory.data(&store);
             for i in 0..in_len {
                 let actual = data[OUT_PTR as usize + i];
@@ -90,6 +91,51 @@ fn run_one(name: &str, in_len: usize) -> Result<u64, Box<dyn Error>> {
                     )
                     .into());
                 }
+            }
+        }
+        "xor_5c" => {
+            if out_len != in_len {
+                return Err(format!(
+                    "xor_5c returned out_len={}, expected {}",
+                    out_len, in_len
+                )
+                .into());
+            }
+            let data = memory.data(&store);
+            let expected = INPUT_BYTE ^ 0x5c;
+            for i in 0..in_len {
+                let actual = data[OUT_PTR as usize + i];
+                if actual != expected {
+                    return Err(format!(
+                        "xor_5c output byte mismatch at {}: got {}, expected {}",
+                        i, actual, expected
+                    )
+                    .into());
+                }
+            }
+        }
+        "sum_bytes" => {
+            if out_len != 4 {
+                return Err(format!(
+                    "sum_bytes returned out_len={}, expected 4",
+                    out_len
+                )
+                .into());
+            }
+            let data = memory.data(&store);
+            let actual_sum = u32::from_le_bytes([
+                data[OUT_PTR as usize],
+                data[OUT_PTR as usize + 1],
+                data[OUT_PTR as usize + 2],
+                data[OUT_PTR as usize + 3],
+            ]);
+            let expected_sum = (INPUT_BYTE as u32) * (in_len as u32);
+            if actual_sum != expected_sum {
+                return Err(format!(
+                    "sum_bytes output mismatch: got {}, expected {}",
+                    actual_sum, expected_sum
+                )
+                .into());
             }
         }
         _ => {}

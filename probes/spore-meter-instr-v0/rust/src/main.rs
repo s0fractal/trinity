@@ -1,54 +1,70 @@
 // spore-meter-instr-v0 :: WASM-to-WASM instrumenter for spore.fuel.v1.
 //
-// MVP scope: nop + identity only (single-BB mutators, optional
-// memory.copy). Mutators containing loop/block/if/br_if/br/br_table/
-// call are refused — see SPEC.md.
+// Scope (post-r3): single-function v0 mutators with the v0 consensus
+// instruction subset, including loops via block/loop/if/else/br/br_if.
+// Modules with internal call, call_indirect, banned f32/f64/SIMD ops,
+// or pre-existing imports are still refused.
 //
 // Strategy:
 //   1. Add a type (func (param i32)) and an import (spore.deduct).
 //      The import is function index 0, shifting all original function
 //      indices by +1.
-//   2. Update exports that reference function indices.
+//   2. Update exports referencing function indices.
 //   3. For each function body:
-//        - Add one scratch i32 local.
-//        - Compute static body fuel = sum of v1 cost for every op in
-//          the body, treating memory.copy / memory.fill as their
-//          fixed cost of 4 only.
-//        - Prepend `i32.const <static>; call $deduct` to the body.
-//        - Before each memory.copy: emit dynamic charge sequence
-//          (tee scratch, get scratch, *2, call deduct).
-//        - Before each memory.fill: same but *1 (or omit the const).
+//        - Preserve original locals; add one scratch i32 local.
+//        - Split the operator stream into basic blocks (BBs). A BB
+//          ends at every control-flow op: block / loop / if / else /
+//          end / br / br_if / br_table / return / unreachable / call.
+//        - Compute static fuel for each BB as the sum of v1 instr
+//          costs of every op inside the BB. memory.copy / memory.fill
+//          contribute their fixed 4; their dynamic per-byte cost is
+//          charged separately.
+//        - Emit BB-entry charge (`i32.const cost; call $deduct`) at
+//          the start of each BB whose cost > 0. Charges of 0 are
+//          skipped (they would just be dead bytes in unreachable BBs
+//          and structurally fine but pointless).
+//        - Before each memory.copy / memory.fill, emit the dynamic
+//          charge sequence (tee scratch, get scratch, *2 / *1, call
+//          $deduct).
 //
-// Output is written to /tmp/spore-meter-instr-v0/<name>.instr.wasm.
+// Loop semantics rely on WASM's own control flow: a br to a loop
+// label resumes at the instruction right after the `loop` opcode
+// (which is where the exit-check BB's charge sits), so the exit-check
+// charge naturally fires N+1 times and the loop-body BB charge fires
+// N times — matching meter #3 (exec-aware) exactly.
 
 use std::error::Error;
 use std::fs;
 use std::path::Path;
 
 use wasm_encoder::{
-    CodeSection, ConstExpr, EntityType, ExportKind, ExportSection,
-    Function, FunctionSection, ImportSection, Instruction, MemArg,
+    BlockType as EncBlockType, CodeSection, ConstExpr, EntityType, ExportKind,
+    ExportSection, Function, FunctionSection, ImportSection, Instruction, MemArg,
     MemorySection, MemoryType, Module, TypeSection, ValType,
 };
-use wasmparser::{Operator, Parser, Payload};
+use wasmparser::{BlockType as ParseBlockType, Operator, Parser, Payload};
 
-const INPUT_MUTATORS: &[&str] = &["nop", "identity"];
+const INPUT_MUTATORS: &[&str] = &["nop", "identity", "xor_5c", "sum_bytes"];
 const SOURCE_DIR_REL: &str = "../../spore-execute-v0";
 const OUTPUT_DIR: &str = "/tmp/spore-meter-instr-v0";
 
+const DEDUCT_FUNC_INDEX: u32 = 0;
+
 /// Per-instruction v1 fuel cost. Returns None for ops outside the
-/// MVP-supported subset (these cause the instrumenter to refuse).
+/// supported subset.
 fn op_static_fuel(op: &Operator) -> Option<u32> {
     use Operator::*;
     Some(match op {
         // 0 fuel (markers)
         End => 0,
 
-        // 1 fuel
+        // 1 fuel (structural / control flow / arith)
         Nop | Drop
         | LocalGet { .. } | LocalSet { .. } | LocalTee { .. }
         | I32Const { .. } | I64Const { .. }
-        | Select | Unreachable
+        | Block { .. } | Loop { .. } | If { .. } | Else
+        | Br { .. } | BrIf { .. }
+        | Return | Select | Unreachable
         // i32 arith
         | I32Add | I32Sub | I32Mul
         | I32DivS | I32DivU | I32RemS | I32RemU
@@ -74,7 +90,7 @@ fn op_static_fuel(op: &Operator) -> Option<u32> {
         | I32Extend8S | I32Extend16S
         | I64Extend8S | I64Extend16S | I64Extend32S => 1,
 
-        // 2 fuel: memory load/store
+        // 2 fuel: memory load/store, call
         I32Load { .. } | I64Load { .. }
         | I32Load8S { .. } | I32Load8U { .. }
         | I32Load16S { .. } | I32Load16U { .. }
@@ -89,37 +105,77 @@ fn op_static_fuel(op: &Operator) -> Option<u32> {
         // separately at instrumentation time.
         MemoryCopy { .. } | MemoryFill { .. } => 4,
 
-        // Anything else (loop, block, if, br, br_if, br_table, call,
-        // call_indirect, return, banned f32/f64/SIMD ops, etc.) is
-        // outside MVP scope. Return None to signal refuse.
+        // Out of supported subset for now: internal call, call_indirect,
+        // br_table (1+N cost, not yet implemented), banned f32/f64/SIMD.
         _ => return None,
     })
 }
 
-/// Walk a function body and either return its static fuel total or
-/// refuse with an explanation if a non-MVP op is present. Also
-/// returns the original op-list as we'll need to re-emit them.
-fn analyze_body<'a>(
-    body_ops: &'a [Operator<'a>],
-) -> Result<u32, String> {
-    let mut total = 0u32;
-    for op in body_ops {
-        match op_static_fuel(op) {
-            Some(c) => total += c,
-            None => {
-                return Err(format!(
-                    "op {:?} is outside MVP scope (loops/branches/calls/banned ops are deferred)",
-                    op
-                ));
-            }
-        }
-    }
-    Ok(total)
+/// Is this op a control-flow boundary that ends a basic block?
+fn is_bb_terminator(op: &Operator) -> bool {
+    use Operator::*;
+    matches!(op,
+        Block { .. } | Loop { .. } | If { .. } | Else | End
+        | Br { .. } | BrIf { .. } | BrTable { .. }
+        | Return | Unreachable | Call { .. }
+    )
 }
 
-/// Translate a single wasmparser Operator into a wasm-encoder
-/// Instruction we can re-emit. Only the MVP-supported subset is
-/// handled; this mirrors op_static_fuel exactly.
+#[derive(Debug, Clone)]
+struct BasicBlock {
+    start: usize,
+    end: usize, // exclusive
+    cost: u32,
+}
+
+/// Walk the operator list, find BB boundaries, compute each BB's cost.
+fn compute_basic_blocks(ops: &[Operator]) -> Result<Vec<BasicBlock>, String> {
+    let mut bbs = vec![];
+    let mut bb_start = 0;
+    for (i, op) in ops.iter().enumerate() {
+        if op_static_fuel(op).is_none() {
+            return Err(format!(
+                "op {:?} is outside supported subset (internal call, call_indirect, br_table, or banned)",
+                op
+            ));
+        }
+        if is_bb_terminator(op) {
+            let cost: u32 = ops[bb_start..=i]
+                .iter()
+                .map(|o| op_static_fuel(o).unwrap_or(0))
+                .sum();
+            bbs.push(BasicBlock { start: bb_start, end: i + 1, cost });
+            bb_start = i + 1;
+        }
+    }
+    // Any trailing ops after the last BB terminator? In well-formed
+    // WASM bodies the last op is End, so this should be empty.
+    if bb_start < ops.len() {
+        let cost: u32 = ops[bb_start..]
+            .iter()
+            .map(|o| op_static_fuel(o).unwrap_or(0))
+            .sum();
+        bbs.push(BasicBlock { start: bb_start, end: ops.len(), cost });
+    }
+    Ok(bbs)
+}
+
+fn mem_arg(m: &wasmparser::MemArg) -> MemArg {
+    MemArg {
+        offset: m.offset,
+        align: m.align as u32,
+        memory_index: m.memory,
+    }
+}
+
+fn translate_block_type(bt: &ParseBlockType) -> EncBlockType {
+    match bt {
+        ParseBlockType::Empty => EncBlockType::Empty,
+        ParseBlockType::Type(t) => EncBlockType::Result(convert_valtype(t)),
+        ParseBlockType::FuncType(i) => EncBlockType::FunctionType(*i),
+    }
+}
+
 fn translate_op<'a>(op: &Operator<'a>) -> Instruction<'static> {
     use Operator as O;
     match *op {
@@ -127,17 +183,23 @@ fn translate_op<'a>(op: &Operator<'a>) -> Instruction<'static> {
         O::Nop => Instruction::Nop,
         O::Drop => Instruction::Drop,
         O::Unreachable => Instruction::Unreachable,
+        O::Return => Instruction::Return,
         O::LocalGet { local_index } => Instruction::LocalGet(local_index),
         O::LocalSet { local_index } => Instruction::LocalSet(local_index),
         O::LocalTee { local_index } => Instruction::LocalTee(local_index),
         O::I32Const { value } => Instruction::I32Const(value),
         O::I64Const { value } => Instruction::I64Const(value),
         O::Select => Instruction::Select,
+        O::Block { blockty } => Instruction::Block(translate_block_type(&blockty)),
+        O::Loop { blockty } => Instruction::Loop(translate_block_type(&blockty)),
+        O::If { blockty } => Instruction::If(translate_block_type(&blockty)),
+        O::Else => Instruction::Else,
+        O::Br { relative_depth } => Instruction::Br(relative_depth),
+        O::BrIf { relative_depth } => Instruction::BrIf(relative_depth),
         O::MemoryCopy { dst_mem, src_mem } => {
             Instruction::MemoryCopy { dst_mem, src_mem }
         }
         O::MemoryFill { mem } => Instruction::MemoryFill(mem),
-        // Loads/stores need their MemArg; translate it.
         O::I32Load { memarg } => Instruction::I32Load(mem_arg(&memarg)),
         O::I64Load { memarg } => Instruction::I64Load(mem_arg(&memarg)),
         O::I32Load8S { memarg } => Instruction::I32Load8S(mem_arg(&memarg)),
@@ -227,31 +289,23 @@ fn translate_op<'a>(op: &Operator<'a>) -> Instruction<'static> {
         O::I64Extend8S => Instruction::I64Extend8S,
         O::I64Extend16S => Instruction::I64Extend16S,
         O::I64Extend32S => Instruction::I64Extend32S,
-        _ => unreachable!("translate_op called on op outside MVP subset"),
+        _ => unreachable!("translate_op called on op outside supported subset"),
     }
 }
 
-fn mem_arg(m: &wasmparser::MemArg) -> MemArg {
-    MemArg {
-        offset: m.offset,
-        align: m.align as u32,
-        memory_index: m.memory,
-    }
+struct FunctionBody<'a> {
+    locals: Vec<(u32, wasmparser::ValType)>,
+    ops: Vec<Operator<'a>>,
+    param_count: u32,
 }
-
-/// Index of the host import function after instrumentation.
-const DEDUCT_FUNC_INDEX: u32 = 0;
-/// Index of the scratch local we add. For mutators with 3 params and
-/// no original locals, scratch is local 3.
-const SCRATCH_LOCAL_INDEX: u32 = 3;
 
 struct ModuleParts<'a> {
     types: Vec<wasmparser::FuncType>,
     imports: Vec<wasmparser::Import<'a>>,
-    func_type_indices: Vec<u32>, // function section
+    func_type_indices: Vec<u32>,
     memories: Vec<wasmparser::MemoryType>,
     exports: Vec<wasmparser::Export<'a>>,
-    function_bodies_ops: Vec<Vec<Operator<'a>>>, // per function, parsed ops
+    function_bodies: Vec<FunctionBody<'a>>,
 }
 
 fn parse_module<'a>(bytes: &'a [u8]) -> Result<ModuleParts<'a>, Box<dyn Error>> {
@@ -261,7 +315,7 @@ fn parse_module<'a>(bytes: &'a [u8]) -> Result<ModuleParts<'a>, Box<dyn Error>> 
         func_type_indices: vec![],
         memories: vec![],
         exports: vec![],
-        function_bodies_ops: vec![],
+        function_bodies: vec![],
     };
 
     let parser = Parser::new(0);
@@ -294,23 +348,21 @@ fn parse_module<'a>(bytes: &'a [u8]) -> Result<ModuleParts<'a>, Box<dyn Error>> 
                 }
             }
             Payload::CodeSectionEntry(body) => {
-                // Refuse if any locals are declared — MVP assumes no
-                // pre-existing locals so we can use index 3 as scratch.
+                let body_idx = parts.function_bodies.len();
+                let type_idx = parts.func_type_indices[body_idx];
+                let param_count = parts.types[type_idx as usize].params().len() as u32;
+                let mut locals = vec![];
                 let locals_reader = body.get_locals_reader()?;
-                if locals_reader.get_count() != 0 {
-                    return Err(format!(
-                        "function body has {} local groups; MVP expects 0",
-                        locals_reader.get_count()
-                    ).into());
+                for local in locals_reader {
+                    locals.push(local?);
                 }
                 let ops_reader = body.get_operators_reader()?;
                 let mut ops = vec![];
                 for op in ops_reader {
                     ops.push(op?);
                 }
-                parts.function_bodies_ops.push(ops);
+                parts.function_bodies.push(FunctionBody { locals, ops, param_count });
             }
-            // Skip everything else (custom name section, etc).
             _ => {}
         }
     }
@@ -318,41 +370,30 @@ fn parse_module<'a>(bytes: &'a [u8]) -> Result<ModuleParts<'a>, Box<dyn Error>> 
 }
 
 fn build_instrumented(parts: &ModuleParts) -> Result<Vec<u8>, Box<dyn Error>> {
-    // ---- 1. Type section: original types + new (func (param i32)) ----
+    // Type section: original types + new (func (param i32))
     let mut type_section = TypeSection::new();
     for ty in &parts.types {
-        let params: Vec<ValType> = ty
-            .params()
-            .iter()
-            .map(|t| convert_valtype(t))
-            .collect();
-        let results: Vec<ValType> = ty
-            .results()
-            .iter()
-            .map(|t| convert_valtype(t))
-            .collect();
+        let params: Vec<ValType> = ty.params().iter().map(convert_valtype).collect();
+        let results: Vec<ValType> = ty.results().iter().map(convert_valtype).collect();
         type_section.ty().function(params, results);
     }
-    // New type for $deduct: (param i32) (result)
     let deduct_type_index = parts.types.len() as u32;
     type_section.ty().function(vec![ValType::I32], vec![]);
 
-    // ---- 2. Import section: spore.deduct as func index 0 ----
+    // Import section
     let mut import_section = ImportSection::new();
-    // Refuse if original module already has imports — MVP doesn't
-    // support that (it would change function index math).
     if !parts.imports.is_empty() {
-        return Err("MVP: original module already has imports; instrumenter would need to handle index shift accumulation".into());
+        return Err("module already has imports; index-shift accumulation not yet handled".into());
     }
     import_section.import("spore", "deduct", EntityType::Function(deduct_type_index));
 
-    // ---- 3. Function section: copy ----
+    // Function section
     let mut function_section = FunctionSection::new();
     for ti in &parts.func_type_indices {
         function_section.function(*ti);
     }
 
-    // ---- 4. Memory section: copy ----
+    // Memory section
     let mut memory_section = MemorySection::new();
     for m in &parts.memories {
         memory_section.memory(MemoryType {
@@ -364,7 +405,7 @@ fn build_instrumented(parts: &ModuleParts) -> Result<Vec<u8>, Box<dyn Error>> {
         });
     }
 
-    // ---- 5. Export section: shift function indices by +1 ----
+    // Export section (shift func indices by +1)
     let mut export_section = ExportSection::new();
     for ex in &parts.exports {
         let (kind, idx) = match ex.kind {
@@ -377,57 +418,54 @@ fn build_instrumented(parts: &ModuleParts) -> Result<Vec<u8>, Box<dyn Error>> {
         export_section.export(ex.name, kind, idx);
     }
 
-    // ---- 6. Code section: instrumented bodies ----
+    // Code section: instrumented bodies
     let mut code_section = CodeSection::new();
-    for body_ops in &parts.function_bodies_ops {
-        // Stripping trailing End from list when emitting; wasm-encoder's
-        // Function::new manages locals; we feed instructions manually.
-        let static_fuel = analyze_body(body_ops)
+    for body in &parts.function_bodies {
+        let bbs = compute_basic_blocks(&body.ops)
             .map_err(|e| -> Box<dyn Error> { e.into() })?;
-        // Add one scratch i32 local.
-        let mut function = Function::new(vec![(1u32, ValType::I32)]);
-        // Prepend static charge: i32.const N; call deduct.
-        function.instruction(&Instruction::I32Const(static_fuel as i32));
-        function.instruction(&Instruction::Call(DEDUCT_FUNC_INDEX));
-        // Re-emit original ops, inserting dynamic charge before each
-        // memory.copy / memory.fill.
-        for op in body_ops {
-            match op {
-                Operator::MemoryCopy { .. } => {
-                    // Stack: [..., dst, src, len]
-                    // tee scratch (keep len on stack, also store in scratch)
-                    function.instruction(&Instruction::LocalTee(SCRATCH_LOCAL_INDEX));
-                    // duplicate len
-                    function.instruction(&Instruction::LocalGet(SCRATCH_LOCAL_INDEX));
-                    // *2
-                    function.instruction(&Instruction::I32Const(2));
-                    function.instruction(&Instruction::I32Mul);
-                    // call deduct
-                    function.instruction(&Instruction::Call(DEDUCT_FUNC_INDEX));
-                    // Stack now: [..., dst, src, len], ready for memory.copy
-                    function.instruction(&translate_op(op));
-                }
-                Operator::MemoryFill { .. } => {
-                    // Stack: [..., dst, val, len]
-                    function.instruction(&Instruction::LocalTee(SCRATCH_LOCAL_INDEX));
-                    function.instruction(&Instruction::LocalGet(SCRATCH_LOCAL_INDEX));
-                    // *1 (omit i32.const 1 + i32.mul; equivalent)
-                    function.instruction(&Instruction::Call(DEDUCT_FUNC_INDEX));
-                    function.instruction(&translate_op(op));
-                }
-                _ => {
-                    function.instruction(&translate_op(op));
-                }
+
+        let original_locals_total: u32 = body.locals.iter().map(|(c, _)| *c).sum();
+        let scratch_local_index: u32 = body.param_count + original_locals_total;
+
+        let mut new_locals: Vec<(u32, ValType)> = body
+            .locals
+            .iter()
+            .map(|(c, t)| (*c, convert_valtype(t)))
+            .collect();
+        new_locals.push((1, ValType::I32));
+
+        let mut function = Function::new(new_locals);
+
+        for bb in &bbs {
+            if bb.cost > 0 {
+                function.instruction(&Instruction::I32Const(bb.cost as i32));
+                function.instruction(&Instruction::Call(DEDUCT_FUNC_INDEX));
+            }
+            for op in &body.ops[bb.start..bb.end] {
+                match op {
+                    Operator::MemoryCopy { .. } => {
+                        function.instruction(&Instruction::LocalTee(scratch_local_index));
+                        function.instruction(&Instruction::LocalGet(scratch_local_index));
+                        function.instruction(&Instruction::I32Const(2));
+                        function.instruction(&Instruction::I32Mul);
+                        function.instruction(&Instruction::Call(DEDUCT_FUNC_INDEX));
+                        function.instruction(&translate_op(op));
+                    }
+                    Operator::MemoryFill { .. } => {
+                        function.instruction(&Instruction::LocalTee(scratch_local_index));
+                        function.instruction(&Instruction::LocalGet(scratch_local_index));
+                        function.instruction(&Instruction::Call(DEDUCT_FUNC_INDEX));
+                        function.instruction(&translate_op(op));
+                    }
+                    _ => {
+                        function.instruction(&translate_op(op));
+                    }
+                };
             }
         }
-        // The original op list already ends with End (wasmparser emits it
-        // as the last op of the body), which translate_op handles.
         code_section.function(&function);
     }
 
-    // Suppress unused warning for ConstExpr (kept in case we later need
-    // an init expr for a global instead of an import). Same for ImportSection
-    // type alias clarity.
     let _ = ConstExpr::i32_const(0);
 
     let mut module = Module::new();
@@ -448,7 +486,7 @@ fn convert_valtype(t: &wasmparser::ValType) -> ValType {
         wasmparser::ValType::F32 => ValType::F32,
         wasmparser::ValType::F64 => ValType::F64,
         wasmparser::ValType::V128 => ValType::V128,
-        wasmparser::ValType::Ref(_) => panic!("ref types not supported in MVP"),
+        wasmparser::ValType::Ref(_) => panic!("ref types not supported"),
     }
 }
 
@@ -461,17 +499,19 @@ fn main() -> Result<(), Box<dyn Error>> {
         let src = source_dir.join(format!("{name}.wasm"));
         let bytes = fs::read(&src)?;
         let parts = parse_module(&bytes)?;
-        let static_fuel = analyze_body(&parts.function_bodies_ops[0])
+        let bbs = compute_basic_blocks(&parts.function_bodies[0].ops)
             .map_err(|e| -> Box<dyn Error> { e.into() })?;
+        let total_static: u32 = bbs.iter().map(|b| b.cost).sum();
         let instr = build_instrumented(&parts)?;
         let dst = out_dir.join(format!("{name}.instr.wasm"));
         fs::write(&dst, &instr)?;
         eprintln!(
-            "instrumented {} -> {} ({} bytes, static_body_fuel={})",
+            "instrumented {} -> {} ({} bytes, {} BBs, sum_bb_static_fuel={})",
             src.display(),
             dst.display(),
             instr.len(),
-            static_fuel
+            bbs.len(),
+            total_static
         );
     }
     Ok(())

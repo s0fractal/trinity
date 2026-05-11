@@ -15,6 +15,8 @@ const INSTR_DIR = "/tmp/spore-meter-instr-v0";
 const MATRIX: { name: string; sizes: number[] }[] = [
   { name: "nop", sizes: [32] },
   { name: "identity", sizes: [32, 256, 1024] },
+  { name: "xor_5c", sizes: [32, 256, 1024] },
+  { name: "sum_bytes", sizes: [32, 256, 1024] },
 ];
 
 // All mutators use these byte conventions (per spore-execute-v0/SPEC.md).
@@ -51,6 +53,12 @@ for (const { name, sizes } of MATRIX) {
     if (name === "identity" && outLen !== inLen) {
       throw new Error(`identity returned out_len=${outLen}, expected ${inLen}`);
     }
+    if (name === "xor_5c" && outLen !== inLen) {
+      throw new Error(`xor_5c returned out_len=${outLen}, expected ${inLen}`);
+    }
+    if (name === "sum_bytes" && outLen !== 4) {
+      throw new Error(`sum_bytes returned out_len=${outLen}, expected 4`);
+    }
     const memAfter = new Uint8Array(memory.buffer);
     if (name === "identity") {
       for (let i = 0; i < inLen; i++) {
@@ -60,6 +68,27 @@ for (const { name, sizes } of MATRIX) {
             `identity output byte mismatch at ${i}: got ${actual}, expected ${INPUT_BYTE}`,
           );
         }
+      }
+    }
+    if (name === "xor_5c") {
+      const expected = INPUT_BYTE ^ 0x5c;
+      for (let i = 0; i < inLen; i++) {
+        const actual = memAfter[OUT_PTR + i];
+        if (actual !== expected) {
+          throw new Error(
+            `xor_5c output byte mismatch at ${i}: got ${actual}, expected ${expected}`,
+          );
+        }
+      }
+    }
+    if (name === "sum_bytes") {
+      const expectedSum = (INPUT_BYTE * inLen) >>> 0;
+      const view = new DataView(memory.buffer);
+      const actualSum = view.getUint32(OUT_PTR, true);
+      if (actualSum !== expectedSum) {
+        throw new Error(
+          `sum_bytes output mismatch: got ${actualSum}, expected ${expectedSum}`,
+        );
       }
     }
     console.log(

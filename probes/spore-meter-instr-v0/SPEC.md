@@ -1,4 +1,4 @@
-# spore-meter-instr-v0 probe (MVP: nop + identity)
+# spore-meter-instr-v0 probe (full v0 corpus: nop + identity + xor_5c + sum_bytes)
 
 **Meter #4** for `spore.fuel.v1`, fundamentally different in
 **algorithm class** from meters #1, #2, #3.
@@ -28,49 +28,66 @@ This closes two real gaps the contract identifies:
    either a cost-table bug or a walker bug; agreement is much
    stronger evidence than agreement between #1 and #2.
 
-## Scope (MVP only)
+## Scope
 
-This MVP supports **only single-basic-block mutators with no
-loops, no internal calls, and no internal branches**:
+Single-function v0 mutators with the v0 consensus instruction
+subset, including loops via `block` / `loop` / `if` / `else` / `br`
+/ `br_if`. Current corpus:
 
-- `nop` — single static body, no dynamic ops
-- `identity` — single static body containing `memory.copy` (dynamic
-  per-byte cost)
+- `nop` — single BB
+- `identity` — single BB with `memory.copy` (dynamic per-byte cost)
+- `xor_5c` — `block { loop { br_if; body; br } }`, 7 BBs
+- `sum_bytes` — same shape, 7 BBs
 
-`xor_5c` and `sum_bytes` (loop mutators) are **deferred** to a
-follow-up probe. Their support requires basic-block analysis across
-loop/block/if/br_if boundaries, which is conceptually harder and
-must match the canonical exec-aware model precisely (exit-check
-phase, body phase). Adding loops here without that care would
-weaken meter #3's exec-aware result.
+Still refused (out of scope):
 
-If the instrumenter is asked to process a mutator containing
-`loop`, `block`, `if`, `else`, `br`, `br_if`, `br_table`, or `call`,
-it MUST refuse with a clear "outside-MVP-scope" error rather than
-silently emitting incorrect instrumentation.
+- Internal `call` (no v0 mutator uses it today)
+- `call_indirect` (banned in v0)
+- `br_table` (1+N cost, not yet handled)
+- Banned f32 / f64 / SIMD ops
+- Pre-existing imports (would require accumulating index-shift math)
+
+When refused, the instrumenter errors clearly rather than silently
+emitting incorrect instrumentation.
 
 ## Instrumentation strategy
 
 For each function body in the input mutator:
 
-1. Compute the **static body fuel** (sum of v1 costs for every
-   opcode in the body, treating `memory.copy` / `memory.fill` as
-   contributing only their fixed cost of 4).
-2. Add one scratch i32 local (for stack manipulation around dynamic
-   ops).
-3. At the start of the body, prepend `i32.const <static>; call $deduct`
-   — charges the static portion in one host call.
-4. Immediately before any `memory.copy`: the length operand is on
-   top of the stack as the 3rd operand. Insert a sequence that:
+1. Split the operator stream into **basic blocks** (BBs). A BB ends
+   at every control-flow op: `block` / `loop` / `if` / `else` /
+   `end` / `br` / `br_if` / `br_table` / `return` / `unreachable` /
+   `call`.
+2. Compute static fuel for each BB as the sum of v1 costs of every
+   op in the BB. `memory.copy` / `memory.fill` contribute only their
+   fixed cost of 4 here; their dynamic per-byte cost is charged
+   separately.
+3. Add one scratch i32 local (preserved on top of any existing
+   locals).
+4. Emit BB-entry charge `i32.const <bb_cost>; call $deduct` at the
+   **start** of each BB whose cost > 0. Charges of 0 are skipped
+   (they would be dead bytes in unreachable BBs and structurally
+   fine but pointless).
+5. Immediately before any `memory.copy`, insert dynamic charge:
    - `local.tee $scratch` (save length, leave on stack)
    - `local.get $scratch` (duplicate)
    - `i32.const 2; i32.mul` (compute `2 * length`)
    - `call $deduct` (charge dynamic per-byte)
-   This leaves `[dst, src, length]` on the stack ready for
-   `memory.copy`.
-5. Similarly for `memory.fill`: dynamic cost is `1 * length`. Same
-   stack manipulation, with `i32.const 1; i32.mul` (or just omit
-   the multiplier and call deduct on the length directly).
+   Stack ends with `[dst, src, length]` ready for `memory.copy`.
+6. Similarly for `memory.fill`: dynamic cost is `1 * length`. Same
+   tee/get/call pattern without the `i32.const 2; i32.mul` step.
+
+### Why the exit-check fires N+1 times automatically
+
+In WASM, a `br $loop` (where `$loop` is a `loop` label) resumes
+execution at the instruction immediately after the `loop` opcode.
+The BB-entry charge for the exit-check phase sits exactly at that
+position, so the charge fires every time control re-enters the
+loop — `N` body iterations plus `1` final iteration that hits the
+exit branch = `N + 1`. The loop-body BB starts right after the
+`br_if`, so its charge fires `N` times. This matches meter #3's
+canonical exec-aware model by construction; no special-case code
+in the instrumenter is needed.
 
 Module-level changes:
 
@@ -92,26 +109,34 @@ fuel** computed by meter #3 — i.e., `fuel_v1` minus `C_apply_base`
 by the mutator's WASM).
 
 ```text
-mutator=nop      in_len=32   body_fuel_instr=1
-mutator=identity in_len=32   body_fuel_instr=72
-mutator=identity in_len=256  body_fuel_instr=520
-mutator=identity in_len=1024 body_fuel_instr=2056
+mutator=nop       in_len=32   body_fuel_instr=1
+mutator=identity  in_len=32   body_fuel_instr=72
+mutator=identity  in_len=256  body_fuel_instr=520
+mutator=identity  in_len=1024 body_fuel_instr=2056
+mutator=xor_5c    in_len=32   body_fuel_instr=679
+mutator=xor_5c    in_len=256  body_fuel_instr=5383
+mutator=xor_5c    in_len=1024 body_fuel_instr=21511
+mutator=sum_bytes in_len=32   body_fuel_instr=555
+mutator=sum_bytes in_len=256  body_fuel_instr=4363
+mutator=sum_bytes in_len=1024 body_fuel_instr=17419
 ```
 
-`run.sh` exits 0 only when every row matches the expected value
-exactly.
+Closed-form: `xor_5c body = 7 + 21·N`, `sum_bytes body = 11 + 17·N`,
+both linear in `N` as expected from the exec-aware fuel model.
 
-## What this probe will NOT close
+`run.sh` performs three diffs: deno (V8) vs expected, wasmtime vs
+expected, deno vs wasmtime. Exits green only when all three pass.
 
-- **Loop mutators.** Deferred.
-- **Trap-on-budget.** This MVP only counts; it does not enforce a
+## What this probe still does NOT close
+
+- **Trap-on-budget.** This probe only counts; it does not enforce a
   budget by trapping. A follow-up extension can have `deduct`
-  throw a JS exception (which traps WASM) when the budget is
-  exhausted. The instrumentation supports this trivially; only the
-  host-side counter logic changes.
-- **Internal calls.** All single-function mutators in v0 today,
-  but a real probe should at least error gracefully on multi-
-  function modules. This MVP does (refuses).
+  throw / return a trap when the budget is exhausted. The
+  instrumentation supports this trivially; only the host-side
+  counter logic changes.
+- **Internal `call`** and **`br_table`** are not yet handled.
+- **Multi-function modules** would need function-index-shift
+  accounting in `call` instructions; refused for now.
 
 ## Falsifiers
 

@@ -1,0 +1,16 @@
+[package]
+name = "spore-meter-instr-v0"
+version = "0.0.1"
+edition = "2021"
+publish = false
+
+[dependencies]
+wasmparser = "0.218"
+wasm-encoder = "0.218"
+
+[[bin]]
+name = "instrument"
+path = "src/main.rs"
+
+[profile.release]
+opt-level = 3

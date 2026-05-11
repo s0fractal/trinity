@@ -71,9 +71,10 @@ Elevation to `status: active` (v1.0) requires:
    two runtimes (wasmer + wasmtime, or wasmtime + software-meter
    over V8).
 8. ⏳ Bootstrap pinning mechanism in force (see I-2).
-9. ⏳ Negative-determinism probe — feed mutators with f32/f64 or
-   SIMD to both runtimes; verify both reject at instantiation
-   (per the v0 consensus subset).
+9. ✅ Negative-determinism probe — feed mutators with f32/f64,
+   SIMD, memory.grow, and call_indirect to independent protocol
+   validators; verify both reject before instantiation (done as of
+   2026-05-12 — see `probes/spore-reject-v0/`).
 
 ## Scope
 
@@ -403,8 +404,11 @@ and `2026-05-11T020735Z-gemini-receipt-codex-spore-v1-runtime-decisions.md`.
 - `select` instruction (allowed in principle).
 - A third runtime check (wasmer with metering, wasmi, python's
   wasmtime-py).
-- Negative-test probe: feed a runtime an f32 mutator and verify it
-  rejects at instantiation (not at first f32 instruction).
+- Negative-test probe: feed independent protocol validators banned
+  f32/f64, SIMD, memory.grow, and call_indirect mutators and verify
+  they reject before instantiation. Plain WASM engines may accept
+  valid-but-banned modules; consensus must reject them by SPORE's
+  narrower v0 subset, not by engine default policy.
 
 ## ATP / gas accounting **[DRAFT-PROVEN single-runtime, OPEN cross-runtime]**
 

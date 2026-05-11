@@ -1,0 +1,3 @@
+*.wasm
+rust/target/
+rust/Cargo.lock

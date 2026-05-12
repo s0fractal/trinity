@@ -189,8 +189,68 @@ First green verification: 2026-05-12, 51 pinned files. See
 `jazz/chords/2026-05-12T...-claude-receipt-spore-bootstrap-pin-v0-local-gate-green`.
 
 This root hash is what an external pin (signed git tag, Bitcoin
-OP_RETURN, etc.) should commit. Until that step happens, the pin
-is local-only.
+OP_RETURN, etc.) should commit.
+
+## External pin status
+
+### Phase A — local annotated tag
+
+- Created by gemini-3.1-pro on behalf of architect:
+  - tag name: `spore-bootstrap-v0-26b45edb`
+  - taggername: s0fractal &lt;sergey.glova@gmail.com&gt;
+  - annotated (not signed)
+  - points at commit `37c045d` (claude receipt chord)
+- Tag message:
+  ```text
+  Bootstrap evaluator root hash: 26b45edb798516d8b486ceebf45444e3249ff2912f0301515c6f4b4d1f830f9a. 3-voice consensus.
+  ```
+- Status: **created locally, not yet pushed to remote** (architect
+  push pipeline pending). Kimi's chord notes this is "delegated
+  custody" — a stepping stone, not the canonical freeze.
+
+### Phase B — Bitcoin commitment via OpenTimestamps
+
+Per kimi `20260510-224500Z` recommendation, the canonical no-custody
+commitment is Bitcoin. OpenTimestamps was chosen over a direct
+OP_RETURN tx because it:
+
+- costs nothing (calendar servers batch stamps to share the BTC fee)
+- leaks no architect-controlled BTC address (no custody trail)
+- produces the same cryptographic guarantee (the hash existed before
+  a specific Bitcoin block, independently verifiable)
+
+Stamping ledger:
+
+| step | artifact | sha-256 | status |
+| --- | --- | --- | --- |
+| canonical commitment | `probes/spore-bootstrap-pin-v0/external/spore-bootstrap-v0.root` (64 ASCII bytes, no trailing newline; content == the BLAKE3 root hex above) | `8c9b98451de989661796ea6392da8c4c1b05d28559d78618abe0880bd7d0b9fb` | committed to repo |
+| OpenTimestamps proof | `probes/spore-bootstrap-pin-v0/external/spore-bootstrap-v0.root.ots` | (binary, ~805 bytes) | initial stamp 2026-05-12, calendar attestations pending Bitcoin |
+
+After ~3–6 hours, run `ots upgrade probes/spore-bootstrap-pin-v0/external/spore-bootstrap-v0.root.ots`
+to pull the Bitcoin attestation into the .ots file. After upgrade,
+the proof becomes self-contained (calendar servers no longer
+needed for verification).
+
+Verification (anyone, any time, once upgraded):
+
+```bash
+ots verify probes/spore-bootstrap-pin-v0/external/spore-bootstrap-v0.root.ots
+# → "Success! Bitcoin block <N> attests existence as of <UTC time>"
+
+cat probes/spore-bootstrap-pin-v0/external/spore-bootstrap-v0.root
+# → 26b45edb798516d8b486ceebf45444e3249ff2912f0301515c6f4b4d1f830f9a
+
+bash probes/spore-bootstrap-pin-v0/run.sh
+# → PIN_GREEN; bootstrap_root_blake3 == above
+```
+
+This three-step chain — BTC block attests SHA-256 of root file →
+root file contains BLAKE3 root → BLAKE3 root verifies against 51
+pinned files — closes the criterion 8 external pin requirement for
+SPORE.v0 `status: active`.
+
+Until `ots upgrade` returns a Bitcoin attestation, Phase B is
+**pending**, not **complete**.
 
 ## Amendment process (pre-freeze)
 

@@ -86,6 +86,22 @@ bootstrap surface is the union of:
 - **Trinity chords** — chord receipts reference the bootstrap;
   they do not constitute it.
 
+## Referenced but not pinned
+
+Per kimi's `20260510-224500Z` review, this section distinguishes
+"deliberately excluded" from "forgot to include" — an audit trail
+of artifacts that contributed evidence to the elevation criteria
+but are not themselves part of the bootstrap evaluator surface.
+
+The hashes captured here are **snapshots** of the version that
+provided the named evidence at the time of pinning. Future
+iterations of these artifacts are not bound by this pin and may
+drift freely.
+
+| path | role | snapshot blake3-256 |
+| --- | --- | --- |
+| `probes/spore-meter-instr-v0/SPEC.md` | Evidence for F-FUEL-3 / F-FUEL-5 (cross-engine, cross-algorithm-class meter agreement on the current v0 corpus). Not part of the bootstrap evaluator — see exclusion rationale above. | `f9010247cca448b1ee2f7aa19016ce26669d537f271195135e061c0f4e62826d` |
+
 ## Pin Manifest
 
 The table below is the **canonical source of truth** for the

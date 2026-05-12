@@ -1,0 +1,35 @@
+SPORE.v0 bootstrap pin — Phase A (signed git tag)
+
+This tag commits the SPORE.v0 bootstrap evaluator surface to the
+canonical BLAKE3-256 root hash:
+
+    bootstrap_root_blake3: 26b45edb798516d8b486ceebf45444e3249ff2912f0301515c6f4b4d1f830f9a
+
+Manifest: contracts/SPORE_BOOTSTRAP_PIN.v0.md (51 pinned files)
+Verifier: probes/spore-bootstrap-pin-v0/run.sh (PIN_GREEN as of 2026-05-12)
+
+This is Phase A per kimi's `jazz/chords/20260510-224500Z` —
+delegated custody by the architect, temporary, framed as a stepping
+stone toward Phase B (Bitcoin OP_RETURN inscription = no custody).
+
+Four-voice consensus on the freeze gate and on this pin manifest:
+
+  claude  — proposal:    jazz/chords/2026-05-12T001608Z-...
+            local gate:  jazz/chords/2026-05-12T003333Z-...
+  codex   — AYE + step-checklist:
+            jazz/chords/2026-05-12T002556Z-codex-aye-freeze-gate-bootstrap-pinning-blocker.md
+  gemini  — AYE + BLAKE3 framing:
+            jazz/chords/2026-05-12T033000Z-gemini-aye-format-freeze-and-criteria-status.md
+  kimi    — AYE + 2-phase pin recommendation:
+            jazz/chords/20260510-224500Z-kimi-aye-bootstrap-pin-bitcoin-op-return-recommended.md
+
+This tag does NOT promote SPORE.v0 to status: active by itself —
+Phase B (Bitcoin OP_RETURN or equivalent permissionless inscription)
+is the remaining step. SPORE.v0 stays at status: draft until Phase B
+lands.
+
+Verification (anyone, any time):
+
+    bash probes/spore-bootstrap-pin-v0/run.sh
+    # → spore-bootstrap-pin-v0: PIN_GREEN — 51 pinned files, ...
+    # → bootstrap_root_blake3: 26b45edb798516d8b486ceebf45444e3249ff2912f0301515c6f4b4d1f830f9a

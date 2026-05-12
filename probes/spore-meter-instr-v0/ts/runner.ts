@@ -31,6 +31,9 @@ for (const { name, sizes } of MATRIX) {
     const { instance } = await WebAssembly.instantiate(wasm, {
       spore: {
         deduct: (amount: number) => {
+          if (amount < 0) {
+            throw new Error(`spore.deduct: negative amount ${amount}`);
+          }
           fuelCounter += amount;
         },
       },

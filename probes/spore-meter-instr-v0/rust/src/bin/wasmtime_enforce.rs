@@ -56,6 +56,9 @@ fn run_once(name: &str, in_len: usize, budget: u64) -> Result<(RunResult, u64), 
         "spore",
         "deduct",
         |mut caller: Caller<'_, HostState>, amount: i32| -> Result<(), wasmtime::Error> {
+            if amount < 0 {
+                anyhow::bail!("spore.deduct: negative amount {}", amount);
+            }
             let st = caller.data_mut();
             let next = st.fuel_counter.saturating_add(amount as u64);
             if next > st.budget {

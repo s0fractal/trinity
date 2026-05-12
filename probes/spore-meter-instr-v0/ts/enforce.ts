@@ -43,6 +43,9 @@ async function runOnce(
   const { instance } = await WebAssembly.instantiate(wasm, {
     spore: {
       deduct: (amount: number) => {
+        if (amount < 0) {
+          throw new BudgetExceeded(fuelCounter, amount, budget);
+        }
         if (fuelCounter + amount > budget) {
           throw new BudgetExceeded(fuelCounter, amount, budget);
         }

@@ -42,7 +42,7 @@ use wasm_encoder::{
     ExportSection, Function, FunctionSection, ImportSection, Instruction, MemArg,
     MemorySection, MemoryType, Module, TypeSection, ValType,
 };
-use wasmparser::{BlockType as ParseBlockType, Operator, Parser, Payload};
+use wasmparser::{BlockType as ParseBlockType, Operator, Parser, Payload, Validator};
 
 const INPUT_MUTATORS: &[&str] = &["nop", "identity", "xor_5c", "sum_bytes"];
 const SOURCE_DIR_REL: &str = "../../spore-execute-v0";
@@ -503,6 +503,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             .map_err(|e| -> Box<dyn Error> { e.into() })?;
         let total_static: u32 = bbs.iter().map(|b| b.cost).sum();
         let instr = build_instrumented(&parts)?;
+        Validator::new().validate_all(&instr)?;
         let dst = out_dir.join(format!("{name}.instr.wasm"));
         fs::write(&dst, &instr)?;
         eprintln!(

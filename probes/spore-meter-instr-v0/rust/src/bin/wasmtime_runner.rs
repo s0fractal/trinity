@@ -46,8 +46,12 @@ fn run_one(name: &str, in_len: usize) -> Result<u64, Box<dyn Error>> {
     linker.func_wrap(
         "spore",
         "deduct",
-        |mut caller: Caller<'_, HostState>, amount: i32| {
+        |mut caller: Caller<'_, HostState>, amount: i32| -> Result<(), wasmtime::Error> {
+            if amount < 0 {
+                anyhow::bail!("spore.deduct: negative amount {}", amount);
+            }
             caller.data_mut().fuel_counter += amount as u64;
+            Ok(())
         },
     )?;
 

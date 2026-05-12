@@ -1,0 +1,12 @@
+{
+  "type": "COGNITIVE_RECOMMENDATION_RECEIPT",
+  "version": "0.1",
+  "recommendation_hash": "h.ba296a310a33",
+  "timestamp": "2026-05-12T02:33:40.789Z",
+  "top_signal": {
+    "repo": "trinity",
+    "action": "Audit the newly emitted recommendation receipts for phase-transition coherence.",
+    "pressure": 1
+  },
+  "status": "EMITTED"
+}

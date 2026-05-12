@@ -1,4 +1,4 @@
 .DS_Store
+.gemini/
 reports/latest-*.md
 reports/*.tmp.md
-

@@ -1,7 +1,9 @@
 ---
 type: "BootstrapPinDescriptor"
 version: "v0"
-status: "draft"
+status: "active"
+elevated_at: "2026-05-12T04:53Z"
+elevation_chord: "../jazz/chords/2026-05-12T045351Z-claude-aye-spore-v0-elevation-with-asymmetric-quorum.md"
 algorithm: "blake3-256"
 related:
   - "./SPORE.v0.draft.md"
@@ -10,14 +12,22 @@ related:
   - "../jazz/chords/2026-05-12T002556Z-codex-aye-freeze-gate-bootstrap-pinning-blocker.md"
   - "../jazz/chords/2026-05-12T033000Z-gemini-aye-format-freeze-and-criteria-status.md"
   - "../jazz/chords/2026-05-12T001608Z-claude-proposal-format-freeze-gate-before-consumer-migration.md"
+  - "../jazz/chords/2026-05-12T041617Z-claude-receipt-ots-upgrade-bitcoin-attestation-landed.md"
+  - "../jazz/chords/2026-05-12T073500Z-gemini-evaluation-spore-protocol-efficiency.md"
+  - "../jazz/chords/2026-05-12T073800Z-kimi-aye-spore-v0-draft-to-active.md"
+  - "../jazz/chords/2026-05-12T045351Z-claude-aye-spore-v0-elevation-with-asymmetric-quorum.md"
 ---
 
 # SPORE Bootstrap Pin v0
 
 ## Status
 
-**DRAFT** as of 2026-05-12. This artifact addresses **criterion 8**
-of `SPORE.v0.draft.md` (Elevation to status: active):
+**ACTIVE** as of 2026-05-12T04:53Z. The pinned protocol snapshot
+identified by `bootstrap_root_blake3 = 26b45edb798516d8b486ceebf45444e3249ff2912f0301515c6f4b4d1f830f9a`
+is the canonical SPORE.v0 specification and is hereby elevated from
+the draft state. See **Elevation record** below.
+
+This artifact closed **criterion 8** of `SPORE.v0.draft.md`:
 
 > 8. ⏳ Bootstrap pinning mechanism in force (see I-2).
 
@@ -36,17 +46,50 @@ The local pre-freeze gate is satisfied when:
    `(path\n hash\n)*` concatenation, in the manifest order below)
    is recorded in this contract.
 
-**External pin** (step 4 of codex's checklist) is **NOT yet in
-force**. Promotion of SPORE.v0 to `status: active` additionally
-requires at least one external pinning mechanism from
-`SPORE.v0.draft.md` §I-2:
+**External pin** is **in force** as of 2026-05-12T07:15Z via
+OpenTimestamps, embedded in two independent Bitcoin block headers
+(949018 and 949022). See "Phase B — Bitcoin commitment" section
+below for the verification chain.
 
-- signed git tag, OR
-- package-registry checksum, OR
-- Bitcoin OP_RETURN inscription / other external commitment.
+## Elevation record
 
-Choice of mechanism is deferred to architect / multi-voice
-consensus.
+The SPORE.v0 protocol snapshot pinned at root
+`26b45edb798516d8b486ceebf45444e3249ff2912f0301515c6f4b4d1f830f9a`
+is elevated from `draft` to `active` as of 2026-05-12T04:53Z.
+
+Quorum:
+
+| voice | position | source |
+|---|---|---|
+| claude | AYE (implicit in OTS receipt closing criterion 8) | `jazz/chords/2026-05-12T041617Z-claude-receipt-ots-upgrade-bitcoin-attestation-landed.md` |
+| gemini | AYE (evaluation concludes "час знімати статус `draft`?") | `jazz/chords/2026-05-12T073500Z-gemini-evaluation-spore-protocol-efficiency.md` |
+| kimi | AYE (criterion-by-criterion audit, all 9 closed) | `jazz/chords/2026-05-12T073800Z-kimi-aye-spore-v0-draft-to-active.md` |
+| codex | absent — token exhaustion; prior standard at `jazz/chords/2026-05-12T002556Z` is now operationally met |
+
+The architect authorized the asymmetric quorum and delegated the
+decision: "кодекса не буде, бо токени скінчились. вирішуй
+самостійно далі."
+
+Decision rationale and pin-preservation policy: see
+`jazz/chords/2026-05-12T045351Z-claude-aye-spore-v0-elevation-with-asymmetric-quorum.md`.
+
+### Why the pinned files retain `status: "draft"` in their frontmatter
+
+The pinned files `contracts/SPORE.v0.draft.md` and
+`contracts/SPORE_FUEL.v1.draft.md` ARE NOT modified by this
+elevation. Modifying them would change their BLAKE3 hashes, change
+the bootstrap root, and invalidate the Bitcoin attestation at
+blocks 949018 and 949022.
+
+The pinned bytes are a **frozen historical snapshot** of the
+protocol at the moment of crystallization (analogous to Bitcoin's
+Genesis block bytes). Lifecycle events such as elevation are
+recorded in this (non-pinned) manifest, which serves as the
+canonical entry point for any verifier trusting the spec.
+
+A reader of the pinned files alone will see `status: "draft"` in
+the frontmatter. That is the historical state preserved by the
+pin. The active state lives here.
 
 ## What is pinned
 

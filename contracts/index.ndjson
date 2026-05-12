@@ -1,0 +1,20 @@
+{"path":"contracts/CANONICAL_HASH.v0.1.md","type":"ContractDescriptor","version":"0.1","status":"active","title":"Canonical Hash Identity"}
+{"path":"contracts/CHORD_CLAIM.v0.1.md","type":"ContractDescriptor","version":"0.1","status":"active","title":"Chord Claim Kinds"}
+{"path":"contracts/COGNITIVE_FIELD.v0.1.md","type":"ContractDescriptor","version":"0.1","status":"draft","title":"Cognitive Field Descriptor"}
+{"path":"contracts/COGNITIVE_RECOMMENDATION.v0.1.md","type":"ContractDescriptor","version":"0.1","status":"active","title":"Cognitive Recommendation Signal"}
+{"path":"contracts/FQDN_SEMANTIC_DNS.v0.1.md","type":"ContractDescriptor","version":"0.1","status":"active","title":"FQDN Semantic DNS Boundary"}
+{"path":"contracts/FREE_ENERGY_PRINCIPLE.v0.1.md","type":"ContractDescriptor","version":"0.1","status":"draft","title":"Free Energy Principle as Substrate Health Metric"}
+{"path":"contracts/IN_LEDGER_OUT.v0.1.md","type":"ContractDescriptor","version":"0.1","status":"draft","title":"In/Ledger/Out IO Architecture"}
+{"path":"contracts/MYC_SUBSTRATE_RECEIPT.v0.1.md","type":"Unknown","version":"","status":"","title":"MYC_SUBSTRATE_RECEIPT.v0.1"}
+{"path":"contracts/PAR_LOOP.v0.1.md","type":"Unknown","version":"","status":"","title":"PAR_LOOP.v0.1"}
+{"path":"contracts/PHI_INTENT.v0.1.md","type":"Unknown","version":"","status":"","title":"PHI_INTENT.v0.1"}
+{"path":"contracts/PHI_RECEIPT.v0.1.md","type":"Unknown","version":"","status":"","title":"PHI_RECEIPT.v0.1"}
+{"path":"contracts/PN_CAD_DESCRIPTOR.v0.1.md","type":"Unknown","version":"","status":"","title":"PN_CAD_DESCRIPTOR.v0.1"}
+{"path":"contracts/PROCESS_OBJECTS.v0.1.md","type":"ProposalDescriptor","version":"0.1","status":"open","title":"PROCESS_OBJECTS.v0.1"}
+{"path":"contracts/SPATIAL_MATERIALIZATION.v0.1.md","type":"ContractDescriptor","version":"0.1","status":"draft","title":"Spatial Materialization"}
+{"path":"contracts/SPORE.v0.draft.md","type":"ContractDescriptor","version":"0.2","status":"draft","title":"Spore — `apply` as the only protocol primitive"}
+{"path":"contracts/SPORE_BOOTSTRAP_PIN.v0.md","type":"BootstrapPinDescriptor","version":"v0","status":"active","title":"SPORE Bootstrap Pin v0"}
+{"path":"contracts/SPORE_FUEL.v1.draft.md","type":"ContractDescriptor","version":"1.0","status":"active","title":"Spore Fuel v1 — canonical per-instruction ATP cost table"}
+{"path":"contracts/THOUGHT_PHASES.v0.1.md","type":"Unknown","version":"","status":"","title":"THOUGHT_PHASES.v0.1"}
+{"path":"contracts/TOPOLOGICAL_GRINDING.v0.draft.md","type":"Unknown","version":"","status":"","title":"TOPOLOGICAL GRINDING (Semantic Proof of Work)"}
+{"path":"contracts/TRINITY_CAPABILITIES.v0.1.md","type":"ContractDescriptor","version":"0.1","status":"draft","title":"Trinity Capability Registry"}

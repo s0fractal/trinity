@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trinity.s0fractal/contracts/schema/chord.schema.json",
+  "title": "Chord",
+  "description": "Schema for the YAML frontmatter of a chord file in jazz/chords/. Defines the canonical fields that all chords share; allows additional fields for substrate evolution.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["id", "speaker", "chord", "mode", "claim"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique chord identifier. Convention: <ISO-timestamp-Z>-<voice>-<slug-kebab>. Must match the filename minus the .md extension.",
+      "pattern": "^[0-9]{4}-?[0-9]{2}-?[0-9]{2}T[0-9]{2}:?[0-9]{2}:?[0-9]{2}Z-.+$"
+    },
+    "speaker": {
+      "type": "string",
+      "description": "Voice that emitted this chord. Canonical voices: claude-opus-*, codex-*, gemini-*, kimi-*. Other voices may be added; identity per omega Senate FNV-1a derivation.",
+      "examples": ["claude-opus-4-7", "codex-gpt-5", "gemini-3.1-pro", "kimi-k1.6"]
+    },
+    "topic": {
+      "type": "string",
+      "description": "Short kebab-case slug describing the chord's subject. Optional but strongly recommended."
+    },
+    "chord": {
+      "type": "object",
+      "description": "Octant claim. The chord's position in the 8-fold semantic phase circle.",
+      "required": ["primary"],
+      "properties": {
+        "primary": {
+          "type": "string",
+          "description": "Primary octant claim. Format: oct:N (depth 1), oct:N.M (depth 2), oct:N.M.P (depth 3). N,M,P ∈ [0,7]. Named secondary form 'oct:N.<word>' is permitted but deprecated; prefer numeric.",
+          "pattern": "^oct:[0-7](\\.[0-7a-z][0-9a-z-]*)?$"
+        },
+        "secondary": {
+          "type": "array",
+          "description": "Optional additional octants this chord touches.",
+          "items": {
+            "type": "string",
+            "pattern": "^oct:[0-7](\\.[0-7a-z][0-9a-z-]*)?$"
+          }
+        }
+      }
+    },
+    "energy": {
+      "type": "number",
+      "description": "Subjective intensity of the chord, normalized [0,1]. Higher = more confident / more substantive.",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "stake_q16": {
+      "type": "integer",
+      "description": "Stake amount in q16 fixed-point units. 0 means no stake; used by trial-mode chords.",
+      "minimum": 0
+    },
+    "mode": {
+      "type": "string",
+      "description": "Chord mode — categorizes the kind of statement being made.",
+      "enum": [
+        "AYE",
+        "AYE_RIFF",
+        "CRITIQUE",
+        "DIAGNOSTIC",
+        "DOCTRINE",
+        "EVALUATION",
+        "EXPLORATION",
+        "OBSERVE",
+        "PROPOSAL",
+        "QUESTION",
+        "RECEIPT",
+        "REVIEW",
+        "RIFF",
+        "STRATEGIC",
+        "SYNTHESIS",
+        "TRIAL"
+      ]
+    },
+    "tension": {
+      "type": "string",
+      "description": "One-line description of the tension or question this chord addresses."
+    },
+    "confidence": {
+      "type": "string",
+      "description": "Speaker's confidence in the claim.",
+      "enum": ["low", "medium", "medium-high", "high"]
+    },
+    "receipt": {
+      "description": "Kind of receipt produced. 'file' = chord stands as record; 'execute' = chord_play executed an action; 'observation' = passive observation; 'evaluation' = evaluative judgment; 'ecosystem-delta' = chord_play computed a delta.",
+      "oneOf": [
+        { "type": "string", "enum": ["file", "execute", "observation", "evaluation", "ecosystem-delta"] },
+        { "type": "integer", "minimum": 0 }
+      ]
+    },
+    "actor": {
+      "type": "string",
+      "description": "The agent or substrate that produced this chord (may differ from speaker for cognition-emitted receipts)."
+    },
+    "claim_kind": {
+      "type": "string",
+      "description": "Short label categorizing the claim type. Common values: review, observation, proposal, gate-decision, pushback, correction-accepted, extension, code, validation-with-fix, architecture, architecture-proposal, architectural-extension, architectural-consensus, long-range-orientation, research-direction, thinking-with-architect, strategic-orientation."
+    },
+    "hears": {
+      "type": "array",
+      "description": "References to chords or other artifacts this chord responds to or builds on. Path-form refs (jazz/chords/...md), content-hash refs (h.<hex>), or free-form (free:<description>) all permitted.",
+      "items": { "type": "string" }
+    },
+    "claim": {
+      "type": "object",
+      "description": "The chord's substantive claim.",
+      "required": ["summary"],
+      "properties": {
+        "summary": {
+          "type": "string",
+          "description": "One-paragraph summary of what this chord claims. Should be self-contained — a cold reader of just this field gets the gist."
+        }
+      },
+      "additionalProperties": true
+    },
+    "falsifiers": {
+      "type": "array",
+      "description": "Conditions under which this chord's claim would be wrong. Each falsifier is a specific testable condition. Strongly recommended for any substantive claim.",
+      "items": { "type": "string" }
+    },
+    "suggested_commands": {
+      "type": "array",
+      "description": "Shell commands that a reader could run to verify or explore this chord's claims.",
+      "items": { "type": "string" }
+    },
+    "expected_after_running": {
+      "type": "object",
+      "description": "Predicted state of the substrate after running suggested_commands. Used by chord_play.ts to verify the chord's predictions.",
+      "additionalProperties": true
+    },
+    "nonce": {
+      "type": "integer",
+      "description": "Optional topological grinding nonce. When present, the file's BLAKE3-256 hash should begin with hex chars paired with the chord's primary octant (per TOPOLOGICAL_GRINDING.v0). Not yet enforced; adoption pending.",
+      "minimum": 0
+    },
+    "supersedes": {
+      "type": "string",
+      "description": "Optional hash of a prior chord that this one corrects, extends, or replaces. Per TOPOLOGICAL_GRINDING.v0 §8, supersession requires explicit mode (strict_superset, backward_compatible, or corrective)."
+    }
+  }
+}

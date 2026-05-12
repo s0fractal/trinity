@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trinity.s0fractal/contracts/schema/receipt.schema.json",
+  "title": "ChordPlayReceipt",
+  "description": "Machine-readable receipt emitted by tools/chord_play.ts after attempting to verify a chord's claims. Sibling to the human-readable .md receipt-chord.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["chord_id", "verdict", "fingerprint", "timestamp"],
+  "properties": {
+    "chord_id": {
+      "type": "string",
+      "description": "ID of the chord that was played. Matches the chord's `id` field."
+    },
+    "chord_path": {
+      "type": "string",
+      "description": "Repository-relative path to the chord file."
+    },
+    "verdict": {
+      "type": "string",
+      "description": "Overall outcome of the play attempt. 'passed' = all expected_after_running claims satisfied; 'failed' = some claim not satisfied (and not trial-mode); 'dormant' = chord ran but state unchanged (no work was needed); 'promoted' = chord transitioned from draft to active; 'trial-reverted' = trial-mode chord reverted via git stash drop after failed claim.",
+      "enum": ["passed", "failed", "dormant", "promoted", "trial-reverted"]
+    },
+    "fingerprint": {
+      "type": "string",
+      "description": "SHA-256 of the chord's canonical content at the moment of play. Lets the receipt point unambiguously at the exact chord text that was verified.",
+      "pattern": "^[a-fA-F0-9]{64}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 UTC timestamp of when the play was performed."
+    },
+    "delta": {
+      "type": "object",
+      "description": "Map of claim-key → resulting value, for each claim in expected_after_running. Allows downstream tooling to see exactly what the substrate state was after the play.",
+      "additionalProperties": true
+    },
+    "commands_run": {
+      "type": "array",
+      "description": "Shell commands that were executed during the play (typically from chord.suggested_commands).",
+      "items": { "type": "string" }
+    },
+    "trial_reverted": {
+      "type": "boolean",
+      "description": "True if the play was in TRIAL mode and the work was rolled back via git stash drop because the verdict was 'trial-reverted'."
+    },
+    "pre": {
+      "type": "object",
+      "description": "Snapshot of relevant substrate state before the play.",
+      "additionalProperties": true
+    },
+    "post": {
+      "type": "object",
+      "description": "Snapshot of relevant substrate state after the play.",
+      "additionalProperties": true
+    },
+    "errors": {
+      "type": "array",
+      "description": "Any errors encountered during play (command failures, parse errors, etc).",
+      "items": { "type": "string" }
+    }
+  }
+}

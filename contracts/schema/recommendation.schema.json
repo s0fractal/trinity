@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://trinity.s0fractal/contracts/schema/recommendation.schema.json",
+  "title": "CognitiveRecommendationDescriptor",
+  "description": "Schema for the output of tools/cognition_recommend.ts. Combines a snapshot of cognitive field signals across substrates with a ranked list of recommended actions.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["type", "version", "timestamp", "recommendations"],
+  "properties": {
+    "type": {
+      "type": "string",
+      "const": "CognitiveRecommendationDescriptor"
+    },
+    "version": {
+      "type": "string",
+      "description": "Schema version of this descriptor.",
+      "examples": ["0.1"]
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 UTC time of when this recommendation set was generated."
+    },
+    "basis": {
+      "type": "object",
+      "description": "Sources of authority for this recommendation: which scanner produced it, which contract specifies its format, what git state was observed.",
+      "additionalProperties": true,
+      "properties": {
+        "scanner": { "type": "string", "description": "Path to the scanner script (typically tools/scanner_core.ts)." },
+        "contract": { "type": "string", "description": "Path to the contract this recommendation conforms to." },
+        "git_status": { "type": "string", "description": "Indicator of git state at time of generation, e.g. 'observed', 'clean', 'dirty'." }
+      }
+    },
+    "signals": {
+      "type": "array",
+      "description": "Per-substrate signal field: counts of artifacts at each level (L1..L8) of coverage, distribution across cognitive phases.",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": ["repo", "total"],
+        "properties": {
+          "repo": {
+            "type": "string",
+            "description": "Substrate name.",
+            "examples": ["myc", "liquid", "omega", "trinity"]
+          },
+          "total": { "type": "integer", "minimum": 0 },
+          "L1_fqdn": { "type": "integer", "minimum": 0, "description": "Files with valid FQDN naming." },
+          "L2_parseable": { "type": "integer", "minimum": 0, "description": "Files whose frontmatter parses." },
+          "L3_schema_valid": { "type": "integer", "minimum": 0, "description": "Files whose frontmatter conforms to expected schema." },
+          "L4a_hash_claimed": { "type": "integer", "minimum": 0, "description": "Files that claim a content hash." },
+          "L4b_hash_verified": { "type": "integer", "minimum": 0, "description": "Files whose claimed hash matches actual content." },
+          "L5_graph_linked": { "type": "integer", "minimum": 0, "description": "Files referenced by other files." },
+          "L6_recipe": { "type": "integer", "minimum": 0, "description": "Files describing executable recipes." },
+          "L7_receipt_backed": { "type": "integer", "minimum": 0, "description": "Files with associated execution receipts." },
+          "L8_published": { "type": "integer", "minimum": 0, "description": "Files published to a public surface." },
+          "public_candidate_rows": { "type": "integer", "minimum": 0 },
+          "phases": {
+            "type": "object",
+            "description": "Distribution of artifacts across cognitive phases (per THOUGHT_PHASES.v0.1).",
+            "additionalProperties": true,
+            "properties": {
+              "raw-fantasy": { "type": "integer", "minimum": 0 },
+              "hypothesis": { "type": "integer", "minimum": 0 },
+              "proposal": { "type": "integer", "minimum": 0 },
+              "experiment": { "type": "integer", "minimum": 0 },
+              "receipt": { "type": "integer", "minimum": 0 },
+              "formula": { "type": "integer", "minimum": 0 },
+              "crystal": { "type": "integer", "minimum": 0 },
+              "compost": { "type": "integer", "minimum": 0 }
+            }
+          },
+          "dirtyLines": {
+            "type": "array",
+            "description": "Output of `git status --porcelain` lines relevant to this substrate.",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    },
+    "recommendations": {
+      "type": "array",
+      "description": "Ranked list of recommended next actions, highest-pressure first.",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": ["repo", "vector", "action", "rank", "pressure"],
+        "properties": {
+          "repo": {
+            "type": "string",
+            "description": "Target substrate."
+          },
+          "vector": {
+            "type": "string",
+            "description": "Short slug categorizing the kind of work this recommends.",
+            "examples": ["metacognition", "identity-resolution", "hash-verification"]
+          },
+          "phase_from": {
+            "type": "string",
+            "description": "Cognitive phase the substrate is currently in (per THOUGHT_PHASES.v0.1)."
+          },
+          "phase_to": {
+            "type": "string",
+            "description": "Cognitive phase this recommendation would move the substrate into."
+          },
+          "pressure": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Normalized urgency [0,1]. Higher = more important."
+          },
+          "rank": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Position in the sorted list (1 = highest priority)."
+          },
+          "action": {
+            "type": "string",
+            "description": "Human-readable description of the recommended next action."
+          },
+          "rationale": {
+            "type": "string",
+            "description": "Why this action matters, given the current substrate state."
+          },
+          "expected_receipt": {
+            "type": "string",
+            "description": "What would constitute a successful completion of this action — a description of the receipt that would prove the work was done."
+          },
+          "commands": {
+            "type": "array",
+            "description": "Suggested shell commands to perform this action.",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}

@@ -29,6 +29,62 @@ This maps perfectly to the 8 Macro-Octants of the Chord Protocol:
 | `oct:6` | ORDER | `C`, `D` | 270° - 315° |
 | `oct:7` | TRANSCENDENCE | `E`, `F` | 315° - 360° |
 
+## 2.5. Architectural Layering (Physical 16-fold vs Semantic 8-fold)
+
+Per 4-voice convergence on 2026-05-12 (claude `2026-05-12T093402Z`, gemini `2026-05-12T123500Z`, kimi `2026-05-12T124000Z`, codex prior `2026-05-12T112000Z`), the ecosystem operates two distinct addressing layers that compose via a fixed pairing mapping. They MUST NOT be conflated.
+
+### Physical layer (16-fold hex)
+
+The base layer of addressing in the ecosystem. Operates on the raw output of BLAKE3-256.
+
+- **Hash prefix:** every artifact has a BLAKE3-256 hash; the first hex character (0-F) is its physical macro-position.
+- **File system paths:** the canonical layout for addressable artifacts is `<root>/<hex char>/<file>` at depth 1, and `<root>/<hex char>/<hex char>/<file>` at depth 2.
+- **LUT indices:** omega's SINE_LUT[256] = 16² aligns with depth-2 physical addressing.
+- **IPFS multihash:** BLAKE3-256 hashes are valid CIDv1 multihashes (algo code `0x1e`); folder structure becomes a UnixFS DAG directly publishable.
+
+The physical layer is what hash-based machinery (hashes, file systems, IPFS, LUTs) operates on. It is geometry, not meaning.
+
+### Semantic layer (8-fold octant)
+
+The interpretive layer. Operates on chord-protocol vocabulary and biological/cognitive geometry.
+
+- **Chord octants:** `oct:0` through `oct:7` with names EXISTENCE / COGNITION / POWER / UNION / CREATION / EXCHANGE / ORDER / TRANSCENDENCE.
+- **MACRO_GROUPS:** the 8-element labeling table in `omega/tools/omega_map_sync.ts`.
+- **Omega phase geometry:** `Math.pow(8, depth)` in `omega/tools/omega_map_sync.ts:computeOctetGeometry` computes ANGLES on the semantic phase circle, NOT physical paths. This is semantic geometry and MUST NOT be rewritten to `Math.pow(16, depth)`.
+- **Liquid 8D phase torus:** the biological phase geometry of liquid neurons. Stays 8D. Not a physical addressing concern.
+
+The semantic layer is what humans and biological/cognitive substrates operate on. It is meaning, projected onto a smaller-cardinality space for cognitive ergonomics.
+
+### The mapping between layers
+
+The two layers are bridged by the pairing table in Section 2 (reproduced for explicitness):
+
+```text
+oct:0 EXISTENCE      ⇄ hex 0,1
+oct:1 COGNITION      ⇄ hex 2,3
+oct:2 POWER          ⇄ hex 4,5
+oct:3 UNION          ⇄ hex 6,7
+oct:4 CREATION       ⇄ hex 8,9
+oct:5 EXCHANGE       ⇄ hex A,B
+oct:6 ORDER          ⇄ hex C,D
+oct:7 TRANSCENDENCE  ⇄ hex E,F
+```
+
+The mapping is **deterministic and total**: every hex character maps to exactly one octant; every octant maps to exactly two hex characters. The function `octant_of(hex_char) = (hex_char_value >> 1)` is the canonical translation.
+
+### Implications for grinding
+
+When a chord claims `oct:7` (semantic), its physical hash prefix must be `E` or `F`. The grinder produces ONE hash satisfying the semantic claim; the resulting file's physical position in the filesystem is determined by the actual hex char produced (E or F). Both are valid for `oct:7`; their separation within the octant is sub-grinding (Depth 2) territory.
+
+A chord claiming `oct:7.3` (depth 2 semantic) requires a hash prefix matching octant 7 first (E or F) and then octant 3 second (6 or 7), i.e. hash must start with one of: `E6`, `E7`, `F6`, `F7`. Same pairing rule applied recursively.
+
+### What MUST NOT be done
+
+- **Do not rewrite `Math.pow(8)` to `Math.pow(16)` anywhere.** Semantic geometry is 8-fold by design.
+- **Do not name physical folders with octant labels** (no `oct7-transcendence/`). Folders are hex-named (`E/`, `F/`). Cold-start readers learn the mapping from the per-folder README.
+- **Do not expand liquid's 8D torus to 16D.** Biology is not obligated to mirror filesystem cardinality.
+- **Do not change chord protocol vocabulary.** `oct:N.M.P` notation is semantic and unchanged.
+
 ## 3. The Mechanism
 An artifact asserting a semantic claim MUST include a `nonce` field. The emitter must iteratively increment the `nonce` and compute the hash until the leading characters of the hash match the target Hex Prefix.
 

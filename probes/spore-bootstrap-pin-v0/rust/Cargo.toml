@@ -1,0 +1,19 @@
+[package]
+name = "spore-bootstrap-pin-v0"
+version = "0.0.1"
+edition = "2021"
+publish = false
+
+[dependencies]
+blake3 = "1.5"
+
+[[bin]]
+name = "compute_hashes"
+path = "src/compute_hashes.rs"
+
+[[bin]]
+name = "verify_pin"
+path = "src/verify_pin.rs"
+
+[profile.release]
+opt-level = 3

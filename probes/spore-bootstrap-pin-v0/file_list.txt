@@ -1,0 +1,74 @@
+# spore-bootstrap-pin-v0 :: canonical bootstrap file list
+#
+# Files whose BLAKE3-256 hashes constitute the SPORE.v0 bootstrap
+# evaluator surface. See `contracts/SPORE_BOOTSTRAP_PIN.v0.md` for
+# rationale and scope.
+#
+# This list is consumed by:
+#   probes/spore-bootstrap-pin-v0/rust/src/compute_hashes.rs
+#   probes/spore-bootstrap-pin-v0/rust/src/verify_pin.rs
+#
+# Order is canonical (preserved verbatim in the manifest's table).
+# Adding or removing entries changes the bootstrap surface and
+# requires re-pinning.
+
+# ── protocol contracts ────────────────────────────────────────
+contracts/SPORE.v0.draft.md
+contracts/SPORE_FUEL.v1.draft.md
+
+# ── wire format (encoder/decoder/spore_id) ────────────────────
+probes/spore-apply-v0/SPEC.md
+probes/spore-apply-v0/run.sh
+probes/spore-apply-v0/rust/Cargo.toml
+probes/spore-apply-v0/rust/src/main.rs
+probes/spore-apply-v0/ts/probe.ts
+probes/spore-apply-v0/python/probe.py
+
+# ── v0 banned-subset protocol validator ───────────────────────
+probes/spore-reject-v0/SPEC.md
+probes/spore-reject-v0/run.sh
+probes/spore-reject-v0/rust/Cargo.toml
+probes/spore-reject-v0/rust/src/main.rs
+probes/spore-reject-v0/ts/probe.ts
+probes/spore-reject-v0/ok_i32.wat
+probes/spore-reject-v0/reject_f32.wat
+probes/spore-reject-v0/reject_f64.wat
+probes/spore-reject-v0/reject_memory_grow.wat
+probes/spore-reject-v0/reject_call_indirect.wat
+probes/spore-reject-v0/reject_simd.wat
+
+# ── deterministic WASM execution (canonical mutators) ─────────
+probes/spore-execute-v0/SPEC.md
+probes/spore-execute-v0/run.sh
+probes/spore-execute-v0/rust/Cargo.toml
+probes/spore-execute-v0/rust/src/main.rs
+probes/spore-execute-v0/rust/src/bin/atp.rs
+probes/spore-execute-v0/rust/src/bin/bench.rs
+probes/spore-execute-v0/ts/probe.ts
+probes/spore-execute-v0/nop.wat
+probes/spore-execute-v0/identity.wat
+probes/spore-execute-v0/xor_5c.wat
+probes/spore-execute-v0/sum_bytes.wat
+probes/spore-execute-v0/thrash_copy.wat
+probes/spore-execute-v0/trap_div0.wat
+probes/spore-execute-v0/trap_oob.wat
+probes/spore-execute-v0/trap_unreachable.wat
+probes/spore-execute-v0/nop.wasm
+probes/spore-execute-v0/identity.wasm
+probes/spore-execute-v0/xor_5c.wasm
+probes/spore-execute-v0/sum_bytes.wasm
+probes/spore-execute-v0/thrash_copy.wasm
+probes/spore-execute-v0/trap_div0.wasm
+probes/spore-execute-v0/trap_oob.wasm
+probes/spore-execute-v0/trap_unreachable.wasm
+
+# ── canonical fuel meters (static walker + exec-aware) ────────
+probes/spore-meter-v0/SPEC.md
+probes/spore-meter-v0/run.sh
+probes/spore-meter-v0/rust/Cargo.toml
+probes/spore-meter-v0/rust/src/main.rs
+probes/spore-meter-v0/ts/meter.ts
+probes/spore-meter-exec-v0/SPEC.md
+probes/spore-meter-exec-v0/run.sh
+probes/spore-meter-exec-v0/rust/Cargo.toml
+probes/spore-meter-exec-v0/rust/src/main.rs

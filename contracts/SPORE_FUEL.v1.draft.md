@@ -491,18 +491,39 @@ arise about specific instruction costs.
 - **F-FUEL-2 (over-charging):** A basis mutator's wall-clock cost is
   significantly below its v1 fuel cost across multiple platforms,
   making the meter a throughput bottleneck.
-- **F-FUEL-3 (two-meter disagreement) — HELD UP under test
-  (2026-05-11):** Two independent meter implementations (rust +
-  wasmparser; deno + hand-rolled binary parser) produce byte-
-  identical fuel for all 10 (mutator, in_len) cells in the test
-  corpus. Algorithm-implementation independence verified;
-  algorithm-design independence (e.g., a fundamentally different
-  meter such as instrumented-WASM) remains untested.
+- **F-FUEL-3 (multi-meter disagreement) — HELD across the current
+  full v0 corpus (2026-05-12):** the execution-aware software
+  meters and the Option-B instrumented-WASM meter produce byte-
+  identical `body_fuel` for all 10 (mutator, in_len) cells. The
+  same instrumented modules run in Deno/V8 and Wasmtime and report
+  identical counters.
+
+  Algorithm-implementation independence is verified across Rust
+  wasmparser and Deno hand parser. Algorithm-design independence
+  is verified for the current corpus by static execution-aware
+  metering vs WASM instrumentation. Arbitrary control-flow shapes
+  (if/else, nested loops, deeper br labels, br_table) remain
+  covered by future adversarial rows, not by this corpus claim.
+
+  Receipts: `probes/spore-meter-instr-v0/` (Option-B meter #4) and
+  chord `2026-05-12T000510Z-codex-review-spore-meter-instr-full-arc`.
 - **F-FUEL-4 (bulk-memory linearity):** A real workload's fuel cost
   for bulk-memory ops is not actually linear in length (e.g.,
   cache-line crossings produce step-function costs that the linear
   formula doesn't capture). If significant, the formula needs a
   piecewise term.
+- **F-FUEL-5 (budget enforcement disagreement) — HELD across the
+  current full v0 corpus (2026-05-12):** with `spore.deduct` host
+  imports trapping when `counter + amount > budget`, both Deno/V8
+  and Wasmtime produce byte-identical SUCCESS rows at
+  `budget = body_fuel` (final_fuel == budget) and byte-identical
+  TRAP rows at `budget = body_fuel - 1` (final_fuel <= budget,
+  identical trap point across engines), for all 10 (mutator,
+  in_len) cells. Cross-engine determinism extends to the post-trap
+  counter value, not only to whether a trap fired.
+
+  Receipts: `probes/spore-meter-instr-v0/ts/enforce.ts`,
+  `probes/spore-meter-instr-v0/rust/src/bin/wasmtime_enforce.rs`.
 
 ## Calibration receipt (informational)
 

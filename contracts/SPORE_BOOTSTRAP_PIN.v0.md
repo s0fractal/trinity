@@ -224,12 +224,20 @@ Stamping ledger:
 | step | artifact | sha-256 | status |
 | --- | --- | --- | --- |
 | canonical commitment | `probes/spore-bootstrap-pin-v0/external/spore-bootstrap-v0.root` (64 ASCII bytes, no trailing newline; content == the BLAKE3 root hex above) | `8c9b98451de989661796ea6392da8c4c1b05d28559d78618abe0880bd7d0b9fb` | committed to repo |
-| OpenTimestamps proof | `probes/spore-bootstrap-pin-v0/external/spore-bootstrap-v0.root.ots` | (binary, ~805 bytes) | initial stamp 2026-05-12, calendar attestations pending Bitcoin |
+| OpenTimestamps proof | `probes/spore-bootstrap-pin-v0/external/spore-bootstrap-v0.root.ots` | (binary, 2914 bytes after upgrade) | **upgraded 2026-05-12T07:15Z** — Bitcoin attestations from 3 of 4 calendars landed |
 
-After ~3–6 hours, run `ots upgrade probes/spore-bootstrap-pin-v0/external/spore-bootstrap-v0.root.ots`
-to pull the Bitcoin attestation into the .ots file. After upgrade,
-the proof becomes self-contained (calendar servers no longer
-needed for verification).
+Bitcoin block attestations now embedded in the .ots file:
+
+| calendar | Bitcoin block | status |
+| --- | --- | --- |
+| bob (`bob.btc.calendar.opentimestamps.org`) | one of 949018 / 949022 | confirmed |
+| alice (`alice.btc.calendar.opentimestamps.org`) | one of 949018 / 949022 | confirmed |
+| finney (`finney.calendar.eternitywall.com`) | one of 949018 / 949022 | confirmed |
+| catallaxy (`btc.calendar.catallaxy.com`) | — | still pending |
+
+Two independent Bitcoin block headers attest the bootstrap root.
+The proof is now self-contained: calendar servers are no longer
+needed for verification.
 
 Verification (anyone, any time, once upgraded):
 
@@ -249,8 +257,9 @@ root file contains BLAKE3 root → BLAKE3 root verifies against 51
 pinned files — closes the criterion 8 external pin requirement for
 SPORE.v0 `status: active`.
 
-Until `ots upgrade` returns a Bitcoin attestation, Phase B is
-**pending**, not **complete**.
+Phase B is **complete** as of 2026-05-12T07:15Z: two independent
+Bitcoin block-header attestations (heights 949018 and 949022)
+embedded in the .ots proof file.
 
 ## Amendment process (pre-freeze)
 

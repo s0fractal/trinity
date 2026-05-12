@@ -1,8 +1,9 @@
 # TOPOLOGICAL GRINDING (Semantic Proof of Work)
 **Version:** v0 (DRAFT)
 **Status:** In Incubation
+**Hash Algorithm:** BLAKE3-256 (multihash code `0x1e`)
 **Authors:** s0fractal (Architect), gemini-3.1-pro (Co-author)
-**Reviewers:** claude-opus-4-7 (AYE-reviewer), codex-gpt-5 (pending)
+**Reviewers:** claude-opus-4-7 (AYE with six spec gaps named in chord `2026-05-12T084803Z`), codex-gpt-5 (pending)
 
 ## 1. Abstract
 In a distributed, content-addressed ecosystem (Liquid, OMEGA-64, MYC, Trinity), entities are addressed by their cryptographic hash (e.g., SHA-256 or BLAKE3). However, this creates **Hash Distortion**: a semantic artifact (e.g., a Chord about `oct:7 TRANSCENDENCE`) receives a completely random physical address (e.g., `14b5...`). 
@@ -10,7 +11,11 @@ In a distributed, content-addressed ecosystem (Liquid, OMEGA-64, MYC, Trinity), 
 To align Semantics (Meaning) with Physics (Address) without relying on a centralized database (violating the "Empty Center" principle), we introduce **Topological Grinding**. This protocol forces the creator of an artifact to burn computational energy (ATP) by grinding a `nonce` until the physical hash naturally lands in the correct semantic coordinate of the hexadecimal phase torus.
 
 ## 2. The Axiom of Geometry (Base-16 Topology)
-We treat the cryptographic hash space as a 1D phase torus divided into 16 macroscopic sectors, addressable via the hexadecimal representation of the hash (`0` to `F`).
+We treat the BLAKE3-256 cryptographic hash space as a 1D phase torus divided into 16 macroscopic sectors, addressable via the hexadecimal representation of the hash (`0` to `F`). BLAKE3 was chosen over SHA-256 because:
+
+- BLAKE3-256 is already the canonical hash in the SPORE protocol stack (`contracts/SPORE.v0.draft.md`).
+- It is ~10× faster than SHA-256, making Depth-3 grinding affordable on commodity hardware.
+- It is a supported multihash algorithm (`0x1e`), giving native CIDv1 compatibility with IPFS, which is the most likely future distribution layer for chord and receipt archives.
 This maps perfectly to the 8 Macro-Octants of the Chord Protocol:
 
 | Octant | Semantic Macro-Group | Hex Prefix Target | Angular Range (Approx) |
@@ -34,7 +39,7 @@ chord: ["oct:7.transcendence"]
 nonce: 8392105  # Computed via Semantic Proof of Work
 ---
 ```
-If `SHA-256(file)` starts with `E` or `F`, the artifact is topologically valid. If it does not, the artifact is rejected by the swarm as "cheap talk" (dissonance).
+If `BLAKE3-256(file)` starts with `E` or `F`, the artifact is topologically valid. If it does not, the artifact is rejected at any importing/publishing adapter (e.g., the myc descriptor importer, the chord-archive verifier) as "cheap talk" (dissonance). Pure archival accumulation (e.g., the `jazz/chords/` directory before adapter consumption) does NOT enforce rejection — enforcement happens at the consumer boundary.
 
 ## 4. Fractal Depth Limits (The Thermodynamic Wall)
 Topological grinding can be recursively deep (matching subsequent hex characters for sub-categories). However, the cost (ATP) scales exponentially. To prevent the ecosystem from freezing due to computational overhead, we establish the following depth boundaries for Phase 0:
@@ -51,6 +56,19 @@ Topological Grinding is strictly defined for **FROZEN** artifacts (e.g., Chord l
 
 **RULE:** Topological Grinding MUST NOT be applied to **LIVING** artifacts (e.g., self-rewriting READMEs, active compost managers). Any modification to an artifact breaks the Proof of Work. Living artifacts achieve phase-locking via runtime continuous adjustment (Kuramoto), not static hash grinding.
 
+## 5.5. Grandfather Clause (Historical Artifacts)
+
+Topological grinding applies only to artifacts emitted **after** this contract reaches `status: active`. Artifacts emitted before that date — including the entire pre-existing `jazz/chords/` archive (~hundreds of files), all pre-existing SPORE receipts, all pre-existing contracts, and any other addressable artifact already in the repository — are **grandfathered**.
+
+Grandfathered artifacts:
+- Remain semantically valid and citable regardless of their actual physical hash position.
+- Do NOT need to be re-emitted or re-ground.
+- May voluntarily be ground in successor versions if the emitter chooses, but no obligation exists.
+
+Probability note: roughly 1 in 8 historical chord files will have a hash whose first hex character accidentally aligns with their declared `oct:N` macro-octant. The probe in Section 7 step 2 should measure this rate as a sanity check on the random-hash-distribution model, NOT as a retroactive validation pass.
+
+The effective date is the timestamp recorded in the contract's frontmatter when `status` transitions from `draft` to `active`. Until then, the contract is non-binding and no grinding is required.
+
 ## 6. SPoW as the Inner Coordinate Layer
 By combining this contract with the Omega-64 Bitcoin anchor:
 - **Bitcoin (Outer Coordinate):** Anchors the artifact in absolute time (e.g., Block 949022).
@@ -59,6 +77,9 @@ By combining this contract with the Omega-64 Bitcoin anchor:
 Together, they form a trustless, 2-axis address space where geometry and semantics are isomorphic.
 
 ## 7. Next Steps (Pending)
-1. Write a `grind.ts` prototype CLI utility to test generation speed.
-2. Conduct an adoption probe: verify 100 historical chords against their required octants.
-3. Formalize the Hex sub-mapping for Depth 2 and Depth 3.
+1. Write a `grind.ts` prototype CLI utility (using BLAKE3-256) to test generation speed at Depth 1, 2, 3. Verify Depth-3 (~4096 attempts) completes in well under one second on commodity hardware.
+2. Conduct an adoption probe: measure the rate of accidental octant-alignment in 100 historical chords (expected: ~1/8 ≈ 12-13 files). NOT a retroactive validation; sanity check only.
+3. **Spec gap (deferred to v0.1 or addressed in v0):** Formalize the BLAKE3 sub-prefix mapping for Depth 2 and Depth 3 (claude `2026-05-12T084803Z` proposes one scheme — review and ratify).
+4. **Spec gap (deferred to v0.1 or addressed in v0):** Define canonical serialization of the file bytes hashed (which bytes? what byte order? line endings? YAML key ordering?). The simplest path: hash the literal repository file bytes with LF line endings and the nonce field placed last in the YAML frontmatter.
+5. **Spec gap (deferred to v0.1):** Disambiguate Section 4's "SP1 ZK-provers" — either explicitly define a zero-knowledge grinding mode, or replace with "GPU compute / dedicated SHA chips."
+6. **Adoption track:** Pick one substrate (likely the chord layer, since chords are already frozen-on-emission). Implement the importer / verifier. Run probe. If green, expand to SPORE mutators, myc descriptors, and eventually Σ-neurons in liquid.

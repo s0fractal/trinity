@@ -31,9 +31,29 @@ const MAX_CONTINUATION_DEPTH = 10;
 let SCHEMAS: Map<string, string[]> = new Map();
 
 interface WordRec {
-  canonical: string;
+  /** First handle, used for fs-readable diagnostic. NOT "canonical" status. */
+  primary: string;
+  /** All equal handles in any language: synonyms and translations
+   *  flattened to a single array with no priority among them. */
+  handles: string[];
+  /** Hex position this entity materializes at. */
   position: string;
-  translations: Record<string, string>;
+  /** Form marker for diagnostic only: "legacy" (type:05) or
+   *  "topological" (kind:5 with multilingual handles in slot 02). */
+  form: "legacy" | "topological";
+}
+
+function fn_collect_legacy_handles(r: Record<string, unknown>): string[] {
+  const out: string[] = [];
+  if (typeof r["01"] === "string") out.push(r["01"] as string);
+  const tr = (r["10"] ?? {}) as Record<string, string>;
+  for (const lang of Object.keys(tr)) {
+    for (const syn of String(tr[lang]).split("/")) {
+      const s = syn.trim();
+      if (s) out.push(s);
+    }
+  }
+  return out;
 }
 
 async function fn_load_words(): Promise<WordRec[]> {
@@ -42,12 +62,31 @@ async function fn_load_words(): Promise<WordRec[]> {
   for (const line of text.trim().split("\n")) {
     try {
       const r = JSON.parse(line);
-      if (r["00"] !== "05") continue;
-      out.push({
-        canonical: r["01"],
-        position: r["12"],
-        translations: r["10"] ?? {},
-      });
+      const kind = r["00"];
+      // Topological form: kind="5" (single hex digit, no leading zero),
+      // handles in slot 02 as array, position in slot 04 (foundation axis).
+      // Per architect 2026-05-14: M-in-context-N interference pattern;
+      // synonyms and translations are equal handles, not priority list.
+      if (kind === "5") {
+        if (Array.isArray(r["02"]) && typeof r["04"] === "string") {
+          const handles = (r["02"] as string[]).filter((s) => typeof s === "string");
+          out.push({
+            primary: handles[0] ?? "",
+            handles,
+            position: r["04"],
+            form: "topological",
+          });
+        }
+      } else if (kind === "05") {
+        // Legacy form: 01=canonical, 10=translations object, 12=position.
+        // Kept for backward compat; will migrate progressively.
+        out.push({
+          primary: (r["01"] as string) ?? "",
+          handles: fn_collect_legacy_handles(r),
+          position: (r["12"] as string) ?? "",
+          form: "legacy",
+        });
+      }
     } catch { /* skip */ }
   }
   return out;
@@ -86,12 +125,19 @@ function fn_validate_payload(payload: any): { valid: boolean; missing?: string[]
 }
 
 function fn_resolve_word(input: string, records: WordRec[]): WordRec | null {
-  for (const r of records) if (r.canonical === input) return r;
+  // Two-pass resolution. Languages are equal, but "preferred name" matters:
+  //  Pass 1: input matches a record's primary handle (its preferred name).
+  //          Soft hierarchy — when you call a thing by its own name, you
+  //          get that thing.
+  //  Pass 2: input matches any equal handle (synonym in any language).
+  //          File order decides among multiple records sharing a handle.
+  // This honors topological equality of handles while resolving naming
+  // collisions deterministically.
   for (const r of records) {
-    for (const lang of Object.keys(r.translations)) {
-      const synonyms = r.translations[lang].split("/").map((s) => s.trim());
-      if (synonyms.includes(input)) return r;
-    }
+    if (r.primary === input) return r;
+  }
+  for (const r of records) {
+    if (r.handles.includes(input)) return r;
   }
   return null;
 }
@@ -252,27 +298,27 @@ function fn_render_health(p: any): void {
 
 function fn_render_help(p: any): void {
   if (p.mode === "list") {
-    console.log("# substrate words (exists, position, canonical, synonyms across langs):");
+    console.log("# substrate words (exists, position, primary handle, handles count, form):");
     for (const r of p.records ?? []) {
       const exists = r.exists ? "✓" : "✗";
+      const form = r.form === "topological" ? "T" : "L";
       console.log(
-        `  ${exists} ${r.position.padEnd(8)} ${r.canonical.padEnd(10)} ${r.synonym_count} syn / ${r.lang_count} lang`,
+        `  ${exists} ${r.position.padEnd(8)} ${r.primary.padEnd(14)} ${r.handles_count.toString().padStart(2)} handles  [${form}]`,
       );
     }
-    console.log("\n# detail: t help <any-synonym-any-language>");
+    console.log("\n# detail: t help <any-handle-any-language>");
+    console.log("# form: T=topological (kind:5, handles array), L=legacy (type:05, canonical+translations)");
   } else if (p.mode === "detail") {
     const r = p.record;
-    console.log(`canonical: ${r.canonical}`);
-    if (p.matched && p.matched !== r.canonical) console.log(`matched:   ${p.matched} (synonym)`);
+    console.log(`primary:   ${r.primary}`);
+    if (p.matched && p.matched !== r.primary) console.log(`matched:   ${p.matched} (equal handle)`);
     console.log(`position:  ${r.position}`);
     console.log(`path:      ${r.path}`);
+    console.log(`form:      ${r.form}`);
     console.log(`status:    ${r.exists ? "✓ executable exists" : "✗ no executable"}`);
-    console.log(`note:      ${r.note ?? ""}`);
-    if (r.translations) {
-      console.log("\nsynonyms by language:");
-      for (const lang of Object.keys(r.translations)) {
-        console.log(`  ${lang}: ${r.translations[lang]}`);
-      }
+    if (Array.isArray(r.handles)) {
+      console.log("\nhandles (equal, no priority):");
+      for (const h of r.handles) console.log(`  ${h}`);
     }
     if (p.decomposition) {
       console.log("\nsemantic decomposition:");
@@ -290,14 +336,11 @@ async function fn_list(): Promise<void> {
     mode: "list",
     records: await Promise.all(records.map(async (r) => {
       const path = fn_position_to_path(r.position);
-      const langs = Object.keys(r.translations);
-      let total = 0;
-      for (const l of langs) total += r.translations[l].split("/").length;
       return {
-        canonical: r.canonical,
+        primary: r.primary,
         position: r.position,
-        synonym_count: total,
-        lang_count: langs.length,
+        handles_count: r.handles.length,
+        form: r.form,
         exists: await fn_exists(path),
       };
     })),
@@ -313,16 +356,16 @@ async function fn_dispatch_word(word: string, rest: string[]): Promise<number> {
     return await fn_run_at_position(clean, rest, 0);
   }
 
-  // Word resolution via glossary
+  // Word resolution via glossary — any handle in any language matches
   const records = await fn_load_words();
   const found = fn_resolve_word(word, records);
   if (!found) {
     console.error(`# unknown word: ${word}`);
-    console.error(`# canonical words: ${records.map((r) => r.canonical).join(", ")}`);
+    console.error(`# known handles: ${records.flatMap((r) => r.handles).join(", ")}`);
     return 1;
   }
-  if (word !== found.canonical) {
-    console.error(`# ${word} → ${found.canonical} (synonym) → ${found.position}`);
+  if (word !== found.primary) {
+    console.error(`# ${word} → ${found.primary} (equal handle) → ${found.position}`);
   } else {
     console.error(`# ${word} → ${found.position}`);
   }

@@ -20,10 +20,24 @@ const SUBSTRATE_ROOT = dirname(dirname(fromFileUrl(import.meta.url)));
 const GLOSSARY_PATH = join(SUBSTRATE_ROOT, "0x0", "00.ndjson");
 
 interface WordRec {
-  canonical: string;
+  primary: string;
+  handles: string[];
   position: string;
-  translations: Record<string, string>;
   note: string;
+  form: "legacy" | "topological";
+}
+
+function fn_collect_legacy_handles(r: Record<string, unknown>): string[] {
+  const out: string[] = [];
+  if (typeof r["01"] === "string") out.push(r["01"] as string);
+  const tr = (r["10"] ?? {}) as Record<string, string>;
+  for (const lang of Object.keys(tr)) {
+    for (const syn of String(tr[lang]).split("/")) {
+      const s = syn.trim();
+      if (s) out.push(s);
+    }
+  }
+  return out;
 }
 
 async function fn_load_all(): Promise<{ words: WordRec[]; symbols: Map<string, any> }> {
@@ -33,14 +47,29 @@ async function fn_load_all(): Promise<{ words: WordRec[]; symbols: Map<string, a
   for (const line of text.trim().split("\n")) {
     try {
       const r = JSON.parse(line);
-      if (r["00"] === "05") {
+      const kind = r["00"];
+      if (kind === "5") {
+        // Topological form
+        if (Array.isArray(r["02"]) && typeof r["04"] === "string") {
+          const handles = (r["02"] as string[]).filter((s) => typeof s === "string");
+          words.push({
+            primary: handles[0] ?? "",
+            handles,
+            position: r["04"],
+            note: (r["09"] as string) ?? "",
+            form: "topological",
+          });
+        }
+      } else if (kind === "05") {
+        // Legacy form
         words.push({
-          canonical: r["01"],
-          position: r["12"],
-          translations: r["10"] ?? {},
-          note: r["09"] ?? "",
+          primary: (r["01"] as string) ?? "",
+          handles: fn_collect_legacy_handles(r),
+          position: (r["12"] as string) ?? "",
+          note: (r["09"] as string) ?? "",
+          form: "legacy",
         });
-      } else if (r["00"] === "03") {
+      } else if (kind === "03") {
         symbols.set(r["01"], r);
       }
     } catch { /* skip */ }
@@ -49,12 +78,12 @@ async function fn_load_all(): Promise<{ words: WordRec[]; symbols: Map<string, a
 }
 
 function fn_resolve(input: string, words: WordRec[]): WordRec | null {
-  for (const r of words) if (r.canonical === input) return r;
+  // Primary-first resolution, then any handle (see 0x0/01.ts comment)
   for (const r of words) {
-    for (const lang of Object.keys(r.translations)) {
-      const syns = r.translations[lang].split("/").map((s) => s.trim());
-      if (syns.includes(input)) return r;
-    }
+    if (r.primary === input) return r;
+  }
+  for (const r of words) {
+    if (r.handles.includes(input)) return r;
   }
   return null;
 }
@@ -84,14 +113,11 @@ if (import.meta.main) {
     // list mode
     const records = await Promise.all(words.map(async (r) => {
       const path = fn_position_to_path(r.position);
-      const langs = Object.keys(r.translations);
-      let total = 0;
-      for (const l of langs) total += r.translations[l].split("/").length;
       return {
-        canonical: r.canonical,
+        primary: r.primary,
         position: r.position,
-        synonym_count: total,
-        lang_count: langs.length,
+        handles_count: r.handles.length,
+        form: r.form,
         exists: await fn_exists(path),
       };
     }));
@@ -122,12 +148,13 @@ if (import.meta.main) {
       mode: "detail",
       matched: target,
       record: {
-        canonical: r.canonical,
+        primary: r.primary,
+        handles: r.handles,
         position: r.position,
         path,
         exists,
+        form: r.form,
         note: r.note,
-        translations: r.translations,
       },
       decomposition,
     }));

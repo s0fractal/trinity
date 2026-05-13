@@ -46,11 +46,12 @@ const GLOSSARY_PATH = join(ROOT, "0x0", "00.ndjson");
 const DENO_JSON_PATH = join(ROOT, "deno.jsonc");
 
 interface WordRecord {
-  word: string;
+  primary: string;
+  handles: string[];
   position: string;
   dipole: string;
-  synonyms: { en?: string; uk?: string };
   note: string;
+  form: "legacy" | "topological";
 }
 
 interface SubstrateMapping {
@@ -69,14 +70,15 @@ interface SchemaRecord {
 }
 
 interface Capability {
-  word: string;
+  primary: string;
+  handles: string[];
   position: string;
   path: string;
   exists: boolean;
   dipole: string;
   dipole_decoded: Array<{ axis: number; name: string; value: number }>;
-  synonyms: { en?: string; uk?: string };
   note: string;
+  form: "legacy" | "topological";
   substrate_implementations: SubstrateMapping[];
   receipt_schema: SchemaRecord | null;
   legacy_tasks: string[];
@@ -100,15 +102,40 @@ async function loadGlossary(): Promise<{
   for (const line of text.trim().split("\n")) {
     try {
       const r = JSON.parse(line);
-      if (r["00"] === "05") {
+      const kind = r["00"];
+      if (kind === "5") {
+        // Topological form
+        if (Array.isArray(r["02"]) && typeof r["04"] === "string") {
+          const handles = (r["02"] as string[]).filter((s) => typeof s === "string");
+          words.push({
+            primary: handles[0] ?? "",
+            handles,
+            position: r["04"],
+            dipole: r["11"] ?? "00 00 00 00 00 00 00 00",
+            note: r["09"] ?? "",
+            form: "topological",
+          });
+        }
+      } else if (kind === "05") {
+        // Legacy form: 01=canonical, 10=translations, 12=position
+        const handles: string[] = [];
+        if (typeof r["01"] === "string") handles.push(r["01"]);
+        const tr = (r["10"] ?? {}) as Record<string, string>;
+        for (const lang of Object.keys(tr)) {
+          for (const syn of String(tr[lang]).split("/")) {
+            const s = syn.trim();
+            if (s) handles.push(s);
+          }
+        }
         words.push({
-          word: r["01"],
+          primary: r["01"] ?? "",
+          handles,
           position: r["12"] ?? "",
           dipole: r["11"] ?? "00 00 00 00 00 00 00 00",
-          synonyms: r["10"] ?? {},
           note: r["09"] ?? "",
+          form: "legacy",
         });
-      } else if (r["00"] === "06") {
+      } else if (kind === "06") {
         mappings.push({
           substrate: r["01"],
           position: r["02"],
@@ -178,18 +205,19 @@ async function buildCapability(
   const path = positionToPath(w.position);
   const exists = path ? await fileExists(path) : false;
   const substrates = mappings.filter((m) => m.position === w.position);
-  // Receipt schema: try to match word → type:07 schema by name
-  const schema = schemas.find((s) => s.type === w.word) ?? null;
-  const tasks = await legacyTasksFor(w.word);
+  // Receipt schema: try to match any handle → type:07 schema by name
+  const schema = schemas.find((s) => w.handles.includes(s.type)) ?? null;
+  const tasks = await legacyTasksFor(w.primary);
   return {
-    word: w.word,
+    primary: w.primary,
+    handles: w.handles,
     position: w.position,
     path: path.replace(ROOT + "/", ""),
     exists,
     dipole: w.dipole,
     dipole_decoded: parseDipole(w.dipole),
-    synonyms: w.synonyms,
     note: w.note,
+    form: w.form,
     substrate_implementations: substrates,
     receipt_schema: schema,
     legacy_tasks: tasks,
@@ -208,26 +236,28 @@ function strongestAxis(decoded: Array<{ axis: number; value: number }>): { axis:
 
 function renderTable(caps: Capability[]): void {
   console.log("# capabilities @ 4/A — live affordance projection");
-  console.log("# " + "─".repeat(80));
+  console.log("# " + "─".repeat(82));
   console.log(`# ${caps.length} words known to substrate`);
   console.log("");
-  console.log("# word".padEnd(18) + "pos".padEnd(10) + "primary axis".padEnd(28) + "subs  schema");
-  console.log("# " + "─".repeat(80));
+  console.log("# primary".padEnd(18) + "pos".padEnd(9) + "primary axis".padEnd(28) + "form  subs  schema");
+  console.log("# " + "─".repeat(82));
   for (const c of caps) {
     const strong = strongestAxis(c.dipole_decoded);
     const axisStr = strong
       ? `axis ${strong.axis} ${strong.name}`.padEnd(28)
       : "—".padEnd(28);
     const exists = c.exists ? "✓" : "✗";
+    const form = c.form === "topological" ? "T" : "L";
     const subs = c.substrate_implementations.length.toString().padStart(2);
     const schema = c.receipt_schema ? "✓" : "·";
-    console.log(`# ${exists} ${c.word.padEnd(16)} ${c.position.padEnd(8)} ${axisStr} ${subs}    ${schema}`);
+    console.log(`# ${exists} ${c.primary.padEnd(16)} ${c.position.padEnd(7)} ${axisStr}  ${form}    ${subs}    ${schema}`);
   }
-  console.log("# " + "─".repeat(80));
+  console.log("# " + "─".repeat(82));
+  console.log("# form: T=topological (kind:5, handles array), L=legacy (type:05)");
 }
 
 function renderDetail(cap: Capability): void {
-  console.log(`# capability @ ${cap.word} (${cap.position})`);
+  console.log(`# capability @ ${cap.primary} (${cap.position})  [${cap.form}]`);
   console.log("# " + "─".repeat(60));
   console.log(`# path:        ${cap.path}`);
   console.log(`# exists:      ${cap.exists ? "yes" : "no"}`);
@@ -240,9 +270,8 @@ function renderDetail(cap: Capability): void {
     }
   }
   console.log(`# note:        ${cap.note}`);
-  for (const lang of Object.keys(cap.synonyms)) {
-    console.log(`# ${lang} synonyms: ${(cap.synonyms as Record<string, string>)[lang]}`);
-  }
+  console.log("# handles (equal, no priority):");
+  for (const h of cap.handles) console.log(`#   ${h}`);
   if (cap.substrate_implementations.length > 0) {
     console.log("# substrate implementations:");
     for (const s of cap.substrate_implementations) {
@@ -267,15 +296,15 @@ function validate(caps: Capability[]): { errors: string[]; warnings: string[] } 
   const positions = new Set<string>();
   for (const c of caps) {
     if (positions.has(c.position)) {
-      errors.push(`duplicate position: ${c.position} (${c.word})`);
+      errors.push(`duplicate position: ${c.position} (${c.primary})`);
     }
     positions.add(c.position);
     if (!c.exists) {
-      errors.push(`word "${c.word}" maps to ${c.position} but file does not exist`);
+      errors.push(`word "${c.primary}" maps to ${c.position} but file does not exist`);
     }
     const strong = strongestAxis(c.dipole_decoded);
     if (!strong) {
-      warnings.push(`word "${c.word}" has neutral dipole`);
+      warnings.push(`word "${c.primary}" has neutral dipole`);
     }
   }
   return { errors, warnings };
@@ -292,11 +321,11 @@ function legacyJsonFor(caps: Capability[]): unknown {
     generated_by: "0x4/A.ts (t capabilities)",
     purpose: "Live affordance projection from glossary + headers. Replaces hand-maintained capabilities/trinity.capabilities.v0.1.json per codex 2026-05-13T210236Z.",
     capabilities: caps.map((c) => ({
-      id: `trinity.${c.word.replace(/-/g, ".")}`,
+      id: `trinity.${c.primary.replace(/-/g, ".")}`,
       owner: "trinity",
       phase: c.receipt_schema ? "receipt" : "untyped",
       kind: "word",
-      command: `t ${c.word}`,
+      command: `t ${c.primary}`,
       position: c.position,
       reads: ["unknown — header convention pending"],
       writes: ["unknown — header convention pending"],
@@ -323,7 +352,7 @@ if (import.meta.main) {
   // Subcommands
   if (args[0] === "show" && args[1]) {
     const target = args[1];
-    const cap = caps.find((c) => c.word === target);
+    const cap = caps.find((c) => c.handles.includes(target));
     if (!cap) {
       console.log(JSON.stringify({ type: "error", message: `unknown word: ${target}` }));
       Deno.exit(1);

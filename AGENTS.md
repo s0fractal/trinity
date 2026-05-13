@@ -205,6 +205,8 @@ universal dispatch surface з multilingual словником.
   (placed right?), `t balance` (where would I belong?), `t status`
   (composite of audit+health), `t capabilities` (live affordance
   projection, replaces hand-maintained `capabilities/*.json`),
+  `t contracts` (stabilized schemas, replaces `contracts/index.ndjson`),
+  `t recipes` (workflow templates),
   `t chord` (scaffolding).
 - **Subprocess composition.** Composite organs (status, balance)
   спавнять інші organs через диспетчер і JSON.parse output. Жодних
@@ -277,8 +279,20 @@ liquid/SPORE" — стоп. **Bridge замість duplicate.** Якщо bridge
 
 - **placement_policy field** — реалізовано de9e08a. Per-file declaration
   у header'і; audit/balance respect'ять policy.
-- **Mismatch drift** — після policy declarations 16 mismatches стали
-  25 match + 1 deferred + 0 mismatch. Substrate's overall = "well".
+- **Mismatch drift** — після policy declarations substrate's
+  overall = "well". 27 match / 1 deferred / 0 mismatch (current state).
+- **Contracts as live projection** — `t contracts` (0x4/F) замінив
+  hand/scraper-maintained `contracts/index.ndjson`. Commit 5f950d2.
+  22 контракти queryable через `t`, з multilingual handles.
+- **Unknown-status contracts** — 8 файлів без YAML frontmatter
+  отримали явний `type/version/status`. Commit 68b818e.
+  Substrate більше не має "unknown" контрактів — 13 active, 8 draft,
+  1 superseded, 2 pinned.
+- **Capabilities demoted** — `capabilities/trinity.capabilities.v0.1.json`
+  → `.legacy.json`. `tools/capabilities.ts` видалено.
+  `t capabilities` (live) — нова canonical. Commit 005e7ac.
+- **Recipes resurfaced** — `t recipes` (0x3/C) робить orphan'ені
+  workflow templates з legacy JSON знов queryable. Commit 550a33a.
 
 ## Один прохання
 

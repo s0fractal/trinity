@@ -2,6 +2,12 @@
 // 0x6/A.ts — health / harmony / fresh check
 // position: 6/A → harmony(6) × apex/fresh(A)
 // hex_dipole: "00 59 00 00 00 00 59 00"
+//   first_penultimate+0.70, harmony_emergence+0.70 (Kimi: cyclic check, order signal)
+//   bucket 6/A: primary axis tied (first_pen 1, harmony 6), bucket 6 ← MATCH on harmony
+//               secondary 'A' → hex A = axis 2 negative pole, dipole 0 on axis 2
+//               ← does not rescue secondary
+//   primary-axis MATCH; secondary is loose
+//   audit phase 1 annotation: claude-opus-4-7-1m, anchor block 949260
 // lifecycle_phase: 1
 //
 // Quick health check: validates substrate structure without

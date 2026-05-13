@@ -2,6 +2,14 @@
 // 0x5/0.ts — block (Bitcoin tip height fetcher)
 // position: 5/0 → action × void = pure fetch / bare timestamp
 // hex_dipole: "8E 00 00 00 00 59 00 00"
+//   void_infinity-0.90 (need ground / not foundation-content),
+//   action_decision+0.70 (Kimi: the fetch act)
+//   bucket 5/0: by-magnitude primary = axis 0 (void), bucket 5 ← MISMATCH
+//               by-positive primary = axis 5 (action) → bucket 5 ← MATCH
+//               secondary '0' → axis 0 void, dipole -0.90 ← sign-pole match
+//   alt reading (claude): void should be +0.40 (returns scalar primitive),
+//                         foundation+0.40 (BTC = ground reference); not re-measured
+//   audit phase 1 annotation: claude-opus-4-7-1m, anchor block 949260
 // lifecycle_phase: 1
 // words mapped here: block, блок, height, висота, timestamp, мітка
 //

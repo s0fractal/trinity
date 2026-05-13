@@ -2,6 +2,15 @@
 // 0x5/C.ts — cross-substrate verify / container action
 // position: 5/C → action(5) × container/cycle(C)
 // hex_dipole: "00 00 59 00 00 00 59 00"
+//   mirror_apex+0.70, harmony_emergence+0.70 (Kimi: reflects substrates, restores order)
+//   bucket 5/C: primary axis is mirror (2) or harmony (6), bucket 5 ← MISMATCH
+//               NO axis 5 (action) component in dipole at all
+//               secondary 'C' → hex C = axis 4 negative pole, dipole 0 on axis 4
+//               ← does not rescue
+//   honest assessment: this LEGACY cross-verify file shows clear bucket dissonance
+//                      — it's now overlapped by `t all 5/C` (0x0/03.ts).
+//                      Belongs at 0x2/6 or 0x6/2 under composite reading.
+//   audit phase 1 annotation: claude-opus-4-7-1m, anchor block 949260
 // lifecycle_phase: 1
 //
 // Cross-substrate verification: executes verify/test across

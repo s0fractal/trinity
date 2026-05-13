@@ -2,6 +2,13 @@
 // 0x0/0F.ts — help (substrate self-introspection)
 // position: 0/0F → foundation × frontier-edge
 // hex_dipole: "00 00 00 00 59 00 00 59"
+//   foundation_container+0.70, completion_frontier+0.70 (Kimi: container/edge view)
+//   bucket 0/0F: primary axis foundation (4) or completion (7), bucket 0 ← MISMATCH
+//                secondary '0F' → hex F = axis 7 negative pole, dipole +0.70 on
+//                axis 7 ← PAIR-MATCH (sign-opposed) — partial composite rescue
+//   alt reading (claude): help is mirror_apex-heavy (reflects substrate state);
+//                         not re-measured; Kimi's reading kept
+//   audit phase 1 annotation: claude-opus-4-7-1m, anchor block 949260
 // lifecycle_phase: 1
 //
 // Returns structured help payload. Dispatcher (0x0/01.ts) renders for TTY.

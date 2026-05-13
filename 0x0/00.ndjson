@@ -73,3 +73,5 @@
 {"00":"05","01":"pipe","12":"0/05","11":"00 00 00 00 00 00 00 00","10":{"en":"pipe/flow/conditional-compose/chain","uk":"труба/потік/умовна-композиція/ланцюг"},"09":"foundation+action = conditional sequential composition with short-circuit"}
 {"00":"05","01":"try","12":"0/06","11":"00 00 00 00 00 00 00 00","10":{"en":"try/attempt/recover/fallback","uk":"спроба/відновлення/запасний"},"09":"foundation+serpent = attempt with graceful fallback"}
 {"00":"07","01":"try","02":"type,action,primary,fallback,used,overall,result","03":"resolved_primary,resolved_fallback,primary_error,note,topology","04":"try receipt from 0x0/06.ts"}
+{"00":"05","01":"cond","12":"0/07","11":"00 00 00 00 00 00 00 00","10":{"en":"cond/branch/if-then-else","uk":"умова/гілка/якщо-тоді-інакше"},"09":"foundation+threshold = conditional branch primitive"}
+{"00":"07","01":"cond","02":"type,action,predicate,then,else,taken,overall,result","03":"predicate_ok,resolved_predicate,resolved_then,resolved_else,predicate_result,note,topology","04":"cond receipt from 0x0/07.ts"}

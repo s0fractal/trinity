@@ -1,7 +1,9 @@
 #!/usr/bin/env -S deno run --allow-read
 // 0x0/0F.ts — help (substrate self-introspection)
 // position: 0/0F → foundation × frontier-edge
-// search strategy: tier-1 canonical, tier-2 multilingual (same as runtime)
+//
+// Returns structured help payload. Dispatcher (0x0/01.ts) renders for TTY.
+// No arg: mode=list. With arg: mode=detail (with semantic decomposition).
 
 import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
 
@@ -65,62 +67,60 @@ async function fn_exists(path: string): Promise<boolean> {
   }
 }
 
-async function fn_list_clustered(words: WordRec[]): Promise<void> {
-  console.log("# substrate words (canonical, position, synonym count, exists):");
-  for (const r of words) {
-    const path = fn_position_to_path(r.position);
-    const exists = (await fn_exists(path)) ? "✓" : "✗";
-    const langs = Object.keys(r.translations);
-    let total = 0;
-    for (const l of langs) total += r.translations[l].split("/").length;
-    console.log(`  ${exists} ${r.position.padEnd(8)} ${r.canonical.padEnd(10)} ${total} syn / ${langs.length} lang`);
-  }
-  console.log("");
-  console.log("# detail: t help <any-synonym-any-language>");
-}
-
-async function fn_word_detail(target: string, words: WordRec[], symbols: Map<string, any>): Promise<void> {
-  const r = fn_resolve(target, words);
-  if (!r) {
-    console.error(`# unknown word: ${target}`);
-    Deno.exit(1);
-  }
-  const path = fn_position_to_path(r.position);
-  const exists = await fn_exists(path);
-
-  console.log(`canonical: ${r.canonical}`);
-  if (target !== r.canonical) console.log(`matched:   ${target} (synonym)`);
-  console.log(`position:  ${r.position}`);
-  console.log(`path:      ${path}`);
-  console.log(`status:    ${exists ? "✓ executable exists" : "✗ no executable"}`);
-  console.log(`note:      ${r.note}`);
-
-  console.log("\nsynonyms by language:");
-  for (const lang of Object.keys(r.translations)) {
-    console.log(`  ${lang}: ${r.translations[lang]}`);
-  }
-
-  console.log("\nsemantic decomposition:");
-  const parts = r.position.split("/");
-  for (const p of parts) {
-    if (p.length === 1) {
-      const sym = symbols.get(p);
-      if (sym) {
-        const base = sym["10"];
-        console.log(`  ${p}: ${base?.en ?? "?"} / ${base?.uk ?? "?"}`);
-      }
-    } else {
-      console.log(`  ${p}: byte-position`);
-    }
-  }
-}
-
 if (import.meta.main) {
   const { words, symbols } = await fn_load_all();
   const [target] = Deno.args;
+
   if (!target) {
-    await fn_list_clustered(words);
+    // list mode
+    const records = await Promise.all(words.map(async (r) => {
+      const path = fn_position_to_path(r.position);
+      const langs = Object.keys(r.translations);
+      let total = 0;
+      for (const l of langs) total += r.translations[l].split("/").length;
+      return {
+        canonical: r.canonical,
+        position: r.position,
+        synonym_count: total,
+        lang_count: langs.length,
+        exists: await fn_exists(path),
+      };
+    }));
+    console.log(JSON.stringify({ type: "help", mode: "list", records }));
   } else {
-    await fn_word_detail(target, words, symbols);
+    // detail mode
+    const r = fn_resolve(target, words);
+    if (!r) {
+      console.log(JSON.stringify({ type: "error", message: `unknown word: ${target}` }));
+      Deno.exit(1);
+    }
+    const path = fn_position_to_path(r.position);
+    const exists = await fn_exists(path);
+    const decomposition: Record<string, string> = {};
+    for (const p of r.position.split("/")) {
+      if (p.length === 1) {
+        const sym = symbols.get(p);
+        if (sym) {
+          const base = sym["10"];
+          decomposition[p] = `${base?.en ?? "?"} / ${base?.uk ?? "?"}`;
+        }
+      } else {
+        decomposition[p] = "byte-position";
+      }
+    }
+    console.log(JSON.stringify({
+      type: "help",
+      mode: "detail",
+      matched: target,
+      record: {
+        canonical: r.canonical,
+        position: r.position,
+        path,
+        exists,
+        note: r.note,
+        translations: r.translations,
+      },
+      decomposition,
+    }));
   }
 }

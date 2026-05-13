@@ -1,21 +1,23 @@
 #!/usr/bin/env -S deno run --allow-read --allow-run
 // 0x0/01.ts — t (the runtime dispatcher)
 // position: 0/01 → foundation/byte01
-// reads 0x0/00.ndjson (glossary), resolves word→hex position, executes
 //
-// Resolution strategy:
+// Topological LISP Evaluator (per gemini proposal 134500Z):
+//   - executables are pure functions that return structured JSON
+//   - dispatcher captures via stdout:piped, parses, renders/routes
+//   - recursive continuations: payload {intent:"continue",next:"5/C",args:[...]}
+//   - TTY-aware: pretty-print for human, raw JSON for pipe
+//
+// Resolution strategy (unchanged):
 //   1. canonical match (record's 01 field)
 //   2. multilingual search (record's 10 field, '/' delimited per language)
-//
-// Position string "5/A" → SUBSTRATE_ROOT/0x5/A.ts
-// Position "0/01"        → SUBSTRATE_ROOT/0x0/01.ts
-// Position "5/A/B"       → SUBSTRATE_ROOT/0x5/A/B.ts
 
 import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const SUBSTRATE_ROOT = dirname(HERE);
 const GLOSSARY_PATH = join(SUBSTRATE_ROOT, "0x0", "00.ndjson");
+const MAX_CONTINUATION_DEPTH = 10;
 
 interface WordRec {
   canonical: string;
@@ -41,11 +43,7 @@ async function fn_load_words(): Promise<WordRec[]> {
 }
 
 function fn_resolve_word(input: string, records: WordRec[]): WordRec | null {
-  // tier 1: canonical exact match
-  for (const r of records) {
-    if (r.canonical === input) return r;
-  }
-  // tier 2: multilingual search through 10 field
+  for (const r of records) if (r.canonical === input) return r;
   for (const r of records) {
     for (const lang of Object.keys(r.translations)) {
       const synonyms = r.translations[lang].split("/").map((s) => s.trim());
@@ -73,52 +71,152 @@ async function fn_exists(path: string): Promise<boolean> {
   }
 }
 
-async function fn_dispatch(word: string, rest: string[]): Promise<number> {
+async function fn_run_at_position(
+  pos: string,
+  args: string[],
+  depth: number,
+): Promise<number> {
+  if (depth > MAX_CONTINUATION_DEPTH) {
+    console.error(`# continuation depth exceeded: ${depth}`);
+    return 3;
+  }
+  const path = fn_position_to_path(pos);
+  if (!(await fn_exists(path))) {
+    console.error(`# no executable at ${path}`);
+    return 2;
+  }
+  const proc = new Deno.Command("deno", {
+    args: ["run", "--allow-all", path, ...args],
+    stdout: "piped",
+    stderr: "inherit",
+  });
+  const result = await proc.output();
+  if (result.code !== 0) return result.code;
+  const raw = new TextDecoder().decode(result.stdout).trim();
+  if (!raw) return 0;
+  return await fn_process_payload(raw, depth);
+}
+
+async function fn_process_payload(raw: string, depth: number): Promise<number> {
+  let payload: any;
+  try {
+    payload = JSON.parse(raw);
+  } catch {
+    // not JSON — passthrough as-is
+    fn_write_raw(raw);
+    return 0;
+  }
+  // recursive continuation
+  if (payload?.intent === "continue" && typeof payload.next === "string") {
+    return await fn_run_at_position(payload.next, payload.args ?? [], depth + 1);
+  }
+  // render
+  const isTty = Deno.stdout.isTerminal();
+  if (isTty) {
+    fn_render_human(payload);
+  } else {
+    fn_write_raw(JSON.stringify(payload));
+  }
+  return 0;
+}
+
+function fn_write_raw(s: string): void {
+  Deno.stdout.writeSync(new TextEncoder().encode(s + "\n"));
+}
+
+function fn_render_human(p: any): void {
+  // type-based pretty printing for TTY
+  if (!p || typeof p !== "object") {
+    console.log(p);
+    return;
+  }
+  const t = p.type;
+  if (t === "scalar" || t === "block") {
+    console.log(String(p.value));
+  } else if (t === "status") {
+    console.log(`# ${p.action ?? "?"} @ ${p.position ?? "?"}`);
+    if (p.args && p.args.length) console.log(`# args: ${p.args.join(" ")}`);
+    if (p.note) console.log(`# ${p.note}`);
+    if (p.synonyms) console.log(`# synonyms: ${p.synonyms.join(", ")}`);
+  } else if (t === "help") {
+    fn_render_help(p);
+  } else if (t === "error") {
+    console.error(`# error: ${p.message ?? "unknown"}`);
+  } else {
+    // fallback: pretty JSON
+    console.log(JSON.stringify(p, null, 2));
+  }
+}
+
+function fn_render_help(p: any): void {
+  if (p.mode === "list") {
+    console.log("# substrate words (exists, position, canonical, synonyms across langs):");
+    for (const r of p.records ?? []) {
+      const exists = r.exists ? "✓" : "✗";
+      console.log(
+        `  ${exists} ${r.position.padEnd(8)} ${r.canonical.padEnd(10)} ${r.synonym_count} syn / ${r.lang_count} lang`,
+      );
+    }
+    console.log("\n# detail: t help <any-synonym-any-language>");
+  } else if (p.mode === "detail") {
+    const r = p.record;
+    console.log(`canonical: ${r.canonical}`);
+    if (p.matched && p.matched !== r.canonical) console.log(`matched:   ${p.matched} (synonym)`);
+    console.log(`position:  ${r.position}`);
+    console.log(`path:      ${r.path}`);
+    console.log(`status:    ${r.exists ? "✓ executable exists" : "✗ no executable"}`);
+    console.log(`note:      ${r.note ?? ""}`);
+    if (r.translations) {
+      console.log("\nsynonyms by language:");
+      for (const lang of Object.keys(r.translations)) {
+        console.log(`  ${lang}: ${r.translations[lang]}`);
+      }
+    }
+    if (p.decomposition) {
+      console.log("\nsemantic decomposition:");
+      for (const [k, v] of Object.entries(p.decomposition)) {
+        console.log(`  ${k}: ${v}`);
+      }
+    }
+  }
+}
+
+async function fn_list(): Promise<void> {
+  const records = await fn_load_words();
+  const payload = {
+    type: "help",
+    mode: "list",
+    records: await Promise.all(records.map(async (r) => {
+      const path = fn_position_to_path(r.position);
+      const langs = Object.keys(r.translations);
+      let total = 0;
+      for (const l of langs) total += r.translations[l].split("/").length;
+      return {
+        canonical: r.canonical,
+        position: r.position,
+        synonym_count: total,
+        lang_count: langs.length,
+        exists: await fn_exists(path),
+      };
+    })),
+  };
+  await fn_process_payload(JSON.stringify(payload), 0);
+}
+
+async function fn_dispatch_word(word: string, rest: string[]): Promise<number> {
   const records = await fn_load_words();
   const found = fn_resolve_word(word, records);
-
   if (!found) {
     console.error(`# unknown word: ${word}`);
     console.error(`# canonical words: ${records.map((r) => r.canonical).join(", ")}`);
     return 1;
   }
-
-  const path = fn_position_to_path(found.position);
-  // diagnostic if word ≠ canonical (matched via translation)
   if (word !== found.canonical) {
-    console.error(`# ${word} (synonym of ${found.canonical}) → ${found.position} → ${path}`);
+    console.error(`# ${word} → ${found.canonical} (synonym) → ${found.position}`);
   } else {
-    console.error(`# ${word} → ${found.position} → ${path}`);
+    console.error(`# ${word} → ${found.position}`);
   }
-
-  if (!(await fn_exists(path))) {
-    console.error(`# no executable at ${path}`);
-    return 2;
-  }
-
-  const proc = new Deno.Command("deno", {
-    args: ["run", "--allow-all", path, ...rest],
-    stdout: "inherit",
-    stderr: "inherit",
-  }).spawn();
-  const status = await proc.status;
-  return status.code;
-}
-
-async function fn_list(): Promise<void> {
-  const records = await fn_load_words();
-  console.log("# substrate words (canonical → position → path):");
-  for (const r of records) {
-    const path = fn_position_to_path(r.position);
-    const exists = (await fn_exists(path)) ? "✓" : "✗";
-    const langs = Object.keys(r.translations);
-    const synonymCount = langs.reduce((sum, l) => sum + r.translations[l].split("/").length, 0);
-    console.log(
-      `  ${exists} ${r.position.padEnd(8)} ${r.canonical.padEnd(10)} (${synonymCount} synonyms across ${langs.length} langs)`,
-    );
-  }
-  console.log("");
-  console.log("# show details (any synonym in any lang): t help <word>");
+  return await fn_run_at_position(found.position, rest, 0);
 }
 
 if (import.meta.main) {
@@ -127,5 +225,5 @@ if (import.meta.main) {
     await fn_list();
     Deno.exit(0);
   }
-  Deno.exit(await fn_dispatch(word, rest));
+  Deno.exit(await fn_dispatch_word(word, rest));
 }

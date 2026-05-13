@@ -35,17 +35,9 @@
 {"00":"04","01":"3","08":"5","10":{"en":"stable action / repeated reliable doing","uk":"стабільна дія / повторюване надійне діяння"},"15":"5(action)+3(triangle/stable)→reliable repeatable action","14":"60","13":{"30":"7F","31":"7F","32":"7F","33":"00"}}
 {"00":"01","09":"end-marker. 16 symbols complete; 7 projections illustrative; voice codes 30..33 (claude/kimi/gemini/codex); votes i8 signed (7F=strong AYE..81=strong NAY, 00=pending, 40=mild AYE, C0=mild NAY); extension: add more projections per symbol×context as 3+ voice consensus emerges. open questions: (i) 7 weak convergence (end vs edge); (ii) sign convention not yet formal voted — current draft: + pole = expansion/abundance/outward."}
 {"00":"02","02":"18","03":"word"}
-{"00":"05","01":"verify","12":"5/A","09":"action+apex = fresh verification"}
-{"00":"05","01":"init","12":"5/A","09":"action+apex = fresh start (synonym of verify by position)"}
-{"00":"05","01":"play","12":"5/D","09":"action+decision = run/execute resolved"}
-{"00":"05","01":"t","12":"0/01","09":"foundation+byte01 = runtime entry itself"}
-{"00":"05","01":"перевірити","12":"5/A","09":"ukrainian synonym of verify by position"}
-{"00":"05","01":"ініціалізувати","12":"5/A","09":"ukrainian synonym of init by position"}
-{"00":"05","01":"грати","12":"5/D","09":"ukrainian synonym of play by position"}
-{"00":"05","01":"ст","12":"0/01","09":"ukrainian-short synonym of t (runtime)"}
-{"00":"05","01":"help","12":"0/0F","09":"foundation+frontier-edge = show substrate boundary/info"}
-{"00":"05","01":"допомога","12":"0/0F","09":"ukrainian synonym of help"}
-{"00":"05","01":"block","12":"5/0","09":"action+void = pure fetch / bare timestamp"}
-{"00":"05","01":"блок","12":"5/0","09":"ukrainian synonym of block"}
-{"00":"05","01":"update","12":"F/A","09":"frontier+apex = push boundary with fresh (no executable yet)"}
-{"00":"05","01":"оновити","12":"F/A","09":"ukrainian synonym of update"}
+{"00":"05","01":"verify","12":"5/A","10":{"en":"verify/init/fresh-action/check","uk":"перевірити/ініціалізувати/свіжа-дія/створити"},"09":"action+apex = fresh verification"}
+{"00":"05","01":"play","12":"5/D","10":{"en":"play/execute/run","uk":"грати/виконати/запустити"},"09":"action+decision = resolved execute"}
+{"00":"05","01":"t","12":"0/01","10":{"en":"t/runtime/exec","uk":"ст/рантайм"},"09":"foundation+byte01 = runtime entry"}
+{"00":"05","01":"help","12":"0/0F","10":{"en":"help/info/describe/show","uk":"допомога/інфо/опиши/покажи"},"09":"foundation+frontier-edge = boundary info"}
+{"00":"05","01":"block","12":"5/0","10":{"en":"block/height/timestamp","uk":"блок/висота/мітка"},"09":"action+void = pure fetch"}
+{"00":"05","01":"update","12":"F/A","10":{"en":"update/refresh/sync","uk":"оновити/освіжити/синхронізувати"},"09":"frontier+apex = push boundary (no executable yet)"}

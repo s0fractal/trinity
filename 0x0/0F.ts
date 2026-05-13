@@ -1,10 +1,7 @@
 #!/usr/bin/env -S deno run --allow-read
 // 0x0/0F.ts — help (substrate self-introspection)
-// position: 0/0F → foundation × frontier-edge (show boundary/info)
-// words mapped here: help, допомога (ukrainian synonym)
-//
-// No arg: list all words clustered by position (shows synonym groups)
-// With arg: show specific word's details + co-located synonyms
+// position: 0/0F → foundation × frontier-edge
+// search strategy: tier-1 canonical, tier-2 multilingual (same as runtime)
 
 import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
 
@@ -12,25 +9,43 @@ const SUBSTRATE_ROOT = dirname(dirname(fromFileUrl(import.meta.url)));
 const GLOSSARY_PATH = join(SUBSTRATE_ROOT, "0x0", "00.ndjson");
 
 interface WordRec {
-  word: string;
-  pos: string;
+  canonical: string;
+  position: string;
+  translations: Record<string, string>;
   note: string;
 }
 
-async function fn_load_all(): Promise<{ words: WordRec[]; symbols: Map<string, any>; projections: any[] }> {
+async function fn_load_all(): Promise<{ words: WordRec[]; symbols: Map<string, any> }> {
   const text = await Deno.readTextFile(GLOSSARY_PATH);
   const words: WordRec[] = [];
   const symbols = new Map<string, any>();
-  const projections: any[] = [];
   for (const line of text.trim().split("\n")) {
     try {
       const r = JSON.parse(line);
-      if (r["00"] === "05") words.push({ word: r["01"], pos: r["12"], note: r["09"] ?? "" });
-      else if (r["00"] === "03") symbols.set(r["01"], r);
-      else if (r["00"] === "04") projections.push(r);
+      if (r["00"] === "05") {
+        words.push({
+          canonical: r["01"],
+          position: r["12"],
+          translations: r["10"] ?? {},
+          note: r["09"] ?? "",
+        });
+      } else if (r["00"] === "03") {
+        symbols.set(r["01"], r);
+      }
     } catch { /* skip */ }
   }
-  return { words, symbols, projections };
+  return { words, symbols };
+}
+
+function fn_resolve(input: string, words: WordRec[]): WordRec | null {
+  for (const r of words) if (r.canonical === input) return r;
+  for (const r of words) {
+    for (const lang of Object.keys(r.translations)) {
+      const syns = r.translations[lang].split("/").map((s) => s.trim());
+      if (syns.includes(input)) return r;
+    }
+  }
+  return null;
 }
 
 function fn_position_to_path(pos: string): string {
@@ -51,49 +66,42 @@ async function fn_exists(path: string): Promise<boolean> {
 }
 
 async function fn_list_clustered(words: WordRec[]): Promise<void> {
-  // group by position to show synonym clusters
-  const byPos = new Map<string, WordRec[]>();
-  for (const w of words) {
-    if (!byPos.has(w.pos)) byPos.set(w.pos, []);
-    byPos.get(w.pos)!.push(w);
-  }
-  const sortedPos = [...byPos.keys()].sort();
-  console.log("# substrate words clustered by position:");
-  for (const pos of sortedPos) {
-    const cluster = byPos.get(pos)!;
-    const path = fn_position_to_path(pos);
-    const exists = await fn_exists(path) ? "✓" : "✗";
-    const synonyms = cluster.map((c) => c.word).join(", ");
-    console.log(`  ${exists} ${pos.padEnd(8)} ${synonyms}`);
+  console.log("# substrate words (canonical, position, synonym count, exists):");
+  for (const r of words) {
+    const path = fn_position_to_path(r.position);
+    const exists = (await fn_exists(path)) ? "✓" : "✗";
+    const langs = Object.keys(r.translations);
+    let total = 0;
+    for (const l of langs) total += r.translations[l].split("/").length;
+    console.log(`  ${exists} ${r.position.padEnd(8)} ${r.canonical.padEnd(10)} ${total} syn / ${langs.length} lang`);
   }
   console.log("");
-  console.log("# show details: t help <word>");
+  console.log("# detail: t help <any-synonym-any-language>");
 }
 
 async function fn_word_detail(target: string, words: WordRec[], symbols: Map<string, any>): Promise<void> {
-  const entry = words.find((w) => w.word === target);
-  if (!entry) {
+  const r = fn_resolve(target, words);
+  if (!r) {
     console.error(`# unknown word: ${target}`);
     Deno.exit(1);
   }
-  const path = fn_position_to_path(entry.pos);
+  const path = fn_position_to_path(r.position);
   const exists = await fn_exists(path);
 
-  console.log(`word:     ${entry.word}`);
-  console.log(`position: ${entry.pos}`);
-  console.log(`path:     ${path}`);
-  console.log(`status:   ${exists ? "✓ executable exists" : "✗ no executable at path"}`);
-  console.log(`note:     ${entry.note}`);
+  console.log(`canonical: ${r.canonical}`);
+  if (target !== r.canonical) console.log(`matched:   ${target} (synonym)`);
+  console.log(`position:  ${r.position}`);
+  console.log(`path:      ${path}`);
+  console.log(`status:    ${exists ? "✓ executable exists" : "✗ no executable"}`);
+  console.log(`note:      ${r.note}`);
 
-  // synonyms at same position
-  const syns = words.filter((w) => w.pos === entry.pos && w.word !== entry.word);
-  if (syns.length > 0) {
-    console.log(`synonyms: ${syns.map((s) => s.word).join(", ")}`);
+  console.log("\nsynonyms by language:");
+  for (const lang of Object.keys(r.translations)) {
+    console.log(`  ${lang}: ${r.translations[lang]}`);
   }
 
-  // referenced symbols (decompose position)
-  const parts = entry.pos.split("/");
-  console.log("\n# semantic decomposition:");
+  console.log("\nsemantic decomposition:");
+  const parts = r.position.split("/");
   for (const p of parts) {
     if (p.length === 1) {
       const sym = symbols.get(p);
@@ -102,7 +110,7 @@ async function fn_word_detail(target: string, words: WordRec[], symbols: Map<str
         console.log(`  ${p}: ${base?.en ?? "?"} / ${base?.uk ?? "?"}`);
       }
     } else {
-      console.log(`  ${p}: byte/sub-position`);
+      console.log(`  ${p}: byte-position`);
     }
   }
 }

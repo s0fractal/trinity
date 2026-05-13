@@ -3,11 +3,13 @@
 // position: 0/01 → foundation/byte01
 // reads 0x0/00.ndjson (glossary), resolves word→hex position, executes
 //
-// Tier 1 only: explicit glossary lookup. Unknown words → error (no BLAKE3 fallback yet).
+// Resolution strategy:
+//   1. canonical match (record's 01 field)
+//   2. multilingual search (record's 10 field, '/' delimited per language)
 //
-// Pattern: position "5/A" → path 0x5/A.ts
-//          position "0/01" → path 0x0/01.ts
-//          position "5/A/B" → path 0x5/A/B.ts
+// Position string "5/A" → SUBSTRATE_ROOT/0x5/A.ts
+// Position "0/01"        → SUBSTRATE_ROOT/0x0/01.ts
+// Position "5/A/B"       → SUBSTRATE_ROOT/0x5/A/B.ts
 
 import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
 
@@ -15,24 +17,45 @@ const HERE = dirname(fromFileUrl(import.meta.url));
 const SUBSTRATE_ROOT = dirname(HERE);
 const GLOSSARY_PATH = join(SUBSTRATE_ROOT, "0x0", "00.ndjson");
 
-async function fn_load_words(): Promise<Map<string, string>> {
-  // reads glossary, returns map word → position string
-  // tracks records with 00:"05" (word-entry per glossary code 18)
+interface WordRec {
+  canonical: string;
+  position: string;
+  translations: Record<string, string>;
+}
+
+async function fn_load_words(): Promise<WordRec[]> {
   const text = await Deno.readTextFile(GLOSSARY_PATH);
-  const map = new Map<string, string>();
+  const out: WordRec[] = [];
   for (const line of text.trim().split("\n")) {
     try {
       const r = JSON.parse(line);
-      if (r["00"] === "05") map.set(r["01"], r["12"]);
+      if (r["00"] !== "05") continue;
+      out.push({
+        canonical: r["01"],
+        position: r["12"],
+        translations: r["10"] ?? {},
+      });
     } catch { /* skip */ }
   }
-  return map;
+  return out;
+}
+
+function fn_resolve_word(input: string, records: WordRec[]): WordRec | null {
+  // tier 1: canonical exact match
+  for (const r of records) {
+    if (r.canonical === input) return r;
+  }
+  // tier 2: multilingual search through 10 field
+  for (const r of records) {
+    for (const lang of Object.keys(r.translations)) {
+      const synonyms = r.translations[lang].split("/").map((s) => s.trim());
+      if (synonyms.includes(input)) return r;
+    }
+  }
+  return null;
 }
 
 function fn_position_to_path(pos: string): string {
-  // "5/A"   → SUBSTRATE_ROOT/0x5/A.ts
-  // "0/01"  → SUBSTRATE_ROOT/0x0/01.ts
-  // "5/A/B" → SUBSTRATE_ROOT/0x5/A/B.ts
   const parts = pos.split("/");
   if (parts.length < 2) throw new Error(`position needs depth≥2: ${pos}`);
   const top = `0x${parts[0]}`;
@@ -41,22 +64,34 @@ function fn_position_to_path(pos: string): string {
   return join(SUBSTRATE_ROOT, top, ...mid, file);
 }
 
-async function fn_dispatch(word: string, rest: string[]): Promise<number> {
-  const words = await fn_load_words();
-  const pos = words.get(word);
+async function fn_exists(path: string): Promise<boolean> {
+  try {
+    await Deno.stat(path);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
-  if (!pos) {
+async function fn_dispatch(word: string, rest: string[]): Promise<number> {
+  const records = await fn_load_words();
+  const found = fn_resolve_word(word, records);
+
+  if (!found) {
     console.error(`# unknown word: ${word}`);
-    console.error(`# learned: ${[...words.keys()].join(", ")}`);
+    console.error(`# canonical words: ${records.map((r) => r.canonical).join(", ")}`);
     return 1;
   }
 
-  const path = fn_position_to_path(pos);
-  console.error(`# ${word} → ${pos} → ${path}`);
+  const path = fn_position_to_path(found.position);
+  // diagnostic if word ≠ canonical (matched via translation)
+  if (word !== found.canonical) {
+    console.error(`# ${word} (synonym of ${found.canonical}) → ${found.position} → ${path}`);
+  } else {
+    console.error(`# ${word} → ${found.position} → ${path}`);
+  }
 
-  try {
-    await Deno.stat(path);
-  } catch {
+  if (!(await fn_exists(path))) {
     console.error(`# no executable at ${path}`);
     return 2;
   }
@@ -71,19 +106,19 @@ async function fn_dispatch(word: string, rest: string[]): Promise<number> {
 }
 
 async function fn_list(): Promise<void> {
-  const words = await fn_load_words();
-  console.log("# substrate words (word → position → path):");
-  for (const [word, pos] of words) {
-    const path = fn_position_to_path(pos);
-    let exists = "";
-    try {
-      await Deno.stat(path);
-      exists = "✓";
-    } catch {
-      exists = "✗";
-    }
-    console.log(`  ${exists} ${word.padEnd(10)} ${pos.padEnd(8)} ${path}`);
+  const records = await fn_load_words();
+  console.log("# substrate words (canonical → position → path):");
+  for (const r of records) {
+    const path = fn_position_to_path(r.position);
+    const exists = (await fn_exists(path)) ? "✓" : "✗";
+    const langs = Object.keys(r.translations);
+    const synonymCount = langs.reduce((sum, l) => sum + r.translations[l].split("/").length, 0);
+    console.log(
+      `  ${exists} ${r.position.padEnd(8)} ${r.canonical.padEnd(10)} (${synonymCount} synonyms across ${langs.length} langs)`,
+    );
   }
+  console.log("");
+  console.log("# show details (any synonym in any lang): t help <word>");
 }
 
 if (import.meta.main) {

@@ -128,10 +128,12 @@ async function fn_run_at_position(
     stderr: "inherit",
   });
   const result = await proc.output();
-  if (result.code !== 0) return result.code;
   const raw = new TextDecoder().decode(result.stdout).trim();
-  if (!raw) return 0;
-  return await fn_process_payload(raw, depth);
+  if (raw) {
+    const payloadResult = await fn_process_payload(raw, depth);
+    if (payloadResult !== 0) return payloadResult;
+  }
+  return result.code;
 }
 
 async function fn_process_payload(raw: string, depth: number): Promise<number> {

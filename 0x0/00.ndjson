@@ -70,3 +70,4 @@
 {"00":"06","01":"myc","02":"6/A","03":"deno task test","04":"myc","05":"deno task test (health placeholder)"}
 {"00":"07","01":"all","02":"type,position,action,summary,substrates","03":"mode,note,topology,falsifier","04":"map receipt from 0x0/03.ts (all primitive)"}
 {"00":"05","01":"each","12":"0/04","11":"00 00 00 00 00 00 00 00","10":{"en":"each/sequence/for/compose","uk":"кожен/послідовно/для/композиція"},"09":"foundation+cardinal = sequential composition primitive"}
+{"00":"05","01":"pipe","12":"0/05","11":"00 00 00 00 00 00 00 00","10":{"en":"pipe/flow/conditional-compose/chain","uk":"труба/потік/умовна-композиція/ланцюг"},"09":"foundation+action = conditional sequential composition with short-circuit"}

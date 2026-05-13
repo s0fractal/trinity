@@ -1,7 +1,13 @@
 #!/usr/bin/env -S deno run --allow-read --allow-run
 // 0x0/01.ts — t (the runtime dispatcher)
 // position: 0/01 → foundation/byte01
-// hex_dipole: "00 00 00 00 00 00 00 00"
+// hex_dipole: "6C 26 40 33 66 40 40 19"
+//   void_infinity+0.85 first_penultimate+0.30 mirror_apex+0.50
+//   triangle_build+0.40 foundation_container+0.80 action_decision+0.50
+//   harmony_emergence+0.50 completion_frontier+0.20
+//   primary axis: void (0) ← bucket MATCH
+//   secondary: foundation (4) ← position '01' unclear under composite reading
+//   measured by claude-opus-4-7-1m, anchor block 949260, audit phase 1
 // lifecycle_phase: 0
 //
 // Topological LISP Evaluator (per gemini proposal 134500Z):

@@ -1,7 +1,13 @@
 #!/usr/bin/env -S deno run --allow-all
 // 0x0/03.ts — all / map / broadcast
 // position: 0/03 → foundation × triangle/trinity
-// hex_dipole: "00 00 00 00 00 00 00 00"
+// hex_dipole: "00 00 33 6C 33 33 40 33"
+//   void_infinity 0 first_penultimate 0 mirror_apex+0.40
+//   triangle_build+0.85 foundation_container+0.40 action_decision+0.40
+//   harmony_emergence+0.50 completion_frontier+0.40
+//   primary axis: triangle (3) ← bucket MISMATCH (sits in '0' = void)
+//   secondary position '03' DOES match axis 3 — composite reading rescues
+//   measured by claude-opus-4-7-1m, anchor block 949260, audit phase 1
 // lifecycle_phase: 0
 //
 // Functional primitive: map a hex signal across all substrates

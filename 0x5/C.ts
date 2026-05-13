@@ -39,9 +39,13 @@ interface SubstrateResult {
   status: "passed" | "failed" | "timeout" | "not_implemented";
 }
 
+import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
+
+const GLOSSARY_PATH = join(dirname(fromFileUrl(import.meta.url)), "..", "0x0", "00.ndjson");
+
 async function fn_load_substrate_mappings(position: string): Promise<SubstrateDef[] | null> {
   try {
-    const text = await Deno.readTextFile("../0x0/00.ndjson");
+    const text = await Deno.readTextFile(GLOSSARY_PATH);
     const defs: SubstrateDef[] = [];
     for (const line of text.trim().split("\n")) {
       try {

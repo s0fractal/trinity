@@ -43,24 +43,24 @@
 {"11":"00 00 59 00 00 00 00 59","00":"5","02":["update","refresh","sync","оновити","освіжити","синхронізувати"],"04":"F/A","09":"frontier+apex = push boundary (no executable yet)"}
 {"11":"00 00 59 00 00 00 59 00","00":"5","02":["cross-verify","verify-all","test-all","перехресна-перевірка","перевірити-все"],"04":"5/C","09":"action+container = verify across all substrates via adapter pattern"}
 {"00":"02","02":"06","03":"substrate_mapping"}
-{"00":"06","01":"trinity","02":"5/C","03":"deno check 0x0/01.ts 0x5/0.ts 0x5/A.ts 0x5/C.ts","04":".","05":"type-check hex substrate files"}
-{"00":"06","01":"omega","02":"5/C","03":"cargo check","04":"omega","05":"compile check (quick); use --deep for cargo test"}
-{"00":"06","01":"liquid","02":"5/C","03":"deno check 00_core/liquid_pipe.ts 00_core/phase_engine.ts 00_core/hydrate.ts 00_core/seed.ts","04":"liquid","05":"type-check core files (hex→φ adapter pending)"}
-{"00":"06","01":"myc","02":"5/C","03":"deno task test","04":"myc","05":"deno task test (42 tests)"}
+{"00":"6","02":["trinity","тринити","trinity-substrate","коренева"],"03":"5/C","04":".","05":"deno check 0x0/01.ts 0x5/0.ts 0x5/A.ts 0x5/C.ts","09":"type-check hex substrate files"}
+{"00":"6","02":["omega","омега","ω"],"03":"5/C","04":"omega","05":"cargo check","09":"compile check (quick); use --deep for cargo test"}
+{"00":"6","02":["liquid","ліквід","рідина"],"03":"5/C","04":"liquid","05":"deno check 00_core/liquid_pipe.ts 00_core/phase_engine.ts 00_core/hydrate.ts 00_core/seed.ts","09":"type-check core files (hex→φ adapter pending)"}
+{"00":"6","02":["myc","міц","грибниця","mycelium"],"03":"5/C","04":"myc","05":"deno task test","09":"deno task test (42 tests)"}
 {"11":"00 59 00 00 00 00 59 00","00":"5","02":["health","harmony","здоров'я","гармонія"],"04":"6/A","09":"harmony+apex = fresh health check"}
 {"00":"5","02":["audit","аудит","place-check","перевірка-розміщення","introspect","інтроспекція","place"],"04":"6/C","09":"harmony+container-pair = bucket vs dipole self-introspection","11":"00 00 40 33 4C 26 6C 33"}
 {"11":"00 00 6C 40 33 26 4C 33","00":"5","02":["status","state","how-are-you","статус","стан","як","ти-як"],"04":"2/E","09":"mirror+harmony-pair = composite self-reflection across organs"}
 {"11":"00 00 40 6C 26 33 4C 40","00":"5","02":["balance","suggest","recommend","rebalance","баланс","балансуй","запропонуй","порадь"],"04":"3/A","09":"triangle+mirror-pair = dipole-driven rebalance proposals (read-only)"}
 {"11":"26 00 40 40 6C 19 33 26","00":"5","02":["chord","scaffold","frontmatter","акорд","скаффолд","каркас"],"04":"4/0","09":"foundation+void = chord scaffolding + dipole math toolkit"}
 {"11":"26 00 59 40 6C 33 33 40","00":"5","02":["capabilities","affordances","can-do","спроможності","що-можу"],"04":"4/A","09":"foundation+mirror-pair = live affordance projection from glossary (per codex 2026-05-13T210236Z)"}
-{"00":"06","01":"trinity","02":"5/A","03":"deno check 0x5/A.ts","04":".","05":"type-check verify executable"}
-{"00":"06","01":"omega","02":"5/A","03":"cargo check","04":"omega","05":"compile check (verify placeholder)"}
-{"00":"06","01":"liquid","02":"5/A","03":"deno check 00_core/liquid_pipe.ts","04":"liquid","05":"type-check core (verify placeholder)"}
-{"00":"06","01":"myc","02":"5/A","03":"deno task test","04":"myc","05":"deno task test (verify placeholder)"}
-{"00":"06","01":"trinity","02":"5/D","03":"deno run --allow-all 0x5/D.ts","04":".","05":"run play executable"}
-{"00":"06","01":"omega","02":"5/D","03":"cargo build","04":"omega","05":"build (play placeholder)"}
-{"00":"06","01":"liquid","02":"5/D","03":"deno check 00_core/hydrate.ts","04":"liquid","05":"type-check hydrate (play placeholder)"}
-{"00":"06","01":"myc","02":"5/D","03":"deno task myc","04":"myc","05":"myc CLI (play placeholder)"}
+{"00":"6","02":["trinity","тринити","trinity-substrate","коренева"],"03":"5/A","04":".","05":"deno check 0x5/A.ts","09":"type-check verify executable"}
+{"00":"6","02":["omega","омега","ω"],"03":"5/A","04":"omega","05":"cargo check","09":"compile check (verify placeholder)"}
+{"00":"6","02":["liquid","ліквід","рідина"],"03":"5/A","04":"liquid","05":"deno check 00_core/liquid_pipe.ts","09":"type-check core (verify placeholder)"}
+{"00":"6","02":["myc","міц","грибниця","mycelium"],"03":"5/A","04":"myc","05":"deno task test","09":"deno task test (verify placeholder)"}
+{"00":"6","02":["trinity","тринити","trinity-substrate","коренева"],"03":"5/D","04":".","05":"deno run --allow-all 0x5/D.ts","09":"run play executable"}
+{"00":"6","02":["omega","омега","ω"],"03":"5/D","04":"omega","05":"cargo build","09":"build (play placeholder)"}
+{"00":"6","02":["liquid","ліквід","рідина"],"03":"5/D","04":"liquid","05":"deno check 00_core/hydrate.ts","09":"type-check hydrate (play placeholder)"}
+{"00":"6","02":["myc","міц","грибниця","mycelium"],"03":"5/D","04":"myc","05":"deno task myc","09":"myc CLI (play placeholder)"}
 {"00":"01","09":"end-marker. 16 symbols, 7 projections, 8 words, 20 substrate mappings (5/A×4, 5/C×4, 5/D×4, F/A×4). 9 hex executables: 0x0/01, 0x0/02, 0x0/0F, 0x5/0, 0x5/A, 0x5/C, 0x5/D, 0x6/A, 0xF/A. type:06 substrate registry operational. Glossary drives cross-substrate execution. Open: liquid hex→φ adapter, SPORE receipt schema, extend registry to all positions."}
 {"00":"02","02":"07","03":"receipt_schema"}
 {"00":"07","01":"status","02":"type,position,action","03":"args,note,synonyms,subsets,todo","04":"basic status echo from any executable"}
@@ -69,10 +69,10 @@
 {"00":"07","01":"error","02":"type,message","03":"position,available","04":"error receipt from dispatcher or executable"}
 {"00":"07","01":"help","02":"type,mode","03":"records,record","04":"help receipt from 0x0/0F.ts"}
 {"11":"00 00 33 6C 33 33 40 33","00":"5","02":["all","every","all-of","map","все","всі","все-разом","мап"],"04":"0/03","09":"foundation+trinity = map signal across all substrates"}
-{"00":"06","01":"trinity","02":"6/A","03":"deno run --allow-read 0x6/A.ts","04":".","05":"health check for trinity substrate"}
-{"00":"06","01":"omega","02":"6/A","03":"cargo check","04":"omega","05":"compile check (health placeholder)"}
-{"00":"06","01":"liquid","02":"6/A","03":"deno check 00_core/liquid_pipe.ts","04":"liquid","05":"type-check core (health placeholder)"}
-{"00":"06","01":"myc","02":"6/A","03":"deno task test","04":"myc","05":"deno task test (health placeholder)"}
+{"00":"6","02":["trinity","тринити","trinity-substrate","коренева"],"03":"6/A","04":".","05":"deno run --allow-read 0x6/A.ts","09":"health check for trinity substrate"}
+{"00":"6","02":["omega","омега","ω"],"03":"6/A","04":"omega","05":"cargo check","09":"compile check (health placeholder)"}
+{"00":"6","02":["liquid","ліквід","рідина"],"03":"6/A","04":"liquid","05":"deno check 00_core/liquid_pipe.ts","09":"type-check core (health placeholder)"}
+{"00":"6","02":["myc","міц","грибниця","mycelium"],"03":"6/A","04":"myc","05":"deno task test","09":"deno task test (health placeholder)"}
 {"00":"07","01":"all","02":"type,position,action,summary,substrates","03":"mode,note,topology,falsifier","04":"map receipt from 0x0/03.ts (all primitive)"}
 {"11":"00 00 00 6C 00 40 40 33","00":"5","02":["each","sequence","for","compose","кожен","послідовно","для","композиція"],"04":"0/04","09":"foundation+cardinal = sequential composition primitive"}
 {"11":"00 00 00 66 00 33 33 40","00":"5","02":["pipe","flow","conditional-compose","chain","труба","потік","умовна-композиція","ланцюг"],"04":"0/05","09":"foundation+action = conditional sequential composition with short-circuit"}

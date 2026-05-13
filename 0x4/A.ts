@@ -135,7 +135,22 @@ async function loadGlossary(): Promise<{
           note: r["09"] ?? "",
           form: "legacy",
         });
+      } else if (kind === "6") {
+        // Topological substrate mapping:
+        //   02 = handles (multilingual substrate name array)
+        //   03 = position served, 04 = cwd, 05 = command, 09 = note
+        if (Array.isArray(r["02"]) && typeof r["03"] === "string") {
+          const handles = (r["02"] as string[]).filter((s) => typeof s === "string");
+          mappings.push({
+            substrate: handles[0] ?? "",
+            position: r["03"],
+            command: r["05"] ?? "",
+            cwd: r["04"] ?? ".",
+            note: r["09"] ?? "",
+          });
+        }
       } else if (kind === "06") {
+        // Legacy form
         mappings.push({
           substrate: r["01"],
           position: r["02"],
@@ -143,7 +158,7 @@ async function loadGlossary(): Promise<{
           cwd: r["04"],
           note: r["05"] ?? "",
         });
-      } else if (r["00"] === "07") {
+      } else if (kind === "07") {
         const required = String(r["02"] ?? "").split(",").map((s) => s.trim()).filter(Boolean);
         const optional = String(r["03"] ?? "").split(",").map((s) => s.trim()).filter(Boolean);
         schemas.push({

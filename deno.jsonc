@@ -24,7 +24,6 @@
     "cognition:field": "deno run -A tools/cognition_field.ts",
     "validate:schemas": "deno run -A tools/validate_schemas.ts",
     "cognition:cycle": "deno task cognition:snapshot && deno task cognition:delta && deno task cognition:recommend && deno task cognition:recommend-receipt && deno task cognition:recommend-to-chord && deno task cognition:field",
-    "capabilities": "deno run -A tools/capabilities.ts",
     "canon:verify": "deno run -A lib/canon/verify_vectors.ts",
     "chord:play": "deno run -A tools/chord_play.ts",
     "chord:block": "deno run --allow-net 0x4/0.ts block",

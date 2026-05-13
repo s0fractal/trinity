@@ -17,7 +17,7 @@
 //
 // capabilities — live affordance projection (per codex 2026-05-13T210236Z)
 //
-// Replaces hand-maintained capabilities/trinity.capabilities.v0.1.json with
+// Replaces hand-maintained capabilities/trinity.capabilities.v0.1.legacy.json with
 // live output computed from:
 //   - 0x0/00.ndjson glossary (type:05 words / type:06 substrate mappings /
 //                              type:07 receipt schemas)
@@ -299,7 +299,7 @@ function legacyJsonFor(caps: Capability[]): unknown {
     version: "0.2-derived",
     status: "live-projection",
     generated_by: "0x4/A.ts (t capabilities)",
-    purpose: "Live affordance projection from glossary + headers. Replaces hand-maintained capabilities/trinity.capabilities.v0.1.json per codex 2026-05-13T210236Z.",
+    purpose: "Live affordance projection from glossary + headers. Replaces hand-maintained capabilities/trinity.capabilities.v0.1.legacy.json per codex 2026-05-13T210236Z.",
     capabilities: caps.map((c) => ({
       id: `trinity.${c.primary.replace(/-/g, ".")}`,
       owner: "trinity",
@@ -382,7 +382,7 @@ if (import.meta.main) {
     action: "list",
     note: "foundation+mirror-pair = live affordance projection from glossary",
     source_of_truth: "0x0/00.ndjson (type:05/06/07) + per-file headers + deno.jsonc",
-    legacy_artifact: "capabilities/trinity.capabilities.v0.1.json (deprecated; use --legacy to regenerate)",
+    legacy_artifact: "capabilities/trinity.capabilities.v0.1.legacy.json (preserved for recipes; use --legacy to regenerate capability list)",
     summary: {
       total_words: caps.length,
       with_schema: caps.filter((c) => c.receipt_schema).length,

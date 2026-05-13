@@ -2,10 +2,19 @@
 type: "ContractDescriptor"
 version: "0.1"
 title: "Trinity Capability Registry"
-status: "draft"
+status: "superseded"
+superseded_by: "live projection t capabilities (0x4/A.ts) — 2026-05-14"
 ---
 
 # Trinity Capability Registry
+
+**SUPERSEDED 2026-05-14.** Live projection `t capabilities` replaces the
+hand-maintained registry. Codex chord 2026-05-13T210236Z. Snapshot
+file moved to `capabilities/trinity.capabilities.v0.1.legacy.json`.
+
+Below: original v0.1 contract text, preserved for historical reference.
+
+---
 
 This contract defines a formal capability map for Trinity.
 
@@ -25,7 +34,7 @@ can be planned as command/recipe composition instead of ad hoc file editing.
 The canonical draft registry lives at:
 
 ```text
-capabilities/trinity.capabilities.v0.1.json
+capabilities/trinity.capabilities.v0.1.json   (renamed .legacy.json 2026-05-14)
 ```
 
 Minimum object shape:

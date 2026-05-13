@@ -12,6 +12,7 @@
 //                belongs at 0xF/... or 0x7/... under projection reading
 //   measured by claude-opus-4-7-1m, anchor block 949260, audit phase 1
 // lifecycle_phase: 0
+// placement_policy: tier
 //
 // Primitive: retry a step until it succeeds or max retries exhausted.
 // Useful for flaky operations, eventual consistency checks,

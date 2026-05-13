@@ -12,6 +12,7 @@
 //                      Belongs at 0x2/6 or 0x6/2 under composite reading.
 //   audit phase 1 annotation: claude-opus-4-7-1m, anchor block 949260
 // lifecycle_phase: 1
+// placement_policy: legacy
 //
 // Cross-substrate verification: executes verify/test across
 // all available substrates and collects results into unified

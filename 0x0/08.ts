@@ -10,6 +10,7 @@
 //                dipole 0.00 on axis 0 ← does not rescue
 //   measured by claude-opus-4-7-1m, anchor block 949260, audit phase 1
 // lifecycle_phase: 0
+// placement_policy: tier
 //
 // Primitive: execute steps in parallel, collect all results.
 // Unlike `all` which reads substrate registry, join takes

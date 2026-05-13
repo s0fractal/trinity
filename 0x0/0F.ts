@@ -10,6 +10,7 @@
 //                         not re-measured; Kimi's reading kept
 //   audit phase 1 annotation: claude-opus-4-7-1m, anchor block 949260
 // lifecycle_phase: 1
+// placement_policy: composite
 //
 // Returns structured help payload. Dispatcher (0x0/01.ts) renders for TTY.
 // No arg: mode=list. With arg: mode=detail (with semantic decomposition).

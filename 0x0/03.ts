@@ -9,6 +9,7 @@
 //   secondary position '03' DOES match axis 3 — composite reading rescues
 //   measured by claude-opus-4-7-1m, anchor block 949260, audit phase 1
 // lifecycle_phase: 0
+// placement_policy: composite
 //
 // Functional primitive: map a hex signal across all substrates
 // that have type:06 registry entries for this position.

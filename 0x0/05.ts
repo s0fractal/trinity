@@ -9,6 +9,7 @@
 //                secondary '05' → axis 5 action, dipole +0.40 ← weak partial composite
 //   measured by claude-opus-4-7-1m, anchor block 949260, audit phase 1
 // lifecycle_phase: 0
+// placement_policy: tier
 //
 // Primitive: conditional sequential composition with short-circuit.
 // If any step fails, stop and return the error.

@@ -12,6 +12,7 @@
 //                      should be re-measured against actual behavior or removed
 //   audit phase 1 annotation: claude-opus-4-7-1m, anchor block 949260
 // lifecycle_phase: 1
+// placement_policy: composite
 //
 // Fractal depth 3: verify within container, fresh perspective.
 // Placeholder for deep verification logic.

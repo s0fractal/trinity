@@ -11,6 +11,7 @@
 //                      remove from substrate after audit-driven decision.
 //   audit phase 1 annotation: claude-opus-4-7-1m, anchor block 949260
 // lifecycle_phase: 1
+// placement_policy: composite
 //
 // Fractal depth 4: verify within container, fresh perspective,
 // stable witness (trinity). Deepest executable in substrate so far.

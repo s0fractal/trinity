@@ -11,6 +11,7 @@
 //                         foundation+0.40 (BTC = ground reference); not re-measured
 //   audit phase 1 annotation: claude-opus-4-7-1m, anchor block 949260
 // lifecycle_phase: 1
+// placement_policy: composite
 // words mapped here: block, блок, height, висота, timestamp, мітка
 //
 // Returns structured JSON: {"type":"block","value":N}

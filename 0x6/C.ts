@@ -58,6 +58,8 @@ const DIPOLE_AXES = [
   "completion_frontier",
 ] as const;
 
+type PlacementPolicy = "axis" | "composite" | "tier" | "legacy";
+
 interface FileReport {
   path: string;
   bucket: string;
@@ -67,8 +69,29 @@ interface FileReport {
   strongest_axes_names: string[];
   strongest_value: number | null;
   bucket_int: number | null;
-  match: "match" | "mismatch" | "no_dipole" | "malformed";
+  placement_policy: PlacementPolicy;
+  match: "match" | "mismatch" | "deferred" | "no_dipole" | "malformed";
   note: string;
+}
+
+function parsePlacementPolicy(text: string): PlacementPolicy {
+  const m = text.match(/placement_policy:\s*(axis|composite|tier|legacy)/);
+  return (m?.[1] as PlacementPolicy) ?? "axis";
+}
+
+function pathComponents(relPath: string): number[] {
+  // "0x5/C/A/3.ts"  → [5, 12, 10, 3]
+  // "0x0/03.ts"     → [0, 0, 3]   (each hex char counts, leading-0 not eaten)
+  // "0x0/0F.ts"     → [0, 0, 15]
+  const parts = relPath.replace(/\.(ts|sh)$/, "").split("/");
+  const out: number[] = [];
+  for (const p of parts) {
+    const cleaned = p.replace(/^0x/, "");
+    for (const ch of cleaned) {
+      if (/[0-9A-Fa-f]/.test(ch)) out.push(parseInt(ch, 16));
+    }
+  }
+  return out;
 }
 
 function i8HexToSigned(hex: string): number {
@@ -149,24 +172,28 @@ async function inspectFile(absPath: string, relPath: string): Promise<FileReport
     return {
       path: relPath, bucket, signature: null, raw: null,
       strongest_axes: [], strongest_axes_names: [], strongest_value: null,
-      bucket_int: bucketInt, match: "no_dipole", note: "unreadable",
+      bucket_int: bucketInt, placement_policy: "axis",
+      match: "no_dipole", note: "unreadable",
     };
   }
-  const head = text.split("\n").slice(0, 25).join("\n");
+  const head = text.split("\n").slice(0, 30).join("\n");
   const { values, raw } = parseHexDipole(head);
+  const policy = parsePlacementPolicy(head);
 
   if (!raw) {
     return {
       path: relPath, bucket, signature: null, raw: null,
       strongest_axes: [], strongest_axes_names: [], strongest_value: null,
-      bucket_int: bucketInt, match: "no_dipole", note: "no hex_dipole field",
+      bucket_int: bucketInt, placement_policy: policy,
+      match: "no_dipole", note: "no hex_dipole field",
     };
   }
   if (!values) {
     return {
       path: relPath, bucket, signature: null, raw,
       strongest_axes: [], strongest_axes_names: [], strongest_value: null,
-      bucket_int: bucketInt, match: "malformed", note: "could not parse 8 i8 bytes",
+      bucket_int: bucketInt, placement_policy: policy,
+      match: "malformed", note: "could not parse 8 i8 bytes",
     };
   }
 
@@ -175,7 +202,8 @@ async function inspectFile(absPath: string, relPath: string): Promise<FileReport
     return {
       path: relPath, bucket, signature: values, raw,
       strongest_axes: [], strongest_axes_names: [], strongest_value: 0,
-      bucket_int: bucketInt, match: "no_dipole", note: "neutral signature (all zero)",
+      bucket_int: bucketInt, placement_policy: policy,
+      match: "no_dipole", note: "neutral signature (all zero)",
     };
   }
 
@@ -186,64 +214,94 @@ async function inspectFile(absPath: string, relPath: string): Promise<FileReport
     return {
       path: relPath, bucket, signature: values, raw,
       strongest_axes: axes, strongest_axes_names: axisNames, strongest_value: mag,
-      bucket_int: null, match: "malformed", note: "bucket not a hex digit",
+      bucket_int: null, placement_policy: policy,
+      match: "malformed", note: "bucket not a hex digit",
     };
   }
 
-  const bucketAxis = bucketInt % 8; // hex 8..F wrap into pair axes 0..7
-  const axisMatch = axes.includes(bucketAxis);
-  // sign check uses value on the matching axis (if any)
-  const matchedValue = axisMatch ? values[bucketAxis] : null;
-  const isNegativePole = bucketInt >= 8;
-  const signOpposed = matchedValue !== null &&
-    ((isNegativePole && matchedValue > 0) || (!isNegativePole && matchedValue < 0));
-
+  // Apply policy. Default "axis" preserves prior strict behavior.
   let m: FileReport["match"];
   let note: string;
-  if (axisMatch && !signOpposed) {
-    note = axes.length === 1
-      ? `axis ${bucketAxis} matches bucket ${bucket}`
-      : `axis ${bucketAxis} among tied strongest [${axes.join(",")}] matches bucket ${bucket}`;
+
+  if (policy === "legacy") {
+    m = "deferred";
+    note = "legacy policy — placement known-imperfect, decision deferred";
+  } else if (policy === "tier") {
     m = "match";
-  } else if (axisMatch && signOpposed) {
-    note = `axis ${bucketAxis} matches bucket ${bucket} via pair (sign-opposed pole)`;
-    m = "match";
+    note = `tier policy — bucket ${bucket} read as tier indicator, dipole free`;
+  } else if (policy === "composite") {
+    const pathMod8 = pathComponents(relPath).map((p) => p % 8);
+    const composite = axes.some((a) => pathMod8.includes(a));
+    if (composite) {
+      const matched = axes.find((a) => pathMod8.includes(a))!;
+      m = "match";
+      note = `composite policy — axis ${matched} matches path components [${pathMod8.join(",")}]`;
+    } else {
+      m = "mismatch";
+      note = `composite policy — strongest axes [${axes.join(",")}] do not include any path component [${pathMod8.join(",")}]`;
+    }
   } else {
-    note = `strongest axes [${axes.join(",")}] do not include bucket axis ${bucketAxis}`;
-    m = "mismatch";
+    // axis policy (default)
+    const bucketAxis = bucketInt % 8;
+    const axisMatch = axes.includes(bucketAxis);
+    const matchedValue = axisMatch ? values[bucketAxis] : null;
+    const isNegativePole = bucketInt >= 8;
+    const signOpposed = matchedValue !== null &&
+      ((isNegativePole && matchedValue > 0) || (!isNegativePole && matchedValue < 0));
+
+    if (axisMatch && !signOpposed) {
+      note = axes.length === 1
+        ? `axis ${bucketAxis} matches bucket ${bucket}`
+        : `axis ${bucketAxis} among tied strongest [${axes.join(",")}] matches bucket ${bucket}`;
+      m = "match";
+    } else if (axisMatch && signOpposed) {
+      note = `axis ${bucketAxis} matches bucket ${bucket} via pair (sign-opposed pole)`;
+      m = "match";
+    } else {
+      note = `axis policy — strongest axes [${axes.join(",")}] do not include bucket axis ${bucketAxis}`;
+      m = "mismatch";
+    }
   }
 
   return {
     path: relPath, bucket, signature: values, raw,
     strongest_axes: axes, strongest_axes_names: axisNames, strongest_value: mag,
-    bucket_int: bucketInt, match: m, note,
+    bucket_int: bucketInt, placement_policy: policy,
+    match: m, note,
   };
 }
 
 function renderReport(reports: FileReport[], opts: { quiet: boolean; mismatchOnly: boolean }): void {
   const matches = reports.filter((r) => r.match === "match").length;
   const mismatches = reports.filter((r) => r.match === "mismatch").length;
+  const deferred = reports.filter((r) => r.match === "deferred").length;
   const noDipole = reports.filter((r) => r.match === "no_dipole").length;
   const malformed = reports.filter((r) => r.match === "malformed").length;
 
   if (!opts.quiet) {
-    console.log("path".padEnd(22) + "bucket  strongest axes (mag)            match");
-    console.log("-".repeat(78));
+    console.log("path".padEnd(22) + "bucket  strongest axes (mag)         policy     match");
+    console.log("-".repeat(86));
     for (const r of reports) {
       if (opts.mismatchOnly && r.match === "match") continue;
-      const icon = r.match === "match" ? "✓" : r.match === "mismatch" ? "✗" : "·";
+      const icon = r.match === "match"
+        ? "✓"
+        : r.match === "mismatch"
+        ? "✗"
+        : r.match === "deferred"
+        ? "⊘"
+        : "·";
       const strongest = r.strongest_axes.length > 0
-        ? `[${r.strongest_axes.join(",")}] ${r.strongest_axes_names.join("/").slice(0, 22).padEnd(22)} ${(r.strongest_value ?? 0).toString().padStart(4)}`
-        : "—".padEnd(32);
+        ? `[${r.strongest_axes.join(",")}] ${r.strongest_axes_names.join("/").slice(0, 18).padEnd(18)} ${(r.strongest_value ?? 0).toString().padStart(4)}`
+        : "—".padEnd(28);
       console.log(
-        `${r.path.padEnd(22)} ${r.bucket.padEnd(7)}${strongest}  ${icon} ${r.match}`,
+        `${r.path.padEnd(22)} ${r.bucket.padEnd(7)}${strongest}  ${r.placement_policy.padEnd(9)}  ${icon} ${r.match}`,
       );
     }
-    console.log("-".repeat(78));
+    console.log("-".repeat(86));
   }
 
   console.log(
-    `total: ${reports.length}  match: ${matches}  mismatch: ${mismatches}  no_dipole: ${noDipole}  malformed: ${malformed}`,
+    `total: ${reports.length}  match: ${matches}  mismatch: ${mismatches}  deferred: ${deferred}  no_dipole: ${noDipole}  malformed: ${malformed}`,
   );
 }
 
@@ -268,6 +326,7 @@ async function main(): Promise<void> {
       summary: {
         match: reports.filter((r) => r.match === "match").length,
         mismatch: reports.filter((r) => r.match === "mismatch").length,
+        deferred: reports.filter((r) => r.match === "deferred").length,
         no_dipole: reports.filter((r) => r.match === "no_dipole").length,
         malformed: reports.filter((r) => r.match === "malformed").length,
       },

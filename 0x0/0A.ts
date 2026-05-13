@@ -11,6 +11,7 @@
 //                on axis 2 ← PAIR-MATCH (sign-opposed pole) — defensible composite
 //   measured by claude-opus-4-7-1m, anchor block 949260, audit phase 1
 // lifecycle_phase: 0
+// placement_policy: composite
 //
 // Primitive: run primary step, then side-effect step,
 // return primary result unchanged.

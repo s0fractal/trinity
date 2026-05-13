@@ -9,6 +9,7 @@
 //                secondary '04' → axis 4 foundation, dipole 0.00 ← does not rescue
 //   measured by claude-opus-4-7-1m, anchor block 949260, audit phase 1
 // lifecycle_phase: 0
+// placement_policy: tier
 //
 // Primitive: apply a list of positions sequentially.
 // No new code needed for common workflows — just compose.

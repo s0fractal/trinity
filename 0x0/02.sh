@@ -2,6 +2,7 @@
 # 0x0/02.sh — global shim for `t` command
 # position: 0/02 → foundation × byte02 (shim slot after glossary 00 and runtime 01)
 # hex_dipole: "00 00 00 00 00 00 59 00"
+# placement_policy: tier
 #   harmony_emergence+0.70 (Kimi reading: restores execution flow)
 #   bucket 0/02: primary axis harmony (6), bucket 0 ← MISMATCH (projection)
 #                secondary '02' → axis 2 mirror, dipole 0 ← does not rescue

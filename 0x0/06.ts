@@ -9,6 +9,7 @@
 //                secondary '06' → axis 6 harmony, dipole +0.70 ← COMPOSITE-READING RESCUE
 //   measured by claude-opus-4-7-1m, anchor block 949260, audit phase 1
 // lifecycle_phase: 0
+// placement_policy: composite
 //
 // Primitive: attempt a step; if it fails, try the fallback.
 // If both fail, return the last error.

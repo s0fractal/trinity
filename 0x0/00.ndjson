@@ -75,3 +75,7 @@
 {"00":"07","01":"try","02":"type,action,primary,fallback,used,overall,result","03":"resolved_primary,resolved_fallback,primary_error,note,topology","04":"try receipt from 0x0/06.ts"}
 {"00":"05","01":"cond","12":"0/07","11":"00 00 00 00 00 00 00 00","10":{"en":"cond/branch/if-then-else","uk":"умова/гілка/якщо-тоді-інакше"},"09":"foundation+threshold = conditional branch primitive"}
 {"00":"07","01":"cond","02":"type,action,predicate,then,else,taken,overall,result","03":"predicate_ok,resolved_predicate,resolved_then,resolved_else,predicate_result,note,topology","04":"cond receipt from 0x0/07.ts"}
+{"00":"05","01":"join","12":"0/08","11":"00 00 00 00 00 00 00 00","10":{"en":"join/zip/parallel-collect/bundle","uk":"об\u0027єднання/пакет/паралельний-збір"},"09":"foundation+infinity = parallel execution with result collection"}
+{"00":"07","01":"join","02":"type,action,steps,count,errors,overall,results","03":"resolved,note,topology","04":"join receipt from 0x0/08.ts"}
+{"00":"05","01":"repeat","12":"0/09","11":"00 00 00 00 00 00 00 00","10":{"en":"repeat/loop/iterate/stress","uk":"повторення/цикл/ітерація"},"09":"foundation+completion = iterate n times and collect"}
+{"00":"07","01":"repeat","02":"type,action,target,resolved,requested_count,actual_count,errors,overall","03":"first_error_at,iterations,note,topology","04":"repeat receipt from 0x0/09.ts"}

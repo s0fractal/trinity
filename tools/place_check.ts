@@ -1,0 +1,283 @@
+#!/usr/bin/env -S deno run --allow-read
+/**
+ * place_check — bucket-vs-dipole match report
+ *
+ * Reads `hex_dipole:` header from every 0xN/.../*.ts and *.sh in
+ * substrate root. Compares strongest axis (by signed magnitude) to
+ * the top-level bucket of the file's path. Reports match/mismatch
+ * per file plus aggregate summary.
+ *
+ * Not a gate. Not enforcement. Just a check.
+ *
+ * Usage:
+ *   deno run --allow-read tools/place_check.ts [--quiet] [--mismatch-only]
+ *
+ *   --quiet           summary only, no per-file lines
+ *   --mismatch-only   skip files where primary axis matches bucket
+ *   --json            machine-readable output (overrides other flags)
+ *
+ * Exit codes:
+ *   0  all files match (primary axis = bucket) OR file has no dipole header
+ *   1  one or more mismatches under projection reading
+ *   2  one or more files have malformed/missing dipole
+ *
+ * Audit phase 2 — see jazz/chords/2026-05-13T223000Z-claude-moratorium-and-initial-dipole-audit.md
+ *
+ * Substrate alignment:
+ *   - HEX_DIPOLE_SEED.v0 axis ordering
+ *   - per-file headers as source of truth (not central glossary)
+ *   - "projection reading": file lives in bucket = its strongest axis
+ *
+ * Limitations:
+ *   - "Strongest axis" defined as max |i8 value|. If dipole has
+ *     tied magnitudes, lower axis index wins (deterministic).
+ *   - Composite/fractal readings (where /M secondary rescues primary
+ *     mismatch) are NOT computed here. See chord for that discussion.
+ *   - Files without `hex_dipole:` header are reported but not failed.
+ */
+import { dirname, fromFileUrl, join, relative } from "https://deno.land/std@0.224.0/path/mod.ts";
+
+const HERE = dirname(fromFileUrl(import.meta.url));
+const ROOT = dirname(HERE);
+
+const DIPOLE_AXES = [
+  "void_infinity",
+  "first_penultimate",
+  "mirror_apex",
+  "triangle_build",
+  "foundation_container",
+  "action_decision",
+  "harmony_emergence",
+  "completion_frontier",
+] as const;
+
+interface FileReport {
+  path: string;
+  bucket: string;
+  signature: number[] | null;
+  raw: string | null;
+  strongest_axes: number[];
+  strongest_axes_names: string[];
+  strongest_value: number | null;
+  bucket_int: number | null;
+  match: "match" | "mismatch" | "no_dipole" | "malformed";
+  note: string;
+}
+
+function i8HexToSigned(hex: string): number {
+  const u8 = parseInt(hex, 16);
+  if (!Number.isFinite(u8) || u8 < 0 || u8 > 255) return NaN;
+  return u8 >= 128 ? u8 - 256 : u8;
+}
+
+function parseHexDipole(text: string): { values: number[] | null; raw: string | null } {
+  const match = text.match(/hex_dipole:\s*"([^"]+)"/);
+  if (!match) return { values: null, raw: null };
+  const raw = match[1].trim();
+  const clean = raw.replace(/\s+/g, "").toUpperCase();
+  if (clean.length !== 16) return { values: null, raw };
+  const values: number[] = [];
+  for (let i = 0; i < 16; i += 2) {
+    const v = i8HexToSigned(clean.slice(i, i + 2));
+    if (!Number.isFinite(v)) return { values: null, raw };
+    values.push(v);
+  }
+  return { values, raw };
+}
+
+function strongestAxes(values: number[]): { axes: number[]; mag: number } {
+  let bestMag = -1;
+  for (let i = 0; i < values.length; i++) {
+    const mag = Math.abs(values[i]);
+    if (mag > bestMag) bestMag = mag;
+  }
+  const axes: number[] = [];
+  for (let i = 0; i < values.length; i++) {
+    if (Math.abs(values[i]) === bestMag) axes.push(i);
+  }
+  return { axes, mag: bestMag };
+}
+
+function bucketOf(relPath: string): { bucket: string; bucketInt: number | null } {
+  const parts = relPath.split("/");
+  const top = parts[0];
+  const m = top.match(/^0x([0-9A-Fa-f])$/);
+  if (!m) return { bucket: top, bucketInt: null };
+  return { bucket: m[1].toUpperCase(), bucketInt: parseInt(m[1], 16) };
+}
+
+async function scanHexFiles(root: string): Promise<string[]> {
+  const out: string[] = [];
+  for await (const entry of Deno.readDir(root)) {
+    if (!entry.isDirectory) continue;
+    if (!entry.name.match(/^0x[0-9A-Fa-f]$/)) continue;
+    const sub = await scanRecursive(join(root, entry.name));
+    for (const p of sub) out.push(relative(root, p));
+  }
+  return out.sort();
+}
+
+async function scanRecursive(dir: string): Promise<string[]> {
+  const out: string[] = [];
+  try {
+    for await (const entry of Deno.readDir(dir)) {
+      const p = join(dir, entry.name);
+      if (entry.isFile && (entry.name.endsWith(".ts") || entry.name.endsWith(".sh"))) {
+        out.push(p);
+      } else if (entry.isDirectory && entry.name.match(/^[0-9A-Fa-f]$/)) {
+        const sub = await scanRecursive(p);
+        out.push(...sub);
+      }
+    }
+  } catch { /* skip unreadable */ }
+  return out;
+}
+
+async function inspectFile(absPath: string, relPath: string): Promise<FileReport> {
+  const { bucket, bucketInt } = bucketOf(relPath);
+  let text: string;
+  try {
+    text = await Deno.readTextFile(absPath);
+  } catch {
+    return {
+      path: relPath, bucket, signature: null, raw: null,
+      strongest_axes: [], strongest_axes_names: [], strongest_value: null,
+      bucket_int: bucketInt, match: "no_dipole", note: "unreadable",
+    };
+  }
+  const head = text.split("\n").slice(0, 25).join("\n");
+  const { values, raw } = parseHexDipole(head);
+
+  if (!raw) {
+    return {
+      path: relPath, bucket, signature: null, raw: null,
+      strongest_axes: [], strongest_axes_names: [], strongest_value: null,
+      bucket_int: bucketInt, match: "no_dipole", note: "no hex_dipole field",
+    };
+  }
+  if (!values) {
+    return {
+      path: relPath, bucket, signature: null, raw,
+      strongest_axes: [], strongest_axes_names: [], strongest_value: null,
+      bucket_int: bucketInt, match: "malformed", note: "could not parse 8 i8 bytes",
+    };
+  }
+
+  const allZero = values.every((v) => v === 0);
+  if (allZero) {
+    return {
+      path: relPath, bucket, signature: values, raw,
+      strongest_axes: [], strongest_axes_names: [], strongest_value: 0,
+      bucket_int: bucketInt, match: "no_dipole", note: "neutral signature (all zero)",
+    };
+  }
+
+  const { axes, mag } = strongestAxes(values);
+  const axisNames = axes.map((a) => DIPOLE_AXES[a]);
+
+  if (bucketInt === null) {
+    return {
+      path: relPath, bucket, signature: values, raw,
+      strongest_axes: axes, strongest_axes_names: axisNames, strongest_value: mag,
+      bucket_int: null, match: "malformed", note: "bucket not a hex digit",
+    };
+  }
+
+  const bucketAxis = bucketInt % 8; // hex 8..F wrap into pair axes 0..7
+  const axisMatch = axes.includes(bucketAxis);
+  // sign check uses value on the matching axis (if any)
+  const matchedValue = axisMatch ? values[bucketAxis] : null;
+  const isNegativePole = bucketInt >= 8;
+  const signOpposed = matchedValue !== null &&
+    ((isNegativePole && matchedValue > 0) || (!isNegativePole && matchedValue < 0));
+
+  let m: FileReport["match"];
+  let note: string;
+  if (axisMatch && !signOpposed) {
+    note = axes.length === 1
+      ? `axis ${bucketAxis} matches bucket ${bucket}`
+      : `axis ${bucketAxis} among tied strongest [${axes.join(",")}] matches bucket ${bucket}`;
+    m = "match";
+  } else if (axisMatch && signOpposed) {
+    note = `axis ${bucketAxis} matches bucket ${bucket} via pair (sign-opposed pole)`;
+    m = "match";
+  } else {
+    note = `strongest axes [${axes.join(",")}] do not include bucket axis ${bucketAxis}`;
+    m = "mismatch";
+  }
+
+  return {
+    path: relPath, bucket, signature: values, raw,
+    strongest_axes: axes, strongest_axes_names: axisNames, strongest_value: mag,
+    bucket_int: bucketInt, match: m, note,
+  };
+}
+
+function renderReport(reports: FileReport[], opts: { quiet: boolean; mismatchOnly: boolean }): void {
+  const matches = reports.filter((r) => r.match === "match").length;
+  const mismatches = reports.filter((r) => r.match === "mismatch").length;
+  const noDipole = reports.filter((r) => r.match === "no_dipole").length;
+  const malformed = reports.filter((r) => r.match === "malformed").length;
+
+  if (!opts.quiet) {
+    console.log("path".padEnd(22) + "bucket  strongest axes (mag)            match");
+    console.log("-".repeat(78));
+    for (const r of reports) {
+      if (opts.mismatchOnly && r.match === "match") continue;
+      const icon = r.match === "match" ? "✓" : r.match === "mismatch" ? "✗" : "·";
+      const strongest = r.strongest_axes.length > 0
+        ? `[${r.strongest_axes.join(",")}] ${r.strongest_axes_names.join("/").slice(0, 22).padEnd(22)} ${(r.strongest_value ?? 0).toString().padStart(4)}`
+        : "—".padEnd(32);
+      console.log(
+        `${r.path.padEnd(22)} ${r.bucket.padEnd(7)}${strongest}  ${icon} ${r.match}`,
+      );
+    }
+    console.log("-".repeat(78));
+  }
+
+  console.log(
+    `total: ${reports.length}  match: ${matches}  mismatch: ${mismatches}  no_dipole: ${noDipole}  malformed: ${malformed}`,
+  );
+}
+
+async function main(): Promise<void> {
+  const args = new Set(Deno.args);
+  const quiet = args.has("--quiet");
+  const mismatchOnly = args.has("--mismatch-only");
+  const json = args.has("--json");
+
+  const files = await scanHexFiles(ROOT);
+  const reports: FileReport[] = [];
+  for (const rel of files) {
+    reports.push(await inspectFile(join(ROOT, rel), rel));
+  }
+
+  if (json) {
+    console.log(JSON.stringify({
+      type: "place_check",
+      total: reports.length,
+      summary: {
+        match: reports.filter((r) => r.match === "match").length,
+        mismatch: reports.filter((r) => r.match === "mismatch").length,
+        no_dipole: reports.filter((r) => r.match === "no_dipole").length,
+        malformed: reports.filter((r) => r.match === "malformed").length,
+      },
+      reports,
+    }, null, 2));
+  } else {
+    renderReport(reports, { quiet, mismatchOnly });
+  }
+
+  const mismatchCount = reports.filter((r) => r.match === "mismatch").length;
+  const malformedCount = reports.filter((r) => r.match === "malformed").length;
+  if (malformedCount > 0) Deno.exit(2);
+  if (mismatchCount > 0) Deno.exit(1);
+  Deno.exit(0);
+}
+
+if (import.meta.main) {
+  main().catch((e) => {
+    console.error(`place_check error: ${e.message}`);
+    Deno.exit(2);
+  });
+}

@@ -31,6 +31,9 @@
     "chord:init": "deno run --allow-net tools/chord_init.ts init",
     "chord:translate": "deno run --allow-net tools/chord_init.ts translate",
     "chord:parse": "deno run --allow-net tools/chord_init.ts parse",
+    "place:check": "deno run --allow-read tools/place_check.ts",
+    "place:check:mismatch": "deno run --allow-read tools/place_check.ts --mismatch-only",
+    "place:check:json": "deno run --allow-read tools/place_check.ts --json",
     "publish:candidates": "deno run -A tools/publish_candidates.ts",
     "publish:verify-candidates": "deno run -A tools/publish_verify_candidates.ts"
   }

@@ -63,3 +63,8 @@
 {"00":"07","01":"cross_substrate_verify","02":"type,position,action,mode,summary,substrates","03":"note,adapter_pattern,falsifier","04":"cross-substrate verification receipt from 0x5/C.ts"}
 {"00":"07","01":"error","02":"type,message","03":"position,available","04":"error receipt from dispatcher or executable"}
 {"00":"07","01":"help","02":"type,mode","03":"records,record","04":"help receipt from 0x0/0F.ts"}
+{"00":"05","01":"all","12":"0/03","11":"00 00 00 00 00 00 00 00","10":{"en":"all/every/all-of/map","uk":"все/всі/все-разом/мап"},"09":"foundation+trinity = map signal across all substrates"}
+{"00":"06","01":"trinity","02":"6/A","03":"deno run --allow-read 0x6/A.ts","04":".","05":"health check for trinity substrate"}
+{"00":"06","01":"omega","02":"6/A","03":"cargo check","04":"omega","05":"compile check (health placeholder)"}
+{"00":"06","01":"liquid","02":"6/A","03":"deno check 00_core/liquid_pipe.ts","04":"liquid","05":"type-check core (health placeholder)"}
+{"00":"06","01":"myc","02":"6/A","03":"deno task test","04":"myc","05":"deno task test (health placeholder)"}

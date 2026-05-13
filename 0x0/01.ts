@@ -164,7 +164,7 @@ async function fn_process_payload(raw: string, depth: number): Promise<number> {
 
   // render
   const isTty = Deno.stdout.isTerminal();
-  const forceHuman = payload?.type === "cross_substrate_verify" || payload?.type === "health" || payload?.type === "validation_error";
+  const forceHuman = payload?.type === "cross_substrate_verify" || payload?.type === "health" || payload?.type === "validation_error" || payload?.type === "all";
   if (isTty || forceHuman) {
     fn_render_human(payload);
   } else {
@@ -201,7 +201,7 @@ function fn_render_human(p: any): void {
     console.error(`# missing fields: ${(p.missing_fields ?? []).join(", ")}`);
     console.error(`# actual keys: ${(p.actual_keys ?? []).join(", ")}`);
     if (p.note) console.error(`# ${p.note}`);
-  } else if (t === "cross_substrate_verify") {
+  } else if (t === "cross_substrate_verify" || t === "all") {
     fn_render_cross_substrate_verify(p);
   } else if (t === "health") {
     fn_render_health(p);
@@ -214,7 +214,8 @@ function fn_render_human(p: any): void {
 function fn_render_cross_substrate_verify(p: any): void {
   const mode = p.mode ?? "quick";
   const summary = p.summary ?? {};
-  console.log(`# cross-verify @ ${p.position ?? "?"} (${mode} mode)`);
+  const label = p.type === "all" ? "all" : "cross-verify";
+  console.log(`# ${label} @ ${p.position ?? "?"} (${mode} mode)`);
   console.log("# " + "─".repeat(50));
   for (const s of p.substrates ?? []) {
     const icon = s.status === "passed" ? "✓" : s.status === "failed" ? "✗" : s.status === "timeout" ? "⏱" : "⊘";

@@ -71,3 +71,5 @@
 {"00":"07","01":"all","02":"type,position,action,summary,substrates","03":"mode,note,topology,falsifier","04":"map receipt from 0x0/03.ts (all primitive)"}
 {"00":"05","01":"each","12":"0/04","11":"00 00 00 00 00 00 00 00","10":{"en":"each/sequence/for/compose","uk":"кожен/послідовно/для/композиція"},"09":"foundation+cardinal = sequential composition primitive"}
 {"00":"05","01":"pipe","12":"0/05","11":"00 00 00 00 00 00 00 00","10":{"en":"pipe/flow/conditional-compose/chain","uk":"труба/потік/умовна-композиція/ланцюг"},"09":"foundation+action = conditional sequential composition with short-circuit"}
+{"00":"05","01":"try","12":"0/06","11":"00 00 00 00 00 00 00 00","10":{"en":"try/attempt/recover/fallback","uk":"спроба/відновлення/запасний"},"09":"foundation+serpent = attempt with graceful fallback"}
+{"00":"07","01":"try","02":"type,action,primary,fallback,used,overall,result","03":"resolved_primary,resolved_fallback,primary_error,note,topology","04":"try receipt from 0x0/06.ts"}

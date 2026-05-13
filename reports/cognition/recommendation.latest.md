@@ -1,7 +1,7 @@
 ---
 type: "CognitiveRecommendationDescriptor"
 version: "0.1"
-created_at: "2026-05-12T02:49:24.379Z"
+created_at: "2026-05-13T17:52:10.880Z"
 ---
 
 # Cognitive Development Recommendations
@@ -12,10 +12,10 @@ This report turns current repository state into a ranked development signal.
 
 | Repo | MD | L2 parseable | L4b verified | L6 recipe | L7 receipt | L8 public | Candidates | Dominant phase | Dirty |
 |---|---:|---:|---:|---:|---:|---:|---:|---|---:|
-| myc | 63 | 95.2% | 0.0% | 1.6% | 85.7% | 11.1% | 2 | receipt | 0 |
-| liquid | 282 | 6.7% | 0.0% | 60.3% | 1.1% | 0.0% | 0 | experiment | 2 |
-| omega | 296 | 83.1% | 0.0% | 0.0% | 5.7% | 0.0% | 0 | hypothesis | 1 |
-| trinity | 211 | 75.8% | 19.0% | 0.0% | 55.9% | 0.0% | 0 | receipt | 17 |
+| myc | 65 | 95.4% | 0.0% | 1.5% | 84.6% | 10.8% | 2 | receipt | 0 |
+| liquid | 281 | 6.4% | 0.0% | 60.1% | 1.1% | 0.0% | 0 | experiment | 1 |
+| omega | 296 | 83.1% | 0.0% | 0.0% | 5.7% | 0.0% | 0 | hypothesis | 0 |
+| trinity | 289 | 85.1% | 13.8% | 0.0% | 70.6% | 0.0% | 0 | receipt | 8 |
 
 ## Ranked Signal
 
@@ -39,7 +39,7 @@ This report turns current repository state into a ranked development signal.
 
 ### 3. liquid / identity-resolution
 
-- pressure: 0.603
+- pressure: 0.601
 - phase: experiment -> receipt
 - action: Turn FQDN Semantic DNS into a resolver fixture with hash-verified before/after examples.
 - rationale: Liquid has high recipe mass; the next gain is proving semantic alias resolution against immutable physical FQDNs.

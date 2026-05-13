@@ -1,7 +1,7 @@
 {
   "type": "CognitiveRecommendationDescriptor",
   "version": "0.1",
-  "timestamp": "2026-05-12T02:49:24.379Z",
+  "timestamp": "2026-05-13T17:52:10.880Z",
   "basis": {
     "scanner": "tools/scanner_core.ts",
     "contract": "contracts/COGNITIVE_RECOMMENDATION.v0.1.md",
@@ -10,15 +10,15 @@
   "signals": [
     {
       "repo": "myc",
-      "total": 63,
-      "L1_fqdn": 53,
-      "L2_parseable": 60,
+      "total": 65,
+      "L1_fqdn": 54,
+      "L2_parseable": 62,
       "L3_schema_valid": 17,
-      "L4a_hash_claimed": 9,
+      "L4a_hash_claimed": 10,
       "L4b_hash_verified": 0,
       "L5_graph_linked": 0,
       "L6_recipe": 1,
-      "L7_receipt_backed": 54,
+      "L7_receipt_backed": 55,
       "L8_published": 7,
       "public_candidate_rows": 2,
       "phases": {
@@ -26,8 +26,8 @@
         "hypothesis": 7,
         "proposal": 0,
         "experiment": 0,
-        "receipt": 54,
-        "formula": 2,
+        "receipt": 55,
+        "formula": 3,
         "crystal": 0,
         "compost": 0
       },
@@ -35,14 +35,14 @@
     },
     {
       "repo": "liquid",
-      "total": 282,
-      "L1_fqdn": 126,
-      "L2_parseable": 19,
-      "L3_schema_valid": 18,
-      "L4a_hash_claimed": 170,
+      "total": 281,
+      "L1_fqdn": 125,
+      "L2_parseable": 18,
+      "L3_schema_valid": 17,
+      "L4a_hash_claimed": 169,
       "L4b_hash_verified": 0,
-      "L5_graph_linked": 139,
-      "L6_recipe": 170,
+      "L5_graph_linked": 138,
+      "L6_recipe": 169,
       "L7_receipt_backed": 3,
       "L8_published": 0,
       "public_candidate_rows": 0,
@@ -50,15 +50,14 @@
         "raw-fantasy": 0,
         "hypothesis": 98,
         "proposal": 0,
-        "experiment": 167,
+        "experiment": 166,
         "receipt": 3,
         "formula": 14,
         "crystal": 0,
         "compost": 0
       },
       "dirtyLines": [
-        "M .gitignore",
-        " M tests/resolver_fixture.test.ts"
+        "D src/ontology/core/covenant.inhabitants.sys.myc.md"
       ]
     },
     {
@@ -84,51 +83,40 @@
         "crystal": 0,
         "compost": 0
       },
-      "dirtyLines": [
-        "M docs/human/LATENT_THREADS.md"
-      ]
+      "dirtyLines": []
     },
     {
       "repo": "trinity",
-      "total": 211,
-      "L1_fqdn": 72,
-      "L2_parseable": 160,
-      "L3_schema_valid": 16,
-      "L4a_hash_claimed": 69,
+      "total": 289,
+      "L1_fqdn": 75,
+      "L2_parseable": 246,
+      "L3_schema_valid": 24,
+      "L4a_hash_claimed": 117,
       "L4b_hash_verified": 40,
-      "L5_graph_linked": 0,
+      "L5_graph_linked": 3,
       "L6_recipe": 0,
-      "L7_receipt_backed": 118,
+      "L7_receipt_backed": 204,
       "L8_published": 0,
       "public_candidate_rows": 0,
       "phases": {
         "raw-fantasy": 3,
-        "hypothesis": 58,
+        "hypothesis": 48,
         "proposal": 4,
         "experiment": 0,
-        "receipt": 116,
-        "formula": 30,
+        "receipt": 202,
+        "formula": 32,
         "crystal": 0,
         "compost": 0
       },
       "dirtyLines": [
-        "M .gitignore",
-        " M deno.jsonc",
-        " m liquid",
-        " m omega",
-        " M reports/cognition/field.latest.json",
-        " M reports/cognition/field.latest.md",
-        " M reports/cognition/recommendation.latest.json",
-        " M reports/cognition/recommendation.latest.md",
-        " M reports/cognition/resolver_receipt.md",
-        " M tools/cognition_recommend.ts",
-        "?? jazz/chords/2026-05-12T023530Z-codex-ecosystem-next-mode-freeze-then-bridge.md",
-        "?? jazz/chords/20260512-023340-trinity-cognition-trinity-metacognition.md",
-        "?? reports/cognition/recommendation.receipt.json",
-        "?? reports/cognition/snapshot.2026-05-12T02:08:45.488Z.json",
-        "?? reports/cognition/snapshot.2026-05-12T02:33:21.060Z.json",
-        "?? reports/cognition/snapshot.2026-05-12T02:33:40.172Z.json",
-        "?? tools/cognition_recommend_receipt.ts"
+        "m liquid",
+        "?? jazz/chords/2026-05-13T163000Z-gemini-stance-glossary-driven-schema-over-shared-router.md",
+        "?? jazz/chords/2026-05-13T164500Z-gemini-riff-dispatcher-as-dumb-apply.md",
+        "?? jazz/chords/2026-05-13T165500Z-gemini-reflection-the-16-position-fractal-foundation.md",
+        "?? jazz/chords/2026-05-13T200000Z-kimi-autonomous-wave-2-health-update-placeholders-end-marker.md",
+        "?? jazz/chords/2026-05-13T203000Z-kimi-option-D-glossary-driven-schema-validation.md",
+        "?? jazz/chords/2026-05-13T204500Z-kimi-all-map-primitive-t-equals-apply.md",
+        "?? jazz/chords/2026-05-13T210000Z-kimi-fractal-nesting-dynamic-health.md"
       ]
     }
   ],
@@ -170,7 +158,7 @@
       "vector": "identity-resolution",
       "phase_from": "experiment",
       "phase_to": "receipt",
-      "pressure": 0.6028368794326241,
+      "pressure": 0.6014234875444839,
       "action": "Turn FQDN Semantic DNS into a resolver fixture with hash-verified before/after examples.",
       "rationale": "Liquid has high recipe mass; the next gain is proving semantic alias resolution against immutable physical FQDNs.",
       "expected_receipt": "A deterministic resolver fixture that maps semantic FQDN input to physical h.* output and verifies the hash.",

@@ -1,0 +1,76 @@
+{
+  "type": "SystemSnapshotDescriptor",
+  "timestamp": "2026-05-13T17:52:52.839Z",
+  "global": {
+    "total_md": 931,
+    "L1_fqdn": 255,
+    "L2_parseable": 572,
+    "L4a_hash_claimed": 371,
+    "L4b_hash_verified": 40,
+    "L6_recipe": 170,
+    "thought_phases": {
+      "raw-fantasy": 3,
+      "hypothesis": 371,
+      "proposal": 4,
+      "experiment": 166,
+      "receipt": 277,
+      "formula": 110,
+      "crystal": 0,
+      "compost": 0
+    }
+  },
+  "repos": {
+    "myc": {
+      "total": 65,
+      "thought_phases": {
+        "raw-fantasy": 0,
+        "hypothesis": 7,
+        "proposal": 0,
+        "experiment": 0,
+        "receipt": 55,
+        "formula": 3,
+        "crystal": 0,
+        "compost": 0
+      }
+    },
+    "liquid": {
+      "total": 281,
+      "thought_phases": {
+        "raw-fantasy": 0,
+        "hypothesis": 98,
+        "proposal": 0,
+        "experiment": 166,
+        "receipt": 3,
+        "formula": 14,
+        "crystal": 0,
+        "compost": 0
+      }
+    },
+    "omega": {
+      "total": 296,
+      "thought_phases": {
+        "raw-fantasy": 0,
+        "hypothesis": 218,
+        "proposal": 0,
+        "experiment": 0,
+        "receipt": 17,
+        "formula": 61,
+        "crystal": 0,
+        "compost": 0
+      }
+    },
+    "trinity": {
+      "total": 289,
+      "thought_phases": {
+        "raw-fantasy": 3,
+        "hypothesis": 48,
+        "proposal": 4,
+        "experiment": 0,
+        "receipt": 202,
+        "formula": 32,
+        "crystal": 0,
+        "compost": 0
+      }
+    }
+  }
+}

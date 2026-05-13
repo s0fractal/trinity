@@ -1,3 +1,10 @@
+---
+type: "ContractDescriptor"
+version: "0.1"
+title: "Perception → Action → Retrospection thinking loop"
+status: "active"
+---
+
 # PAR_LOOP.v0.1
 
 PAR means:

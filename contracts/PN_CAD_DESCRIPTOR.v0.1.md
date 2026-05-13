@@ -1,3 +1,10 @@
+---
+type: "ContractDescriptor"
+version: "0.1"
+title: "PN-CAD Descriptor — liquid fact publication envelope for myc"
+status: "active"
+---
+
 # PN_CAD_DESCRIPTOR.v0.1
 
 `PN_CAD_DESCRIPTOR` is the publication envelope for a `liquid` PN-CAD fact that

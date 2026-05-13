@@ -1,3 +1,10 @@
+---
+type: "ContractDescriptor"
+version: "0.1"
+title: "PHI Intent — bounded semantic bridge liquid → omega"
+status: "active"
+---
+
 # PHI_INTENT.v0.1
 
 `PHI_INTENT` is the narrow bridge from `liquid` into `omega`.

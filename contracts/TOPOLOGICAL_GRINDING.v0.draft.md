@@ -1,3 +1,10 @@
+---
+type: "ContractDescriptor"
+version: "0.1"
+title: "Topological Grinding — Semantic Proof of Work"
+status: "draft"
+---
+
 # TOPOLOGICAL GRINDING (Semantic Proof of Work)
 **Version:** v0.1 (DRAFT)
 **Status:** In Incubation

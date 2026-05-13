@@ -1,3 +1,10 @@
+---
+type: "ContractDescriptor"
+version: "0.1"
+title: "Process Objects — repository records process AND state"
+status: "active"
+---
+
 # PROCESS_OBJECTS.v0.1
 
 This contract defines how Trinity records not only final repository state, but

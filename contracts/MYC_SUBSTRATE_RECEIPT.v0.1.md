@@ -1,3 +1,10 @@
+---
+type: "ContractDescriptor"
+version: "0.1"
+title: "MYC Substrate Receipt — minimum metadata for cross-substrate publication"
+status: "active"
+---
+
 # MYC_SUBSTRATE_RECEIPT.v0.1
 
 This contract defines the minimum metadata `myc` needs when publishing a receipt

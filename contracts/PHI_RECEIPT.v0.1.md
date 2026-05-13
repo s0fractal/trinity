@@ -1,3 +1,10 @@
+---
+type: "ContractDescriptor"
+version: "0.1"
+title: "PHI Receipt — deterministic omega → myc response"
+status: "active"
+---
+
 # PHI_RECEIPT.v0.1
 
 `PHI_RECEIPT` is the deterministic response from `omega` to a `PHI_INTENT`.

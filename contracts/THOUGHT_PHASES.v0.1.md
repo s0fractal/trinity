@@ -1,3 +1,10 @@
+---
+type: "ContractDescriptor"
+version: "0.1"
+title: "Thought Phases — eight-phase wind rose of repository cognition"
+status: "active"
+---
+
 # THOUGHT_PHASES.v0.1
 
 This contract defines an eight-phase model for repository thought.

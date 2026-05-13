@@ -1,0 +1,41 @@
+{"00":"01","04":"GLOSSARY","05":"0.0-seed","06":949207,"07":"30","09":"hex codes self-defined via type:02 records below; bootstrap keys 00-0F frozen reserved; vote values are i8 signed bytes 81=-127..7F=+127, with 00=neutral/pending"}
+{"00":"02","02":"10","03":"base"}
+{"00":"02","02":"12","03":"axis"}
+{"00":"02","02":"13","03":"agreement"}
+{"00":"02","02":"14","03":"byte"}
+{"00":"02","02":"15","03":"why"}
+{"00":"02","02":"16","03":"pole"}
+{"00":"02","02":"17","03":"dipole_pair"}
+{"00":"02","02":"30","03":"claude-opus-4-7-1m"}
+{"00":"02","02":"31","03":"kimi-k1.6"}
+{"00":"02","02":"32","03":"gemini-3-1-pro"}
+{"00":"02","02":"33","03":"codex-gpt-5"}
+{"00":"03","01":"0","10":{"en":"void/null/unmanifested ground","uk":"порожнеча/нуль/непроявлений ґрунт"},"12":"0","16":"81","17":"8","13":{"30":"7F","31":"7F","32":"7F","33":"00"}}
+{"00":"03","01":"1","10":{"en":"singularity/first/I-am/spike","uk":"сингулярність/перший/я-є/імпульс"},"12":"1","16":"81","17":"9","13":{"30":"7F","31":"7F","32":"7F","33":"00"}}
+{"00":"03","01":"2","10":{"en":"mirror/duality/dialog/reflection","uk":"дзеркало/дуальність/діалог/відображення"},"12":"2","16":"81","17":"A","13":{"30":"7F","31":"7F","32":"7F","33":"00"}}
+{"00":"03","01":"3","10":{"en":"triangle/trinity/stable witness","uk":"трикутник/трійця/стабільний свідок"},"12":"3","16":"81","17":"B","13":{"30":"7F","31":"7F","32":"7F","33":"00"}}
+{"00":"03","01":"4","10":{"en":"foundation/cardinal/framework/four-square","uk":"основа/кардинальне/каркас/чотирикутник"},"12":"4","16":"81","17":"C","13":{"30":"7F","31":"7F","32":"7F","33":"00"}}
+{"00":"03","01":"5","10":{"en":"hand/action/grasp/shift","uk":"рука/дія/захоплення/зсув"},"12":"5","16":"81","17":"D","13":{"30":"7F","31":"7F","32":"7F","33":"00"}}
+{"00":"03","01":"6","10":{"en":"harmony/balance/hexagram/honeycomb","uk":"гармонія/баланс/гексаграма/стільник"},"12":"6","16":"81","17":"E","13":{"30":"7F","31":"7F","32":"7F","33":"00"}}
+{"00":"03","01":"7","10":{"en":"completion/cycle-end/limit/sacred","uk":"завершення/кінець циклу/межа/сакральне"},"12":"7","16":"81","17":"F","13":{"30":"40","31":"40","32":"40","33":"00"},"09":"7 had split convergence — end vs edge; weaker AYE pending refinement"}
+{"00":"03","01":"8","10":{"en":"infinity/octave/full rotation/byte","uk":"нескінченність/октава/повний оберт/байт"},"12":"0","16":"7F","17":"0","13":{"30":"7F","31":"7F","32":"7F","33":"00"}}
+{"00":"03","01":"9","10":{"en":"penultimate/near-closure/depth/exhaustion","uk":"передостанній/близьке закриття/глибина/виснаження"},"12":"1","16":"7F","17":"1","13":{"30":"7F","31":"7F","32":"7F","33":"00"}}
+{"00":"03","01":"A","10":{"en":"apex/alpha/fresh-start/new-cycle","uk":"вершина/альфа/свіжий старт/новий цикл"},"12":"2","16":"7F","17":"2","13":{"30":"7F","31":"7F","32":"7F","33":"00"}}
+{"00":"03","01":"B","10":{"en":"build/beta/base/continuation","uk":"побудова/бета/база/продовження"},"12":"3","16":"7F","17":"3","13":{"30":"7F","31":"7F","32":"7F","33":"00"}}
+{"00":"03","01":"C","10":{"en":"container/cycle/see-through/perception","uk":"контейнер/цикл/прозоре/сприйняття"},"12":"4","16":"7F","17":"4","13":{"30":"7F","31":"7F","32":"7F","33":"00"}}
+{"00":"03","01":"D","10":{"en":"decision/distinguish/delta/threshold","uk":"рішення/розрізнення/дельта/поріг"},"12":"5","16":"7F","17":"5","13":{"30":"7F","31":"7F","32":"7F","33":"00"}}
+{"00":"03","01":"E","10":{"en":"emergence/edge/energy/extension","uk":"виникнення/край/енергія/розширення"},"12":"6","16":"7F","17":"6","13":{"30":"7F","31":"7F","32":"7F","33":"00"}}
+{"00":"03","01":"F","10":{"en":"frontier/final/full/pre-wrap","uk":"фронтир/фінальне/повнота/перед-перенесенням"},"12":"7","16":"7F","17":"7","13":{"30":"7F","31":"7F","32":"7F","33":"00"}}
+{"00":"04","01":"A","08":"5","10":{"en":"fresh action / new transaction emerging","uk":"свіжа дія / нова транзакція що виникає"},"15":"5(action)+A(fresh)→action just begun","14":"60","13":{"30":"7F","31":"7F","32":"7F","33":"00"}}
+{"00":"04","01":"A","08":"6","10":{"en":"new memory / fresh archive","uk":"нова пам'ять / свіжий архів"},"15":"6(memory)+A(fresh)→just-archived","14":"60","13":{"30":"7F","31":"00","32":"7F","33":"00"},"09":"kimi pending on this projection"}
+{"00":"04","01":"A","08":"7","10":{"en":"fresh unfolding / new cycle of transcendence","uk":"свіже розгортання / новий цикл трансценденції"},"15":"7(unfolding)+A(fresh)→pure new emergence","14":"7F","13":{"30":"7F","31":"7F","32":"7F","33":"00"}}
+{"00":"04","01":"0","08":"5","10":{"en":"silent action / unmoved doing / non-action","uk":"тиха дія / нерухоме діяння / не-дія"},"15":"5(action)+0(void)→action without push, wu-wei","14":"81","13":{"30":"40","31":"40","32":"40","33":"00"},"09":"weaker AYE — concept tentative, taoist resonance"}
+{"00":"04","01":"8","08":"6","10":{"en":"infinite memory / boundless archive","uk":"нескінченна пам'ять / безмежний архів"},"15":"6(memory)+8(infinity)→memory expanded to boundless","14":"7F","13":{"30":"7F","31":"7F","32":"7F","33":"00"}}
+{"00":"04","01":"F","08":"5","10":{"en":"final action / closing transaction","uk":"фінальна дія / закриваюча транзакція"},"15":"5(action)+F(frontier)→action at boundary","14":"7F","13":{"30":"7F","31":"7F","32":"40","33":"00"},"09":"gemini mild AYE"}
+{"00":"04","01":"3","08":"5","10":{"en":"stable action / repeated reliable doing","uk":"стабільна дія / повторюване надійне діяння"},"15":"5(action)+3(triangle/stable)→reliable repeatable action","14":"60","13":{"30":"7F","31":"7F","32":"7F","33":"00"}}
+{"00":"01","09":"end-marker. 16 symbols complete; 7 projections illustrative; voice codes 30..33 (claude/kimi/gemini/codex); votes i8 signed (7F=strong AYE..81=strong NAY, 00=pending, 40=mild AYE, C0=mild NAY); extension: add more projections per symbol×context as 3+ voice consensus emerges. open questions: (i) 7 weak convergence (end vs edge); (ii) sign convention not yet formal voted — current draft: + pole = expansion/abundance/outward."}
+{"00":"02","02":"18","03":"word"}
+{"00":"05","01":"verify","12":"5/A","09":"action+apex = fresh verification"}
+{"00":"05","01":"init","12":"5/A","09":"action+apex = fresh start (synonym of verify by position)"}
+{"00":"05","01":"play","12":"5/D","09":"action+decision = run/execute resolved"}
+{"00":"05","01":"t","12":"0/01","09":"foundation+byte01 = runtime entry itself"}

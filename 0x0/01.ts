@@ -214,10 +214,7 @@ function fn_render_human(p: any): void {
   if (t === "scalar" || t === "block") {
     console.log(String(p.value));
   } else if (t === "status") {
-    console.log(`# ${p.action ?? "?"} @ ${p.position ?? "?"}`);
-    if (p.args && p.args.length) console.log(`# args: ${p.args.join(" ")}`);
-    if (p.note) console.log(`# ${p.note}`);
-    if (p.synonyms) console.log(`# synonyms: ${p.synonyms.join(", ")}`);
+    fn_render_status(p);
   } else if (t === "help") {
     fn_render_help(p);
   } else if (t === "error") {
@@ -232,6 +229,24 @@ function fn_render_human(p: any): void {
     fn_render_cross_substrate_verify(p);
   } else if (t === "health") {
     fn_render_health(p);
+  } else if (t === "each") {
+    fn_render_each(p);
+  } else if (t === "pipe") {
+    fn_render_pipe(p);
+  } else if (t === "cond") {
+    fn_render_cond(p);
+  } else if (t === "try") {
+    fn_render_try(p);
+  } else if (t === "join") {
+    fn_render_join(p);
+  } else if (t === "repeat") {
+    fn_render_repeat(p);
+  } else if (t === "tap") {
+    fn_render_tap(p);
+  } else if (t === "until") {
+    fn_render_until(p);
+  } else if (t === "any") {
+    fn_render_any(p);
   } else {
     // fallback: pretty JSON
     console.log(JSON.stringify(p, null, 2));
@@ -297,6 +312,91 @@ function fn_render_help(p: any): void {
       }
     }
   }
+}
+
+function fn_render_status(p: any): void {
+  // New composite format (0x2/E.ts) vs old simple format
+  if (p.summary?.overall) {
+    const s = p.summary;
+    const icon = s.overall === "well" ? "✓" : s.overall === "drifting" ? "⚠" : s.overall === "degraded" ? "⚠" : "✗";
+    console.log(`# status @ ${p.position ?? "?"} — ${icon} ${s.overall ?? "?"}`);
+    if (p.note) console.log(`# ${p.note}`);
+    console.log("# " + "─".repeat(40));
+    if (s.health) {
+      const hi = s.health.overall === "healthy" ? "✓" : s.health.overall === "degraded" ? "⚠" : "✗";
+      console.log(`# health:   ${hi} ${s.health.overall}  (${s.health.ok ?? 0} ok, ${s.health.fail ?? 0} fail)`);
+    }
+    if (s.audit) {
+      const ai = s.audit.match > 0 && s.audit.mismatch === 0 ? "✓" : "⚠";
+      console.log(`# audit:    ${ai} ${s.audit.match}/${s.audit.total} match`);
+    }
+  } else {
+    console.log(`# ${p.action ?? "?"} @ ${p.position ?? "?"}`);
+    if (p.args && p.args.length) console.log(`# args: ${p.args.join(" ")}`);
+    if (p.note) console.log(`# ${p.note}`);
+    if (p.synonyms) console.log(`# synonyms: ${p.synonyms.join(", ")}`);
+  }
+}
+
+function fn_render_pipe(p: any): void {
+  const icon = p.overall === "passed" ? "✓" : "✗";
+  const label = p.stoppedAt ? `stopped at ${p.stoppedAt}` : `${p.steps?.length ?? 0} steps passed`;
+  console.log(`# pipe @ ${p.position ?? "0/05"} — ${icon} ${p.overall ?? "?"} (${label})`);
+  if (p.note) console.log(`# ${p.note}`);
+}
+
+function fn_render_each(p: any): void {
+  const icon = p.overall === "passed" ? "✓" : "✗";
+  console.log(`# each @ ${p.position ?? "0/04"} — ${icon} ${p.overall ?? "?"}  (${p.count ?? 0} steps, ${p.errors ?? 0} errors)`);
+  if (p.note) console.log(`# ${p.note}`);
+}
+
+function fn_render_cond(p: any): void {
+  const icon = p.overall === "passed" ? "✓" : "✗";
+  const branch = p.taken ?? "?";
+  console.log(`# cond @ ${p.position ?? "0/07"} — ${icon} ${p.overall ?? "?"}  (took ${branch})`);
+  if (p.note) console.log(`# ${p.note}`);
+}
+
+function fn_render_try(p: any): void {
+  const icon = p.overall === "passed" ? "✓" : "✗";
+  const used = p.used ?? "?";
+  console.log(`# try @ ${p.position ?? "0/06"} — ${icon} ${p.overall ?? "?"}  (used: ${used})`);
+  if (p.note) console.log(`# ${p.note}`);
+}
+
+function fn_render_join(p: any): void {
+  const icon = p.overall === "passed" ? "✓" : "✗";
+  console.log(`# join @ ${p.position ?? "0/08"} — ${icon} ${p.overall ?? "?"}  (${p.count ?? 0} parallel, ${p.errors ?? 0} errors)`);
+  if (p.note) console.log(`# ${p.note}`);
+}
+
+function fn_render_repeat(p: any): void {
+  const icon = p.overall === "passed" ? "✓" : "✗";
+  const err = p.first_error_at !== null ? `first error at ${p.first_error_at}` : "all ok";
+  console.log(`# repeat @ ${p.position ?? "0/09"} — ${icon} ${p.overall ?? "?"}  (${p.requested_count ?? 0}×, ${err})`);
+  if (p.note) console.log(`# ${p.note}`);
+}
+
+function fn_render_tap(p: any): void {
+  const picon = p.primary_ok ? "✓" : "✗";
+  const sicon = p.side_ok ? "✓" : "✗";
+  console.log(`# tap @ ${p.position ?? "0/0A"} — primary ${picon}, side ${sicon}`);
+  if (p.note) console.log(`# ${p.note}`);
+}
+
+function fn_render_until(p: any): void {
+  const icon = p.overall === "passed" ? "✓" : "✗";
+  const at = p.success_at !== null ? `success at attempt ${(p.success_at as number) + 1}` : `failed after ${p.attempts ?? 0}`;
+  console.log(`# until @ ${p.position ?? "0/0B"} — ${icon} ${p.overall ?? "?"}  (${at})`);
+  if (p.note) console.log(`# ${p.note}`);
+}
+
+function fn_render_any(p: any): void {
+  const icon = p.overall === "passed" ? "✓" : "✗";
+  const first = p.first_success_at !== null ? `first success: ${p.steps?.[p.first_success_at] ?? "?"}` : "all failed";
+  console.log(`# any @ ${p.position ?? "0/0C"} — ${icon} ${p.overall ?? "?"}  (${first})`);
+  if (p.note) console.log(`# ${p.note}`);
 }
 
 async function fn_list(): Promise<void> {

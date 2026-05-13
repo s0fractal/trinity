@@ -39,35 +39,66 @@ interface SubstrateResult {
   status: "passed" | "failed" | "timeout" | "not_implemented";
 }
 
-function getSubstrates(deep: boolean): SubstrateDef[] {
-  return [
-    {
-      name: "trinity",
-      cwd: ".",
-      cmd: ["deno", "check", "0x0/01.ts", "0x5/0.ts", "0x5/A.ts", "0x5/C.ts"],
-      note: "Trinity substrate: type-check hex substrate files (deno test skipped — liquid/tests have pre-existing TS errors)",
-    },
-    {
-      name: "omega",
-      cwd: "omega",
-      cmd: deep ? ["cargo", "test"] : ["cargo", "check"],
-      note: deep
-        ? "Omega substrate: full test suite (286 tests, external trigger)"
-        : "Omega substrate: compile check only (use --deep for full tests)",
-    },
-    {
-      name: "liquid",
-      cwd: "liquid",
-      cmd: ["deno", "check", "00_core/liquid_pipe.ts", "00_core/phase_engine.ts", "00_core/hydrate.ts", "00_core/seed.ts"],
-      note: "Liquid substrate: type-check core files (hex→φ adapter pending; tests hang, audit has drift)",
-    },
-    {
-      name: "myc",
-      cwd: "myc",
-      cmd: ["deno", "task", "test"],
-      note: "MYC substrate: deno task test (42 tests, protocol audit + myc core)",
-    },
-  ];
+async function fn_load_substrate_mappings(position: string): Promise<SubstrateDef[] | null> {
+  try {
+    const text = await Deno.readTextFile("../0x0/00.ndjson");
+    const defs: SubstrateDef[] = [];
+    for (const line of text.trim().split("\n")) {
+      try {
+        const r = JSON.parse(line);
+        if (r["00"] === "06" && r["02"] === position) {
+          const cmd = r["03"] ? String(r["03"]).split(" ") : null;
+          defs.push({
+            name: r["01"],
+            cwd: r["04"] ?? ".",
+            cmd,
+            note: r["05"] ?? "",
+          });
+        }
+      } catch { /* skip bad lines */ }
+    }
+    return defs.length > 0 ? defs : null;
+  } catch {
+    return null;
+  }
+}
+
+const FALLBACK_SUBSTRATES: SubstrateDef[] = [
+  {
+    name: "trinity",
+    cwd: ".",
+    cmd: ["deno", "check", "0x0/01.ts", "0x5/0.ts", "0x5/A.ts", "0x5/C.ts"],
+    note: "Trinity substrate: type-check hex substrate files (deno test skipped — liquid/tests have pre-existing TS errors)",
+  },
+  {
+    name: "omega",
+    cwd: "omega",
+    cmd: ["cargo", "check"],
+    note: "Omega substrate: compile check only (use --deep for full tests)",
+  },
+  {
+    name: "liquid",
+    cwd: "liquid",
+    cmd: ["deno", "check", "00_core/liquid_pipe.ts", "00_core/phase_engine.ts", "00_core/hydrate.ts", "00_core/seed.ts"],
+    note: "Liquid substrate: type-check core files (hex→φ adapter pending; tests hang, audit has drift)",
+  },
+  {
+    name: "myc",
+    cwd: "myc",
+    cmd: ["deno", "task", "test"],
+    note: "MYC substrate: deno task test (42 tests, protocol audit + myc core)",
+  },
+];
+
+async function getSubstrates(deep: boolean, position: string): Promise<SubstrateDef[]> {
+  const fromGlossary = await fn_load_substrate_mappings(position);
+  const base = fromGlossary ?? FALLBACK_SUBSTRATES;
+  return base.map((d) => {
+    if (d.name === "omega" && deep) {
+      return { ...d, cmd: ["cargo", "test"], note: d.note + " (deep mode)" };
+    }
+    return d;
+  });
 }
 
 const TIMEOUT_MS = 60000;
@@ -149,7 +180,7 @@ if (import.meta.main) {
   const filterArgs = args.filter((a) => a !== "--deep");
   const filter = filterArgs[0];
 
-  const SUBSTRATES = getSubstrates(deep);
+  const SUBSTRATES = await getSubstrates(deep, "5/C");
   const targets = filter
     ? SUBSTRATES.filter((s) => s.name === filter)
     : SUBSTRATES;

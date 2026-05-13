@@ -170,10 +170,10 @@ async function fn_process_payload(raw: string, depth: number): Promise<number> {
     return 2; // non-zero: schema mismatch
   }
 
-  // render
-  const isTty = Deno.stdout.isTerminal();
-  const forceHuman = payload?.type === "cross_substrate_verify" || payload?.type === "health" || payload?.type === "validation_error" || payload?.type === "all";
-  if (isTty || forceHuman) {
+  // render — terminal gets human format, pipe gets raw JSON.
+  // Errors and validation_errors are still surfaced to stderr by their
+  // render path, so this only governs the stdout payload representation.
+  if (Deno.stdout.isTerminal()) {
     fn_render_human(payload);
   } else {
     fn_write_raw(JSON.stringify(payload));

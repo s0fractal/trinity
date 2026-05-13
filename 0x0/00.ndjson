@@ -43,3 +43,8 @@
 {"00":"05","01":"block","12":"5/0","11":"8E 00 00 00 00 59 00 00","10":{"en":"block/height/timestamp","uk":"блок/висота/мітка"},"09":"action+void = pure fetch"}
 {"00":"05","01":"update","12":"F/A","11":"00 00 59 00 00 00 00 59","10":{"en":"update/refresh/sync","uk":"оновити/освіжити/синхронізувати"},"09":"frontier+apex = push boundary (no executable yet)"}
 {"00":"05","01":"cross-verify","12":"5/C","11":"00 00 59 00 00 00 59 00","10":{"en":"cross-verify/verify-all/test-all","uk":"перехресна-перевірка/перевірити-все"},"09":"action+container = verify across all substrates via adapter pattern"}
+{"00":"02","02":"06","03":"substrate_mapping"}
+{"00":"06","01":"trinity","02":"5/C","03":"deno check 0x0/01.ts 0x5/0.ts 0x5/A.ts 0x5/C.ts","04":".","05":"type-check hex substrate files"}
+{"00":"06","01":"omega","02":"5/C","03":"cargo check","04":"omega","05":"compile check (quick); use --deep for cargo test"}
+{"00":"06","01":"liquid","02":"5/C","03":"deno check 00_core/liquid_pipe.ts 00_core/phase_engine.ts 00_core/hydrate.ts 00_core/seed.ts","04":"liquid","05":"type-check core files (hex→φ adapter pending)"}
+{"00":"06","01":"myc","02":"5/C","03":"deno task test","04":"myc","05":"deno task test (42 tests)"}

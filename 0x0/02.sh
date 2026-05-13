@@ -1,6 +1,7 @@
 #!/bin/bash
 # 0x0/02.sh — global shim for `t` command
 # position: 0/02 → foundation × byte02 (shim slot after glossary 00 and runtime 01)
+# hex_dipole: "00 00 00 00 00 00 59 00"
 # wraps deno invocation of substrate runtime (0x0/01.ts) with full permissions
 #
 # Resolves real path through symlinks so substrate root stays correct

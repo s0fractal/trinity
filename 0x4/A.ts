@@ -51,7 +51,6 @@ interface WordRecord {
   position: string;
   dipole: string;
   note: string;
-  form: "legacy" | "topological";
 }
 
 interface SubstrateMapping {
@@ -78,7 +77,6 @@ interface Capability {
   dipole: string;
   dipole_decoded: Array<{ axis: number; name: string; value: number }>;
   note: string;
-  form: "legacy" | "topological";
   substrate_implementations: SubstrateMapping[];
   receipt_schema: SchemaRecord | null;
   legacy_tasks: string[];
@@ -104,7 +102,7 @@ async function loadGlossary(): Promise<{
       const r = JSON.parse(line);
       const kind = r["00"];
       if (kind === "5") {
-        // Topological form
+        // Word record: handles in 02 (mirror), position in 04 (foundation)
         if (Array.isArray(r["02"]) && typeof r["04"] === "string") {
           const handles = (r["02"] as string[]).filter((s) => typeof s === "string");
           words.push({
@@ -113,32 +111,11 @@ async function loadGlossary(): Promise<{
             position: r["04"],
             dipole: r["11"] ?? "00 00 00 00 00 00 00 00",
             note: r["09"] ?? "",
-            form: "topological",
           });
         }
-      } else if (kind === "05") {
-        // Legacy form: 01=canonical, 10=translations, 12=position
-        const handles: string[] = [];
-        if (typeof r["01"] === "string") handles.push(r["01"]);
-        const tr = (r["10"] ?? {}) as Record<string, string>;
-        for (const lang of Object.keys(tr)) {
-          for (const syn of String(tr[lang]).split("/")) {
-            const s = syn.trim();
-            if (s) handles.push(s);
-          }
-        }
-        words.push({
-          primary: r["01"] ?? "",
-          handles,
-          position: r["12"] ?? "",
-          dipole: r["11"] ?? "00 00 00 00 00 00 00 00",
-          note: r["09"] ?? "",
-          form: "legacy",
-        });
       } else if (kind === "6") {
-        // Topological substrate mapping:
-        //   02 = handles (multilingual substrate name array)
-        //   03 = position served, 04 = cwd, 05 = command, 09 = note
+        // Substrate mapping: handles in 02 (multilingual substrate name),
+        // position served in 03, cwd in 04, command in 05, note in 09
         if (Array.isArray(r["02"]) && typeof r["03"] === "string") {
           const handles = (r["02"] as string[]).filter((s) => typeof s === "string");
           mappings.push({
@@ -149,15 +126,6 @@ async function loadGlossary(): Promise<{
             note: r["09"] ?? "",
           });
         }
-      } else if (kind === "06") {
-        // Legacy form
-        mappings.push({
-          substrate: r["01"],
-          position: r["02"],
-          command: r["03"],
-          cwd: r["04"],
-          note: r["05"] ?? "",
-        });
       } else if (kind === "07") {
         const required = String(r["02"] ?? "").split(",").map((s) => s.trim()).filter(Boolean);
         const optional = String(r["03"] ?? "").split(",").map((s) => s.trim()).filter(Boolean);
@@ -232,7 +200,6 @@ async function buildCapability(
     dipole: w.dipole,
     dipole_decoded: parseDipole(w.dipole),
     note: w.note,
-    form: w.form,
     substrate_implementations: substrates,
     receipt_schema: schema,
     legacy_tasks: tasks,
@@ -254,25 +221,23 @@ function renderTable(caps: Capability[]): void {
   console.log("# " + "─".repeat(82));
   console.log(`# ${caps.length} words known to substrate`);
   console.log("");
-  console.log("# primary".padEnd(18) + "pos".padEnd(9) + "primary axis".padEnd(28) + "form  subs  schema");
-  console.log("# " + "─".repeat(82));
+  console.log("# primary".padEnd(18) + "pos".padEnd(9) + "primary axis".padEnd(28) + "subs  schema");
+  console.log("# " + "─".repeat(76));
   for (const c of caps) {
     const strong = strongestAxis(c.dipole_decoded);
     const axisStr = strong
       ? `axis ${strong.axis} ${strong.name}`.padEnd(28)
       : "—".padEnd(28);
     const exists = c.exists ? "✓" : "✗";
-    const form = c.form === "topological" ? "T" : "L";
     const subs = c.substrate_implementations.length.toString().padStart(2);
     const schema = c.receipt_schema ? "✓" : "·";
-    console.log(`# ${exists} ${c.primary.padEnd(16)} ${c.position.padEnd(7)} ${axisStr}  ${form}    ${subs}    ${schema}`);
+    console.log(`# ${exists} ${c.primary.padEnd(16)} ${c.position.padEnd(7)} ${axisStr}  ${subs}    ${schema}`);
   }
-  console.log("# " + "─".repeat(82));
-  console.log("# form: T=topological (kind:5, handles array), L=legacy (type:05)");
+  console.log("# " + "─".repeat(76));
 }
 
 function renderDetail(cap: Capability): void {
-  console.log(`# capability @ ${cap.primary} (${cap.position})  [${cap.form}]`);
+  console.log(`# capability @ ${cap.primary} (${cap.position})`);
   console.log("# " + "─".repeat(60));
   console.log(`# path:        ${cap.path}`);
   console.log(`# exists:      ${cap.exists ? "yes" : "no"}`);

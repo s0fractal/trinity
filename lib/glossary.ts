@@ -48,75 +48,40 @@ async function* readGlossaryLines(): AsyncGenerator<any, void, unknown> {
 
 /** Resolve any handle (in any language) to its hex position.
  *  Two-pass: primary-handle match first, then any equal handle.
- *  Accepts both kind:5 (topological) and kind:05 (legacy) records. */
+ *  Reads kind:5 records (topological form). */
 export async function resolveWord(word: string): Promise<string | null> {
-  // Two-pass: collect all matches, then prefer primary
   const primaryMatches: string[] = [];
   const anyMatches: string[] = [];
   for await (const r of readGlossaryLines()) {
-    const kind = r["00"];
-    if (kind === "5") {
-      // Topological form
-      const handles = Array.isArray(r["02"]) ? r["02"] : [];
-      const position = r["04"];
-      if (typeof position !== "string") continue;
-      if (handles[0] === word) primaryMatches.push(position);
-      if (handles.includes(word)) anyMatches.push(position);
-    } else if (kind === "05") {
-      // Legacy form
-      const position = r["12"];
-      if (typeof position !== "string") continue;
-      if (r["01"] === word) primaryMatches.push(position);
-      const tr = (r["10"] ?? {}) as Record<string, string>;
-      const synonyms: string[] = [r["01"] as string];
-      for (const lang of Object.keys(tr)) {
-        for (const syn of String(tr[lang]).split("/")) {
-          synonyms.push(syn.trim());
-        }
-      }
-      if (synonyms.includes(word)) anyMatches.push(position);
-    }
+    if (r["00"] !== "5") continue;
+    const handles = Array.isArray(r["02"]) ? r["02"] : [];
+    const position = r["04"];
+    if (typeof position !== "string") continue;
+    if (handles[0] === word) primaryMatches.push(position);
+    if (handles.includes(word)) anyMatches.push(position);
   }
   if (primaryMatches.length > 0) return primaryMatches[0];
   if (anyMatches.length > 0) return anyMatches[0];
   return null;
 }
 
-/** Load all substrate mappings for a given position.
- *  Accepts both kind:6 (topological) and kind:06 (legacy) records. */
+/** Load substrate mappings for a given position.
+ *  Reads kind:6 records (topological form).
+ *  Slot semantics: 02=handles, 03=position served, 04=cwd, 05=command, 09=note. */
 export async function loadSubstrateMappings(position: string): Promise<SubstrateMapping[]> {
   const defs: SubstrateMapping[] = [];
   for await (const r of readGlossaryLines()) {
-    const kind = r["00"];
-    if (kind === "6") {
-      // Topological form:
-      //   02 = handles (multilingual substrate name array)
-      //   03 = position this mapping serves
-      //   04 = cwd
-      //   05 = command
-      //   09 = note
-      if (r["03"] !== position) continue;
-      const handles = Array.isArray(r["02"]) ? r["02"] : [];
-      const cmd = r["05"] ? String(r["05"]).split(" ") : null;
-      defs.push({
-        name: String(handles[0] ?? ""),
-        position: String(r["03"]),
-        cwd: String(r["04"] ?? "."),
-        cmd,
-        note: String(r["09"] ?? ""),
-      });
-    } else if (kind === "06") {
-      // Legacy form: 01=substrate, 02=position, 03=command, 04=cwd, 05=note
-      if (r["02"] !== position) continue;
-      const cmd = r["03"] ? String(r["03"]).split(" ") : null;
-      defs.push({
-        name: String(r["01"]),
-        position: String(r["02"]),
-        cwd: String(r["04"] ?? "."),
-        cmd,
-        note: String(r["05"] ?? ""),
-      });
-    }
+    if (r["00"] !== "6") continue;
+    if (r["03"] !== position) continue;
+    const handles = Array.isArray(r["02"]) ? r["02"] : [];
+    const cmd = r["05"] ? String(r["05"]).split(" ") : null;
+    defs.push({
+      name: String(handles[0] ?? ""),
+      position: String(r["03"]),
+      cwd: String(r["04"] ?? "."),
+      cmd,
+      note: String(r["09"] ?? ""),
+    });
   }
   return defs;
 }

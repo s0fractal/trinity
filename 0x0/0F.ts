@@ -24,20 +24,6 @@ interface WordRec {
   handles: string[];
   position: string;
   note: string;
-  form: "legacy" | "topological";
-}
-
-function fn_collect_legacy_handles(r: Record<string, unknown>): string[] {
-  const out: string[] = [];
-  if (typeof r["01"] === "string") out.push(r["01"] as string);
-  const tr = (r["10"] ?? {}) as Record<string, string>;
-  for (const lang of Object.keys(tr)) {
-    for (const syn of String(tr[lang]).split("/")) {
-      const s = syn.trim();
-      if (s) out.push(s);
-    }
-  }
-  return out;
 }
 
 async function fn_load_all(): Promise<{ words: WordRec[]; symbols: Map<string, any> }> {
@@ -49,7 +35,6 @@ async function fn_load_all(): Promise<{ words: WordRec[]; symbols: Map<string, a
       const r = JSON.parse(line);
       const kind = r["00"];
       if (kind === "5") {
-        // Topological form
         if (Array.isArray(r["02"]) && typeof r["04"] === "string") {
           const handles = (r["02"] as string[]).filter((s) => typeof s === "string");
           words.push({
@@ -57,18 +42,8 @@ async function fn_load_all(): Promise<{ words: WordRec[]; symbols: Map<string, a
             handles,
             position: r["04"],
             note: (r["09"] as string) ?? "",
-            form: "topological",
           });
         }
-      } else if (kind === "05") {
-        // Legacy form
-        words.push({
-          primary: (r["01"] as string) ?? "",
-          handles: fn_collect_legacy_handles(r),
-          position: (r["12"] as string) ?? "",
-          note: (r["09"] as string) ?? "",
-          form: "legacy",
-        });
       } else if (kind === "03") {
         symbols.set(r["01"], r);
       }
@@ -117,7 +92,6 @@ if (import.meta.main) {
         primary: r.primary,
         position: r.position,
         handles_count: r.handles.length,
-        form: r.form,
         exists: await fn_exists(path),
       };
     }));
@@ -153,7 +127,6 @@ if (import.meta.main) {
         position: r.position,
         path,
         exists,
-        form: r.form,
         note: r.note,
       },
       decomposition,

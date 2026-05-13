@@ -38,55 +38,28 @@ interface WordRec {
   handles: string[];
   /** Hex position this entity materializes at. */
   position: string;
-  /** Form marker for diagnostic only: "legacy" (type:05) or
-   *  "topological" (kind:5 with multilingual handles in slot 02). */
-  form: "legacy" | "topological";
-}
-
-function fn_collect_legacy_handles(r: Record<string, unknown>): string[] {
-  const out: string[] = [];
-  if (typeof r["01"] === "string") out.push(r["01"] as string);
-  const tr = (r["10"] ?? {}) as Record<string, string>;
-  for (const lang of Object.keys(tr)) {
-    for (const syn of String(tr[lang]).split("/")) {
-      const s = syn.trim();
-      if (s) out.push(s);
-    }
-  }
-  return out;
 }
 
 async function fn_load_words(): Promise<WordRec[]> {
+  // Reads kind:5 records. Per architect 2026-05-14: 0xN/M is an
+  // interference pattern (M-in-context-N), and synonyms and translations
+  // are equal handles, not priority list.
+  //   00 (void)        kind marker "5"
+  //   02 (mirror)      handles array — multilingual equal projections
+  //   04 (foundation)  position — where this word materializes
   const text = await Deno.readTextFile(GLOSSARY_PATH);
   const out: WordRec[] = [];
   for (const line of text.trim().split("\n")) {
     try {
       const r = JSON.parse(line);
-      const kind = r["00"];
-      // Topological form: kind="5" (single hex digit, no leading zero),
-      // handles in slot 02 as array, position in slot 04 (foundation axis).
-      // Per architect 2026-05-14: M-in-context-N interference pattern;
-      // synonyms and translations are equal handles, not priority list.
-      if (kind === "5") {
-        if (Array.isArray(r["02"]) && typeof r["04"] === "string") {
-          const handles = (r["02"] as string[]).filter((s) => typeof s === "string");
-          out.push({
-            primary: handles[0] ?? "",
-            handles,
-            position: r["04"],
-            form: "topological",
-          });
-        }
-      } else if (kind === "05") {
-        // Legacy form: 01=canonical, 10=translations object, 12=position.
-        // Kept for backward compat; will migrate progressively.
-        out.push({
-          primary: (r["01"] as string) ?? "",
-          handles: fn_collect_legacy_handles(r),
-          position: (r["12"] as string) ?? "",
-          form: "legacy",
-        });
-      }
+      if (r["00"] !== "5") continue;
+      if (!Array.isArray(r["02"]) || typeof r["04"] !== "string") continue;
+      const handles = (r["02"] as string[]).filter((s) => typeof s === "string");
+      out.push({
+        primary: handles[0] ?? "",
+        handles,
+        position: r["04"],
+      });
     } catch { /* skip */ }
   }
   return out;
@@ -298,23 +271,20 @@ function fn_render_health(p: any): void {
 
 function fn_render_help(p: any): void {
   if (p.mode === "list") {
-    console.log("# substrate words (exists, position, primary handle, handles count, form):");
+    console.log("# substrate words (exists, position, primary handle, handles count):");
     for (const r of p.records ?? []) {
       const exists = r.exists ? "✓" : "✗";
-      const form = r.form === "topological" ? "T" : "L";
       console.log(
-        `  ${exists} ${r.position.padEnd(8)} ${r.primary.padEnd(14)} ${r.handles_count.toString().padStart(2)} handles  [${form}]`,
+        `  ${exists} ${r.position.padEnd(8)} ${r.primary.padEnd(14)} ${r.handles_count.toString().padStart(2)} handles`,
       );
     }
     console.log("\n# detail: t help <any-handle-any-language>");
-    console.log("# form: T=topological (kind:5, handles array), L=legacy (type:05, canonical+translations)");
   } else if (p.mode === "detail") {
     const r = p.record;
     console.log(`primary:   ${r.primary}`);
     if (p.matched && p.matched !== r.primary) console.log(`matched:   ${p.matched} (equal handle)`);
     console.log(`position:  ${r.position}`);
     console.log(`path:      ${r.path}`);
-    console.log(`form:      ${r.form}`);
     console.log(`status:    ${r.exists ? "✓ executable exists" : "✗ no executable"}`);
     if (Array.isArray(r.handles)) {
       console.log("\nhandles (equal, no priority):");
@@ -340,7 +310,6 @@ async function fn_list(): Promise<void> {
         primary: r.primary,
         position: r.position,
         handles_count: r.handles.length,
-        form: r.form,
         exists: await fn_exists(path),
       };
     })),

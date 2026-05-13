@@ -68,3 +68,4 @@
 {"00":"06","01":"omega","02":"6/A","03":"cargo check","04":"omega","05":"compile check (health placeholder)"}
 {"00":"06","01":"liquid","02":"6/A","03":"deno check 00_core/liquid_pipe.ts","04":"liquid","05":"type-check core (health placeholder)"}
 {"00":"06","01":"myc","02":"6/A","03":"deno task test","04":"myc","05":"deno task test (health placeholder)"}
+{"00":"07","01":"all","02":"type,position,action,summary,substrates","03":"mode,note,topology,falsifier","04":"map receipt from 0x0/03.ts (all primitive)"}

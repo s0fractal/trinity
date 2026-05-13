@@ -1,7 +1,13 @@
 #!/usr/bin/env -S deno run --allow-all
 // 0x0/05.ts — pipe / flow / conditional compose
 // position: 0/05 → foundation × hand/action
-// hex_dipole: "00 00 00 00 00 00 00 00"
+// hex_dipole: "00 00 00 66 00 33 33 40"
+//   triangle_build+0.80 (PRIMARY: chain composition)
+//   completion_frontier+0.50 (short-circuit termination)
+//   action_decision+0.40, harmony_emergence+0.40
+//   bucket 0/05: primary axis triangle (3), bucket 0 ← MISMATCH (projection)
+//                secondary '05' → axis 5 action, dipole +0.40 ← weak partial composite
+//   measured by claude-opus-4-7-1m, anchor block 949260, audit phase 1
 // lifecycle_phase: 0
 //
 // Primitive: conditional sequential composition with short-circuit.

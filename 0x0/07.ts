@@ -1,7 +1,14 @@
 #!/usr/bin/env -S deno run --allow-all
 // 0x0/07.ts — cond / branch / if-then-else
 // position: 0/07 → foundation × threshold/seven
-// hex_dipole: "00 00 00 00 00 00 00 00"
+// hex_dipole: "00 00 26 33 00 66 33 00"
+//   action_decision+0.80 (PRIMARY: cond IS the decision primitive)
+//   triangle_build+0.40 (branches into structure)
+//   harmony_emergence+0.40 (predicate evaluates), mirror_apex+0.30
+//   bucket 0/07: primary axis action (5), bucket 0 ← MISMATCH (projection)
+//                secondary '07' → axis 7 completion, dipole 0.00 ← does not rescue
+//                under composite reading, cond belongs at 0x5/... or 0x5/7
+//   measured by claude-opus-4-7-1m, anchor block 949260, audit phase 1
 // lifecycle_phase: 0
 //
 // Primitive: evaluate predicate; if ok → run then-branch,

@@ -1,7 +1,15 @@
 #!/usr/bin/env -S deno run --allow-all
 // 0x0/0A.ts — tap / touch / side-effect decorator
 // position: 0/0A → foundation × ten/apex
-// hex_dipole: "00 00 00 00 00 00 00 00"
+// hex_dipole: "26 00 59 33 00 26 00 00"
+//   mirror_apex+0.70 (PRIMARY: observes without consuming = reflection)
+//   triangle_build+0.40 (composition decoration)
+//   void_infinity+0.30 (passes primary through unchanged)
+//   action_decision+0.30
+//   bucket 0/0A: primary axis mirror (2), bucket 0 ← MISMATCH (projection)
+//                secondary '0A' → hex A = axis 2 negative pole, dipole +0.70
+//                on axis 2 ← PAIR-MATCH (sign-opposed pole) — defensible composite
+//   measured by claude-opus-4-7-1m, anchor block 949260, audit phase 1
 // lifecycle_phase: 0
 //
 // Primitive: run primary step, then side-effect step,

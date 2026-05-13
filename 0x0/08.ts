@@ -1,7 +1,14 @@
 #!/usr/bin/env -S deno run --allow-all
 // 0x0/08.ts — join / zip / parallel collect
 // position: 0/08 → foundation × infinity/all
-// hex_dipole: "00 00 00 00 00 00 00 00"
+// hex_dipole: "00 00 00 59 40 33 40 00"
+//   triangle_build+0.70 (PRIMARY: union/composition primitive)
+//   foundation_container+0.50 (gathers in container)
+//   harmony_emergence+0.50 (assembly), action_decision+0.40
+//   bucket 0/08: primary axis triangle (3), bucket 0 ← MISMATCH (projection)
+//                secondary '08' → axis 0 pair-pole (hex 8 = axis 0 negative),
+//                dipole 0.00 on axis 0 ← does not rescue
+//   measured by claude-opus-4-7-1m, anchor block 949260, audit phase 1
 // lifecycle_phase: 0
 //
 // Primitive: execute steps in parallel, collect all results.

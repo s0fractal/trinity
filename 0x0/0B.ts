@@ -1,7 +1,16 @@
 #!/usr/bin/env -S deno run --allow-all
 // 0x0/0B.ts — until / retry / loop-until-success
 // position: 0/0B → foundation × edge/eleven
-// hex_dipole: "00 00 00 00 00 00 00 00"
+// hex_dipole: "00 33 26 00 00 40 00 59"
+//   completion_frontier+0.70 (PRIMARY: until IS termination condition)
+//   action_decision+0.50 (retry body)
+//   first_penultimate+0.40 (approaches-completion cyclic),
+//   mirror_apex+0.30
+//   bucket 0/0B: primary axis completion (7), bucket 0 ← MISMATCH (projection)
+//                secondary '0B' → hex B = axis 3 negative pole, dipole 0 on
+//                axis 3 ← does not rescue
+//                belongs at 0xF/... or 0x7/... under projection reading
+//   measured by claude-opus-4-7-1m, anchor block 949260, audit phase 1
 // lifecycle_phase: 0
 //
 // Primitive: retry a step until it succeeds or max retries exhausted.

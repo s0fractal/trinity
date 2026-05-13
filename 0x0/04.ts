@@ -1,7 +1,13 @@
 #!/usr/bin/env -S deno run --allow-all
 // 0x0/04.ts — each / for-each / sequential apply
 // position: 0/04 → foundation × cardinal/four-square
-// hex_dipole: "00 00 00 00 00 00 00 00"
+// hex_dipole: "00 00 00 6C 00 40 40 33"
+//   triangle_build+0.85 (PRIMARY: sequential composition is the act)
+//   action_decision+0.50, harmony_emergence+0.50 (ordered doing)
+//   completion_frontier+0.40 (gather all then return)
+//   bucket 0/04: primary axis triangle (3), bucket 0 ← MISMATCH (projection)
+//                secondary '04' → axis 4 foundation, dipole 0.00 ← does not rescue
+//   measured by claude-opus-4-7-1m, anchor block 949260, audit phase 1
 // lifecycle_phase: 0
 //
 // Primitive: apply a list of positions sequentially.

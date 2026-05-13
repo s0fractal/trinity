@@ -1,7 +1,14 @@
 #!/usr/bin/env -S deno run --allow-all
 // 0x0/0C.ts — any / race / first-success
 // position: 0/0C → foundation × container/cycle
-// hex_dipole: "00 00 00 00 00 00 00 00"
+// hex_dipole: "00 4C 00 33 00 33 40 00"
+//   first_penultimate+0.60 (PRIMARY: first-match wins = approach-to-close)
+//   harmony_emergence+0.40 (emergence from candidate set)
+//   action_decision+0.40, triangle_build+0.40
+//   bucket 0/0C: primary axis first_penultimate (1), bucket 0 ← MISMATCH (projection)
+//                secondary '0C' → hex C = axis 4 negative pole, dipole 0 on
+//                axis 4 ← does not rescue
+//   measured by claude-opus-4-7-1m, anchor block 949260, audit phase 1
 // lifecycle_phase: 0
 //
 // Primitive: run steps in parallel, return the first success.

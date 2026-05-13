@@ -1,7 +1,13 @@
 #!/usr/bin/env -S deno run --allow-all
 // 0x0/06.ts — try / attempt / graceful fallback
 // position: 0/06 → foundation × serpent/curve
-// hex_dipole: "00 00 00 00 00 00 00 00"
+// hex_dipole: "00 00 26 00 00 33 59 40"
+//   harmony_emergence+0.70 (PRIMARY: graceful recovery = order restoration)
+//   completion_frontier+0.50 (handles boundary case)
+//   action_decision+0.40, mirror_apex+0.30
+//   bucket 0/06: primary axis harmony (6), bucket 0 ← MISMATCH (projection)
+//                secondary '06' → axis 6 harmony, dipole +0.70 ← COMPOSITE-READING RESCUE
+//   measured by claude-opus-4-7-1m, anchor block 949260, audit phase 1
 // lifecycle_phase: 0
 //
 // Primitive: attempt a step; if it fails, try the fallback.

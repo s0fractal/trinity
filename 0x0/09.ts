@@ -1,7 +1,15 @@
 #!/usr/bin/env -S deno run --allow-all
 // 0x0/09.ts — repeat / loop / iterate
 // position: 0/09 → foundation × completion/circle
-// hex_dipole: "00 00 00 00 00 00 00 00"
+// hex_dipole: "00 40 00 00 33 4C 00 33"
+//   action_decision+0.60 (PRIMARY: iterative doing)
+//   first_penultimate+0.50 (cyclic / counting / approach-to-close)
+//   foundation_container+0.40 (accumulator)
+//   completion_frontier+0.40 (bounded loop edge)
+//   bucket 0/09: primary axis action (5), bucket 0 ← MISMATCH (projection)
+//                secondary '09' → hex 9 = axis 1 negative pole, dipole +0.50
+//                on axis 1 ← partial composite match (sign opposed)
+//   measured by claude-opus-4-7-1m, anchor block 949260, audit phase 1
 // lifecycle_phase: 0
 //
 // Primitive: execute a step N times, collecting each result.

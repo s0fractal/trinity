@@ -37,7 +37,7 @@
 {"00":"02","02":"18","03":"word"}
 {"00":"05","01":"verify","12":"5/A","11":"00 00 59 00 00 59 00 00","10":{"en":"verify/init/fresh-action/check","uk":"перевірити/ініціалізувати/свіжа-дія/створити"},"09":"action+apex = fresh verification"}
 {"00":"05","01":"play","12":"5/D","11":"00 00 00 00 00 59 00 59","10":{"en":"play/execute/run","uk":"грати/виконати/запустити"},"09":"action+decision = resolved execute"}
-{"00":"05","01":"t","12":"0/01","11":"00 00 00 00 00 00 00 00","10":{"en":"t/runtime/exec","uk":"ст/рантайм"},"09":"foundation+byte01 = runtime entry"}
+{"00":"05","01":"t","12":"0/01","11":"6C 26 40 33 66 40 40 19","10":{"en":"t/runtime/exec","uk":"ст/рантайм"},"09":"foundation+byte01 = runtime entry"}
 {"00":"05","01":"help","12":"0/0F","11":"00 00 00 00 59 00 00 59","10":{"en":"help/info/describe/show","uk":"допомога/інфо/опиши/покажи"},"09":"foundation+frontier-edge = boundary info"}
 {"00":"05","01":"block","12":"5/0","11":"8E 00 00 00 00 59 00 00","10":{"en":"block/height/timestamp","uk":"блок/висота/мітка"},"09":"action+void = pure fetch"}
 {"00":"05","01":"update","12":"F/A","11":"00 00 59 00 00 00 00 59","10":{"en":"update/refresh/sync","uk":"оновити/освіжити/синхронізувати"},"09":"frontier+apex = push boundary (no executable yet)"}
@@ -52,6 +52,7 @@
 {"00":"05","01":"status","12":"2/E","11":"00 00 6C 40 33 26 4C 33","10":{"en":"status/state/how-are-you","uk":"статус/стан/як/ти-як"},"09":"mirror+harmony-pair = composite self-reflection across organs"}
 {"00":"05","01":"balance","12":"3/A","11":"00 00 40 6C 26 33 4C 40","10":{"en":"balance/suggest/recommend/rebalance","uk":"баланс/балансуй/запропонуй/порадь"},"09":"triangle+mirror-pair = dipole-driven rebalance proposals (read-only)"}
 {"00":"05","01":"chord","12":"4/0","11":"26 00 40 40 6C 19 33 26","10":{"en":"chord/scaffold/frontmatter","uk":"акорд/скаффолд/каркас"},"09":"foundation+void = chord scaffolding + dipole math toolkit"}
+{"00":"05","01":"capabilities","12":"4/A","11":"26 00 59 40 6C 33 33 40","10":{"en":"capabilities/affordances/can-do","uk":"спроможності/що-можу"},"09":"foundation+mirror-pair = live affordance projection from glossary (per codex 2026-05-13T210236Z)"}
 {"00":"06","01":"trinity","02":"5/A","03":"deno check 0x5/A.ts","04":".","05":"type-check verify executable"}
 {"00":"06","01":"omega","02":"5/A","03":"cargo check","04":"omega","05":"compile check (verify placeholder)"}
 {"00":"06","01":"liquid","02":"5/A","03":"deno check 00_core/liquid_pipe.ts","04":"liquid","05":"type-check core (verify placeholder)"}
@@ -67,25 +68,25 @@
 {"00":"07","01":"cross_substrate_verify","02":"type,position,action,mode,summary,substrates","03":"note,adapter_pattern,falsifier","04":"cross-substrate verification receipt from 0x5/C.ts"}
 {"00":"07","01":"error","02":"type,message","03":"position,available","04":"error receipt from dispatcher or executable"}
 {"00":"07","01":"help","02":"type,mode","03":"records,record","04":"help receipt from 0x0/0F.ts"}
-{"00":"05","01":"all","12":"0/03","11":"00 00 00 00 00 00 00 00","10":{"en":"all/every/all-of/map","uk":"все/всі/все-разом/мап"},"09":"foundation+trinity = map signal across all substrates"}
+{"00":"05","01":"all","12":"0/03","11":"00 00 33 6C 33 33 40 33","10":{"en":"all/every/all-of/map","uk":"все/всі/все-разом/мап"},"09":"foundation+trinity = map signal across all substrates"}
 {"00":"06","01":"trinity","02":"6/A","03":"deno run --allow-read 0x6/A.ts","04":".","05":"health check for trinity substrate"}
 {"00":"06","01":"omega","02":"6/A","03":"cargo check","04":"omega","05":"compile check (health placeholder)"}
 {"00":"06","01":"liquid","02":"6/A","03":"deno check 00_core/liquid_pipe.ts","04":"liquid","05":"type-check core (health placeholder)"}
 {"00":"06","01":"myc","02":"6/A","03":"deno task test","04":"myc","05":"deno task test (health placeholder)"}
 {"00":"07","01":"all","02":"type,position,action,summary,substrates","03":"mode,note,topology,falsifier","04":"map receipt from 0x0/03.ts (all primitive)"}
-{"00":"05","01":"each","12":"0/04","11":"00 00 00 00 00 00 00 00","10":{"en":"each/sequence/for/compose","uk":"кожен/послідовно/для/композиція"},"09":"foundation+cardinal = sequential composition primitive"}
-{"00":"05","01":"pipe","12":"0/05","11":"00 00 00 00 00 00 00 00","10":{"en":"pipe/flow/conditional-compose/chain","uk":"труба/потік/умовна-композиція/ланцюг"},"09":"foundation+action = conditional sequential composition with short-circuit"}
-{"00":"05","01":"try","12":"0/06","11":"00 00 00 00 00 00 00 00","10":{"en":"try/attempt/recover/fallback","uk":"спроба/відновлення/запасний"},"09":"foundation+serpent = attempt with graceful fallback"}
+{"00":"05","01":"each","12":"0/04","11":"00 00 00 6C 00 40 40 33","10":{"en":"each/sequence/for/compose","uk":"кожен/послідовно/для/композиція"},"09":"foundation+cardinal = sequential composition primitive"}
+{"00":"05","01":"pipe","12":"0/05","11":"00 00 00 66 00 33 33 40","10":{"en":"pipe/flow/conditional-compose/chain","uk":"труба/потік/умовна-композиція/ланцюг"},"09":"foundation+action = conditional sequential composition with short-circuit"}
+{"00":"05","01":"try","12":"0/06","11":"00 00 26 00 00 33 59 40","10":{"en":"try/attempt/recover/fallback","uk":"спроба/відновлення/запасний"},"09":"foundation+serpent = attempt with graceful fallback"}
 {"00":"07","01":"try","02":"type,action,primary,fallback,used,overall,result","03":"resolved_primary,resolved_fallback,primary_error,note,topology","04":"try receipt from 0x0/06.ts"}
-{"00":"05","01":"cond","12":"0/07","11":"00 00 00 00 00 00 00 00","10":{"en":"cond/branch/if-then-else","uk":"умова/гілка/якщо-тоді-інакше"},"09":"foundation+threshold = conditional branch primitive"}
+{"00":"05","01":"cond","12":"0/07","11":"00 00 26 33 00 66 33 00","10":{"en":"cond/branch/if-then-else","uk":"умова/гілка/якщо-тоді-інакше"},"09":"foundation+threshold = conditional branch primitive"}
 {"00":"07","01":"cond","02":"type,action,predicate,then,else,taken,overall,result","03":"predicate_ok,resolved_predicate,resolved_then,resolved_else,predicate_result,note,topology","04":"cond receipt from 0x0/07.ts"}
-{"00":"05","01":"join","12":"0/08","11":"00 00 00 00 00 00 00 00","10":{"en":"join/zip/parallel-collect/bundle","uk":"об\u0027єднання/пакет/паралельний-збір"},"09":"foundation+infinity = parallel execution with result collection"}
+{"00":"05","01":"join","12":"0/08","11":"00 00 00 59 40 33 40 00","10":{"en":"join/zip/parallel-collect/bundle","uk":"об\u0027єднання/пакет/паралельний-збір"},"09":"foundation+infinity = parallel execution with result collection"}
 {"00":"07","01":"join","02":"type,action,steps,count,errors,overall,results","03":"resolved,note,topology","04":"join receipt from 0x0/08.ts"}
-{"00":"05","01":"repeat","12":"0/09","11":"00 00 00 00 00 00 00 00","10":{"en":"repeat/loop/iterate/stress","uk":"повторення/цикл/ітерація"},"09":"foundation+completion = iterate n times and collect"}
+{"00":"05","01":"repeat","12":"0/09","11":"00 40 00 00 33 4C 00 33","10":{"en":"repeat/loop/iterate/stress","uk":"повторення/цикл/ітерація"},"09":"foundation+completion = iterate n times and collect"}
 {"00":"07","01":"repeat","02":"type,action,target,resolved,requested_count,actual_count,errors,overall","03":"first_error_at,iterations,note,topology","04":"repeat receipt from 0x0/09.ts"}
-{"00":"05","01":"tap","12":"0/0A","11":"00 00 00 00 00 00 00 00","10":{"en":"tap/touch/side-effect/observer","uk":"дотик/спостереження/побічний-ефект"},"09":"foundation+apex = side-effect decorator"}
+{"00":"05","01":"tap","12":"0/0A","11":"26 00 59 33 00 26 00 00","10":{"en":"tap/touch/side-effect/observer","uk":"дотик/спостереження/побічний-ефект"},"09":"foundation+apex = side-effect decorator"}
 {"00":"07","01":"tap","02":"type,action,primary,side_effect,resolved_primary,resolved_side,overall","03":"primary_ok,side_ok,primary_result,side_result,note,topology","04":"tap receipt from 0x0/0A.ts"}
-{"00":"05","01":"until","12":"0/0B","11":"00 00 00 00 00 00 00 00","10":{"en":"until/retry/loop-until-success","uk":"повторювати/доки-не-успіх"},"09":"foundation+edge = retry until success or exhausted"}
+{"00":"05","01":"until","12":"0/0B","11":"00 33 26 00 00 40 00 59","10":{"en":"until/retry/loop-until-success","uk":"повторювати/доки-не-успіх"},"09":"foundation+edge = retry until success or exhausted"}
 {"00":"07","01":"until","02":"type,action,target,resolved,max_retries,delay_ms,attempts,overall","03":"success_at,final_result,note,topology","04":"until receipt from 0x0/0B.ts"}
-{"00":"05","01":"any","12":"0/0C","11":"00 00 00 00 00 00 00 00","10":{"en":"any/race/first-success/speculate","uk":"будь-який/перший-успіх/перегонки"},"09":"foundation+cycle = parallel race, return first success"}
+{"00":"05","01":"any","12":"0/0C","11":"00 4C 00 33 00 33 40 00","10":{"en":"any/race/first-success/speculate","uk":"будь-який/перший-успіх/перегонки"},"09":"foundation+cycle = parallel race, return first success"}
 {"00":"07","01":"any","02":"type,action,steps,count,first_success_at,overall,results","03":"resolved,note,topology","04":"any receipt from 0x0/0C.ts"}

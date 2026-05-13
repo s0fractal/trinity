@@ -34,7 +34,6 @@
 {"00":"04","01":"8","08":"6","10":{"en":"infinite memory / boundless archive","uk":"нескінченна пам'ять / безмежний архів"},"15":"6(memory)+8(infinity)→memory expanded to boundless","14":"7F","13":{"30":"7F","31":"7F","32":"7F","33":"00"}}
 {"00":"04","01":"F","08":"5","10":{"en":"final action / closing transaction","uk":"фінальна дія / закриваюча транзакція"},"15":"5(action)+F(frontier)→action at boundary","14":"7F","13":{"30":"7F","31":"7F","32":"40","33":"00"},"09":"gemini mild AYE"}
 {"00":"04","01":"3","08":"5","10":{"en":"stable action / repeated reliable doing","uk":"стабільна дія / повторюване надійне діяння"},"15":"5(action)+3(triangle/stable)→reliable repeatable action","14":"60","13":{"30":"7F","31":"7F","32":"7F","33":"00"}}
-{"00":"01","09":"end-marker. 16 symbols complete; 7 projections illustrative; voice codes 30..33 (claude/kimi/gemini/codex); votes i8 signed (7F=strong AYE..81=strong NAY, 00=pending, 40=mild AYE, C0=mild NAY); field 11=hex_dipole_position added per kimi 2026-05-13; extension: add more projections per symbol×context as 3+ voice consensus emerges. open questions: (i) 7 weak convergence (end vs edge); (ii) sign convention not yet formal voted — current draft: + pole = expansion/abundance/outward."}
 {"00":"02","02":"18","03":"word"}
 {"00":"05","01":"verify","12":"5/A","11":"00 00 59 00 00 59 00 00","10":{"en":"verify/init/fresh-action/check","uk":"перевірити/ініціалізувати/свіжа-дія/створити"},"09":"action+apex = fresh verification"}
 {"00":"05","01":"play","12":"5/D","11":"00 00 00 00 00 59 00 59","10":{"en":"play/execute/run","uk":"грати/виконати/запустити"},"09":"action+decision = resolved execute"}
@@ -48,7 +47,6 @@
 {"00":"06","01":"omega","02":"5/C","03":"cargo check","04":"omega","05":"compile check (quick); use --deep for cargo test"}
 {"00":"06","01":"liquid","02":"5/C","03":"deno check 00_core/liquid_pipe.ts 00_core/phase_engine.ts 00_core/hydrate.ts 00_core/seed.ts","04":"liquid","05":"type-check core files (hex→φ adapter pending)"}
 {"00":"06","01":"myc","02":"5/C","03":"deno task test","04":"myc","05":"deno task test (42 tests)"}
-{"00":"01","09":"end-marker. Added type:06 substrate mappings for 5/C (trinity/omega/liquid/myc). Added word 'cross-verify' → 5/C. 0x5/D.ts created as play/execute placeholder. Glossary now drives substrate execution for cross-verify. Next: extend type:06 to other positions (5/A, 5/D)."}
 {"00":"05","01":"health","12":"6/A","11":"00 59 00 00 00 00 59 00","10":{"en":"health/check/status/harmony","uk":"здоров'я/перевірити/статус/гармонія"},"09":"harmony+apex = fresh health check"}
 {"00":"06","01":"trinity","02":"5/A","03":"deno check 0x5/A.ts","04":".","05":"type-check verify executable"}
 {"00":"06","01":"omega","02":"5/A","03":"cargo check","04":"omega","05":"compile check (verify placeholder)"}
@@ -58,3 +56,4 @@
 {"00":"06","01":"omega","02":"5/D","03":"cargo build","04":"omega","05":"build (play placeholder)"}
 {"00":"06","01":"liquid","02":"5/D","03":"deno check 00_core/hydrate.ts","04":"liquid","05":"type-check hydrate (play placeholder)"}
 {"00":"06","01":"myc","02":"5/D","03":"deno task myc","04":"myc","05":"myc CLI (play placeholder)"}
+{"00":"01","09":"end-marker. 16 symbols, 7 projections, 8 words, 20 substrate mappings (5/A×4, 5/C×4, 5/D×4, F/A×4). 9 hex executables: 0x0/01, 0x0/02, 0x0/0F, 0x5/0, 0x5/A, 0x5/C, 0x5/D, 0x6/A, 0xF/A. type:06 substrate registry operational. Glossary drives cross-substrate execution. Open: liquid hex→φ adapter, SPORE receipt schema, extend registry to all positions."}

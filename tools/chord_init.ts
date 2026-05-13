@@ -55,14 +55,35 @@ const DIPOLE_AXES = [
   "completion_frontier", // axis 7: hex 7 ↔ hex F
 ] as const;
 
-// Lifecycle phases from LIFECYCLE_SEED.v0.draft.md
+// Lifecycle phases — trimmed to 3 for v0.1 operational simplicity
+// (growth/maturity/reproduction merged into "active").
+// Full 5-phase model returns in v0.2+ when granularity needed.
 const LIFECYCLE_PHASES = [
-  "seed", // 0 = oct:0 EXISTENCE
-  "growth", // 1 = oct:3 UNION
-  "maturity", // 2 = oct:5 EXCHANGE
-  "reproduction", // 3 = oct:7 TRANSCENDENCE
-  "compost", // 4 = oct:6 ORDER
+  "seed",    // 0 = oct:0 EXISTENCE    — nascent, unproven
+  "active",  // 1 = oct:3..7 UNION..TRANSCENDENCE — living, growing, reproducing
+  "compost", // 2 = oct:6 ORDER        — archived, absorbed, recycled
 ] as const;
+
+const GLOSSARY_PATH = new URL("../0x0/00.ndjson", import.meta.url).pathname;
+
+/** Load dipole pair mapping from glossary type-03 records.
+ *  Returns Map<hex_char, dipole_pair_char> — e.g. "0"→"8", "8"→"0".
+ *  This removes implicit pair mapping from code comments (SSOT = glossary).
+ */
+async function fn_load_dipole_pairs(): Promise<Map<string, string>> {
+  const text = await Deno.readTextFile(GLOSSARY_PATH);
+  const pairs = new Map<string, string>();
+  for (const line of text.trim().split("\n")) {
+    try {
+      const r = JSON.parse(line);
+      if (r["00"] !== "03") continue;
+      const hex = r["01"];
+      const pair = r["17"];
+      if (hex && pair) pairs.set(hex, pair);
+    } catch { /* skip */ }
+  }
+  return pairs;
+}
 
 async function fetchBtcBlock(): Promise<number> {
   const res = await fetch(BTC_TIP_URL);
@@ -175,7 +196,7 @@ self_dipole_position: "${neutralVector}"
 
 # Lifecycle (numeric primary, name transitional):
 self_lifecycle:
-  phase: 0           # 0=seed 1=growth 2=maturity 3=reproduction 4=compost
+  phase: 0           # 0=seed 1=active 2=compost
   spiral_depth: 0
   q_phase: 4         # subnet/chord-level subjective scale
 
@@ -257,7 +278,13 @@ function cmdParse(positional: string[]): void {
   }
 }
 
-function printHelp(): void {
+async function printHelp(): Promise<void> {
+  const pairs = await fn_load_dipole_pairs();
+  const pairLines = Array.from(pairs.entries())
+    .filter(([k]) => k >= "0" && k <= "7") // only first half of circle
+    .map(([k, v]) => `  ${k} ↔ ${v}`)
+    .join("\n");
+
   console.log(`chord_init — substrate-native chord skeleton generator
 
 Subcommands:
@@ -278,7 +305,10 @@ Examples:
 Dipole axes (canonical order, byte positions 0..7):
 ${DIPOLE_AXES.map((n, i) => `  ${i}: ${n}`).join("\n")}
 
-Lifecycle phases (numeric IDs):
+Dipole pairs (loaded from glossary 0x0/00.ndjson):
+${pairLines}
+
+Lifecycle phases (trimmed to 3 for v0.1):
 ${LIFECYCLE_PHASES.map((n, i) => `  ${i}: ${n}`).join("\n")}
 `);
 }

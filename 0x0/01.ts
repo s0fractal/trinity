@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-read --allow-run
 // 0x0/01.ts — t (the runtime dispatcher)
 // position: 0/01 → foundation/byte01
+// hex_dipole: "00 00 00 00 00 00 00 00"
+// lifecycle_phase: 0
 //
 // Topological LISP Evaluator (per gemini proposal 134500Z):
 //   - executables are pure functions that return structured JSON

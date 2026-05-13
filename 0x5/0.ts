@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-net
 // 0x5/0.ts — block (Bitcoin tip height fetcher)
 // position: 5/0 → action × void = pure fetch / bare timestamp
+// hex_dipole: "8E 00 00 00 00 59 00 00"
+// lifecycle_phase: 1
 // words mapped here: block, блок, height, висота, timestamp, мітка
 //
 // Returns structured JSON: {"type":"block","value":N}

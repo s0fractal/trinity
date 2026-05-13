@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-read
 // 0x0/0F.ts — help (substrate self-introspection)
 // position: 0/0F → foundation × frontier-edge
+// hex_dipole: "00 00 00 00 59 00 00 59"
+// lifecycle_phase: 1
 //
 // Returns structured help payload. Dispatcher (0x0/01.ts) renders for TTY.
 // No arg: mode=list. With arg: mode=detail (with semantic decomposition).

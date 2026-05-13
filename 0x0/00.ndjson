@@ -48,3 +48,4 @@
 {"00":"06","01":"omega","02":"5/C","03":"cargo check","04":"omega","05":"compile check (quick); use --deep for cargo test"}
 {"00":"06","01":"liquid","02":"5/C","03":"deno check 00_core/liquid_pipe.ts 00_core/phase_engine.ts 00_core/hydrate.ts 00_core/seed.ts","04":"liquid","05":"type-check core files (hex→φ adapter pending)"}
 {"00":"06","01":"myc","02":"5/C","03":"deno task test","04":"myc","05":"deno task test (42 tests)"}
+{"00":"01","09":"end-marker. Added type:06 substrate mappings for 5/C (trinity/omega/liquid/myc). Added word 'cross-verify' → 5/C. 0x5/D.ts created as play/execute placeholder. Glossary now drives substrate execution for cross-verify. Next: extend type:06 to other positions (5/A, 5/D)."}

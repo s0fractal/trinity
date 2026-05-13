@@ -114,7 +114,7 @@ async function fn_process_payload(raw: string, depth: number): Promise<number> {
   }
   // render
   const isTty = Deno.stdout.isTerminal();
-  const forceHuman = payload?.type === "cross_substrate_verify";
+  const forceHuman = payload?.type === "cross_substrate_verify" || payload?.type === "health";
   if (isTty || forceHuman) {
     fn_render_human(payload);
   } else {
@@ -147,6 +147,8 @@ function fn_render_human(p: any): void {
     console.error(`# error: ${p.message ?? "unknown"}`);
   } else if (t === "cross_substrate_verify") {
     fn_render_cross_substrate_verify(p);
+  } else if (t === "health") {
+    fn_render_health(p);
   } else {
     // fallback: pretty JSON
     console.log(JSON.stringify(p, null, 2));
@@ -168,6 +170,19 @@ function fn_render_cross_substrate_verify(p: any): void {
   console.log("# " + "─".repeat(50));
   const overallIcon = summary.overall === "passed" ? "✓" : "✗";
   console.log(`# overall:  ${overallIcon} ${summary.overall ?? "?"}  ${summary.passed ?? 0}/${summary.total ?? 0} passed`);
+}
+
+function fn_render_health(p: any): void {
+  const summary = p.summary ?? {};
+  const icon = summary.overall === "healthy" ? "✓" : summary.overall === "degraded" ? "⚠" : "✗";
+  console.log(`# health @ ${p.position ?? "?"} — ${icon} ${summary.overall ?? "?"}`);
+  console.log("# " + "─".repeat(40));
+  for (const c of p.checks ?? []) {
+    const ci = c.status === "ok" ? "✓" : c.status === "warn" ? "⚠" : "✗";
+    console.log(`# ${ci} ${c.name.padEnd(20)} ${c.detail}`);
+  }
+  console.log("# " + "─".repeat(40));
+  console.log(`# checks: ${summary.ok ?? 0} ok, ${summary.warn ?? 0} warn, ${summary.fail ?? 0} fail`);
 }
 
 function fn_render_help(p: any): void {

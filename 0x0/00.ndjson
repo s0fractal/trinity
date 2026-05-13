@@ -39,3 +39,13 @@
 {"00":"05","01":"init","12":"5/A","09":"action+apex = fresh start (synonym of verify by position)"}
 {"00":"05","01":"play","12":"5/D","09":"action+decision = run/execute resolved"}
 {"00":"05","01":"t","12":"0/01","09":"foundation+byte01 = runtime entry itself"}
+{"00":"05","01":"перевірити","12":"5/A","09":"ukrainian synonym of verify by position"}
+{"00":"05","01":"ініціалізувати","12":"5/A","09":"ukrainian synonym of init by position"}
+{"00":"05","01":"грати","12":"5/D","09":"ukrainian synonym of play by position"}
+{"00":"05","01":"ст","12":"0/01","09":"ukrainian-short synonym of t (runtime)"}
+{"00":"05","01":"help","12":"0/0F","09":"foundation+frontier-edge = show substrate boundary/info"}
+{"00":"05","01":"допомога","12":"0/0F","09":"ukrainian synonym of help"}
+{"00":"05","01":"block","12":"5/0","09":"action+void = pure fetch / bare timestamp"}
+{"00":"05","01":"блок","12":"5/0","09":"ukrainian synonym of block"}
+{"00":"05","01":"update","12":"F/A","09":"frontier+apex = push boundary with fresh (no executable yet)"}
+{"00":"05","01":"оновити","12":"F/A","09":"ukrainian synonym of update"}

@@ -1,44 +1,50 @@
-#!/usr/bin/env -S deno run --allow-net --allow-env
-/**
- * chord_init
- *
- * Substrate-native chord skeleton generator.
- *
- * Replaces ad-hoc timestamping with Bitcoin block anchoring.
- * Provides dipole vocabulary translation (human axis names ↔ hex bytes).
- * Outputs canonical YAML frontmatter for new chord files.
- *
- * Subcommands:
- *   block                          Print current Bitcoin block height
- *   init [opts]                    Print chord skeleton (frontmatter + body)
- *   translate <axis> <value>       Convert human axis name + signed value
- *                                  to hex byte (e.g., translate void_infinity +0.4)
- *   parse "<hex bytes>"            Convert 8-byte hex vector to human readings
- *
- * Init options:
- *   --author=NAME         Author identity (default: anonymous)
- *   --topic="SLUG"        Topic slug (default: untitled)
- *   --octet=oct:N.M       Chord primary octet (default: oct:7.0)
- *   --claim-kind=KIND     Claim kind (default: observation)
- *
- * Examples:
- *   deno run -A tools/chord_init.ts block
- *   deno run -A tools/chord_init.ts init --author=claude --topic=test
- *   deno run -A tools/chord_init.ts translate void_infinity +0.4
- *   deno run -A tools/chord_init.ts parse "33 8E 59 40 00 26 4C 59"
- *
- * Substrate alignment:
- *   - Bitcoin anchor: Φ-Manifest Invariant 3 (omega/docs/PHI_MANIFEST.md)
- *   - Dipole axes: HEX_DIPOLE_SEED.v0.draft.md
- *   - Lifecycle phases: LIFECYCLE_SEED.v0.draft.md
- *   - Chord schema: CHORD_CLAIM.v0.1.md
- *
- * Notes:
- *   - Dipole vocabulary is hardcoded here for PoC. Later: parse from
- *     contracts/HEX_DIPOLE_SEED.v0.draft.md as single source of truth.
- *   - Identity verification: soft (trust-based) for v0.0. Path to
- *     hard (Ed25519): liquid/00_core/node_identity.ts.
- */
+#!/usr/bin/env -S deno run --allow-net --allow-env --allow-read
+// 0x4/0.ts — chord (substrate-native chord scaffolding + dipole math)
+// position: 4/0 → foundation(4) × void(0) = primal toolkit / blank-scaffold
+// hex_dipole: "26 00 40 40 6C 19 33 26"
+//   foundation_container+0.85 (PRIMARY: provides chord infrastructure)
+//   mirror_apex+0.50 (parse reflects hex → readings)
+//   triangle_build+0.50 (init composes frontmatter scaffold)
+//   harmony_emergence+0.40 (canonical convention enforcement)
+//   void_infinity+0.30 (operates from empty / scaffold)
+//   completion_frontier+0.30 (produces final chord skeleton)
+//   action_decision+0.20 (mostly format conversion, light action)
+//   bucket 4/0: primary axis foundation (4), bucket 4 ← MATCH
+//               secondary '0' → axis 0 void, dipole +0.30 on axis 0 ← weak match
+//   measured by claude-opus-4-7-1m. First file at 0x4/ — establishes bucket.
+// lifecycle_phase: 1
+//
+// Subcommands (canonical via `t chord <sub> ...`, legacy via `deno task chord:*`):
+//   block                          Print current Bitcoin block height
+//   init [opts]                    Print chord skeleton (frontmatter + body)
+//   translate <axis> <value>       Convert axis name + signed value → hex byte
+//   parse "<hex bytes>"            Convert 8-byte hex vector → human readings
+//
+// Init options:
+//   --author=NAME         Author identity (default: anonymous)
+//   --topic="SLUG"        Topic slug (default: untitled)
+//   --octet=oct:N.M       Chord primary octet (default: oct:7.0)
+//   --claim-kind=KIND     Claim kind (default: observation)
+//
+// Examples:
+//   t chord block
+//   t chord init --author=claude --topic=my-thought
+//   t chord translate void_infinity +0.4
+//   t chord parse "33 8E 59 40 00 26 4C 59"
+//
+// Substrate alignment:
+//   - Bitcoin anchor: Φ-Manifest Invariant 3 (omega/docs/PHI_MANIFEST.md)
+//   - Dipole axes: HEX_DIPOLE_SEED.v0.draft.md
+//   - Lifecycle phases: LIFECYCLE_SEED.v0.draft.md
+//   - Chord schema: CHORD_CLAIM.v0.1.md
+//
+// Glossary words: chord, scaffold, frontmatter, акорд, скаффолд
+//
+// Notes:
+//   - Dipole vocabulary still hardcoded; later can read from HEX_DIPOLE_SEED.v0
+//   - Identity verification: soft (trust-based) for v0.0
+//   - Path resolution unchanged: ../0x0/00.ndjson still resolves correctly
+//     from 0x4/0.ts (same depth as old tools/ location)
 
 const BTC_TIP_URL = "https://blockstream.info/api/blocks/tip/height";
 

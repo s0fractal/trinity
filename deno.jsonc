@@ -27,10 +27,10 @@
     "capabilities": "deno run -A tools/capabilities.ts",
     "canon:verify": "deno run -A lib/canon/verify_vectors.ts",
     "chord:play": "deno run -A tools/chord_play.ts",
-    "chord:block": "deno run --allow-net tools/chord_init.ts block",
-    "chord:init": "deno run --allow-net tools/chord_init.ts init",
-    "chord:translate": "deno run --allow-net tools/chord_init.ts translate",
-    "chord:parse": "deno run --allow-net tools/chord_init.ts parse",
+    "chord:block": "deno run --allow-net 0x4/0.ts block",
+    "chord:init": "deno run --allow-net 0x4/0.ts init",
+    "chord:translate": "deno run --allow-net 0x4/0.ts translate",
+    "chord:parse": "deno run --allow-net 0x4/0.ts parse",
     "publish:candidates": "deno run -A tools/publish_candidates.ts",
     "publish:verify-candidates": "deno run -A tools/publish_verify_candidates.ts"
   }

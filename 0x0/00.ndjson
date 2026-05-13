@@ -48,6 +48,7 @@
 {"00":"06","01":"liquid","02":"5/C","03":"deno check 00_core/liquid_pipe.ts 00_core/phase_engine.ts 00_core/hydrate.ts 00_core/seed.ts","04":"liquid","05":"type-check core files (hex→φ adapter pending)"}
 {"00":"06","01":"myc","02":"5/C","03":"deno task test","04":"myc","05":"deno task test (42 tests)"}
 {"00":"05","01":"health","12":"6/A","11":"00 59 00 00 00 00 59 00","10":{"en":"health/check/status/harmony","uk":"здоров'я/перевірити/статус/гармонія"},"09":"harmony+apex = fresh health check"}
+{"00":"05","01":"audit","12":"6/C","11":"00 00 40 33 4C 26 6C 33","10":{"en":"audit/place-check/introspect/place","uk":"аудит/перевірка-розміщення/інтроспекція"},"09":"harmony+container-pair = bucket vs dipole self-introspection"}
 {"00":"06","01":"trinity","02":"5/A","03":"deno check 0x5/A.ts","04":".","05":"type-check verify executable"}
 {"00":"06","01":"omega","02":"5/A","03":"cargo check","04":"omega","05":"compile check (verify placeholder)"}
 {"00":"06","01":"liquid","02":"5/A","03":"deno check 00_core/liquid_pipe.ts","04":"liquid","05":"type-check core (verify placeholder)"}

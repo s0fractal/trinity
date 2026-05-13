@@ -1,40 +1,47 @@
 #!/usr/bin/env -S deno run --allow-read
-/**
- * place_check — bucket-vs-dipole match report
- *
- * Reads `hex_dipole:` header from every 0xN/.../*.ts and *.sh in
- * substrate root. Compares strongest axis (by signed magnitude) to
- * the top-level bucket of the file's path. Reports match/mismatch
- * per file plus aggregate summary.
- *
- * Not a gate. Not enforcement. Just a check.
- *
- * Usage:
- *   deno run --allow-read tools/place_check.ts [--quiet] [--mismatch-only]
- *
- *   --quiet           summary only, no per-file lines
- *   --mismatch-only   skip files where primary axis matches bucket
- *   --json            machine-readable output (overrides other flags)
- *
- * Exit codes:
- *   0  all files match (primary axis = bucket) OR file has no dipole header
- *   1  one or more mismatches under projection reading
- *   2  one or more files have malformed/missing dipole
- *
- * Audit phase 2 — see jazz/chords/2026-05-13T223000Z-claude-moratorium-and-initial-dipole-audit.md
- *
- * Substrate alignment:
- *   - HEX_DIPOLE_SEED.v0 axis ordering
- *   - per-file headers as source of truth (not central glossary)
- *   - "projection reading": file lives in bucket = its strongest axis
- *
- * Limitations:
- *   - "Strongest axis" defined as max |i8 value|. If dipole has
- *     tied magnitudes, lower axis index wins (deterministic).
- *   - Composite/fractal readings (where /M secondary rescues primary
- *     mismatch) are NOT computed here. See chord for that discussion.
- *   - Files without `hex_dipole:` header are reported but not failed.
- */
+// 0x6/C.ts — audit / place-check / introspect
+// position: 6/C → harmony(6) × container-pair(C) = order-check of container state
+// hex_dipole: "00 00 40 33 4C 26 6C 33"
+//   harmony_emergence+0.85 (PRIMARY: measures dissonance from intended order)
+//   foundation_container+0.60 (examines bucket/container state)
+//   mirror_apex+0.50 (reflects substrate state back as report)
+//   completion_frontier+0.40, triangle_build+0.40 (composes file-reads)
+//   action_decision+0.30 (probes files)
+//   bucket 6/C: primary axis harmony (6), bucket 6 ← MATCH
+//               secondary 'C' → hex C = axis 4 negative pole, dipole +0.60
+//               on axis 4 ← PAIR-MATCH (sign-opposed; offer on need-bucket)
+//   measured by claude-opus-4-7-1m, anchor block 949262
+// lifecycle_phase: 1
+//
+// audit — bucket-vs-dipole match report
+//
+// Reads `hex_dipole:` header from every 0xN/.../*.ts and *.sh in substrate
+// root. Compares strongest axes (loose tie semantics) against the top-level
+// bucket of the file's path. Reports match/mismatch per file plus summary.
+//
+// Not a gate. Not enforcement. Just a check.
+//
+// Usage (via dispatcher):
+//   t audit                    full report
+//   t audit --mismatch-only    only files with bucket≠axis dissonance
+//   t audit --quiet            summary line only
+//   t audit --json             machine-readable JSON output
+//
+// Glossary words: audit, place-check, introspect, аудит, інтроспекція
+//
+// Substrate alignment:
+//   - HEX_DIPOLE_SEED.v0 axis ordering
+//   - per-file headers as source of truth (not central glossary)
+//   - loose-tie: any axis tied for strongest magnitude that matches
+//     bucket axis (mod 8) counts as match; sign-pole opposition noted
+//   - composite/fractal readings (where /M secondary rescues primary
+//     mismatch) NOT computed here; see receipt chord 2026-05-13T230000Z
+//
+// Exit codes:
+//   0  all files match OR file has no dipole header
+//   1  one or more mismatches under projection reading
+//   2  one or more files have malformed/missing dipole
+
 import { dirname, fromFileUrl, join, relative } from "https://deno.land/std@0.224.0/path/mod.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
@@ -254,7 +261,9 @@ async function main(): Promise<void> {
 
   if (json) {
     console.log(JSON.stringify({
-      type: "place_check",
+      type: "audit",
+      position: "6/C",
+      action: "audit",
       total: reports.length,
       summary: {
         match: reports.filter((r) => r.match === "match").length,
@@ -277,7 +286,7 @@ async function main(): Promise<void> {
 
 if (import.meta.main) {
   main().catch((e) => {
-    console.error(`place_check error: ${e.message}`);
+    console.error(`audit error: ${e.message}`);
     Deno.exit(2);
   });
 }

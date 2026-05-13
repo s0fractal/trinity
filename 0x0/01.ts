@@ -298,6 +298,14 @@ async function fn_list(): Promise<void> {
 }
 
 async function fn_dispatch_word(word: string, rest: string[]): Promise<number> {
+  // Fractal path: direct hex position execution (e.g., 5/C, 5/C/A, 5/C/A/3)
+  const clean = word.replace(/^0x/, "");
+  if (/^[0-9A-Fa-f](\/[0-9A-Fa-f])+$/.test(clean)) {
+    console.error(`# ${word} → direct position`);
+    return await fn_run_at_position(clean, rest, 0);
+  }
+
+  // Word resolution via glossary
   const records = await fn_load_words();
   const found = fn_resolve_word(word, records);
   if (!found) {

@@ -60,23 +60,37 @@ async function checkGlossary(): Promise<{ ok: boolean; records: number; words: n
 if (import.meta.main) {
   const checks: HealthCheck[] = [];
 
-  // Check core executables exist
-  const executables = ["../0x0/01.ts", "../0x0/0F.ts", "../0x5/0.ts", "../0x5/A.ts", "../0x5/C.ts", "../0x5/D.ts"];
-  for (const exe of executables) {
-    const exists = await checkFile(exe);
+  // Dynamically scan all hex executables (0x*/**/*.ts, *.sh)
+  async function scan(dir: string, prefix: string): Promise<string[]> {
+    const out: string[] = [];
+    try {
+      for await (const entry of Deno.readDir(dir)) {
+        if (entry.isFile && (entry.name.endsWith(".ts") || entry.name.endsWith(".sh"))) {
+          out.push(prefix + entry.name);
+        } else if (entry.isDirectory && entry.name.match(/^(0x)?[0-9A-Fa-f]$/)) {
+          const sub = await scan(`${dir}/${entry.name}`, prefix + entry.name + "/");
+          out.push(...sub);
+        }
+      }
+    } catch { /* skip unreadable dirs */ }
+    return out;
+  }
+
+  const allFiles = await scan(`${ROOT}/..`, "");
+
+  for (const f of allFiles) {
+    const exists = await checkFile(`../${f}`);
     checks.push({
-      name: `file:${exe.replace("../", "")}`,
+      name: `file:${f}`,
       status: exists ? "ok" : "fail",
       detail: exists ? "exists" : "missing",
     });
   }
 
-  // Check dipole headers
-  const dipoleFiles = ["../0x0/01.ts", "../0x0/02.sh", "../0x0/0F.ts", "../0x5/0.ts", "../0x5/A.ts", "../0x5/C.ts", "../0x5/D.ts"];
-  for (const f of dipoleFiles) {
-    const hasDipole = await checkDipole(f);
+  for (const f of allFiles) {
+    const hasDipole = await checkDipole(`../${f}`);
     checks.push({
-      name: `dipole:${f.replace("../", "")}`,
+      name: `dipole:${f}`,
       status: hasDipole ? "ok" : "warn",
       detail: hasDipole ? "header present" : "missing hex_dipole",
     });

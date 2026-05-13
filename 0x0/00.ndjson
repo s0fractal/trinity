@@ -42,3 +42,4 @@
 {"00":"05","01":"help","12":"0/0F","11":"00 00 00 00 59 00 00 59","10":{"en":"help/info/describe/show","uk":"допомога/інфо/опиши/покажи"},"09":"foundation+frontier-edge = boundary info"}
 {"00":"05","01":"block","12":"5/0","11":"8E 00 00 00 00 59 00 00","10":{"en":"block/height/timestamp","uk":"блок/висота/мітка"},"09":"action+void = pure fetch"}
 {"00":"05","01":"update","12":"F/A","11":"00 00 59 00 00 00 00 59","10":{"en":"update/refresh/sync","uk":"оновити/освіжити/синхронізувати"},"09":"frontier+apex = push boundary (no executable yet)"}
+{"00":"05","01":"cross-verify","12":"5/C","11":"00 00 59 00 00 00 59 00","10":{"en":"cross-verify/verify-all/test-all","uk":"перехресна-перевірка/перевірити-все"},"09":"action+container = verify across all substrates via adapter pattern"}

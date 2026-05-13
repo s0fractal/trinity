@@ -21,6 +21,9 @@ const SUBSTRATE_ROOT = dirname(HERE);
 const GLOSSARY_PATH = join(SUBSTRATE_ROOT, "0x0", "00.ndjson");
 const MAX_CONTINUATION_DEPTH = 10;
 
+// Schema registry (type:07 records from glossary)
+let SCHEMAS: Map<string, string[]> = new Map();
+
 interface WordRec {
   canonical: string;
   position: string;
@@ -42,6 +45,38 @@ async function fn_load_words(): Promise<WordRec[]> {
     } catch { /* skip */ }
   }
   return out;
+}
+
+async function fn_load_schemas(): Promise<Map<string, string[]>> {
+  const map = new Map<string, string[]>();
+  try {
+    const text = await Deno.readTextFile(GLOSSARY_PATH);
+    for (const line of text.trim().split("\n")) {
+      try {
+        const r = JSON.parse(line);
+        if (r["00"] === "07" && r["01"] && r["02"]) {
+          const required = String(r["02"]).split(",").map((s) => s.trim()).filter(Boolean);
+          map.set(r["01"], required);
+        }
+      } catch { /* skip bad lines */ }
+    }
+  } catch { /* glossary missing — schemas empty */ }
+  return map;
+}
+
+function fn_validate_payload(payload: any): { valid: boolean; missing?: string[]; type?: string } {
+  if (!payload || typeof payload !== "object") {
+    return { valid: false, missing: ["payload is not an object"] };
+  }
+  const t = payload.type;
+  if (!t) return { valid: false, missing: ["type field missing"] };
+  const required = SCHEMAS.get(t);
+  if (!required) return { valid: true }; // no schema known — permissive
+  const missing: string[] = [];
+  for (const field of required) {
+    if (!(field in payload)) missing.push(field);
+  }
+  return missing.length === 0 ? { valid: true } : { valid: false, missing, type: t };
 }
 
 function fn_resolve_word(input: string, records: WordRec[]): WordRec | null {
@@ -112,9 +147,24 @@ async function fn_process_payload(raw: string, depth: number): Promise<number> {
   if (payload?.intent === "continue" && typeof payload.next === "string") {
     return await fn_run_at_position(payload.next, payload.args ?? [], depth + 1);
   }
+  // schema validation (glossary-driven, type:07)
+  const validation = fn_validate_payload(payload);
+  if (!validation.valid) {
+    const errorPayload = {
+      type: "validation_error",
+      position: payload?.position ?? "?",
+      expected_type: validation.type,
+      missing_fields: validation.missing,
+      actual_keys: Object.keys(payload ?? {}),
+      note: "Prediction Error: executable output does not match glossary schema (type:07)",
+    };
+    fn_render_human(errorPayload);
+    return 2; // non-zero: schema mismatch
+  }
+
   // render
   const isTty = Deno.stdout.isTerminal();
-  const forceHuman = payload?.type === "cross_substrate_verify" || payload?.type === "health";
+  const forceHuman = payload?.type === "cross_substrate_verify" || payload?.type === "health" || payload?.type === "validation_error";
   if (isTty || forceHuman) {
     fn_render_human(payload);
   } else {
@@ -145,6 +195,12 @@ function fn_render_human(p: any): void {
     fn_render_help(p);
   } else if (t === "error") {
     console.error(`# error: ${p.message ?? "unknown"}`);
+  } else if (t === "validation_error") {
+    console.error(`# validation error @ ${p.position ?? "?"}`);
+    console.error(`# expected type: ${p.expected_type ?? "?"}`);
+    console.error(`# missing fields: ${(p.missing_fields ?? []).join(", ")}`);
+    console.error(`# actual keys: ${(p.actual_keys ?? []).join(", ")}`);
+    if (p.note) console.error(`# ${p.note}`);
   } else if (t === "cross_substrate_verify") {
     fn_render_cross_substrate_verify(p);
   } else if (t === "health") {
@@ -257,6 +313,7 @@ async function fn_dispatch_word(word: string, rest: string[]): Promise<number> {
 }
 
 if (import.meta.main) {
+  SCHEMAS = await fn_load_schemas();
   const [word, ...rest] = Deno.args;
   if (!word) {
     await fn_list();

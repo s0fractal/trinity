@@ -10,13 +10,15 @@
 // addressing (0x5/C = verify) with substrate-specific execution.
 //
 // Substrate mappings:
-//   trinity → deno test --allow-all
-//   omega   → cargo test (external trigger)
-//   liquid  → hex→φ adapter (pending)
-//   myc     → descriptor check (pending)
+//   trinity → deno check hex substrate files
+//   omega   → cargo check (quick) / cargo test --deep (full)
+//   liquid  → deno check core files (hex→φ adapter pending)
+//   myc     → deno task test
 //
-// Usage: t verify          (all substrates)
-//        t verify trinity  (single substrate)
+// Usage: t cross-verify              (quick: all substrates)
+//        t cross-verify --deep       (deep: omega full tests)
+//        t cross-verify trinity      (single substrate)
+//        t cross-verify --deep omega (deep + single)
 //
 // Returns JSON receipt for dispatcher rendering.
 
@@ -37,32 +39,36 @@ interface SubstrateResult {
   status: "passed" | "failed" | "timeout" | "not_implemented";
 }
 
-const SUBSTRATES: SubstrateDef[] = [
-  {
-    name: "trinity",
-    cwd: ".",
-    cmd: ["deno", "check", "0x0/01.ts", "0x5/0.ts", "0x5/A.ts", "0x5/C.ts"],
-    note: "Trinity substrate: type-check hex substrate files (deno test skipped — liquid/tests have pre-existing TS errors)",
-  },
-  {
-    name: "omega",
-    cwd: "omega",
-    cmd: ["cargo", "test"],
-    note: "Omega substrate: Frozen Rust math library (external trigger)",
-  },
-  {
-    name: "liquid",
-    cwd: "liquid",
-    cmd: null,
-    note: "Liquid substrate: φ-routing requires hex→φ adapter (not yet implemented)",
-  },
-  {
-    name: "myc",
-    cwd: "myc",
-    cmd: null,
-    note: "MYC substrate: publication descriptor check (not yet mapped)",
-  },
-];
+function getSubstrates(deep: boolean): SubstrateDef[] {
+  return [
+    {
+      name: "trinity",
+      cwd: ".",
+      cmd: ["deno", "check", "0x0/01.ts", "0x5/0.ts", "0x5/A.ts", "0x5/C.ts"],
+      note: "Trinity substrate: type-check hex substrate files (deno test skipped — liquid/tests have pre-existing TS errors)",
+    },
+    {
+      name: "omega",
+      cwd: "omega",
+      cmd: deep ? ["cargo", "test"] : ["cargo", "check"],
+      note: deep
+        ? "Omega substrate: full test suite (286 tests, external trigger)"
+        : "Omega substrate: compile check only (use --deep for full tests)",
+    },
+    {
+      name: "liquid",
+      cwd: "liquid",
+      cmd: ["deno", "check", "00_core/liquid_pipe.ts", "00_core/phase_engine.ts", "00_core/hydrate.ts", "00_core/seed.ts"],
+      note: "Liquid substrate: type-check core files (hex→φ adapter pending; tests hang, audit has drift)",
+    },
+    {
+      name: "myc",
+      cwd: "myc",
+      cmd: ["deno", "task", "test"],
+      note: "MYC substrate: deno task test (42 tests, protocol audit + myc core)",
+    },
+  ];
+}
 
 const TIMEOUT_MS = 60000;
 
@@ -138,7 +144,12 @@ async function runSubstrate(def: SubstrateDef): Promise<SubstrateResult> {
 }
 
 if (import.meta.main) {
-  const filter = Deno.args[0];
+  const args = [...Deno.args];
+  const deep = args.includes("--deep");
+  const filterArgs = args.filter((a) => a !== "--deep");
+  const filter = filterArgs[0];
+
+  const SUBSTRATES = getSubstrates(deep);
   const targets = filter
     ? SUBSTRATES.filter((s) => s.name === filter)
     : SUBSTRATES;
@@ -165,7 +176,8 @@ if (import.meta.main) {
     type: "cross_substrate_verify",
     position: "5/C",
     action: "verify",
-    note: "5(action) × C(container) — verify across all substrates",
+    mode: deep ? "deep" : "quick",
+    note: `5(action) × C(container) — verify across all substrates (${deep ? "deep" : "quick"} mode)`,
     summary: {
       total: results.length,
       passed,

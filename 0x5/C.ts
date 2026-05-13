@@ -9,63 +9,12 @@
 // receipt format. Demonstrates adapter pattern: shared hex
 // addressing (0x5/C = verify) with substrate-specific execution.
 //
-// Substrate mappings:
-//   trinity → deno check hex substrate files
-//   omega   → cargo check (quick) / cargo test --deep (full)
-//   liquid  → deno check core files (hex→φ adapter pending)
-//   myc     → deno task test
-//
-// Usage: t cross-verify              (quick: all substrates)
-//        t cross-verify --deep       (deep: omega full tests)
-//        t cross-verify trinity      (single substrate)
-//        t cross-verify --deep omega (deep + single)
-//
-// Returns JSON receipt for dispatcher rendering.
+// LEGACY: This file predates the `all` primitive (0x0/03.ts).
+// New code should prefer `t all 5/C` or `t pipe verify all`.
+// Kept for backward compatibility and as bootstrap anchor.
 
-interface SubstrateDef {
-  name: string;
-  cwd: string;
-  cmd: string[] | null;
-  note: string;
-}
-
-interface SubstrateResult {
-  substrate: string;
-  command: string | null;
-  exit_code: number | null;
-  stdout: string;
-  stderr: string;
-  duration_ms: number;
-  status: "passed" | "failed" | "timeout" | "not_implemented";
-}
-
-import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
-
-const GLOSSARY_PATH = join(dirname(fromFileUrl(import.meta.url)), "..", "0x0", "00.ndjson");
-
-async function fn_load_substrate_mappings(position: string): Promise<SubstrateDef[] | null> {
-  try {
-    const text = await Deno.readTextFile(GLOSSARY_PATH);
-    const defs: SubstrateDef[] = [];
-    for (const line of text.trim().split("\n")) {
-      try {
-        const r = JSON.parse(line);
-        if (r["00"] === "06" && r["02"] === position) {
-          const cmd = r["03"] ? String(r["03"]).split(" ") : null;
-          defs.push({
-            name: r["01"],
-            cwd: r["04"] ?? ".",
-            cmd,
-            note: r["05"] ?? "",
-          });
-        }
-      } catch { /* skip bad lines */ }
-    }
-    return defs.length > 0 ? defs : null;
-  } catch {
-    return null;
-  }
-}
+import { loadSubstrateMappings } from "../lib/glossary.ts";
+import { runSubstrate, type SubstrateDef, type SubstrateResult } from "../lib/runner.ts";
 
 const FALLBACK_SUBSTRATES: SubstrateDef[] = [
   {
@@ -95,87 +44,17 @@ const FALLBACK_SUBSTRATES: SubstrateDef[] = [
 ];
 
 async function getSubstrates(deep: boolean, position: string): Promise<SubstrateDef[]> {
-  const fromGlossary = await fn_load_substrate_mappings(position);
-  const base = fromGlossary ?? FALLBACK_SUBSTRATES;
+  const fromGlossary = await loadSubstrateMappings(position);
+  // Map glossary SubstrateMapping to SubstrateDef (compatible shapes)
+  const base: SubstrateDef[] = fromGlossary.length > 0
+    ? fromGlossary.map((m) => ({ name: m.name, cwd: m.cwd, cmd: m.cmd, note: m.note }))
+    : FALLBACK_SUBSTRATES;
   return base.map((d) => {
     if (d.name === "omega" && deep) {
       return { ...d, cmd: ["cargo", "test"], note: d.note + " (deep mode)" };
     }
     return d;
   });
-}
-
-const TIMEOUT_MS = 60000;
-
-async function runSubstrate(def: SubstrateDef): Promise<SubstrateResult> {
-  const start = performance.now();
-
-  if (def.cmd === null) {
-    return {
-      substrate: def.name,
-      command: null,
-      exit_code: null,
-      stdout: "",
-      stderr: "",
-      duration_ms: 0,
-      status: "not_implemented",
-    };
-  }
-
-  const abort = new AbortController();
-  const timeoutId = setTimeout(() => abort.abort(), TIMEOUT_MS);
-
-  try {
-    const proc = new Deno.Command(def.cmd[0], {
-      args: def.cmd.slice(1),
-      cwd: def.cwd,
-      stdout: "piped",
-      stderr: "piped",
-      signal: abort.signal,
-    });
-
-    const output = await proc.output();
-    clearTimeout(timeoutId);
-
-    const stdout = new TextDecoder().decode(output.stdout);
-    const stderr = new TextDecoder().decode(output.stderr);
-    const duration = Math.round(performance.now() - start);
-
-    return {
-      substrate: def.name,
-      command: def.cmd.join(" "),
-      exit_code: output.code,
-      stdout: stdout.slice(0, 4000),
-      stderr: stderr.slice(0, 4000),
-      duration_ms: duration,
-      status: output.code === 0 ? "passed" : "failed",
-    };
-  } catch (e) {
-    clearTimeout(timeoutId);
-    const duration = Math.round(performance.now() - start);
-
-    if (e instanceof DOMException && e.name === "AbortError") {
-      return {
-        substrate: def.name,
-        command: def.cmd.join(" "),
-        exit_code: null,
-        stdout: "",
-        stderr: `Timeout after ${TIMEOUT_MS}ms`,
-        duration_ms: duration,
-        status: "timeout",
-      };
-    }
-
-    return {
-      substrate: def.name,
-      command: def.cmd.join(" "),
-      exit_code: null,
-      stdout: "",
-      stderr: String(e).slice(0, 4000),
-      duration_ms: duration,
-      status: "failed",
-    };
-  }
 }
 
 if (import.meta.main) {

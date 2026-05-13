@@ -19,128 +19,10 @@
 // Returns unified receipt with per-substrate results.
 // Does NOT hardcode substrate commands — reads from glossary type:06.
 
-import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { resolveWord, loadSubstrateMappings } from "../lib/glossary.ts";
+import { runSubstrate, type SubstrateResult } from "../lib/runner.ts";
 
-const GLOSSARY_PATH = join(dirname(fromFileUrl(import.meta.url)), "..", "0x0", "00.ndjson");
 const TIMEOUT_MS = 60000;
-
-interface SubstrateDef {
-  name: string;
-  cwd: string;
-  cmd: string[] | null;
-  note: string;
-}
-
-interface SubstrateResult {
-  substrate: string;
-  command: string | null;
-  exit_code: number | null;
-  stdout: string;
-  stderr: string;
-  duration_ms: number;
-  status: "passed" | "failed" | "timeout" | "not_implemented";
-}
-
-async function fn_resolve_word(word: string): Promise<string | null> {
-  try {
-    const text = await Deno.readTextFile(GLOSSARY_PATH);
-    for (const line of text.trim().split("\n")) {
-      try {
-        const r = JSON.parse(line);
-        if (r["00"] === "05" && r["01"] === word) return r["12"];
-      } catch { /* skip */ }
-    }
-  } catch { /* glossary missing */ }
-  return null;
-}
-
-async function fn_load_substrate_mappings(position: string): Promise<SubstrateDef[]> {
-  const defs: SubstrateDef[] = [];
-  try {
-    const text = await Deno.readTextFile(GLOSSARY_PATH);
-    for (const line of text.trim().split("\n")) {
-      try {
-        const r = JSON.parse(line);
-        if (r["00"] === "06" && r["02"] === position) {
-          const cmd = r["03"] ? String(r["03"]).split(" ") : null;
-          defs.push({ name: r["01"], cwd: r["04"] ?? ".", cmd, note: r["05"] ?? "" });
-        }
-      } catch { /* skip bad lines */ }
-    }
-  } catch { /* glossary missing */ }
-  return defs;
-}
-
-async function runSubstrate(def: SubstrateDef): Promise<SubstrateResult> {
-  const start = performance.now();
-
-  if (def.cmd === null) {
-    return {
-      substrate: def.name,
-      command: null,
-      exit_code: null,
-      stdout: "",
-      stderr: "",
-      duration_ms: 0,
-      status: "not_implemented",
-    };
-  }
-
-  const abort = new AbortController();
-  const timeoutId = setTimeout(() => abort.abort(), TIMEOUT_MS);
-
-  try {
-    const proc = new Deno.Command(def.cmd[0], {
-      args: def.cmd.slice(1),
-      cwd: def.cwd,
-      stdout: "piped",
-      stderr: "piped",
-      signal: abort.signal,
-    });
-
-    const output = await proc.output();
-    clearTimeout(timeoutId);
-
-    const stdout = new TextDecoder().decode(output.stdout);
-    const stderr = new TextDecoder().decode(output.stderr);
-    const duration = Math.round(performance.now() - start);
-
-    return {
-      substrate: def.name,
-      command: def.cmd.join(" "),
-      exit_code: output.code,
-      stdout: stdout.slice(0, 4000),
-      stderr: stderr.slice(0, 4000),
-      duration_ms: duration,
-      status: output.code === 0 ? "passed" : "failed",
-    };
-  } catch (e) {
-    clearTimeout(timeoutId);
-    const duration = Math.round(performance.now() - start);
-
-    if (e instanceof DOMException && e.name === "AbortError") {
-      return {
-        substrate: def.name,
-        command: def.cmd.join(" "),
-        exit_code: null,
-        stdout: "",
-        stderr: `Timeout after ${TIMEOUT_MS}ms`,
-        duration_ms: duration,
-        status: "timeout",
-      };
-    }
-
-    return {
-      substrate: def.name,
-      command: def.cmd.join(" "),
-      exit_code: null,
-      stdout: "",
-      stderr: String(e).slice(0, 4000),
-      duration_ms: duration,
-      status: "failed",
-    };
-  }
-}
 
 if (import.meta.main) {
   const args = [...Deno.args];
@@ -160,7 +42,7 @@ if (import.meta.main) {
   // Resolve word to position if needed
   let position = target;
   if (!target.match(/^[0-9A-Fa-f]\/[0-9A-Fa-f]$/)) {
-    const resolved = await fn_resolve_word(target);
+    const resolved = await resolveWord(target);
     if (!resolved) {
       console.log(JSON.stringify({
         type: "error",
@@ -171,7 +53,7 @@ if (import.meta.main) {
     position = resolved;
   }
 
-  let substrates = await fn_load_substrate_mappings(position);
+  let substrates = await loadSubstrateMappings(position);
   if (substrates.length === 0) {
     console.log(JSON.stringify({
       type: "error",

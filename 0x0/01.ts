@@ -114,7 +114,8 @@ async function fn_process_payload(raw: string, depth: number): Promise<number> {
   }
   // render
   const isTty = Deno.stdout.isTerminal();
-  if (isTty) {
+  const forceHuman = payload?.type === "cross_substrate_verify";
+  if (isTty || forceHuman) {
     fn_render_human(payload);
   } else {
     fn_write_raw(JSON.stringify(payload));
@@ -144,10 +145,29 @@ function fn_render_human(p: any): void {
     fn_render_help(p);
   } else if (t === "error") {
     console.error(`# error: ${p.message ?? "unknown"}`);
+  } else if (t === "cross_substrate_verify") {
+    fn_render_cross_substrate_verify(p);
   } else {
     // fallback: pretty JSON
     console.log(JSON.stringify(p, null, 2));
   }
+}
+
+function fn_render_cross_substrate_verify(p: any): void {
+  const mode = p.mode ?? "quick";
+  const summary = p.summary ?? {};
+  console.log(`# cross-verify @ ${p.position ?? "?"} (${mode} mode)`);
+  console.log("# " + "─".repeat(50));
+  for (const s of p.substrates ?? []) {
+    const icon = s.status === "passed" ? "✓" : s.status === "failed" ? "✗" : s.status === "timeout" ? "⏱" : "⊘";
+    const cmd = s.command ?? "not implemented";
+    const shortCmd = cmd.length > 35 ? cmd.slice(0, 32) + "..." : cmd;
+    const dur = s.duration_ms ?? 0;
+    console.log(`# ${s.substrate.padEnd(9)} ${icon} ${s.status.padEnd(14)} ${dur.toString().padStart(5)}ms  ${shortCmd}`);
+  }
+  console.log("# " + "─".repeat(50));
+  const overallIcon = summary.overall === "passed" ? "✓" : "✗";
+  console.log(`# overall:  ${overallIcon} ${summary.overall ?? "?"}  ${summary.passed ?? 0}/${summary.total ?? 0} passed`);
 }
 
 function fn_render_help(p: any): void {

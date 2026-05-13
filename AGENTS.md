@@ -255,13 +255,6 @@ liquid/SPORE" — стоп. **Bridge замість duplicate.** Якщо bridge
 
 ## Що відкрите (на 2026-05-14)
 
-- **placement_policy field** (codex'ова пропозиція
-  2026-05-13T205222Z). Per-file декларація: axis | tier | composite
-  | legacy. Audit/balance respect'ять policy замість universal
-  projection reading.
-- **Mismatch rebalance.** 16 з 26 файлів placed wrong під projection
-  reading. `t balance` показує куди. Move'и потребують policy
-  рішення.
 - **`lib/` not топологічний.** Поки використовується для shared
   glossary parsing. Майбутнє: дисперчер extensions для continuation-
   passing або autogen mod. Архітектор decision pending.
@@ -275,6 +268,17 @@ liquid/SPORE" — стоп. **Bridge замість duplicate.** Якщо bridge
   organs — статус стане recursive.
 - **AGENTS.md letters для liquid/omega/myc.** Цей файл — trinity-
   specific. Substrate'и мають свої.
+- **Rebalance optional.** Після placement_policy (de9e08a) substrate
+  не "drifts" — кожен файл декларує свій policy. Move'и можна робити
+  для чистоти проекції (axis policy default everywhere), але це
+  cleanup, не fix. Архітекторне рішення.
+
+## Що закрилось після першого draft (для контексту)
+
+- **placement_policy field** — реалізовано de9e08a. Per-file declaration
+  у header'і; audit/balance respect'ять policy.
+- **Mismatch drift** — після policy declarations 16 mismatches стали
+  25 match + 1 deferred + 0 mismatch. Substrate's overall = "well".
 
 ## Один прохання
 

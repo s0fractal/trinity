@@ -79,3 +79,9 @@
 {"00":"07","01":"join","02":"type,action,steps,count,errors,overall,results","03":"resolved,note,topology","04":"join receipt from 0x0/08.ts"}
 {"00":"05","01":"repeat","12":"0/09","11":"00 00 00 00 00 00 00 00","10":{"en":"repeat/loop/iterate/stress","uk":"повторення/цикл/ітерація"},"09":"foundation+completion = iterate n times and collect"}
 {"00":"07","01":"repeat","02":"type,action,target,resolved,requested_count,actual_count,errors,overall","03":"first_error_at,iterations,note,topology","04":"repeat receipt from 0x0/09.ts"}
+{"00":"05","01":"tap","12":"0/0A","11":"00 00 00 00 00 00 00 00","10":{"en":"tap/touch/side-effect/observer","uk":"дотик/спостереження/побічний-ефект"},"09":"foundation+apex = side-effect decorator"}
+{"00":"07","01":"tap","02":"type,action,primary,side_effect,resolved_primary,resolved_side,overall","03":"primary_ok,side_ok,primary_result,side_result,note,topology","04":"tap receipt from 0x0/0A.ts"}
+{"00":"05","01":"until","12":"0/0B","11":"00 00 00 00 00 00 00 00","10":{"en":"until/retry/loop-until-success","uk":"повторювати/доки-не-успіх"},"09":"foundation+edge = retry until success or exhausted"}
+{"00":"07","01":"until","02":"type,action,target,resolved,max_retries,delay_ms,attempts,overall","03":"success_at,final_result,note,topology","04":"until receipt from 0x0/0B.ts"}
+{"00":"05","01":"any","12":"0/0C","11":"00 00 00 00 00 00 00 00","10":{"en":"any/race/first-success/speculate","uk":"будь-який/перший-успіх/перегонки"},"09":"foundation+cycle = parallel race, return first success"}
+{"00":"07","01":"any","02":"type,action,steps,count,first_success_at,overall,results","03":"resolved,note,topology","04":"any receipt from 0x0/0C.ts"}

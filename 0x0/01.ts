@@ -257,12 +257,16 @@ function fn_render_human(p: any): void {
 
 function fn_render_spore_apply(p: any): void {
   console.log(`# apply @ ${p.position ?? "5/F"}`);
+  console.log(`# protocol: ${p.protocol ?? "spore.v0"}  backend: ${p.backend_kind ?? "unknown"}`);
+  if (p.simulation === true) {
+    console.log(`# ⚠ SIMULATION — receipt_kind: ${p.receipt_kind ?? "simulated_spore_apply"} (not a verified SPORE.v0 receipt)`);
+  }
   console.log(`# mutator: ${p.mutator}`);
   console.log(`# state:   ${p.state}`);
   if (p.inputs && p.inputs.length > 0) {
     console.log(`# inputs:  ${p.inputs.join(", ")}`);
   }
-  console.log(`# -> ${p.output} [receipt: ${p.receipt}]`);
+  console.log(`# -> ${p.output}`);
   if (p.note) console.log(`# ${p.note}`);
 }
 
@@ -328,13 +332,23 @@ function fn_render_help(p: any): void {
 }
 
 function fn_render_status(p: any): void {
-  // New composite format (0x2/E.ts) vs old simple format
+  // SUBSTRATE_HEALTH.v0.1 projection — preferred if present.
+  // Falls back to legacy `summary` field for backward compat.
   if (p.summary?.overall) {
     const s = p.summary;
-    const icon = s.overall === "well" ? "✓" : s.overall === "drifting" ? "⚠" : s.overall === "degraded" ? "⚠" : "✗";
-    console.log(`# status @ ${p.position ?? "?"} — ${icon} ${s.overall ?? "?"}`);
+    const sh = p.substrate_health;
+
+    // Use the more honest overall when SUBSTRATE_HEALTH is present.
+    const overall = sh?.overall ?? s.overall;
+    const icon =
+      overall === "healthy" || overall === "well" ? "✓"
+      : overall === "degraded" || overall === "drifting" ? "⚠"
+      : "✗";
+    const legacyNote = sh && sh.overall !== s.overall ? ` (legacy: ${s.overall})` : "";
+    console.log(`# status @ ${p.position ?? "?"} — ${icon} ${overall}${legacyNote}`);
     if (p.note) console.log(`# ${p.note}`);
     console.log("# " + "─".repeat(40));
+
     if (s.health) {
       const hi = s.health.overall === "healthy" ? "✓" : s.health.overall === "degraded" ? "⚠" : "✗";
       console.log(`# health:   ${hi} ${s.health.overall}  (${s.health.ok ?? 0} ok, ${s.health.fail ?? 0} fail)`);
@@ -343,11 +357,26 @@ function fn_render_status(p: any): void {
       const ai = s.audit.match > 0 && s.audit.mismatch === 0 ? "✓" : "⚠";
       console.log(`# audit:    ${ai} ${s.audit.match}/${s.audit.total} match`);
     }
+
+    // External CI (SUBSTRATE_HEALTH.v0.1). Surface red_signals visibly.
+    if (sh?.external_ci) {
+      const ci = sh.external_ci;
+      const ci_icon = ci.green === true ? "✓" : ci.green === false ? "⚠" : "·";
+      const stale_tag = ci.is_stale ? " (stale)" : "";
+      const age = ci.age_seconds !== null ? ` ${ci.age_seconds}s old` : "";
+      console.log(`# ext_ci:   ${ci_icon} green=${ci.green}${stale_tag}${age}`);
+      if (ci.red_signals && ci.red_signals.length > 0) {
+        for (const sig of ci.red_signals) {
+          console.log(`#   ✗ ${sig}`);
+        }
+      }
+    }
+
     if (p.submodules) {
       for (const [name, sub] of Object.entries(p.submodules)) {
         if (!sub) continue;
         const subData = sub as any;
-        const subOvr = subData.summary?.overall ?? "unknown";
+        const subOvr = subData.substrate_health?.overall ?? subData.summary?.overall ?? "unknown";
         const si = subOvr === "healthy" ? "✓" : subOvr === "degraded" ? "⚠" : "✗";
         console.log(`# sub[${name.padEnd(6)}]: ${si} ${subOvr}`);
       }

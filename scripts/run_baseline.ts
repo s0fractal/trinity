@@ -132,6 +132,33 @@ async function main() {
   await Deno.writeTextFile(reportPath, report);
   console.log(`\nReport written: ${reportPath}`);
 
+  // JSON sidecar — machine-readable form, consumed by SUBSTRATE_HEALTH.v0.1
+  // adopters (e.g. 0x2/E.ts:loadCachedCi). Markdown remains for human read.
+  // Schema: trinity.audit-baseline.v0.1
+  const sidecar = {
+    schema: "trinity.audit-baseline.v0.1",
+    kind: strict ? "strict" : "green",
+    generated_at: now,
+    duration_total_ms: results.reduce((acc, r) => acc + r.durationMs, 0),
+    gates: results.map((result) => ({
+      name: result.name,
+      status: result.code === 0 ? "PASS" : "FAIL",
+      exit_code: result.code,
+      duration_ms: result.durationMs,
+    })),
+    summary: {
+      total: results.length,
+      passed: results.filter((r) => r.code === 0).length,
+      failed: results.filter((r) => r.code !== 0).length,
+      skipped: 0,
+    },
+  };
+  const sidecarPath = `${root}/reports/latest-${
+    strict ? "strict" : "green"
+  }-audit.json`;
+  await Deno.writeTextFile(sidecarPath, JSON.stringify(sidecar, null, 2) + "\n");
+  console.log(`Sidecar written:  ${sidecarPath}`);
+
   const failed = results.filter((result) => result.code !== 0);
   if (failed.length > 0) {
     Deno.exit(1);

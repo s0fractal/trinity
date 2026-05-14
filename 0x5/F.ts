@@ -28,11 +28,15 @@ async function main() {
       type: "spore_apply",
       action: "apply",
       position: "5/F",
+      protocol: result.protocol ?? "spore.v0",
+      backend_kind: result.backend_kind ?? "unknown",
+      simulation: result.simulation === true,
+      receipt_kind: result.receipt_kind ?? "unknown",
       mutator: mutatorHash,
       state: stateHash,
       inputs: inputHashes,
       output: result.output_hash,
-      receipt: result.receipt,
+      note: result.note,
     };
     console.log(JSON.stringify(payload));
     Deno.exit(0);

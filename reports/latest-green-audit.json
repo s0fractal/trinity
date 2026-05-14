@@ -1,0 +1,38 @@
+{
+  "schema": "trinity.audit-baseline.v0.1",
+  "kind": "green",
+  "generated_at": "2026-05-14T18:02:33.848Z",
+  "duration_total_ms": 5914,
+  "gates": [
+    {
+      "name": "myc / deno task check",
+      "status": "FAIL",
+      "exit_code": 1,
+      "duration_ms": 58
+    },
+    {
+      "name": "omega / cargo test --workspace",
+      "status": "PASS",
+      "exit_code": 0,
+      "duration_ms": 1613
+    },
+    {
+      "name": "liquid / deno task audit:strict",
+      "status": "FAIL",
+      "exit_code": 1,
+      "duration_ms": 4000
+    },
+    {
+      "name": "liquid / deno task ledger:doctor --json",
+      "status": "PASS",
+      "exit_code": 0,
+      "duration_ms": 243
+    }
+  ],
+  "summary": {
+    "total": 4,
+    "passed": 2,
+    "failed": 2,
+    "skipped": 0
+  }
+}

@@ -54,7 +54,10 @@ async function checkGlossary(): Promise<{ ok: boolean; records: number; words: n
       try {
         const r = JSON.parse(line);
         records++;
-        if (r["00"] === "05") words++;
+        // type:5 records (words) are stored as `"00":"5"` in the glossary,
+        // while schema/dipole records use the two-char form (`"00":"05"`).
+        // Accept both so this counter stays honest under either convention.
+        if (r["00"] === "5" || r["00"] === "05") words++;
       } catch { /* skip */ }
     }
     return { ok: true, records, words };

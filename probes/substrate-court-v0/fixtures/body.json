@@ -1,0 +1,29 @@
+{
+  "type": "SubstrateHealth",
+  "schema": "trinity.substrate-health.v0.1",
+  "substrate": "trinity",
+  "overall": "healthy",
+  "own_organs": {
+    "ok": 76,
+    "warn": 0,
+    "fail": 0,
+    "total": 76
+  },
+  "external_ci": {
+    "green": true,
+    "strict": null,
+    "red_signals": [],
+    "checked_at": "2026-05-14T17:00:00Z",
+    "max_age_seconds": 600,
+    "age_seconds": 0,
+    "is_stale": false,
+    "source": "live"
+  },
+  "law_hash": null,
+  "clock": {
+    "causal_ticks": null,
+    "era": null,
+    "bitcoin_block": null,
+    "wall_time_utc": "2026-05-14T17:00:00Z"
+  }
+}

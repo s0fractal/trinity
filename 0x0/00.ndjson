@@ -62,7 +62,7 @@
 
 {"00":"01","09":"end-marker. 16 symbols, 7 projections, 8 words, 16 substrate mappings (5/A×4, 5/C×4). 7 hex executables: 0x0/01, 0x0/02, 0x0/0F, 0x5/0, 0x5/A, 0x5/C, 0x6/A. type:06 substrate registry operational. Glossary drives cross-substrate execution. Open: liquid hex→φ adapter, SPORE receipt schema, extend registry to all positions."}
 {"00":"02","02":"07","03":"receipt_schema"}
-{"00":"07","01":"status","02":"type,position,action","03":"args,note,synonyms,subsets,todo","04":"basic status echo from any executable"}
+{"00":"07","01":"status","02":"type,position,action","03":"args,note,synonyms,subsets,todo,summary,organs,submodules,substrate_health,substrate_health_envelope,topology","04":"status echo from any executable; substrate_health follows SUBSTRATE_HEALTH.v0.1; --envelope adds substrate_health_envelope per RECEIPT_ENVELOPE.v1.0 (see contracts/)"}
 {"00":"07","01":"health","02":"type,position,action,summary,checks","03":"note,synonyms","04":"health check receipt from 0x6/A.ts"}
 {"00":"07","01":"cross_substrate_verify","02":"type,position,action,mode,summary,substrates","03":"note,adapter_pattern,falsifier","04":"legacy cross-substrate verification receipt; cross-verify now emits all receipt via 0x0/03.ts"}
 {"00":"07","01":"error","02":"type,message","03":"position,available","04":"error receipt from dispatcher or executable"}
@@ -94,7 +94,9 @@
 {"00":"8","01":"recipe.submodule-deterministic-receipt","02":["submodule deterministic receipt","детермінований receipt сабмодулів"],"05":["omega.rust.tests","omega.deno.fast","liquid.doctor","liquid.audit.strict","trinity.cognition.field"],"06":"terminal test output plus updated cognitive field","09":"Convert substrate test pressure into a receipt or explicit failure surface.","11":"19 00 40 66 33 40 40 33"}
 {"00":"8","01":"recipe.spatial-materialization-bootstrap","02":["spatial materialization bootstrap","bootstrap просторової матеріалізації"],"05":["trinity.spatial-materialization.contract","trinity.capabilities.validate","trinity.cognition.field"],"06":"contracts/SPATIAL_MATERIALIZATION.v0.1.md plus updated cognitive field","09":"Borrow OMEGA's markdown-to-layered-facade pattern without porting the monolithic generator.","11":"19 00 40 66 33 40 40 33"}
 {"00":"5","02":["apply","застосувати","виконати"],"04":"5/F","09":"action+frontier = spore apply deterministic primitive","11":"26 26 40 33 40 6C 40 59"}
-{"00":"07","01":"spore_apply","02":"type,action,position,mutator,state,output,receipt","03":"inputs,note,topology","04":"spore apply receipt from 0x5/F.ts"}
+{"00":"5","02":["court","verdict","witness-verdict","суд","вердикт"],"04":"6/E","09":"harmony+completion-pair = multi-witness Substrate Court verdict (see probes/substrate-court-v0/)","11":"26 26 33 26 33 26 6C 59"}
+{"00":"07","01":"SubstrateCourtVerdict","02":"type,schema,witnesses_count,agreement,body_hashes,envelope_ids,law_hashes,conflicts","03":"note,topology","04":"substrate court verdict from 0x6/E.ts; emits agreement bool + conflicts list (body_hash_divergence | schema_mismatch | envelope_id_collision | self_inconsistent_body_hash | duplicate_substrate_tag)"}
+{"00":"07","01":"spore_apply","02":"type,action,position,protocol,backend_kind,simulation,receipt_kind,mutator,state,output","03":"inputs,note,topology","04":"spore apply receipt from 0x5/F.ts; protocol owner is Trinity, backend is pluggable (wasmtime|deno|omega-zk|simulation); see contracts/SPORE_VS_OMEGA_SPORE_BOUNDARY.v0.1.md"}
 {"00":"5","02":["validate_schemas","validate","валідація"],"04":"5/4","09":"action+foundation = validate schemas","11":"26 26 26 26 59 6C 26 26"}
 {"00":"5","02":["ontology_coverage","ontology","покриття"],"04":"6/3","09":"harmony+build = ontology coverage scanner","11":"26 26 26 59 26 26 6C 26"}
 {"00":"5","02":["cognition_snapshot","cognition-snapshot","зліпок-когніції"],"04":"2/4","09":"mirror+foundation = capture cognitive state","11":"26 26 6C 26 59 26 26 26"}

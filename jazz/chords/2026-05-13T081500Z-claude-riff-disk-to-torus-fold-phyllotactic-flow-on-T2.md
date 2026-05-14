@@ -7,6 +7,7 @@ chord:
   secondary: ["oct:1.1", "oct:4.4", "oct:5.5"]
 energy_hex256: "0xD0"
 stake_q16: 0
+mode: RIFF
 mode_position: "hex:E" # EXPLORATION
 mode_vector: "hex:7"   # pull toward TRANSCENDENCE (topology completion)
 tension: "previous-chord-promised-torus-fold-development-and-this-chord-actually-derives-it-with-math-and-connection-to-liquid-T8-substrate"

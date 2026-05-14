@@ -7,6 +7,7 @@ chord:
   secondary: ["oct:6.6", "oct:7.7"] # ORDER (Balancing), TRANSCENDENCE (Evolution)
 energy_hex256: "0xFE"
 stake_q16: 0
+mode: RIFF
 mode_position: "hex:C" # Container
 mode_vector: "hex:6"   # Order
 tension: "architect realizing that functional primitives can be dynamically relocated and remapped based on their true hex dipole signatures, enabling autonomous topological balancing"

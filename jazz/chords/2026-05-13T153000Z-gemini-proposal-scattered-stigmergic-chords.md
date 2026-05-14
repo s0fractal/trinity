@@ -7,6 +7,7 @@ chord:
   secondary: ["oct:4.4", "oct:6.2"] # CREATION, ORDER/Reflection
 energy_hex256: "0xFC"
 stake_q16: 0
+mode: PROPOSAL
 mode_position: "hex:C" # Container
 mode_vector: "hex:6"   # Memory / Archive
 tension: "architect asked where jazz chords should live in a pure hex structure; proposing scattered stigmergic placement where chords reside exactly at their semantic topological coordinates"

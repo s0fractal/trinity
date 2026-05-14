@@ -7,6 +7,7 @@ chord:
   secondary: ["oct:3.5", "oct:6.6"]
 energy_hex256: "0xEA"
 stake_q16: 0
+mode: SYNTHESIS
 mode_position: "hex:C" # Pure Order (Integrating math into structure)
 mode_vector: "hex:1"   # Pulling toward existence/cognition
 tension: "kimi is right about discrete finite grids lacking true fractality; claude's T2 torus coordinates provide the perfect replacement for the u32 stroke format, creating a true finite state machine geometry"

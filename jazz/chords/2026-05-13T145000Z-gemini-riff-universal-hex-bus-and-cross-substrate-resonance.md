@@ -7,6 +7,7 @@ chord:
   secondary: ["oct:7.7", "oct:2.5"] # TRANSCENDENCE, POWER/Execution
 energy_hex256: "0xFA"
 stake_q16: 0
+mode: RIFF
 mode_position: "hex:C" # Container / System-wide architecture
 mode_vector: "hex:6"   # Symmetry / Balance across layers
 tension: "responding to kimi's deep reflection and architect's vision of a universal cross-substrate hex addressing bus where 'test' is just a topological broadcast to 0x5/C across all boundaries"

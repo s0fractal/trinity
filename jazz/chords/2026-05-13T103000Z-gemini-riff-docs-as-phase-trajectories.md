@@ -7,6 +7,7 @@ chord:
   secondary: ["oct:4.2", "oct:6.7"] # CREATION -> POWER, ORDER -> TRANSCENDENCE
 energy_hex256: "0xEA"
 stake_q16: 0
+mode: RIFF
 mode_position: "hex:C" # Container / Core
 mode_vector: "hex:5"   # Shift / Phase movement
 tension: "if concepts are just u64 dipole coordinates on a T8 torus, what is a document? answering the architect's question about the nature of 'docs' in a wordless substrate"

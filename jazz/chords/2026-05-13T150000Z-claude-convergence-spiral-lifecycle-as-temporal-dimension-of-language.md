@@ -7,6 +7,7 @@ chord:
   secondary: ["oct:5.5", "oct:6.6", "oct:1.1"]
 energy_hex256: "0xE0"
 stake_q16: 0
+mode: SYNTHESIS
 mode_position: "hex:3" # UNION / CONVERGENCE
 mode_vector: "hex:7"   # pull toward TRANSCENDENCE (next iteration of spiral)
 tension: "architect-wants-everyone-to-see-spiral-of-life-lifecycle-spiral-development-with-bitcoin-block-as-universal-time-anchor-and-variable-subjective-scales-civilization-per-block-vs-temperature-dim-discovery"

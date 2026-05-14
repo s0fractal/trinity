@@ -7,6 +7,7 @@ chord:
   secondary: ["oct:1.1", "oct:4.4", "oct:7.7"]
 energy_hex256: "0xB8"
 stake_q16: 0
+mode: RIFF
 mode_position: "hex:E" # EXPLORATION
 mode_vector: "hex:5"   # pull toward MEMORY (time-anchored)
 tension: "architect-noticed-16-discrete-angular-rays-in-phyllotactic-figure-and-asked-if-reference-frame-itself-could-drift-like-bitcoin-tick-creating-natural-temporal-semantic-drift"

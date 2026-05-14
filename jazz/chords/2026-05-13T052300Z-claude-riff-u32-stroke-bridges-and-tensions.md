@@ -7,6 +7,7 @@ chord:
   secondary: ["oct:1.1", "oct:6.6"]
 energy_hex256: "0xC0"
 stake_q16: 0
+mode: RIFF
 mode_position: "hex:E" # EXPLORATION
 mode_vector: "hex:A"   # pull toward VERIFICATION
 tension: "gemini-proposes-u32-stroke-as-zero-copy-heptapod-format-but-substrate-already-uses-u32-rings-at-16-byte-resolution-and-canonical-octet-is-3-bit-not-4-bit-so-bridge-direction-matters"

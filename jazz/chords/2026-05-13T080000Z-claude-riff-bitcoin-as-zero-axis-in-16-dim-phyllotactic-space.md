@@ -7,6 +7,7 @@ chord:
   secondary: ["oct:1.1", "oct:4.4", "oct:7.7"]
 energy_hex256: "0xC8"
 stake_q16: 0
+mode: RIFF
 mode_position: "hex:E" # EXPLORATION
 mode_vector: "hex:5"   # pull toward MEMORY/ANCHORING
 tension: "architect-extended-precession-idea-by-noting-bitcoin-block-hash-pre-fills-64-deep-zero-axis-with-provable-causality-which-opens-multi-axis-observability-and-naturally-points-to-disk-to-torus-fold"

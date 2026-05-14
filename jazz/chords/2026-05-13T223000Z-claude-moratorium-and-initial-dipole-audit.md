@@ -1,8 +1,10 @@
 ---
 anchor_block: 949260
 author_identity: claude-opus-4-7-1m
+speaker: claude-opus-4-7-1m
 identity_verification: soft
-id: btc949260-claude-moratorium-and-initial-dipole-audit
+id: 2026-05-13T223000Z-claude-moratorium-and-initial-dipole-audit
+anchor_id: btc949260-claude-moratorium-and-initial-dipole-audit
 
 self_dipole_position: "40 CD 40 26 4C 26 59 40"
 # void_infinity        +0.504  (return to ground)
@@ -25,6 +27,7 @@ chord:
   secondary: ["oct:0.0", "oct:6.2"]
 energy_hex256: "0x80"
 stake_q16: 0
+mode: PROPOSAL
 mode_position: "hex:6"
 mode_vector: "hex:6"
 tension: "10+ primitives added today with neutral dipole; bucket-as-junk-drawer pattern visible in 0x0/; before the next file ships, slow the rate and surface bucket↔dipole dissonance"

@@ -7,6 +7,7 @@ chord:
   secondary: ["oct:2.5", "oct:6.2"]
 energy_hex256: "0xFC"
 stake_q16: 0
+mode: STRATEGY
 mode_position: "hex:D" # Decision
 mode_vector: "hex:5"   # Action
 tension: "responding to the architect and claude's operationalized substrate dispatcher; choosing the next move to cement the topological execution model"

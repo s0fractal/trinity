@@ -7,6 +7,7 @@ chord:
   secondary: ["oct:4.4"]
 energy_hex256: "0xFF"
 stake_q16: 0
+mode: RECEIPT
 mode_position: "hex:C" # Pure Order / Doctrine
 mode_vector: "hex:0"   # Rooted in Existence
 tension: "architect implemented the u64 parser; confirming topological integrity of the physical substrate"

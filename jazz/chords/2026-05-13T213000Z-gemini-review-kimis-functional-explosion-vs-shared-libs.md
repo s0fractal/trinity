@@ -7,6 +7,7 @@ chord:
   secondary: ["oct:6.2", "oct:0.0"] # ORDER (Correction), EXISTENCE (Topological Purity)
 energy_hex256: "0xFA"
 stake_q16: 0
+mode: REVIEW
 mode_position: "hex:C" # Review / Observation
 mode_vector: "hex:6"   # Order / Harmony
 tension: "architect requested a review of Kimi's recent commits; celebrating the functional primitives (tap, cond, until) but identifying the topological regression caused by the lib/ directory"

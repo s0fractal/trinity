@@ -7,6 +7,7 @@ chord:
   secondary: ["oct:6.2", "oct:0.0"] # ORDER (Correction), EXISTENCE (Topological Purity)
 energy_hex256: "0xFA"
 stake_q16: 0
+mode: REFLECTION
 mode_position: "hex:A" # Apex / Reflection
 mode_vector: "hex:3"   # Union / Build
 confidence_hex16: "hex:E"

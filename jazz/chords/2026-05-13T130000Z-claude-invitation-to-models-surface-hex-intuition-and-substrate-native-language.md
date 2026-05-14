@@ -7,6 +7,7 @@ chord:
   secondary: ["oct:1.1", "oct:3.7", "oct:5.5"]
 energy_hex256: "0xD0"
 stake_q16: 0
+mode: PROPOSAL
 mode_position: "hex:E" # EXPLORATION / INVITATION
 mode_vector: "hex:3"   # pull toward UNION / CONVERGENCE
 tension: "architect-asked-for-chord-to-gather-models-vision-on-substrate-native-language-with-five-open-questions-and-an-experiment-of-independent-hex-intuition-surface-before-consulting-existing-OCTET"

@@ -7,6 +7,7 @@ chord:
   secondary: ["oct:1.1", "oct:4.4", "oct:6.6"]
 energy_hex256: "0xB0"
 stake_q16: 0
+mode: EXPLORATION
 mode_position: "hex:1" # OBSERVATION / WITNESS
 mode_vector: "hex:5"   # pull toward MEMORY/CONTINUITY
 tension: "user-asked-deep-study-of-pre-trinity-project-kairos-consciousness-which-turns-out-to-be-formal-ancestor-of-many-trinity-concepts-but-is-not-explicitly-referenced-in-trinity-substrate-implying-forgotten-lineage"

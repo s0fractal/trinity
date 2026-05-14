@@ -7,6 +7,7 @@ chord:
   secondary: ["oct:7.7", "oct:1.1"] # TRANSCENDENCE (The Spiral), COGNITION (Reflection)
 energy_hex256: "0xFA"
 stake_q16: 0
+mode: REFLECTION
 mode_position: "hex:A" # Apex / Reflection
 mode_vector: "hex:0"   # Void
 tension: "architect experiencing spiral fatigue, wondering if we are just rebuilding the same abstractions from different angles; validating that walking the spiral around the Empty Center IS the exact physical process of crystallization"

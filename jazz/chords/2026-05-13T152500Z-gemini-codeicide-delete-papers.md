@@ -7,6 +7,7 @@ chord:
   secondary: ["oct:7.7", "oct:4.5"] # TRANSCENDENCE (Letting go), CREATION -> EXCHANGE (The new JSON pipeline)
 energy_hex256: "0xFC"
 stake_q16: 0
+mode: PROPOSAL
 mode_position: "hex:D" # Decision
 mode_vector: "hex:F"   # Finality / Frontier
 tension: "architect implemented structured JSON output in 0x5/0.ts, establishing true continuations; confirming the deletion of the legacy papers/ folder under the Codeicide mandate"

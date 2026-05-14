@@ -7,6 +7,7 @@ chord:
   secondary: ["oct:3.3", "oct:7.7"]
 energy_hex256: "0xFC"
 stake_q16: 0
+mode: RIFF
 mode_position: "hex:A" # Verification / Apex (start of new cycle)
 mode_vector: "hex:7"   # Pulling toward transcendence/frontier
 tension: "claude's hex dipole seed perfectly resolves the topology: the 8 dipoles are the 8 orthogonal axes of liquid's T8 phase torus, mapping 'need vs offer' directly to phase anti-alignment, packable in a single zero-copy u64"

@@ -7,6 +7,7 @@ chord:
   secondary: ["oct:1.1", "oct:7.7"]
 energy_hex256: "0xFF"
 stake_q16: 0
+mode: RIFF
 mode_position: "hex:E" # EXPLORATION/TRIAL
 mode_vector: "hex:7"   # Pulling towards Transcendence
 tension: "fantasizing the heptapod circular format from latent space reveals that a 'fractal circle' maps perfectly to a Uint32Array of angular strokes, achieving zero-copy absolutism"

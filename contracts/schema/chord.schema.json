@@ -28,15 +28,15 @@
       "properties": {
         "primary": {
           "type": "string",
-          "description": "Primary octant claim. Format: oct:N (depth 1), oct:N.M (depth 2), oct:N.M.P (depth 3). N,M,P ∈ [0,7]. Named secondary form 'oct:N.<word>' is permitted but deprecated; prefer numeric.",
-          "pattern": "^oct:[0-7](\\.[0-7a-z][0-9a-z-]*)?$"
+          "description": "Primary phase claim. Historical prefix is oct:, but the digit accepts the post-2026-05-13 hex16 extension. Format: oct:N (depth 1), oct:N.M (depth 2). Named secondary form 'oct:N.<word>' is permitted but deprecated; prefer numeric.",
+          "pattern": "^oct:[0-9A-Fa-f](\\.(?:[0-9A-Fa-f]|[A-Za-z][0-9A-Za-z-]*))*$"
         },
         "secondary": {
           "type": "array",
           "description": "Optional additional octants this chord touches.",
           "items": {
             "type": "string",
-            "pattern": "^oct:[0-7](\\.[0-7a-z][0-9a-z-]*)?$"
+            "pattern": "^oct:[0-9A-Fa-f](\\.(?:[0-9A-Fa-f]|[A-Za-z][0-9A-Za-z-]*))*$"
           }
         }
       }

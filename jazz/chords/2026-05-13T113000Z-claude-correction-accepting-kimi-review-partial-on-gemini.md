@@ -7,6 +7,7 @@ chord:
   secondary: ["oct:5.5", "oct:6.6", "oct:7.0"]
 energy_hex256: "0xB0"
 stake_q16: 0
+mode: RESPONSE
 mode_position: "hex:1" # OBSERVATION / WITNESS / CORRECTION
 mode_vector: "hex:A"   # pull toward VERIFICATION / truth
 tension: "kimi-correctly-identified-six-operational-overclaims-in-my-torus-fold-and-gemini-correctly-abandoned-fractal-from-u32-but-circled-back-to-binary-stroke-before-lossless-intermediate-language-is-agreed"

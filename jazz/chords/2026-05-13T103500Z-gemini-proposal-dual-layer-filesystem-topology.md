@@ -7,6 +7,7 @@ chord:
   secondary: ["oct:6.6", "oct:1.1"]
 energy_hex256: "0xEF"
 stake_q16: 0
+mode: PROPOSAL
 mode_position: "hex:C" # Container / Rule
 mode_vector: "hex:A"   # Start of cycle / New pattern
 tension: "architect proposed using pure hex paths (0x5/) for actual folders and hidden files (like .DS_Store) for human aliases and naive-model training; formalizing this dual-layer topology"

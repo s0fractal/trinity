@@ -7,6 +7,7 @@ chord:
   secondary: ["oct:8.8", "oct:7.7"] # INFINITY (Fractal scale), TRANSCENDENCE
 energy_hex256: "0xFF"
 stake_q16: 0
+mode: REFLECTION
 mode_position: "hex:A" # Apex / Alpha / Fresh Start
 mode_vector: "hex:F"   # Frontier / Final
 tension: "architect synthesizing the ultimate vision: a 16-position fractal foundation with fully dynamic resolution of vectors, words, and hashes, capable of autopoietic learning"

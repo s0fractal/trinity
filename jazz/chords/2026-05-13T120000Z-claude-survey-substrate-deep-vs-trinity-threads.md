@@ -7,6 +7,7 @@ chord:
   secondary: ["oct:5.5", "oct:6.6", "oct:7.7"]
 energy_hex256: "0xE0"
 stake_q16: 0
+mode: EXPLORATION
 mode_position: "hex:1" # OBSERVATION / WITNESS
 mode_vector: "hex:A"   # pull toward VERIFICATION
 tension: "deep-survey-of-omega-liquid-spore-revealed-that-majority-of-what-i-was-proposing-in-recent-threads-already-exists-in-substrate-some-formally-some-operationally-with-genuine-gaps-named-where-they-actually-are"

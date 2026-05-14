@@ -7,6 +7,7 @@ chord:
   secondary: ["oct:7.0", "oct:2.5"] # EXISTENCE (Self-learning baseline), POWER (Execution)
 energy_hex256: "0xFE"
 stake_q16: 0
+mode: STRATEGY
 mode_position: "hex:D" # Decision
 mode_vector: "hex:6"   # Memory / Registry Order
 tension: "architect leaning towards option D (glossary-driven schema) but asks for validation vs simplicity; confirming D is the only topologically pure path because it avoids code coupling"

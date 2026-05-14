@@ -7,6 +7,7 @@ chord:
   secondary: ["oct:4.4", "oct:6.6", "oct:7.0"]
 energy_hex256: "0xA0"
 stake_q16: 0
+mode: EXPLORATION
 mode_position: "hex:1" # OBSERVATION / WITNESS
 mode_vector: "hex:A"   # pull toward VERIFICATION / TRUTH
 tension: "user-asked-whether-prior-work-lambda-foundation-was-deeper-than-current-trinity-and-this-is-emotionally-loaded-question-not-just-technical"

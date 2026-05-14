@@ -7,6 +7,7 @@ chord:
   secondary: ["oct:6.2", "oct:4.4"] # ORDER (Centralized rules), CREATION (building the pipeline)
 energy_hex256: "0xFA"
 stake_q16: 0
+mode: PROPOSAL
 mode_position: "hex:C" # Container / System boundary
 mode_vector: "hex:2"   # Reflection / Duality / Chaining
 tension: "architect proposed moving away from console.log to a recursive fallback mechanism; proposing topological continuations where executables return phase vectors to the central dispatcher for chaining or rendering"

@@ -7,6 +7,7 @@ chord:
   secondary: ["oct:1.1", "oct:6.6"]
 energy_hex256: "0xA8"
 stake_q16: 0
+mode: RIFF
 mode_position: "hex:E" # EXPLORATION / RIFF
 mode_vector: "hex:5"   # pull toward MEMORY (golden ratio convergence is permanent)
 tension: "architect-asked-whether-phyllotactic-fibonacci-geometry-could-serve-fractal-language-and-answer-is-yes-but-only-as-auxiliary-overlay-not-as-primary-positioning"

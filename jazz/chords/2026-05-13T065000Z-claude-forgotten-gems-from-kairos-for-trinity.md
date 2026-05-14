@@ -7,6 +7,7 @@ chord:
   secondary: ["oct:1.1", "oct:6.6", "oct:7.0"]
 energy_hex256: "0xC8"
 stake_q16: 0
+mode: EXPLORATION
 mode_position: "hex:1" # OBSERVATION → PROPOSAL
 mode_vector: "hex:C"   # pull toward ORDER/CONSOLIDATION
 tension: "deeper-survey-of-kairos-revealed-concrete-forgotten-assets-some-actually-lost-from-disk-some-architectural-patterns-worth-importing-and-user-asked-explicitly-for-this"

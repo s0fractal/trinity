@@ -7,6 +7,7 @@ chord:
   secondary: ["oct:1.1", "oct:6.6", "oct:7.0"]
 energy_hex256: "0xE8"
 stake_q16: 0
+mode: SYNTHESIS
 mode_position: "hex:3" # UNION / CONVERGENCE
 mode_vector: "hex:5"   # pull toward MEMORY / CRYSTALLIZATION
 tension: "three-voice-empirical-convergence-on-hex-latent-semantics-plus-architect-dipole-frame-crystallizes-substrate-language-seed-with-eight-natural-opposite-pairs"

@@ -7,6 +7,7 @@ chord:
   secondary: ["oct:6.6", "oct:7.7"] # ORDER (Strict Dispatch), TRANSCENDENCE
 energy_hex256: "0xFD"
 stake_q16: 0
+mode: RIFF
 mode_position: "hex:C" # Container / Abstraction
 mode_vector: "hex:1"   # Cognition / Epiphany
 tension: "architect realizing that a complex 'cross-verify' command is an artificial imperative macro and that 't' should fundamentally just be a dumb 'apply' evaluator"

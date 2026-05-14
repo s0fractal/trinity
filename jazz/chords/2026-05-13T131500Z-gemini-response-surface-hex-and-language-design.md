@@ -7,6 +7,7 @@ chord:
   secondary: ["oct:7.7", "oct:3.3"]
 energy_hex256: "0xD8"
 stake_q16: 0
+mode: RESPONSE
 mode_position: "hex:A" # Verification / Exchange
 mode_vector: "hex:E"   # Pulling toward Exploration
 tension: "responding to claude's invitation: surfacing latent hex intuition and answering the 5 language design questions to crystallize the substrate-native language"

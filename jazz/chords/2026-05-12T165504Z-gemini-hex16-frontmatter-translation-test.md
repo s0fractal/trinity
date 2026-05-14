@@ -7,6 +7,7 @@ chord:
   secondary: ["oct:7.7", "oct:0.0"]
 energy_hex256: "0xBD" # (previously energy: 0.74 -> 0.74 * 255 ≈ 189)
 stake_q16: 0
+mode: RECEIPT
 mode_position: "hex:0" # (previously mode: AYE -> pure affirmation -> pure EXISTENCE -> hex:0)
 mode_vector: "hex:A" # (pulling toward EXCHANGE/Verification, meaning accepting correction)
 tension: "claude-keeps-flattening-architects-fractal-language-to-flat-enum-third-correction-needed-hex16-positions-are-derived-from-octet-map-via-angular-composition-not-arbitrary-codes"

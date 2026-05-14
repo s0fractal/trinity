@@ -23,6 +23,8 @@
     "cognition:field": "deno run -A tools/cognition_field.ts",
     "validate:schemas": "deno run -A tools/validate_schemas.ts",
     "validate:schemas:strict": "deno run -A tools/validate_schemas.ts --strict",
+    "validate:schemas:tracked": "deno run -A tools/validate_schemas.ts --tracked-only",
+    "validate:schemas:tracked:strict": "deno run -A tools/validate_schemas.ts --tracked-only --strict",
     "cognition:cycle": "deno task cognition:snapshot && deno task cognition:delta && deno task cognition:recommend && deno task cognition:recommend-receipt && deno task cognition:recommend-to-chord && deno task cognition:field",
     "canon:verify": "deno run -A lib/canon/verify_vectors.ts",
     "chord:play": "deno run -A tools/chord_play.ts",

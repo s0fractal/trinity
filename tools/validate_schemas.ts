@@ -27,6 +27,10 @@ interface ValidationResult {
   grandfatheredErrors: Array<{ path: string; message: string }>;
 }
 
+interface ChordFile {
+  path: string;
+}
+
 type AjvError = {
   instancePath?: string;
   message?: string;
@@ -116,15 +120,42 @@ function recordFailure(
   }
 }
 
-async function validateChords(ajv: AjvInstance, grandfatherBefore: Date | null): Promise<ValidationResult> {
+async function listChordFiles(trackedOnly: boolean): Promise<ChordFile[]> {
+  if (trackedOnly) {
+    const output = await new Deno.Command("git", {
+      args: ["ls-files", "jazz/chords/*.md"],
+      cwd: ROOT,
+      stdout: "piped",
+      stderr: "piped",
+    }).output();
+    if (output.code !== 0) {
+      const stderr = new TextDecoder().decode(output.stderr).trim();
+      throw new Error(`git ls-files failed: ${stderr}`);
+    }
+    return new TextDecoder().decode(output.stdout).trim().split("\n")
+      .filter(Boolean)
+      .map((path) => ({ path: `${ROOT}${path}` }));
+  }
+
+  const files: ChordFile[] = [];
+  const chordsDir = `${ROOT}jazz/chords`;
+  for await (const entry of walk(chordsDir, { exts: [".md"], maxDepth: 4 })) {
+    if (entry.isFile) files.push({ path: entry.path });
+  }
+  return files;
+}
+
+async function validateChords(
+  ajv: AjvInstance,
+  grandfatherBefore: Date | null,
+  trackedOnly: boolean,
+): Promise<ValidationResult> {
   const schemaPath = `${ROOT}contracts/schema/chord.schema.json`;
   const schema = JSON.parse(await Deno.readTextFile(schemaPath));
   const validate = ajv.compile(schema);
 
   const result = emptyResult();
-  const chordsDir = `${ROOT}jazz/chords`;
-  for await (const entry of walk(chordsDir, { exts: [".md"], maxDepth: 4 })) {
-    if (!entry.isFile) continue;
+  for (const entry of await listChordFiles(trackedOnly)) {
     result.total++;
     const path = entry.path.replace(ROOT, "");
     const grandfathered = isGrandfathered(entry.path, grandfatherBefore);
@@ -176,41 +207,90 @@ function printResult(label: string, r: ValidationResult): void {
   const active = r.enforceFailed > 0 ? `, ${r.enforceFailed} active failures` : "";
   console.log(`${label}: ${r.passed}/${r.total} passed (${pct}%), ${r.failed} failed${debt}${active}`);
   if (r.errors.length > 0) {
-    console.log(`  first ${Math.min(5, r.errors.length)} active errors:`);
-    for (const err of r.errors.slice(0, 5)) {
+    console.log(`  first ${r.errors.length} active errors:`);
+    for (const err of r.errors) {
       console.log(`    ${err.path}: ${err.message}`);
     }
   }
   if (r.grandfatheredErrors.length > 0) {
-    console.log(`  first ${Math.min(3, r.grandfatheredErrors.length)} grandfathered errors:`);
-    for (const err of r.grandfatheredErrors.slice(0, 3)) {
+    console.log(`  first ${r.grandfatheredErrors.length} grandfathered errors:`);
+    for (const err of r.grandfatheredErrors) {
       console.log(`    ${err.path}: ${err.message}`);
     }
   }
 }
 
+function printResultJson(
+  chordResult: ValidationResult,
+  recResult: ValidationResult | null,
+  options: {
+    grandfatherBefore: string | null;
+    trackedOnly: boolean;
+    strict: boolean;
+  },
+): void {
+  const total = chordResult.total + (recResult?.total ?? 0);
+  const passed = chordResult.passed + (recResult?.passed ?? 0);
+  const failed = chordResult.failed + (recResult?.failed ?? 0);
+  const activeFailures = chordResult.enforceFailed + (recResult?.enforceFailed ?? 0);
+  console.log(JSON.stringify({
+    type: "schema_validation",
+    options,
+    summary: {
+      total,
+      passed,
+      failed,
+      active_failures: activeFailures,
+      grandfathered_failures: chordResult.grandfathered,
+    },
+    chords: chordResult,
+    recommendation: recResult,
+  }, null, 2));
+}
+
 if (import.meta.main) {
   const flags = parseArgs(Deno.args, {
-    boolean: ["strict"],
-    string: ["grandfather-before"],
+    boolean: ["strict", "json", "tracked-only"],
+    string: ["grandfather-before", "max-errors"],
     default: {
       strict: false,
+      json: false,
+      "tracked-only": false,
       "grandfather-before": DEFAULT_GRANDFATHER_BEFORE,
+      "max-errors": "5",
     },
   });
   const grandfatherBefore = flags["grandfather-before"] ? parseCutoff(String(flags["grandfather-before"])) : null;
   const ajv = new Ajv2020({ allErrors: true, strict: false });
 
-  const chordResult = await validateChords(ajv, grandfatherBefore);
-  printResult("chords", chordResult);
+  const chordResult = await validateChords(ajv, grandfatherBefore, Boolean(flags["tracked-only"]));
 
   const recResult = await validateRecommendation(ajv);
-  if (recResult) printResult("recommendation", recResult);
+
+  if (flags.json) {
+    printResultJson(chordResult, recResult, {
+      grandfatherBefore: flags["grandfather-before"] ? String(flags["grandfather-before"]) : null,
+      trackedOnly: Boolean(flags["tracked-only"]),
+      strict: Boolean(flags.strict),
+    });
+  } else {
+    const maxErrors = Math.max(0, Number(flags["max-errors"] ?? 5));
+    const originalActive = chordResult.errors;
+    const originalGrandfathered = chordResult.grandfatheredErrors;
+    chordResult.errors = originalActive.slice(0, maxErrors);
+    chordResult.grandfatheredErrors = originalGrandfathered.slice(0, Math.min(3, maxErrors));
+    printResult("chords", chordResult);
+    chordResult.errors = originalActive;
+    chordResult.grandfatheredErrors = originalGrandfathered;
+    if (recResult) printResult("recommendation", recResult);
+  }
 
   const total = chordResult.total + (recResult?.total ?? 0);
   const passed = chordResult.passed + (recResult?.passed ?? 0);
   const failed = chordResult.failed + (recResult?.failed ?? 0);
   const enforceFailed = chordResult.enforceFailed + (recResult?.enforceFailed ?? 0);
-  console.log(`\noverall: ${passed}/${total} passed, ${failed} failed, ${enforceFailed} active failures`);
+  if (!flags.json) {
+    console.log(`\noverall: ${passed}/${total} passed, ${failed} failed, ${enforceFailed} active failures`);
+  }
   Deno.exit(flags.strict && enforceFailed > 0 ? 1 : 0);
 }

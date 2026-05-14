@@ -343,6 +343,15 @@ function fn_render_status(p: any): void {
       const ai = s.audit.match > 0 && s.audit.mismatch === 0 ? "✓" : "⚠";
       console.log(`# audit:    ${ai} ${s.audit.match}/${s.audit.total} match`);
     }
+    if (p.submodules) {
+      for (const [name, sub] of Object.entries(p.submodules)) {
+        if (!sub) continue;
+        const subData = sub as any;
+        const subOvr = subData.summary?.overall ?? "unknown";
+        const si = subOvr === "healthy" ? "✓" : subOvr === "degraded" ? "⚠" : "✗";
+        console.log(`# sub[${name.padEnd(6)}]: ${si} ${subOvr}`);
+      }
+    }
   } else {
     console.log(`# ${p.action ?? "?"} @ ${p.position ?? "?"}`);
     if (p.args && p.args.length) console.log(`# args: ${p.args.join(" ")}`);

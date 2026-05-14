@@ -27,7 +27,7 @@
 //
 // Glossary words: status, state, як, ти-як, статус, стан, how-are-you
 
-import { dirname, fromFileUrl } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
@@ -48,15 +48,41 @@ async function call_t(word: string, args: string[] = []): Promise<unknown> {
   }
 }
 
+async function call_submodule_organ(submodule: string, hexPath: string): Promise<unknown> {
+  const organPath = join(ROOT, submodule, hexPath);
+  try {
+    const stat = await Deno.stat(organPath);
+    if (!stat.isFile) return null;
+  } catch {
+    return null;
+  }
+
+  const proc = new Deno.Command("deno", {
+    args: ["run", "--allow-all", organPath],
+    stdout: "piped",
+    stderr: "piped",
+  });
+  const out = await proc.output();
+  if (out.code !== 0) return null;
+  const raw = new TextDecoder().decode(out.stdout).trim();
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return { type: "raw", text: raw, exit_code: out.code };
+  }
+}
+
 if (import.meta.main) {
   // Gather from organs in parallel
-  const [audit, health] = await Promise.all([
+  const [audit, health, liquidStatus] = await Promise.all([
     call_t("audit", ["--json"]),
     call_t("health"),
+    call_submodule_organ("liquid", "0x2/E.ts"),
   ]);
 
   const auditAny = audit as Record<string, unknown> & { summary?: Record<string, number>; total?: number };
   const healthAny = health as Record<string, unknown> & { summary?: Record<string, string | number> };
+  const liquidAny = liquidStatus as Record<string, unknown> & { summary?: Record<string, string | number> } | null;
 
   const auditSummary = auditAny?.summary ?? {};
   const healthSummary = healthAny?.summary ?? {};
@@ -82,11 +108,16 @@ if (import.meta.main) {
     overall = "unwell";
   }
 
+  // If liquid reports not healthy, downgrade the composite status.
+  if (liquidAny && liquidAny.summary?.overall !== "healthy" && overall === "well") {
+    overall = "degraded";
+  }
+
   const receipt = {
     type: "status",
     position: "2/E",
     action: "status",
-    note: "mirror(2) × harmony-pair(E) — composite self-reflection across organs",
+    note: "mirror(2) × harmony-pair(E) — composite self-reflection across organs and submodules",
     summary: {
       overall,
       health: {
@@ -102,12 +133,14 @@ if (import.meta.main) {
       },
     },
     organs: {
-      // full nested receipts preserved for caller inspection
       health: healthAny,
       audit: auditAny,
     },
+    submodules: {
+      liquid: liquidAny,
+    },
     synonyms: ["status", "state", "як", "ти-як", "статус", "стан", "how-are-you"],
-    topology: "composes audit + health → unified self-reflection; future: recursive into submodules",
+    topology: "composes audit + health → unified self-reflection; now recursive into submodules",
   };
 
   console.log(JSON.stringify(receipt, null, 2));

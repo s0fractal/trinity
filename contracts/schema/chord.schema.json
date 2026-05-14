@@ -58,18 +58,23 @@
       "enum": [
         "AYE",
         "AYE_RIFF",
+        "ANALYSIS",
         "CRITIQUE",
         "DIAGNOSTIC",
         "DOCTRINE",
         "EVALUATION",
         "EXPLORATION",
+        "IMPLEMENTATION",
         "OBSERVE",
         "PROPOSAL",
         "QUESTION",
         "RECEIPT",
+        "REFLECTION",
+        "RESPONSE",
         "REVIEW",
         "RIFF",
         "STRATEGIC",
+        "STRATEGY",
         "SYNTHESIS",
         "TRIAL"
       ]

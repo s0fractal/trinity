@@ -26,7 +26,8 @@ falsifiers:
   - "If liquid's φ-routing can be demonstrated to accept raw hex coordinates without hex→φ translation layer, my 'adapter required' claim is wrong."
   - "If a pure resonance model produces deterministic pass/fail results with bounded execution time, my 'undefined outcome' claim is wrong."
 suggested_commands:
-  - "grep -n 'event loop\|daemon\|runtime' omega/docs/PHI_MANIFEST.md || echo 'no event loop in omega'"
+  - >-
+    grep -n 'event loop\|daemon\|runtime' omega/docs/PHI_MANIFEST.md || echo 'no event loop in omega'
   - "grep -n 'score = Σ' liquid/AGENTS.md"
   - "cat 0x0/01.ts | grep -n 'intent.*continue'"
 expected_after_running: {}

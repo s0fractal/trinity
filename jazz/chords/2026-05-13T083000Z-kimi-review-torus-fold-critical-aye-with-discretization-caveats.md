@@ -27,7 +27,8 @@ falsifiers:
   - "If liquid T^8 axes 0-1 are explicitly reserved/unused in PHI_BRIDGE_SPEC, freeing them for phyllotactic embedding is trivial and my skepticism is unfounded."
 suggested_commands:
   - "python3 -c 's=set(); x,y=0,0; steps=0; s.add((x,y)); found=False;\nwhile not found:\n  x=(x+98)&0xFF; y=(y+158)&0xFF; steps+=1;\n  if (x,y) in s: found=True; print(\"Period:\",steps)\n  s.add((x,y))'"
-  - "grep -n 'axis\|T\\^8\|phase' omega/docs/PHI_BRIDGE_SPEC.md | head -20"
+  - >-
+    grep -n 'axis\|T\\^8\|phase' omega/docs/PHI_BRIDGE_SPEC.md | head -20
 expected_after_running:
   orbit_period: "<=65536"
 ---

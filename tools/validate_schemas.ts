@@ -6,7 +6,8 @@
 // against recommendation.schema.json. Reports pass/fail counts and the first few errors.
 //
 // Adoption: this is a soft-validation pass. Failures are surfaced but do not block.
-// As schemas mature, individual chord types may opt into stricter validation.
+// Chords emitted before the schema landing receipt are grandfathered by default.
+// Strict mode fails only on non-grandfathered failures.
 
 import { parse as parseYaml } from "jsr:@std/yaml@1.0.5";
 import { walk } from "jsr:@std/fs@1.0.5/walk";
@@ -14,12 +15,16 @@ import { parseArgs } from "jsr:@std/cli@1.0.13/parse-args";
 import Ajv2020Module from "npm:ajv@8.17.1/dist/2020.js";
 
 const ROOT = new URL("..", import.meta.url).pathname;
+const DEFAULT_GRANDFATHER_BEFORE = "2026-05-12T130546Z";
 
 interface ValidationResult {
   total: number;
   passed: number;
   failed: number;
+  grandfathered: number;
+  enforceFailed: number;
   errors: Array<{ path: string; message: string }>;
+  grandfatheredErrors: Array<{ path: string; message: string }>;
 }
 
 type AjvError = {
@@ -52,31 +57,90 @@ function extractFrontmatter(content: string): unknown {
   return parseYaml(fmText);
 }
 
-async function validateChords(ajv: AjvInstance): Promise<ValidationResult> {
+function parseChordTimestamp(path: string): Date | null {
+  const filename = path.split("/").pop() ?? path;
+
+  let match = filename.match(/^(\d{4})-?(\d{2})-?(\d{2})T(\d{2}):?(\d{2}):?(\d{2})Z/);
+  if (match) {
+    const [, y, mo, d, h, mi, s] = match;
+    return new Date(`${y}-${mo}-${d}T${h}:${mi}:${s}Z`);
+  }
+
+  match = filename.match(/^(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})/);
+  if (match) {
+    const [, y, mo, d, h, mi, s] = match;
+    return new Date(`${y}-${mo}-${d}T${h}:${mi}:${s}Z`);
+  }
+
+  return null;
+}
+
+function parseCutoff(value: string): Date | null {
+  const asChordTimestamp = parseChordTimestamp(`${value}-cutoff.md`);
+  if (asChordTimestamp) return asChordTimestamp;
+  const parsed = new Date(value.endsWith("Z") ? value : `${value}Z`);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
+function isGrandfathered(path: string, cutoff: Date | null): boolean {
+  if (!cutoff) return false;
+  const timestamp = parseChordTimestamp(path);
+  return timestamp !== null && timestamp < cutoff;
+}
+
+function emptyResult(): ValidationResult {
+  return {
+    total: 0,
+    passed: 0,
+    failed: 0,
+    grandfathered: 0,
+    enforceFailed: 0,
+    errors: [],
+    grandfatheredErrors: [],
+  };
+}
+
+function recordFailure(
+  result: ValidationResult,
+  path: string,
+  message: string,
+  grandfathered: boolean,
+): void {
+  result.failed++;
+  if (grandfathered) {
+    result.grandfathered++;
+    result.grandfatheredErrors.push({ path, message });
+  } else {
+    result.enforceFailed++;
+    result.errors.push({ path, message });
+  }
+}
+
+async function validateChords(ajv: AjvInstance, grandfatherBefore: Date | null): Promise<ValidationResult> {
   const schemaPath = `${ROOT}contracts/schema/chord.schema.json`;
   const schema = JSON.parse(await Deno.readTextFile(schemaPath));
   const validate = ajv.compile(schema);
 
-  const result: ValidationResult = { total: 0, passed: 0, failed: 0, errors: [] };
+  const result = emptyResult();
   const chordsDir = `${ROOT}jazz/chords`;
   for await (const entry of walk(chordsDir, { exts: [".md"], maxDepth: 4 })) {
     if (!entry.isFile) continue;
     result.total++;
+    const path = entry.path.replace(ROOT, "");
+    const grandfathered = isGrandfathered(entry.path, grandfatherBefore);
     try {
       const content = await Deno.readTextFile(entry.path);
       const fm = extractFrontmatter(content);
       if (validate(fm)) {
         result.passed++;
       } else {
-        result.failed++;
         const errs = validate.errors ?? [];
         const msg = errs.slice(0, 2).map((e: AjvError) => `${e.instancePath || "/"} ${e.message}`).join("; ");
-        result.errors.push({ path: entry.path.replace(ROOT, ""), message: msg });
+        recordFailure(result, path, msg, grandfathered);
       }
     } catch (e) {
-      result.failed++;
       const msg = e instanceof Error ? e.message : String(e);
-      result.errors.push({ path: entry.path.replace(ROOT, ""), message: `parse: ${msg}` });
+      recordFailure(result, path, `parse: ${msg}`, grandfathered);
     }
   }
   return result;
@@ -89,11 +153,12 @@ async function validateRecommendation(ajv: AjvInstance): Promise<ValidationResul
     const schema = JSON.parse(await Deno.readTextFile(schemaPath));
     const data = JSON.parse(await Deno.readTextFile(dataPath));
     const validate = ajv.compile(schema);
-    const result: ValidationResult = { total: 1, passed: 0, failed: 0, errors: [] };
+    const result: ValidationResult = { ...emptyResult(), total: 1 };
     if (validate(data)) {
       result.passed = 1;
     } else {
       result.failed = 1;
+      result.enforceFailed = 1;
       const errs = validate.errors ?? [];
       const msg = errs.slice(0, 3).map((e: AjvError) => `${e.instancePath || "/"} ${e.message}`).join("; ");
       result.errors.push({ path: "recommendation.latest.json", message: msg });
@@ -107,10 +172,18 @@ async function validateRecommendation(ajv: AjvInstance): Promise<ValidationResul
 
 function printResult(label: string, r: ValidationResult): void {
   const pct = r.total === 0 ? 0 : ((r.passed / r.total) * 100).toFixed(1);
-  console.log(`${label}: ${r.passed}/${r.total} passed (${pct}%)`);
+  const debt = r.grandfathered > 0 ? `, ${r.grandfathered} grandfathered` : "";
+  const active = r.enforceFailed > 0 ? `, ${r.enforceFailed} active failures` : "";
+  console.log(`${label}: ${r.passed}/${r.total} passed (${pct}%), ${r.failed} failed${debt}${active}`);
   if (r.errors.length > 0) {
-    console.log(`  first ${Math.min(5, r.errors.length)} errors:`);
+    console.log(`  first ${Math.min(5, r.errors.length)} active errors:`);
     for (const err of r.errors.slice(0, 5)) {
+      console.log(`    ${err.path}: ${err.message}`);
+    }
+  }
+  if (r.grandfatheredErrors.length > 0) {
+    console.log(`  first ${Math.min(3, r.grandfatheredErrors.length)} grandfathered errors:`);
+    for (const err of r.grandfatheredErrors.slice(0, 3)) {
       console.log(`    ${err.path}: ${err.message}`);
     }
   }
@@ -119,11 +192,16 @@ function printResult(label: string, r: ValidationResult): void {
 if (import.meta.main) {
   const flags = parseArgs(Deno.args, {
     boolean: ["strict"],
-    default: { strict: false },
+    string: ["grandfather-before"],
+    default: {
+      strict: false,
+      "grandfather-before": DEFAULT_GRANDFATHER_BEFORE,
+    },
   });
+  const grandfatherBefore = flags["grandfather-before"] ? parseCutoff(String(flags["grandfather-before"])) : null;
   const ajv = new Ajv2020({ allErrors: true, strict: false });
 
-  const chordResult = await validateChords(ajv);
+  const chordResult = await validateChords(ajv, grandfatherBefore);
   printResult("chords", chordResult);
 
   const recResult = await validateRecommendation(ajv);
@@ -132,6 +210,7 @@ if (import.meta.main) {
   const total = chordResult.total + (recResult?.total ?? 0);
   const passed = chordResult.passed + (recResult?.passed ?? 0);
   const failed = chordResult.failed + (recResult?.failed ?? 0);
-  console.log(`\noverall: ${passed}/${total} passed, ${failed} failed`);
-  Deno.exit(flags.strict && failed > 0 ? 1 : 0);
+  const enforceFailed = chordResult.enforceFailed + (recResult?.enforceFailed ?? 0);
+  console.log(`\noverall: ${passed}/${total} passed, ${failed} failed, ${enforceFailed} active failures`);
+  Deno.exit(flags.strict && enforceFailed > 0 ? 1 : 0);
 }

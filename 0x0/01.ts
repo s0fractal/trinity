@@ -247,10 +247,23 @@ function fn_render_human(p: any): void {
     fn_render_until(p);
   } else if (t === "any") {
     fn_render_any(p);
+  } else if (t === "spore_apply") {
+    fn_render_spore_apply(p);
   } else {
     // fallback: pretty JSON
     console.log(JSON.stringify(p, null, 2));
   }
+}
+
+function fn_render_spore_apply(p: any): void {
+  console.log(`# apply @ ${p.position ?? "5/F"}`);
+  console.log(`# mutator: ${p.mutator}`);
+  console.log(`# state:   ${p.state}`);
+  if (p.inputs && p.inputs.length > 0) {
+    console.log(`# inputs:  ${p.inputs.join(", ")}`);
+  }
+  console.log(`# -> ${p.output} [receipt: ${p.receipt}]`);
+  if (p.note) console.log(`# ${p.note}`);
 }
 
 function fn_render_cross_substrate_verify(p: any): void {

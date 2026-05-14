@@ -22,6 +22,7 @@
 //        t all 5/C      → map 5/C across substrates
 //        t all health    → map health (6/A) across substrates
 //        t all 5/C --deep omega  → map with deep override for omega
+//        t all 5/C --only myc    → map only one substrate
 //
 // Returns unified receipt with per-substrate results.
 // Does NOT hardcode substrate commands — reads from glossary type:06.
@@ -33,9 +34,24 @@ const TIMEOUT_MS = 60000;
 
 if (import.meta.main) {
   const args = [...Deno.args];
-  const deepIdx = args.indexOf("--deep");
-  const deepSubstrate = deepIdx >= 0 ? args[deepIdx + 1] : null;
-  const filteredArgs = deepIdx >= 0 ? args.filter((_, i) => i !== deepIdx && i !== deepIdx + 1) : args;
+  let deepSubstrate: string | null = null;
+  let onlySubstrate: string | null = null;
+  const filteredArgs: string[] = [];
+
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === "--deep") {
+      deepSubstrate = args[i + 1] ?? null;
+      i++;
+      continue;
+    }
+    if (args[i] === "--only") {
+      onlySubstrate = args[i + 1] ?? null;
+      i++;
+      continue;
+    }
+    filteredArgs.push(args[i]);
+  }
+
   const target = filteredArgs[0];
 
   if (!target) {
@@ -70,6 +86,19 @@ if (import.meta.main) {
     Deno.exit(1);
   }
 
+  const availableSubstrates = substrates.map((s) => s.name);
+  if (onlySubstrate) {
+    substrates = substrates.filter((s) => s.name === onlySubstrate);
+    if (substrates.length === 0) {
+      console.log(JSON.stringify({
+        type: "error",
+        message: `No substrate named ${onlySubstrate} for ${position}`,
+        available: availableSubstrates,
+      }));
+      Deno.exit(1);
+    }
+  }
+
   // Apply deep override
   if (deepSubstrate) {
     substrates = substrates.map((d) => {
@@ -92,7 +121,7 @@ if (import.meta.main) {
     type: "all",
     position,
     action: "map",
-    mode: deepSubstrate ? `deep:${deepSubstrate}` : "quick",
+    mode: deepSubstrate ? `deep:${deepSubstrate}` : onlySubstrate ? `only:${onlySubstrate}` : "quick",
     note: `map(${position}) across ${substrates.length} substrates`,
     summary: {
       total: results.length,

@@ -1,7 +1,15 @@
+#!/usr/bin/env -S deno run -A
+// 0x2/5.ts — cognition_field (Mirror + Action)
+// position: 2/5 → mirror(2) × action(5)
+// hex_dipole: "26 26 6C 26 26 59 26 26"
+// placement_policy: axis
+//
+// cognition_field.ts — evaluate cognitive field
+
 import { parse as parseYaml } from "https://deno.land/std@0.224.0/yaml/mod.ts";
 import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { ensureDir } from "https://deno.land/std@0.224.0/fs/ensure_dir.ts";
-import { REPOS, scanEcosystem, type ThoughtPhase } from "./scanner_core.ts";
+import { REPOS, scanEcosystem, type ThoughtPhase } from "./tools/scanner_core.ts";
 
 const REC_PATH = "reports/cognition/recommendation.latest.json";
 const OUT_JSON = "reports/cognition/field.latest.json";

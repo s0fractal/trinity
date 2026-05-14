@@ -1,4 +1,12 @@
-import { REPOS, scanEcosystem } from "./scanner_core.ts";
+#!/usr/bin/env -S deno run -A
+// 0x2/C.ts — cognition_phase_report (Mirror + Build-pair)
+// position: 2/C → mirror(2) × build-pair(C)
+// hex_dipole: "26 26 6C 59 26 26 26 26"
+// placement_policy: axis
+//
+// cognition_phase_report.ts — report cognitive phases
+
+import { REPOS, scanEcosystem } from "./tools/scanner_core.ts";
 
 interface RepoStats {
   total: number;

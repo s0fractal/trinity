@@ -1,5 +1,10 @@
 #!/usr/bin/env -S deno run -A
-// grind.ts — Topological Grinding (Semantic Proof of Work) for chord files.
+// 0x7/0.ts — grind (Completion + Void)
+// position: 7/0 → completion(7) × void(0)
+// hex_dipole: "8E 00 00 00 00 00 00 59"
+// placement_policy: composite
+//
+// grind.ts — topological hex-dipole nonce grinding
 //
 // Reads a chord file with YAML frontmatter declaring `primary: "oct:N..."`,
 // grinds a `nonce` value until the BLAKE3-256 hash of the file's bytes

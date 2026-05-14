@@ -1,3 +1,11 @@
+#!/usr/bin/env -S deno run -A
+// 0x5/E.ts — cognition_recommend_receipt (Action + Harmony-pair)
+// position: 5/E → action(5) × harmony-pair(E)
+// hex_dipole: "26 26 26 26 26 6C 59 26"
+// placement_policy: axis
+//
+// cognition_recommend_receipt.ts — convert recommend output to a receipt
+
 import { sha256Hex } from "../lib/canon/hash.ts";
 
 /**

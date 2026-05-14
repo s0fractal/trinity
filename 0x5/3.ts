@@ -1,3 +1,11 @@
+#!/usr/bin/env -S deno run -A
+// 0x5/3.ts — recommend_to_chord (Action + Triangle/Build)
+// position: 5/3 → action(5) × triangle(3)
+// hex_dipole: "26 26 26 59 26 6C 26 26"
+// placement_policy: axis
+//
+// recommend_to_chord.ts — convert recommendation to chord
+
 import { ensureDir } from "https://deno.land/std@0.224.0/fs/ensure_dir.ts";
 import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { sha256Hex } from "../lib/canon/hash.ts";
@@ -172,7 +180,7 @@ transition_receipt:
 # Chord: ${rec.repo} → ${rec.phase_to}
 
 - chord_id: \`${chordId}\`
-- emitter: \`tools/recommend_to_chord.ts\`
+- emitter: \`0x5/3.ts\`
 - vector: ${rec.vector}
 - phase: ${rec.phase_from} → ${rec.phase_to}
 - pressure: ${rec.pressure.toFixed(3)}

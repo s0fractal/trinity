@@ -1,8 +1,16 @@
+#!/usr/bin/env -S deno run -A
+// 0x3/5.ts — chord_play (Triangle/Build + Action)
+// position: 3/5 → triangle(3) × action(5)
+// hex_dipole: "26 26 26 6C 26 59 26 26"
+// placement_policy: axis
+//
+// chord_play.ts — parse and visualize chord structure
+
 import { parse as parseYaml } from "https://deno.land/std@0.224.0/yaml/mod.ts";
 import { ensureDir } from "https://deno.land/std@0.224.0/fs/ensure_dir.ts";
 import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { sha256Hex } from "../lib/canon/hash.ts";
-import { scanEcosystem, type FileProfile } from "./scanner_core.ts";
+import { scanEcosystem, type FileProfile } from "./tools/scanner_core.ts";
 
 /**
  * chord_play

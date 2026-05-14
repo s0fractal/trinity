@@ -1,4 +1,12 @@
-import { REPOS, scanEcosystem } from "./scanner_core.ts";
+#!/usr/bin/env -S deno run -A
+// 0x6/3.ts — ontology_coverage (Harmony + Build)
+// position: 6/3 → harmony(6) × build(3)
+// hex_dipole: "26 26 26 59 26 26 6C 26"
+// placement_policy: axis
+//
+// ontology_coverage.ts — evaluate coverage of ontology nodes
+
+import { REPOS, scanEcosystem } from "./tools/scanner_core.ts";
 
 async function main() {
   const cwd = Deno.cwd();

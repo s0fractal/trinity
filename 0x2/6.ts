@@ -1,3 +1,11 @@
+#!/usr/bin/env -S deno run -A
+// 0x2/6.ts — cognition_delta (Mirror + Harmony)
+// position: 2/6 → mirror(2) × harmony(6)
+// hex_dipole: "26 26 6C 26 26 26 59 26"
+// placement_policy: axis
+//
+// cognition_delta.ts — measure cognitive delta
+
 import { expandGlob } from "https://deno.land/std@0.224.0/fs/expand_glob.ts";
 import { parse } from "https://deno.land/std@0.224.0/flags/mod.ts";
 

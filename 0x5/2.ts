@@ -1,5 +1,12 @@
-import { REPOS, scanEcosystem, type ThoughtPhase } from "./scanner_core.ts";
+#!/usr/bin/env -S deno run -A
+// 0x5/2.ts — cognition_recommend (Action + Mirror)
+// position: 5/2 → action(5) × mirror(2)
+// hex_dipole: "26 26 59 26 26 6C 26 26"
+// placement_policy: axis
+//
+// cognition_recommend.ts — suggest recommendations
 
+import { REPOS, scanEcosystem, type ThoughtPhase } from "./tools/scanner_core.ts";
 type RepoName = typeof REPOS[number];
 
 interface RepoSignal {

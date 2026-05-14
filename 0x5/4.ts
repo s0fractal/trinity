@@ -1,4 +1,9 @@
 #!/usr/bin/env -S deno run -A
+// 0x5/4.ts — validate_schemas (Action + Foundation)
+// position: 5/4 → action(5) × foundation(4)
+// hex_dipole: "26 26 26 26 59 6C 26 26"
+// placement_policy: axis
+//
 // validate_schemas.ts — validate substrate artifacts against contracts/schema/*.json
 //
 // Walks jazz/chords/*.md and validates each chord's YAML frontmatter against

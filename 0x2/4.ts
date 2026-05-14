@@ -1,4 +1,11 @@
-import { REPOS, scanEcosystem } from "./scanner_core.ts";
+#!/usr/bin/env -S deno run -A
+// 0x2/4.ts — cognition_snapshot (Mirror + Foundation)
+// position: 2/4 → mirror(2) × foundation(4)
+// hex_dipole: "26 26 6C 26 59 26 26 26"
+// placement_policy: axis
+//
+// cognition_snapshot.ts — capture cognitive state
+import { REPOS, scanEcosystem } from "./tools/scanner_core.ts";
 import { ensureDir } from "https://deno.land/std@0.224.0/fs/ensure_dir.ts";
 import { dirname } from "https://deno.land/std@0.224.0/path/mod.ts";
 

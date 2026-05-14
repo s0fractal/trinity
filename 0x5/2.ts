@@ -6,7 +6,7 @@
 //
 // cognition_recommend.ts — suggest recommendations
 
-import { REPOS, scanEcosystem, type ThoughtPhase } from "./tools/scanner_core.ts";
+import { REPOS, scanEcosystem, type ThoughtPhase } from "../tools/scanner_core.ts";
 type RepoName = typeof REPOS[number];
 
 interface RepoSignal {

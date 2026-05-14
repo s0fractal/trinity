@@ -96,13 +96,13 @@
 {"00":"5","02":["apply","застосувати","виконати"],"04":"5/F","09":"action+frontier = spore apply deterministic primitive","11":"26 26 40 33 40 6C 40 59"}
 {"00":"07","01":"spore_apply","02":"type,action,position,mutator,state,output,receipt","03":"inputs,note,topology","04":"spore apply receipt from 0x5/F.ts"}
 {"00":"5","02":["validate_schemas","validate","валідація"],"04":"5/4","09":"action+foundation = validate schemas","11":"26 26 26 26 59 6C 26 26"}
-{"00":"6","02":["ontology_coverage","ontology","покриття"],"04":"6/3","09":"harmony+build = ontology coverage scanner","11":"26 26 26 59 26 26 6C 26"}
-{"00":"2","02":["cognition_snapshot","cognition-snapshot","зліпок-когніції"],"04":"2/4","09":"mirror+foundation = capture cognitive state","11":"26 26 6C 26 59 26 26 26"}
-{"00":"2","02":["cognition_delta","cognition-delta","дельта-когніції"],"04":"2/6","09":"mirror+harmony = measure cognitive delta","11":"26 26 6C 26 26 26 59 26"}
-{"00":"2","02":["cognition_field","cognition-field","поле-когніції"],"04":"2/5","09":"mirror+action = evaluate cognitive field","11":"26 26 6C 26 26 59 26 26"}
-{"00":"2","02":["cognition_phase_report","cognition-phase-report","звіт-фаз-когніції"],"04":"2/C","09":"mirror+build-pair = report cognitive phases","11":"26 26 6C 59 26 26 26 26"}
+{"00":"5","02":["ontology_coverage","ontology","покриття"],"04":"6/3","09":"harmony+build = ontology coverage scanner","11":"26 26 26 59 26 26 6C 26"}
+{"00":"5","02":["cognition_snapshot","cognition-snapshot","зліпок-когніції"],"04":"2/4","09":"mirror+foundation = capture cognitive state","11":"26 26 6C 26 59 26 26 26"}
+{"00":"5","02":["cognition_delta","cognition-delta","дельта-когніції"],"04":"2/6","09":"mirror+harmony = measure cognitive delta","11":"26 26 6C 26 26 26 59 26"}
+{"00":"5","02":["cognition_field","cognition-field","поле-когніції"],"04":"2/5","09":"mirror+action = evaluate cognitive field","11":"26 26 6C 26 26 59 26 26"}
+{"00":"5","02":["cognition_phase_report","cognition-phase-report","звіт-фаз-когніції"],"04":"2/C","09":"mirror+build-pair = report cognitive phases","11":"26 26 6C 59 26 26 26 26"}
 {"00":"5","02":["cognition_recommend","cognition-recommend","рекомендація"],"04":"5/2","09":"action+mirror = suggest recommendations","11":"26 26 59 26 26 6C 26 26"}
 {"00":"5","02":["cognition_recommend_receipt","cognition-recommend-receipt","чек-рекомендації"],"04":"5/E","09":"action+harmony-pair = create recommend receipt","11":"26 26 26 26 26 6C 59 26"}
-{"00":"3","02":["chord_play","chord-play","програти-акорд"],"04":"3/5","09":"triangle+action = parse and visualize chord structure","11":"26 26 26 6C 26 59 26 26"}
+{"00":"5","02":["chord_play","chord-play","програти-акорд"],"04":"3/5","09":"triangle+action = parse and visualize chord structure","11":"26 26 26 6C 26 59 26 26"}
 {"00":"5","02":["recommend_to_chord","recommend-to-chord","до-акорду"],"04":"5/3","09":"action+triangle = convert recommendation to chord","11":"26 26 26 59 26 6C 26 26"}
-{"00":"7","02":["grind","grind-nonce","знайти-нонс"],"04":"7/0","09":"completion+void = topological hex-dipole nonce grinding","11":"8E 00 00 00 00 00 00 59"}
+{"00":"5","02":["grind","grind-nonce","знайти-нонс"],"04":"7/0","09":"completion+void = topological hex-dipole nonce grinding","11":"8E 00 00 00 00 00 00 59"}

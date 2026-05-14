@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-all
 // 0x5/F.ts — apply (SPORE Primitive)
 // position: 5/F → action_frontier
+// hex_dipole: "26 26 40 33 40 6C 40 59"
+// placement_policy: axis
 
 import { SporeApplyBackend } from "../liquid/00_core/pipe/spore_apply_backend.ts";
 

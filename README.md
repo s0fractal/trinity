@@ -8,7 +8,7 @@ Trinity is the meta-repository for the s0fractal triad:
 
 This repository does not merge the three systems into one codebase. It pins them
 as Git submodules and provides one place for cross-repo contracts, fixtures,
-reports, and orchestration scripts.
+reports, and a glossary-driven living runtime (`t`).
 
 ## Layout
 
@@ -29,13 +29,15 @@ trinity/
 
 ```bash
 git submodule update --init --recursive
-deno task status
+./t status
 ```
 
 ## Useful Tasks
 
 ```bash
-deno task status
+./t status
+./t health
+./t audit
 deno task audit:green
 deno task audit:strict
 deno task fixture:phi

@@ -68,7 +68,7 @@ Strict failures are not ignored. They are the current work queue.
 Submodules are pinned to known commits. Updating a submodule pointer is a
 Trinity-level change and should be accompanied by:
 
-1. `deno task status`
+1. `./t status`
 2. `deno task audit:green`
 3. Notes about any strict gate regressions or improvements
 
@@ -77,7 +77,7 @@ Trinity-level change and should be accompanied by:
 When a model audits the system from this repository:
 
 1. Read this file first.
-2. Run `deno task status`.
+2. Run `./t status`.
 3. Prefer contract and fixture changes in `trinity` over cross-layer coupling.
 4. Touch submodule code only when the user explicitly asks for implementation.
 5. Treat `myc`, `omega`, and `liquid` boundaries as part of the architecture.

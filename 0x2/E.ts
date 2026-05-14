@@ -74,15 +74,19 @@ async function call_submodule_organ(submodule: string, hexPath: string): Promise
 
 if (import.meta.main) {
   // Gather from organs in parallel
-  const [audit, health, liquidStatus] = await Promise.all([
+  const [audit, health, liquidStatus, omegaStatus, mycStatus] = await Promise.all([
     call_t("audit", ["--json"]),
     call_t("health"),
     call_submodule_organ("liquid", "0x2/E.ts"),
+    call_submodule_organ("omega", "0x2/E.ts"),
+    call_submodule_organ("myc", "0x2/E.ts"),
   ]);
 
   const auditAny = audit as Record<string, unknown> & { summary?: Record<string, number>; total?: number };
   const healthAny = health as Record<string, unknown> & { summary?: Record<string, string | number> };
   const liquidAny = liquidStatus as Record<string, unknown> & { summary?: Record<string, string | number> } | null;
+  const omegaAny = omegaStatus as Record<string, unknown> & { summary?: Record<string, string | number> } | null;
+  const mycAny = mycStatus as Record<string, unknown> & { summary?: Record<string, string | number> } | null;
 
   const auditSummary = auditAny?.summary ?? {};
   const healthSummary = healthAny?.summary ?? {};
@@ -108,9 +112,12 @@ if (import.meta.main) {
     overall = "unwell";
   }
 
-  // If liquid reports not healthy, downgrade the composite status.
-  if (liquidAny && liquidAny.summary?.overall !== "healthy" && overall === "well") {
-    overall = "degraded";
+  // If any submodule reports not healthy, downgrade the composite status.
+  const subs = [liquidAny, omegaAny, mycAny];
+  for (const sub of subs) {
+    if (sub && sub.summary?.overall !== "healthy" && overall === "well") {
+      overall = "degraded";
+    }
   }
 
   const receipt = {
@@ -138,6 +145,8 @@ if (import.meta.main) {
     },
     submodules: {
       liquid: liquidAny,
+      omega: omegaAny,
+      myc: mycAny,
     },
     synonyms: ["status", "state", "як", "ти-як", "статус", "стан", "how-are-you"],
     topology: "composes audit + health → unified self-reflection; now recursive into submodules",

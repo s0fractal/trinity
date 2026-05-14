@@ -15,15 +15,11 @@
 // lifecycle_phase: 0
 // placement_policy: axis
 //
-// recipes — live projection of workflow templates
+// recipes — live projection of workflow templates from ledger records.
 //
-// Currently reads from capabilities/trinity.capabilities.v0.1.legacy.json
-// (the orphaned recipes section after capabilities migration). This is
-// the LAST consumer of that legacy file from inside `t`. Long-term
-// (per codex 2026-05-13T211717Z): recipes become record-graph form
-// — sequences expressed as composed `t <word>` calls + apply edges,
-// not separate ontology class. When that migration happens, this organ
-// updates source.
+// Reads kind:8 records from 0x0/00.ndjson. This replaces the old
+// deleted capabilities registry dependency; recipes
+// are now compact ledger projections, not a separate capabilities registry.
 //
 // Workflow templates are NOT contracts (contracts = stabilized
 // schemas) and NOT capabilities (capabilities = what t can do
@@ -42,7 +38,7 @@ import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/m
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
-const LEGACY_PATH = join(ROOT, "capabilities", "trinity.capabilities.v0.1.legacy.json");
+const GLOSSARY_PATH = join(ROOT, "0x0", "00.ndjson");
 
 interface Recipe {
   id: string;
@@ -52,19 +48,21 @@ interface Recipe {
 }
 
 async function loadRecipes(): Promise<Recipe[]> {
-  try {
-    const text = await Deno.readTextFile(LEGACY_PATH);
-    const data = JSON.parse(text);
-    const recipes = Array.isArray(data.recipes) ? data.recipes : [];
-    return recipes.map((r: Record<string, unknown>) => ({
-      id: String(r.id ?? ""),
-      purpose: String(r.purpose ?? ""),
-      steps: Array.isArray(r.steps) ? r.steps.map(String) : [],
-      receipt: String(r.receipt ?? ""),
-    }));
-  } catch {
-    return [];
+  const recipes: Recipe[] = [];
+  const text = await Deno.readTextFile(GLOSSARY_PATH);
+  for (const line of text.trim().split("\n")) {
+    try {
+      const r = JSON.parse(line);
+      if (r["00"] !== "8") continue;
+      recipes.push({
+        id: String(r["01"] ?? ""),
+        purpose: String(r["09"] ?? ""),
+        steps: Array.isArray(r["05"]) ? r["05"].map(String) : [],
+        receipt: String(r["06"] ?? ""),
+      });
+    } catch { /* skip malformed non-recipe lines */ }
   }
+  return recipes;
 }
 
 function renderTable(recipes: Recipe[]): void {
@@ -81,7 +79,7 @@ function renderTable(recipes: Recipe[]): void {
     console.log("");
   }
   console.log("# " + "─".repeat(80));
-  console.log("# source: capabilities/trinity.capabilities.v0.1.legacy.json (pending record-graph migration)");
+  console.log("# source: 0x0/00.ndjson kind:8 recipe records");
   console.log("# show details: t recipes show <recipe-id-suffix>");
 }
 
@@ -127,13 +125,13 @@ if (import.meta.main) {
     position: "3/C",
     action: "list",
     note: "triangle+container-pair = workflow composition templates",
-    source: "capabilities/trinity.capabilities.v0.1.legacy.json (pending record-graph migration per codex 2026-05-13T211717Z)",
+    source: "0x0/00.ndjson kind:8 recipe records",
     summary: {
       total: recipes.length,
     },
     recipes,
     synonyms: ["recipes", "workflows", "templates", "sequences", "рецепти", "потоки-роботи", "шаблони", "послідовності"],
-    topology: "live projection from legacy JSON; templates compose existing capabilities into sequences",
+    topology: "live projection from ledger records; templates compose existing t/workflow steps into sequences",
   };
 
   if (wantJson) {

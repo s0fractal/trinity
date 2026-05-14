@@ -22,7 +22,6 @@ trinity/
   scripts/      # orchestration and audit helpers
   reports/      # generated or curated audit reports
   docs/         # operator/model guidance
-  intake/       # future raw/object/projection intake pipeline
 ```
 
 ## Bootstrap
@@ -40,6 +39,7 @@ git submodule update --init --recursive
 ./t audit
 deno task audit:green
 deno task audit:strict
+deno task submodules:status
 deno task fixture:phi
 ```
 

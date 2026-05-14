@@ -58,7 +58,7 @@ that re-issues new prefixes alongside the old.
 
 Truncation length (12 hex = 48 bits) is intentionally short for filename
 ergonomics. Collisions are tolerated **only** when the full sha256 is also
-recorded (e.g., in `intake/projections/index.ndjson`).
+recorded in a curated receipt, contract, or ledger projection.
 
 ## 5. Cross-Substrate Authority
 

@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "status": "deno run -A scripts/trinity_status.ts",
+    "status": "deno run -A 0x0/01.ts status",
     "audit:green": "deno run -A scripts/run_baseline.ts --green",
     "audit:strict": "deno run -A scripts/run_baseline.ts --strict",
     "fixture:phi": "deno run -A scripts/phi_roundtrip.ts",
@@ -14,7 +14,6 @@
     "check:liquid:doctor": "cd liquid && deno task ledger:doctor --json",
     "check:liquid:unit": "cd liquid && deno task test:unit",
     "ontology:coverage": "deno run -A tools/ontology_coverage.ts",
-    "intake:ingest": "deno run -A tools/intake_ingest.ts",
     "cognition:phase-report": "deno run -A tools/cognition_phase_report.ts",
     "cognition:snapshot": "deno run -A tools/cognition_snapshot.ts",
     "cognition:delta": "deno run -A tools/cognition_delta.ts",
@@ -23,14 +22,13 @@
     "cognition:recommend-to-chord": "deno run -A tools/recommend_to_chord.ts",
     "cognition:field": "deno run -A tools/cognition_field.ts",
     "validate:schemas": "deno run -A tools/validate_schemas.ts",
+    "validate:schemas:strict": "deno run -A tools/validate_schemas.ts --strict",
     "cognition:cycle": "deno task cognition:snapshot && deno task cognition:delta && deno task cognition:recommend && deno task cognition:recommend-receipt && deno task cognition:recommend-to-chord && deno task cognition:field",
     "canon:verify": "deno run -A lib/canon/verify_vectors.ts",
     "chord:play": "deno run -A tools/chord_play.ts",
     "chord:block": "deno run --allow-net 0x4/0.ts block",
     "chord:init": "deno run --allow-net 0x4/0.ts init",
     "chord:translate": "deno run --allow-net 0x4/0.ts translate",
-    "chord:parse": "deno run --allow-net 0x4/0.ts parse",
-    "publish:candidates": "deno run -A tools/publish_candidates.ts",
-    "publish:verify-candidates": "deno run -A tools/publish_verify_candidates.ts"
+    "chord:parse": "deno run --allow-net 0x4/0.ts parse"
   }
 }

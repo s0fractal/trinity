@@ -342,7 +342,7 @@ Do not port OMEGA's full builder yet.
 The smallest useful step is:
 
 ```text
-capabilities/trinity.capabilities.v0.1.json
+live `t capabilities` projection
   -> generated markdown SpatialNodeDescriptor stubs
   -> generated/_/<turn>/<phase> phase-spiral facade
   -> generated/t.ts entrypoint facade

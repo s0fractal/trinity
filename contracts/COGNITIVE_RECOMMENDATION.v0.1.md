@@ -47,10 +47,10 @@ It MUST NOT treat raw counts as proof. Counts are pressure indicators only.
       "phase_from": "hypothesis",
       "phase_to": "receipt",
       "pressure": 0.73,
-      "action": "Create one verified process object from intake/raw.",
+      "action": "Create one verified process receipt from current substrate state.",
       "rationale": "The repository has intake mass but low verified hash coverage.",
       "expected_receipt": "A reproducible command or report proving the transition.",
-      "commands": ["deno task intake:ingest ..."]
+      "commands": ["deno task cognition:recommend"]
     }
   ]
 }

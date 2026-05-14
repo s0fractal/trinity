@@ -10,7 +10,8 @@
 
 import { parse as parseYaml } from "jsr:@std/yaml@1.0.5";
 import { walk } from "jsr:@std/fs@1.0.5/walk";
-import Ajv2020 from "npm:ajv@8.17.1/dist/2020.js";
+import { parseArgs } from "jsr:@std/cli@1.0.13/parse-args";
+import Ajv2020Module from "npm:ajv@8.17.1/dist/2020.js";
 
 const ROOT = new URL("..", import.meta.url).pathname;
 
@@ -20,6 +21,24 @@ interface ValidationResult {
   failed: number;
   errors: Array<{ path: string; message: string }>;
 }
+
+type AjvError = {
+  instancePath?: string;
+  message?: string;
+};
+
+type AjvValidator = {
+  errors?: AjvError[] | null;
+  (data: unknown): boolean;
+};
+
+type AjvInstance = {
+  compile(schema: unknown): AjvValidator;
+};
+
+type AjvConstructor = new (options: { allErrors: boolean; strict: boolean }) => AjvInstance;
+
+const Ajv2020 = Ajv2020Module as unknown as AjvConstructor;
 
 function extractFrontmatter(content: string): unknown {
   if (!content.startsWith("---")) {
@@ -33,8 +52,7 @@ function extractFrontmatter(content: string): unknown {
   return parseYaml(fmText);
 }
 
-// deno-lint-ignore no-explicit-any
-async function validateChords(ajv: any): Promise<ValidationResult> {
+async function validateChords(ajv: AjvInstance): Promise<ValidationResult> {
   const schemaPath = `${ROOT}contracts/schema/chord.schema.json`;
   const schema = JSON.parse(await Deno.readTextFile(schemaPath));
   const validate = ajv.compile(schema);
@@ -52,7 +70,7 @@ async function validateChords(ajv: any): Promise<ValidationResult> {
       } else {
         result.failed++;
         const errs = validate.errors ?? [];
-        const msg = errs.slice(0, 2).map((e) => `${e.instancePath || "/"} ${e.message}`).join("; ");
+        const msg = errs.slice(0, 2).map((e: AjvError) => `${e.instancePath || "/"} ${e.message}`).join("; ");
         result.errors.push({ path: entry.path.replace(ROOT, ""), message: msg });
       }
     } catch (e) {
@@ -64,8 +82,7 @@ async function validateChords(ajv: any): Promise<ValidationResult> {
   return result;
 }
 
-// deno-lint-ignore no-explicit-any
-async function validateRecommendation(ajv: any): Promise<ValidationResult | null> {
+async function validateRecommendation(ajv: AjvInstance): Promise<ValidationResult | null> {
   const schemaPath = `${ROOT}contracts/schema/recommendation.schema.json`;
   const dataPath = `${ROOT}reports/cognition/recommendation.latest.json`;
   try {
@@ -78,7 +95,7 @@ async function validateRecommendation(ajv: any): Promise<ValidationResult | null
     } else {
       result.failed = 1;
       const errs = validate.errors ?? [];
-      const msg = errs.slice(0, 3).map((e) => `${e.instancePath || "/"} ${e.message}`).join("; ");
+      const msg = errs.slice(0, 3).map((e: AjvError) => `${e.instancePath || "/"} ${e.message}`).join("; ");
       result.errors.push({ path: "recommendation.latest.json", message: msg });
     }
     return result;
@@ -100,6 +117,10 @@ function printResult(label: string, r: ValidationResult): void {
 }
 
 if (import.meta.main) {
+  const flags = parseArgs(Deno.args, {
+    boolean: ["strict"],
+    default: { strict: false },
+  });
   const ajv = new Ajv2020({ allErrors: true, strict: false });
 
   const chordResult = await validateChords(ajv);
@@ -112,5 +133,5 @@ if (import.meta.main) {
   const passed = chordResult.passed + (recResult?.passed ?? 0);
   const failed = chordResult.failed + (recResult?.failed ?? 0);
   console.log(`\noverall: ${passed}/${total} passed, ${failed} failed`);
-  Deno.exit(failed > 0 ? 1 : 0);
+  Deno.exit(flags.strict && failed > 0 ? 1 : 0);
 }

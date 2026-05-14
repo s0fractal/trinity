@@ -54,7 +54,6 @@
           "L6_recipe": { "type": "integer", "minimum": 0, "description": "Files describing executable recipes." },
           "L7_receipt_backed": { "type": "integer", "minimum": 0, "description": "Files with associated execution receipts." },
           "L8_published": { "type": "integer", "minimum": 0, "description": "Files published to a public surface." },
-          "public_candidate_rows": { "type": "integer", "minimum": 0 },
           "phases": {
             "type": "object",
             "description": "Distribution of artifacts across cognitive phases (per THOUGHT_PHASES.v0.1).",

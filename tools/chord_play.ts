@@ -57,8 +57,6 @@ interface ChordFrontmatter {
 interface Snapshot {
   L4b_hash_verified_count: number;
   L4b_hash_verified_pct: number;
-  duplicate_index_rows: number;
-  malformed_index_lines: number;
   canon_vectors_pass: boolean;
   trinity_repo_verified_count: number;
   phase: Record<string, number>;
@@ -99,7 +97,6 @@ async function buildSnapshot(): Promise<Snapshot> {
     if (!p.isEntrypoint) phase[p.thoughtPhase] = (phase[p.thoughtPhase] ?? 0) + 1;
   }
 
-  const indexCheck = await checkIndexHealth();
   const canonOk = await checkCanonVectors();
 
   return {
@@ -107,45 +104,11 @@ async function buildSnapshot(): Promise<Snapshot> {
     L4b_hash_verified_pct: ontologyTotal > 0
       ? +(100 * verified.length / ontologyTotal).toFixed(2)
       : 0,
-    duplicate_index_rows: indexCheck.duplicates,
-    malformed_index_lines: indexCheck.malformed,
     canon_vectors_pass: canonOk,
     trinity_repo_verified_count: trinityVerified.length,
     phase,
     compost_count: phase.compost,
   };
-}
-
-async function checkIndexHealth(): Promise<{
-  duplicates: number;
-  malformed: number;
-}> {
-  let text: string;
-  try {
-    text = await Deno.readTextFile("intake/projections/index.ndjson");
-  } catch {
-    return { duplicates: 0, malformed: 0 };
-  }
-  let malformed = 0;
-  const seen = new Set<string>();
-  let duplicates = 0;
-  for (const line of text.split("\n")) {
-    const t = line.trim();
-    if (!t) continue;
-    try {
-      const obj = JSON.parse(t);
-      if (typeof obj?.source_hash !== "string" || typeof obj?.target_fqdn !== "string") {
-        malformed++;
-        continue;
-      }
-      const key = `${obj.source_hash}|${obj.target_fqdn}`;
-      if (seen.has(key)) duplicates++;
-      else seen.add(key);
-    } catch {
-      malformed++;
-    }
-  }
-  return { duplicates, malformed };
 }
 
 async function checkCanonVectors(): Promise<boolean> {
@@ -164,10 +127,6 @@ function metricValue(snap: Snapshot, name: string): number | boolean {
       return snap.L4b_hash_verified_count;
     case "L4b_hash_verified_pct":
       return snap.L4b_hash_verified_pct;
-    case "duplicate_index_rows":
-      return snap.duplicate_index_rows;
-    case "malformed_index_lines":
-      return snap.malformed_index_lines;
     case "canon_vectors_pass":
       return snap.canon_vectors_pass;
     case "trinity_repo_verified_count":

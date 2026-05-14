@@ -83,10 +83,6 @@ export function classifyPhase(path: string, content: string, fm: Record<string, 
     return "crystal";
   }
 
-  if (path.includes("/intake/raw/")) {
-    return "raw-fantasy";
-  }
-
   if (fm && (fm.type === "ProposalDescriptor" || fm.proposal_status || fm.status === "proposed")) {
     return "proposal";
   }

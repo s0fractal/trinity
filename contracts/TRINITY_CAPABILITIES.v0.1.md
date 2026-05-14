@@ -10,7 +10,8 @@ superseded_by: "live projection t capabilities (0x4/A.ts) — 2026-05-14"
 
 **SUPERSEDED 2026-05-14.** Live projection `t capabilities` replaces the
 hand-maintained registry. Codex chord 2026-05-13T210236Z. Snapshot
-file moved to `capabilities/trinity.capabilities.v0.1.legacy.json`.
+file was later removed after recipes migrated into `0x0/00.ndjson` kind:8
+records.
 
 Below: original v0.1 contract text, preserved for historical reference.
 
@@ -34,7 +35,7 @@ can be planned as command/recipe composition instead of ad hoc file editing.
 The canonical draft registry lives at:
 
 ```text
-capabilities/trinity.capabilities.v0.1.json   (renamed .legacy.json 2026-05-14)
+capabilities/trinity.capabilities.v0.1.json   (renamed .legacy.json, then deleted 2026-05-14)
 ```
 
 Minimum object shape:

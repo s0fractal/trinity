@@ -2,3 +2,8 @@
 .gemini/
 reports/latest-*.md
 reports/*.tmp.md
+reports/cognition/*.latest.json
+reports/cognition/*.latest.md
+reports/cognition/*.receipt.json
+reports/cognition/snapshot.*.json
+public-candidates/myc/process.ndjson

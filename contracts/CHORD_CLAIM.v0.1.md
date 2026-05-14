@@ -20,10 +20,10 @@ The chord proposes an action and bets on a measurable post-state.
 ```yaml
 claim_kind: "action"
 suggested_commands:
-  - "deno task intake:ingest intake/raw/*.md"
+  - "deno task cognition:recommend"
 expected_after_running:
   L4b_hash_verified: ">=+3"
-  duplicate_index_rows: "==0"
+  trinity_repo_verified_count: ">=+1"
 falsifier_kind: "ecosystem-delta"
 ```
 
@@ -170,8 +170,6 @@ The verifier tool reads these from scanner output (no LLM required):
 - `L4b_hash_verified` — count or percent
 - `L4b_hash_verified_count` — count only
 - `L4b_hash_verified_pct` — percent only
-- `duplicate_index_rows` — integer
-- `malformed_index_lines` — integer
 - `canon_vectors_pass` — boolean
 - `trinity_repo_verified_count` — integer (L4b in trinity repo only)
 - `phase[receipt]`, `phase[formula]`, etc. — counts per phase

@@ -288,9 +288,10 @@ liquid/SPORE" — стоп. **Bridge замість duplicate.** Якщо bridge
   отримали явний `type/version/status`. Commit 68b818e.
   Substrate більше не має "unknown" контрактів — 13 active, 8 draft,
   1 superseded, 2 pinned.
-- **Capabilities demoted** — `capabilities/trinity.capabilities.v0.1.json`
-  → `.legacy.json`. `tools/capabilities.ts` видалено.
-  `t capabilities` (live) — нова canonical. Commit 005e7ac.
+- **Capabilities demoted, then deleted** — `capabilities/trinity.capabilities.v0.1.json`
+  → `.legacy.json` → removed after recipes migrated into ledger records.
+  `tools/capabilities.ts` видалено. `t capabilities` (live) — canonical.
+  Commit 005e7ac started the demotion; later cleanup removed the directory.
 - **Recipes resurfaced** — `t recipes` (0x3/C) робить orphan'ені
   workflow templates з legacy JSON знов queryable. Commit 550a33a.
 

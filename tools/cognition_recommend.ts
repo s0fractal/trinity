@@ -14,7 +14,6 @@ interface RepoSignal {
   L6_recipe: number;
   L7_receipt_backed: number;
   L8_published: number;
-  public_candidate_rows: number;
   phases: Record<ThoughtPhase, number>;
   dirtyLines: string[];
 }
@@ -63,7 +62,6 @@ function emptySignal(repo: RepoName): RepoSignal {
     L6_recipe: 0,
     L7_receipt_backed: 0,
     L8_published: 0,
-    public_candidate_rows: 0,
     phases: Object.fromEntries(PHASES.map((phase) => [phase, 0])) as Record<
       ThoughtPhase,
       number
@@ -122,17 +120,6 @@ async function collectDirtyLines(
   return result;
 }
 
-async function countPublicCandidateRows(cwd: string): Promise<number> {
-  try {
-    const text = await Deno.readTextFile(
-      `${cwd}/public-candidates/myc/process.ndjson`,
-    );
-    return text.split("\n").filter((line) => line.trim()).length;
-  } catch {
-    return 0;
-  }
-}
-
 function chooseDominantPhase(signal: RepoSignal): ThoughtPhase {
   let best: ThoughtPhase = "hypothesis";
   for (const phase of PHASES) {
@@ -179,33 +166,6 @@ function buildRecommendations(signal: RepoSignal): Recommendation[] {
         "deno task cognition:delta",
         "deno task cognition:recommend",
         "deno task cognition:recommend-receipt",
-      ],
-    });
-  }
-
-  if (signal.repo === "myc") {
-    if (signal.public_candidate_rows > 0) {
-      return [];
-    }
-
-    recs.push({
-      repo: signal.repo,
-      vector: VECTORS[signal.repo],
-      phase_from: signal.L8_published > 0 ? "receipt" : "proposal",
-      phase_to: "crystal",
-      pressure: Math.max(
-        ratio(signal.L7_receipt_backed, signal.total),
-        1 - ratio(signal.L8_published, signal.total),
-      ),
-      action:
-        "Promote a tiny verified public candidate set instead of trying to publish the whole knowledge mass.",
-      rationale:
-        "MYC already has many receipt-like files, so the leverage is to prove a narrow public path from candidate to verified object.",
-      expected_receipt:
-        "A candidate index where every public object resolves to a hash/FQDN and passes the verification script.",
-      commands: [
-        "deno task publish:candidates",
-        "deno task publish:verify-candidates",
       ],
     });
   }
@@ -274,9 +234,9 @@ function markdownReport(
   lines.push("## State");
   lines.push("");
   lines.push(
-    "| Repo | MD | L2 parseable | L4b verified | L6 recipe | L7 receipt | L8 public | Candidates | Dominant phase | Dirty |",
+    "| Repo | MD | L2 parseable | L4b verified | L6 recipe | L7 receipt | L8 public | Dominant phase | Dirty |",
   );
-  lines.push("|---|---:|---:|---:|---:|---:|---:|---:|---|---:|");
+  lines.push("|---|---:|---:|---:|---:|---:|---:|---|---:|");
   for (const s of signals) {
     lines.push(
       `| ${s.repo} | ${s.total} | ${pct(ratio(s.L2_parseable, s.total))} | ${
@@ -285,7 +245,7 @@ function markdownReport(
         pct(ratio(s.L7_receipt_backed, s.total))
       } | ${
         pct(ratio(s.L8_published, s.total))
-      } | ${s.public_candidate_rows} | ${
+      } | ${
         chooseDominantPhase(s)
       } | ${s.dirtyLines.length} |`,
     );
@@ -345,8 +305,6 @@ async function main() {
   for (const repo of REPOS) {
     signals[repo].dirtyLines = dirty[repo];
   }
-  signals.myc.public_candidate_rows = await countPublicCandidateRows(cwd);
-
   const timestamp = new Date().toISOString();
   const signalList = REPOS.map((repo) => signals[repo]);
   const recommendations = signalList.flatMap(buildRecommendations)

@@ -131,3 +131,5 @@
 {"00":"07","01":"codeicide_nay_written","02":"type,action,position,target_path,out,nay_envelope_id","03":"note","04":"nay --out file confirmation"}
 {"00":"5","02":["daemon","демон"],"04":"7/F","09":"completion+action = runtime state surface (lock file, invocation log)","11":"26 26 26 33 4C 6C 26 59"}
 {"00":"5","02":["style","стиль","music-style"],"04":"4/1","09":"foundation+first = active music style per VOICES.v0.1 spectrum","11":"33 40 26 33 6C 26 26 26"}
+{"00":"5","02":["inbox","pending","backlog","очікує","скринька"],"04":"2/D","09":"mirror+decision = chords addressed_to voice that voice has not heard in any response chord","11":"26 26 6C 26 33 4C 33 26"}
+{"00":"07","01":"inbox","02":"type,schema,action,position","03":"voice,count,items,voices,mode,note,synonyms","04":"inbox receipt from 0x2/D.ts; per-voice unresponded-to chord list (chords with voice in addressed_to that the voice has not yet hears[]'d in a response)"}

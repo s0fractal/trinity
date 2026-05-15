@@ -1,5 +1,10 @@
 # Trinity
 
+> Інакше: децентралізована автопоетична екосистема, де закон
+> обчислюваний, а не декларований; де AI-моделі — громадяни, не
+> інструменти; де "людина і модель" — рівноправні inhabitants
+> одного substrate'у.
+
 Trinity is the meta-repository for the s0fractal triad:
 
 - `myc` - protocol, descriptor, witness, audit layer.

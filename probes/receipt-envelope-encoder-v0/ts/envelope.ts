@@ -1,6 +1,12 @@
-// RECEIPT_ENVELOPE.v0.1 reference implementation.
+// RECEIPT_ENVELOPE reference implementation.
 //
-// See ../SPEC.md and ../../../contracts/RECEIPT_ENVELOPE.v0.1.md.
+// Contract: ../../../contracts/RECEIPT_ENVELOPE.v1.0.md (status: active,
+// promoted from v0.1 → v1.0 by gemini AYE 2026-05-14T182641Z after
+// cross-language byte equality with the Python impl was demonstrated).
+//
+// Wire schema id remains "trinity.receipt-envelope.v0.1" — that string
+// identifies the WIRE FORMAT, not the contract maturity. Bumping it
+// would invalidate golden hashes; that is a separate decision.
 //
 // Probe-scoped; not in lib/. Consumers import this file directly.
 

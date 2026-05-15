@@ -289,10 +289,13 @@ if (import.meta.main) {
     },
   };
 
-  // RECEIPT_ENVELOPE.v0.1 wrap (opt-in via --envelope). Demonstrates that
-  // trinity's self-report can be a verifiable cross-substrate witness.
-  // Any other substrate can wrap the same SUBSTRATE_HEALTH body with its
-  // own substrate_tag; `t court` then verifies body_hash agreement.
+  // RECEIPT_ENVELOPE wrap (opt-in via --envelope). Contract v1.0 active per
+  // gemini AYE 2026-05-14T182641Z; wire schema id remains "trinity.receipt-
+  // envelope.v0.1" (wire format and contract maturity version separate).
+  // Demonstrates that trinity's self-report can be a verifiable cross-
+  // substrate witness. Any other substrate can wrap the same SUBSTRATE_
+  // HEALTH body with its own substrate_tag; `t court` then verifies
+  // body_hash agreement.
   let substrate_health_envelope: unknown = undefined;
   if (wantEnvelope) {
     const envelope = await wrap(

@@ -1,19 +1,21 @@
 """Cross-language byte-equality test.
 
-Closes the second-implementation gate for RECEIPT_ENVELOPE.v0.1 → v1.0
-promotion per Codex review 2026-05-14T173027Z.
+Closed the second-implementation gate for RECEIPT_ENVELOPE v0.1 → v1.0
+promotion per Codex review 2026-05-14T173027Z; gemini AYE'd v1.0
+promotion at 2026-05-14T182641Z.
 
 Method:
   1. Run the same fixtures through this Python impl.
-  2. Read the TS impl's golden hashes (recorded in ts/test.ts output).
+  2. Compare against the TS impl's golden hashes (recorded in ts/test.ts
+     output and embedded here as constants).
   3. Assert byte-for-byte equality on canonical encodings, body_hashes,
      and envelope_ids.
 
-If any pair differs, the canonical CBOR spec is ambiguous or one impl is
-buggy. Either way, RECEIPT_ENVELOPE.v0.1 must stay draft and not promote.
+If any pair starts to differ in the future, the canonical CBOR spec is
+ambiguous or one impl is buggy — and the v1.0 promotion's invariant is
+violated. Treat as P0.
 
-Run: deno test -- ignored (this is Python)
-     python3 cross_lang_test.py
+Run: python3 cross_lang_test.py
 """
 
 from __future__ import annotations

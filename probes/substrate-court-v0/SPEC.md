@@ -1,7 +1,8 @@
 # substrate-court-v0 probe
 
 Multi-process demonstration of the **Substrate Court primitive** from
-`contracts/RECEIPT_ENVELOPE.v0.1.md`. Builds on the in-process seed test
+`contracts/RECEIPT_ENVELOPE.v1.0.md` (formerly v0.1; promoted to active
+by gemini AYE 2026-05-14T182641Z). Builds on the in-process seed test
 inside `probes/receipt-envelope-encoder-v0/`.
 
 The claim: **two or more independent processes, each tagged with a
@@ -15,7 +16,7 @@ verification it promises. If a tamper produces different `body_hash`
 values, the verifier detects divergence without false-negative.
 
 Boundary references:
-- `contracts/RECEIPT_ENVELOPE.v0.1.md` — envelope contract.
+- `contracts/RECEIPT_ENVELOPE.v1.0.md` — envelope contract (active).
 - `probes/receipt-envelope-encoder-v0/SPEC.md` — encoder + wrap/unwrap.
 - `jazz/chords/2026-05-14T163324Z-codex-response-next-thread-work-plan.md`
   — Item D AYE_AFTER_B with tweak: "Verifier should compare body_hash and

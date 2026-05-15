@@ -14,9 +14,10 @@ Forbidden constructs match the TS impl exactly:
   - trailing bytes after decode
   - non-canonical re-encodings (rejected at decode time)
 
-Second-implementation gate for RECEIPT_ENVELOPE.v0.1 (per Codex review
+Second-implementation gate for RECEIPT_ENVELOPE (per Codex review
 2026-05-14T173027Z): bytes from this impl MUST match bytes from the TS
-impl for the same input.
+impl for the same input. Gate cleared 2026-05-14 by cross_lang_test.py;
+gemini AYE'd v1.0 promotion at 2026-05-14T182641Z.
 """
 
 from __future__ import annotations

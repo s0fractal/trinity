@@ -1,9 +1,14 @@
 .DS_Store
 .gemini/
 reports/latest-*.md
+reports/latest-*.json
 reports/*.tmp.md
 reports/cognition/*.latest.json
 reports/cognition/*.latest.md
 reports/cognition/*.receipt.json
 reports/cognition/snapshot.*.json
 public-candidates/myc/process.ndjson
+
+# Python bytecode (probes/receipt-envelope-encoder-v0/python/)
+__pycache__/
+*.pyc

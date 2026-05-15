@@ -1,7 +1,13 @@
-"""RECEIPT_ENVELOPE.v0.1 reference impl in Python.
+"""RECEIPT_ENVELOPE reference impl in Python.
 
-Port of ../ts/envelope.ts. Used for the cross-language byte-equality test
-that closes the v0.1 → v1.0 promotion gate per Codex review 2026-05-14T173027Z.
+Contract: ../../../contracts/RECEIPT_ENVELOPE.v1.0.md (status: active,
+promoted 2026-05-14 by gemini AYE after this implementation demonstrated
+byte equality with the TS impl, closing Codex's AYE_WITH_GUARDRAIL).
+
+Wire schema id remains "trinity.receipt-envelope.v0.1" — identifies the
+wire format, not the contract version.
+
+Port of ../ts/envelope.ts.
 """
 
 from __future__ import annotations

@@ -1,6 +1,6 @@
 # receipt-envelope-encoder-v0 probe
 
-Hand-rolled minimal canonical CBOR encoder + `RECEIPT_ENVELOPE.v0.1`
+Hand-rolled minimal canonical CBOR encoder + `RECEIPT_ENVELOPE`
 reference implementation. Probe-scoped (NOT in `lib/`) per architect
 constraint: trinity should not grow `lib/`.
 
@@ -10,18 +10,22 @@ organs that need to wrap/unwrap receipts import directly from
 two-plus consumers, at which point it may graduate to a hex coordinate.
 
 Boundary reference:
-- `contracts/RECEIPT_ENVELOPE.v0.1.md` — envelope contract (paper).
+- `contracts/RECEIPT_ENVELOPE.v1.0.md` — envelope contract (status:
+  active, promoted from v0.1 → v1.0 by gemini AYE 2026-05-14T182641Z).
+  Wire schema id remains `trinity.receipt-envelope.v0.1` — identifies
+  the wire format, not the contract maturity version.
 - `contracts/SPORE_VS_OMEGA_SPORE_BOUNDARY.v0.1.md` — sibling boundary doc.
 
 ## Status
 
-**TWO-IMPL CROSS-VERIFIED.** SPEC + TypeScript impl (`ts/`) + Python impl
-(`python/`) + cross-language byte-equality test. Codex's TWEAK on Item B
-(`2026-05-14T163324Z`) drove the hand-rolled-no-dep choice. Codex's
-review (`2026-05-14T173027Z`) added the second-implementation gate as a
-guardrail for promoting `RECEIPT_ENVELOPE.v0.1` to v1.0; this probe now
-clears that gate by producing byte-identical canonical CBOR and envelope
-hashes from both impls for the same fixtures.
+**TWO-IMPL CROSS-VERIFIED — GATE CLEARED.** SPEC + TypeScript impl
+(`ts/`) + Python impl (`python/`) + cross-language byte-equality test.
+Codex's TWEAK on Item B (`2026-05-14T163324Z`) drove the hand-rolled-no-
+dep choice. Codex's review (`2026-05-14T173027Z`) added the second-
+implementation gate as a guardrail for promoting `RECEIPT_ENVELOPE` to
+v1.0; this probe cleared that gate on 2026-05-14 by producing byte-
+identical canonical CBOR and envelope hashes from both impls for the
+same fixtures. Gemini AYE'd v1.0 promotion at 2026-05-14T182641Z.
 
 ## Canonical CBOR subset
 
@@ -149,9 +153,10 @@ before calling coWitness.
 7. **coWitness** — wrap an envelope, coWitness twice, assert
    `envelope_id` changes each time and `witness_chain.length` grows.
 
-## Acceptance for promoting envelope v0.1 to v1.0
+## Acceptance for v0.1 → v1.0 promotion (HISTORICAL — gate cleared 2026-05-14)
 
-(per `contracts/RECEIPT_ENVELOPE.v0.1.md`):
+Original criteria from `contracts/RECEIPT_ENVELOPE.v1.0.md` (formerly
+v0.1.md). All five satisfied; recording here as audit trail:
 
 - ✓ At least three of the registered body kinds wrapped and round-tripped — done in `ts/test.ts`.
 - ✓ **CBOR canonical serialization confirmed byte-identical across at least two implementations** — TypeScript (`ts/`) + Python (`python/`), verified by `python/cross_lang_test.py` on 2026-05-14. Both impls produce identical `body_hash` and `envelope_id` on shared fixtures.

@@ -151,6 +151,7 @@ async function fn_run_at_position(
     args: ["run", "--allow-all", path, ...args],
     stdout: "piped",
     stderr: "inherit",
+    stdin: "inherit",  // pipe parent's stdin through to organ (enables `t cowitness --stdin` etc.)
   });
   const result = await proc.output();
   const raw = new TextDecoder().decode(result.stdout).trim();

@@ -1,9 +1,9 @@
 #!/usr/bin/env -S deno run --allow-read
 // 0x2/0.ts — voices / synthetic voice profiles from chord history
 // position: 2/0 → mirror(2) × void(0) = reflection surface / identity pool
-// hex_dipole: "6C 33 26 26 26 26 26 26"
-//   mirror_apex+0.85 (PRIMARY: reflects who speaks into substrate)
-//   first_penultimate+0.50 (identities are first-class)
+// hex_dipole: "33 26 6C 26 26 26 26 26"
+//   axis 0 void_infinity +0.30 (secondary: reflection surface from emptiness)
+//   axis 2 mirror_apex +0.85 (PRIMARY: reflects who speaks into substrate)
 //   bucket 2/0: primary axis mirror (2), bucket 2 ← MATCH
 //               secondary '0' → axis 0 void, dipole +0.30 on axis 0 ← weak
 //   measured by claude-opus-4-7-1m

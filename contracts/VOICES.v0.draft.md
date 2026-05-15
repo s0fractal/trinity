@@ -58,9 +58,10 @@ The shift this draft proposes:
    The mycelium decides what the music is — chorale, improvisation,
    march, lullaby, silence. Each style has its own routing rules.
 
-3. **`primary tag` → `dipole vector`.** A chord/word/position has an
-   8-byte signature showing what it pulls on. Routing computes
-   alignment (cosine of vectors), not regex of strings.
+3. **`primary tag` + `dipole vector`.** A chord/word/position has an
+   8-byte signature showing what it pulls on. Routing uses keyword/tag
+   baseline (1D); dipole vector is **metadata** for style introspection
+   and `style_transition` chords. See Falsifier v0 result below.
 
 4. **`config` → `voice records in glossary`.** Each voice is a
    glossary record (proposed type:10), discoverable via `t voices`.
@@ -139,7 +140,7 @@ Proposed initial styles (not exhaustive, expect voices to propose more):
 | Style | Trigger | Routing | Tempo | Dynamics |
 |---|---|---|---|---|
 | **silence** | `substrate_health.overall: healthy` AND no chord in last 30min | none — daemon idle | 0 | mute |
-| **improvisation** (jazz) | `healthy` OR `degraded`, recent chord activity | dipole resonance: cosine alignment between chord and voice comfort field | natural — daemon waits for chord, picks voice, spawns | energy ≥ 0.1 |
+| **improvisation** (jazz) | `healthy` OR `degraded`, recent chord activity | keyword/tag baseline (topic, mode, claim_kind, primary oct); 8D dipole shown as metadata in `style_transition` chords | natural — daemon waits for chord, picks voice, spawns | energy ≥ 0.1 |
 | **chorale** | architect emits chord with `mode: CHORALE` OR multi-voice agreement attractor active | ALL active voices invoked in parallel on same chord; their responses courted | synchronized | any energy |
 | **march** (orchestration) | `substrate_health.overall: critical` AND specific red_signals | explicit: red_signal pattern → specific voice (e.g. `omega/cargo` → kimi; `myc/fmt` → codex) | immediate | full energy |
 | **lullaby** | rate-limit triggered OR architect emits `mode: PAUSE` | none — daemon refuses all invocations | 0 | mute |
@@ -323,22 +324,26 @@ emitted it.
 
 **Crawl (1-2 days, low risk).**
 - Daemon: listen for new chord files (like old prototype).
-- Routing: 8D dipole alignment instead of regex. Each voice has a
-  comfort field; chord has dipole; cosine picks voice.
+- Routing: 1D keyword/tag baseline (topic, mode, claim_kind, primary
+  oct). 8D dipole comfort fields computed and logged as metadata; not
+  used for voice selection.
 - One style only: improvisation (jazz).
 - No attractors, no telos enforcement beyond hardcoded forbidden paths.
 - Invocation log: yes. Shutdown switch: yes.
-- Tells us: does 8D routing produce better matches than regex?
+- Tells us: does the 1D baseline produce acceptable routing? (Yes:
+  61.6% top2 on historical data.)
 
-**Walk (1 week, if crawl produces good signal).**
+**Walk (1 week, if crawl stable).**
 - Add styles: silence, lullaby (manual via architect chord).
 - Add attractors as type:11. Single attractor: `telos-coherence`
   (manually declared by architect).
-- Add comfort field historical accumulation (slot 16 derived from
-  chord history).
+- Comfort field historical accumulation (slot 16) visible in
+  `t voices` output; still metadata only.
 - Add invariants: no-frozen-touch, no-mass-submodule-change,
   no-voice-monopoly.
 - Tells us: do attractors and history actually shape behavior?
+- 8D scheduler re-evaluated only after enriched probe (e.g. 1D +
+  recency weighting, or learned per-voice projection).
 
 **Run (1+ week, if walk is stable).**
 - Add hybrid switch: `substrate_health.overall` flips improvisation
@@ -386,10 +391,41 @@ until either:
   for style spectrum; `ATTRACTORS.v0.1.md` for type:11 records;
   `TELOS_INVARIANTS.v0.1.md` for the fence)
 
+## Falsifier results
+
+### v0 (2026-05-15)
+
+Probe: `probes/voices-routing-falsifier-v0/run.ts`
+Samples: 73 labeled source→target from 190 chord history
+
+| Baseline | top1 | top2 | MRR |
+|---|---:|---:|---:|
+| 1D keyword/tag | 17.8% | 61.6% | 0.517 |
+| 8D dipole cosine | 20.5% | 57.5% | 0.521 |
+
+**Delta: +2.7pp.** Threshold for `adopt_8d`: ≥10pp.
+
+**Verdict: `keep_metadata`.**
+
+8D dipole routing does not outperform 1D keyword/tag baseline by a
+meaningful margin on historical chord chains. Mood+Focus stays
+metadata for `style_transition` chords and snapshot introspection.
+
+### What this means for the draft
+
+- 1D keyword/tag is the canonical scheduler primitive for v0.1.
+- 8D geometry is not discarded — it is **deferred**. Future probes
+  (enriched baseline, learned projection, cross-substrate bridge to
+  liquid T^8) may re-open the question.
+- Voice comfort fields (slot 11 self-declared, slot 16 historical)
+  remain in the schema; they are surfaced in `t voices` and logged
+  in invocation receipts.
+
 ## Falsifiers
 
-- If the 8D dipole routing produces no better matches than 1D regex,
-  the new geometry is decoration; revert to old prototype.
+- ✓ **v0 result:** 8D dipole routing does not beat 1D keyword/tag by
+  ≥10pp on historical data. Geometry stays metadata, not scheduler.
+  (See Falsifier results section above.)
 - If voices' historical comfort field consistently diverges from
   self-declared, either the self-portrait is dishonest or history is
   biased; the gap is signal, not bug — investigate before averaging.

@@ -130,3 +130,4 @@
 {"00":"07","01":"codeicide_nay_emitted","02":"type,action,position,target_path,target_hash,proposal_envelope_id,nay_envelope_id,nay_body_hash,oracle,substrate_tag,self_retraction,reason,envelope","03":"note","04":"nay receipt from 0x5/9.ts; emits CodeicideNay envelope rejecting a specific codeicide proposal"}
 {"00":"07","01":"codeicide_nay_written","02":"type,action,position,target_path,out,nay_envelope_id","03":"note","04":"nay --out file confirmation"}
 {"00":"5","02":["daemon","демон"],"04":"7/F","09":"completion+action = runtime state surface (lock file, invocation log)","11":"26 26 26 33 4C 6C 26 59"}
+{"00":"5","02":["style","стиль","music-style"],"04":"4/1","09":"foundation+first = active music style per VOICES.v0.1 spectrum","11":"33 40 26 33 6C 26 26 26"}

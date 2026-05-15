@@ -10,6 +10,7 @@
     "jsr:@std/path@*": "1.1.4",
     "jsr:@std/path@^1.0.7": "1.1.4",
     "jsr:@std/path@^1.1.4": "1.1.4",
+    "jsr:@std/yaml@1": "1.0.5",
     "jsr:@std/yaml@1.0.5": "1.0.5",
     "npm:@noble/hashes@1.4.0": "1.4.0",
     "npm:ajv@8.17.1": "8.17.1",

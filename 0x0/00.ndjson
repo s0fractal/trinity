@@ -123,3 +123,4 @@
 {"00":"5","02":["chord_play","chord-play","програти-акорд"],"04":"3/5","09":"triangle+action = parse and visualize chord structure","11":"26 26 26 6C 26 59 26 26"}
 {"00":"5","02":["recommend_to_chord","recommend-to-chord","до-акорду"],"04":"5/3","09":"action+triangle = convert recommendation to chord","11":"26 26 26 59 26 6C 26 26"}
 {"00":"5","02":["grind","grind-nonce","знайти-нонс"],"04":"7/0","09":"completion+void = topological hex-dipole nonce grinding","11":"8E 00 00 00 00 00 00 59"}
+{"00":"5","02":["voices","voice","голоси","голос"],"04":"2/0","09":"mirror+void = synthetic voice profiles from chord history","11":"6C 33 26 26 26 26 26 26"}

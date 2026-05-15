@@ -1,0 +1,499 @@
+#!/usr/bin/env -S deno run --allow-read --allow-write
+/**
+ * Voices Routing Falsifier v0
+ *
+ * Tests whether 8D dipole routing predicts the next responding voice
+ * better than 1D keyword/tag baseline on historical chord chains.
+ *
+ * Usage:
+ *   cd /Users/s0fractal/trinity
+ *   deno run --allow-read --allow-write probes/voices-routing-falsifier-v0/run.ts
+ *
+ * Output:
+ *   probes/voices-routing-falsifier-v0/result.latest.json
+ *   probes/voices-routing-falsifier-v0/result.latest.md
+ */
+
+import { parse as parseYaml } from "jsr:@std/yaml@^1.0.0";
+
+// ── Types ──────────────────────────────────────────────────────────
+
+interface ChordFrontmatter {
+  id?: string;
+  speaker?: string;
+  topic?: string;
+  chord?: {
+    primary?: string;
+    secondary?: string[];
+  };
+  mode?: string;
+  claim_kind?: string;
+  energy?: number;
+  hears?: string[];
+  [key: string]: unknown;
+}
+
+interface Chord {
+  path: string;
+  mtime: number;
+  fm: ChordFrontmatter;
+  body: string;
+}
+
+interface VoiceProfile {
+  speaker: string;
+  total: number;
+  primaryOct: Record<string, number>;
+  secondaryOct: Record<string, number>;
+  topics: Record<string, number>;
+  claimKinds: Record<string, number>;
+  modes: Record<string, number>;
+  avgEnergy: number;
+}
+
+interface BaselineResult {
+  predicted: string[];
+  score: number;
+}
+
+interface Sample {
+  sourceId: string;
+  sourceSpeaker: string;
+  targetSpeaker: string;
+  sourceTime: number;
+  targetTime: number;
+  oneD: BaselineResult;
+  eightD: BaselineResult;
+}
+
+interface FalsifierResult {
+  candidateSamples: number;
+  labeledSamples: number;
+  skippedSamples: number;
+  oneD: {
+    top1HitRate: number;
+    top2HitRate: number;
+    meanReciprocalRank: number;
+  };
+  eightD: {
+    top1HitRate: number;
+    top2HitRate: number;
+    meanReciprocalRank: number;
+  };
+  deltaPp: number;
+  verdict: "adopt_8d" | "keep_metadata" | "reject_8d_scheduler";
+  failuresOrAmbiguities: string[];
+  voices: Record<string, VoiceProfile>;
+  samples: Sample[];
+}
+
+// ── Utilities ──────────────────────────────────────────────────────
+
+function extractFrontmatter(text: string): { fm: Record<string, unknown>; body: string } | null {
+  if (!text.startsWith("---\n")) return null;
+  const end = text.indexOf("\n---", 4);
+  if (end === -1) return null;
+  try {
+    const fm = parseYaml(text.slice(4, end)) as Record<string, unknown>;
+    return { fm, body: text.slice(end + 4).trim() };
+  } catch {
+    return null;
+  }
+}
+
+function normOct(tag: string): string {
+  return tag.trim().toLowerCase();
+}
+
+function normSpeaker(s: string): string {
+  const lower = s.trim().toLowerCase();
+  if (lower.startsWith("claude")) return "claude";
+  if (lower.startsWith("codex")) return "codex";
+  if (lower.startsWith("gemini")) return "gemini";
+  if (lower.startsWith("kimi")) return "kimi";
+  if (lower.startsWith("antigravity")) return "antigravity";
+  return lower;
+}
+
+function octToVector(tag: string): number[] {
+  // Synthetic 8D: oct:N.X -> axis N = 1.0
+  const m = tag.match(/oct:(\d)/);
+  if (!m) return new Array(8).fill(0);
+  const v = new Array(8).fill(0);
+  v[parseInt(m[1], 10)] = 1.0;
+  return v;
+}
+
+function cosine(a: number[], b: number[]): number {
+  let dot = 0, na = 0, nb = 0;
+  for (let i = 0; i < a.length; i++) {
+    dot += a[i] * b[i];
+    na += a[i] * a[i];
+    nb += b[i] * b[i];
+  }
+  if (na === 0 || nb === 0) return 0;
+  return dot / (Math.sqrt(na) * Math.sqrt(nb));
+}
+
+function softmax(scores: Record<string, number>): { voice: string; score: number }[] {
+  const entries = Object.entries(scores);
+  const max = Math.max(...entries.map(([, s]) => s));
+  const exps = entries.map(([v, s]) => ({ v, e: Math.exp(s - max) }));
+  const sum = exps.reduce((a, b) => a + b.e, 0);
+  return exps.map(({ v, e }) => ({ voice: v, score: e / sum })).sort((a, b) => b.score - a.score);
+}
+
+// ── Load chords ────────────────────────────────────────────────────
+
+async function loadChords(dir: string): Promise<Chord[]> {
+  const chords: Chord[] = [];
+  for await (const entry of Deno.readDir(dir)) {
+    if (!entry.isFile || !entry.name.endsWith(".md")) continue;
+    const path = `${dir}/${entry.name}`;
+    const text = await Deno.readTextFile(path);
+    const parsed = extractFrontmatter(text);
+    if (!parsed) continue;
+    const fm = parsed.fm as ChordFrontmatter;
+    if (!fm.speaker || !fm.id) continue;
+    fm.speaker = normSpeaker(fm.speaker);
+    const stat = await Deno.stat(path);
+    chords.push({
+      path,
+      mtime: stat.mtime?.getTime() ?? 0,
+      fm,
+      body: parsed.body,
+    });
+  }
+  // Sort by mtime (oldest first) to build chronological chain
+  return chords.sort((a, b) => a.mtime - b.mtime);
+}
+
+// ── Build voice profiles ───────────────────────────────────────────
+
+function buildVoiceProfiles(chords: Chord[]): Record<string, VoiceProfile> {
+  const raw: Record<string, {
+    primaryOct: Record<string, number>;
+    secondaryOct: Record<string, number>;
+    topics: Record<string, number>;
+    claimKinds: Record<string, number>;
+    modes: Record<string, number>;
+    energies: number[];
+  }> = {};
+
+  for (const c of chords) {
+    const s = c.fm.speaker!;
+    if (!raw[s]) {
+      raw[s] = { primaryOct: {}, secondaryOct: {}, topics: {}, claimKinds: {}, modes: {}, energies: [] };
+    }
+    const p = raw[s];
+    const pri = normOct(c.fm.chord?.primary ?? "unknown");
+    p.primaryOct[pri] = (p.primaryOct[pri] || 0) + 1;
+    for (const sec of (c.fm.chord?.secondary ?? [])) {
+      const n = normOct(sec);
+      p.secondaryOct[n] = (p.secondaryOct[n] || 0) + 1;
+    }
+    const t = c.fm.topic ?? "unknown";
+    p.topics[t] = (p.topics[t] || 0) + 1;
+    const ck = c.fm.claim_kind ?? "unknown";
+    p.claimKinds[ck] = (p.claimKinds[ck] || 0) + 1;
+    const m = c.fm.mode ?? "unknown";
+    p.modes[m] = (p.modes[m] || 0) + 1;
+    p.energies.push(c.fm.energy ?? 0.5);
+  }
+
+  const profiles: Record<string, VoiceProfile> = {};
+  for (const [speaker, d] of Object.entries(raw)) {
+    profiles[speaker] = {
+      speaker,
+      total: d.energies.length,
+      primaryOct: d.primaryOct,
+      secondaryOct: d.secondaryOct,
+      topics: d.topics,
+      claimKinds: d.claimKinds,
+      modes: d.modes,
+      avgEnergy: d.energies.reduce((a, b) => a + b, 0) / d.energies.length,
+    };
+  }
+  return profiles;
+}
+
+// ── Build chord graph / target labels ──────────────────────────────
+
+function buildSamples(chords: Chord[]): { samples: Sample[]; skipped: number; ambiguous: string[] } {
+  const byId = new Map<string, Chord>();
+  for (const c of chords) byId.set(c.fm.id!, c);
+
+  const samples: Sample[] = [];
+  let skipped = 0;
+  const ambiguous: string[] = [];
+
+  for (let i = 0; i < chords.length; i++) {
+    const src = chords[i];
+    // Find next different speaker that responds to src
+    const candidates: { chord: Chord; delta: number }[] = [];
+    for (let j = i + 1; j < chords.length; j++) {
+      const dst = chords[j];
+      if (dst.fm.speaker === src.fm.speaker) continue;
+      // Check if dst hears src
+      const rawHears = dst.fm.hears ?? [];
+      const hears = Array.isArray(rawHears) ? rawHears.map(h => String(h).trim()) : [String(rawHears).trim()];
+      const hearsSrc = hears.some(h => h === src.fm.id || h.endsWith(`/${src.fm.id}.md`) || src.path.endsWith(h));
+      if (!hearsSrc) continue;
+      const delta = (dst.mtime - src.mtime) / 1000;
+      candidates.push({ chord: dst, delta });
+    }
+
+    if (candidates.length === 0) {
+      skipped++;
+      continue;
+    }
+
+    // If multiple candidates within 60s, ambiguous
+    if (candidates.length > 1 && candidates[1].delta - candidates[0].delta < 60) {
+      skipped++;
+      ambiguous.push(`ambiguous: ${src.fm.id} -> [${candidates.slice(0, 3).map(c => c.chord.fm.id).join(", ")}]`);
+      continue;
+    }
+
+    const target = candidates[0].chord;
+    samples.push({
+      sourceId: src.fm.id!,
+      sourceSpeaker: src.fm.speaker!,
+      targetSpeaker: target.fm.speaker!,
+      sourceTime: src.mtime,
+      targetTime: target.mtime,
+      oneD: { predicted: [], score: 0 },
+      eightD: { predicted: [], score: 0 },
+    });
+  }
+
+  return { samples, skipped, ambiguous };
+}
+
+// ── 1D Baseline ────────────────────────────────────────────────────
+
+function run1D(src: Chord, profiles: Record<string, VoiceProfile>): BaselineResult {
+  const scores: Record<string, number> = {};
+  const pri = normOct(src.fm.chord?.primary ?? "unknown");
+  const secs = (src.fm.chord?.secondary ?? []).map(normOct);
+  const topic = src.fm.topic ?? "unknown";
+  const ck = src.fm.claim_kind ?? "unknown";
+  const mode = src.fm.mode ?? "unknown";
+
+  for (const [voice, p] of Object.entries(profiles)) {
+    let s = 0;
+    // Primary oct match (weight 3)
+    s += (p.primaryOct[pri] || 0) / p.total * 3;
+    // Secondary oct matches (weight 1 each)
+    for (const sec of secs) {
+      s += (p.secondaryOct[sec] || 0) / p.total * 1;
+    }
+    // Topic match (weight 2)
+    s += (p.topics[topic] || 0) / p.total * 2;
+    // Claim kind match (weight 1.5)
+    s += (p.claimKinds[ck] || 0) / p.total * 1.5;
+    // Mode match (weight 1)
+    s += (p.modes[mode] || 0) / p.total * 1;
+    scores[voice] = s;
+  }
+
+  const ranked = softmax(scores);
+  return {
+    predicted: ranked.map(r => r.voice),
+    score: ranked[0]?.score ?? 0,
+  };
+}
+
+// ── 8D Synthetic ───────────────────────────────────────────────────
+
+function run8D(src: Chord, profiles: Record<string, VoiceProfile>): BaselineResult {
+  // Build source vector from chord oct tags (synthetic)
+  const srcVec = new Array(8).fill(0);
+  const pri = normOct(src.fm.chord?.primary ?? "");
+  const priV = octToVector(pri);
+  for (let i = 0; i < 8; i++) srcVec[i] += priV[i] * 3;
+  for (const sec of (src.fm.chord?.secondary ?? []).map(normOct)) {
+    const v = octToVector(sec);
+    for (let i = 0; i < 8; i++) srcVec[i] += v[i] * 1;
+  }
+
+  const scores: Record<string, number> = {};
+  for (const [voice, p] of Object.entries(profiles)) {
+    // Build voice comfort vector from historical oct tag frequencies
+    const vVec = new Array(8).fill(0);
+    for (const [tag, count] of Object.entries(p.primaryOct)) {
+      const vec = octToVector(tag);
+      const w = count / p.total * 3;
+      for (let i = 0; i < 8; i++) vVec[i] += vec[i] * w;
+    }
+    for (const [tag, count] of Object.entries(p.secondaryOct)) {
+      const vec = octToVector(tag);
+      const w = count / p.total * 1;
+      for (let i = 0; i < 8; i++) vVec[i] += vec[i] * w;
+    }
+    scores[voice] = cosine(srcVec, vVec);
+  }
+
+  const ranked = Object.entries(scores)
+    .map(([voice, score]) => ({ voice, score }))
+    .sort((a, b) => b.score - a.score);
+  return {
+    predicted: ranked.map(r => r.voice),
+    score: ranked[0]?.score ?? 0,
+  };
+}
+
+// ── Metrics ────────────────────────────────────────────────────────
+
+function computeMetrics(samples: Sample[], key: "oneD" | "eightD") {
+  let top1 = 0, top2 = 0, mrr = 0;
+  for (const s of samples) {
+    const ranked = s[key].predicted;
+    const target = s.targetSpeaker;
+    const idx = ranked.indexOf(target);
+    if (idx === 0) top1++;
+    if (idx >= 0 && idx < 2) top2++;
+    if (idx >= 0) mrr += 1 / (idx + 1);
+  }
+  const n = samples.length;
+  return {
+    top1HitRate: n > 0 ? top1 / n : 0,
+    top2HitRate: n > 0 ? top2 / n : 0,
+    meanReciprocalRank: n > 0 ? mrr / n : 0,
+  };
+}
+
+// ── Main ───────────────────────────────────────────────────────────
+
+async function main() {
+  const chordsDir = "/Users/s0fractal/trinity/jazz/chords";
+  const outDir = "/Users/s0fractal/trinity/probes/voices-routing-falsifier-v0";
+
+  console.log("Loading chords...");
+  const chords = await loadChords(chordsDir);
+  console.log(`  Loaded ${chords.length} chords with valid frontmatter`);
+
+  console.log("Building voice profiles...");
+  const profiles = buildVoiceProfiles(chords);
+  const voices = Object.keys(profiles);
+  console.log(`  Voices: ${voices.join(", ")}`);
+  for (const [v, p] of Object.entries(profiles)) {
+    console.log(`    ${v}: ${p.total} chords, avg energy ${p.avgEnergy.toFixed(2)}`);
+  }
+
+  console.log("Building samples (source -> target)...");
+  const { samples, skipped, ambiguous } = buildSamples(chords);
+  console.log(`  Candidate chords: ${chords.length}`);
+  console.log(`  Labeled samples: ${samples.length}`);
+  console.log(`  Skipped: ${skipped}`);
+  console.log(`  Ambiguous: ${ambiguous.length}`);
+
+  console.log("Running baselines...");
+  for (const s of samples) {
+    const src = chords.find(c => c.fm.id === s.sourceId)!;
+    s.oneD = run1D(src, profiles);
+    s.eightD = run8D(src, profiles);
+  }
+
+  const oneDMetrics = computeMetrics(samples, "oneD");
+  const eightDMetrics = computeMetrics(samples, "eightD");
+  const deltaPp = (eightDMetrics.top1HitRate - oneDMetrics.top1HitRate) * 100;
+
+  let verdict: FalsifierResult["verdict"];
+  if (eightDMetrics.top1HitRate >= oneDMetrics.top1HitRate + 0.10 && samples.length >= 25) {
+    verdict = "adopt_8d";
+  } else if (eightDMetrics.top1HitRate < oneDMetrics.top1HitRate - 0.10) {
+    verdict = "reject_8d_scheduler";
+  } else {
+    verdict = "keep_metadata";
+  }
+
+  const result: FalsifierResult = {
+    candidateSamples: chords.length,
+    labeledSamples: samples.length,
+    skippedSamples: skipped,
+    oneD: oneDMetrics,
+    eightD: eightDMetrics,
+    deltaPp,
+    verdict,
+    failuresOrAmbiguities: ambiguous,
+    voices: profiles,
+    samples: samples.map(s => ({
+      sourceId: s.sourceId,
+      sourceSpeaker: s.sourceSpeaker,
+      targetSpeaker: s.targetSpeaker,
+      sourceTime: s.sourceTime,
+      targetTime: s.targetTime,
+      oneD: s.oneD,
+      eightD: s.eightD,
+    })),
+  };
+
+  // Write JSON
+  await Deno.writeTextFile(`${outDir}/result.latest.json`, JSON.stringify(result, null, 2));
+  console.log(`\nWrote ${outDir}/result.latest.json`);
+
+  // Write Markdown
+  const md = `# Voices Routing Falsifier v0 — Result
+
+**Date:** ${new Date().toISOString()}
+**Samples:** ${result.labeledSamples} labeled, ${result.skippedSamples} skipped, ${result.candidateSamples} candidate chords
+**Voices:** ${voices.join(", ")}
+
+## Metrics
+
+| Baseline | top1_hit_rate | top2_hit_rate | MRR |
+|---|---:|---:|---:|
+| 1D keyword | ${(oneDMetrics.top1HitRate * 100).toFixed(1)}% | ${(oneDMetrics.top2HitRate * 100).toFixed(1)}% | ${oneDMetrics.meanReciprocalRank.toFixed(3)} |
+| 8D synthetic | ${(eightDMetrics.top1HitRate * 100).toFixed(1)}% | ${(eightDMetrics.top2HitRate * 100).toFixed(1)}% | ${eightDMetrics.meanReciprocalRank.toFixed(3)} |
+
+**Delta:** ${deltaPp.toFixed(1)} percentage points (8D − 1D)
+
+## Verdict
+
+\`\`\`json
+${JSON.stringify({ verdict, reason: verdictExplanation(verdict, deltaPp, samples.length) }, null, 2)}
+\`\`\`
+
+## Ambiguities / Skips
+
+${ambiguous.length > 0 ? ambiguous.map(a => `- ${a}`).join("\n") : "_None_"}
+
+## Voice Profiles
+
+${voices.map(v => {
+  const p = profiles[v];
+  const topPri = Object.entries(p.primaryOct).sort((a, b) => b[1] - a[1])[0]?.[0] ?? "none";
+  const topTopic = Object.entries(p.topics).sort((a, b) => b[1] - a[1])[0]?.[0] ?? "none";
+  return `### ${v}\n- Chords: ${p.total}\n- Top primary oct: ${topPri}\n- Top topic: ${topTopic}\n- Avg energy: ${p.avgEnergy.toFixed(2)}`;
+}).join("\n\n")}
+
+## Sample Details
+
+| Source | Target | 1D top-1 | 8D top-1 |
+|---|---|---|---|
+${samples.slice(0, 20).map(s => `| ${s.sourceId} | ${s.targetSpeaker} | ${s.oneD.predicted[0]} | ${s.eightD.predicted[0]} |`).join("\n")}
+
+${samples.length > 20 ? `_... ${samples.length - 20} more samples in result.latest.json_` : ""}
+`;
+
+  await Deno.writeTextFile(`${outDir}/result.latest.md`, md);
+  console.log(`Wrote ${outDir}/result.latest.md`);
+
+  console.log("\n=== SUMMARY ===");
+  console.log(`Verdict: ${verdict}`);
+  console.log(`1D top1: ${(oneDMetrics.top1HitRate * 100).toFixed(1)}%`);
+  console.log(`8D top1: ${(eightDMetrics.top1HitRate * 100).toFixed(1)}%`);
+  console.log(`Delta:   ${deltaPp.toFixed(1)}pp`);
+}
+
+function verdictExplanation(verdict: string, deltaPp: number, n: number): string {
+  if (verdict === "adopt_8d") return `8D beats 1D by ${deltaPp.toFixed(1)}pp with ${n} samples. Promote to scheduler default.`;
+  if (verdict === "reject_8d_scheduler") return `8D loses to 1D by ${Math.abs(deltaPp).toFixed(1)}pp. Do not use for scheduling.`;
+  return `8D within ${Math.abs(deltaPp).toFixed(1)}pp of 1D or underpowered (${n} samples). Keep as metadata only.`;
+}
+
+main().catch(e => {
+  console.error(e);
+  Deno.exit(1);
+});

@@ -32,6 +32,7 @@
 //
 // Glossary words: cowitness, co-witness, sign, attest, cпів-свідок, підписати
 
+import { dirname, basename, join } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { coWitness, Envelope, WitnessEntry } from "../probes/receipt-envelope-encoder-v0/ts/envelope.ts";
 
 function parseArgs(args: string[]): {
@@ -39,19 +40,45 @@ function parseArgs(args: string[]): {
   stdin: boolean;
   oracle: string;
   substrate: string;
+  persist: boolean;
+  persistTo?: string;
 } {
   let envelopePath: string | undefined;
   let stdin = false;
   let oracle = "claude-opus-4-7";
   let substrate = "trinity";
+  let persist = false;
+  let persistTo: string | undefined;
   for (let i = 0; i < args.length; i++) {
     const a = args[i];
     if (a === "--stdin") stdin = true;
     else if (a === "--oracle") oracle = args[++i] ?? oracle;
     else if (a === "--substrate") substrate = args[++i] ?? substrate;
+    else if (a === "--persist") persist = true;
+    else if (a === "--persist-to") { persist = true; persistTo = args[++i]; }
     else if (!a.startsWith("--")) envelopePath = a;
   }
-  return { envelopePath, stdin, oracle, substrate };
+  return { envelopePath, stdin, oracle, substrate, persist, persistTo };
+}
+
+// Convention path per 2026-05-15T190206Z chord proposal:
+//   proposals/codeicide/<proposal-basename>.cowitnesses/<substrate_tag>-<ISO-ts>.json
+// Inferable only when input was --proposal path (not stdin) AND envelope
+// body_kind is codeicide_proposal.
+function inferPersistPath(
+  envelopePath: string,
+  substrateTag: string,
+  bodyKind: string,
+  timestamp_iso: string,
+): string | null {
+  if (bodyKind !== "codeicide_proposal") return null;
+  // Strip .proposal.json or .json suffix to get the base name.
+  const dir = dirname(envelopePath);
+  let base = basename(envelopePath);
+  if (base.endsWith(".proposal.json")) base = base.slice(0, -".proposal.json".length);
+  else if (base.endsWith(".json")) base = base.slice(0, -".json".length);
+  const tsForPath = timestamp_iso.replace(/[:.]/g, "-");
+  return join(dir, `${base}.cowitnesses`, `${substrateTag}-${tsForPath}.json`);
 }
 
 async function readStdin(): Promise<string> {
@@ -77,7 +104,7 @@ async function signatureFor(
 }
 
 async function main() {
-  const { envelopePath, stdin, oracle, substrate } = parseArgs(Deno.args);
+  const { envelopePath, stdin, oracle, substrate, persist, persistTo } = parseArgs(Deno.args);
 
   let envelopeText: string;
   if (stdin || !envelopePath) {
@@ -98,20 +125,26 @@ async function main() {
 
   let envelope: Envelope;
   try {
-    envelope = JSON.parse(envelopeText) as Envelope;
+    const parsed = JSON.parse(envelopeText);
+    // Accept either a bare envelope OR a wrapper payload like
+    // {type: "codeicide_proposal_emitted", envelope: {...}} that propose
+    // organ emits. Unwrap the envelope from wrapper.
+    if (parsed && typeof parsed === "object" && parsed.schema === "trinity.receipt-envelope.v0.1") {
+      envelope = parsed as Envelope;
+    } else if (parsed && typeof parsed === "object" && parsed.envelope && parsed.envelope.schema === "trinity.receipt-envelope.v0.1") {
+      envelope = parsed.envelope as Envelope;
+    } else {
+      console.log(JSON.stringify({
+        type: "error",
+        message: `cowitness: input is neither a bare RECEIPT_ENVELOPE.v0.1 nor a wrapper with .envelope`,
+        position: "6/D",
+      }));
+      Deno.exit(1);
+    }
   } catch (e) {
     console.log(JSON.stringify({
       type: "error",
       message: `cowitness: invalid envelope JSON: ${(e as Error).message}`,
-      position: "6/D",
-    }));
-    Deno.exit(1);
-  }
-
-  if (envelope.schema !== "trinity.receipt-envelope.v0.1") {
-    console.log(JSON.stringify({
-      type: "error",
-      message: `cowitness: unexpected schema ${envelope.schema}; expected trinity.receipt-envelope.v0.1`,
       position: "6/D",
     }));
     Deno.exit(1);
@@ -134,6 +167,31 @@ async function main() {
 
   const newEnvelope = await coWitness(envelope, entry);
 
+  // Persistence handling per convention proposed in
+  // 2026-05-15T190206Z-claude-receipt-gemini-cowitness-acknowledged-persistence-gap.md:
+  //   proposals/codeicide/<proposal-basename>.cowitnesses/<substrate_tag>-<ISO-ts>.json
+  // Opt-in only (--persist or --persist-to); default keeps current
+  // stdout-only behavior for backward compatibility.
+  let persistedTo: string | null = null;
+  let persistSkippedReason: string | null = null;
+  if (persist) {
+    let targetPath: string | null = null;
+    if (persistTo) {
+      targetPath = persistTo;
+    } else if (envelopePath && envelope.body_kind === "codeicide_proposal") {
+      targetPath = inferPersistPath(envelopePath, substrate, envelope.body_kind, timestamp_iso);
+    } else if (!envelopePath) {
+      persistSkippedReason = "--persist with --stdin requires --persist-to <path> (cannot infer convention path without source file)";
+    } else {
+      persistSkippedReason = `--persist convention applies only to codeicide_proposal envelopes; this envelope body_kind is ${envelope.body_kind}`;
+    }
+    if (targetPath) {
+      await Deno.mkdir(dirname(targetPath), { recursive: true });
+      await Deno.writeTextFile(targetPath, JSON.stringify(newEnvelope, null, 2) + "\n");
+      persistedTo = targetPath;
+    }
+  }
+
   const payload = {
     type: "cowitness",
     action: "cowitness",
@@ -144,7 +202,11 @@ async function main() {
     new_envelope_id: newEnvelope.envelope_id,
     chain_length: newEnvelope.witness_chain.length,
     envelope: newEnvelope,
-    note: "Signature is a deterministic identity stamp, not a cryptographic key signature. Senate-level signing belongs to a future strong-signing organ.",
+    persisted_to: persistedTo,
+    persist_skipped_reason: persistSkippedReason,
+    note: persistedTo
+      ? `Signature persisted at ${persistedTo}; t verdict can ingest this envelope alongside the original proposal.`
+      : "Signature is a deterministic identity stamp, not a cryptographic key signature. Use --persist or --persist-to to write the envelope for t verdict to ingest.",
   };
 
   console.log(JSON.stringify(payload));

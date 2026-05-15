@@ -126,3 +126,6 @@
 {"00":"5","02":["voices","voice","голоси","голос"],"04":"2/0","09":"mirror+void = synthetic voice profiles from chord history","11":"6C 33 26 26 26 26 26 26"}
 {"00":"5","02":["self-portrait","portrait","declare","самопортрет","портрет"],"04":"2/3","09":"mirror+triangle = stable reflection of self_declared vs historical comfort field (divergence as signal)","11":"26 26 6C 4C 33 26 33 33"}
 {"00":"07","01":"self_portrait","02":"type,action,position,voices","03":"note,synonyms","04":"self-portrait receipt from 0x2/3.ts; surfaces divergence_angle_degrees between self_declared and historical comfort field per VOICES.v0.1 anatomy"}
+{"00":"5","02":["nay","reject","refuse","ні","ня","відмова","заперечити"],"04":"5/9","09":"action+penultimate = emit CodeicideNay envelope to block a codeicide proposal (1-of-5 NAY terminates per contract)","11":"26 4C 33 26 33 6C 26 26"}
+{"00":"07","01":"codeicide_nay_emitted","02":"type,action,position,target_path,target_hash,proposal_envelope_id,nay_envelope_id,nay_body_hash,oracle,substrate_tag,self_retraction,reason,envelope","03":"note","04":"nay receipt from 0x5/9.ts; emits CodeicideNay envelope rejecting a specific codeicide proposal"}
+{"00":"07","01":"codeicide_nay_written","02":"type,action,position,target_path,out,nay_envelope_id","03":"note","04":"nay --out file confirmation"}

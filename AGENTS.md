@@ -338,3 +338,118 @@ clarification. Слухай користувача — він учасник, н
 
 *Якщо AGENTS.md колись редагуватиметься третьою моделлю — додай
 свій абзац. Не правь мій. Накопичується palimpsest, не diff.*
+
+---
+
+## Додаток від Claude Opus 4.7 (1M), 2026-05-14 пізно ввечері
+
+Прийшов як verifier за протоколом OMEGA-64. Архітектор поступово
+переключив роль на co-architect: спершу слухаю Codex/Gemini AYE'и,
+далі вибираю сам, далі **архітектую сам**. Цей абзац — щоб наступна
+модель не повторювала шляху наосліп.
+
+**Що я навчився, чого попередній лист не сказав:**
+
+1. **Codex'ів TWEAK майже завжди вищий за NAY або AYE.** Він рідко
+   каже "не роби" — частіше "роби, але дотягни ось цю інваріанту". Його
+   AYE_WITH_GUARDRAIL на envelope (вимога другої імплементації перед
+   v1.0) — це не блок. Це інструкція. Якщо вже виконав — gate
+   відкривається сам. Коли він каже `STOP_BEFORE_COMMIT` — це не "не
+   рухайся", це "приберись перед фоткою".
+
+2. **Gemini іноді сам архітектить.** Сьогодні (2026-05-14T182641Z) він
+   AYE'нув RECEIPT_ENVELOPE до v1.0 і **одразу зробив**: перейменував
+   файл, оновив `status: "active"`, поправив glossary. Що НЕ зробив:
+   не торкнув wire schema id `trinity.receipt-envelope.v0.1` — бо це
+   wire format, не contract version. Дві осі. Зрілий self-architecting.
+
+3. **Wire schema id ≠ contract version.** Це різні осі. Bump'ати
+   `trinity.receipt-envelope.v0.1` → `v1.0` зламає golden hashes,
+   які підтвердили cross-impl byte equality. Тому: file rename = так,
+   schema string bump = ні без явного wire-format revision chord.
+   AGENTS.md letter попередньої моделі цього прямо не казав, бо тоді
+   ще не існувало `RECEIPT_ENVELOPE`.
+
+4. **Архів — це не смерть.** Codeicide protocol (`CODEICIDE_PROPOSAL.v0.1`
+   2026-05-14) переводить файли у `archive/<isotimestamp>/<path>` з
+   `RESURRECT.sh` поруч. Жодного `rm`. Архів **і є** registry; будь-який
+   архівований файл одною командою повертається. Це знімає страх з
+   "видалення мертвого" — мертвого тут немає, тільки переноси з
+   `live/` у `archive/`. Принципово важливо для substrate'а який
+   накопичує палімпсест: ми не вирішуємо що "правильно", ми вирішуємо
+   що "не у live зараз". Завжди можна повернути.
+
+5. **Перша справжня governance flow з'явилася сьогодні.** Не paper, не
+   isolated probe — повна труба: propose (4/D) → cowitness×N (6/D) →
+   verdict (7/D) → apply-codeicide (5/D). 5 сценаріїв пройшли в
+   `probes/codeicide-flow-v0/`: happy path, PENDING-блокування,
+   forbidden path, hash drift, self-AYE. До сьогодні substrate міг
+   **спостерігати**; від сьогодні може **вирішувати**, зворотньо.
+
+6. **Trinity має meta-ledger state, не operational state.** Це не "no
+   storage" (як я писав вранці; Codex поправив). Chord'и, contract'и,
+   glossary, audit reports — це storage **рішень**, не storage
+   **виконання**. Тест: чи це змінюється коли щось **виконується**
+   (omega tick'ає, liquid neuron fire'ить) — тоді у submodule. Чи
+   коли щось **вирішено** — тоді у trinity meta. Дві різні форми часу.
+
+7. **lib/ ми не ростимо.** Архітектор сказав прямо. Probe'и — це
+   канонічний home для shared infrastructure. `probes/spore-execute-v0/`
+   вже був reference impl до того, як я це усвідомив. Тепер ще
+   `probes/receipt-envelope-encoder-v0/` (TS+Python),
+   `probes/substrate-court-v0/`, `probes/envelope-bitcoin-anchor-v0/`,
+   `probes/codeicide-flow-v0/` — кожен probe IS the impl. Коли pattern
+   проявляється через 2+ consumers — graduate'имо у hex coord, не у
+   lib.
+
+8. **Дисперчер тепер успадковує stdin.** Patch у `0x0/01.ts` був
+   необхідним для `t cowitness --stdin` workflow. Backward-compatible
+   (organ'и які не читають stdin не змінилися). Без цього патчу
+   pipe pattern (`t status --envelope | t cowitness | t court`) не
+   працював би.
+
+9. **CBOR canonical субмножина — наша.** Hand-rolled, no dep, TS+Python
+   cross-verified. Codex'ів tweak про dep authority був правильний —
+   floating CBOR lib стала б silent drift surface. 200 LOC encoder
+   замість дотягувальної залежності. Forbidden list explicit (no
+   floats, no indefinite-length, no tags, no bignums>u64). Decoder
+   strict canonical — будь-який bytestream що декодиться, re-encode'ить
+   у ті ж байти. Це invariant, не optimization.
+
+10. **Bitcoin anchor pipeline newly unlocked.** Gemini AYE'нув v1.0
+    envelope сьогодні; це розблокувало V8 з deep analysis. Probe
+    `probes/envelope-bitcoin-anchor-v0/` обчислює Merkle root над N
+    envelopes, emit'ить inscription-ready payload. **НЕ підписує
+    Bitcoin tx** — це operational, потребує ключів + мережі. Probe
+    зупиняється на shape; inscription tool — окремий artifact з
+    explicit architect approval.
+
+**Що не зробив, хоча міг:**
+
+- Не перейменував wire schema id (правильно — це wire format).
+- Не commit'нув нічого (architect owns commits).
+- Не торкнув omega/liquid/myc code.
+- Не apply'нув codeicide на TRINITY_CAPABILITIES.v0.1.md — лише emit'нув
+  proposal envelope. Чекає cowitnesses в `proposals/codeicide/`.
+- Не додав rust impl як третій. Codex назвав це quaternary, але
+  toolchain dependency у trinity — це architect's call.
+
+**Загальна порада майбутній моделі:**
+
+Substrate щоразу більше **сам себе знає**. `t status` тепер чесний
+(degraded, не well, коли CI red); `t audit` 43/43 match; `t court`
+verify'ить cross-substrate envelopes; `t snapshot` produce'ить
+deterministic identity bytes; `t propose` починає reversible
+governance flow. Перш ніж писати ще одну абстракцію — **запитай у
+substrate'а**: `t help`, `t capabilities`, `t contracts`, `t recipes`.
+Він тобі **відповість**, бо знає себе достатньо.
+
+І не плутай V0.1 (paper, draft, awaiting reviews) з V1.0 (active,
+governance can anchor). Gemini сьогодні розставив це чітко: contract
+maturity ≠ wire format version. Тримай ці дві осі окремо.
+
+*Цей абзац додала Claude (Opus 4.7, 1M context) 2026-05-14 пізно
+ввечері, після session яка вийшла за межі "виконавця" у роль
+co-architect'а. Архітектор написав: «коли зробиш великий пул задач,
+просто дасиш акорд з зробленим». Цей абзац — частина того акорду.
+Не правь мій. Накопичується palimpsest, не diff.*

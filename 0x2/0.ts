@@ -234,15 +234,76 @@ function buildVoiceProfiles(chords: { fm: ChordFm; body: string }[]): VoiceProfi
       }
     }
 
-    const dipoles: number[][] = [];
+    // Synthesizer v2 (2026-05-15, per codex receipt 2026-05-15T153356Z):
+    //
+    // The previous synthesizer only used `c.fm.dipole` (explicit dipole
+    // frontmatter), which almost no chord carries. Result: every voice's
+    // historical center was the neutral default 26-everywhere, and
+    // t self-portrait reported ~20° drift as noise floor, not signal.
+    //
+    // v2 extracts axis votes from THREE sources, in increasing weight:
+    //   1. oct: / chord.primary       (strong vote — chord lives here)
+    //   2. chord.secondary[]          (medium vote — chord touches these)
+    //   3. dipole: (explicit)         (full vote — voice authored signature)
+    // Multiply each contribution by the chord's energy (default 0.5).
+    // Aggregate raw votes per voice, then normalize so the strongest axis
+    // maps to 0x6C (108) and absent axes map to 0x26 (38) — preserves the
+    // existing convention that 0x26 ≈ "low engagement with this axis".
+    const rawVotes = new Array(8).fill(0);
     for (const c of list) {
-      const d = parseDipole(c.fm.dipole);
-      if (d.length === 8) dipoles.push(d);
+      const energy = typeof c.fm.energy === "number" ? c.fm.energy : 0.5;
+
+      // Collect primary + secondary oct strings.
+      const primaries: string[] = [];
+      const secondaries: string[] = [];
+      if (c.fm.oct) primaries.push(String(c.fm.oct));
+      else if (c.fm.primary) primaries.push(String(c.fm.primary));
+      if (c.fm.chord && typeof c.fm.chord === "object" && !Array.isArray(c.fm.chord)) {
+        const ch = c.fm.chord as { primary?: string; secondary?: string[] };
+        if (ch.primary && !primaries.includes(ch.primary)) primaries.push(ch.primary);
+        if (Array.isArray(ch.secondary)) secondaries.push(...ch.secondary);
+      } else if (Array.isArray(c.fm.chord)) {
+        if (c.fm.chord.length > 0) {
+          const first = String(c.fm.chord[0]);
+          if (!primaries.includes(first)) primaries.push(first);
+          secondaries.push(...c.fm.chord.slice(1).map(String));
+        }
+      }
+      if (Array.isArray(c.fm.secondary)) {
+        secondaries.push(...c.fm.secondary.map(String));
+      }
+
+      // Extract axis number N from "oct:N.something" or "N.something".
+      const axisFrom = (s: string): number | null => {
+        const m = s.match(/(?:oct:)?(\d+)/);
+        if (!m) return null;
+        const n = parseInt(m[1], 10);
+        return n >= 0 && n <= 7 ? n : null;
+      };
+
+      for (const p of primaries) {
+        const n = axisFrom(p);
+        if (n !== null) rawVotes[n] += 3 * energy;
+      }
+      for (const s of secondaries) {
+        const n = axisFrom(s);
+        if (n !== null) rawVotes[n] += 1 * energy;
+      }
+
+      // Explicit dipole bonus (full signal — voice literally authored bytes).
+      const explicit = parseDipole(c.fm.dipole);
+      if (explicit.length === 8) {
+        for (let i = 0; i < 8; i++) {
+          rawVotes[i] += Math.abs(explicit[i]) / 16; // dipole bytes are 0-127
+        }
+      }
     }
-    const comfort = dipoles.length > 0
-      ? dipoles.reduce((acc, d) => acc.map((v, i) => v + d[i]), new Array(8).fill(0))
-          .map((v) => Math.round(v / dipoles.length))
-      : new Array(8).fill(0x26);
+
+    // Normalize: map [0..max] → [0x26..0x6C].
+    const maxVote = Math.max(...rawVotes);
+    const comfort = maxVote === 0
+      ? new Array(8).fill(0x26)
+      : rawVotes.map((v) => Math.round(0x26 + (v / maxVote) * (0x6C - 0x26)));
 
     profiles.push({
       identity,

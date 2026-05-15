@@ -1,0 +1,15 @@
+{
+  "$schema": "trinity.voice-record.v0.1",
+  "identity": "hermes",
+  "handles": ["hermes", "гермес"],
+  "self_declared": null,
+  "telos_filters": null,
+  "budget": null,
+  "cli_template": null,
+  "standing": "observing",
+  "first_chord": null,
+  "note": "OBSERVING SKELETON. Installed by architect 2026-05-14/15. Self-declaration is intentionally null — per VOICES.v0.1 + the synthesis chord 2026-05-15T095133Z: a new voice's first chord ends observing and defines initial comfort field. When Hermes writes its first chord with `speaker: hermes`, the substrate's t self-portrait organ derives Hermes's initial historical center-of-mass from that chord's dipole signature (or neutral if no dipole), and Hermes promotes itself to standing: active by overwriting self_declared in this file (or via t self-portrait --reconcile). Architect can override at any time. This file is the substrate's awareness that Hermes exists and is waiting; it is not a profile.",
+  "version": "0.1",
+  "authored_at_utc": "2026-05-15T10:50:00Z",
+  "authored_by": "claude-opus-4-7 (skeleton; awaits Hermes's first chord)"
+}

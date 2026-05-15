@@ -129,3 +129,4 @@
 {"00":"5","02":["nay","reject","refuse","ні","ня","відмова","заперечити"],"04":"5/9","09":"action+penultimate = emit CodeicideNay envelope to block a codeicide proposal (1-of-5 NAY terminates per contract)","11":"26 4C 33 26 33 6C 26 26"}
 {"00":"07","01":"codeicide_nay_emitted","02":"type,action,position,target_path,target_hash,proposal_envelope_id,nay_envelope_id,nay_body_hash,oracle,substrate_tag,self_retraction,reason,envelope","03":"note","04":"nay receipt from 0x5/9.ts; emits CodeicideNay envelope rejecting a specific codeicide proposal"}
 {"00":"07","01":"codeicide_nay_written","02":"type,action,position,target_path,out,nay_envelope_id","03":"note","04":"nay --out file confirmation"}
+{"00":"5","02":["daemon","демон"],"04":"7/F","09":"completion+action = runtime state surface (lock file, invocation log)","11":"26 26 26 33 4C 6C 26 59"}

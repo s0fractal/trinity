@@ -18,6 +18,10 @@
 //   t daemon status --json    # machine-readable
 //   t daemon stop             # write state/daemon.lock
 //   t daemon start            # remove state/daemon.lock
+//   t daemon run --once       # single pass: scan new chords, route, log
+//   t daemon run --dry-run    # inspect routing without writing receipts
+//   t daemon run --backfill   # route all historical chords (first run)
+//   t daemon run --since <iso> # explicit replay window
 //
 // Glossary words: daemon, демон
 
@@ -196,13 +200,13 @@ function coerce(v: string): unknown {
   return v;
 }
 
-async function readLastCheck(): Promise<number> {
+async function readLastCheck(): Promise<number | null> {
   try {
     const text = await Deno.readTextFile(LAST_CHECK_FILE);
     const n = parseInt(text.trim(), 10);
-    return isNaN(n) ? 0 : n;
+    return isNaN(n) ? null : n;
   } catch {
-    return 0;
+    return null;
   }
 }
 
@@ -236,6 +240,17 @@ async function getVoiceProfiles(): Promise<VoiceProfile[]> {
   const text = new TextDecoder().decode(stdout);
   const data = JSON.parse(text);
   return (data.voices || []) as VoiceProfile[];
+}
+
+async function loadVoiceStanding(identity: string): Promise<string | null> {
+  try {
+    const path = join(ROOT, "state", "voices", `${identity}.json`);
+    const text = await Deno.readTextFile(path);
+    const data = JSON.parse(text);
+    return data.self_declared?.standing ?? data.standing ?? null;
+  } catch {
+    return null;
+  }
 }
 
 function axisFromOct(tag: string): number | null {
@@ -288,9 +303,11 @@ function route1D(chord: ChordFm, voices: VoiceProfile[]): { voice: string; score
   return best;
 }
 
-async function writeInvocationReceipt(chordId: string, voice: string, score: number): Promise<void> {
+async function writeInvocationReceipt(
+  chordId: string, voice: string, score: number, backfill: boolean,
+): Promise<void> {
   await Deno.mkdir(LOG_DIR, { recursive: true });
-  const entry = {
+  const entry: Record<string, unknown> = {
     timestamp: new Date().toISOString(),
     chord_id: chordId,
     voice,
@@ -298,12 +315,18 @@ async function writeInvocationReceipt(chordId: string, voice: string, score: num
     style: "improvisation",
     backend: "1D_keyword_baseline",
   };
+  if (backfill) entry.backfill = true;
   await Deno.writeTextFile(LOG_FILE, JSON.stringify(entry) + "\n", { append: true });
 }
 
 // ── run handler ────────────────────────────────────────────────────────────
 
-async function handleRun(useJson: boolean): Promise<void> {
+async function handleRun(
+  useJson: boolean,
+  dryRun: boolean,
+  backfill: boolean,
+  sinceOverride: number | null,
+): Promise<void> {
   const locked = await readLockFile();
   if (locked) {
     const msg = useJson
@@ -313,21 +336,61 @@ async function handleRun(useJson: boolean): Promise<void> {
     return;
   }
 
-  const since = await readLastCheck();
+  const lastCheck = await readLastCheck();
+  let since: number;
+  if (sinceOverride !== null) {
+    since = sinceOverride;
+  } else if (backfill) {
+    since = 0; // explicit backfill: route all historical chords
+  } else if (lastCheck !== null) {
+    since = lastCheck;
+  } else {
+    // No last-check and no --backfill: initialize to now, route nothing
+    const now = Date.now();
+    if (!dryRun) await writeLastCheck(now);
+    if (useJson) {
+      console.log(JSON.stringify({
+        type: "daemon_run_receipt",
+        schema: "trinity.daemon.v0.1",
+        checked_at: new Date(now).toISOString(),
+        new_chords: 0,
+        routed: 0,
+        note: "initialized_last_check_to_now (no --backfill)",
+        receipts: [],
+      }, null, 2));
+    } else {
+      console.log(`# daemon @ 7/F — run --once`);
+      console.log(`# ──────────────────────────────────────────────────────────────────`);
+      console.log(`# Initialized last-check to now. No chords routed.`);
+      console.log(`# Pass --backfill to route historical chords.`);
+    }
+    return;
+  }
+
   const chords = await loadNewChords(since);
   const voices = await getVoiceProfiles();
+
+  // Pre-load standing for each voice to skip observing/paused
+  const standings = new Map<string, string | null>();
+  for (const v of voices) {
+    standings.set(v.identity, await loadVoiceStanding(v.identity));
+  }
 
   const receipts: Array<{ chord_id: string; voice: string; score: number }> = [];
   for (const c of chords) {
     const match = route1D(c.fm, voices);
     if (match && match.score > 0) {
-      await writeInvocationReceipt(c.fm.id!, match.voice, match.score);
+      const standing = standings.get(match.voice);
+      if (standing === "observing" || standing === "paused") continue;
+      if (!dryRun) {
+        await writeInvocationReceipt(c.fm.id!, match.voice, match.score, backfill);
+      }
       receipts.push({ chord_id: c.fm.id!, voice: match.voice, score: match.score });
     }
   }
 
   const now = Date.now();
-  await writeLastCheck(now);
+  if (!dryRun) await writeLastCheck(now);
 
   if (useJson) {
     console.log(JSON.stringify({
@@ -336,14 +399,17 @@ async function handleRun(useJson: boolean): Promise<void> {
       checked_at: new Date(now).toISOString(),
       new_chords: chords.length,
       routed: receipts.length,
+      dry_run: dryRun,
+      backfill,
       receipts,
     }, null, 2));
   } else {
-    console.log(`# daemon @ 7/F — run --once`);
+    const modeLabel = dryRun ? "run --dry-run" : "run --once";
+    console.log(`# daemon @ 7/F — ${modeLabel}`);
     console.log(`# ──────────────────────────────────────────────────────────────────`);
     console.log(`# Checked:     ${new Date(since).toISOString()} → ${new Date(now).toISOString()}`);
     console.log(`# New chords:  ${chords.length}`);
-    console.log(`# Routed:      ${receipts.length}`);
+    console.log(`# Routed:      ${receipts.length}${dryRun ? " (DRY RUN — not written)" : ""}${backfill ? " (backfill)" : ""}`);
     for (const r of receipts) {
       console.log(`#   → ${r.chord_id} → ${r.voice} (score ${r.score})`);
     }
@@ -357,6 +423,15 @@ async function main() {
   const args = Deno.args;
   const cmd = args[0] || "status";
   const useJson = args.includes("--json");
+  const dryRun = args.includes("--dry-run");
+  const backfill = args.includes("--backfill");
+
+  let sinceOverride: number | null = null;
+  const sinceIdx = args.indexOf("--since");
+  if (sinceIdx !== -1 && sinceIdx + 1 < args.length) {
+    const parsed = new Date(args[sinceIdx + 1]).getTime();
+    if (!isNaN(parsed)) sinceOverride = parsed;
+  }
 
   if (cmd === "stop") {
     await writeLock();
@@ -385,7 +460,7 @@ async function main() {
   }
 
   if (cmd === "run") {
-    await handleRun(useJson);
+    await handleRun(useJson, dryRun, backfill, sinceOverride);
     return;
   }
 

@@ -39,6 +39,8 @@ const CHORDS_DIR = join(ROOT, "jazz", "chords");
 
 interface DaemonStatus {
   status: "running" | "stopped";
+  runtime_state: "unlocked" | "locked";
+  process_running: boolean;
   lock_file: boolean;
   last_invocation: string | null;
   style_active: string | null;
@@ -104,11 +106,25 @@ function renderTable(status: DaemonStatus): string {
   const lines = [
     `# daemon @ 7/F — runtime state`,
     `# ──────────────────────────────────────────────────────────────────`,
-    `# status     last_invocation         style_active    invocations_24h`,
+    `# status     runtime     process  last_invocation         invocations_24h`,
     `# ──────────────────────────────────────────────────────────────────`,
-    `# ${status.status.padEnd(10)} ${(status.last_invocation ?? "—").padEnd(23)} ${(status.style_active ?? "—").padEnd(15)} ${String(status.invocation_count_24h).padStart(4)}`,
+    `# ${status.status.padEnd(10)} ${status.runtime_state.padEnd(11)} ${String(status.process_running).padEnd(8)} ${(status.last_invocation ?? "—").padEnd(23)} ${String(status.invocation_count_24h).padStart(4)}`,
   ];
   return lines.join("\n");
+}
+
+async function buildStatus(): Promise<DaemonStatus> {
+  const locked = await readLockFile();
+  return {
+    status: locked ? "stopped" : "running",
+    runtime_state: locked ? "locked" : "unlocked",
+    // Crawl phase has no long-lived process yet; `t daemon run` is explicit.
+    process_running: false,
+    lock_file: locked,
+    last_invocation: await readLastInvocation(),
+    style_active: null,
+    invocation_count_24h: await countInvocations24h(),
+  };
 }
 
 function renderJson(status: DaemonStatus): string {
@@ -435,26 +451,14 @@ async function main() {
 
   if (cmd === "stop") {
     await writeLock();
-    const status: DaemonStatus = {
-      status: "stopped",
-      lock_file: true,
-      last_invocation: await readLastInvocation(),
-      style_active: null,
-      invocation_count_24h: await countInvocations24h(),
-    };
+    const status = await buildStatus();
     console.log(useJson ? renderJson(status) : renderTable(status));
     return;
   }
 
   if (cmd === "start") {
     await removeLock();
-    const status: DaemonStatus = {
-      status: "running",
-      lock_file: false,
-      last_invocation: await readLastInvocation(),
-      style_active: null,
-      invocation_count_24h: await countInvocations24h(),
-    };
+    const status = await buildStatus();
     console.log(useJson ? renderJson(status) : renderTable(status));
     return;
   }
@@ -465,14 +469,7 @@ async function main() {
   }
 
   // default: status
-  const locked = await readLockFile();
-  const status: DaemonStatus = {
-    status: locked ? "stopped" : "running",
-    lock_file: locked,
-    last_invocation: await readLastInvocation(),
-    style_active: null,
-    invocation_count_24h: await countInvocations24h(),
-  };
+  const status = await buildStatus();
   console.log(useJson ? renderJson(status) : renderTable(status));
 }
 

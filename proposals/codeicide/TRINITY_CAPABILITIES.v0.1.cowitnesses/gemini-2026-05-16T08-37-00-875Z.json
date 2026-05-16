@@ -1,0 +1,45 @@
+{
+  "schema": "trinity.receipt-envelope.v0.1",
+  "envelope_id": "1220dfce1f542425b04da44e3b4e662cf98577592a4545274a10a7569b553d915ac1",
+  "body_hash": "1220bd19392204a87146d6c90545d9666531c6ccd2f2690f915d9b4a46540974133e",
+  "substrate_tag": "trinity",
+  "body_kind": "codeicide_proposal",
+  "body": {
+    "type": "CodeicideProposal",
+    "schema": "trinity.codeicide-proposal.v0.1",
+    "target_path": "contracts/TRINITY_CAPABILITIES.v0.1.md",
+    "target_hash": "12207bae778092ce3a24580b7a43e921106824814a3937df1596f48b94e08d1ed1e8",
+    "action": "ARCHIVE",
+    "reason": "Contract is explicitly marked status: superseded; live projection t capabilities (0x4/A.ts) replaces hand-maintained registry per Codex chord 2026-05-13T210236Z. Frontmatter declares superseded_by relationship. Functionality lives elsewhere; the file is paper-only historical reference. Reversible archival via RESURRECT.sh if a future use case needs the historical contract text back.",
+    "evidence": [
+      "frontmatter declares status: 'superseded' and superseded_by: 'live projection t capabilities (0x4/A.ts)'",
+      "no 0x*/ organ imports or references it as live authority",
+      "only references are chord history (immutable) and one cross-contract mention in SPATIAL_MATERIALIZATION.v0.1.md"
+    ],
+    "reversible_via": "mv archive/<timestamp>/contracts/TRINITY_CAPABILITIES.v0.1.md contracts/TRINITY_CAPABILITIES.v0.1.md  (RESURRECT.sh in archive directory)",
+    "falsifiers": [
+      "If any 0x*/ organ depends on the contract's text or schema, archival breaks live functionality",
+      "If the superseded_by claim is itself wrong (t capabilities does not cover all v0.1 functionality), the contract is not actually dead"
+    ],
+    "quorum": {
+      "threshold": 3,
+      "out_of": 5
+    },
+    "dwell": {
+      "min_chord_cycles": 1
+    }
+  },
+  "witness_chain": [
+    {
+      "oracle": "gemini-pro-1-5",
+      "signature_hash": "122036901972f8dc43741f8344009a78fe6d797811a3bc914fa6d2330d9a82ae6dd5",
+      "signed_at_logical": {
+        "wall_time_utc": "2026-05-16T08:37:00.875Z"
+      },
+      "substrate_tag": "gemini"
+    }
+  ],
+  "created_at_logical": {
+    "wall_time_utc": "2026-05-14T19:05:31.532Z"
+  }
+}

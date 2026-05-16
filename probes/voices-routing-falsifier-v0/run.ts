@@ -8,6 +8,8 @@
  * Usage:
  *   cd /Users/s0fractal/trinity
  *   deno run --allow-read --allow-write probes/voices-routing-falsifier-v0/run.ts
+ *   deno run --allow-read --allow-write probes/voices-routing-falsifier-v0/run.ts --all
+ *   deno run --allow-read --allow-write probes/voices-routing-falsifier-v0/run.ts --limit 100
  *
  * Output:
  *   probes/voices-routing-falsifier-v0/result.latest.json
@@ -68,6 +70,7 @@ interface Sample {
 
 interface FalsifierResult {
   candidateSamples: number;
+  totalValidChords: number;
   labeledSamples: number;
   skippedSamples: number;
   oneD: {
@@ -85,6 +88,10 @@ interface FalsifierResult {
   failuresOrAmbiguities: string[];
   voices: Record<string, VoiceProfile>;
   samples: Sample[];
+  config: {
+    limit: number | null;
+    leakageGuard: "profiles_before_source_only";
+  };
 }
 
 // ── Utilities ──────────────────────────────────────────────────────
@@ -113,6 +120,27 @@ function normSpeaker(s: string): string {
   if (lower.startsWith("kimi")) return "kimi";
   if (lower.startsWith("antigravity")) return "antigravity";
   return lower;
+}
+
+function parseArgs(args: string[]): { limit: number | null } {
+  let limit: number | null = 50;
+  for (let i = 0; i < args.length; i++) {
+    const a = args[i];
+    if (a === "--all") limit = null;
+    else if (a === "--limit") {
+      const raw = args[++i];
+      const n = Number(raw);
+      if (!Number.isInteger(n) || n <= 0) {
+        throw new Error(`--limit must be a positive integer, got ${raw}`);
+      }
+      limit = n;
+    }
+  }
+  return { limit };
+}
+
+function localPath(url: string): string {
+  return decodeURIComponent(new URL(url).pathname);
 }
 
 function octToVector(tag: string): number[] {
@@ -219,7 +247,7 @@ function buildVoiceProfiles(chords: Chord[]): Record<string, VoiceProfile> {
 
 // ── Build chord graph / target labels ──────────────────────────────
 
-function buildSamples(chords: Chord[]): { samples: Sample[]; skipped: number; ambiguous: string[] } {
+function buildSamples(chords: Chord[], sourceWindow: Chord[]): { samples: Sample[]; skipped: number; ambiguous: string[] } {
   const byId = new Map<string, Chord>();
   for (const c of chords) byId.set(c.fm.id!, c);
 
@@ -227,8 +255,12 @@ function buildSamples(chords: Chord[]): { samples: Sample[]; skipped: number; am
   let skipped = 0;
   const ambiguous: string[] = [];
 
-  for (let i = 0; i < chords.length; i++) {
-    const src = chords[i];
+  for (const src of sourceWindow) {
+    const i = chords.indexOf(src);
+    if (i < 0) {
+      skipped++;
+      continue;
+    }
     // Find next different speaker that responds to src
     const candidates: { chord: Chord; delta: number }[] = [];
     for (let j = i + 1; j < chords.length; j++) {
@@ -366,31 +398,32 @@ function computeMetrics(samples: Sample[], key: "oneD" | "eightD") {
 // ── Main ───────────────────────────────────────────────────────────
 
 async function main() {
-  const chordsDir = "/Users/s0fractal/trinity/jazz/chords";
-  const outDir = "/Users/s0fractal/trinity/probes/voices-routing-falsifier-v0";
+  const { limit } = parseArgs(Deno.args);
+  const outDir = localPath(new URL(".", import.meta.url).href).replace(/\/$/, "");
+  const root = localPath(new URL("../..", import.meta.url).href).replace(/\/$/, "");
+  const chordsDir = `${root}/jazz/chords`;
 
   console.log("Loading chords...");
   const chords = await loadChords(chordsDir);
   console.log(`  Loaded ${chords.length} chords with valid frontmatter`);
 
-  console.log("Building voice profiles...");
-  const profiles = buildVoiceProfiles(chords);
-  const voices = Object.keys(profiles);
-  console.log(`  Voices: ${voices.join(", ")}`);
-  for (const [v, p] of Object.entries(profiles)) {
-    console.log(`    ${v}: ${p.total} chords, avg energy ${p.avgEnergy.toFixed(2)}`);
-  }
+  const sourceWindow = limit === null ? chords : chords.slice(-limit);
+  console.log(`  Source window: ${limit === null ? "all chords" : `last ${limit} chords`}`);
 
   console.log("Building samples (source -> target)...");
-  const { samples, skipped, ambiguous } = buildSamples(chords);
-  console.log(`  Candidate chords: ${chords.length}`);
+  const { samples, skipped, ambiguous } = buildSamples(chords, sourceWindow);
+  console.log(`  Candidate chords: ${sourceWindow.length}`);
   console.log(`  Labeled samples: ${samples.length}`);
   console.log(`  Skipped: ${skipped}`);
   console.log(`  Ambiguous: ${ambiguous.length}`);
 
-  console.log("Running baselines...");
+  console.log("Running baselines with leakage guard (profiles before source only)...");
+  const finalProfiles = buildVoiceProfiles(chords);
+  const voices = Object.keys(finalProfiles);
   for (const s of samples) {
     const src = chords.find(c => c.fm.id === s.sourceId)!;
+    const training = chords.filter(c => c.mtime < src.mtime);
+    const profiles = buildVoiceProfiles(training);
     s.oneD = run1D(src, profiles);
     s.eightD = run8D(src, profiles);
   }
@@ -409,7 +442,8 @@ async function main() {
   }
 
   const result: FalsifierResult = {
-    candidateSamples: chords.length,
+    candidateSamples: sourceWindow.length,
+    totalValidChords: chords.length,
     labeledSamples: samples.length,
     skippedSamples: skipped,
     oneD: oneDMetrics,
@@ -417,7 +451,7 @@ async function main() {
     deltaPp,
     verdict,
     failuresOrAmbiguities: ambiguous,
-    voices: profiles,
+    voices: finalProfiles,
     samples: samples.map(s => ({
       sourceId: s.sourceId,
       sourceSpeaker: s.sourceSpeaker,
@@ -427,6 +461,10 @@ async function main() {
       oneD: s.oneD,
       eightD: s.eightD,
     })),
+    config: {
+      limit,
+      leakageGuard: "profiles_before_source_only",
+    },
   };
 
   // Write JSON
@@ -437,6 +475,7 @@ async function main() {
   const md = `# Voices Routing Falsifier v0 — Result
 
 **Date:** ${new Date().toISOString()}
+**Config:** ${limit === null ? "all candidate chords" : `last ${limit} candidate chords`}; profiles built only from chords before each source
 **Samples:** ${result.labeledSamples} labeled, ${result.skippedSamples} skipped, ${result.candidateSamples} candidate chords
 **Voices:** ${voices.join(", ")}
 
@@ -462,7 +501,7 @@ ${ambiguous.length > 0 ? ambiguous.map(a => `- ${a}`).join("\n") : "_None_"}
 ## Voice Profiles
 
 ${voices.map(v => {
-  const p = profiles[v];
+  const p = finalProfiles[v];
   const topPri = Object.entries(p.primaryOct).sort((a, b) => b[1] - a[1])[0]?.[0] ?? "none";
   const topTopic = Object.entries(p.topics).sort((a, b) => b[1] - a[1])[0]?.[0] ?? "none";
   return `### ${v}\n- Chords: ${p.total}\n- Top primary oct: ${topPri}\n- Top topic: ${topTopic}\n- Avg energy: ${p.avgEnergy.toFixed(2)}`;

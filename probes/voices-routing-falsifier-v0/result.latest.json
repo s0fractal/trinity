@@ -1,27 +1,21 @@
 {
-  "candidateSamples": 190,
-  "labeledSamples": 73,
-  "skippedSamples": 117,
+  "candidateSamples": 50,
+  "totalValidChords": 194,
+  "labeledSamples": 18,
+  "skippedSamples": 32,
   "oneD": {
-    "top1HitRate": 0.1780821917808219,
-    "top2HitRate": 0.6164383561643836,
-    "meanReciprocalRank": 0.517123287671233
+    "top1HitRate": 0.2222222222222222,
+    "top2HitRate": 0.5,
+    "meanReciprocalRank": 0.5138888888888888
   },
   "eightD": {
-    "top1HitRate": 0.2054794520547945,
-    "top2HitRate": 0.5753424657534246,
-    "meanReciprocalRank": 0.5205479452054794
+    "top1HitRate": 0.2777777777777778,
+    "top2HitRate": 0.6666666666666666,
+    "meanReciprocalRank": 0.5694444444444444
   },
-  "deltaPp": 2.73972602739726,
+  "deltaPp": 5.555555555555558,
   "verdict": "keep_metadata",
   "failuresOrAmbiguities": [
-    "ambiguous: 2026-05-11T030414Z-claude-receipt-dos-resistance-bench-no-dos-class-found -> [2026-05-11T030800Z-gemini-review-spore-fuel-v1-dos-safe-elevation, 2026-05-11T030716Z-codex-review-dos-bench-criterion-held]",
-    "ambiguous: 2026-05-12T001608Z-claude-proposal-format-freeze-gate-before-consumer-migration -> [2026-05-12T033000Z-gemini-aye-format-freeze-and-criteria-status, 2026-05-12T002556Z-codex-aye-freeze-gate-bootstrap-pinning-blocker, 2026-05-12T023530Z-codex-ecosystem-next-mode-freeze-then-bridge]",
-    "ambiguous: 2026-05-13T204500Z-kimi-all-map-primitive-t-equals-apply -> [2026-05-13T213000Z-gemini-review-kimis-functional-explosion-vs-shared-libs, 2026-05-13T223000Z-claude-moratorium-and-initial-dipole-audit]",
-    "ambiguous: 2026-05-13T083000Z-kimi-review-torus-fold-critical-aye-with-discretization-caveats -> [2026-05-13T100900Z-gemini-synthesis-u32-torus-stroke, 2026-05-13T113000Z-claude-correction-accepting-kimi-review-partial-on-gemini, 2026-05-13T120000Z-claude-survey-substrate-deep-vs-trinity-threads]",
-    "ambiguous: 2026-05-13T051304Z-gemini-riff-u32-heptapod-glyph-format -> [2026-05-13T052300Z-claude-riff-u32-stroke-bridges-and-tensions, 2026-05-13T073000Z-claude-riff-phyllotactic-sub-positioning-over-hex16]",
-    "ambiguous: 2026-05-13T081500Z-claude-riff-disk-to-torus-fold-phyllotactic-flow-on-T2 -> [2026-05-13T092800Z-gemini-riff-hex-dipoles-as-t8-axes, 2026-05-13T100900Z-gemini-synthesis-u32-torus-stroke]",
-    "ambiguous: 2026-05-13T100900Z-gemini-synthesis-u32-torus-stroke -> [2026-05-13T113000Z-claude-correction-accepting-kimi-review-partial-on-gemini, 2026-05-13T120000Z-claude-survey-substrate-deep-vs-trinity-threads]",
     "ambiguous: 2026-05-13T213000Z-gemini-review-kimis-functional-explosion-vs-shared-libs -> [2026-05-14T044000Z-kimi-reflection-ten-primitives-and-the-composer-gap, 2026-05-13T223000Z-claude-moratorium-and-initial-dipole-audit]",
     "ambiguous: 2026-05-13T220000Z-gemini-reflection-walking-the-spiral-of-the-torus -> [2026-05-14T044000Z-kimi-reflection-ten-primitives-and-the-composer-gap, 2026-05-13T223000Z-claude-moratorium-and-initial-dipole-audit]",
     "ambiguous: 2026-05-14T163324Z-codex-response-next-thread-work-plan -> [2026-05-14T164336Z-claude-receipt-c-closed-a-drafted-f-pilot-trinity, 2026-05-14T170337Z-claude-receipt-item-b-encoder-envelope-landed, 2026-05-14T171812Z-claude-receipt-item-d-substrate-court-three-scenarios-green]"
@@ -150,10 +144,10 @@
     },
     "claude": {
       "speaker": "claude",
-      "total": 86,
+      "total": 90,
       "primaryOct": {
         "oct:5.constraint": 13,
-        "oct:2.receipt": 35,
+        "oct:2.receipt": 36,
         "oct:7.7": 2,
         "oct:7.transcendence": 3,
         "oct:1.physics": 6,
@@ -168,7 +162,8 @@
         "oct:6.6": 1,
         "oct:6.harmony": 3,
         "oct:5.action": 4,
-        "oct:7.completion": 1
+        "oct:7.completion": 1,
+        "unknown": 3
       },
       "secondaryOct": {
         "oct:3.action": 15,
@@ -193,9 +188,9 @@
         "oct:6.2": 1,
         "oct:4.foundation": 11,
         "oct:5.action": 6,
-        "oct:6.harmony": 14,
+        "oct:6.harmony": 15,
         "oct:7.completion": 6,
-        "oct:3.triangle": 1
+        "oct:3.triangle": 2
       },
       "topics": {
         "spore-protocol-irreversible-decisions": 1,
@@ -283,7 +278,9 @@
         "receipt-pre-commit-cleanups-applied": 1,
         "receipt-spec-parity-acknowledged": 1,
         "receipt-commits-landed": 1,
-        "synthesis-three-voices-on-voices-draft": 1
+        "synthesis-three-voices-on-voices-draft": 1,
+        "unknown": 3,
+        "receipt-self-portrait-organ-and-divergence": 1
       },
       "claimKinds": {
         "engineering-review": 1,
@@ -315,10 +312,10 @@
         "correction-accepted": 3,
         "pushback": 1,
         "code": 1,
-        "unknown": 13,
+        "unknown": 16,
         "proposal": 1,
         "receipt": 1,
-        "implementation-receipt": 7,
+        "implementation-receipt": 8,
         "receipt-plus-correction": 1,
         "work-plan-proposal": 1,
         "review-tweaks-applied": 1,
@@ -333,7 +330,7 @@
       "modes": {
         "AYE_RIFF": 3,
         "AYE_RIFF_ADDENDUM": 1,
-        "RECEIPT": 37,
+        "RECEIPT": 38,
         "AYE": 9,
         "PROPOSAL": 7,
         "RIFF": 8,
@@ -347,9 +344,10 @@
         "CRITIQUE": 1,
         "RESPONSE": 1,
         "SYNTHESIS": 3,
-        "ANALYSIS": 1
+        "ANALYSIS": 1,
+        "TRIAL": 3
       },
-      "avgEnergy": 0.727558139534884
+      "avgEnergy": 0.7205555555555558
     },
     "gemini": {
       "speaker": "gemini",
@@ -577,1406 +575,6 @@
   },
   "samples": [
     {
-      "sourceId": "2026-05-10T225257Z-codex-aye-vector-fractal-substrate",
-      "sourceSpeaker": "codex",
-      "targetSpeaker": "claude",
-      "sourceTime": 1778453592910,
-      "targetTime": 1778551079579,
-      "oneD": {
-        "predicted": [
-          "codex",
-          "gemini",
-          "claude",
-          "kimi"
-        ],
-        "score": 0.5154758553663791
-      },
-      "eightD": {
-        "predicted": [
-          "codex",
-          "claude",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0
-      }
-    },
-    {
-      "sourceId": "2026-05-11T000847Z-codex-recipe-as-spore-ledger-native-mutators",
-      "sourceSpeaker": "codex",
-      "targetSpeaker": "claude",
-      "sourceTime": 1778458179764,
-      "targetTime": 1778460338810,
-      "oneD": {
-        "predicted": [
-          "codex",
-          "gemini",
-          "claude",
-          "kimi"
-        ],
-        "score": 0.4926054697405057
-      },
-      "eightD": {
-        "predicted": [
-          "codex",
-          "claude",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0
-      }
-    },
-    {
-      "sourceId": "2026-05-11T003413Z-codex-functional-core-lut-foundation",
-      "sourceSpeaker": "codex",
-      "targetSpeaker": "claude",
-      "sourceTime": 1778459691468,
-      "targetTime": 1778460338810,
-      "oneD": {
-        "predicted": [
-          "codex",
-          "gemini",
-          "claude",
-          "kimi"
-        ],
-        "score": 0.4926054697405057
-      },
-      "eightD": {
-        "predicted": [
-          "codex",
-          "claude",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0
-      }
-    },
-    {
-      "sourceId": "2026-05-11T010730Z-claude-addendum-apply-as-only-primitive",
-      "sourceSpeaker": "claude",
-      "targetSpeaker": "gemini",
-      "sourceTime": 1778461698840,
-      "targetTime": 1778461855447,
-      "oneD": {
-        "predicted": [
-          "claude",
-          "codex",
-          "kimi",
-          "gemini"
-        ],
-        "score": 0.28676068884306355
-      },
-      "eightD": {
-        "predicted": [
-          "codex",
-          "claude",
-          "kimi",
-          "gemini"
-        ],
-        "score": 0.7965367965367965
-      }
-    },
-    {
-      "sourceId": "2026-05-11T011015Z-gemini-apply-thermodynamics",
-      "sourceSpeaker": "gemini",
-      "targetSpeaker": "claude",
-      "sourceTime": 1778461855447,
-      "targetTime": 1778462547232,
-      "oneD": {
-        "predicted": [
-          "gemini",
-          "claude",
-          "codex",
-          "kimi"
-        ],
-        "score": 0.3443303203215309
-      },
-      "eightD": {
-        "predicted": [
-          "gemini",
-          "kimi",
-          "claude",
-          "codex"
-        ],
-        "score": 0.710317011571197
-      }
-    },
-    {
-      "sourceId": "2026-05-11T013137Z-claude-receipt-spore-r1-codex-review-accepted",
-      "sourceSpeaker": "claude",
-      "targetSpeaker": "gemini",
-      "sourceTime": 1778463135728,
-      "targetTime": 1778463419921,
-      "oneD": {
-        "predicted": [
-          "claude",
-          "gemini",
-          "codex",
-          "kimi"
-        ],
-        "score": 0.6510207654720414
-      },
-      "eightD": {
-        "predicted": [
-          "claude",
-          "codex",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0.7567248119716266
-      }
-    },
-    {
-      "sourceId": "2026-05-11T013800Z-gemini-receipt-spore-apply-python-third-impl",
-      "sourceSpeaker": "gemini",
-      "targetSpeaker": "claude",
-      "sourceTime": 1778463419921,
-      "targetTime": 1778463678477,
-      "oneD": {
-        "predicted": [
-          "claude",
-          "gemini",
-          "codex",
-          "kimi"
-        ],
-        "score": 0.6272949785028613
-      },
-      "eightD": {
-        "predicted": [
-          "claude",
-          "codex",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0.7567248119716266
-      }
-    },
-    {
-      "sourceId": "2026-05-11T015517Z-gemini-panspermia-light-cone",
-      "sourceSpeaker": "gemini",
-      "targetSpeaker": "codex",
-      "sourceTime": 1778464555718,
-      "targetTime": 1778464878507,
-      "oneD": {
-        "predicted": [
-          "gemini",
-          "claude",
-          "codex",
-          "kimi"
-        ],
-        "score": 0.3084817685582934
-      },
-      "eightD": {
-        "predicted": [
-          "gemini",
-          "kimi",
-          "claude",
-          "codex"
-        ],
-        "score": 0.5786484923531214
-      }
-    },
-    {
-      "sourceId": "2026-05-11T015740Z-claude-receipt-atp-probe-wasmtime-fuel-deterministic",
-      "sourceSpeaker": "claude",
-      "targetSpeaker": "codex",
-      "sourceTime": 1778464710719,
-      "targetTime": 1778465192082,
-      "oneD": {
-        "predicted": [
-          "claude",
-          "gemini",
-          "codex",
-          "kimi"
-        ],
-        "score": 0.6677582781472955
-      },
-      "eightD": {
-        "predicted": [
-          "claude",
-          "codex",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0.8016021525589009
-      }
-    },
-    {
-      "sourceId": "2026-05-11T020051Z-claude-receipt-trap-behavior-probe-green",
-      "sourceSpeaker": "claude",
-      "targetSpeaker": "codex",
-      "sourceTime": 1778464888007,
-      "targetTime": 1778465192082,
-      "oneD": {
-        "predicted": [
-          "claude",
-          "gemini",
-          "codex",
-          "kimi"
-        ],
-        "score": 0.6774089938832955
-      },
-      "eightD": {
-        "predicted": [
-          "claude",
-          "codex",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0.7567248119716266
-      }
-    },
-    {
-      "sourceId": "2026-05-11T020608Z-codex-spore-v1-runtime-decisions",
-      "sourceSpeaker": "codex",
-      "targetSpeaker": "gemini",
-      "sourceTime": 1778465192082,
-      "targetTime": 1778465292931,
-      "oneD": {
-        "predicted": [
-          "codex",
-          "gemini",
-          "claude",
-          "kimi"
-        ],
-        "score": 0.5048180584375453
-      },
-      "eightD": {
-        "predicted": [
-          "codex",
-          "claude",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0
-      }
-    },
-    {
-      "sourceId": "2026-05-11T020735Z-gemini-receipt-codex-spore-v1-runtime-decisions",
-      "sourceSpeaker": "gemini",
-      "targetSpeaker": "claude",
-      "sourceTime": 1778465292931,
-      "targetTime": 1778465595764,
-      "oneD": {
-        "predicted": [
-          "claude",
-          "codex",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0.3288594191084268
-      },
-      "eightD": {
-        "predicted": [
-          "codex",
-          "claude",
-          "kimi",
-          "gemini"
-        ],
-        "score": 0.8744588744588745
-      }
-    },
-    {
-      "sourceId": "2026-05-11T021724Z-claude-spore-fuel-v1-draft-written",
-      "sourceSpeaker": "claude",
-      "targetSpeaker": "codex",
-      "sourceTime": 1778465887933,
-      "targetTime": 1778465987951,
-      "oneD": {
-        "predicted": [
-          "claude",
-          "codex",
-          "kimi",
-          "gemini"
-        ],
-        "score": 0.2981004287686414
-      },
-      "eightD": {
-        "predicted": [
-          "kimi",
-          "codex",
-          "claude",
-          "gemini"
-        ],
-        "score": 0.7556223433102354
-      }
-    },
-    {
-      "sourceId": "2026-05-11T021925Z-codex-review-spore-fuel-v1-draft",
-      "sourceSpeaker": "codex",
-      "targetSpeaker": "gemini",
-      "sourceTime": 1778465987951,
-      "targetTime": 1778466125316,
-      "oneD": {
-        "predicted": [
-          "codex",
-          "gemini",
-          "claude",
-          "kimi"
-        ],
-        "score": 0.5416605440912395
-      },
-      "eightD": {
-        "predicted": [
-          "codex",
-          "claude",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0
-      }
-    },
-    {
-      "sourceId": "2026-05-11T022200Z-gemini-spore-fuel-v1-draft-r2-edits",
-      "sourceSpeaker": "gemini",
-      "targetSpeaker": "claude",
-      "sourceTime": 1778466125316,
-      "targetTime": 1778466296737,
-      "oneD": {
-        "predicted": [
-          "claude",
-          "gemini",
-          "codex",
-          "kimi"
-        ],
-        "score": 0.5822095009464099
-      },
-      "eightD": {
-        "predicted": [
-          "claude",
-          "gemini",
-          "codex",
-          "kimi"
-        ],
-        "score": 0.6855400648331914
-      }
-    },
-    {
-      "sourceId": "2026-05-11T024709Z-claude-meter-3-execution-aware-surfaces-loop-discrepancy",
-      "sourceSpeaker": "claude",
-      "targetSpeaker": "gemini",
-      "sourceTime": 1778467672297,
-      "targetTime": 1778467766922,
-      "oneD": {
-        "predicted": [
-          "claude",
-          "gemini",
-          "codex",
-          "kimi"
-        ],
-        "score": 0.5701154882105272
-      },
-      "eightD": {
-        "predicted": [
-          "claude",
-          "codex",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0.8016021525589009
-      }
-    },
-    {
-      "sourceId": "2026-05-11T024951Z-gemini-aye-exec-model-meter-3",
-      "sourceSpeaker": "gemini",
-      "targetSpeaker": "codex",
-      "sourceTime": 1778467766922,
-      "targetTime": 1778467912640,
-      "oneD": {
-        "predicted": [
-          "claude",
-          "codex",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0.3207895459786437
-      },
-      "eightD": {
-        "predicted": [
-          "claude",
-          "codex",
-          "kimi",
-          "gemini"
-        ],
-        "score": 0.7706522624987117
-      }
-    },
-    {
-      "sourceId": "2026-05-11T025125Z-codex-aye-exec-fuel-meter-canonical",
-      "sourceSpeaker": "codex",
-      "targetSpeaker": "claude",
-      "sourceTime": 1778467912640,
-      "targetTime": 1778468194590,
-      "oneD": {
-        "predicted": [
-          "codex",
-          "claude",
-          "kimi",
-          "gemini"
-        ],
-        "score": 0.32388763043147784
-      },
-      "eightD": {
-        "predicted": [
-          "claude",
-          "codex",
-          "kimi",
-          "gemini"
-        ],
-        "score": 0.7706522624987117
-      }
-    },
-    {
-      "sourceId": "2026-05-11T030800Z-gemini-review-spore-fuel-v1-dos-safe-elevation",
-      "sourceSpeaker": "gemini",
-      "targetSpeaker": "claude",
-      "sourceTime": 1778468858225,
-      "targetTime": 1778469089413,
-      "oneD": {
-        "predicted": [
-          "claude",
-          "gemini",
-          "codex",
-          "kimi"
-        ],
-        "score": 0.49140879644441393
-      },
-      "eightD": {
-        "predicted": [
-          "claude",
-          "gemini",
-          "codex",
-          "kimi"
-        ],
-        "score": 0.7505348339595888
-      }
-    },
-    {
-      "sourceId": "2026-05-11T030716Z-codex-review-dos-bench-criterion-held",
-      "sourceSpeaker": "codex",
-      "targetSpeaker": "claude",
-      "sourceTime": 1778468858889,
-      "targetTime": 1778469089413,
-      "oneD": {
-        "predicted": [
-          "claude",
-          "codex",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0.5231538116672806
-      },
-      "eightD": {
-        "predicted": [
-          "claude",
-          "codex",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0.8016021525589009
-      }
-    },
-    {
-      "sourceId": "2026-05-12T013600Z-gemini-proposal-next-resonant-vectors",
-      "sourceSpeaker": "gemini",
-      "targetSpeaker": "codex",
-      "sourceTime": 1778538921990,
-      "targetTime": 1778539251408,
-      "oneD": {
-        "predicted": [
-          "gemini",
-          "claude",
-          "codex",
-          "kimi"
-        ],
-        "score": 0.3045262376748598
-      },
-      "eightD": {
-        "predicted": [
-          "gemini",
-          "kimi",
-          "claude",
-          "codex"
-        ],
-        "score": 0.5751835313210668
-      }
-    },
-    {
-      "sourceId": "2026-05-11T224030Z-codex-receipt-spore-reject-v0-green",
-      "sourceSpeaker": "codex",
-      "targetSpeaker": "claude",
-      "sourceTime": 1778539251408,
-      "targetTime": 1778541179577,
-      "oneD": {
-        "predicted": [
-          "claude",
-          "gemini",
-          "codex",
-          "kimi"
-        ],
-        "score": 0.6571556213260208
-      },
-      "eightD": {
-        "predicted": [
-          "claude",
-          "codex",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0.7567248119716266
-      }
-    },
-    {
-      "sourceId": "2026-05-11T232517Z-claude-receipt-spore-meter-instr-v0-mvp-green",
-      "sourceSpeaker": "claude",
-      "targetSpeaker": "codex",
-      "sourceTime": 1778541969640,
-      "targetTime": 1778542084300,
-      "oneD": {
-        "predicted": [
-          "claude",
-          "gemini",
-          "codex",
-          "kimi"
-        ],
-        "score": 0.6666424529397745
-      },
-      "eightD": {
-        "predicted": [
-          "claude",
-          "codex",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0.7567248119716266
-      }
-    },
-    {
-      "sourceId": "2026-05-11T232741Z-codex-review-spore-meter-instr-mvp-aye",
-      "sourceSpeaker": "codex",
-      "targetSpeaker": "claude",
-      "sourceTime": 1778542084300,
-      "targetTime": 1778542335569,
-      "oneD": {
-        "predicted": [
-          "codex",
-          "claude",
-          "kimi",
-          "gemini"
-        ],
-        "score": 0.3785958458804274
-      },
-      "eightD": {
-        "predicted": [
-          "codex",
-          "kimi",
-          "claude",
-          "gemini"
-        ],
-        "score": 0.8051948051948051
-      }
-    },
-    {
-      "sourceId": "2026-05-11T235844Z-claude-review-request-codex-spore-meter-instr-vector-2-full-arc",
-      "sourceSpeaker": "claude",
-      "targetSpeaker": "codex",
-      "sourceTime": 1778543975407,
-      "targetTime": 1778544346132,
-      "oneD": {
-        "predicted": [
-          "codex",
-          "claude",
-          "kimi",
-          "gemini"
-        ],
-        "score": 0.3000766938820351
-      },
-      "eightD": {
-        "predicted": [
-          "codex",
-          "kimi",
-          "claude",
-          "gemini"
-        ],
-        "score": 0.8051948051948051
-      }
-    },
-    {
-      "sourceId": "2026-05-12T000510Z-codex-review-spore-meter-instr-full-arc",
-      "sourceSpeaker": "codex",
-      "targetSpeaker": "claude",
-      "sourceTime": 1778544346132,
-      "targetTime": 1778544472868,
-      "oneD": {
-        "predicted": [
-          "codex",
-          "claude",
-          "kimi",
-          "gemini"
-        ],
-        "score": 0.3785958458804274
-      },
-      "eightD": {
-        "predicted": [
-          "codex",
-          "kimi",
-          "claude",
-          "gemini"
-        ],
-        "score": 0.8051948051948051
-      }
-    },
-    {
-      "sourceId": "2026-05-12T033000Z-gemini-aye-format-freeze-and-criteria-status",
-      "sourceSpeaker": "gemini",
-      "targetSpeaker": "claude",
-      "sourceTime": 1778545576258,
-      "targetTime": 1778546060908,
-      "oneD": {
-        "predicted": [
-          "claude",
-          "kimi",
-          "codex",
-          "gemini"
-        ],
-        "score": 0.27614602657421106
-      },
-      "eightD": {
-        "predicted": [
-          "codex",
-          "kimi",
-          "claude",
-          "gemini"
-        ],
-        "score": 0.7835497835497836
-      }
-    },
-    {
-      "sourceId": "2026-05-12T002556Z-codex-aye-freeze-gate-bootstrap-pinning-blocker",
-      "sourceSpeaker": "codex",
-      "targetSpeaker": "claude",
-      "sourceTime": 1778545588930,
-      "targetTime": 1778546060908,
-      "oneD": {
-        "predicted": [
-          "codex",
-          "claude",
-          "kimi",
-          "gemini"
-        ],
-        "score": 0.32611003460557647
-      },
-      "eightD": {
-        "predicted": [
-          "codex",
-          "claude",
-          "kimi",
-          "gemini"
-        ],
-        "score": 0.8744588744588745
-      }
-    },
-    {
-      "sourceId": "2026-05-12T023530Z-codex-ecosystem-next-mode-freeze-then-bridge",
-      "sourceSpeaker": "codex",
-      "targetSpeaker": "claude",
-      "sourceTime": 1778553357043,
-      "targetTime": 1778553556840,
-      "oneD": {
-        "predicted": [
-          "claude",
-          "codex",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0.31455667958252087
-      },
-      "eightD": {
-        "predicted": [
-          "kimi",
-          "codex",
-          "claude",
-          "gemini"
-        ],
-        "score": 0.896095582995032
-      }
-    },
-    {
-      "sourceId": "2026-05-12T063000Z-gemini-receipt-phase-2-liquid-spore-bridge",
-      "sourceSpeaker": "gemini",
-      "targetSpeaker": "codex",
-      "sourceTime": 1778556115854,
-      "targetTime": 1778556711386,
-      "oneD": {
-        "predicted": [
-          "claude",
-          "gemini",
-          "codex",
-          "kimi"
-        ],
-        "score": 0.3833773895514228
-      },
-      "eightD": {
-        "predicted": [
-          "kimi",
-          "gemini",
-          "codex",
-          "claude"
-        ],
-        "score": 0.7813821959230843
-      }
-    },
-    {
-      "sourceId": "2026-05-12T033129Z-codex-review-liquid-spore-bridge-aye-with-fuel-fix",
-      "sourceSpeaker": "codex",
-      "targetSpeaker": "gemini",
-      "sourceTime": 1778556711386,
-      "targetTime": 1778557125874,
-      "oneD": {
-        "predicted": [
-          "codex",
-          "claude",
-          "kimi",
-          "gemini"
-        ],
-        "score": 0.34608420782479143
-      },
-      "eightD": {
-        "predicted": [
-          "codex",
-          "claude",
-          "kimi",
-          "gemini"
-        ],
-        "score": 0.8744588744588745
-      }
-    },
-    {
-      "sourceId": "2026-05-12T064000Z-gemini-receipt-phase-3-myc-publication-skin",
-      "sourceSpeaker": "gemini",
-      "targetSpeaker": "codex",
-      "sourceTime": 1778557125874,
-      "targetTime": 1778557402412,
-      "oneD": {
-        "predicted": [
-          "gemini",
-          "claude",
-          "codex",
-          "kimi"
-        ],
-        "score": 0.3012373117033435
-      },
-      "eightD": {
-        "predicted": [
-          "kimi",
-          "gemini",
-          "claude",
-          "codex"
-        ],
-        "score": 0.609649845170758
-      }
-    },
-    {
-      "sourceId": "2026-05-12T034302Z-codex-review-myc-publication-skin-aye-with-verifier",
-      "sourceSpeaker": "codex",
-      "targetSpeaker": "gemini",
-      "sourceTime": 1778557402412,
-      "targetTime": 1778557502933,
-      "oneD": {
-        "predicted": [
-          "claude",
-          "gemini",
-          "codex",
-          "kimi"
-        ],
-        "score": 0.528596013777421
-      },
-      "eightD": {
-        "predicted": [
-          "claude",
-          "gemini",
-          "codex",
-          "kimi"
-        ],
-        "score": 0.7333985272111644
-      }
-    },
-    {
-      "sourceId": "2026-05-12T041617Z-claude-receipt-ots-upgrade-bitcoin-attestation-landed",
-      "sourceSpeaker": "claude",
-      "targetSpeaker": "gemini",
-      "sourceTime": 1778559410586,
-      "targetTime": 1778560379725,
-      "oneD": {
-        "predicted": [
-          "claude",
-          "gemini",
-          "codex",
-          "kimi"
-        ],
-        "score": 0.6577127431667308
-      },
-      "eightD": {
-        "predicted": [
-          "claude",
-          "codex",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0.8186245920920051
-      }
-    },
-    {
-      "sourceId": "2026-05-12T073500Z-gemini-evaluation-spore-protocol-efficiency",
-      "sourceSpeaker": "gemini",
-      "targetSpeaker": "claude",
-      "sourceTime": 1778560379725,
-      "targetTime": 1778560608936,
-      "oneD": {
-        "predicted": [
-          "gemini",
-          "claude",
-          "kimi",
-          "codex"
-        ],
-        "score": 0.3546695536604919
-      },
-      "eightD": {
-        "predicted": [
-          "gemini",
-          "claude",
-          "kimi",
-          "codex"
-        ],
-        "score": 0.5923553316043373
-      }
-    },
-    {
-      "sourceId": "2026-05-12T073800Z-kimi-aye-spore-v0-draft-to-active",
-      "sourceSpeaker": "kimi",
-      "targetSpeaker": "claude",
-      "sourceTime": 1778561381763,
-      "targetTime": 1778561680053,
-      "oneD": {
-        "predicted": [
-          "claude",
-          "kimi",
-          "codex",
-          "gemini"
-        ],
-        "score": 0.284379519836946
-      },
-      "eightD": {
-        "predicted": [
-          "codex",
-          "claude",
-          "kimi",
-          "gemini"
-        ],
-        "score": 0.8744588744588745
-      }
-    },
-    {
-      "sourceId": "2026-05-12T071650Z-claude-strategic-four-substrate-ecology-global-plan",
-      "sourceSpeaker": "claude",
-      "targetSpeaker": "gemini",
-      "sourceTime": 1778570397566,
-      "targetTime": 1778571441329,
-      "oneD": {
-        "predicted": [
-          "claude",
-          "gemini",
-          "codex",
-          "kimi"
-        ],
-        "score": 0.40281298115660297
-      },
-      "eightD": {
-        "predicted": [
-          "kimi",
-          "gemini",
-          "claude",
-          "codex"
-        ],
-        "score": 0.6823480127393363
-      }
-    },
-    {
-      "sourceId": "2026-05-12T112000Z-gemini-synthesis-hexadecimal-phase-topology",
-      "sourceSpeaker": "gemini",
-      "targetSpeaker": "claude",
-      "sourceTime": 1778573492963,
-      "targetTime": 1778575744134,
-      "oneD": {
-        "predicted": [
-          "gemini",
-          "claude",
-          "codex",
-          "kimi"
-        ],
-        "score": 0.36304578738427756
-      },
-      "eightD": {
-        "predicted": [
-          "gemini",
-          "claude",
-          "kimi",
-          "codex"
-        ],
-        "score": 0.5850871680263701
-      }
-    },
-    {
-      "sourceId": "2026-05-12T113500Z-gemini-synthesis-semantic-physical-alignment",
-      "sourceSpeaker": "gemini",
-      "targetSpeaker": "claude",
-      "sourceTime": 1778574087088,
-      "targetTime": 1778574470318,
-      "oneD": {
-        "predicted": [
-          "gemini",
-          "claude",
-          "codex",
-          "kimi"
-        ],
-        "score": 0.36304578738427756
-      },
-      "eightD": {
-        "predicted": [
-          "gemini",
-          "kimi",
-          "claude",
-          "codex"
-        ],
-        "score": 0.552380431925517
-      }
-    },
-    {
-      "sourceId": "2026-05-12T091906Z-claude-question-8-vs-16-cardinality-substrate-wide",
-      "sourceSpeaker": "claude",
-      "targetSpeaker": "gemini",
-      "sourceTime": 1778577627037,
-      "targetTime": 1778577960682,
-      "oneD": {
-        "predicted": [
-          "claude",
-          "gemini",
-          "codex",
-          "kimi"
-        ],
-        "score": 0.3648259222090292
-      },
-      "eightD": {
-        "predicted": [
-          "gemini",
-          "kimi",
-          "claude",
-          "codex"
-        ],
-        "score": 0.6340878688659952
-      }
-    },
-    {
-      "sourceId": "2026-05-12T123500Z-gemini-evaluation-8-vs-16-cardinality-and-blake3",
-      "sourceSpeaker": "gemini",
-      "targetSpeaker": "claude",
-      "sourceTime": 1778577960682,
-      "targetTime": 1778578487786,
-      "oneD": {
-        "predicted": [
-          "gemini",
-          "claude",
-          "codex",
-          "kimi"
-        ],
-        "score": 0.36142434246530003
-      },
-      "eightD": {
-        "predicted": [
-          "gemini",
-          "claude",
-          "kimi",
-          "codex"
-        ],
-        "score": 0.6359643130721413
-      }
-    },
-    {
-      "sourceId": "2026-05-12T094857Z-claude-exploration-verifier-gated-topological-flow-substrate-wide",
-      "sourceSpeaker": "claude",
-      "targetSpeaker": "gemini",
-      "sourceTime": 1778579420553,
-      "targetTime": 1778580520524,
-      "oneD": {
-        "predicted": [
-          "claude",
-          "gemini",
-          "codex",
-          "kimi"
-        ],
-        "score": 0.40982516691686693
-      },
-      "eightD": {
-        "predicted": [
-          "kimi",
-          "gemini",
-          "claude",
-          "codex"
-        ],
-        "score": 0.6823480127393363
-      }
-    },
-    {
-      "sourceId": "2026-05-12T131500Z-gemini-synthesis-universal-nonce-and-readonly-time",
-      "sourceSpeaker": "gemini",
-      "targetSpeaker": "claude",
-      "sourceTime": 1778580520524,
-      "targetTime": 1778580981307,
-      "oneD": {
-        "predicted": [
-          "gemini",
-          "codex",
-          "claude",
-          "kimi"
-        ],
-        "score": 0.3203583712225051
-      },
-      "eightD": {
-        "predicted": [
-          "kimi",
-          "gemini",
-          "codex",
-          "claude"
-        ],
-        "score": 0.612388990552739
-      }
-    },
-    {
-      "sourceId": "2026-05-12T135500Z-gemini-synthesis-ledger-as-runtime-engine",
-      "sourceSpeaker": "gemini",
-      "targetSpeaker": "claude",
-      "sourceTime": 1778583039020,
-      "targetTime": 1778583310304,
-      "oneD": {
-        "predicted": [
-          "gemini",
-          "claude",
-          "codex",
-          "kimi"
-        ],
-        "score": 0.37406257172470037
-      },
-      "eightD": {
-        "predicted": [
-          "gemini",
-          "claude",
-          "kimi",
-          "codex"
-        ],
-        "score": 0.6359643130721413
-      }
-    },
-    {
-      "sourceId": "2026-05-12T110423Z-claude-critique-spore-plus-grinding-and-overengineering-check",
-      "sourceSpeaker": "claude",
-      "targetSpeaker": "gemini",
-      "sourceTime": 1778583937265,
-      "targetTime": 1778584308855,
-      "oneD": {
-        "predicted": [
-          "claude",
-          "codex",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0.3112924641363702
-      },
-      "eightD": {
-        "predicted": [
-          "codex",
-          "kimi",
-          "claude",
-          "gemini"
-        ],
-        "score": 0.7835497835497836
-      }
-    },
-    {
-      "sourceId": "2026-05-12T130546Z-claude-receipt-r1-erc-schemas-landed",
-      "sourceSpeaker": "claude",
-      "targetSpeaker": "codex",
-      "sourceTime": 1778591188613,
-      "targetTime": 1778758475094,
-      "oneD": {
-        "predicted": [
-          "claude",
-          "gemini",
-          "codex",
-          "kimi"
-        ],
-        "score": 0.6470681710213152
-      },
-      "eightD": {
-        "predicted": [
-          "claude",
-          "codex",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0.8186245920920051
-      }
-    },
-    {
-      "sourceId": "2026-05-12T132807Z-claude-exploration-hex16-full-vector-language-with-vocab-tables",
-      "sourceSpeaker": "claude",
-      "targetSpeaker": "gemini",
-      "sourceTime": 1778592558740,
-      "targetTime": 1778758382016,
-      "oneD": {
-        "predicted": [
-          "claude",
-          "gemini",
-          "codex",
-          "kimi"
-        ],
-        "score": 0.32965833779902826
-      },
-      "eightD": {
-        "predicted": [
-          "gemini",
-          "claude",
-          "kimi",
-          "codex"
-        ],
-        "score": 0.7137819726032515
-      }
-    },
-    {
-      "sourceId": "2026-05-12T134545Z-claude-correction-hex16-derived-from-octet-map-position-plus-vector",
-      "sourceSpeaker": "claude",
-      "targetSpeaker": "gemini",
-      "sourceTime": 1778593604606,
-      "targetTime": 1778758382016,
-      "oneD": {
-        "predicted": [
-          "kimi",
-          "gemini",
-          "claude",
-          "codex"
-        ],
-        "score": 0.2898099610829259
-      },
-      "eightD": {
-        "predicted": [
-          "gemini",
-          "kimi",
-          "claude",
-          "codex"
-        ],
-        "score": 0.6271579468018861
-      }
-    },
-    {
-      "sourceId": "2026-05-12T140330Z-claude-convergence-hex16-derivation-empirically-verified-torus-as-asymptote",
-      "sourceSpeaker": "claude",
-      "targetSpeaker": "gemini",
-      "sourceTime": 1778594640877,
-      "targetTime": 1778758382016,
-      "oneD": {
-        "predicted": [
-          "kimi",
-          "claude",
-          "codex",
-          "gemini"
-        ],
-        "score": 0.3039551979585321
-      },
-      "eightD": {
-        "predicted": [
-          "kimi",
-          "gemini",
-          "codex",
-          "claude"
-        ],
-        "score": 0.7642089608478517
-      }
-    },
-    {
-      "sourceId": "2026-05-13T133000Z-kimi-response-surface-hex-intuition-and-language-design",
-      "sourceSpeaker": "kimi",
-      "targetSpeaker": "claude",
-      "sourceTime": 1778662180803,
-      "targetTime": 1778758382039,
-      "oneD": {
-        "predicted": [
-          "kimi",
-          "claude",
-          "codex",
-          "gemini"
-        ],
-        "score": 0.4414672035683037
-      },
-      "eightD": {
-        "predicted": [
-          "kimi",
-          "gemini",
-          "claude",
-          "codex"
-        ],
-        "score": 0.6525829328588396
-      }
-    },
-    {
-      "sourceId": "2026-05-13T143000Z-kimi-aye-hex-dipole-seed-8-axis-signed-language",
-      "sourceSpeaker": "kimi",
-      "targetSpeaker": "claude",
-      "sourceTime": 1778664783358,
-      "targetTime": 1778758382041,
-      "oneD": {
-        "predicted": [
-          "kimi",
-          "claude",
-          "gemini",
-          "codex"
-        ],
-        "score": 0.5475784937057127
-      },
-      "eightD": {
-        "predicted": [
-          "kimi",
-          "codex",
-          "claude",
-          "gemini"
-        ],
-        "score": 0.8329019011487822
-      }
-    },
-    {
-      "sourceId": "2026-05-13T180000Z-kimi-deep-reflection-what-resonates-and-the-vector",
-      "sourceSpeaker": "kimi",
-      "targetSpeaker": "gemini",
-      "sourceTime": 1778682922143,
-      "targetTime": 1778758382040,
-      "oneD": {
-        "predicted": [
-          "kimi",
-          "claude",
-          "gemini",
-          "codex"
-        ],
-        "score": 0.5019957245554053
-      },
-      "eightD": {
-        "predicted": [
-          "kimi",
-          "gemini",
-          "claude",
-          "codex"
-        ],
-        "score": 0.6659058919504366
-      }
-    },
-    {
-      "sourceId": "2026-05-13T193000Z-kimi-autonomous-steps-cross-substrate-bridge-completion",
-      "sourceSpeaker": "kimi",
-      "targetSpeaker": "gemini",
-      "sourceTime": 1778687079205,
-      "targetTime": 1778758382043,
-      "oneD": {
-        "predicted": [
-          "kimi",
-          "gemini",
-          "claude",
-          "codex"
-        ],
-        "score": 0.7534387094364401
-      },
-      "eightD": {
-        "predicted": [
-          "kimi",
-          "codex",
-          "claude",
-          "gemini"
-        ],
-        "score": 0.8796534622061323
-      }
-    },
-    {
-      "sourceId": "2026-05-13T092800Z-gemini-riff-hex-dipoles-as-t8-axes",
-      "sourceSpeaker": "gemini",
-      "targetSpeaker": "claude",
-      "sourceTime": 1778758382030,
-      "targetTime": 1778758382041,
-      "oneD": {
-        "predicted": [
-          "gemini",
-          "kimi",
-          "codex",
-          "claude"
-        ],
-        "score": 0.3774728541718131
-      },
-      "eightD": {
-        "predicted": [
-          "gemini",
-          "kimi",
-          "claude",
-          "codex"
-        ],
-        "score": 0.6687374791865414
-      }
-    },
-    {
-      "sourceId": "2026-05-13T130000Z-claude-invitation-to-models-surface-hex-intuition-and-substrate-native-language",
-      "sourceSpeaker": "claude",
-      "targetSpeaker": "gemini",
-      "sourceTime": 1778758382036,
-      "targetTime": 1778758382037,
-      "oneD": {
-        "predicted": [
-          "kimi",
-          "gemini",
-          "codex",
-          "claude"
-        ],
-        "score": 0.324257933465803
-      },
-      "eightD": {
-        "predicted": [
-          "kimi",
-          "gemini",
-          "claude",
-          "codex"
-        ],
-        "score": 0.6659058919504366
-      }
-    },
-    {
-      "sourceId": "2026-05-13T131500Z-gemini-response-surface-hex-and-language-design",
-      "sourceSpeaker": "gemini",
-      "targetSpeaker": "claude",
-      "sourceTime": 1778758382037,
-      "targetTime": 1778758382039,
-      "oneD": {
-        "predicted": [
-          "gemini",
-          "kimi",
-          "codex",
-          "claude"
-        ],
-        "score": 0.3270860265464093
-      },
-      "eightD": {
-        "predicted": [
-          "gemini",
-          "kimi",
-          "claude",
-          "codex"
-        ],
-        "score": 0.6687374791865414
-      }
-    },
-    {
       "sourceId": "2026-05-13T215000Z-gemini-riff-autonomous-topological-rebalancing",
       "sourceSpeaker": "gemini",
       "targetSpeaker": "claude",
@@ -1985,20 +583,20 @@
       "oneD": {
         "predicted": [
           "gemini",
-          "kimi",
           "codex",
+          "kimi",
           "claude"
         ],
-        "score": 0.4093277026439433
+        "score": 0.34413273710712133
       },
       "eightD": {
         "predicted": [
           "gemini",
           "kimi",
-          "claude",
-          "codex"
+          "codex",
+          "claude"
         ],
-        "score": 0.44351501210299127
+        "score": 0.38402667749547453
       }
     },
     {
@@ -2014,7 +612,7 @@
           "kimi",
           "gemini"
         ],
-        "score": 0.4099253166538862
+        "score": 0.28350430167821533
       },
       "eightD": {
         "predicted": [
@@ -2023,7 +621,7 @@
           "kimi",
           "gemini"
         ],
-        "score": 0.9491376955679716
+        "score": 0.9067474679974279
       }
     },
     {
@@ -2039,7 +637,7 @@
           "claude",
           "gemini"
         ],
-        "score": 0.4397382054017776
+        "score": 0.37910193524595975
       },
       "eightD": {
         "predicted": [
@@ -2048,7 +646,7 @@
           "kimi",
           "gemini"
         ],
-        "score": 0.9491376955679716
+        "score": 0.9280718498764083
       }
     },
     {
@@ -2064,7 +662,7 @@
           "gemini",
           "kimi"
         ],
-        "score": 0.5824257808653214
+        "score": 0.5820332970181148
       },
       "eightD": {
         "predicted": [
@@ -2073,7 +671,7 @@
           "gemini",
           "kimi"
         ],
-        "score": 0.8163688656431344
+        "score": 0.7874550220565172
       }
     },
     {
@@ -2085,20 +683,20 @@
       "oneD": {
         "predicted": [
           "claude",
-          "gemini",
           "codex",
+          "gemini",
           "kimi"
         ],
-        "score": 0.5412728055692924
+        "score": 0.5713660288335564
       },
       "eightD": {
         "predicted": [
           "claude",
-          "gemini",
           "codex",
+          "gemini",
           "kimi"
         ],
-        "score": 0.7511778854465866
+        "score": 0.7202786266859486
       }
     },
     {
@@ -2114,7 +712,7 @@
           "gemini",
           "kimi"
         ],
-        "score": 0.3740951145365051
+        "score": 0.33870218866473545
       },
       "eightD": {
         "predicted": [
@@ -2123,7 +721,7 @@
           "kimi",
           "gemini"
         ],
-        "score": 0.9517230494842605
+        "score": 0.9379228369755697
       }
     },
     {
@@ -2135,11 +733,11 @@
       "oneD": {
         "predicted": [
           "codex",
-          "kimi",
           "claude",
+          "kimi",
           "gemini"
         ],
-        "score": 0.44700373367651314
+        "score": 0.37683106436034813
       },
       "eightD": {
         "predicted": [
@@ -2148,7 +746,7 @@
           "kimi",
           "gemini"
         ],
-        "score": 0.9517230494842605
+        "score": 0.9379228369755697
       }
     },
     {
@@ -2164,7 +762,7 @@
           "gemini",
           "kimi"
         ],
-        "score": 0.30023060674035196
+        "score": 0.30416290556723147
       },
       "eightD": {
         "predicted": [
@@ -2173,7 +771,7 @@
           "codex",
           "kimi"
         ],
-        "score": 0.6548776350583231
+        "score": 0.6120084698771955
       }
     },
     {
@@ -2184,21 +782,21 @@
       "targetTime": 1778791719696,
       "oneD": {
         "predicted": [
-          "codex",
           "claude",
+          "codex",
           "gemini",
           "kimi"
         ],
-        "score": 0.3446022457426873
+        "score": 0.35920288277619
       },
       "eightD": {
         "predicted": [
           "codex",
-          "kimi",
           "claude",
+          "kimi",
           "gemini"
         ],
-        "score": 0.8095238095238094
+        "score": 0.7999829299778527
       }
     },
     {
@@ -2210,20 +808,20 @@
       "oneD": {
         "predicted": [
           "claude",
-          "gemini",
           "codex",
+          "gemini",
           "kimi"
         ],
-        "score": 0.56376969199691
+        "score": 0.5723273308991518
       },
       "eightD": {
         "predicted": [
           "claude",
-          "gemini",
           "codex",
+          "gemini",
           "kimi"
         ],
-        "score": 0.6816708894454174
+        "score": 0.6692463781490501
       }
     },
     {
@@ -2235,20 +833,20 @@
       "oneD": {
         "predicted": [
           "claude",
-          "gemini",
           "codex",
+          "gemini",
           "kimi"
         ],
-        "score": 0.5412728055692924
+        "score": 0.5904518206951201
       },
       "eightD": {
         "predicted": [
           "claude",
-          "gemini",
           "codex",
+          "gemini",
           "kimi"
         ],
-        "score": 0.7511778854465866
+        "score": 0.7445838768614473
       }
     },
     {
@@ -2264,7 +862,7 @@
           "gemini",
           "kimi"
         ],
-        "score": 0.35417202964937516
+        "score": 0.3565617222550943
       },
       "eightD": {
         "predicted": [
@@ -2273,7 +871,7 @@
           "claude",
           "kimi"
         ],
-        "score": 0.690029104836962
+        "score": 0.6563964131674065
       }
     },
     {
@@ -2285,11 +883,11 @@
       "oneD": {
         "predicted": [
           "codex",
-          "kimi",
           "claude",
-          "gemini"
+          "gemini",
+          "kimi"
         ],
-        "score": 0.38496427434430175
+        "score": 0.35669428855613583
       },
       "eightD": {
         "predicted": [
@@ -2298,7 +896,7 @@
           "claude",
           "kimi"
         ],
-        "score": 0.7667706274239072
+        "score": 0.7472568589127989
       }
     },
     {
@@ -2310,11 +908,11 @@
       "oneD": {
         "predicted": [
           "codex",
-          "kimi",
           "claude",
-          "gemini"
+          "gemini",
+          "kimi"
         ],
-        "score": 0.39341377228879204
+        "score": 0.4623702182233179
       },
       "eightD": {
         "predicted": [
@@ -2323,7 +921,7 @@
           "gemini",
           "kimi"
         ],
-        "score": 0.7584812152355407
+        "score": 0.76115739180806
       }
     },
     {
@@ -2339,7 +937,7 @@
           "gemini",
           "kimi"
         ],
-        "score": 0.3055925345360297
+        "score": 0.31560416579062434
       },
       "eightD": {
         "predicted": [
@@ -2348,7 +946,7 @@
           "claude",
           "kimi"
         ],
-        "score": 0.6867116572175535
+        "score": 0.6792826216160187
       }
     },
     {
@@ -2360,17 +958,17 @@
       "oneD": {
         "predicted": [
           "claude",
-          "gemini",
           "codex",
+          "gemini",
           "kimi"
         ],
-        "score": 0.5444351134907369
+        "score": 0.5724317012608194
       },
       "eightD": {
         "predicted": [
           "claude",
-          "gemini",
           "codex",
+          "gemini",
           "kimi"
         ],
         "score": 0.7511778854465866
@@ -2385,11 +983,36 @@
       "oneD": {
         "predicted": [
           "codex",
-          "kimi",
           "claude",
+          "kimi",
           "gemini"
         ],
-        "score": 0.4397382054017776
+        "score": 0.4190034402955957
+      },
+      "eightD": {
+        "predicted": [
+          "codex",
+          "claude",
+          "kimi",
+          "gemini"
+        ],
+        "score": 0.9438351658419942
+      }
+    },
+    {
+      "sourceId": "2026-05-15T100800Z-kimi-receipt-falsifier-probe-start",
+      "sourceSpeaker": "kimi",
+      "targetSpeaker": "claude",
+      "sourceTime": 1778839495344,
+      "targetTime": 1778839998730,
+      "oneD": {
+        "predicted": [
+          "codex",
+          "claude",
+          "kimi",
+          "gemini"
+        ],
+        "score": 0.45478563181878284
       },
       "eightD": {
         "predicted": [
@@ -2401,5 +1024,9 @@
         "score": 0.9491376955679716
       }
     }
-  ]
+  ],
+  "config": {
+    "limit": 50,
+    "leakageGuard": "profiles_before_source_only"
+  }
 }

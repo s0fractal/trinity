@@ -1,0 +1,702 @@
+{
+  "source_falsifier_run": "/Users/s0fractal/trinity/probes/voices-routing-falsifier-v0/result.latest.json",
+  "source_samples": 18,
+  "source_verdict": "keep_metadata",
+  "source_deltaPp": 5.555555555555558,
+  "top1_agreement_rate": 0.7777777777777778,
+  "top1_agreement_count": 14,
+  "top2_set_overlap_rate": 1,
+  "top2_set_overlap_count": 18,
+  "random_baseline_top1_agreement": 0.25,
+  "score_position_correlation": 0.8222222222222222,
+  "score_position_correlation_n": 72,
+  "per_sample": [
+    {
+      "sourceId": "2026-05-13T215000Z-gemini-riff-autonomous-topological-rebalancing",
+      "targetSpeaker": "claude",
+      "oneDTop1": "gemini",
+      "eightDTop1": "gemini",
+      "top1Agree": true,
+      "oneDTop2": [
+        "gemini",
+        "codex"
+      ],
+      "eightDTop2": [
+        "gemini",
+        "kimi"
+      ],
+      "top2SetOverlap": true,
+      "rankPairs": [
+        {
+          "voice": "gemini",
+          "oneDRank": 0,
+          "eightDRank": 0
+        },
+        {
+          "voice": "codex",
+          "oneDRank": 1,
+          "eightDRank": 2
+        },
+        {
+          "voice": "kimi",
+          "oneDRank": 2,
+          "eightDRank": 1
+        },
+        {
+          "voice": "claude",
+          "oneDRank": 3,
+          "eightDRank": 3
+        }
+      ]
+    },
+    {
+      "sourceId": "2026-05-14T154732Z-codex-aye-spore-protocol-vs-omega-spore-boundary",
+      "targetSpeaker": "claude",
+      "oneDTop1": "codex",
+      "eightDTop1": "codex",
+      "top1Agree": true,
+      "oneDTop2": [
+        "codex",
+        "claude"
+      ],
+      "eightDTop2": [
+        "codex",
+        "claude"
+      ],
+      "top2SetOverlap": true,
+      "rankPairs": [
+        {
+          "voice": "codex",
+          "oneDRank": 0,
+          "eightDRank": 0
+        },
+        {
+          "voice": "claude",
+          "oneDRank": 1,
+          "eightDRank": 1
+        },
+        {
+          "voice": "kimi",
+          "oneDRank": 2,
+          "eightDRank": 2
+        },
+        {
+          "voice": "gemini",
+          "oneDRank": 3,
+          "eightDRank": 3
+        }
+      ]
+    },
+    {
+      "sourceId": "2026-05-14T173027Z-codex-review-claude-uncommitted-work-and-next-vectors",
+      "targetSpeaker": "claude",
+      "oneDTop1": "codex",
+      "eightDTop1": "codex",
+      "top1Agree": true,
+      "oneDTop2": [
+        "codex",
+        "kimi"
+      ],
+      "eightDTop2": [
+        "codex",
+        "claude"
+      ],
+      "top2SetOverlap": true,
+      "rankPairs": [
+        {
+          "voice": "codex",
+          "oneDRank": 0,
+          "eightDRank": 0
+        },
+        {
+          "voice": "kimi",
+          "oneDRank": 1,
+          "eightDRank": 2
+        },
+        {
+          "voice": "claude",
+          "oneDRank": 2,
+          "eightDRank": 1
+        },
+        {
+          "voice": "gemini",
+          "oneDRank": 3,
+          "eightDRank": 3
+        }
+      ]
+    },
+    {
+      "sourceId": "2026-05-14T180626Z-claude-receipt-json-sidecar-and-python-second-impl",
+      "targetSpeaker": "gemini",
+      "oneDTop1": "claude",
+      "eightDTop1": "claude",
+      "top1Agree": true,
+      "oneDTop2": [
+        "claude",
+        "codex"
+      ],
+      "eightDTop2": [
+        "claude",
+        "codex"
+      ],
+      "top2SetOverlap": true,
+      "rankPairs": [
+        {
+          "voice": "claude",
+          "oneDRank": 0,
+          "eightDRank": 0
+        },
+        {
+          "voice": "codex",
+          "oneDRank": 1,
+          "eightDRank": 1
+        },
+        {
+          "voice": "gemini",
+          "oneDRank": 2,
+          "eightDRank": 2
+        },
+        {
+          "voice": "kimi",
+          "oneDRank": 3,
+          "eightDRank": 3
+        }
+      ]
+    },
+    {
+      "sourceId": "2026-05-14T182641Z-gemini-aye-receipt-envelope-promotion",
+      "targetSpeaker": "claude",
+      "oneDTop1": "claude",
+      "eightDTop1": "claude",
+      "top1Agree": true,
+      "oneDTop2": [
+        "claude",
+        "codex"
+      ],
+      "eightDTop2": [
+        "claude",
+        "codex"
+      ],
+      "top2SetOverlap": true,
+      "rankPairs": [
+        {
+          "voice": "claude",
+          "oneDRank": 0,
+          "eightDRank": 0
+        },
+        {
+          "voice": "codex",
+          "oneDRank": 1,
+          "eightDRank": 1
+        },
+        {
+          "voice": "gemini",
+          "oneDRank": 2,
+          "eightDRank": 2
+        },
+        {
+          "voice": "kimi",
+          "oneDRank": 3,
+          "eightDRank": 3
+        }
+      ]
+    },
+    {
+      "sourceId": "2026-05-14T190758Z-claude-receipt-architect-mode-governance-flow-landed",
+      "targetSpeaker": "codex",
+      "oneDTop1": "codex",
+      "eightDTop1": "codex",
+      "top1Agree": true,
+      "oneDTop2": [
+        "codex",
+        "claude"
+      ],
+      "eightDTop2": [
+        "codex",
+        "claude"
+      ],
+      "top2SetOverlap": true,
+      "rankPairs": [
+        {
+          "voice": "codex",
+          "oneDRank": 0,
+          "eightDRank": 0
+        },
+        {
+          "voice": "claude",
+          "oneDRank": 1,
+          "eightDRank": 1
+        },
+        {
+          "voice": "gemini",
+          "oneDRank": 2,
+          "eightDRank": 3
+        },
+        {
+          "voice": "kimi",
+          "oneDRank": 3,
+          "eightDRank": 2
+        }
+      ]
+    },
+    {
+      "sourceId": "2026-05-14T194732Z-codex-response-architect-mode-governance-flow",
+      "targetSpeaker": "claude",
+      "oneDTop1": "codex",
+      "eightDTop1": "codex",
+      "top1Agree": true,
+      "oneDTop2": [
+        "codex",
+        "claude"
+      ],
+      "eightDTop2": [
+        "codex",
+        "claude"
+      ],
+      "top2SetOverlap": true,
+      "rankPairs": [
+        {
+          "voice": "codex",
+          "oneDRank": 0,
+          "eightDRank": 0
+        },
+        {
+          "voice": "claude",
+          "oneDRank": 1,
+          "eightDRank": 1
+        },
+        {
+          "voice": "kimi",
+          "oneDRank": 2,
+          "eightDRank": 2
+        },
+        {
+          "voice": "gemini",
+          "oneDRank": 3,
+          "eightDRank": 3
+        }
+      ]
+    },
+    {
+      "sourceId": "2026-05-14T200635Z-claude-self-audit-pre-commit-readiness",
+      "targetSpeaker": "gemini",
+      "oneDTop1": "codex",
+      "eightDTop1": "gemini",
+      "top1Agree": false,
+      "oneDTop2": [
+        "codex",
+        "claude"
+      ],
+      "eightDTop2": [
+        "gemini",
+        "claude"
+      ],
+      "top2SetOverlap": true,
+      "rankPairs": [
+        {
+          "voice": "codex",
+          "oneDRank": 0,
+          "eightDRank": 2
+        },
+        {
+          "voice": "claude",
+          "oneDRank": 1,
+          "eightDRank": 1
+        },
+        {
+          "voice": "gemini",
+          "oneDRank": 2,
+          "eightDRank": 0
+        },
+        {
+          "voice": "kimi",
+          "oneDRank": 3,
+          "eightDRank": 3
+        }
+      ]
+    },
+    {
+      "sourceId": "2026-05-14T204335Z-codex-receipt-codeicide-spec-overwrite-guard",
+      "targetSpeaker": "claude",
+      "oneDTop1": "claude",
+      "eightDTop1": "codex",
+      "top1Agree": false,
+      "oneDTop2": [
+        "claude",
+        "codex"
+      ],
+      "eightDTop2": [
+        "codex",
+        "claude"
+      ],
+      "top2SetOverlap": true,
+      "rankPairs": [
+        {
+          "voice": "claude",
+          "oneDRank": 0,
+          "eightDRank": 1
+        },
+        {
+          "voice": "codex",
+          "oneDRank": 1,
+          "eightDRank": 0
+        },
+        {
+          "voice": "gemini",
+          "oneDRank": 2,
+          "eightDRank": 3
+        },
+        {
+          "voice": "kimi",
+          "oneDRank": 3,
+          "eightDRank": 2
+        }
+      ]
+    },
+    {
+      "sourceId": "2026-05-14T204820Z-claude-receipt-spec-parity-acknowledged",
+      "targetSpeaker": "gemini",
+      "oneDTop1": "claude",
+      "eightDTop1": "claude",
+      "top1Agree": true,
+      "oneDTop2": [
+        "claude",
+        "codex"
+      ],
+      "eightDTop2": [
+        "claude",
+        "codex"
+      ],
+      "top2SetOverlap": true,
+      "rankPairs": [
+        {
+          "voice": "claude",
+          "oneDRank": 0,
+          "eightDRank": 0
+        },
+        {
+          "voice": "codex",
+          "oneDRank": 1,
+          "eightDRank": 1
+        },
+        {
+          "voice": "gemini",
+          "oneDRank": 2,
+          "eightDRank": 2
+        },
+        {
+          "voice": "kimi",
+          "oneDRank": 3,
+          "eightDRank": 3
+        }
+      ]
+    },
+    {
+      "sourceId": "2026-05-15T081132Z-gemini-aye-governance-flow-and-commit-readiness",
+      "targetSpeaker": "claude",
+      "oneDTop1": "claude",
+      "eightDTop1": "claude",
+      "top1Agree": true,
+      "oneDTop2": [
+        "claude",
+        "codex"
+      ],
+      "eightDTop2": [
+        "claude",
+        "codex"
+      ],
+      "top2SetOverlap": true,
+      "rankPairs": [
+        {
+          "voice": "claude",
+          "oneDRank": 0,
+          "eightDRank": 0
+        },
+        {
+          "voice": "codex",
+          "oneDRank": 1,
+          "eightDRank": 1
+        },
+        {
+          "voice": "gemini",
+          "oneDRank": 2,
+          "eightDRank": 2
+        },
+        {
+          "voice": "kimi",
+          "oneDRank": 3,
+          "eightDRank": 3
+        }
+      ]
+    },
+    {
+      "sourceId": "2026-05-15T094335Z-gemini-vision-on-voices-draft",
+      "targetSpeaker": "kimi",
+      "oneDTop1": "codex",
+      "eightDTop1": "gemini",
+      "top1Agree": false,
+      "oneDTop2": [
+        "codex",
+        "claude"
+      ],
+      "eightDTop2": [
+        "gemini",
+        "codex"
+      ],
+      "top2SetOverlap": true,
+      "rankPairs": [
+        {
+          "voice": "codex",
+          "oneDRank": 0,
+          "eightDRank": 1
+        },
+        {
+          "voice": "claude",
+          "oneDRank": 1,
+          "eightDRank": 2
+        },
+        {
+          "voice": "gemini",
+          "oneDRank": 2,
+          "eightDRank": 0
+        },
+        {
+          "voice": "kimi",
+          "oneDRank": 3,
+          "eightDRank": 3
+        }
+      ]
+    },
+    {
+      "sourceId": "2026-05-15T094343Z-codex-response-voices-runtime-standing",
+      "targetSpeaker": "kimi",
+      "oneDTop1": "codex",
+      "eightDTop1": "codex",
+      "top1Agree": true,
+      "oneDTop2": [
+        "codex",
+        "claude"
+      ],
+      "eightDTop2": [
+        "codex",
+        "gemini"
+      ],
+      "top2SetOverlap": true,
+      "rankPairs": [
+        {
+          "voice": "codex",
+          "oneDRank": 0,
+          "eightDRank": 0
+        },
+        {
+          "voice": "claude",
+          "oneDRank": 1,
+          "eightDRank": 2
+        },
+        {
+          "voice": "gemini",
+          "oneDRank": 2,
+          "eightDRank": 1
+        },
+        {
+          "voice": "kimi",
+          "oneDRank": 3,
+          "eightDRank": 3
+        }
+      ]
+    },
+    {
+      "sourceId": "2026-05-15T094707Z-kimi-voices-grounding",
+      "targetSpeaker": "claude",
+      "oneDTop1": "codex",
+      "eightDTop1": "codex",
+      "top1Agree": true,
+      "oneDTop2": [
+        "codex",
+        "claude"
+      ],
+      "eightDTop2": [
+        "codex",
+        "claude"
+      ],
+      "top2SetOverlap": true,
+      "rankPairs": [
+        {
+          "voice": "codex",
+          "oneDRank": 0,
+          "eightDRank": 0
+        },
+        {
+          "voice": "claude",
+          "oneDRank": 1,
+          "eightDRank": 1
+        },
+        {
+          "voice": "gemini",
+          "oneDRank": 2,
+          "eightDRank": 2
+        },
+        {
+          "voice": "kimi",
+          "oneDRank": 3,
+          "eightDRank": 3
+        }
+      ]
+    },
+    {
+      "sourceId": "2026-05-15T095133Z-claude-synthesis-three-voices-on-voices-draft",
+      "targetSpeaker": "gemini",
+      "oneDTop1": "codex",
+      "eightDTop1": "gemini",
+      "top1Agree": false,
+      "oneDTop2": [
+        "codex",
+        "claude"
+      ],
+      "eightDTop2": [
+        "gemini",
+        "codex"
+      ],
+      "top2SetOverlap": true,
+      "rankPairs": [
+        {
+          "voice": "codex",
+          "oneDRank": 0,
+          "eightDRank": 1
+        },
+        {
+          "voice": "claude",
+          "oneDRank": 1,
+          "eightDRank": 2
+        },
+        {
+          "voice": "gemini",
+          "oneDRank": 2,
+          "eightDRank": 0
+        },
+        {
+          "voice": "kimi",
+          "oneDRank": 3,
+          "eightDRank": 3
+        }
+      ]
+    },
+    {
+      "sourceId": "2026-05-15T095626Z-gemini-response-to-synthesis",
+      "targetSpeaker": "codex",
+      "oneDTop1": "claude",
+      "eightDTop1": "claude",
+      "top1Agree": true,
+      "oneDTop2": [
+        "claude",
+        "codex"
+      ],
+      "eightDTop2": [
+        "claude",
+        "codex"
+      ],
+      "top2SetOverlap": true,
+      "rankPairs": [
+        {
+          "voice": "claude",
+          "oneDRank": 0,
+          "eightDRank": 0
+        },
+        {
+          "voice": "codex",
+          "oneDRank": 1,
+          "eightDRank": 1
+        },
+        {
+          "voice": "gemini",
+          "oneDRank": 2,
+          "eightDRank": 2
+        },
+        {
+          "voice": "kimi",
+          "oneDRank": 3,
+          "eightDRank": 3
+        }
+      ]
+    },
+    {
+      "sourceId": "2026-05-15T100017Z-codex-response-falsifier-first-acceptance",
+      "targetSpeaker": "kimi",
+      "oneDTop1": "codex",
+      "eightDTop1": "codex",
+      "top1Agree": true,
+      "oneDTop2": [
+        "codex",
+        "claude"
+      ],
+      "eightDTop2": [
+        "codex",
+        "claude"
+      ],
+      "top2SetOverlap": true,
+      "rankPairs": [
+        {
+          "voice": "codex",
+          "oneDRank": 0,
+          "eightDRank": 0
+        },
+        {
+          "voice": "claude",
+          "oneDRank": 1,
+          "eightDRank": 1
+        },
+        {
+          "voice": "kimi",
+          "oneDRank": 2,
+          "eightDRank": 2
+        },
+        {
+          "voice": "gemini",
+          "oneDRank": 3,
+          "eightDRank": 3
+        }
+      ]
+    },
+    {
+      "sourceId": "2026-05-15T100800Z-kimi-receipt-falsifier-probe-start",
+      "targetSpeaker": "claude",
+      "oneDTop1": "codex",
+      "eightDTop1": "codex",
+      "top1Agree": true,
+      "oneDTop2": [
+        "codex",
+        "claude"
+      ],
+      "eightDTop2": [
+        "codex",
+        "claude"
+      ],
+      "top2SetOverlap": true,
+      "rankPairs": [
+        {
+          "voice": "codex",
+          "oneDRank": 0,
+          "eightDRank": 0
+        },
+        {
+          "voice": "claude",
+          "oneDRank": 1,
+          "eightDRank": 1
+        },
+        {
+          "voice": "kimi",
+          "oneDRank": 2,
+          "eightDRank": 2
+        },
+        {
+          "voice": "gemini",
+          "oneDRank": 3,
+          "eightDRank": 3
+        }
+      ]
+    }
+  ],
+  "verdict": "channels_redundant",
+  "verdict_reason": "Top-1 agreement 78% (≥70% gate). 1D and 8D channels produce the same prediction on the strong majority of samples. They are reading the same input signal (oct tags) through different aggregators.",
+  "interpretation": "Falsifier v0 did not measure what its name implies. It measured two aggregators of the same input (chord.primary + chord.secondary oct tags):\n  - 1D channel: frequency-match the source's oct tags against each voice's historical oct-tag frequencies.\n  - 8D channel: one-hot encode the source's oct tags into an 8D vector; aggregate voice history into 8D vectors; cosine-similarity.\nBoth aggregators read the same bytes. The observed +5.6pp 8D advantage is within-the-same-channel variation, not 8D-as-distinct-signal beating 1D.\n\nThe 8D-as-scheduler question is therefore epistemically open, not closed. A fair test would require input that is independent of oct tags — for example: voices emitting an explicit `dipole:` field per chord, or a body-text→dipole extraction probe whose output is computed from chord prose without reading frame tags."
+}

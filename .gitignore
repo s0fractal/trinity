@@ -3,6 +3,7 @@
 reports/latest-*.md
 reports/latest-*.json
 reports/*.tmp.md
+reports/trinity_clean_export.md
 reports/cognition/*.latest.json
 reports/cognition/*.latest.md
 reports/cognition/*.receipt.json

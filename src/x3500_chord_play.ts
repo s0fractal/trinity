@@ -10,7 +10,7 @@ import { parse as parseYaml } from "https://deno.land/std@0.224.0/yaml/mod.ts";
 import { ensureDir } from "https://deno.land/std@0.224.0/fs/ensure_dir.ts";
 import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { sha256Hex } from "./x4010_hash.ts";
-import { scanEcosystem, type FileProfile } from "../tools/scanner_core.ts";
+import { scanEcosystem, type FileProfile } from "./x6010_scanner_core.ts";
 
 /**
  * chord_play

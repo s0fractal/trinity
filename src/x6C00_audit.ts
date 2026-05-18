@@ -15,11 +15,21 @@
 //
 // audit — bucket-vs-dipole match report
 //
-// Reads `hex_dipole:` header from every 0xN/.../*.ts and *.sh in substrate
-// root. Compares strongest axes (loose tie semantics) against the top-level
-// bucket of the file's path. Reports match/mismatch per file plus summary.
+// Reads `hex_dipole:` header from every src/x<NNNN>_*.ts and *.sh after the
+// 2026-05-18 flat-src migration. Compares strongest axes (loose tie semantics)
+// against the first hex digit of the file's coordinate. Reports match /
+// mismatch / no_dipole per file plus summary.
 //
 // Not a gate. Not enforcement. Just a check.
+//
+// no_dipole policy (formalized 2026-05-18):
+//   Files migrated from lib/, scripts/, tools/ infrastructure do not require
+//   hex_dipole headers — they're called via static import, not via t-dispatch,
+//   so audit-time semantic verification is not load-bearing. Audit reports
+//   them as `no_dipole` (neutral status, not mismatch). Organs reachable via
+//   `t <handle>` glossary lookup SHOULD have hex_dipole headers so audit can
+//   verify their declared placement. Infra files MAY add headers later if
+//   their coordinate role becomes ambiguous; this is opt-in, not required.
 //
 // Usage (via dispatcher):
 //   t audit                    full report

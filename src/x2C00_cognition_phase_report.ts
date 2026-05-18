@@ -6,7 +6,7 @@
 //
 // cognition_phase_report.ts — report cognitive phases
 
-import { REPOS, scanEcosystem } from "../tools/scanner_core.ts";
+import { REPOS, scanEcosystem } from "./x6010_scanner_core.ts";
 
 interface RepoStats {
   total: number;

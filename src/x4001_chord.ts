@@ -303,10 +303,10 @@ Subcommands:
   parse "<hex bytes>"                Convert 8-byte hex vector to human readings
 
 Examples:
-  deno run -A tools/chord_init.ts block
-  deno run -A tools/chord_init.ts init --author=claude --topic="my topic"
-  deno run -A tools/chord_init.ts translate void_infinity +0.4
-  deno run -A tools/chord_init.ts parse "33 8E 59 40 00 26 4C 59"
+  deno run -A src/x4001_chord.ts block
+  deno run -A src/x4001_chord.ts init --author=claude --topic="my topic"
+  deno run -A src/x4001_chord.ts translate void_infinity +0.4
+  deno run -A src/x4001_chord.ts parse "33 8E 59 40 00 26 4C 59"
 
 Dipole axes (canonical order, byte positions 0..7):
 ${DIPOLE_AXES.map((n, i) => `  ${i}: ${n}`).join("\n")}

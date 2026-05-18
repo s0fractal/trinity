@@ -1,0 +1,6 @@
+{
+  "tasks": {
+    "mine": "deno run --config=probe.jsonc -A mine.ts",
+    "verify": "deno run --config=probe.jsonc -A verify.ts"
+  }
+}

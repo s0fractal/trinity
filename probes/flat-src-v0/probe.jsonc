@@ -1,0 +1,11 @@
+{
+  "tasks": {
+    "gen": "deno run --config=probe.jsonc -A generate_mods.ts",
+    "test": "deno test --config=probe.jsonc -A src/"
+  },
+  "imports": {
+    "@x0": "./src/x0000_mod.ts",
+    "@x4": "./src/x4000_mod.ts",
+    "@xA": "./src/xA000_mod.ts"
+  }
+}

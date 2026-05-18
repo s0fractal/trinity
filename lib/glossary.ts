@@ -10,8 +10,9 @@
 import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
 
 function getGlossaryPath(): string {
-  // lib/glossary.ts is at lib/glossary.ts; glossary is at 0x0/00.ndjson
-  return join(dirname(fromFileUrl(import.meta.url)), "..", "0x0", "00.ndjson");
+  // lib/glossary.ts is at lib/glossary.ts; glossary now lives at src/x0001_glossary.ndjson
+  // after the 2026-05-18 flat-src migration.
+  return join(dirname(fromFileUrl(import.meta.url)), "..", "src", "x0001_glossary.ndjson");
 }
 
 export interface WordRecord {

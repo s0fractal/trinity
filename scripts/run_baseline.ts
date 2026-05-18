@@ -133,7 +133,7 @@ async function main() {
   console.log(`\nReport written: ${reportPath}`);
 
   // JSON sidecar — machine-readable form, consumed by SUBSTRATE_HEALTH.v0.1
-  // adopters (e.g. 0x2/E.ts:loadCachedCi). Markdown remains for human read.
+  // adopters (e.g. src/x2E00_status.ts:loadCachedCi). Markdown remains for human read.
   // Schema: trinity.audit-baseline.v0.1
   const sidecar = {
     schema: "trinity.audit-baseline.v0.1",

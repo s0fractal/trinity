@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "status": "deno run -A 0x0/01.ts status",
+    "status": "deno run -A src/x0100_dispatch.ts status",
     "audit:green": "deno run -A scripts/run_baseline.ts --green",
     "audit:strict": "deno run -A scripts/run_baseline.ts --strict",
     "fixture:phi": "deno run -A scripts/phi_roundtrip.ts",
@@ -28,14 +28,9 @@
     "cognition:cycle": "deno task cognition:snapshot && deno task cognition:delta && deno task cognition:recommend && deno task cognition:recommend-receipt && deno task cognition:recommend-to-chord && deno task cognition:field",
     "canon:verify": "deno run -A lib/canon/verify_vectors.ts",
     "chord:play": "deno run -A tools/chord_play.ts",
-    "chord:block": "deno run --allow-net 0x4/0.ts block",
-    "chord:init": "deno run --allow-net 0x4/0.ts init",
-    "chord:translate": "deno run --allow-net 0x4/0.ts translate",
-    "chord:parse": "deno run --allow-net 0x4/0.ts parse"
-  },
-  "workspace": [
-    "./4",
-    "./A",
-    "./F"
-  ]
+    "chord:block": "deno run --allow-net src/x4001_chord.ts block",
+    "chord:init": "deno run --allow-net src/x4001_chord.ts init",
+    "chord:translate": "deno run --allow-net src/x4001_chord.ts translate",
+    "chord:parse": "deno run --allow-net src/x4001_chord.ts parse"
+  }
 }

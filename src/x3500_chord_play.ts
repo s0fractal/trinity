@@ -9,7 +9,7 @@
 import { parse as parseYaml } from "https://deno.land/std@0.224.0/yaml/mod.ts";
 import { ensureDir } from "https://deno.land/std@0.224.0/fs/ensure_dir.ts";
 import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
-import { sha256Hex } from "../lib/canon/hash.ts";
+import { sha256Hex } from "./x4010_hash.ts";
 import { scanEcosystem, type FileProfile } from "../tools/scanner_core.ts";
 
 /**
@@ -121,7 +121,7 @@ async function buildSnapshot(): Promise<Snapshot> {
 
 async function checkCanonVectors(): Promise<boolean> {
   const out = await new Deno.Command("deno", {
-    args: ["run", "-A", "lib/canon/verify_vectors.ts"],
+    args: ["run", "-A", "src/x6410_verify_vectors.ts"],
     stdout: "null",
     stderr: "null",
   }).output();

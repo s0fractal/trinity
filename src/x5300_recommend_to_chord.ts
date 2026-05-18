@@ -8,7 +8,7 @@
 
 import { ensureDir } from "https://deno.land/std@0.224.0/fs/ensure_dir.ts";
 import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
-import { sha256Hex } from "../lib/canon/hash.ts";
+import { sha256Hex } from "./x4010_hash.ts";
 
 /**
  * recommend_to_chord

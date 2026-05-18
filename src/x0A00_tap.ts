@@ -25,8 +25,8 @@
 // This is the side-effect primitive for composition.
 // It lets you observe without changing the data flow.
 
-import { resolveWord } from "../lib/glossary.ts";
-import { runStep } from "../lib/runner.ts";
+import { resolveWord } from "./x0011_glossary_parser.ts";
+import { runStep } from "./x5010_dispatch_runner.ts";
 
 function isError(result: any): boolean {
   if (!result || typeof result !== "object") return true;

@@ -8,7 +8,7 @@
  * Exit code 0 = all vectors pass; 1 = any drift.
  */
 
-import { fqdnPrefix, sha256Hex } from "./hash.ts";
+import { fqdnPrefix, sha256Hex } from "./x4010_hash.ts";
 
 interface Vector {
   name: string;
@@ -23,7 +23,7 @@ interface VectorFile {
   vectors: Vector[];
 }
 
-const VECTOR_PATH = new URL("../../fixtures/canon-vectors.json", import.meta.url);
+const VECTOR_PATH = new URL("../fixtures/canon-vectors.json", import.meta.url);
 
 const text = await Deno.readTextFile(VECTOR_PATH);
 const file = JSON.parse(text) as VectorFile;

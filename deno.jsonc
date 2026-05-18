@@ -1,10 +1,10 @@
 {
   "tasks": {
     "status": "deno run -A src/x0100_dispatch.ts status",
-    "audit:green": "deno run -A scripts/run_baseline.ts --green",
-    "audit:strict": "deno run -A scripts/run_baseline.ts --strict",
-    "fixture:phi": "deno run -A scripts/phi_roundtrip.ts",
-    "fixture:phi:ingest-myc": "deno run -A scripts/phi_roundtrip.ts --ingest-myc",
+    "audit:green": "deno run -A src/x6500_run_baseline.ts --green",
+    "audit:strict": "deno run -A src/x6500_run_baseline.ts --strict",
+    "fixture:phi": "deno run -A src/x6420_phi_roundtrip.ts",
+    "fixture:phi:ingest-myc": "deno run -A src/x6420_phi_roundtrip.ts --ingest-myc",
     "submodules:status": "git submodule foreach 'git status --short --branch'",
     "submodules:update": "git submodule update --init --recursive",
     "check:myc": "cd myc && deno task check",
@@ -26,7 +26,7 @@
     "validate:schemas:tracked": "deno run -A tools/validate_schemas.ts --tracked-only",
     "validate:schemas:tracked:strict": "deno run -A tools/validate_schemas.ts --tracked-only --strict",
     "cognition:cycle": "deno task cognition:snapshot && deno task cognition:delta && deno task cognition:recommend && deno task cognition:recommend-receipt && deno task cognition:recommend-to-chord && deno task cognition:field",
-    "canon:verify": "deno run -A lib/canon/verify_vectors.ts",
+    "canon:verify": "deno run -A src/x6410_verify_vectors.ts",
     "chord:play": "deno run -A tools/chord_play.ts",
     "chord:block": "deno run --allow-net src/x4001_chord.ts block",
     "chord:init": "deno run --allow-net src/x4001_chord.ts init",

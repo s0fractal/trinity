@@ -1,18 +1,13 @@
-// lib/glossary.ts — shared glossary parser
-// Hex substrate infrastructure: NOT an executable.
-// Centralizes 00.ndjson access so executables don't duplicate
-// the same line-by-line parse loop in every file.
-//
-// Design note: This is a deliberate exception to "no imports between
-// executables" — lib/ is infrastructure, not substrate. Executables
-// may import it to avoid ~200 lines of duplication.
+// src/x0011_glossary_parser.ts — shared glossary parser
+// Coordinate 0011 = void/primitives → singular → singular → void (primitive of identity registry).
+// Centralizes glossary access so organs don't duplicate the line-by-line parse loop.
+// Importable from any organ; the convention "no imports between executables" was retired
+// when all infrastructure moved into src/ with explicit coordinates.
 
 import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
 
 function getGlossaryPath(): string {
-  // lib/glossary.ts is at lib/glossary.ts; glossary now lives at src/x0001_glossary.ndjson
-  // after the 2026-05-18 flat-src migration.
-  return join(dirname(fromFileUrl(import.meta.url)), "..", "src", "x0001_glossary.ndjson");
+  return join(dirname(fromFileUrl(import.meta.url)), "x0001_glossary.ndjson");
 }
 
 export interface WordRecord {

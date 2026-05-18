@@ -22,8 +22,8 @@
 //
 // Returns unified receipt with all results preserved.
 
-import { resolveWord } from "../lib/glossary.ts";
-import { runStep } from "../lib/runner.ts";
+import { resolveWord } from "./x0011_glossary_parser.ts";
+import { runStep } from "./x5010_dispatch_runner.ts";
 
 if (import.meta.main) {
   const steps = Deno.args;

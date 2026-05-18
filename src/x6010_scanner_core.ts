@@ -1,7 +1,7 @@
 import { walk } from "https://deno.land/std@0.224.0/fs/walk.ts";
 import { join } from "https://deno.land/std@0.224.0/path/join.ts";
 import { parse as parseYaml } from "https://deno.land/std@0.224.0/yaml/mod.ts";
-import { fqdnPrefix as calculateFqdnHash } from "../lib/canon/hash.ts";
+import { fqdnPrefix as calculateFqdnHash } from "./x4010_hash.ts";
 
 export const REPOS = ["myc", "liquid", "omega", "trinity"];
 

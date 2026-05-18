@@ -6,7 +6,7 @@
 //
 // cognition_recommend_receipt.ts — convert recommend output to a receipt
 
-import { sha256Hex } from "../lib/canon/hash.ts";
+import { sha256Hex } from "./x4010_hash.ts";
 
 /**
  * cognition_recommend_receipt

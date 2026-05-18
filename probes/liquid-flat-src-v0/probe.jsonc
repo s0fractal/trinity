@@ -1,0 +1,6 @@
+{
+  "tasks": {
+    "check": "deno check src/xA502_spore_apply_backend.ts",
+    "check:mod": "deno check src/xA500_mod.ts"
+  }
+}

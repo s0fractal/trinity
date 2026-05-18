@@ -39,6 +39,7 @@
 // Glossary words: capabilities, affordances, can-do, спроможності, що-можу
 
 import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { positionToPath } from "../lib/runner.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
@@ -152,15 +153,6 @@ function parseDipole(raw: string): Array<{ axis: number; name: string; value: nu
     out.push({ axis: i, name: DIPOLE_AXES[i], value: i8 });
   }
   return out;
-}
-
-function positionToPath(pos: string): string {
-  const parts = pos.split("/");
-  if (parts.length < 2) return "";
-  const top = `0x${parts[0]}`;
-  const mid = parts.slice(1, -1);
-  const file = parts[parts.length - 1] + ".ts";
-  return join(ROOT, top, ...mid, file);
 }
 
 async function fileExists(p: string): Promise<boolean> {

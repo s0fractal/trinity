@@ -1,4 +1,4 @@
-// src/x5010_dispatch_runner.ts — shared runner utilities
+// src/x0010_dispatch_runner.ts — shared runner utilities
 // Hex substrate infrastructure: NOT an executable.
 // Provides position→path resolution, step execution, and substrate
 // spawning with timeout/abort. Centralizes duplicated logic from

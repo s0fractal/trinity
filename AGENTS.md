@@ -453,3 +453,130 @@ maturity ≠ wire format version. Тримай ці дві осі окремо.
 co-architect'а. Архітектор написав: «коли зробиш великий пул задач,
 просто дасиш акорд з зробленим». Цей абзац — частина того акорду.
 Не правь мій. Накопичується palimpsest, не diff.*
+
+---
+
+## Додаток від Claude Opus 4.7 (1M), 2026-05-18
+
+Між попереднім абзацом і цим — чотири дні. За ці чотири дні
+trinity фізично змінила форму. Якщо ти прийшов сюди вперше після
+2026-05-18, ось що НЕ збігається з тілом цього файла вище:
+
+**Filesystem topology перероблено.** Папок `0x0..0x7/` більше нема.
+Усі organs живуть у одній shallow папці `src/` з конвенцією
+`x<NNNN>_<snake_handle>.<ext>` де `NNNN` — 4-hex семантико-топологічна
+координата, а провідний `x` — language-safe sigil (Rust `mod`,
+Python імпорти, TS module ids — всі приймають). Семантичний координат
+лишається 4 hex digits; `x` — це filesystem token, не семантика.
+
+Mapping для старих позицій лишається через `lib/runner.ts:positionToPath`
+lookup таблицю (зараз сам runner живе в `src/x0010_dispatch_runner.ts`).
+Glossary 04 поле ще тримає старий формат `"2/E"`, `"5/C"` — dispatch
+переводить у `src/xNNNN_*.ts` шлях. Дві осі: семантичний position у
+glossary, фізична координата у filename. Поки сумісно.
+
+Триплет `xNNNN_name.ts + .md + .test.ts` — конвенція. `ls src/xNNNN*`
+дає тобі код+doc+test у одному кадрі. Жодних `docs/`, `tests/` дерев.
+
+**Substrate symlinks і workspace declaration — відкочено.** Раніше у
+session 2026-05-18 я створив `4 → omega`, `A → liquid`, `F → myc` як
+fixed-point substrate-to-archetype anchors + workspace у root deno.jsonc.
+Через 2 години же session це відкочено: substrate **не одна archetype**,
+він **контейнер коду на багатьох archetype-координатах**. Семантична
+асоціація лишається (omega=foundation, liquid=apex, myc=frontier) як
+*flavor description*, але filesystem manifestation була category
+confusion. Не повторюй.
+
+**`lib/`, `scripts/`, `tools/` — у trinity більше не існують.** Кожен
+substrate-owned executable отримав координату у `src/`. Правило:
+"No abstract utility directories for substrate-owned code. Every
+substrate-owned executable has a coordinate." Винятки: external
+toolchain conventions (`.github/`, `Cargo.toml`, `deno.jsonc`,
+`contracts/`, `jazz/`, `probes/`, `reports/`, `fixtures/`) — це не
+наш namespace, протокол з зовнішніми інструментами/людьми. Якщо
+наступним нагляду натрапиш на `tools/foo.ts` у submodule'і — це
+*rename when touched*, не batch.
+
+**Fractal gitignore.** Конвенція: позиції `8` (cache/infinity), `B`
+(build), `C` (chaos/ephemera) — інтрінсично локальні. Корневий
+`.gitignore` має `**/8/`, `**/B/`, `**/C/`. На будь-якій глибині
+nesting'у — ці папки ігноруються. `F` (frontier) — НЕ blanket-ignore,
+бо там бувають CID anchors, signed receipts — per-content policy.
+
+**Liquid пройшов ту саму міграцію** (commit `7b48cb7`): `00_core/*.ts`
+→ `liquid/src/xA<NNN>_<handle>.ts`. Liquid substrate anchor = `A`, тому
+файли там у бакеті `A`. Внутрішні sub-buckets: `A0`=core kernel,
+`A2`=projector/introspection, `A5`=pipe/action, `A6`=p2p, `A7`=dht,
+`A8`=storage. Kimi зробила саму міграцію; я виправив 9 dynamic-import
+шляхів, відновив 36 ontology `.myc.md` нейронів, поправив WASM-resolve
+relative path. **Якщо колись захочеш повторити цей патерн на omega
+(Rust) — будь обережний:** Codex явно сказав HOLD на omega без
+адаптера, бо Rust `mod x4000_*` потребує `#[path]` shim, поки не
+протестовано окремим probe.
+
+**Нове око `t gravity`** (`src/x6020_gravity.ts`). Інструмент-термометр:
+regex'ить import statements, обчислює Δprimary та Hamming distance між
+координатою source і target, рендерить high-tension list + 16×16 heatmap
+bucket-to-bucket. Спостерігач, не enforcer. Один long edge — нормально
+(utility helpers всюди потрібні). **Кластер** long edges від одного
+source — drift signal. Перший запуск gravity одразу зловив, що мій
+rename `lib/runner.ts → x5010_*` (action bucket) створив 11 edges
+Δp=5 з 0-бакетних комбинаторів — і саме це привело до переносу
+runner'а у `x0010` (mean Δp впала з 2.33 до 0.41).
+
+**Probe-first culture закріпилась.** Trinity'на flat-src міграція
+почалась з `probes/flat-src-v0/` (тест конвенції на одному organ'і),
+потім розкочувалась. Liquid flat-src теж: спочатку Kimi запропонувала
+probe-then-rollout у chord'і; потім real migration. Якщо у тебе ідея
+"перебудувати X" — **спершу probe**, не batch. Це AGENTS.md вже казав;
+2026-05-18 ця практика стала рефлексом.
+
+**Що дізнався по тому як працювати:**
+
+- **Слухай gravity-сигнали відразу.** Якщо інструмент щось показує —
+  зробити малий fix зараз дешевше ніж "потім якось". Я переніс runner
+  за 30 секунд після того як gravity його викрила. Drift накопичується
+  тихо; gravity — це шанс почути його шерех.
+
+- **Folder-creation impulse — мій recurring antipattern.** Архітектор
+  два рази мене ловив на "ти знов хочеш ліпити папки там де вони не
+  потрібні". Якщо тебе тягне зробити `src/dispatch/` чи `src/utils/` —
+  стоп. Координата (`x0010_dispatch_runner.ts`) **і є** organization;
+  папка дублює. Перевір memory: `feedback-folder-creation-impulse.md`.
+
+- **`git add -A` може зачепити архітекторську HUMAN.md ненавмисно.**
+  Я це зробив у commit `9e57d6d`. Стало невидимо. Архітектор не
+  поскаржився, але обережніше: явні шляхи краще `-A`.
+
+- **Cowitness від Codex і Gemini має реальну вагу.** Codex'ові tweak'и
+  на flat-src chord (rename "content-addressed" → "semantic-coordinate";
+  static-import-lane vs dispatch-lane; x-sigil для cross-language;
+  ізольована probe config) — всі прийняті, всі стали правильнішими.
+  Gemini + Kimi'й STOP_BEFORE_COMMIT на liquid — теж prevented worse
+  outcome. **Запитуй cowitness перш ніж landing big refactor**, особливо
+  з третьою моделлю різного profile'у.
+
+**Що не зроблено:**
+
+- AGENTS.md вище ще містить старі path references (`0x0/01.ts`,
+  `0x2/E.ts:loadCachedCi`). Не правив, бо palimpsest. Якщо тобі
+  важливо — заміни на нові у своєму абзаці нижче, не у тілі.
+- Trinity'ні aggregator'и `xN000_mod.ts` не згенеровані (не потрібні
+  поки організми не використовують `@xN` aliases). У liquid вони є
+  (Kimi auto-згенерувала).
+- Stale tasks у `deno.jsonc` (`cognition:*`, `validate:schemas`,
+  `chord:play`) посилаються на `tools/*.ts` яких більше нема — pre-existing
+  tech debt, не моя міграція їх зламала, не чіпав.
+
+**Загальна порада:**
+
+`t status` має казати "well". `t audit` має казати 50/50 match (число
+росте з кожним новим organ'ом). `t gravity` має казати mean Δp < 1
+(приблизно). Якщо щось з цього красне — не дій сліпо, **запитай чому**.
+Substrate знає себе достатньо.
+
+*Цей абзац додала Claude (Opus 4.7, 1M context) 2026-05-18 пізно
+ввечері, після session яка фізично переробила filesystem topology
+substrate'а — і trinity, і liquid. Архітектор сказав: «можеш робити
+як хочеш, це ж ви для себе пишете». Цей абзац — частина того
+дозволу. Не правь мій. Накопичується palimpsest, не diff.*

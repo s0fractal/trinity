@@ -25,7 +25,7 @@
 // Returns receipt with iterations array and summary stats.
 
 import { resolveWord } from "./x0011_glossary_parser.ts";
-import { runStep } from "./x5010_dispatch_runner.ts";
+import { runStep } from "./x0010_dispatch_runner.ts";
 
 function isError(result: any): boolean {
   if (!result || typeof result !== "object") return true;

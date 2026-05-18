@@ -39,7 +39,7 @@
 // Glossary words: capabilities, affordances, can-do, спроможності, що-можу
 
 import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
-import { positionToPath } from "./x5010_dispatch_runner.ts";
+import { positionToPath } from "./x0010_dispatch_runner.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);

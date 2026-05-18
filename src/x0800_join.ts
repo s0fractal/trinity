@@ -23,7 +23,7 @@
 // Returns unified receipt with all results preserved.
 
 import { resolveWord } from "./x0011_glossary_parser.ts";
-import { runStep } from "./x5010_dispatch_runner.ts";
+import { runStep } from "./x0010_dispatch_runner.ts";
 
 if (import.meta.main) {
   const steps = Deno.args;

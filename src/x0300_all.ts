@@ -28,7 +28,7 @@
 // Does NOT hardcode substrate commands — reads from glossary type:06.
 
 import { resolveWord, loadSubstrateMappings } from "./x0011_glossary_parser.ts";
-import { runSubstrate, type SubstrateResult } from "./x5010_dispatch_runner.ts";
+import { runSubstrate, type SubstrateResult } from "./x0010_dispatch_runner.ts";
 
 const TIMEOUT_MS = 60000;
 

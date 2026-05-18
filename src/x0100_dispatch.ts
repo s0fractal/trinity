@@ -21,7 +21,7 @@
 //   2. multilingual search (record's 10 field, '/' delimited per language)
 
 import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
-import { positionToPath as libPositionToPath } from "./x5010_dispatch_runner.ts";
+import { positionToPath as libPositionToPath } from "./x0010_dispatch_runner.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const SUBSTRATE_ROOT = dirname(HERE);

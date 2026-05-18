@@ -13,3 +13,9 @@ public-candidates/myc/process.ndjson
 # Python bytecode (probes/receipt-envelope-encoder-v0/python/)
 __pycache__/
 *.pyc
+
+# Fractal local-only archetypes: 8 (cache/recurrence), B (build), C (chaos/ephemera).
+# These positions are intrinsically local at any nesting depth.
+**/8/
+**/B/
+**/C/

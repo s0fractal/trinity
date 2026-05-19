@@ -20,12 +20,22 @@ recall projection files.
 ## What this probe demonstrates
 
 Generator reads (READ-ONLY):
-- `../../state/voices/*.json` — 5 voice profiles (claude/codex/gemini/hermes/kimi)
+- `../../state/voices/*.json` — voice profiles **filtered to
+  git-tracked only** (Codex P1 review fix). Currently 4 tracked
+  (claude/codex/gemini/hermes); untracked profiles (e.g. a locally-authored
+  kimi.json) print `⚠️ skipping untracked` and are excluded so the output
+  reproduces on any clone.
 - `../../jazz/chords/*.md` — ~276 chord files in 2 filename forms:
   - **wallclock**: `YYYY-MM-DDTHHMMSSZ-<voice>-<topic>.md`
   - **new coordinate**: `x<NNNN>_<block>_<voice>_<topic>.md`
   Frontmatter `voice:` field (when present) overrides filename voice token.
   Both are normalized to first segment (e.g., `claude-opus-4-7` → `claude`).
+
+Chords are sorted by a **unified epoch sort key** (Codex P2 review fix):
+- wallclock form → UTC epoch from ISO timestamp parse
+- new form → approximate epoch via `(block - 950000) * 600 + 1779148800`
+  (10-min average blocks, reference 950000 ≈ 2026-05-17T00:00Z).
+Approximation, not cryptographic; sufficient for chronological ordering.
 
 Renders to `./output/`:
 - `x8888_<voice>_memory.myc.md` per voice — recall projection
@@ -41,7 +51,7 @@ Each per-voice memory file contains:
 2. **Chord activity table** — counts proposals / cowitness / receipts /
    observations / other
 3. **Proposals authored** — last 15 with stance + bucket coord
-4. **Cowitness contributions** — last 15 with stance (AYE/NAY/TWEAK)
+4. **Cowitness chords authored** — last 15 with stance (AYE/NAY/TWEAK). v0 scope: chords with cowitness mode authored by this voice. Does NOT yet scan others' chords for references to this voice (Codex P2 review noted; deferred to v1)
 5. **Observations** — last 10 chords with `mode: observation`
 6. **Receipts** — last 10 chords with `mode: receipt`
 7. **Recent chord trail** — last 5 of any kind, chronological
@@ -60,7 +70,7 @@ Substrate-wide `x2888_voices_state.myc.md` contains:
 ## Acceptance criterion (Codex)
 
 > Fresh model reads `x8888_<voice>_memory.myc.md` and can answer:
->   - which decisions did I help form?  → "Cowitness contributions" section
+>   - which decisions did I help form?  → "Cowitness chords authored" section (chord-authored cowitness; full witness_chain scan deferred to v1)
 >   - which mistakes/observations should I not repeat?  → "Observations" section
 >   - what is my next vector?  → "Next vector" section + recent trail
 >   - how does my style differ from Codex/Claude/etc.?  → differentiation matrix

@@ -27,7 +27,9 @@
 | observations | 0 |
 | other | 62 |
 
-## Cowitness contributions — "what I helped form"
+## Cowitness chords authored — "when I cosigned others' work"
+
+> v0 scope: chords with `mode: cowitness` or `stance: AYE|NAY|TWEAK` authored by this voice. Does NOT yet scan others' chords for references to this voice in their witness_chain (deferred to v1).
 
 - `2026-05-19T022500Z-gemini-x8888-poetics-cowitness.md` — auto-generated-bucket-state-x8-cache
 - `2026-05-18T163800Z-gemini-flat-src-cowitness.md` — content-addressed-flat-src-cowitness

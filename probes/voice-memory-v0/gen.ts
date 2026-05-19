@@ -53,15 +53,47 @@ const FRONTMATTER_RE = /^---\r?\n([\s\S]*?)\r?\n---/;
 
 interface Chord {
   filename: string;
-  ts: string;           // wallclock OR block-height; for sorting
-  voice: string;        // from filename or frontmatter
+  ts: string;           // raw filename ts (block-height string OR wallclock)
+  sort_key: number;     // unified epoch-seconds chronological sort (Codex P2 fix)
+  voice: string;
   topic: string;
   mode: string | null;
-  stance: string | null; // PROPOSE / AYE / NAY / TWEAK / RECEIPT / etc.
-  bucket_coord: string | null; // xNNNN if new form
+  stance: string | null;
+  bucket_coord: string | null;
   block_height: number | null;
   source_hash: string;
   source_size: number;
+}
+
+// Approximate Bitcoin block → UTC epoch. 10 min/block, reference
+// block 950000 ≈ 2026-05-17T00:00:00Z. Approximation, not cryptographic.
+const REFERENCE_BLOCK = 950000;
+const REFERENCE_EPOCH_SEC = 1779148800;
+function blockHeightToEpoch(block: number): number {
+  return REFERENCE_EPOCH_SEC + (block - REFERENCE_BLOCK) * 600;
+}
+
+function wallclockToEpoch(ts: string): number {
+  const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2})(\d{2})(\d{2})Z$/.exec(ts);
+  if (!m) return 0;
+  const [, y, mo, d, h, mi, s] = m;
+  return Math.floor(Date.UTC(+y, +mo - 1, +d, +h, +mi, +s) / 1000);
+}
+
+/** Return set of paths git tracks under a given subdir, relative to trinity root. */
+async function gitTrackedSet(subdir: string): Promise<Set<string>> {
+  try {
+    const proc = new Deno.Command("git", {
+      args: ["-C", TRINITY_ROOT, "ls-files", subdir],
+      stdout: "piped",
+      stderr: "piped",
+    });
+    const out = await proc.output();
+    if (out.code !== 0) return new Set();
+    return new Set(new TextDecoder().decode(out.stdout).trim().split("\n").filter(Boolean));
+  } catch {
+    return new Set();
+  }
 }
 
 interface VoiceProfile {
@@ -100,9 +132,18 @@ async function sha256Hex(bytes: Uint8Array): Promise<string> {
 }
 
 async function loadVoices(): Promise<VoiceProfile[]> {
+  // Only include voices tracked by git (Codex P1 fix: untracked voice
+  // profiles like a locally-authored kimi.json would otherwise leak into
+  // a "reproducible" output that other machines can't recreate).
+  const tracked = await gitTrackedSet("state/voices");
   const out: VoiceProfile[] = [];
   for await (const entry of Deno.readDir(VOICES_DIR)) {
     if (!entry.isFile || !entry.name.endsWith(".json")) continue;
+    const relPath = `state/voices/${entry.name}`;
+    if (!tracked.has(relPath)) {
+      console.warn(`  ⚠️  skipping untracked voice profile ${relPath} (not in git ls-files); add to repo to include in generated memory`);
+      continue;
+    }
     const path = join(VOICES_DIR, entry.name);
     const bytes = await Deno.readFile(path);
     const text = new TextDecoder().decode(bytes);
@@ -150,6 +191,7 @@ async function loadChords(): Promise<Chord[]> {
     let bucket_coord: string | null = null;
     let block_height: number | null = null;
     let ts = "";
+    let sort_key = 0;
 
     // Try new form first
     const newM = NEW_FORM.exec(entry.name);
@@ -157,12 +199,14 @@ async function loadChords(): Promise<Chord[]> {
       bucket_coord = newM[1].toUpperCase();
       block_height = parseInt(newM[2], 10);
       voice = newM[3].toLowerCase();
-      ts = newM[2]; // block height as string for sort
+      ts = newM[2];
+      sort_key = blockHeightToEpoch(block_height);
     } else {
       const oldM = OLD_FORM.exec(entry.name);
       if (oldM) {
         ts = oldM[1];
         voice = oldM[2].toLowerCase();
+        sort_key = wallclockToEpoch(ts);
       } else {
         continue; // unparseable
       }
@@ -190,6 +234,7 @@ async function loadChords(): Promise<Chord[]> {
     out.push({
       filename: entry.name,
       ts,
+      sort_key,
       voice,
       topic,
       mode,
@@ -200,7 +245,7 @@ async function loadChords(): Promise<Chord[]> {
       source_size: bytes.length,
     });
   }
-  return out.sort((a, b) => a.ts.localeCompare(b.ts));
+  return out.sort((a, b) => a.sort_key - b.sort_key);
 }
 
 interface SourceFile { path: string; hash: string; size: number; }
@@ -300,9 +345,14 @@ function renderVoiceMemory(
     lines.push(``);
   }
 
-  // Cowitness contributions
+  // Cowitness chords authored — narrowed scope per Codex P2 review.
+  // This is chords AUTHORED by this voice with cowitness mode/stance, NOT
+  // a full scan of references/witness_chain across all chords (where this
+  // voice may appear as cosigner). Full scan deferred to v1.
   if (cowitness.length > 0) {
-    lines.push(`## Cowitness contributions — "what I helped form"`);
+    lines.push(`## Cowitness chords authored — "when I cosigned others' work"`);
+    lines.push(``);
+    lines.push(`> v0 scope: chords with \`mode: cowitness\` or \`stance: AYE|NAY|TWEAK\` authored by this voice. Does NOT yet scan others' chords for references to this voice in their witness_chain (deferred to v1).`);
     lines.push(``);
     for (const c of cowitness.slice(-15).reverse()) {
       const stance = c.stance ? ` [${c.stance}]` : "";

@@ -9,7 +9,7 @@
 import { parse as parseYaml } from "https://deno.land/std@0.224.0/yaml/mod.ts";
 import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { ensureDir } from "https://deno.land/std@0.224.0/fs/ensure_dir.ts";
-import { REPOS, scanEcosystem, type ThoughtPhase } from "./x6010_scanner_core.ts";
+import { REPOS, scanEcosystem, type ThoughtPhase } from "./x0020_scanner_core.ts";
 
 const REC_PATH = "reports/cognition/recommendation.latest.json";
 const OUT_JSON = "reports/cognition/field.latest.json";

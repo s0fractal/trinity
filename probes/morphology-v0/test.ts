@@ -137,7 +137,7 @@ const policyCases: Array<{ source: string; target: string; expected: "allow" | "
   { source: "7", target: "5", expected: "deny" }, // sealed cannot depend on action
   { source: "5", target: "8", expected: "warn" }, // action reading cache: warn pattern
   { source: "6", target: "5", expected: "allow" }, // audit → action: ok
-  { source: "0", target: "4", expected: "deny" }, // primitive does NOT depend on foundation (foundation depends on primitives, not vice versa)
+  { source: "0", target: "4", expected: "allow" }, // primitive MAY use foundation utilities (canonical hash, schemas) per refined policy 2026-05-19
 ];
 
 for (const c of policyCases) {

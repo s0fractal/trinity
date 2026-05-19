@@ -5,7 +5,7 @@
 // placement_policy: axis
 //
 // cognition_snapshot.ts — capture cognitive state
-import { REPOS, scanEcosystem } from "./x6010_scanner_core.ts";
+import { REPOS, scanEcosystem } from "./x0020_scanner_core.ts";
 import { ensureDir } from "https://deno.land/std@0.224.0/fs/ensure_dir.ts";
 import { dirname } from "https://deno.land/std@0.224.0/path/mod.ts";
 

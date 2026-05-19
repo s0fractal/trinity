@@ -63,11 +63,24 @@ export interface FullHashCheck {
 
 const FULL_HASH_RE = /^---\r?\n([\s\S]*?)\r?\n---\r?\n/;
 const HASH_FIELD_RE = /^(content_hash|envelope_hash|sha256):\s*([0-9a-fA-F]{32,})/m;
+// Strip the declared hash field from content before re-hashing to avoid
+// the circular self-reference. Replaces "<key>: <hex>" with empty content
+// while preserving the line so other byte-offset-dependent invariants
+// (rare) remain stable; the line content itself becomes a fixed marker.
+const HASH_FIELD_STRIP_RE = /^(content_hash|envelope_hash|sha256):\s*[0-9a-fA-F]{32,}\s*$/m;
+
+function canonicalizeForHash(content: string): string {
+  // Replace the declared hash field with a fixed placeholder so the
+  // content hashes to a deterministic value regardless of what hash was
+  // claimed. The placeholder preserves the field name to keep the YAML
+  // structurally valid for parsing.
+  return content.replace(HASH_FIELD_STRIP_RE, (_match, field) => `${field}: <stripped-for-hash>`);
+}
 
 export async function checkFullHash(filename: string, content: string): Promise<FullHashCheck> {
-  const actual_hash = await sha256Hex(content);
   const fm = FULL_HASH_RE.exec(content);
   if (!fm) {
+    const actual_hash = await sha256Hex(content);
     return {
       filename,
       declared_hash: null,
@@ -78,6 +91,7 @@ export async function checkFullHash(filename: string, content: string): Promise<
   }
   const declared = HASH_FIELD_RE.exec(fm[1]);
   if (!declared) {
+    const actual_hash = await sha256Hex(content);
     return {
       filename,
       declared_hash: null,
@@ -86,20 +100,24 @@ export async function checkFullHash(filename: string, content: string): Promise<
       note: "frontmatter has no content_hash/envelope_hash/sha256 field",
     };
   }
-  // Note: when content includes its own hash, computing hash naively
-  // gives circular dependency. Real impl would canonicalize (strip
-  // declared_hash field before hashing). For probe v0 we accept that
-  // bare content hash in frontmatter is illustrative, not load-bearing.
+  // Canonicalize content for hashing by stripping the declared hash field.
+  // This avoids the circular self-reference (where the file contains the
+  // hash of itself, so naive recomputation can never match).
+  const canonical = canonicalizeForHash(content);
+  const actual_hash = await sha256Hex(canonical);
   const declaredHash = declared[2].toLowerCase();
+  const exactMatch = declaredHash === actual_hash;
+  const prefixMatch = declaredHash.length < actual_hash.length &&
+    actual_hash.startsWith(declaredHash);
   return {
     filename,
     declared_hash: declaredHash,
     actual_hash,
-    match: declaredHash === actual_hash || declaredHash === actual_hash.slice(0, declaredHash.length),
-    note: declaredHash === actual_hash
-      ? "ok (exact)"
-      : declaredHash === actual_hash.slice(0, declaredHash.length)
-      ? "ok (prefix match)"
-      : `drift: declared ${declaredHash.slice(0, 16)}..., actual ${actual_hash.slice(0, 16)}...`,
+    match: exactMatch || prefixMatch,
+    note: exactMatch
+      ? "ok (exact, canonicalized)"
+      : prefixMatch
+      ? "ok (declared is prefix of canonical hash)"
+      : `drift: declared ${declaredHash.slice(0, 16)}..., actual (canonicalized) ${actual_hash.slice(0, 16)}...`,
   };
 }

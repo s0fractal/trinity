@@ -6,7 +6,7 @@
 //
 // cognition_recommend.ts — suggest recommendations
 
-import { REPOS, scanEcosystem, type ThoughtPhase } from "./x6010_scanner_core.ts";
+import { REPOS, scanEcosystem, type ThoughtPhase } from "./x0020_scanner_core.ts";
 type RepoName = typeof REPOS[number];
 
 interface RepoSignal {
@@ -323,7 +323,7 @@ async function main() {
     version: "0.1",
     timestamp,
     basis: {
-      scanner: "src/x6010_scanner_core.ts",
+      scanner: "src/x0020_scanner_core.ts",
       contract: "contracts/COGNITIVE_RECOMMENDATION.v0.1.md",
       git_status: "observed",
     },

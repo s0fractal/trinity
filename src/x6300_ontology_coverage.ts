@@ -6,7 +6,7 @@
 //
 // ontology_coverage.ts — evaluate coverage of ontology nodes
 
-import { REPOS, scanEcosystem } from "./x6010_scanner_core.ts";
+import { REPOS, scanEcosystem } from "./x0020_scanner_core.ts";
 
 async function main() {
   const cwd = Deno.cwd();

@@ -75,22 +75,38 @@ intent: ...
   break under coordinate FQDN. Out of scope for this probe; would need
   LegacyPathResolver per Kimi's 2026-05-18 concern.
 
+## Fixtures
+
+Two samples deliberately preserved post Codex review 2026-05-19:
+
+- `sample/xA000_mined_test.myc.md` — already mined (nonce 895, hash[:3]=000).
+  Verify reports `✓ match`.
+- `sample/xA000_unmined_test.myc.md` — intentionally unmined (nonce 0,
+  hash[:3] something else). Verify reports `✗ drift`.
+
+Earlier probe had a single fixture; running `mine` against it left the
+verify-drift demonstration silently misleading. Two-fixture pair makes
+each state demonstrable without mutating shared state.
+
 ## Workflow
 
 ```sh
 cd probes/blake3-fqdn-v0
 
-# 1. Inspect drift
-deno task --config=probe.jsonc verify sample/xA000_unmined_test.myc.md
-# → ✗ drift: filename claims 000, content hashes to B9D
+# 1. Inspect both fixtures
+deno task --config=probe.jsonc verify sample/xA000_mined_test.myc.md sample/xA000_unmined_test.myc.md
+# → ✓ xA000_mined_test.myc.md   filename:000  content:000  — ok
+# → ✗ xA000_unmined_test.myc.md filename:000  content:502  — drift
 
-# 2. Mine to match
+# 2. Mine the unmined one
 deno task --config=probe.jsonc mine sample/xA000_unmined_test.myc.md
-# → mined nonce: 9232 (attempts: 9233, final prefix: 000)
+# → mined nonce: X (writes nonce into the file's frontmatter)
 
 # 3. Re-verify
 deno task --config=probe.jsonc verify sample/xA000_unmined_test.myc.md
 # → ✓ ok
+
+# 4. To re-demonstrate drift: reset mining_nonce in unmined fixture back to 0
 ```
 
 ## Tweaks landed in this probe
@@ -139,7 +155,6 @@ deno task --config=probe.jsonc verify sample/xA000_unmined_test.myc.md
 
 ## Sample state
 
-The single sample neuron `sample/xA000_unmined_test.myc.md` has been
-**mined** during probe construction (nonce 9232). To re-demonstrate the
-drift→mine workflow, reset `mining_nonce: 9232` back to `mining_nonce: 0`
-and re-run the steps above.
+`xA000_mined_test.myc.md` has been mined (nonce 895). `xA000_unmined_test.myc.md`
+is held at nonce 0 so verify always reports drift against it. Two-fixture
+pair lets each state be observed without state mutation.

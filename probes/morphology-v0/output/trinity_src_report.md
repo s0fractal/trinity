@@ -7,12 +7,12 @@ Scanned: 59 files (filtered to morphology-shaped names only).
 
 | archetype | files |
 |-----------|-------|
-| 0 | 16 |
+| 0 | 17 |
 | 2 | 8 |
 | 3 | 3 |
 | 4 | 7 |
 | 5 | 10 |
-| 6 | 10 |
+| 6 | 9 |
 | 7 | 5 |
 
 ## lane distribution
@@ -35,6 +35,7 @@ Scanned: 59 files (filtered to morphology-shaped names only).
 | 0001 | 0 | unknown | authored | x0001_glossary.ndjson | n/a |
 | 0010 | 0 | organ | authored | x0010_dispatch_runner.ts | n/a |
 | 0011 | 0 | organ | authored | x0011_glossary_parser.ts | n/a |
+| 0020 | 0 | organ | authored | x0020_scanner_core.ts | n/a |
 | 0100 | 0 | organ | authored | x0100_dispatch.ts | n/a |
 | 0200 | 0 | unknown | authored | x0200_shim.sh | n/a |
 | 0300 | 0 | organ | authored | x0300_all.ts | n/a |
@@ -76,7 +77,6 @@ Scanned: 59 files (filtered to morphology-shaped names only).
 | 5D00 | 5 | organ | authored | x5D00_apply_codeicide.ts | n/a |
 | 5E00 | 5 | organ | authored | x5E00_cognition_recommend_receipt.ts | n/a |
 | 5F00 | 5 | organ | authored | x5F00_apply.ts | n/a |
-| 6010 | 6 | organ | authored | x6010_scanner_core.ts | n/a |
 | 6020 | 6 | organ | authored | x6020_gravity.ts | n/a |
 | 6300 | 6 | organ | authored | x6300_ontology_coverage.ts | n/a |
 | 6410 | 6 | organ | authored | x6410_verify_vectors.ts | n/a |
@@ -92,9 +92,14 @@ Scanned: 59 files (filtered to morphology-shaped names only).
 | 7E00 | 7 | organ | authored | x7E00_anchor_prep.ts | n/a |
 | 7F00 | 7 | organ | authored | x7F00_daemon.ts | n/a |
 
-## ⚠️ import-policy violations
+## import-policy violations
 
-| source | target | result | imported | rationale |
-|--------|--------|--------|----------|-----------|
-| x3500_chord_play.ts (x3) | x6 | deny | ./x6010_scanner_core.ts | default deny: archetype 3 has no rule permitting import of 6 |
+> ⚠️ Scanner is probe-v0 regex-only: catches `from "./xNNNN_*.ts"` static imports only.
+> Misses: side-effect imports (`import "./x..."`), dynamic imports (`await import(...)`),
+> re-export forms (`export * from`), aliases via import map, non-`.ts` lanes,
+> and submodule imports. Treat the count as "detected by static-from scanner", not as
+> "complete policy coverage". A real `t audit --policy` mode would need full AST or
+> Deno module graph parsing.
+
+None detected by static-from scanner. (See caveat above — broader scan needed for confidence.)
 

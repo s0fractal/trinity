@@ -371,9 +371,40 @@ async function main(argv: string[]) {
   const source_root = relative(HERE, SRC);
   const receipts = { generated_at, manifest_hash, source_root, source_files: organs.length };
 
+  // Sidecar manifest: emit canonical manifest as JSON for future continuity
+  // proofs (per Codex review 2026-05-19 P3). manifest_hash alone proves
+  // "some manifest existed"; sidecar reveals which per-file hashes that was.
+  const manifestPath = join(OUT, args.bucket ? `x${args.bucket}888_state.manifest.json` : "x8888_agents.manifest.json");
+  const manifestContent = canonicalManifest(organs);
+  await Deno.writeTextFile(manifestPath, manifestContent + "\n");
+  console.log(`[write] ${manifestPath.split("/").pop()} (${organs.length} entries)`);
+  let written = 1;
+
+  // Mode hygiene: each mode owns specific outputs; clean up artifacts
+  // belonging to the OTHER mode so review doesn't confuse stale state
+  // for current (per Codex P3).
+  if (args.bucket) {
+    // Bucket-mode: full-mode artifacts are stale
+    for (const stale of ["x8888_agents.myc.md", "x8888_agents.manifest.json"]) {
+      try {
+        await Deno.remove(join(OUT, stale));
+        console.log(`[remove-stale] ${stale} (bucket-mode does not produce federation index)`);
+      } catch { /* didn't exist */ }
+    }
+  } else {
+    // Full-mode: bucket-mode per-bucket manifests are stale
+    for await (const entry of Deno.readDir(OUT)) {
+      if (!entry.isFile) continue;
+      const m = /^x([0-9A-Fa-f])888_state\.manifest\.json$/.exec(entry.name);
+      if (m) {
+        await Deno.remove(join(OUT, entry.name));
+        console.log(`[remove-stale] ${entry.name} (full-mode supersedes per-bucket manifests)`);
+      }
+    }
+  }
+
   // First pass: render bucket state files, compute their hashes for x8888
   const bucketHashes = new Map<string, string>();
-  let written = 0;
   for (const [bucket, bucketOrgans] of buckets) {
     const path = join(OUT, `x${bucket}888_state.myc.md`);
     const content = renderBucketState(bucket, bucketOrgans, receipts);

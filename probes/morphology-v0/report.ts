@@ -210,9 +210,18 @@ function render(report: Report): string {
   }
   lines.push(``);
 
-  // Policy violations
+  // Policy violations — scanner caveat
+  lines.push(`## import-policy violations`);
+  lines.push(``);
+  lines.push(`> ⚠️ Scanner is probe-v0 regex-only: catches \`from "./xNNNN_*.ts"\` static imports only.`);
+  lines.push(`> Misses: side-effect imports (\`import "./x..."\`), dynamic imports (\`await import(...)\`),`);
+  lines.push(`> re-export forms (\`export * from\`), aliases via import map, non-\`.ts\` lanes,`);
+  lines.push(`> and submodule imports. Treat the count as "detected by static-from scanner", not as`);
+  lines.push(`> "complete policy coverage". A real \`t audit --policy\` mode would need full AST or`);
+  lines.push(`> Deno module graph parsing.`);
+  lines.push(``);
   if (report.violations.length > 0) {
-    lines.push(`## ⚠️ import-policy violations`);
+    lines.push(`Detected (${report.violations.length}):`);
     lines.push(``);
     lines.push(`| source | target | result | imported | rationale |`);
     lines.push(`|--------|--------|--------|----------|-----------|`);
@@ -221,9 +230,7 @@ function render(report: Report): string {
     }
     lines.push(``);
   } else {
-    lines.push(`## import-policy violations`);
-    lines.push(``);
-    lines.push(`None detected. All cross-archetype imports satisfy probe-v0 policy.`);
+    lines.push(`None detected by static-from scanner. (See caveat above — broader scan needed for confidence.)`);
     lines.push(``);
   }
 

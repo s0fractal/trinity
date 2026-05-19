@@ -31,8 +31,13 @@ interface PolicyDecision {
 }
 
 // archetype → set of allowed target archetypes
+// Refined 2026-05-19 based on real trinity scan (Codex review): primitives
+// (x0) MAY depend on foundation utilities (x4) — hash, canonical schemas,
+// etc. — but NOT on action/audit/cache/chaos. Foundation builds on
+// primitives, primitives may use foundation utilities. Symmetric on the
+// "infrastructure" pole, asymmetric on the "operational" pole.
 const ALLOWED: Record<string, Set<string>> = {
-  "0": new Set(["0"]),
+  "0": new Set(["0", "4"]),
   "1": new Set(["0", "1", "4"]),
   "2": new Set(["0", "1", "2", "4", "5", "6"]),
   "3": new Set(["0", "1", "3", "4", "5"]),

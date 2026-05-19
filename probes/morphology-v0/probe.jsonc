@@ -1,0 +1,5 @@
+{
+  "tasks": {
+    "test": "deno run --config=probe.jsonc -A test.ts"
+  }
+}

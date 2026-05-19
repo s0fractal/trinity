@@ -61,6 +61,7 @@ src/
   x6500_run_baseline.ts      # maturity: frozen
   x6C00_audit.ts             # maturity: active, with horizon
   x6F00_audit_planner.ts     # maturity: draft, horizon-heavy
+  x6FFF_typo_demo.ts         # maturity: activ (intentional typo — proves validator works)
 
 output/
   x6888_state.myc.md         # AUTO-GENERATED bucket-6 state
@@ -71,7 +72,42 @@ output/
 
 ```sh
 cd probes/agents-gen-v0
-deno task --config=probe.jsonc gen
+deno task --config=probe.jsonc gen                # all buckets, fresh timestamp
+deno task --config=probe.jsonc gen --stable       # deterministic: omit generated_at
+deno task --config=probe.jsonc gen --bucket=6     # one bucket only (no x8888 produced)
+```
+
+## Determinism + receipt-like output (post Codex review 2026-05-19)
+
+Per Codex's `x2600_..._codex_substrate-morphology` review of this probe:
+
+- **`--stable` mode**: omits `generated_at` so identical source produces
+  byte-identical output. Diff-friendly. Two runs with no source change →
+  same `source_manifest_hash`. Verified by `diff` between consecutive runs.
+- **`source_manifest_hash`** in output header: SHA-256 of canonical JSON
+  manifest of all source files (sorted by path, each entry has hash + size).
+  Output stops being "cache", becomes "receipt-like projection" — you can
+  tell exactly which source bytes produced this artifact.
+- **`bucket_hashes:` block** in `x8888_agents.myc.md`: SHA-256 of each
+  bucket's `xN888_state.myc.md` output. Substrate index doesn't re-hash
+  everything as soup; it cites bucket-level projections by hash.
+- **Maturity validation**: typos like `maturity: activ` are flagged with
+  warning on stderr AND surfaced in output's "invalid maturity" section.
+  The `x6FFF_typo_demo.ts` fixture exists permanently to demonstrate this
+  policy stays working.
+- **`--bucket=N` arg**: now actually honored (was documented in v1 but
+  silently ignored — a contract-breaker if shipped).
+
+Chain of trust:
+
+```
+source files bytes
+  → per-file sha256
+  → canonical manifest (sorted JSON: [{hash, path, size}, ...])
+  → source_manifest_hash
+  → embedded in output xN888_state.myc.md
+  → bucket file sha256
+  → bucket_hashes block in x8888_agents.myc.md
 ```
 
 ## Sample output (header)

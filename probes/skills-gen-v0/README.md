@@ -90,7 +90,8 @@ skill_safe: yes | yes-with-care | yes-readonly
 
 `skill_tag` — short categorization of WHAT the organ does (read-only-report,
 emits-envelope, external-dependency, mutates-state, etc.). Authors choose;
-audit verifies semantic match.
+future audit should verify semantic match (probe v0 does NOT validate
+tag/safety consistency — Codex flagged this for future extension).
 
 `skill_safe` — invocation safety:
 - `yes` — pure read, no side effects, safe to invoke from anywhere

@@ -1,0 +1,5 @@
+{
+  "tasks": {
+    "gen": "deno run --config=probe.jsonc -A gen.ts"
+  }
+}

@@ -5,21 +5,25 @@
 //
 // Probe v0 vocabulary (NOT authoritative — to be refined via cowitness):
 //
-//   - 0 void/primitives:    can be imported by ANY; can import only 0
-//   - 1 singularity:        can import 0, 4
-//   - 2 mirror:             can import 0, 4, 5, 6
-//   - 3 triangle:           can import 0, 4, 5
+//   - 0 void/primitives:    can be imported by ANY; may import 0, 4
+//                           (foundation utilities like canonical hash are
+//                           legitimate primitive dependencies — refined
+//                           2026-05-19 after real-trinity scan)
+//   - 1 singularity:        can import 0, 1, 4
+//   - 2 mirror:             can import 0, 1, 2, 4, 5, 6
+//   - 3 triangle:           can import 0, 1, 3, 4, 5
 //   - 4 foundation/law:     can import 0, 1, 4; MUST NOT import 5, 8, C
-//   - 5 action:             can import 0, 4, 6, 7; MUST NOT import C
-//   - 6 audit:              can import 0, 4, 5, 7; MUST NOT import C
-//   - 7 completion/seal:    can import 0, 4; SHOULD NOT import 5, 6 directly
+//   - 5 action:             can import 0, 4, 5, 6, 7; MUST NOT import C
+//   - 6 audit:              can import 0, 4, 5, 6, 7; MUST NOT import C
+//   - 7 completion/seal:    can import 0, 4, 7; SHOULD NOT import 5, 6 directly
 //   - 8 cache/generated:    can READ from anywhere, MUST NOT be imported by stable 0-7
+//   - 9 penultimate:        can import 0, 1, 9
 //   - A apex/Я:             special — can import anywhere (substrate's "subjective" pole)
-//   - B build:              can import 0-7; transient
-//   - C chaos/scratch:      MUST NOT be imported by any production organ
-//   - D decision:           can import 0, 4, 5, 6
-//   - E edge:               can import 0, 4, 5, 6
-//   - F frontier:           can import 0, 4, 7
+//   - B build:              can import 0-7
+//   - C chaos/scratch:      MUST NOT be imported by any production organ; isolates to 0, C
+//   - D decision:           can import 0, 4, 5, 6, D
+//   - E edge:               can import 0, 4, 5, 6, E
+//   - F frontier:           can import 0, 4, 7, F
 
 export type PolicyResult = "allow" | "warn" | "deny";
 

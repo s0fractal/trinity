@@ -367,22 +367,12 @@ async function main(argv: string[]) {
 
   const buckets = groupByBucket(organs);
   const generated_at = args.stable ? null : new Date().toISOString();
-  const manifest_hash = await manifestHash(organs);
+  const global_manifest_hash = await manifestHash(organs);
   const source_root = relative(HERE, SRC);
-  const receipts = { generated_at, manifest_hash, source_root, source_files: organs.length };
-
-  // Sidecar manifest: emit canonical manifest as JSON for future continuity
-  // proofs (per Codex review 2026-05-19 P3). manifest_hash alone proves
-  // "some manifest existed"; sidecar reveals which per-file hashes that was.
-  const manifestPath = join(OUT, args.bucket ? `x${args.bucket}888_state.manifest.json` : "x8888_agents.manifest.json");
-  const manifestContent = canonicalManifest(organs);
-  await Deno.writeTextFile(manifestPath, manifestContent + "\n");
-  console.log(`[write] ${manifestPath.split("/").pop()} (${organs.length} entries)`);
-  let written = 1;
 
   // Mode hygiene: each mode owns specific outputs; clean up artifacts
   // belonging to the OTHER mode so review doesn't confuse stale state
-  // for current (per Codex P3).
+  // for current (per Codex P3 review #1).
   if (args.bucket) {
     // Bucket-mode: full-mode artifacts are stale
     for (const stale of ["x8888_agents.myc.md", "x8888_agents.manifest.json"]) {
@@ -391,31 +381,56 @@ async function main(argv: string[]) {
         console.log(`[remove-stale] ${stale} (bucket-mode does not produce federation index)`);
       } catch { /* didn't exist */ }
     }
-  } else {
-    // Full-mode: bucket-mode per-bucket manifests are stale
+    // Also any OTHER bucket's stale per-bucket files (e.g., switched from --bucket=6 to --bucket=4)
     for await (const entry of Deno.readDir(OUT)) {
       if (!entry.isFile) continue;
-      const m = /^x([0-9A-Fa-f])888_state\.manifest\.json$/.exec(entry.name);
-      if (m) {
+      const m = /^x([0-9A-Fa-f])888_state\.(myc\.md|manifest\.json)$/.exec(entry.name);
+      if (m && m[1].toUpperCase() !== args.bucket) {
         await Deno.remove(join(OUT, entry.name));
-        console.log(`[remove-stale] ${entry.name} (full-mode supersedes per-bucket manifests)`);
+        console.log(`[remove-stale] ${entry.name} (bucket-mode --bucket=${args.bucket} supersedes other-bucket outputs)`);
       }
     }
+  } else {
+    // Full-mode: nothing to clean (per-bucket manifests are LEGITIMATE in full mode now,
+    // each bucket gets its own hash so they're version-anchored independently).
+    // See Codex review #2 P2: per-bucket manifests prevent cross-bucket noise.
   }
 
-  // First pass: render bucket state files, compute their hashes for x8888
-  const bucketHashes = new Map<string, string>();
+  let written = 0;
+
+  // Per-bucket: each bucket gets its own manifest, hash, and sidecar.
+  // Codex P2 (review #2): if global manifest_hash is embedded in every
+  // bucket file, then changes in OTHER buckets churn THIS bucket's
+  // receipt. Per-bucket hash isolates: bucket X file only changes when
+  // bucket X organs change.
+  const bucketHashes = new Map<string, string>();         // hash of rendered bucket-state output (for x8888 federation)
+  const bucketManifests = new Map<string, string>();      // hash of bucket-scoped canonical manifest (for source-bytes receipt)
   for (const [bucket, bucketOrgans] of buckets) {
+    const bucketManifestHash = await manifestHash(bucketOrgans);
+    bucketManifests.set(bucket, bucketManifestHash);
+
+    const bucketReceipts = {
+      generated_at,
+      manifest_hash: bucketManifestHash,
+      source_root,
+      source_files: bucketOrgans.length,
+    };
+
     const path = join(OUT, `x${bucket}888_state.myc.md`);
-    const content = renderBucketState(bucket, bucketOrgans, receipts);
+    const content = renderBucketState(bucket, bucketOrgans, bucketReceipts);
     await Deno.writeTextFile(path, content + "\n");
     const bucketBytes = new TextEncoder().encode(content + "\n");
     bucketHashes.set(bucket, `sha256:${await sha256Hex(bucketBytes)}`);
 
+    // Per-bucket sidecar manifest (Codex P3-4 review #1 + P2 review #2)
+    const sidecarPath = join(OUT, `x${bucket}888_state.manifest.json`);
+    await Deno.writeTextFile(sidecarPath, canonicalManifest(bucketOrgans) + "\n");
+    written += 2; // state + manifest
+
     const invalidCount = bucketOrgans.filter((o) => o.invalid_maturity).length;
     const tag = invalidCount > 0 ? ` (${invalidCount} INVALID-maturity)` : "";
     console.log(`[write] x${bucket}888_state.myc.md (${bucketOrgans.length} organs)${tag}`);
-    written++;
+    console.log(`[write] x${bucket}888_state.manifest.json (${bucketOrgans.length} entries)`);
 
     if (invalidCount > 0) {
       for (const o of bucketOrgans.filter((o) => o.invalid_maturity)) {
@@ -424,15 +439,28 @@ async function main(argv: string[]) {
     }
   }
 
+  // Substrate-level federation file + global sidecar (full mode only)
   if (!args.bucket) {
+    const agentsReceipts = {
+      generated_at,
+      manifest_hash: global_manifest_hash,
+      source_root,
+      source_files: organs.length,
+    };
     const agentsPath = join(OUT, "x8888_agents.myc.md");
-    const agentsContent = await renderSubstrateAgents(buckets, bucketHashes, receipts);
+    const agentsContent = await renderSubstrateAgents(buckets, bucketHashes, agentsReceipts);
     await Deno.writeTextFile(agentsPath, agentsContent + "\n");
+
+    // Substrate-wide sidecar with ALL organs (Codex P3-4 review #1)
+    const globalSidecarPath = join(OUT, "x8888_agents.manifest.json");
+    await Deno.writeTextFile(globalSidecarPath, canonicalManifest(organs) + "\n");
+
     console.log(`[write] x8888_agents.myc.md (${buckets.size} buckets indexed)`);
-    written++;
+    console.log(`[write] x8888_agents.manifest.json (${organs.length} entries, whole substrate)`);
+    written += 2;
   }
 
-  console.log(`done. ${written} files written to output/. manifest_hash=${manifest_hash}${args.stable ? " (stable)" : ""}`);
+  console.log(`done. ${written} files written to output/. global_manifest_hash=${global_manifest_hash}${args.stable ? " (stable)" : ""}`);
 }
 
 if (import.meta.main) {

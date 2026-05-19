@@ -19,3 +19,12 @@ __pycache__/
 **/8/
 **/B/
 **/C/
+
+# Auto-generated substrate-state files (regenerable from organ headers via `t agents`).
+# First-run brief was committed once (e78e51c) for review visibility; subsequent
+# regenerations stay out of git history. Per-bucket + global manifest sidecars
+# included so source_manifest_hash chain is reproducible from sources alone.
+src/x?888_state.myc.md
+src/x?888_state.manifest.json
+src/x8888_agents.myc.md
+src/x8888_agents.manifest.json

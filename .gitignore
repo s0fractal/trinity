@@ -32,3 +32,20 @@ src/x?888_skill.myc.md
 src/x?888_skill.manifest.json
 src/x8888_skills.myc.md
 src/x8888_skills.manifest.json
+
+# Auto-generated voice memory (recall projection) — `t memory`.
+# Per-voice memory at x8888_<voice>_memory.myc.md; substrate-wide voice index
+# at x2888_voices_state.myc.md. All gitignored: regenerable from tracked
+# state/voices/*.json + tracked jazz/chords/*.md via source manifest chain.
+src/x8888_*_memory.myc.md
+src/x8888_*_memory.manifest.json
+src/x2888_voices_state.myc.md
+src/x2888_voices_state.manifest.json
+
+# Auto-generated roadmap (frontier tension) — `t roadmap`.
+# Substrate-wide + per-voice frontier. Regenerable from organ horizons +
+# tracked chords + tracked voices.
+src/x8D00_roadmap.myc.md
+src/x8D00_roadmap.manifest.json
+src/x8D00_*_roadmap.myc.md
+src/x8D00_*_roadmap.manifest.json

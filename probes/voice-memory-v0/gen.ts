@@ -66,7 +66,9 @@ interface Chord {
 }
 
 // Approximate Bitcoin block → UTC epoch. 10 min/block, reference
-// block 950000 ≈ 2026-05-17T00:00:00Z. Approximation, not cryptographic.
+// block 950000 ≈ 2026-05-19T00:00:00Z. Approximation, not cryptographic.
+// (Codex P3 review: previous comment said 2026-05-17; the actual epoch
+// 1779148800 corresponds to 2026-05-19T00:00:00Z. Comment now matches.)
 const REFERENCE_BLOCK = 950000;
 const REFERENCE_EPOCH_SEC = 1779148800;
 function blockHeightToEpoch(block: number): number {
@@ -176,9 +178,20 @@ function extractFrontmatter(content: string): string | null {
 }
 
 async function loadChords(): Promise<Chord[]> {
+  // Codex P1 review (round 2): same tracked-only discipline as voices.
+  // Recent locally-authored chords that haven't been committed yet would
+  // otherwise leak into manifest hash and break reproducibility from
+  // a clean clone. Skipped chords print a warning.
+  const tracked = await gitTrackedSet("jazz/chords");
   const out: Chord[] = [];
+  let skipped = 0;
   for await (const entry of Deno.readDir(CHORDS_DIR)) {
     if (!entry.isFile || !entry.name.endsWith(".md")) continue;
+    const relPath = `jazz/chords/${entry.name}`;
+    if (!tracked.has(relPath)) {
+      skipped++;
+      continue;
+    }
     const path = join(CHORDS_DIR, entry.name);
     const bytes = await Deno.readFile(path);
     const text = new TextDecoder().decode(bytes);
@@ -244,6 +257,9 @@ async function loadChords(): Promise<Chord[]> {
       source_hash: await sha256Hex(bytes),
       source_size: bytes.length,
     });
+  }
+  if (skipped > 0) {
+    console.warn(`  ⚠️  skipped ${skipped} untracked chord(s) in jazz/chords/ (not in git ls-files); committed output reflects only the tracked set`);
   }
   return out.sort((a, b) => a.sort_key - b.sort_key);
 }

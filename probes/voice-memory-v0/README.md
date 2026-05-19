@@ -31,10 +31,15 @@ Generator reads (READ-ONLY):
   Frontmatter `voice:` field (when present) overrides filename voice token.
   Both are normalized to first segment (e.g., `claude-opus-4-7` → `claude`).
 
-Chords are sorted by a **unified epoch sort key** (Codex P2 review fix):
+Chords are also **filtered to git-tracked only** (Codex P1 round-2 review fix).
+Recent locally-authored chords that haven't been committed yet would
+otherwise leak into the manifest hash and break reproducibility from a
+clean clone. Generator prints `⚠️ skipped N untracked chord(s)` summary.
+
+Chords are sorted by a **unified epoch sort key** (Codex P2 round-1 fix):
 - wallclock form → UTC epoch from ISO timestamp parse
 - new form → approximate epoch via `(block - 950000) * 600 + 1779148800`
-  (10-min average blocks, reference 950000 ≈ 2026-05-17T00:00Z).
+  (10-min average blocks, reference 950000 ≈ 2026-05-19T00:00:00Z).
 Approximation, not cryptographic; sufficient for chronological ordering.
 
 Renders to `./output/`:
@@ -65,7 +70,8 @@ Substrate-wide `x2888_voices_state.myc.md` contains:
   - claude-opus-4-7: mirror=108 (highest) → reflective
   - codex-gpt-5: action=108 (highest) → operational
   - gemini-pro-1-5: foundation=108 (highest) → stable/architectural
-  - kimi-code-cli: triangle=89 (highest) → structural composer
+  - (kimi voice profile sits locally untracked; would show triangle=89 if
+    committed to state/voices/kimi.json)
 
 ## Acceptance criterion (Codex)
 
@@ -98,8 +104,8 @@ All four answerable from probe output as it stands.
 
 ```sh
 cd probes/voice-memory-v0
-deno task --config=probe.jsonc gen --stable                # all voices
-deno task --config=probe.jsonc gen --stable --voice=kimi   # one voice
+deno task --config=probe.jsonc gen --stable                  # all tracked voices
+deno task --config=probe.jsonc gen --stable --voice=claude   # one voice (must be tracked)
 ```
 
 ## Source manifest chain
@@ -120,10 +126,18 @@ Two consecutive `--stable` runs produce same manifest hashes (deterministic).
 Source manifest changes IFF source bytes change — voice memory is a
 verifiable receipt-like projection, not opaque cache.
 
-Probe v0 manifest entries (per current substrate state):
-- per-voice (e.g., kimi): 24 entries (1 profile + 23 chords)
+Probe v0 manifest entries (per current substrate state, tracked-only):
 - per-voice (e.g., claude): 120 entries (1 profile + 119 chords)
-- global (voices_state.manifest.json): 281 entries (5 profiles + 276 chords)
+- per-voice (e.g., codex): 60 entries (1 profile + 59 chords)
+- per-voice (e.g., gemini): 66 entries (1 profile + 65 chords)
+- per-voice (e.g., hermes): 1 entry (1 profile + 0 chords — Hermes hasn't authored any tracked chords)
+- global (voices_state.manifest.json): 274 entries (4 voices + 270 chords)
+- 2 untracked chords currently sit locally on disk; they're skipped from
+  the manifest until committed
+- ~27 chord files use a legacy filename form (`YYYYMMDD-HHMMSS-voice-topic.md`,
+  no `T`/`Z`) not recognized by either NEW_FORM or OLD_FORM regex; they
+  parse silently as unparseable and are excluded. Future v1 could add a
+  third filename form pattern if those older chords need to participate.
 
 ## Next moves (if probe resonates)
 

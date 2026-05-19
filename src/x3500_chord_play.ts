@@ -3,6 +3,9 @@
 // position: 3/5 → triangle(3) × action(5)
 // hex_dipole: "26 26 26 6C 26 59 26 26"
 // placement_policy: axis
+// intent: parse and visualize chord structure; scaffold new chord files
+// maturity: active
+// horizon: extend to new chord coordinate-naming convention (x<type>_<block>_<voice>_<slug>.md)
 //
 // chord_play.ts — parse and visualize chord structure
 

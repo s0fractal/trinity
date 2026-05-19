@@ -14,6 +14,9 @@
 //   measured by claude-opus-4-7-1m
 // lifecycle_phase: 0
 // placement_policy: axis
+// intent: surface kind:8 recipe records from glossary as queryable workflow templates
+// maturity: active
+// horizon: cross-link recipes to gravity-flagged drift signals (recipe-as-remediation)
 //
 // recipes — live projection of workflow templates from ledger records.
 //

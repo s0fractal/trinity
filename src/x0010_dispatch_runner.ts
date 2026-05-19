@@ -63,6 +63,7 @@ const POSITION_TO_FILE: Record<string, string> = {
   "7/D": "x7D00_verdict.ts",
   "7/E": "x7E00_anchor_prep.ts",
   "7/F": "x7F00_daemon.ts",
+  "8/8": "x8800_agents_gen.ts",
 };
 
 export interface SubstrateDef {

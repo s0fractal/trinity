@@ -13,6 +13,9 @@
 //               on axis 2 ← PAIR-MATCH (sign-opposed; offer on need-bucket)
 //   measured by claude-opus-4-7-1m. First file at 0x3/ — establishes bucket.
 // lifecycle_phase: 0
+// intent: read audit signals and propose where drifting files should be relocated
+// maturity: active
+// horizon: extend balance suggestions to use gravity metric (mean Δprimary) as secondary signal
 //
 // balance — dipole-driven rebalancing proposals (read-only)
 //

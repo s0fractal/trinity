@@ -1,0 +1,8 @@
+{"00":"5","02":["audit","place-check","introspect"],"04":"6/C","09":"placement audit"}
+{"00":"5","02":["gravity","tension","drift"],"04":"6/02","09":"edge tension report"}
+{"00":"5","02":["cowitness","witness","засвідчити"],"04":"6/D","09":"append oracle signature"}
+{"00":"5","02":["court","verify","verdict","суд"],"04":"6/E","09":"substrate court verifier"}
+{"00":"5","02":["audit:green","baseline","cross-substrate-check"],"04":"6/5","09":"baseline gates runner"}
+{"00":"5","02":["status","state","як","ти-як"],"04":"2/E","09":"composite self-reflection"}
+{"00":"5","02":["health","harmony","здоров'я"],"04":"6/A","09":"fresh health check"}
+{"00":"5","02":["agents","agents-brief","self-brief","бриф"],"04":"8/8","09":"substrate self-brief generator"}

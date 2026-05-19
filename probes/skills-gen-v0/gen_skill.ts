@@ -1,0 +1,357 @@
+// gen_skill.ts — bucket + substrate skill brief generator
+//
+// Pairs with agents-gen-v0 (state brief). State says "what I see"; skill
+// says "how to move here without dumb moves".
+//
+// Reads:
+//   - ./src/ fixture organs (header fields incl. skill_tag, skill_safe)
+//   - ./glossary_subset.ndjson (which t commands route where)
+//   - ./policy_subset.json (import-policy table from morphology-v0)
+//
+// Renders:
+//   - ./output/xN888_skill.myc.md  per bucket
+//   - ./output/x8888_skills.myc.md substrate-wide
+//
+// Run: deno run --config=probe.jsonc -A gen_skill.ts [--stable]
+
+import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
+
+const HERE = dirname(fromFileUrl(import.meta.url));
+const SRC = join(HERE, "src");
+const OUT = join(HERE, "output");
+
+const FILENAME_RE = /^x([0-9A-Fa-f])([0-9A-Fa-f]{3})_([^.]+)\.ts$/;
+const HEADER_RE = /^\/\/\s*(\w+):\s*(.+?)\s*$/;
+const KNOWN_FIELDS = new Set([
+  "intent", "maturity", "horizon", "position", "hex_dipole",
+  "placement_policy", "skill_tag", "skill_safe",
+]);
+
+interface OrganMeta {
+  filename: string;
+  coordinate: string;
+  bucket: string;
+  handle: string;
+  intent?: string;
+  maturity?: string;
+  horizon?: string;
+  skill_tag?: string;
+  skill_safe?: string;
+}
+
+interface GlossaryEntry {
+  handles: string[];
+  position: string;
+  note: string;
+}
+
+interface Policy {
+  allow: Record<string, string[]>;
+  hard_deny: [string, string, string][];
+  warn: [string, string, string][];
+}
+
+interface Args {
+  stable: boolean;
+}
+
+function parseArgs(argv: string[]): Args {
+  return { stable: argv.includes("--stable") };
+}
+
+function parseHeader(content: string): Map<string, string> {
+  const fields = new Map<string, string>();
+  const lines = content.split("\n").slice(0, 30);
+  for (const line of lines) {
+    const m = HEADER_RE.exec(line);
+    if (!m) continue;
+    const [, k, v] = m;
+    if (KNOWN_FIELDS.has(k) && !fields.has(k)) fields.set(k, v);
+  }
+  return fields;
+}
+
+async function scanOrgans(): Promise<OrganMeta[]> {
+  const out: OrganMeta[] = [];
+  for await (const entry of Deno.readDir(SRC)) {
+    if (!entry.isFile) continue;
+    const m = FILENAME_RE.exec(entry.name);
+    if (!m) continue;
+    const [, bucket, sub, handle] = m;
+    const content = await Deno.readTextFile(join(SRC, entry.name));
+    const fields = parseHeader(content);
+    out.push({
+      filename: entry.name,
+      coordinate: (bucket + sub).toUpperCase(),
+      bucket: bucket.toUpperCase(),
+      handle,
+      intent: fields.get("intent"),
+      maturity: fields.get("maturity"),
+      horizon: fields.get("horizon"),
+      skill_tag: fields.get("skill_tag"),
+      skill_safe: fields.get("skill_safe"),
+    });
+  }
+  return out.sort((a, b) => a.coordinate.localeCompare(b.coordinate));
+}
+
+async function loadGlossary(): Promise<GlossaryEntry[]> {
+  const text = await Deno.readTextFile(join(HERE, "glossary_subset.ndjson"));
+  const entries: GlossaryEntry[] = [];
+  for (const line of text.trim().split("\n")) {
+    try {
+      const r = JSON.parse(line);
+      if (r["00"] !== "5") continue;
+      entries.push({
+        handles: Array.isArray(r["02"]) ? r["02"] : [],
+        position: r["04"] ?? "",
+        note: r["09"] ?? "",
+      });
+    } catch { /* skip */ }
+  }
+  return entries;
+}
+
+async function loadPolicy(): Promise<Policy> {
+  const text = await Deno.readTextFile(join(HERE, "policy_subset.json"));
+  return JSON.parse(text);
+}
+
+function groupByBucket(organs: OrganMeta[]): Map<string, OrganMeta[]> {
+  const m = new Map<string, OrganMeta[]>();
+  for (const o of organs) {
+    const list = m.get(o.bucket) ?? [];
+    list.push(o);
+    m.set(o.bucket, list);
+  }
+  return m;
+}
+
+function bucketCommands(bucket: string, glossary: GlossaryEntry[]): GlossaryEntry[] {
+  // commands whose position starts with this bucket digit
+  return glossary.filter((e) => {
+    const primary = e.position.split("/")[0];
+    return primary.toUpperCase() === bucket;
+  });
+}
+
+function bucketImportRules(bucket: string, policy: Policy): {
+  allowed_targets: string[];
+  must_not_import: string[];
+  warns: string[];
+} {
+  const allowed = policy.allow[bucket] ?? [];
+  const denies = policy.hard_deny
+    .filter(([src]) => src === bucket)
+    .map(([, tgt, why]) => `x${tgt} (${why})`);
+  const warns = policy.warn
+    .filter(([src]) => src === bucket)
+    .map(([, tgt, why]) => `x${tgt} (${why})`);
+  return {
+    allowed_targets: allowed.map((t) => `x${t}`),
+    must_not_import: denies,
+    warns,
+  };
+}
+
+function renderBucketSkill(
+  bucket: string,
+  organs: OrganMeta[],
+  glossary: GlossaryEntry[],
+  policy: Policy,
+  generated_at: string | null,
+): string {
+  const cmds = bucketCommands(bucket, glossary);
+  const rules = bucketImportRules(bucket, policy);
+
+  const lines: string[] = [];
+  lines.push(`<!-- AUTO-GENERATED by probes/skills-gen-v0/gen_skill.ts — do not edit by hand. -->`);
+  if (generated_at) lines.push(`<!-- generated_at: ${generated_at} -->`);
+  lines.push(`<!-- bucket: ${bucket}   organs: ${organs.length}   t-commands: ${cmds.length} -->`);
+  lines.push(``);
+  lines.push(`# Bucket ${bucket} skill — how to move here without dumb moves`);
+  lines.push(``);
+
+  // Use first — t commands that route to this bucket
+  if (cmds.length > 0) {
+    lines.push(`## Use first (t-commands routing to this bucket)`);
+    lines.push(``);
+    for (const c of cmds) {
+      const primary = c.handles[0] ?? "?";
+      lines.push(`- \`t ${primary}\` — ${c.note}  (position ${c.position})`);
+    }
+    lines.push(``);
+  }
+
+  // Good moves — by skill_tag
+  const safeOrgans = organs.filter((o) => o.skill_safe === "yes");
+  const careOrgans = organs.filter((o) => o.skill_safe === "yes-with-care");
+  const readonlyOrgans = organs.filter((o) => o.skill_safe === "yes-readonly");
+  if (safeOrgans.length > 0 || readonlyOrgans.length > 0) {
+    lines.push(`## Safe to invoke`);
+    lines.push(``);
+    for (const o of [...safeOrgans, ...readonlyOrgans]) {
+      const tag = o.skill_tag ? ` [${o.skill_tag}]` : "";
+      lines.push(`- **x${o.coordinate}_${o.handle}**${tag} — ${o.intent ?? "(no intent declared)"}`);
+    }
+    lines.push(``);
+  }
+
+  if (careOrgans.length > 0) {
+    lines.push(`## Use with care (effects beyond read)`);
+    lines.push(``);
+    for (const o of careOrgans) {
+      const tag = o.skill_tag ? ` [${o.skill_tag}]` : "";
+      lines.push(`- **x${o.coordinate}_${o.handle}**${tag} — ${o.intent ?? "(no intent declared)"}`);
+    }
+    lines.push(``);
+  }
+
+  // Import rules
+  lines.push(`## Import policy for x${bucket}`);
+  lines.push(``);
+  if (rules.allowed_targets.length > 0) {
+    lines.push(`**May import:** ${rules.allowed_targets.join(", ")}`);
+    lines.push(``);
+  }
+  if (rules.must_not_import.length > 0) {
+    lines.push(`**MUST NOT import:**`);
+    for (const r of rules.must_not_import) lines.push(`- ${r}`);
+    lines.push(``);
+  }
+  if (rules.warns.length > 0) {
+    lines.push(`**Warn (pattern, not deny):**`);
+    for (const w of rules.warns) lines.push(`- ${w}`);
+    lines.push(``);
+  }
+
+  // Falsifiers — bucket-archetype-specific guidance
+  lines.push(`## Before editing x${bucket}... organs`);
+  lines.push(``);
+  lines.push(`- Run \`t audit\` and \`t gravity\` first; note current baseline metrics.`);
+  lines.push(`- If adding a new organ, ensure its hex_dipole declares the bucket axis as primary (audit will flag mismatch).`);
+  lines.push(`- If adding header fields (intent/maturity/horizon), they appear in the next \`t agents\` regen.`);
+  if (bucket === "6") {
+    lines.push(`- Bucket 6 is audit-flavored. Prefer adding **read-only verifiers / reports** over mutating organs.`);
+    lines.push(`- Do not introduce a new x6 → x8 (cache) dependency; cache is downstream of audit, not upstream.`);
+    lines.push(`- Audit signals are observation, not enforcement: don't add exit-1 gates without architect approval.`);
+  }
+  if (bucket === "4") {
+    lines.push(`- Bucket 4 is foundation. Schemas/laws here are stable; mutations need contract + cowitness.`);
+    lines.push(`- Foundation organs MUST NOT import action (x5) or cache (x8); they would create circular law dependency.`);
+  }
+  if (bucket === "5") {
+    lines.push(`- Bucket 5 is action. Actions emit receipts (lane: \`.receipt.*\`); side-effects should be auditable.`);
+    lines.push(`- Avoid reading from cache (x8) as a load-bearing dependency — flag as warn.`);
+  }
+  if (bucket === "7") {
+    lines.push(`- Bucket 7 is completion/sealing. Receipts are sealed artifacts; once anchored, do not mutate.`);
+    lines.push(`- Sealed organs MUST NOT depend on action/audit/cache (they would create circularity in finality).`);
+  }
+  lines.push(``);
+
+  lines.push(`## Falsifiers`);
+  lines.push(``);
+  lines.push(`- New organ that does NOT appear in this skill brief after regen → header parsing failed or organ missed glossary entry.`);
+  lines.push(`- "Safe to invoke" organ that produced state-mutating side effect → \`skill_safe: yes\` is wrong; reclassify.`);
+  lines.push(`- Policy warning that fires on every PR → policy table is too strict for actual workflow; refine vocabulary via cowitness.`);
+  lines.push(``);
+
+  return lines.join("\n");
+}
+
+function renderSubstrateSkill(
+  buckets: Map<string, OrganMeta[]>,
+  glossary: GlossaryEntry[],
+  policy: Policy,
+  generated_at: string | null,
+): string {
+  const allCmds = glossary;
+  const lines: string[] = [];
+  lines.push(`<!-- AUTO-GENERATED by probes/skills-gen-v0/gen_skill.ts — do not edit by hand. -->`);
+  if (generated_at) lines.push(`<!-- generated_at: ${generated_at} -->`);
+  lines.push(`<!-- buckets: ${buckets.size}   organs: ${[...buckets.values()].flat().length}   t-commands: ${allCmds.length} -->`);
+  lines.push(``);
+  lines.push(`# Substrate skill — how to operate here without dumb moves`);
+  lines.push(``);
+  lines.push(`This is the operating brief, paired with \`x8888_agents.myc.md\` (which is "what I see"). This file is "how to move".`);
+  lines.push(``);
+  lines.push(`## First moves for a fresh model`);
+  lines.push(``);
+  lines.push(`1. \`t status\` — substrate self-reflection (mirror+harmony). If "well", proceed; if anything else, read first.`);
+  lines.push(`2. \`t audit\` — placement audit (verify organ dipoles match bucket archetypes).`);
+  lines.push(`3. \`t agents\` (then read \`src/x8888_agents.myc.md\`) — federation index of buckets.`);
+  lines.push(`4. \`t gravity\` — topology tension (mean Δprimary; rising trend = drift signal).`);
+  lines.push(`5. Drill into per-bucket skills: \`src/xN888_skill.myc.md\` for whichever N you're touching.`);
+  lines.push(``);
+  lines.push(`## Bucket overview`);
+  lines.push(``);
+  lines.push(`| bucket | organs | drill |`);
+  lines.push(`|--------|--------|-------|`);
+  for (const [bucket, organs] of [...buckets.entries()].sort()) {
+    lines.push(`| ${bucket} | ${organs.length} | [x${bucket}888_skill.myc.md](./x${bucket}888_skill.myc.md) |`);
+  }
+  lines.push(``);
+  lines.push(`## t-commands by bucket`);
+  lines.push(``);
+  for (const [bucket] of [...buckets.entries()].sort()) {
+    const cmds = bucketCommands(bucket, glossary);
+    if (cmds.length === 0) continue;
+    lines.push(`### bucket ${bucket}`);
+    lines.push(``);
+    for (const c of cmds) {
+      const primary = c.handles[0] ?? "?";
+      lines.push(`- \`t ${primary}\` — ${c.note}`);
+    }
+    lines.push(``);
+  }
+  lines.push(`## Global guidance`);
+  lines.push(``);
+  lines.push(`- **Read before write.** Generated briefs (xN888_*.myc.md) are projections, not sources. To change substrate state, change source organs, then regenerate.`);
+  lines.push(`- **Probe before contract.** Don't write contracts.MORPHOLOGY.v0.md before \`probes/morphology-v0/\` graduates. Probe → real organ → contract.`);
+  lines.push(`- **Cowitness for cross-bucket moves.** Single-bucket refactor: model decides. Cross-bucket: chord proposal + AYE from at least one other model.`);
+  lines.push(`- **Receipts over assertions.** When you say "X works", prefer "\`t audit\` reports 51/51 match" over prose. Auditable.`);
+  lines.push(`- **Falsifiers in proposals.** Every chord with proposal should name what would falsify it. Without falsifier, proposal is opinion not hypothesis.`);
+  lines.push(``);
+  lines.push(`## Forbidden / requires-cowitness moves`);
+  lines.push(``);
+  lines.push(`- Touching omega (frozen RFC v1.0) without architect explicit approval`);
+  lines.push(`- Mutating contracts in pinned SPORE_BOOTSTRAP_PIN (51 files in Bitcoin attestation)`);
+  lines.push(`- Adding hard-deny to morphology policy without observed real-substrate violation`);
+  lines.push(`- Batch-renaming files outside a single substrate's src/ (cross-substrate refactor)`);
+  lines.push(`- Pushing to remote without explicit \`git push\` instruction`);
+  lines.push(`- Running destructive operations (force-push, reset --hard, rm -rf, dropping db tables)`);
+  lines.push(``);
+  return lines.join("\n");
+}
+
+async function main(argv: string[]) {
+  const args = parseArgs(argv);
+  await Deno.mkdir(OUT, { recursive: true });
+
+  const organs = await scanOrgans();
+  const glossary = await loadGlossary();
+  const policy = await loadPolicy();
+  const buckets = groupByBucket(organs);
+  const generated_at = args.stable ? null : new Date().toISOString();
+
+  let written = 0;
+  for (const [bucket, bucketOrgans] of buckets) {
+    const path = join(OUT, `x${bucket}888_skill.myc.md`);
+    const content = renderBucketSkill(bucket, bucketOrgans, glossary, policy, generated_at);
+    await Deno.writeTextFile(path, content + "\n");
+    console.log(`[write] x${bucket}888_skill.myc.md (${bucketOrgans.length} organs)`);
+    written++;
+  }
+
+  const subsPath = join(OUT, "x8888_skills.myc.md");
+  await Deno.writeTextFile(subsPath, renderSubstrateSkill(buckets, glossary, policy, generated_at) + "\n");
+  console.log(`[write] x8888_skills.myc.md (substrate-wide)`);
+  written++;
+
+  console.log(`done. ${written} files written to output/${args.stable ? " (stable)" : ""}`);
+}
+
+if (import.meta.main) {
+  await main(Deno.args);
+}

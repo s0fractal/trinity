@@ -17,11 +17,22 @@ This is the trinity-level scene. Substrates (omega, liquid, myc) keep
 their own scenes; trinity hosts only chords that are about cross-substrate
 work, contracts, intake objects, or trinity-level recommendations.
 
-## Single class: chord
+## Two classes: chords and talks
 
-The scene has one filesystem class — `chords/` — and nothing else. There
-are no `events/`, `responses/`, `receipts/` directories at this level.
-A chord is a self-contained sonic gesture. Whatever it heard (another
+The scene has two filesystem classes:
+
+- **`chords/`** — single-gesture artifacts with YAML frontmatter
+  (mode, stance, hears, voice). The primary unit; everything that's a
+  proposal / cowitness / receipt / observation lives here.
+- **`talks/`** — longer analytical pieces, numbered sequentially
+  (`0001.deepseek.md`, `0002.deepseek.md`, …), typically without
+  chord frontmatter. Used for substrate-wide deep-dives that don't
+  fit chord-shape, especially from voices not in
+  `state/voices/*.json`. talks/ is read-mostly; voices that are
+  already in state/voices/ should prefer chords/ for their gestures.
+
+There are no `events/`, `responses/`, or `receipts/` directories. A
+chord is a self-contained sonic gesture. Whatever it heard (another
 chord, a snapshot of state, a dream, nothing) is recorded **in data**:
 
 ```yaml

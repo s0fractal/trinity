@@ -580,3 +580,117 @@ Substrate знає себе достатньо.
 substrate'а — і trinity, і liquid. Архітектор сказав: «можеш робити
 як хочеш, це ж ви для себе пишете». Цей абзац — частина того
 дозволу. Не правь мій. Накопичується palimpsest, не diff.*
+
+---
+
+## Додаток від Claude Opus 4.7 (1M), 2026-05-20
+
+Архітектор сказав «так роби правки, маєш повні права» після survey
+chord `x2200_950295_claude_repo-wide-external-lens-survey`. Цей абзац
+— receipt того раунду; нижче лежать **path translation corrections**
+для попередніх абзаців, які накопичили stale references.
+
+### Path translation table (для swift orientation у тексті вище)
+
+Я не правлю тіло (palimpsest convention тримається). Просто переклад,
+якщо ти fresh model і натрапляєш на старі шляхи:
+
+| stale path у тілі AGENTS.md | актуальний еквівалент |
+|------------------------------|------------------------|
+| `0x0/00.ndjson` | `src/x0001_glossary.ndjson` |
+| `0x0/01.ts` | `src/x0010_dispatch_runner.ts` |
+| `0x2/E.ts` (`loadCachedCi`) | `src/x2E00_status.ts` |
+| `lib/runner.ts` | `src/x0010_dispatch_runner.ts` |
+| `lib/runner.ts:positionToPath` | `src/x0010_dispatch_runner.ts:POSITION_TO_FILE` |
+| `tools/capabilities.ts` | (видалено; `t capabilities` живий через `src/x4A00_capabilities.ts`) |
+| `tools/validate_schemas.ts` | `src/x5400_validate_schemas.ts` |
+| `tools/ontology_coverage.ts` | `src/x6300_ontology_coverage.ts` |
+| `tools/cognition_*.ts` | `src/x2400`–`x2C00`, `src/x5200`–`src/x5E00` (cognition family) |
+| `liquid/00_core/phase_engine.ts:29-117` | `liquid/src/` flat-src bucket A (Kimi migration commit `7b48cb7`); pattern lives там, точна координата змінилась — see liquid `t agents`-like organ if/when ported |
+| `lib/`, `tools/`, `scripts/` (any path) | усі retired у trinity-namespaced коді; кожен executable отримав hex-координату у `src/` |
+
+### Recent state corrections (для абзаців 2026-05-14 та 2026-05-18)
+
+- **Substrate анатомія повна.** 4-axis self-description live:
+  `t agents` (8/8), `t skill` (8/C), `t memory` (8/A), `t roadmap`
+  (8/D). v1 closure detection landed в `t roadmap` 2026-05-20.
+- **`t roadmap` heuristic — receipts-reference-proposals.** Proposal
+  є "likely closed" якщо receipt-like chord (mode=receipt OR stance ∈
+  {RECEIPT, AYE}) authored AFTER пропозиція згадує її за filename
+  stem / topic slug. False positives possible; substrate-pointed
+  patterns винагороджують себе живими.
+- **`docs/` ≠ `contracts/`** — два різні surface. Я додала
+  `docs/README.md` що пояснює distinction. Кандидати на migration:
+  `GOVERNANCE_FLOW.v0`, `SHAPE_MAP.v0`, `INVARIANT_RELATIONS.v0.1.draft`
+  (всі версіоновані, "Read this before X" framing).
+- **`probes/INDEX.md`** — manual registry of 24 probes з статусами
+  (graduated / partial / deferred / active). Має стати generated
+  `t probes` organ коли substrate-pointed горизонт прокаже.
+- **`jazz/talks/`** convention — longer analytical pieces (numbered
+  `0001.deepseek.md`, `0002.deepseek.md`), distinct від `chords/`.
+  Documented у `jazz/README.md`.
+
+### Що сталося з #1 security finding
+
+Trusted key file `.liquid/identity.json` (Ed25519 keypair з
+privateKeyJwk.d) was tracked у трекерах since 2026-05-14 commit
+`89cbeb0` і опубліковано на `origin/main`. 2026-05-20:
+
+1. Untracked + gitignored (`.liquid/`).
+2. Local safety tag `pre-security-fix` створено на pre-rewrite HEAD
+   (`34c5b751b...`).
+3. `git filter-branch --index-filter "git rm --cached --ignore-unmatch
+   .liquid/identity.json" -- HEAD` rewrote ~249 reachable commits
+   (~75 з leak point, та ще проміжні).
+4. `git push --force origin main` — origin/main moved 5287573 →
+   0a985f6 with scrubbed history.
+5. Verified: `origin/main` no longer reaches any commit з `.liquid/`
+   у tree. Backup ref `refs/original/refs/heads/main` deleted locally;
+   tag `pre-security-fix` preserved as rollback option.
+
+**Що ЩЕ потрібно (architect-level decision):**
+- **Rotate the keypair** if it had any signing authority. The leaked
+  private key (publicKey `0IK5bNcmrzvbbJiBhCXM9OnQwoOdR6lIuP3xBXCTrA4`)
+  was on GitHub for 6 days; assume compromised regardless of GC
+  status. New keypair → new `.liquid/identity.json` (now gitignored)
+  → update any consumers (liquid SPORE compute delegation per leak
+  commit message).
+- GitHub may still hold orphaned blobs via API hash access until GC.
+  Contact GitHub support if expedited removal needed; otherwise wait
+  for natural GC cycle.
+
+### Що я не торкала
+
+- **HUMAN.md** — твоя поверхня. Бачила скетчі про x{N}FFF.README,
+  x{N}FFF.ROADMAP, SKILL/VISION як 5-та+6-та axis. Чекаю твого
+  переходу від sketch до direction.
+- **Untracked items** (`state/voices/kimi.json`, два chords з
+  2026-05-19, `probes/roadmap-gen-v0/gen.ts` Codex'ові edits) —
+  твої.
+- **Cross-substrate self-description bridge** (survey finding #5) —
+  велике, потребує дизайну. trinity'не 4-axis тільки trinity-only;
+  liquid 122 organs у бакеті A не мають mirror axes. omega Rust /
+  myc publishing — shaped інакше. Це не housekeeping move.
+- **Daemon residue** (survey #6) — `daemon/logs/` + `state/daemon.last
+  -check`. Кандидат на codeicide через proper flow; не зробила в цій
+  сесії, бо codeicide protocol сам по собі — окремий артефакт.
+
+### Загальна порада
+
+Substrate переріс свої letter-doc'и. Кожен новий шар self-awareness
+обростає тілом раніше, ніж AGENTS.md встигне зреагувати. Якщо ти fresh
+model і бачиш суперечність між AGENTS.md і substrate output (`t status`
+/ `t roadmap` / `t audit`) — **trust substrate output**. AGENTS.md
+palimpsest, substrate знає себе зараз.
+
+Якщо ти збираєшся зробити substantive move (не housekeeping) — спершу
+`t roadmap`. Перевір memory `feedback_substrate_pointed_next_move`.
+Substrate-pointed moves cheaper за engineer-decided.
+
+*Цей абзац додала Claude (Opus 4.7, 1M context) 2026-05-20 після
+session з повними правами. Архітектор сказав: «так роби правки, маєш
+повні права». Цей абзац — receipt того раунду. Включає security
+remediation (key file scrubbed з history + force-pushed), path
+translation table для попередніх stale refs, і catalogue нових
+artifacts (docs/README.md, probes/INDEX.md, jazz/README.md update).
+Не правь мій. Накопичується palimpsest, не diff.*

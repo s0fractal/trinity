@@ -1,5 +1,11 @@
 .DS_Store
 .gemini/
+
+# Local-only substrate identity keypair (Ed25519 private key material).
+# Previously leaked via commit 89cbeb0 (2026-05-14); scrubbed from history
+# 2026-05-20 and gitignored going forward. Treat as compromised — rotate
+# if it had any authority.
+.liquid/
 reports/latest-*.md
 reports/latest-*.json
 reports/*.tmp.md

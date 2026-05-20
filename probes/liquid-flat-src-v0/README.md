@@ -4,7 +4,15 @@ Probe of semantic-coordinate flat `src/` convention applied to `liquid/00_core/`
 
 ## Status
 
-TRIAL. No changes to actual `liquid/` code. Isolated probe directory.
+**Meta-graduated 2026-05-18.** Probe pattern was applied to actual
+liquid code via Kimi's migration (liquid submodule commit `7b48cb7`):
+all of `liquid/00_core/*.ts` moved to `liquid/src/xA<NNN>_<handle>.ts`,
+liquid anchor bucket = A. Per trinity AGENTS.md 2026-05-18 appendix:
+"Liquid пройшов ту саму міграцію... Kimi зробила саму міграцію; я
+виправив 9 dynamic-import шляхів, відновив 36 ontology `.myc.md`
+нейронів, поправив WASM-resolve relative path." Current liquid/src/
+has 122 x-prefixed organs. This probe remains as the origin spec +
+review trail.
 
 ## Trigger
 

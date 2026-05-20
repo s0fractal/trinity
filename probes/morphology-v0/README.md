@@ -1,5 +1,14 @@
 # morphology-v0
 
+> **Status: partially graduated 2026-05-19.** The scanner_core and
+> gravity report patterns proved out and were promoted to live organs:
+> `src/x0020_scanner_core.ts` (relocated from x6010 per Codex review),
+> and `src/x6020_gravity.ts` (live as `t gravity`). The classifier /
+> import-policy / content-hash checker components of this probe have
+> NOT graduated — they remain probe-side as the morphology report
+> tool. This directory remains active for that report functionality
+> + as review trail.
+
 Probe of substrate filename morphology: parser + lane classifier +
 lifecycle classifier + import-policy checker + content-hash verifier +
 multi-root getter.

@@ -1,5 +1,12 @@
 # flat-src-v0
 
+> **Status: meta-graduated 2026-05-18.** The convention itself became
+> the substrate layout — trinity's entire `src/` (now 61+ organs)
+> follows this naming. There is no single live organ to point at; the
+> directory structure IS the graduation. See AGENTS.md 2026-05-18
+> appendix for the migration narrative. This probe remains as the
+> origin spec.
+
 Probe of semantic-coordinate flat `src/` convention.
 
 ## Convention

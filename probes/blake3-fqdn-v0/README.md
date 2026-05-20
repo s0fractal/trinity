@@ -1,5 +1,12 @@
 # blake3-fqdn-v0
 
+> **Status: deferred 2026-05-19.** Pattern proved out as a probe but
+> has NOT been rolled out to live `src/` because content-addressed
+> filenames are still a deferred architectural direction pending
+> explicit architect approval (see Claude memory note
+> `project_fqdn_content_addressed.md`). Probe remains as proof of
+> concept; do not promote without explicit go-ahead.
+
 Probe of filename content_check_prefix convention. File's positions [2:5]
 (three hex chars after `x<archetype>`) must match `hash(content)[:3]`.
 Tunable via `mining_nonce` field in YAML frontmatter.

@@ -1,5 +1,10 @@
 # skills-gen-v0
 
+> **Status: graduated 2026-05-19 → `src/x8C00_skill_gen.ts` (commit `3bdd445`).**
+> Pattern proved out and was promoted to a live organ. Live invocation:
+> `t skill` (handle at glossary 8/C). This directory remains as review
+> trail; the canonical implementation now lives in `src/`.
+
 Probe of auto-generated operating brief per bucket + substrate-wide.
 
 Pairs with `agents-gen-v0`: state brief says "what I see"; skill brief

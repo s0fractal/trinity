@@ -1,5 +1,13 @@
 # voice-memory-v0
 
+> **Status: graduated 2026-05-19 → `src/x8A00_voice_memory_gen.ts` (commit `9947768`).**
+> Pattern proved out (4 voices, 270 chords, deterministic manifest hashes
+> across `--stable` runs) and was promoted to a live organ. Live
+> invocation: `t memory` (handle at glossary 8/A). This directory
+> remains as review trail (Codex P1/P2 review history — tracked-source
+> discipline, unified sort key, cowitness scope honesty); the canonical
+> implementation now lives in `src/`.
+
 Probe of voice recall projection — generated digest of stigmergy.
 
 ## Trigger

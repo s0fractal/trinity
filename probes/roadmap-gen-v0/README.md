@@ -1,11 +1,17 @@
 # roadmap-gen-v0
 
+> **Status: graduated 2026-05-19 → `src/x8D00_roadmap_gen.ts` (commit `9947768`).**
+> v1 closure detection landed 2026-05-20 (commit `0c49570`). Live
+> invocation: `t roadmap` (handle at glossary 8/D). This directory
+> remains as review trail; the canonical implementation now lives in
+> `src/`.
+
 Probe of the **fourth axis** of substrate self-description.
 
 ## Trigger
 
-Codex chord `2026-05-19T120243Z-codex-self-description-roadmap-axis.md`
-(stance: PROPOSE_FOURTH_AXIS_AS_FRONTIER):
+Codex local proposal on 2026-05-19 (stance:
+PROPOSE_FOURTH_AXIS_AS_FRONTIER):
 
 > Trinity now has three generated self-description axes (state, skill, memory)
 > and is missing the fourth: **roadmap** — "куди іти?"
@@ -103,9 +109,10 @@ For each tracked voice:
   NOT profile contents.
 - ❌ "Cannot cite source artifacts + hashes" — manifest sidecar
   per output with every source hashed.
-- ❌ "Memory changes but roadmap doesn't react" — roadmap source set
-  includes chord files; when a new chord lands (changing chord set),
-  manifest hash changes, roadmap regenerates.
+- ❌ "Claimed memory/state/skill dependency without reading those
+  sources directly" — v0 is explicit that it reads direct sources only
+  (organ horizons + tracked chords + tracked voices). Cross-axis
+  generated-output consumption is deferred to v1.
 
 ## Run
 

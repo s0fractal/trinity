@@ -1,5 +1,11 @@
 # agents-gen-v0
 
+> **Status: graduated 2026-05-19 → `src/x8800_agents_gen.ts` (commit `e78e51c`).**
+> Pattern proved out and was promoted to a live organ. Live invocation:
+> `t agents` (handle at glossary 8/8). This directory remains as review
+> trail (Codex P1/P2 fixes, falsifier history); the canonical
+> implementation now lives in `src/`.
+
 Probe of auto-generated bucket-state documentation at `xN888_state.myc.md`
 plus substrate-level federation index at `x8888_agents.myc.md`.
 

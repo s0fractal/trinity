@@ -600,6 +600,28 @@ function renderSubstrateSkill(
   lines.push(`6. Drill into per-bucket: \`src/xN888_skill.myc.md\`.`);
   lines.push(``);
 
+  lines.push(`## Composition skill (model convenience)`);
+  lines.push(``);
+  lines.push(
+    `Bucket 0 has TWO composition layers — use both:`,
+  );
+  lines.push(``);
+  lines.push(
+    `- **Dispatch-level**: \`t pipe\`, \`t each\`, \`t all\`, \`t try\`, \`t cond\`, \`t join\`, \`t repeat\`, \`t tap\`, \`t until\`, \`t any\` (coords 0/03..0/0C). Composes t-commands across substrates.`,
+  );
+  lines.push(
+    `- **Code-level** (\`src/x0030_compose.ts\`): \`pipe / flow / tap / ifElse / tryOr / fromNullable / parallel\`. Composes TS functions inside organ code.`,
+  );
+  lines.push(``);
+  lines.push(
+    `**When writing or refactoring organ code**: prefer pipe/parallel/tryOr over sequential statements + try-catch when the transformation chain is ≥ 3 steps. Per architect 2026-05-22 ("model convenience over human readability") — optimize structural clarity for model parsing, not line count.`,
+  );
+  lines.push(``);
+  lines.push(
+    `Reference refactors: \`src/x4F00_contracts.ts\` (full pipe-chain), \`src/x8D00_roadmap_gen.ts\` (targeted parallel() at I/O bottleneck).`,
+  );
+  lines.push(``);
+
   if (unclassified > 0 || invalid > 0 || tagDrift.length > 0) {
     lines.push(`## ⚠️ Substrate classification gaps`);
     lines.push(``);

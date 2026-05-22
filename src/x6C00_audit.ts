@@ -52,7 +52,11 @@
 //   1  one or more mismatches under projection reading
 //   2  one or more files have malformed/missing dipole
 
-import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
+import {
+  dirname,
+  fromFileUrl,
+  join,
+} from "https://deno.land/std@0.224.0/path/mod.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
@@ -107,7 +111,9 @@ function i8HexToSigned(hex: string): number {
   return u8 >= 128 ? u8 - 256 : u8;
 }
 
-function parseHexDipole(text: string): { values: number[] | null; raw: string | null } {
+function parseHexDipole(
+  text: string,
+): { values: number[] | null; raw: string | null } {
   const match = text.match(/hex_dipole:\s*"([^"]+)"/);
   if (!match) return { values: null, raw: null };
   const raw = match[1].trim();
@@ -135,7 +141,9 @@ function strongestAxes(values: number[]): { axes: number[]; mag: number } {
   return { axes, mag: bestMag };
 }
 
-function bucketOf(relPath: string): { bucket: string; bucketInt: number | null } {
+function bucketOf(
+  relPath: string,
+): { bucket: string; bucketInt: number | null } {
   // After flat-src: bucket is the first hex digit in the filename (x<bucket>...).
   const name = relPath.split("/").pop() ?? "";
   const m = name.match(/^x([0-9A-Fa-f])[0-9A-Fa-f]{3}_/);
@@ -158,17 +166,27 @@ async function scanHexFiles(root: string): Promise<string[]> {
   return out.sort();
 }
 
-async function inspectFile(absPath: string, relPath: string): Promise<FileReport> {
+async function inspectFile(
+  absPath: string,
+  relPath: string,
+): Promise<FileReport> {
   const { bucket, bucketInt } = bucketOf(relPath);
   let text: string;
   try {
     text = await Deno.readTextFile(absPath);
   } catch {
     return {
-      path: relPath, bucket, signature: null, raw: null,
-      strongest_axes: [], strongest_axes_names: [], strongest_value: null,
-      bucket_int: bucketInt, placement_policy: "axis",
-      match: "no_dipole", note: "unreadable",
+      path: relPath,
+      bucket,
+      signature: null,
+      raw: null,
+      strongest_axes: [],
+      strongest_axes_names: [],
+      strongest_value: null,
+      bucket_int: bucketInt,
+      placement_policy: "axis",
+      match: "no_dipole",
+      note: "unreadable",
       is_dispatchable: false,
     };
   }
@@ -187,19 +205,33 @@ async function inspectFile(absPath: string, relPath: string): Promise<FileReport
       ? "DISPATCHABLE ORGAN missing hex_dipole — gap"
       : "library/utility (no import.meta.main) — no dipole by design (policy-OK)";
     return {
-      path: relPath, bucket, signature: null, raw: null,
-      strongest_axes: [], strongest_axes_names: [], strongest_value: null,
-      bucket_int: bucketInt, placement_policy: policy,
-      match: "no_dipole", note,
+      path: relPath,
+      bucket,
+      signature: null,
+      raw: null,
+      strongest_axes: [],
+      strongest_axes_names: [],
+      strongest_value: null,
+      bucket_int: bucketInt,
+      placement_policy: policy,
+      match: "no_dipole",
+      note,
       is_dispatchable,
     };
   }
   if (!values) {
     return {
-      path: relPath, bucket, signature: null, raw,
-      strongest_axes: [], strongest_axes_names: [], strongest_value: null,
-      bucket_int: bucketInt, placement_policy: policy,
-      match: "malformed", note: "could not parse 8 i8 bytes",
+      path: relPath,
+      bucket,
+      signature: null,
+      raw,
+      strongest_axes: [],
+      strongest_axes_names: [],
+      strongest_value: null,
+      bucket_int: bucketInt,
+      placement_policy: policy,
+      match: "malformed",
+      note: "could not parse 8 i8 bytes",
       is_dispatchable,
     };
   }
@@ -207,10 +239,17 @@ async function inspectFile(absPath: string, relPath: string): Promise<FileReport
   const allZero = values.every((v) => v === 0);
   if (allZero) {
     return {
-      path: relPath, bucket, signature: values, raw,
-      strongest_axes: [], strongest_axes_names: [], strongest_value: 0,
-      bucket_int: bucketInt, placement_policy: policy,
-      match: "no_dipole", note: "neutral signature (all zero)",
+      path: relPath,
+      bucket,
+      signature: values,
+      raw,
+      strongest_axes: [],
+      strongest_axes_names: [],
+      strongest_value: 0,
+      bucket_int: bucketInt,
+      placement_policy: policy,
+      match: "no_dipole",
+      note: "neutral signature (all zero)",
       is_dispatchable,
     };
   }
@@ -220,10 +259,17 @@ async function inspectFile(absPath: string, relPath: string): Promise<FileReport
 
   if (bucketInt === null) {
     return {
-      path: relPath, bucket, signature: values, raw,
-      strongest_axes: axes, strongest_axes_names: axisNames, strongest_value: mag,
-      bucket_int: null, placement_policy: policy,
-      match: "malformed", note: "bucket not a hex digit",
+      path: relPath,
+      bucket,
+      signature: values,
+      raw,
+      strongest_axes: axes,
+      strongest_axes_names: axisNames,
+      strongest_value: mag,
+      bucket_int: null,
+      placement_policy: policy,
+      match: "malformed",
+      note: "bucket not a hex digit",
       is_dispatchable,
     };
   }
@@ -244,10 +290,14 @@ async function inspectFile(absPath: string, relPath: string): Promise<FileReport
     if (composite) {
       const matched = axes.find((a) => pathMod8.includes(a))!;
       m = "match";
-      note = `composite policy — axis ${matched} matches path components [${pathMod8.join(",")}]`;
+      note = `composite policy — axis ${matched} matches path components [${
+        pathMod8.join(",")
+      }]`;
     } else {
       m = "mismatch";
-      note = `composite policy — strongest axes [${axes.join(",")}] do not include any path component [${pathMod8.join(",")}]`;
+      note = `composite policy — strongest axes [${
+        axes.join(",")
+      }] do not include any path component [${pathMod8.join(",")}]`;
     }
   } else {
     // axis policy (default)
@@ -256,46 +306,64 @@ async function inspectFile(absPath: string, relPath: string): Promise<FileReport
     const matchedValue = axisMatch ? values[bucketAxis] : null;
     const isNegativePole = bucketInt >= 8;
     const signOpposed = matchedValue !== null &&
-      ((isNegativePole && matchedValue > 0) || (!isNegativePole && matchedValue < 0));
+      ((isNegativePole && matchedValue > 0) ||
+        (!isNegativePole && matchedValue < 0));
 
     if (axisMatch && !signOpposed) {
       note = axes.length === 1
         ? `axis ${bucketAxis} matches bucket ${bucket}`
-        : `axis ${bucketAxis} among tied strongest [${axes.join(",")}] matches bucket ${bucket}`;
+        : `axis ${bucketAxis} among tied strongest [${
+          axes.join(",")
+        }] matches bucket ${bucket}`;
       m = "match";
     } else if (axisMatch && signOpposed) {
-      note = `axis ${bucketAxis} matches bucket ${bucket} via pair (sign-opposed pole)`;
+      note =
+        `axis ${bucketAxis} matches bucket ${bucket} via pair (sign-opposed pole)`;
       m = "match";
     } else {
-      note = `axis policy — strongest axes [${axes.join(",")}] do not include bucket axis ${bucketAxis}`;
+      note = `axis policy — strongest axes [${
+        axes.join(",")
+      }] do not include bucket axis ${bucketAxis}`;
       m = "mismatch";
     }
   }
 
   return {
-    path: relPath, bucket, signature: values, raw,
-    strongest_axes: axes, strongest_axes_names: axisNames, strongest_value: mag,
-    bucket_int: bucketInt, placement_policy: policy,
-    match: m, note,
+    path: relPath,
+    bucket,
+    signature: values,
+    raw,
+    strongest_axes: axes,
+    strongest_axes_names: axisNames,
+    strongest_value: mag,
+    bucket_int: bucketInt,
+    placement_policy: policy,
+    match: m,
+    note,
     is_dispatchable,
   };
 }
 
-function renderReport(reports: FileReport[], opts: { quiet: boolean; mismatchOnly: boolean }): void {
+function renderReport(
+  reports: FileReport[],
+  opts: { quiet: boolean; mismatchOnly: boolean },
+): void {
   const matches = reports.filter((r) => r.match === "match").length;
   const mismatches = reports.filter((r) => r.match === "mismatch").length;
   const deferred = reports.filter((r) => r.match === "deferred").length;
   const noDipole = reports.filter((r) => r.match === "no_dipole").length;
   // Split no_dipole into honest sub-categories per Kimi's Vector 3 + claude/antigravity tweaks:
   // dispatchable organ missing dipole = real gap; library/utility missing dipole = policy-OK.
-  const noDipoleOrganGap = reports.filter((r) =>
-    r.match === "no_dipole" && r.is_dispatchable
-  ).length;
+  const noDipoleOrganGap =
+    reports.filter((r) => r.match === "no_dipole" && r.is_dispatchable).length;
   const noDipoleLibraryOk = noDipole - noDipoleOrganGap;
   const malformed = reports.filter((r) => r.match === "malformed").length;
 
   if (!opts.quiet) {
-    console.log("path".padEnd(22) + "bucket  strongest axes (mag)         policy     match");
+    console.log(
+      "path".padEnd(22) +
+        "bucket  strongest axes (mag)         policy     match",
+    );
     console.log("-".repeat(86));
     for (const r of reports) {
       if (opts.mismatchOnly && r.match === "match") continue;
@@ -307,10 +375,14 @@ function renderReport(reports: FileReport[], opts: { quiet: boolean; mismatchOnl
         ? "⊘"
         : "·";
       const strongest = r.strongest_axes.length > 0
-        ? `[${r.strongest_axes.join(",")}] ${r.strongest_axes_names.join("/").slice(0, 18).padEnd(18)} ${(r.strongest_value ?? 0).toString().padStart(4)}`
+        ? `[${r.strongest_axes.join(",")}] ${
+          r.strongest_axes_names.join("/").slice(0, 18).padEnd(18)
+        } ${(r.strongest_value ?? 0).toString().padStart(4)}`
         : "—".padEnd(28);
       console.log(
-        `${r.path.padEnd(22)} ${r.bucket.padEnd(7)}${strongest}  ${r.placement_policy.padEnd(9)}  ${icon} ${r.match}`,
+        `${r.path.padEnd(22)} ${r.bucket.padEnd(7)}${strongest}  ${
+          r.placement_policy.padEnd(9)
+        }  ${icon} ${r.match}`,
       );
     }
     console.log("-".repeat(86));
@@ -334,26 +406,30 @@ async function main(): Promise<void> {
   }
 
   if (json) {
-    console.log(JSON.stringify({
-      type: "audit",
-      position: "6/C",
-      action: "audit",
-      total: reports.length,
-      summary: {
-        match: reports.filter((r) => r.match === "match").length,
-        mismatch: reports.filter((r) => r.match === "mismatch").length,
-        deferred: reports.filter((r) => r.match === "deferred").length,
-        no_dipole: reports.filter((r) => r.match === "no_dipole").length,
-        no_dipole_organ_gap: reports.filter((r) =>
-          r.match === "no_dipole" && r.is_dispatchable
-        ).length,
-        no_dipole_library_ok: reports.filter((r) =>
-          r.match === "no_dipole" && !r.is_dispatchable
-        ).length,
-        malformed: reports.filter((r) => r.match === "malformed").length,
+    console.log(JSON.stringify(
+      {
+        type: "audit",
+        position: "6/C",
+        action: "audit",
+        total: reports.length,
+        summary: {
+          match: reports.filter((r) => r.match === "match").length,
+          mismatch: reports.filter((r) => r.match === "mismatch").length,
+          deferred: reports.filter((r) => r.match === "deferred").length,
+          no_dipole: reports.filter((r) => r.match === "no_dipole").length,
+          no_dipole_organ_gap: reports.filter((r) =>
+            r.match === "no_dipole" && r.is_dispatchable
+          ).length,
+          no_dipole_library_ok: reports.filter((r) =>
+            r.match === "no_dipole" && !r.is_dispatchable
+          ).length,
+          malformed: reports.filter((r) => r.match === "malformed").length,
+        },
+        reports,
       },
-      reports,
-    }, null, 2));
+      null,
+      2,
+    ));
   } else {
     renderReport(reports, { quiet, mismatchOnly });
   }

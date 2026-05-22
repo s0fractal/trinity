@@ -316,9 +316,10 @@ function auditSkillTagDrift(
       continue;
     }
     if (!entry.handles.includes(o.skill_tag)) {
-      o.skill_tag_drift = `tag "${o.skill_tag}" not in glossary handles for ${pos} (handles: ${
-        entry.handles.slice(0, 4).join(", ")
-      }${entry.handles.length > 4 ? ", ..." : ""})`;
+      o.skill_tag_drift =
+        `tag "${o.skill_tag}" not in glossary handles for ${pos} (handles: ${
+          entry.handles.slice(0, 4).join(", ")
+        }${entry.handles.length > 4 ? ", ..." : ""})`;
     }
   }
 }

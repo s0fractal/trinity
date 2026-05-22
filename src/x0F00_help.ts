@@ -15,7 +15,15 @@
 // Returns structured help payload. Dispatcher (0x0/01.ts) renders for TTY.
 // No arg: mode=list. With arg: mode=detail (with semantic decomposition).
 
-import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
+import {
+  dirname,
+  fromFileUrl,
+  join,
+} from "https://deno.land/std@0.224.0/path/mod.ts";
+import {
+  exists as fn_exists,
+  positionToPath as fn_position_to_path,
+} from "./x0010_dispatch_runner.ts";
 
 const SUBSTRATE_ROOT = dirname(dirname(fromFileUrl(import.meta.url)));
 const GLOSSARY_PATH = join(SUBSTRATE_ROOT, "src", "x0001_glossary.ndjson");
@@ -27,7 +35,9 @@ interface WordRec {
   note: string;
 }
 
-async function fn_load_all(): Promise<{ words: WordRec[]; symbols: Map<string, any> }> {
+async function fn_load_all(): Promise<
+  { words: WordRec[]; symbols: Map<string, any> }
+> {
   const text = await Deno.readTextFile(GLOSSARY_PATH);
   const words: WordRec[] = [];
   const symbols = new Map<string, any>();
@@ -37,7 +47,9 @@ async function fn_load_all(): Promise<{ words: WordRec[]; symbols: Map<string, a
       const kind = r["00"];
       if (kind === "5") {
         if (Array.isArray(r["02"]) && typeof r["04"] === "string") {
-          const handles = (r["02"] as string[]).filter((s) => typeof s === "string");
+          const handles = (r["02"] as string[]).filter((s) =>
+            typeof s === "string"
+          );
           words.push({
             primary: handles[0] ?? "",
             handles,
@@ -64,22 +76,12 @@ function fn_resolve(input: string, words: WordRec[]): WordRec | null {
   return null;
 }
 
-function fn_position_to_path(pos: string): string {
-  const parts = pos.split("/");
-  const top = `0x${parts[0]}`;
-  const mid = parts.slice(1, -1);
-  const file = parts[parts.length - 1] + ".ts";
-  return join(SUBSTRATE_ROOT, top, ...mid, file);
-}
-
-async function fn_exists(path: string): Promise<boolean> {
-  try {
-    await Deno.stat(path);
-    return true;
-  } catch {
-    return false;
-  }
-}
+// Position→path + exists imported from x0010_dispatch_runner: single
+// source of truth for flat-src resolution. Pre-flat-src this organ had
+// its own 0xN/M-style resolver; after 2026-05-18 migration that
+// resolver always returned false (architect's 2026-05-23 audit found
+// it). Reusing the dispatcher's resolver keeps help in sync with
+// actual t-dispatch behavior.
 
 if (import.meta.main) {
   const { words, symbols } = await fn_load_all();
@@ -101,7 +103,9 @@ if (import.meta.main) {
     // detail mode
     const r = fn_resolve(target, words);
     if (!r) {
-      console.log(JSON.stringify({ type: "error", message: `unknown word: ${target}` }));
+      console.log(
+        JSON.stringify({ type: "error", message: `unknown word: ${target}` }),
+      );
       Deno.exit(1);
     }
     const path = fn_position_to_path(r.position);

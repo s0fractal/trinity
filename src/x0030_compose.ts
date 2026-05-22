@@ -64,7 +64,10 @@ export function pipe<A, B, C, D, E, F, G>(
   fg: (f: F) => G | Promise<G>,
 ): Promise<G>;
 // deno-lint-ignore no-explicit-any
-export async function pipe(value: any, ...fns: Array<(v: any) => any>): Promise<any> {
+export async function pipe(
+  value: any,
+  ...fns: Array<(v: any) => any>
+): Promise<any> {
   let acc = await value;
   for (const fn of fns) acc = await fn(acc);
   return acc;
@@ -116,8 +119,7 @@ export function ifElse<I, T, F>(
   onTrue: (v: I) => T | Promise<T>,
   onFalse: (v: I) => F | Promise<F>,
 ): (v: I) => Promise<T | F> {
-  return async (v: I) =>
-    pred(v) ? await onTrue(v) : await onFalse(v);
+  return async (v: I) => pred(v) ? await onTrue(v) : await onFalse(v);
 }
 
 /** Try fn; on throw return fallback. NOT a full Result monad —
@@ -140,8 +142,7 @@ export function fromNullable<T, U>(
   fn: (v: T) => U | Promise<U>,
   fallback: U,
 ): (v: T | null | undefined) => Promise<U> {
-  return async (v) =>
-    (v === null || v === undefined) ? fallback : await fn(v);
+  return async (v) => (v === null || v === undefined) ? fallback : await fn(v);
 }
 
 /** Named parallel-collect. Pass an object of () => Promise<X>;

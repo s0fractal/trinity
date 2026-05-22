@@ -503,7 +503,9 @@ async function loadSubstrateProjections(): Promise<SubstrateProjection[]> {
             for (let k = j + 1; k < bodyLines.length; k++) {
               const cont = bodyLines[k].trim();
               if (!cont) break;
-              if (/^(Signal|Not a backlog|Roadmap pressure|###|##)/.test(cont)) {
+              if (
+                /^(Signal|Not a backlog|Roadmap pressure|###|##)/.test(cont)
+              ) {
                 break;
               }
               p += " " + cont;

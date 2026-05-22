@@ -63,12 +63,12 @@ const SRC = HERE;
 const PROBES_DIR = join(TRINITY_ROOT, "probes");
 const OUT = HERE;
 
-const BANNER_STATUS_RE =
-  /^>\s*\*\*Status:\s*([^*]+?)\*\*\s*(.*?)$/m;
+const BANNER_STATUS_RE = /^>\s*\*\*Status:\s*([^*]+?)\*\*\s*(.*?)$/m;
 const SPEC_STATUS_SECTION_RE = /^##\s+Status\s*$/m;
 const ORGAN_FILE_RE = /^x([0-9A-Fa-f])([0-9A-Fa-f]{3})_([^.]+)\.ts$/;
 const GRADUATED_TARGET_RE = /(?:→|->)\s*`?(src\/x[0-9A-Fa-f]{4}_[^`\s]+\.ts)`?/;
-const GRADUATED_CONTRACT_RE = /(?:→|->)\s*([A-Z_]+\.v\d+(?:\.\d+)?)\s*contract/i;
+const GRADUATED_CONTRACT_RE =
+  /(?:→|->)\s*([A-Z_]+\.v\d+(?:\.\d+)?)\s*contract/i;
 
 type StatusKind =
   | "graduated"

@@ -42,7 +42,11 @@
 // Glossary words: contracts, agreements, schemas, pacts, контракти,
 //                 угоди, схеми, пакти
 
-import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
+import {
+  dirname,
+  fromFileUrl,
+  join,
+} from "https://deno.land/std@0.224.0/path/mod.ts";
 import { parallel, pipe, tryOr } from "./x0030_compose.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
@@ -123,8 +127,14 @@ async function loadAddedAtCache(): Promise<Map<string, Date>> {
   _addedAtCache = await tryOr(async () => {
     const proc = new Deno.Command("git", {
       args: [
-        "-C", ROOT, "log", "--diff-filter=A", "--name-only",
-        "--format=COMMIT %aI", "--", "contracts/",
+        "-C",
+        ROOT,
+        "log",
+        "--diff-filter=A",
+        "--name-only",
+        "--format=COMMIT %aI",
+        "--",
+        "contracts/",
       ],
       stdout: "piped",
       stderr: "piped",
@@ -156,7 +166,9 @@ function chordDateFromFilename(filename: string): Date | null {
 // Extract distinct contract filenames mentioned in chord body.
 function contractRefsInChord(body: string): Set<string> {
   const out = new Set<string>();
-  const matches = body.matchAll(/contracts\/([A-Za-z0-9_]+\.v[0-9.]+(?:\.draft)?\.md)/g);
+  const matches = body.matchAll(
+    /contracts\/([A-Za-z0-9_]+\.v[0-9.]+(?:\.draft)?\.md)/g,
+  );
   for (const m of matches) out.add(m[1]);
   return out;
 }
@@ -173,7 +185,10 @@ function recordCowitness(
   const prev = map.get(contractFile) ?? { count: 0, latestDaysAgo: null };
   prev.count++;
   if (chordDate) {
-    const daysAgo = Math.max(0, Math.floor((now - chordDate.getTime()) / 86400000));
+    const daysAgo = Math.max(
+      0,
+      Math.floor((now - chordDate.getTime()) / 86400000),
+    );
     if (prev.latestDaysAgo === null || daysAgo < prev.latestDaysAgo) {
       prev.latestDaysAgo = daysAgo;
     }
@@ -182,11 +197,18 @@ function recordCowitness(
 }
 
 // Cache: chord-reference counts per contract.
-let _cowitnessCache: Map<string, { count: number; latestDaysAgo: number | null }> | null = null;
-async function loadCowitnessCache(): Promise<Map<string, { count: number; latestDaysAgo: number | null }>> {
+let _cowitnessCache:
+  | Map<string, { count: number; latestDaysAgo: number | null }>
+  | null = null;
+async function loadCowitnessCache(): Promise<
+  Map<string, { count: number; latestDaysAgo: number | null }>
+> {
   if (_cowitnessCache) return _cowitnessCache;
   _cowitnessCache = await tryOr(async () => {
-    const out = new Map<string, { count: number; latestDaysAgo: number | null }>();
+    const out = new Map<
+      string,
+      { count: number; latestDaysAgo: number | null }
+    >();
     const chordsDir = join(ROOT, "jazz", "chords");
     const now = Date.now();
     for await (const entry of Deno.readDir(chordsDir)) {
@@ -345,11 +367,15 @@ async function listContracts(): Promise<ContractEntry[]> {
 }
 
 function renderTable(contracts: ContractEntry[]): void {
-  console.log("# contracts @ 4/F — live projection of contracts/*.md frontmatter");
+  console.log(
+    "# contracts @ 4/F — live projection of contracts/*.md frontmatter",
+  );
   console.log("# " + "─".repeat(86));
   console.log(`# ${contracts.length} contracts known`);
   console.log("");
-  console.log("# status      version    pin  lines  sunset                file");
+  console.log(
+    "# status      version    pin  lines  sunset                   file",
+  );
   console.log("# " + "─".repeat(86));
   for (const c of contracts) {
     const pinIcon = c.pinned ? "🔒" : "  ";
@@ -357,42 +383,45 @@ function renderTable(contracts: ContractEntry[]): void {
     const ver = c.version.padEnd(10);
     const lines = c.body_lines.toString().padStart(4);
     const sunsetCell = formatSunsetCell(c);
-    console.log(`# ${status} ${ver} ${pinIcon}  ${lines}  ${sunsetCell}  ${c.filename}`);
+    console.log(
+      `# ${status} ${ver} ${pinIcon}  ${lines}  ${sunsetCell}  ${c.filename}`,
+    );
   }
   console.log("# " + "─".repeat(86));
   const byStatus = new Map<string, number>();
   for (const c of contracts) {
     byStatus.set(c.status, (byStatus.get(c.status) ?? 0) + 1);
   }
-  const summary = Array.from(byStatus.entries()).map(([k, v]) => `${k}:${v}`).join("  ");
+  const summary = Array.from(byStatus.entries()).map(([k, v]) => `${k}:${v}`)
+    .join("  ");
   const pinned = contracts.filter((c) => c.pinned).length;
   console.log(`# ${summary}  pinned:${pinned}`);
   renderSunsetSummary(contracts);
 }
 
 function formatSunsetCell(c: ContractEntry): string {
-  if (c.status !== "draft") return "—".padEnd(21);
+  if (c.status !== "draft") return "—".padEnd(24);
   switch (c.sunset_status) {
     case "pinned":
-      return "pinned".padEnd(21);
+      return "pinned".padEnd(24);
     case "load-bearing":
-      return "load-bearing".padEnd(21);
+      return "load-bearing".padEnd(24);
     case "extended": {
       const ext = c.cowitness_recent_days !== null
         ? `cowit ${c.cowitness_recent_days}d ago`
         : "cowit";
-      return `extended (${ext})`.slice(0, 21).padEnd(21);
+      return `extended (${ext})`.slice(0, 24).padEnd(24);
     }
     case "fresh":
-      return `fresh (${c.age_days}d)`.padEnd(21);
+      return `fresh (${c.age_days}d)`.padEnd(24);
     case "approaching-sunset":
-      return `nearing (${c.age_days}d)`.padEnd(21);
+      return `nearing (${c.age_days}d)`.padEnd(24);
     case "past-sunset":
-      return `past (${c.age_days}d)`.padEnd(21);
+      return `past (${c.age_days}d)`.padEnd(24);
     case "unknown":
-      return "age-unknown".padEnd(21);
+      return "age-unknown".padEnd(24);
     default:
-      return "—".padEnd(21);
+      return "—".padEnd(24);
   }
 }
 
@@ -403,14 +432,23 @@ function renderSunsetSummary(contracts: ContractEntry[]): void {
   for (const c of drafts) {
     byStatus.set(c.sunset_status, (byStatus.get(c.sunset_status) ?? 0) + 1);
   }
-  const parts = ["load-bearing", "extended", "fresh", "approaching-sunset", "past-sunset"]
+  const parts = [
+    "load-bearing",
+    "extended",
+    "fresh",
+    "approaching-sunset",
+    "past-sunset",
+  ]
     .filter((k) => (byStatus.get(k) ?? 0) > 0)
     .map((k) => `${k}: ${byStatus.get(k)}`);
   if (parts.length > 0) {
-    console.log(`# draft sunset (${drafts.length} drafts): ${parts.join(", ")}`);
+    console.log(
+      `# draft sunset (${drafts.length} drafts): ${parts.join(", ")}`,
+    );
   }
   const pastOrNearing = drafts.filter((c) =>
-    c.sunset_status === "approaching-sunset" || c.sunset_status === "past-sunset"
+    c.sunset_status === "approaching-sunset" ||
+    c.sunset_status === "past-sunset"
   );
   if (pastOrNearing.length > 0) {
     console.log(`#   ⚠ ${pastOrNearing.length} draft(s) need attention:`);
@@ -430,11 +468,25 @@ function renderDetail(c: ContractEntry): void {
   console.log(`# type:        ${c.type}`);
   console.log(`# version:     ${c.version}`);
   console.log(`# status:      ${c.status}`);
-  console.log(`# pinned:      ${c.pinned ? "yes (externally anchored — do not modify)" : "no (internal — editable per consensus)"}`);
+  console.log(
+    `# pinned:      ${
+      c.pinned
+        ? "yes (externally anchored — do not modify)"
+        : "no (internal — editable per consensus)"
+    }`,
+  );
   console.log(`# body lines:  ${c.body_lines}`);
   console.log(`# related:     ${c.related_count}`);
-  console.log(`# age:         ${c.age_days !== null ? `${c.age_days} days` : "unknown"}`);
-  console.log(`# cowitness:   ${c.cowitness_count} chord refs${c.cowitness_recent_days !== null ? `, latest ${c.cowitness_recent_days}d ago` : ""}`);
+  console.log(
+    `# age:         ${c.age_days !== null ? `${c.age_days} days` : "unknown"}`,
+  );
+  console.log(
+    `# cowitness:   ${c.cowitness_count} chord refs${
+      c.cowitness_recent_days !== null
+        ? `, latest ${c.cowitness_recent_days}d ago`
+        : ""
+    }`,
+  );
   console.log(`# load-bearing: ${c.load_bearing ? "yes" : "no"}`);
   console.log(`# sunset:      ${c.sunset_status}`);
   console.log("");
@@ -444,7 +496,9 @@ function renderDetail(c: ContractEntry): void {
 if (import.meta.main) {
   const args = Deno.args;
   const wantJson = args.includes("--json");
-  const statusFilter = args.find((a) => a.startsWith("--status="))?.split("=")[1];
+  const statusFilter = args.find((a) => a.startsWith("--status="))?.split(
+    "=",
+  )[1];
 
   let contracts = await listContracts();
   if (statusFilter) {
@@ -458,7 +512,12 @@ if (import.meta.main) {
       c.title.toLowerCase().includes(target)
     );
     if (!cap) {
-      console.log(JSON.stringify({ type: "error", message: `unknown contract: ${args[1]}` }));
+      console.log(
+        JSON.stringify({
+          type: "error",
+          message: `unknown contract: ${args[1]}`,
+        }),
+      );
       Deno.exit(1);
     }
     if (wantJson) {
@@ -475,7 +534,8 @@ if (import.meta.main) {
     action: "list",
     note: "foundation+frontier-pair = stabilized schemas (live projection)",
     source_of_truth: "contracts/*.md frontmatter",
-    superseded_artifact: "contracts/index.ndjson — replaced by this live projection",
+    superseded_artifact:
+      "contracts/index.ndjson — replaced by this live projection",
     summary: {
       total: contracts.length,
       active: contracts.filter((c) => c.status === "active").length,
@@ -485,8 +545,18 @@ if (import.meta.main) {
       pinned: contracts.filter((c) => c.pinned).length,
     },
     contracts,
-    synonyms: ["contracts", "agreements", "schemas", "pacts", "контракти", "угоди", "схеми", "пакти"],
-    topology: "live read of contracts/*.md frontmatter; body remains as .md payload pending record-graph migration (codex 2026-05-13T211717Z)",
+    synonyms: [
+      "contracts",
+      "agreements",
+      "schemas",
+      "pacts",
+      "контракти",
+      "угоди",
+      "схеми",
+      "пакти",
+    ],
+    topology:
+      "live read of contracts/*.md frontmatter; body remains as .md payload pending record-graph migration (codex 2026-05-13T211717Z)",
   };
 
   if (wantJson) {

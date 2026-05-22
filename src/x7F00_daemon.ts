@@ -25,14 +25,18 @@
 //
 // Glossary words: daemon, демон
 
-import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
+import {
+  dirname,
+  fromFileUrl,
+  join,
+} from "https://deno.land/std@0.224.0/path/mod.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
 const LOCK_FILE = join(ROOT, "state", "daemon.lock");
 const LAST_CHECK_FILE = join(ROOT, "state", "daemon.last-check");
-const LOG_DIR = join(ROOT, "daemon", "logs");
-const LOG_FILE = join(LOG_DIR, "invocations.ndjson");
+const LOG_FILE = join(ROOT, "src", "x7F01_daemon_invocations.ndjson");
+const LEGACY_LOG_FILE = join(ROOT, "daemon", "logs", "invocations.ndjson");
 const CHORDS_DIR = join(ROOT, "jazz", "chords");
 
 // ── types ──────────────────────────────────────────────────────────────────
@@ -60,7 +64,7 @@ async function readLockFile(): Promise<boolean> {
 
 async function readLastInvocation(): Promise<string | null> {
   try {
-    const text = await Deno.readTextFile(LOG_FILE);
+    const text = await readInvocationLog();
     const lines = text.trim().split("\n").filter((l) => l.length > 0);
     if (lines.length === 0) return null;
     const last = JSON.parse(lines[lines.length - 1]);
@@ -74,7 +78,7 @@ async function countInvocations24h(): Promise<number> {
   const cutoff = Date.now() - 24 * 60 * 60 * 1000;
   let count = 0;
   try {
-    const text = await Deno.readTextFile(LOG_FILE);
+    const text = await readInvocationLog();
     for (const line of text.trim().split("\n")) {
       if (line.length === 0) continue;
       try {
@@ -87,11 +91,22 @@ async function countInvocations24h(): Promise<number> {
   return count;
 }
 
+async function readInvocationLog(): Promise<string> {
+  try {
+    return await Deno.readTextFile(LOG_FILE);
+  } catch {
+    return await Deno.readTextFile(LEGACY_LOG_FILE);
+  }
+}
+
 // ── state mutators ─────────────────────────────────────────────────────────
 
 async function writeLock(): Promise<void> {
   await Deno.mkdir(dirname(LOCK_FILE), { recursive: true });
-  await Deno.writeTextFile(LOCK_FILE, `locked_at: ${new Date().toISOString()}\n`);
+  await Deno.writeTextFile(
+    LOCK_FILE,
+    `locked_at: ${new Date().toISOString()}\n`,
+  );
 }
 
 async function removeLock(): Promise<void> {
@@ -108,7 +123,11 @@ function renderTable(status: DaemonStatus): string {
     `# ──────────────────────────────────────────────────────────────────`,
     `# status     runtime     process  last_invocation         invocations_24h`,
     `# ──────────────────────────────────────────────────────────────────`,
-    `# ${status.status.padEnd(10)} ${status.runtime_state.padEnd(11)} ${String(status.process_running).padEnd(8)} ${(status.last_invocation ?? "—").padEnd(23)} ${String(status.invocation_count_24h).padStart(4)}`,
+    `# ${status.status.padEnd(10)} ${status.runtime_state.padEnd(11)} ${
+      String(status.process_running).padEnd(8)
+    } ${(status.last_invocation ?? "—").padEnd(23)} ${
+      String(status.invocation_count_24h).padStart(4)
+    }`,
   ];
   return lines.join("\n");
 }
@@ -163,7 +182,9 @@ interface VoiceProfile {
   comfort_field_synthetic: string;
 }
 
-function parseYamlFrontmatter(text: string): { fm: Record<string, unknown>; body: string } | null {
+function parseYamlFrontmatter(
+  text: string,
+): { fm: Record<string, unknown>; body: string } | null {
   if (!text.startsWith("---\n")) return null;
   const end = text.indexOf("\n---", 4);
   if (end === -1) return null;
@@ -210,9 +231,22 @@ function coerce(v: string): unknown {
   if (v === "null" || v === "~") return null;
   if (/^\d+$/.test(v)) return parseInt(v, 10);
   if (/^\d+\.\d+$/.test(v)) return parseFloat(v);
-  if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) return v.slice(1, -1);
-  if (v.startsWith("[") && v.endsWith("]")) { try { const p = JSON.parse(v); if (Array.isArray(p)) return p; } catch {} }
-  if (v.startsWith("{") && v.endsWith("}")) { try { const p = JSON.parse(v); if (typeof p === "object" && p !== null) return p; } catch {} }
+  if (
+    (v.startsWith('"') && v.endsWith('"')) ||
+    (v.startsWith("'") && v.endsWith("'"))
+  ) return v.slice(1, -1);
+  if (v.startsWith("[") && v.endsWith("]")) {
+    try {
+      const p = JSON.parse(v);
+      if (Array.isArray(p)) return p;
+    } catch {}
+  }
+  if (v.startsWith("{") && v.endsWith("}")) {
+    try {
+      const p = JSON.parse(v);
+      if (typeof p === "object" && p !== null) return p;
+    } catch {}
+  }
   return v;
 }
 
@@ -231,7 +265,9 @@ async function writeLastCheck(ts: number): Promise<void> {
   await Deno.writeTextFile(LAST_CHECK_FILE, String(ts));
 }
 
-async function loadNewChords(since: number): Promise<{ fm: ChordFm; path: string; mtime: number }[]> {
+async function loadNewChords(
+  since: number,
+): Promise<{ fm: ChordFm; path: string; mtime: number }[]> {
   const entries: { fm: ChordFm; path: string; mtime: number }[] = [];
   for await (const entry of Deno.readDir(CHORDS_DIR)) {
     if (!entry.isFile || !entry.name.endsWith(".md")) continue;
@@ -251,7 +287,11 @@ async function loadNewChords(since: number): Promise<{ fm: ChordFm; path: string
 }
 
 async function getVoiceProfiles(): Promise<VoiceProfile[]> {
-  const cmd = new Deno.Command("t", { args: ["voices", "--json"], stdout: "piped", stderr: "piped" });
+  const cmd = new Deno.Command("t", {
+    args: ["voices", "--json"],
+    stdout: "piped",
+    stderr: "piped",
+  });
   const { stdout } = await cmd.output();
   const text = new TextDecoder().decode(stdout);
   const data = JSON.parse(text);
@@ -280,7 +320,10 @@ function scoreVoice(chord: ChordFm, voice: VoiceProfile): number {
   let score = 0;
 
   // Topic match (+3)
-  if (chord.topic && voice.top_topic !== "unknown" && chord.topic === voice.top_topic) {
+  if (
+    chord.topic && voice.top_topic !== "unknown" &&
+    chord.topic === voice.top_topic
+  ) {
     score += 3;
   }
 
@@ -288,8 +331,9 @@ function scoreVoice(chord: ChordFm, voice: VoiceProfile): number {
   const chordOcts: string[] = [];
   if (chord.oct) chordOcts.push(String(chord.oct));
   else if (chord.primary) chordOcts.push(String(chord.primary));
-  else if (Array.isArray(chord.chord)) chordOcts.push(...chord.chord.map(String));
-  else if (chord.chord && typeof chord.chord === "object") {
+  else if (Array.isArray(chord.chord)) {
+    chordOcts.push(...chord.chord.map(String));
+  } else if (chord.chord && typeof chord.chord === "object") {
     const ch = chord.chord as { primary?: string; secondary?: string[] };
     if (ch.primary) chordOcts.push(ch.primary);
   }
@@ -299,7 +343,9 @@ function scoreVoice(chord: ChordFm, voice: VoiceProfile): number {
   }
 
   // Comfort field axis alignment (+1 per strong axis match)
-  const comfortBytes = voice.comfort_field_synthetic.split(/\s+/).map((h) => parseInt(h, 16));
+  const comfortBytes = voice.comfort_field_synthetic.split(/\s+/).map((h) =>
+    parseInt(h, 16)
+  );
   for (const oct of chordOcts) {
     const axis = axisFromOct(oct);
     if (axis !== null && comfortBytes[axis] > 0x40) {
@@ -310,7 +356,10 @@ function scoreVoice(chord: ChordFm, voice: VoiceProfile): number {
   return score;
 }
 
-function route1D(chord: ChordFm, voices: VoiceProfile[]): { voice: string; score: number } | null {
+function route1D(
+  chord: ChordFm,
+  voices: VoiceProfile[],
+): { voice: string; score: number } | null {
   let best: { voice: string; score: number } | null = null;
   for (const v of voices) {
     const s = scoreVoice(chord, v);
@@ -320,9 +369,12 @@ function route1D(chord: ChordFm, voices: VoiceProfile[]): { voice: string; score
 }
 
 async function writeInvocationReceipt(
-  chordId: string, voice: string, score: number, backfill: boolean,
+  chordId: string,
+  voice: string,
+  score: number,
+  backfill: boolean,
 ): Promise<void> {
-  await Deno.mkdir(LOG_DIR, { recursive: true });
+  await Deno.mkdir(dirname(LOG_FILE), { recursive: true });
   const entry: Record<string, unknown> = {
     timestamp: new Date().toISOString(),
     chord_id: chordId,
@@ -332,7 +384,9 @@ async function writeInvocationReceipt(
     backend: "1D_keyword_baseline",
   };
   if (backfill) entry.backfill = true;
-  await Deno.writeTextFile(LOG_FILE, JSON.stringify(entry) + "\n", { append: true });
+  await Deno.writeTextFile(LOG_FILE, JSON.stringify(entry) + "\n", {
+    append: true,
+  });
 }
 
 // ── run handler ────────────────────────────────────────────────────────────
@@ -365,18 +419,24 @@ async function handleRun(
     const now = Date.now();
     if (!dryRun) await writeLastCheck(now);
     if (useJson) {
-      console.log(JSON.stringify({
-        type: "daemon_run_receipt",
-        schema: "trinity.daemon.v0.1",
-        checked_at: new Date(now).toISOString(),
-        new_chords: 0,
-        routed: 0,
-        note: "initialized_last_check_to_now (no --backfill)",
-        receipts: [],
-      }, null, 2));
+      console.log(JSON.stringify(
+        {
+          type: "daemon_run_receipt",
+          schema: "trinity.daemon.v0.1",
+          checked_at: new Date(now).toISOString(),
+          new_chords: 0,
+          routed: 0,
+          note: "initialized_last_check_to_now (no --backfill)",
+          receipts: [],
+        },
+        null,
+        2,
+      ));
     } else {
       console.log(`# daemon @ 7/F — run --once`);
-      console.log(`# ──────────────────────────────────────────────────────────────────`);
+      console.log(
+        `# ──────────────────────────────────────────────────────────────────`,
+      );
       console.log(`# Initialized last-check to now. No chords routed.`);
       console.log(`# Pass --backfill to route historical chords.`);
     }
@@ -392,16 +452,26 @@ async function handleRun(
     standings.set(v.identity, await loadVoiceStanding(v.identity));
   }
 
-  const receipts: Array<{ chord_id: string; voice: string; score: number }> = [];
+  const receipts: Array<{ chord_id: string; voice: string; score: number }> =
+    [];
   for (const c of chords) {
     const match = route1D(c.fm, voices);
     if (match && match.score > 0) {
       const standing = standings.get(match.voice);
       if (standing === "observing" || standing === "paused") continue;
       if (!dryRun) {
-        await writeInvocationReceipt(c.fm.id!, match.voice, match.score, backfill);
+        await writeInvocationReceipt(
+          c.fm.id!,
+          match.voice,
+          match.score,
+          backfill,
+        );
       }
-      receipts.push({ chord_id: c.fm.id!, voice: match.voice, score: match.score });
+      receipts.push({
+        chord_id: c.fm.id!,
+        voice: match.voice,
+        score: match.score,
+      });
     }
   }
 
@@ -409,23 +479,37 @@ async function handleRun(
   if (!dryRun) await writeLastCheck(now);
 
   if (useJson) {
-    console.log(JSON.stringify({
-      type: "daemon_run_receipt",
-      schema: "trinity.daemon.v0.1",
-      checked_at: new Date(now).toISOString(),
-      new_chords: chords.length,
-      routed: receipts.length,
-      dry_run: dryRun,
-      backfill,
-      receipts,
-    }, null, 2));
+    console.log(JSON.stringify(
+      {
+        type: "daemon_run_receipt",
+        schema: "trinity.daemon.v0.1",
+        checked_at: new Date(now).toISOString(),
+        new_chords: chords.length,
+        routed: receipts.length,
+        dry_run: dryRun,
+        backfill,
+        receipts,
+      },
+      null,
+      2,
+    ));
   } else {
     const modeLabel = dryRun ? "run --dry-run" : "run --once";
     console.log(`# daemon @ 7/F — ${modeLabel}`);
-    console.log(`# ──────────────────────────────────────────────────────────────────`);
-    console.log(`# Checked:     ${new Date(since).toISOString()} → ${new Date(now).toISOString()}`);
+    console.log(
+      `# ──────────────────────────────────────────────────────────────────`,
+    );
+    console.log(
+      `# Checked:     ${new Date(since).toISOString()} → ${
+        new Date(now).toISOString()
+      }`,
+    );
     console.log(`# New chords:  ${chords.length}`);
-    console.log(`# Routed:      ${receipts.length}${dryRun ? " (DRY RUN — not written)" : ""}${backfill ? " (backfill)" : ""}`);
+    console.log(
+      `# Routed:      ${receipts.length}${
+        dryRun ? " (DRY RUN — not written)" : ""
+      }${backfill ? " (backfill)" : ""}`,
+    );
     for (const r of receipts) {
       console.log(`#   → ${r.chord_id} → ${r.voice} (score ${r.score})`);
     }

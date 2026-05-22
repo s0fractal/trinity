@@ -289,7 +289,7 @@ real, not aspirational.
   ./t daemon start     # removes lock + spawns daemon
   ./t daemon status    # ps + last invocation timestamp
   ```
-- **Invocation log:** `daemon/logs/invocations.ndjson` — one line per
+- **Invocation log:** `src/x7F01_daemon_invocations.ndjson` — one line per
   invocation: timestamp, voice, chord_envelope_id, style, alignment
   score, exit code. Replayable.
 - **Audit chord:** every 24h daemon emits a `mode: REFLECTION` chord

@@ -39,10 +39,9 @@ async function exportCleanCodebase() {
       "tests",
       "jazz/chords", // Too massive
       "probes", // Temporary
-      "daemon/logs", // Daemon logs
       "liquid", // Submodule
-      "omega",  // Submodule
-      "myc",    // Submodule
+      "omega", // Submodule
+      "myc", // Submodule
     ],
   };
 
@@ -53,14 +52,13 @@ async function exportCleanCodebase() {
 
       // Extra safety checks
       if (
-        relativePath.startsWith("tests/")
-        || relativePath.startsWith("liquid/")
-        || relativePath.startsWith("omega/")
-        || relativePath.startsWith("myc/")
-        || relativePath.startsWith("jazz/chords/")
-        || relativePath.startsWith("probes/")
-        || relativePath.startsWith("archive/")
-        || relativePath.startsWith("daemon/logs/")
+        relativePath.startsWith("tests/") ||
+        relativePath.startsWith("liquid/") ||
+        relativePath.startsWith("omega/") ||
+        relativePath.startsWith("myc/") ||
+        relativePath.startsWith("jazz/chords/") ||
+        relativePath.startsWith("probes/") ||
+        relativePath.startsWith("archive/")
       ) {
         continue;
       }

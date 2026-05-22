@@ -1,3 +1,22 @@
+// src/x7400_export_clean.ts — export / clean codebase dump
+// position: 7/4 → completion(7) × foundation(4) = stable extraction artifact
+// hex_dipole: "26 00 26 00 4C 00 26 6C"
+//   completion_frontier+0.85 (PRIMARY: produces final extraction terminus; bucket 7 MATCH)
+//   foundation_container+0.60 (stable artifact; sub-position 4 PAIR-MATCH)
+//   void_infinity+0.30 (reads entire substrate)
+//   mirror_apex+0.30 (mirrors substrate to external markdown)
+//   harmony_emergence+0.30 (synthesizes ordered single-file output)
+// placement_policy: axis
+// intent: dump trinity substrate (excluding submodules, heavy logs, tests) to single markdown for external review
+// maturity: active
+// horizon: incremental export (skip unchanged sections via content-hash); split by bucket for partial reviews
+// skill_tag: export
+// skill_safe: yes-with-care
+//
+// Closes Vector 3 organ-gap finding (claude+kimi+antigravity 2026-05-22):
+// this was the 1 dispatchable organ flagged "no_dipole organ-gap" by the
+// audit-split refinement; now has dipole, becomes audit-visible.
+
 import { ensureDir } from "https://deno.land/std@0.224.0/fs/ensure_dir.ts";
 import { expandGlob } from "https://deno.land/std@0.224.0/fs/expand_glob.ts";
 import { join } from "https://deno.land/std@0.224.0/path/mod.ts";

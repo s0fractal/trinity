@@ -9,7 +9,7 @@
 // placement_policy: axis
 // intent: scan probes/ subdirs, classify each probe's status (graduated / partial / deferred / active / unknown), render x8E00_probes.myc.md
 // maturity: active
-// horizon: detect graduation drift (probe marked active but target organ exists); link probe receipts via chord references
+// horizon: detect graduation drift (probe marked active but target organ exists); declarative graduation_target field in SPEC frontmatter for semantic links beyond lexical matching
 //
 // probes_gen — fifth self-description axis ("що я експериментую?")
 //
@@ -36,6 +36,8 @@
 //   probes/<probe>/README.md  (status banner)
 //   probes/<probe>/SPEC.md    (status section, fallback)
 //   src/x*.ts                 (filename inference)
+//   jazz/chords/*.md          (chord references — finds chords mentioning
+//                              probes/<probe>/; surfaces activity per probe)
 //
 // Renders (gitignored):
 //   src/x8E00_probes.myc.md          substrate-wide probe index
@@ -91,6 +93,13 @@ interface ProbeRecord {
   graduation_date: string | null;
   source_hash: string;
   source_size: number;
+  chord_refs: ChordRef[];
+}
+
+interface ChordRef {
+  filename: string;
+  block_height: number;
+  is_receipt: boolean;
 }
 
 async function sha256Hex(bytes: Uint8Array): Promise<string> {
@@ -164,9 +173,79 @@ async function findOrganForProbe(
   return null;
 }
 
+// Chord-reference scanning: cross-axis composition with chord pressure.
+// For each probe, find tracked chord files whose body or filename mentions
+// `probes/<probe-name>/`. Returns deduplicated list sorted by block height ascending.
+interface ChordSource {
+  filename: string;
+  body: string;
+  hash: string;
+  size: number;
+}
+
+const CHORD_NEW_FORM = /^x[0-9A-Fa-f]{4}_(\d+)_/;
+const CHORD_OLD_FORM = /^(\d{4})-(\d{2})-(\d{2})T(\d{2})(\d{2})(\d{2})Z/;
+const CHORD_BLOCK_REF = 950000;
+const CHORD_EPOCH_REF = 1779148800; // 2026-05-19T00:00:00Z
+
+function chordBlockHeight(filename: string): number {
+  const n = CHORD_NEW_FORM.exec(filename);
+  if (n) return parseInt(n[1], 10);
+  const o = CHORD_OLD_FORM.exec(filename);
+  if (!o) return 0;
+  const [, y, mo, d, h, mi, s] = o;
+  const epoch = Math.floor(Date.UTC(+y, +mo - 1, +d, +h, +mi, +s) / 1000);
+  return CHORD_BLOCK_REF + Math.floor((epoch - CHORD_EPOCH_REF) / 600);
+}
+
+function isReceiptFilename(filename: string): boolean {
+  const lower = filename.toLowerCase();
+  return /receipt|aye|verdict/.test(lower);
+}
+
+async function loadChordSources(): Promise<ChordSource[]> {
+  const tracked = await gitTrackedSet("jazz/chords");
+  const out: ChordSource[] = [];
+  const chordsDir = join(TRINITY_ROOT, "jazz", "chords");
+  for await (const entry of Deno.readDir(chordsDir)) {
+    if (!entry.isFile || !entry.name.endsWith(".md")) continue;
+    if (!tracked.has(`jazz/chords/${entry.name}`)) continue;
+    const bytes = await Deno.readFile(join(chordsDir, entry.name));
+    const text = new TextDecoder().decode(bytes);
+    out.push({
+      filename: entry.name,
+      body: text,
+      hash: await sha256Hex(bytes),
+      size: bytes.length,
+    });
+  }
+  return out;
+}
+
+function findChordRefs(
+  probeName: string,
+  chords: ChordSource[],
+): { refs: ChordRef[]; matchedFilenames: string[] } {
+  const needle = `probes/${probeName}/`;
+  const refs: ChordRef[] = [];
+  const matchedFilenames: string[] = [];
+  for (const c of chords) {
+    if (!c.body.includes(needle)) continue;
+    refs.push({
+      filename: c.filename,
+      block_height: chordBlockHeight(c.filename),
+      is_receipt: isReceiptFilename(c.filename),
+    });
+    matchedFilenames.push(c.filename);
+  }
+  refs.sort((a, b) => a.block_height - b.block_height);
+  return { refs, matchedFilenames };
+}
+
 async function readProbe(
   probeName: string,
   trackedOrgans: Set<string>,
+  chords: ChordSource[],
 ): Promise<ProbeRecord | null> {
   const dir = join(PROBES_DIR, probeName);
   let stat: Deno.FileInfo;
@@ -248,6 +327,8 @@ async function readProbe(
   const basis = new TextEncoder().encode(readme + "\n---\n" + spec);
   const hash = await sha256Hex(basis);
 
+  const { refs: chord_refs } = findChordRefs(probeName, chords);
+
   return {
     name: probeName,
     rel_path: `probes/${probeName}/`,
@@ -258,6 +339,7 @@ async function readProbe(
     graduation_date,
     source_hash: hash,
     source_size: basis.length,
+    chord_refs,
   };
 }
 
@@ -339,7 +421,7 @@ function renderProbesIndex(
   );
   lines.push(``);
   lines.push(
-    `*Status detected from (highest first): README banner → SPEC \`## Status\` section → filename inference (probe handle matches existing organ) → default unknown.*`,
+    `*Status detected from (highest first): README banner → SPEC top banner → SPEC \`## Status\` section → filename inference → default unknown. Each probe also surfaces chord activity (count, latest, latest receipt) from cross-axis scan of \`jazz/chords/\`.*`,
   );
   lines.push(``);
 
@@ -373,6 +455,25 @@ function renderProbesIndex(
       ) {
         lines.push(`  - ${p.status_detail}`);
       }
+      if (p.chord_refs.length > 0) {
+        const latest = p.chord_refs[p.chord_refs.length - 1];
+        const receipts = p.chord_refs.filter((c) => c.is_receipt);
+        const latestReceipt = receipts.length > 0
+          ? receipts[receipts.length - 1]
+          : null;
+        const parts = [
+          `${p.chord_refs.length} chord ref${
+            p.chord_refs.length === 1 ? "" : "s"
+          }`,
+          `latest: \`${latest.filename}\` (block ${latest.block_height})`,
+        ];
+        if (latestReceipt && latestReceipt.filename !== latest.filename) {
+          parts.push(
+            `latest receipt: \`${latestReceipt.filename}\` (block ${latestReceipt.block_height})`,
+          );
+        }
+        lines.push(`  - ${parts.join("; ")}`);
+      }
     }
     lines.push(``);
   }
@@ -391,19 +492,41 @@ function parseArgs(argv: string[]): Args {
   return out;
 }
 
+function chordSource(c: ChordSource): SourceFile {
+  return {
+    path: `jazz/chords/${c.filename}`,
+    hash: `sha256:${c.hash}`,
+    size: c.size,
+  };
+}
+
 async function main(argv: string[]) {
   const args = parseArgs(argv);
   const trackedOrgans = await gitTrackedSet("src");
+  const chords = await loadChordSources();
 
   const probes: ProbeRecord[] = [];
+  const referencedChordFilenames = new Set<string>();
   for await (const entry of Deno.readDir(PROBES_DIR)) {
     if (!entry.isDirectory) continue;
-    const rec = await readProbe(entry.name, trackedOrgans);
-    if (rec) probes.push(rec);
+    const rec = await readProbe(entry.name, trackedOrgans, chords);
+    if (rec) {
+      probes.push(rec);
+      for (const r of rec.chord_refs) referencedChordFilenames.add(r.filename);
+    }
   }
   probes.sort((a, b) => a.name.localeCompare(b.name));
 
-  const allSources: SourceFile[] = probes.map(probeSource);
+  // Source manifest includes probe sources + ONLY chord files that actually
+  // reference a probe (otherwise every chord change would invalidate x8E00,
+  // which would be noise — only chord activity that touches probes matters).
+  const referencedChordSources = chords
+    .filter((c) => referencedChordFilenames.has(c.filename))
+    .map(chordSource);
+  const allSources: SourceFile[] = [
+    ...probes.map(probeSource),
+    ...referencedChordSources,
+  ];
   const manifest_hash = await manifestHash(allSources);
   const generated_at = args.stable ? null : new Date().toISOString();
 
@@ -422,10 +545,10 @@ async function main(argv: string[]) {
   );
 
   console.log(
-    `[write] x8E00_probes.myc.md (${probes.length} probes)`,
+    `[write] x8E00_probes.myc.md (${probes.length} probes, ${referencedChordSources.length} chord refs)`,
   );
   console.log(
-    `[write] x8E00_probes.manifest.json (${probes.length} entries)`,
+    `[write] x8E00_probes.manifest.json (${allSources.length} entries: ${probes.length} probes + ${referencedChordSources.length} chord refs)`,
   );
   console.log(
     `done. 2 files. manifest_hash=${manifest_hash}${

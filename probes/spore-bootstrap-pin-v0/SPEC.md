@@ -1,5 +1,7 @@
 # spore-bootstrap-pin-v0 probe
 
+> **Status: graduated (contract) → SPORE_BOOTSTRAP_PIN.v0 contract active 2026-05-12.** 51 files Bitcoin-anchored under this pin.
+
 Verification probe for `contracts/SPORE_BOOTSTRAP_PIN.v0.md`.
 
 This probe addresses **criterion 8** of `SPORE.v0.draft.md`

@@ -25,9 +25,9 @@
 //   - architect's "generate from state, not author docs" principle
 //
 // Status detection (highest signal first):
-//   1. README.md `> **Status: graduated 2026-... → src/xNNNN_*`     — explicit banner
-//   2. README.md `> **Status: deferred|partial|meta-graduated ...`  — non-graduated banner
-//   3. SPEC.md `## Status\n\n<content>` first non-blank line         — older format
+//   1. README.md `> **Status: graduated 2026-... → src/xNNNN_*`     — explicit banner (new format)
+//   2. SPEC.md   `> **Status: graduated 2026-... → src/xNNNN_*`     — same banner pattern, older file
+//   3. SPEC.md `## Status\n\n<content>` first non-blank line         — pre-banner format
 //   4. Filename inference — if src/x<NNNN>_<base>*.ts exists (where
 //      <base> is probe handle minus -vN suffix), mark "likely graduated"
 //   5. Default — "unknown" (probe dir exists, no signal detected)
@@ -59,7 +59,7 @@ const SRC = HERE;
 const PROBES_DIR = join(TRINITY_ROOT, "probes");
 const OUT = HERE;
 
-const README_STATUS_RE =
+const BANNER_STATUS_RE =
   /^>\s*\*\*Status:\s*([^*]+?)\*\*\s*(.*?)$/m;
 const SPEC_STATUS_SECTION_RE = /^##\s+Status\s*$/m;
 const ORGAN_FILE_RE = /^x([0-9A-Fa-f])([0-9A-Fa-f]{3})_([^.]+)\.ts$/;
@@ -80,7 +80,12 @@ interface ProbeRecord {
   rel_path: string;
   status: StatusKind;
   status_detail: string;
-  status_source: "readme_banner" | "spec_section" | "filename_match" | "default";
+  status_source:
+    | "readme_banner"
+    | "spec_banner"
+    | "spec_section"
+    | "filename_match"
+    | "default";
   target: string | null;
   graduation_date: string | null;
   source_hash: string;
@@ -188,18 +193,22 @@ async function readProbe(
   let graduation_date: string | null = null;
 
   // Layer 1: README banner
-  const bannerM = README_STATUS_RE.exec(readme);
+  const readmeBannerM = readme ? BANNER_STATUS_RE.exec(readme) : null;
+  // Layer 2: SPEC.md top banner (same pattern, older file)
+  const specBannerM = spec ? BANNER_STATUS_RE.exec(spec) : null;
+  const bannerM = readmeBannerM ?? specBannerM;
+
   if (bannerM) {
     const label = bannerM[1].trim();
     const rest = bannerM[2].trim();
     const fullBanner = label + " " + rest;
     status = classifyBannerStatus(label);
     status_detail = label;
-    status_source = "readme_banner";
+    status_source = readmeBannerM ? "readme_banner" : "spec_banner";
     target = extractTarget(fullBanner);
     graduation_date = extractGraduationDate(label);
   } else if (spec) {
-    // Layer 2: SPEC.md `## Status` section
+    // Layer 3: SPEC.md `## Status` section (pre-banner format)
     const sectM = SPEC_STATUS_SECTION_RE.exec(spec);
     if (sectM) {
       const after = spec.slice(sectM.index + sectM[0].length);
@@ -356,7 +365,7 @@ function renderProbesIndex(
       lines.push(`- \`${p.name}\`${target}${date}${src}`);
       if (
         p.status_detail && p.status_source !== "readme_banner" &&
-        p.status_source !== "default"
+        p.status_source !== "spec_banner" && p.status_source !== "default"
       ) {
         lines.push(`  - ${p.status_detail}`);
       }

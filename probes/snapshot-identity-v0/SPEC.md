@@ -1,5 +1,7 @@
 # snapshot-identity-v0 probe
 
+> **Status: graduated → `src/x4E00_snapshot.ts` (`t snapshot`).** The snapshot-as-identity claim is live.
+
 Demonstrates that `t snapshot` produces **byte-identical body_hash for
 the same meta-ledger state** across multiple calls, separated in wall
 time. This is the empirical basis for the snapshot-as-identity claim

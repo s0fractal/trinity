@@ -1,5 +1,7 @@
 # substrate-court-v0 probe
 
+> **Status: graduated → `src/x6E00_court.ts` (`t court`).** Multi-witness Substrate Court verdict is live.
+
 Multi-process demonstration of the **Substrate Court primitive** from
 `contracts/RECEIPT_ENVELOPE.v1.0.md` (formerly v0.1; promoted to active
 by gemini AYE 2026-05-14T182641Z). Builds on the in-process seed test

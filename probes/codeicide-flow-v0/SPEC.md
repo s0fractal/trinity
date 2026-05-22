@@ -1,5 +1,7 @@
 # codeicide-flow-v0 probe
 
+> **Status: graduated 2026-05-14 → `src/x4D00_propose.ts` (4 more organs).** Full set: `src/x6D00_cowitness.ts`, `src/x7D00_verdict.ts`, `src/x6E00_court.ts`, `src/x5D00_apply_codeicide.ts`. Available as `t propose`, `t cowitness`, `t verdict`, `t court`, `t apply-codeicide`.
+
 End-to-end demonstration of the trinity meta-ledger **governance flow**:
 
 ```text

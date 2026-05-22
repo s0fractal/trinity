@@ -1,5 +1,7 @@
 # spore-reject-v0 probe
 
+> **Status: graduated (contract) → SPORE.v0 contract active 2026-05-12.** Probe is the negative-determinism test record.
+
 Negative-determinism probe for the `SPORE.v0` consensus mutator
 subset.
 

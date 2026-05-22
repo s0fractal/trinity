@@ -1,5 +1,7 @@
 # spore-apply-v0 probe
 
+> **Status: graduated (contract) → SPORE.v0 contract active 2026-05-12.** Probe is the cross-language test record (TS + Rust).
+
 Cross-language probe verifying that the `apply` record wire format
 and `spore_id` hash are byte-identical between independent rust and
 ts implementations.

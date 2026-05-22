@@ -1,5 +1,7 @@
 # liquid-flat-src-v0
 
+> **Status: meta-graduated 2026-05-18 → liquid `src/` (122 organs at bucket A).** Convention applied to actual liquid code via Kimi's migration.
+
 Probe of semantic-coordinate flat `src/` convention applied to `liquid/00_core/`.
 
 ## Status

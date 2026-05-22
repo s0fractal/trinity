@@ -1,5 +1,7 @@
 # spore-meter-exec-v0 probe
 
+> **Status: active — execution-side measurement.** Meter #3 for spore.fuel.v1; future organ decision pending.
+
 **Meter #3** for `spore.fuel.v1`, with a fundamentally different
 algorithm from meters #1 (`probes/spore-meter-v0/rust/`, Rust +
 wasmparser) and #2 (`probes/spore-meter-v0/ts/`, Deno + hand-rolled

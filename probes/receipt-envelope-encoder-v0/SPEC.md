@@ -1,5 +1,7 @@
 # receipt-envelope-encoder-v0 probe
 
+> **Status: graduated (contract) → RECEIPT_ENVELOPE.v1.0 contract active 2026-05-14.** TS + Python cross-impl probes are the test record.
+
 Hand-rolled minimal canonical CBOR encoder + `RECEIPT_ENVELOPE`
 reference implementation. Probe-scoped (NOT in `lib/`) per architect
 constraint: trinity should not grow `lib/`.

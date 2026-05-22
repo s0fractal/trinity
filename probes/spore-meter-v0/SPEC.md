@@ -1,5 +1,7 @@
 # spore-meter-v0 probe
 
+> **Status: active — measurement exploration.** Pattern may or may not become a live organ; future decision.
+
 Reference software meter for `spore.fuel.v1`.
 
 This probe implements **meter #1** required by `SPORE_FUEL.v1.draft.md`'s

@@ -1,5 +1,7 @@
 # spore-meter-instr-v0 probe (full v0 corpus: nop + identity + xor_5c + sum_bytes)
 
+> **Status: active — instrumentation-side measurement.** Meter #4 for spore.fuel.v1; future organ decision pending.
+
 **Meter #4** for `spore.fuel.v1`, fundamentally different in
 **algorithm class** from meters #1, #2, #3.
 

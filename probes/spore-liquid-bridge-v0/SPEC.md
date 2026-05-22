@@ -1,5 +1,7 @@
 # spore-liquid-bridge-v0 probe
 
+> **Status: active — cross-substrate bridge exploration.** Adapter pattern between SPORE and Liquid; tied to spore-runtime-adapter-v0; future organ decision pending.
+
 Thin adapter probe for projecting one Liquid-style semantic event
 into a SPORE `apply` receipt without changing Liquid's native
 storage.

@@ -1,5 +1,7 @@
 # envelope-bitcoin-anchor-v0 probe
 
+> **Status: graduated → `src/x7E00_anchor_prep.ts` (`t anchor_prep`).** Merkle root + inclusion proofs over N envelopes is live.
+
 **Inscription-prep** for `RECEIPT_ENVELOPE` v1.0 envelopes. Computes a
 Merkle root over N `envelope_id` values and emits an inscription-ready
 payload. **Does NOT actually inscribe.** This probe stops at the data

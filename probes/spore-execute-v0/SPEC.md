@@ -1,5 +1,7 @@
 # spore-execute-v0 probe
 
+> **Status: graduated (contract) → SPORE.v0 contract active 2026-05-12.** Probe is the cross-runtime execution reference.
+
 Cross-runtime execution probe for the `apply` primitive.
 
 This probe extends `spore-apply-v0` (which verified the wire format

@@ -34,6 +34,7 @@ const CHORDS_DIR = join(ROOT, "jazz", "chords");
 interface ChordFm {
   id?: string;
   speaker?: string;
+  voice?: string;
   created?: string;
   mode?: string;
   oct?: string;
@@ -135,8 +136,38 @@ function coerce(v: string): unknown {
 
 // ── voice profile builders (from falsifier probe, cleaned) ─────────────────
 
-function normSpeaker(s: string): string {
+// Load handle→identity-key resolver from the voice registry so chord
+// `voice: architect` correctly bins under s0fractal (etc).
+const VOICE_FILE_RE = /^x8A[0-9A-Fa-f]{2}_voice_([^.]+)\.myc\.json$/;
+async function loadHandleAliases(): Promise<Map<string, string>> {
+  const m = new Map<string, string>();
+  try {
+    for await (const entry of Deno.readDir(join(ROOT, "src"))) {
+      if (!entry.isFile || !VOICE_FILE_RE.test(entry.name)) continue;
+      const text = await Deno.readTextFile(join(ROOT, "src", entry.name));
+      try {
+        const raw = JSON.parse(text);
+        const identity: string = raw.identity ??
+          entry.name.replace(/\.json$/, "");
+        const key = identity.split("-")[0].toLowerCase();
+        m.set(key, key);
+        if (Array.isArray(raw.handles)) {
+          for (const h of raw.handles) m.set(String(h).toLowerCase(), key);
+        }
+      } catch { /* skip malformed */ }
+    }
+  } catch { /* src/ dir missing — should not happen */ }
+  return m;
+}
+
+function normSpeaker(s: string, aliases?: Map<string, string>): string {
   const lower = s.trim().toLowerCase();
+  // Registry handles win first (so `architect` → s0fractal, etc).
+  if (aliases) {
+    const aliased = aliases.get(lower) ?? aliases.get(lower.split("-")[0]);
+    if (aliased) return aliased;
+  }
+  // Legacy hardcoded shortcuts (for older speakers without registry profile).
   if (lower.startsWith("claude")) return "claude";
   if (lower.startsWith("codex")) return "codex";
   if (lower.startsWith("gemini")) return "gemini";
@@ -157,14 +188,19 @@ function parseDipole(d: unknown): number[] {
 
 async function loadChords(): Promise<{ fm: ChordFm; body: string }[]> {
   const entries: { fm: ChordFm; body: string }[] = [];
+  const aliases = await loadHandleAliases();
   for await (const entry of Deno.readDir(CHORDS_DIR)) {
     if (!entry.isFile || !entry.name.endsWith(".md")) continue;
     const text = await Deno.readTextFile(join(CHORDS_DIR, entry.name));
     const parsed = parseYamlFrontmatter(text);
     if (!parsed) continue;
     const fm = parsed.fm as ChordFm;
-    if (!fm.speaker || !fm.id) continue;
-    fm.speaker = normSpeaker(fm.speaker);
+    // Accept newer chord format: `voice:` instead of `speaker:`, filename
+    // as id fallback. Required: SOME speaker/voice identifier.
+    const rawSpeaker = fm.speaker ?? fm.voice;
+    if (!rawSpeaker) continue;
+    if (!fm.id) fm.id = entry.name.replace(/\.md$/, "");
+    fm.speaker = normSpeaker(String(rawSpeaker), aliases);
     entries.push({ fm, body: parsed.body });
   }
   // chronological by created timestamp

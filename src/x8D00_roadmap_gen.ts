@@ -22,11 +22,18 @@
 // consume generated state/skill/memory output files. Cross-axis
 // downstream consumption deferred to v1 after memory graduates.
 //
-// Reads (READ-ONLY, tracked-only via git ls-files):
-//   src/x*.ts          organ horizons
-//   jazz/chords/*.md   chord pressure
-//   src/x8A*_voice_*.myc.json voice profiles
-//   state/voices/*.json legacy voice profiles
+// Reads (READ-ONLY, tracked-only via git ls-files for trinity sources):
+//   src/x*.ts                            organ horizons
+//   jazz/chords/*.md                     chord pressure
+//   src/x8A*_voice_*.myc.json            voice profiles
+//   state/voices/*.json                  legacy voice profiles
+//   <substrate>/src/x8D00_*projection*.myc.md
+//                                        substrate-owned roadmap projections
+//                                        (omega/liquid/myc; skipped silently if
+//                                        substrate has no projection file).
+//                                        Trinity reads ONLY the projection —
+//                                        never traverses into raw vision files
+//                                        (per substrate projection contract).
 //
 // Renders (gitignored):
 //   src/x8D00_roadmap.myc.md            substrate-wide frontier
@@ -57,6 +64,8 @@ const OUT = HERE;
 
 const VOICE_FILE_RE = /^x8A[0-9A-Fa-f]{2}_voice_([^.]+)\.myc\.json$/;
 const ORGAN_FILE_RE = /^x([0-9A-Fa-f])([0-9A-Fa-f]{3})_([^.]+)\.ts$/;
+const SUBSTRATE_DIRS = ["omega", "liquid", "myc"];
+const PROJECTION_RE = /^x8D00_.*projection.*\.myc\.md$/;
 const HEADER_RE = /^\/\/\s*(\w+):\s*(.+?)\s*$/;
 const OLD_FORM = /^(\d{4}-\d{2}-\d{2}T\d{6}Z)-([a-z]+)-(.+)\.md$/;
 const NEW_FORM = /^x([0-9A-Fa-f]{4})_(\d+)_([a-z0-9-]+)_(.+)\.md$/;
@@ -139,6 +148,16 @@ interface VoiceProfile {
   comfort_field_axes?: Record<string, number>;
   natural_styles?: string[];
   telos_filters?: string[];
+  source_hash: string;
+  source_size: number;
+}
+interface SubstrateProjection {
+  substrate: string;
+  filename: string;
+  rel_path: string;
+  source_layer?: string;
+  coordinate?: string;
+  era_signals: { heading: string; pressure?: string }[];
   source_hash: string;
   source_size: number;
 }
@@ -440,6 +459,72 @@ async function loadVoices(): Promise<VoiceProfile[]> {
   return out.sort((a, b) => a.identity.localeCompare(b.identity));
 }
 
+async function loadSubstrateProjections(): Promise<SubstrateProjection[]> {
+  const out: SubstrateProjection[] = [];
+  for (const substrate of SUBSTRATE_DIRS) {
+    const dir = join(TRINITY_ROOT, substrate, "src");
+    try {
+      for await (const entry of Deno.readDir(dir)) {
+        if (!entry.isFile) continue;
+        if (!PROJECTION_RE.test(entry.name)) continue;
+        const bytes = await Deno.readFile(join(dir, entry.name));
+        const text = new TextDecoder().decode(bytes);
+
+        let source_layer: string | undefined;
+        let coordinate: string | undefined;
+        const fm = FRONTMATTER_RE.exec(text);
+        if (fm) {
+          const lm = /^source_layer:\s*(.+?)\s*$/m.exec(fm[1]);
+          if (lm) source_layer = lm[1].trim();
+          const cm = /^coordinate:\s*(.+?)\s*$/m.exec(fm[1]);
+          if (cm) coordinate = cm[1].trim();
+        }
+
+        const bodyStart = fm ? fm.index + fm[0].length : 0;
+        const body = text.slice(bodyStart);
+        const bodyLines = body.split("\n");
+        const era_signals: { heading: string; pressure?: string }[] = [];
+        for (let i = 0; i < bodyLines.length; i++) {
+          const hm = /^###\s+(.+?)\s*$/.exec(bodyLines[i]);
+          if (!hm) continue;
+          const heading = hm[1];
+          let pressure: string | undefined;
+          for (let j = i + 1; j < Math.min(i + 20, bodyLines.length); j++) {
+            const pm = /^Roadmap pressure:\s*(.+?)\s*$/.exec(bodyLines[j]);
+            if (!pm) continue;
+            let p = pm[1].trim();
+            for (let k = j + 1; k < bodyLines.length; k++) {
+              const cont = bodyLines[k].trim();
+              if (!cont) break;
+              if (/^(Signal|Not a backlog|Roadmap pressure|###|##)/.test(cont)) {
+                break;
+              }
+              p += " " + cont;
+            }
+            pressure = p;
+            break;
+          }
+          era_signals.push({ heading, pressure });
+        }
+
+        out.push({
+          substrate,
+          filename: entry.name,
+          rel_path: `${substrate}/src/${entry.name}`,
+          source_layer,
+          coordinate,
+          era_signals,
+          source_hash: await sha256Hex(bytes),
+          source_size: bytes.length,
+        });
+      }
+    } catch {
+      // substrate dir not present (or unreadable) — skip silently
+    }
+  }
+  return out.sort((a, b) => a.rel_path.localeCompare(b.rel_path));
+}
+
 interface SourceFile {
   path: string;
   hash: string;
@@ -476,6 +561,13 @@ function voiceSource(v: VoiceProfile): SourceFile {
     size: v.source_size,
   };
 }
+function substrateProjectionSource(p: SubstrateProjection): SourceFile {
+  return {
+    path: p.rel_path,
+    hash: `sha256:${p.source_hash}`,
+    size: p.source_size,
+  };
+}
 
 interface Receipts {
   generated_at: string | null;
@@ -487,6 +579,7 @@ function renderSubstrateRoadmap(
   horizons: OrganHorizon[],
   chords: ChordRef[],
   voices: VoiceProfile[],
+  projections: SubstrateProjection[],
   closures: Map<string, Closure>,
   receipts: Receipts,
 ): string {
@@ -542,7 +635,7 @@ function renderSubstrateRoadmap(
   );
   lines.push(``);
   lines.push(
-    `*v0 scope: reads SOURCES directly (organ horizons + tracked chords + voice profiles). Does NOT yet consume generated state/skill/memory output files; cross-axis downstream consumption is deferred.*`,
+    `*v1 scope: reads SOURCES directly (organ horizons + tracked chords + voice profiles + substrate roadmap projections). Does NOT yet consume generated state/skill/memory output files; cross-axis downstream consumption is deferred.*`,
   );
   lines.push(``);
   lines.push(
@@ -568,6 +661,30 @@ function renderSubstrateRoadmap(
       for (const h of hs) {
         const m = h.maturity ? ` [${h.maturity}]` : "";
         lines.push(`- **x${h.coordinate}_${h.handle}**${m} — ${h.horizon}`);
+      }
+      lines.push(``);
+    }
+  }
+
+  if (projections.length > 0) {
+    lines.push(`## Far-horizon signals (substrate projections)`);
+    lines.push(``);
+    lines.push(
+      `Substrate-owned projection files: each substrate declares its own far-horizon roadmap. Trinity consumes the projection, not the raw vision (per substrate's projection contract).`,
+    );
+    lines.push(``);
+    for (const p of projections) {
+      lines.push(
+        `### ${p.substrate} — [\`${p.rel_path}\`](../${p.rel_path})`,
+      );
+      lines.push(``);
+      if (p.era_signals.length === 0) {
+        lines.push(`(no era headings detected in projection body)`);
+      } else {
+        for (const e of p.era_signals) {
+          lines.push(`- **${e.heading}**`);
+          if (e.pressure) lines.push(`  - pressure: ${e.pressure}`);
+        }
       }
       lines.push(``);
     }
@@ -802,6 +919,7 @@ async function main(argv: string[]) {
   const horizons = await loadOrganHorizons();
   const { chords, bodies } = await loadChords();
   const voices = await loadVoices();
+  const projections = await loadSubstrateProjections();
   const generated_at = args.stable ? null : new Date().toISOString();
 
   const chordsByVoice = new Map<string, ChordRef[]>();
@@ -821,6 +939,7 @@ async function main(argv: string[]) {
     ...horizons.map(organSource),
     ...chords.map(chordSource),
     ...voices.map(voiceSource),
+    ...projections.map(substrateProjectionSource),
   ];
   const globalHash = await manifestHash(allSources);
   const globalReceipts: Receipts = {
@@ -839,6 +958,7 @@ async function main(argv: string[]) {
         horizons,
         chords,
         voices,
+        projections,
         closures,
         globalReceipts,
       ) + "\n",
@@ -848,7 +968,7 @@ async function main(argv: string[]) {
       canonicalManifest(allSources) + "\n",
     );
     console.log(
-      `[write] x8D00_roadmap.myc.md (substrate; ${horizons.length} horizons, ${chords.length} chords)`,
+      `[write] x8D00_roadmap.myc.md (substrate; ${horizons.length} horizons, ${chords.length} chords, ${projections.length} substrate projections)`,
     );
     written += 2;
   }

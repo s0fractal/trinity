@@ -49,6 +49,7 @@
 //
 // Glossary words: roadmap, frontier, фронтир, куди-іти
 
+import { parallel } from "./x0030_compose.ts";
 import {
   dirname,
   fromFileUrl,
@@ -922,10 +923,16 @@ function parseArgs(argv: string[]): Args {
 
 async function main(argv: string[]) {
   const args = parseArgs(argv);
-  const horizons = await loadOrganHorizons();
-  const { chords, bodies } = await loadChords();
-  const voices = await loadVoices();
-  const projections = await loadSubstrateProjections();
+  // Four independent source loads — parallel for I/O speedup, named
+  // keys preserve clarity over Promise.all([...]) destructuring.
+  const sources = await parallel({
+    horizons: () => loadOrganHorizons(),
+    chordsAndBodies: () => loadChords(),
+    voices: () => loadVoices(),
+    projections: () => loadSubstrateProjections(),
+  });
+  const { horizons, voices, projections } = sources;
+  const { chords, bodies } = sources.chordsAndBodies;
   const generated_at = args.stable ? null : new Date().toISOString();
 
   // Handle-based alias resolution: chord voice tags that match a profile's

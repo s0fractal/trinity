@@ -43,6 +43,7 @@
 //                 угоди, схеми, пакти
 
 import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { parallel, pipe, tryOr } from "./x0030_compose.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
@@ -99,92 +100,106 @@ function parseFrontmatter(text: string): Record<string, string | number> {
   return out;
 }
 
+// Parse `git log --diff-filter=A --name-only --format="COMMIT %aI"`
+// output into filename → first-commit Date map. Git walks newest→oldest;
+// last write wins per file = the addition (oldest commit).
+function parseGitAdditions(text: string): Map<string, Date> {
+  const out = new Map<string, Date>();
+  let currentDate: Date | null = null;
+  for (const line of text.split("\n")) {
+    if (line.startsWith("COMMIT ")) {
+      currentDate = new Date(line.slice("COMMIT ".length).trim());
+    } else if (line.startsWith("contracts/") && currentDate) {
+      out.set(line.slice("contracts/".length), currentDate);
+    }
+  }
+  return out;
+}
+
 // Cache: first-commit timestamps for all contracts (one git call vs per-file).
 let _addedAtCache: Map<string, Date> | null = null;
 async function loadAddedAtCache(): Promise<Map<string, Date>> {
   if (_addedAtCache) return _addedAtCache;
-  const out = new Map<string, Date>();
-  try {
+  _addedAtCache = await tryOr(async () => {
     const proc = new Deno.Command("git", {
       args: [
-        "-C",
-        ROOT,
-        "log",
-        "--diff-filter=A",
-        "--name-only",
-        "--format=COMMIT %aI",
-        "--",
-        "contracts/",
+        "-C", ROOT, "log", "--diff-filter=A", "--name-only",
+        "--format=COMMIT %aI", "--", "contracts/",
       ],
       stdout: "piped",
       stderr: "piped",
     });
     const { stdout } = await proc.output();
-    const text = new TextDecoder().decode(stdout);
-    let currentDate: Date | null = null;
-    for (const line of text.split("\n")) {
-      if (line.startsWith("COMMIT ")) {
-        currentDate = new Date(line.slice("COMMIT ".length).trim());
-      } else if (line.startsWith("contracts/") && currentDate) {
-        const f = line.slice("contracts/".length);
-        if (!out.has(f)) out.set(f, currentDate); // first-seen = oldest (--reverse not needed; log walks newest-first, so last write wins)
-        out.set(f, currentDate); // log goes newest→oldest; last set is oldest = the addition
-      }
-    }
-  } catch { /* git unavailable — leave cache empty */ }
-  _addedAtCache = out;
+    return parseGitAdditions(new TextDecoder().decode(stdout));
+  }, new Map<string, Date>());
+  return _addedAtCache;
+}
+
+// Extract chord's date from its filename (newer x<coord>_<block>_ or
+// older YYYY-MM-DDTHHMMSSZ form). Null if neither matches.
+function chordDateFromFilename(filename: string): Date | null {
+  const newM = /^x[0-9A-Fa-f]{4}_(\d+)_/.exec(filename);
+  if (newM) {
+    // Block height → approx epoch: ref 950000 = 2026-05-19T00:00Z
+    const block = parseInt(newM[1], 10);
+    const epoch = 1779148800 + (block - 950000) * 600;
+    return new Date(epoch * 1000);
+  }
+  const oldM = /^(\d{4})-(\d{2})-(\d{2})T(\d{2})(\d{2})(\d{2})Z/.exec(filename);
+  if (oldM) {
+    const [, y, mo, d, h, mi, s] = oldM;
+    return new Date(Date.UTC(+y, +mo - 1, +d, +h, +mi, +s));
+  }
+  return null;
+}
+
+// Extract distinct contract filenames mentioned in chord body.
+function contractRefsInChord(body: string): Set<string> {
+  const out = new Set<string>();
+  const matches = body.matchAll(/contracts\/([A-Za-z0-9_]+\.v[0-9.]+(?:\.draft)?\.md)/g);
+  for (const m of matches) out.add(m[1]);
   return out;
+}
+
+// Update cowitness entry for a contract with a new chord reference.
+// Clamp days-ago at 0 (block-height→epoch can over-estimate for
+// same-session chords).
+function recordCowitness(
+  map: Map<string, { count: number; latestDaysAgo: number | null }>,
+  contractFile: string,
+  chordDate: Date | null,
+  now: number,
+): void {
+  const prev = map.get(contractFile) ?? { count: 0, latestDaysAgo: null };
+  prev.count++;
+  if (chordDate) {
+    const daysAgo = Math.max(0, Math.floor((now - chordDate.getTime()) / 86400000));
+    if (prev.latestDaysAgo === null || daysAgo < prev.latestDaysAgo) {
+      prev.latestDaysAgo = daysAgo;
+    }
+  }
+  map.set(contractFile, prev);
 }
 
 // Cache: chord-reference counts per contract.
 let _cowitnessCache: Map<string, { count: number; latestDaysAgo: number | null }> | null = null;
 async function loadCowitnessCache(): Promise<Map<string, { count: number; latestDaysAgo: number | null }>> {
   if (_cowitnessCache) return _cowitnessCache;
-  const out = new Map<string, { count: number; latestDaysAgo: number | null }>();
-  const chordsDir = join(ROOT, "jazz", "chords");
-  const now = Date.now();
-  try {
+  _cowitnessCache = await tryOr(async () => {
+    const out = new Map<string, { count: number; latestDaysAgo: number | null }>();
+    const chordsDir = join(ROOT, "jazz", "chords");
+    const now = Date.now();
     for await (const entry of Deno.readDir(chordsDir)) {
       if (!entry.isFile || !entry.name.endsWith(".md")) continue;
       const text = await Deno.readTextFile(join(chordsDir, entry.name));
-      // Chord age from filename: x<coord>_<block>_... or YYYY-MM-DD timestamp.
-      let chordDate: Date | null = null;
-      const newM = /^x[0-9A-Fa-f]{4}_(\d+)_/.exec(entry.name);
-      if (newM) {
-        // Block height → approx epoch: ref 950000 = 2026-05-19T00:00Z
-        const block = parseInt(newM[1], 10);
-        const epoch = 1779148800 + (block - 950000) * 600;
-        chordDate = new Date(epoch * 1000);
-      } else {
-        const oldM = /^(\d{4})-(\d{2})-(\d{2})T(\d{2})(\d{2})(\d{2})Z/.exec(entry.name);
-        if (oldM) {
-          const [, y, mo, d, h, mi, s] = oldM;
-          chordDate = new Date(Date.UTC(+y, +mo - 1, +d, +h, +mi, +s));
-        }
-      }
-      // For each contract mentioned in body, record this chord's reference.
-      const matches = text.matchAll(/contracts\/([A-Za-z0-9_]+\.v[0-9.]+(?:\.draft)?\.md)/g);
-      const seenInThisChord = new Set<string>();
-      for (const m of matches) {
-        const f = m[1];
-        if (seenInThisChord.has(f)) continue;
-        seenInThisChord.add(f);
-        const prev = out.get(f) ?? { count: 0, latestDaysAgo: null };
-        prev.count++;
-        if (chordDate) {
-          // Clamp at 0: block-height→epoch can over-estimate (future blocks
-          // in same-session chords). Negative days-ago is unhelpful display.
-          const daysAgo = Math.max(0, Math.floor((now - chordDate.getTime()) / 86400000));
-          if (prev.latestDaysAgo === null || daysAgo < prev.latestDaysAgo) {
-            prev.latestDaysAgo = daysAgo;
-          }
-        }
-        out.set(f, prev);
+      const chordDate = chordDateFromFilename(entry.name);
+      for (const contractFile of contractRefsInChord(text)) {
+        recordCowitness(out, contractFile, chordDate, now);
       }
     }
-  } catch { /* chords dir missing — skip */ }
-  _cowitnessCache = out;
-  return out;
+    return out;
+  }, new Map<string, { count: number; latestDaysAgo: number | null }>());
+  return _cowitnessCache;
 }
 
 function classifySunset(
@@ -210,53 +225,98 @@ function classifySunset(
   return "past-sunset";
 }
 
-async function readContract(filename: string): Promise<ContractEntry | null> {
-  const path = join(CONTRACTS_DIR, filename);
-  let text: string;
-  try {
-    text = await Deno.readTextFile(path);
-  } catch {
-    return null;
-  }
-  const fm = parseFrontmatter(text);
-  const bodyLines = text.split("\n").length;
-  // Pinned: SPORE_BOOTSTRAP_PIN or anything with status=active and Bitcoin
-  // attestation marker in body
-  const pinned = filename.includes("BOOTSTRAP_PIN") ||
-    /bitcoin\s+attestation|op_return|inscribed/i.test(text);
-
-  // Vector 4 sunset audit:
-  const addedAt = (await loadAddedAtCache()).get(filename);
-  const age_days = addedAt
-    ? Math.floor((Date.now() - addedAt.getTime()) / 86400000)
-    : null;
-  const cowit = (await loadCowitnessCache()).get(filename) ??
-    { count: 0, latestDaysAgo: null };
-  // Load-bearing detection: explicit frontmatter flag, OR referenced ≥3 times
-  // in chord trail (sustained substrate dependency), OR contains "load-bearing"
-  // marker in body. Pinned already separately flagged.
-  const load_bearing = String(fm.load_bearing ?? "").toLowerCase() === "true" ||
-    cowit.count >= 3 ||
-    /load[- ]bearing/i.test(text.split("\n").slice(0, 50).join("\n"));
-
-  const entry: ContractEntry = {
+// Build the base ContractEntry from filename + text + parsed frontmatter.
+// Enrichment fields (age, cowitness, load_bearing, sunset_status) filled
+// downstream by enricher functions.
+function buildBaseEntry(
+  filename: string,
+  text: string,
+  fm: Record<string, string | number>,
+): ContractEntry {
+  return {
     filename,
     path: `contracts/${filename}`,
     type: String(fm.type ?? "Unknown"),
     version: String(fm.version ?? ""),
     status: String(fm.status ?? "unknown"),
     title: String(fm.title ?? filename),
-    pinned,
+    // Pinned: SPORE_BOOTSTRAP_PIN or Bitcoin attestation marker in body.
+    pinned: filename.includes("BOOTSTRAP_PIN") ||
+      /bitcoin\s+attestation|op_return|inscribed/i.test(text),
     related_count: Number(fm.related_count ?? 0),
-    body_lines: bodyLines,
-    age_days,
-    cowitness_count: cowit.count,
-    cowitness_recent_days: cowit.latestDaysAgo,
-    load_bearing,
+    body_lines: text.split("\n").length,
+    age_days: null,
+    cowitness_count: 0,
+    cowitness_recent_days: null,
+    load_bearing: false,
     sunset_status: "unknown",
   };
-  entry.sunset_status = classifySunset(entry);
-  return entry;
+}
+
+function enrichWithAge(
+  entry: ContractEntry,
+  addedAt: Date | undefined,
+): ContractEntry {
+  return {
+    ...entry,
+    age_days: addedAt
+      ? Math.floor((Date.now() - addedAt.getTime()) / 86400000)
+      : null,
+  };
+}
+
+function enrichWithCowitness(
+  entry: ContractEntry,
+  cowit: { count: number; latestDaysAgo: number | null } | undefined,
+): ContractEntry {
+  const c = cowit ?? { count: 0, latestDaysAgo: null };
+  return {
+    ...entry,
+    cowitness_count: c.count,
+    cowitness_recent_days: c.latestDaysAgo,
+  };
+}
+
+// Load-bearing detection: explicit frontmatter flag, ≥3 chord refs
+// (sustained substrate dependency), or "load-bearing" body marker.
+// Pinned already separately flagged.
+function enrichWithLoadBearing(
+  entry: ContractEntry,
+  text: string,
+  fm: Record<string, string | number>,
+): ContractEntry {
+  return {
+    ...entry,
+    load_bearing: String(fm.load_bearing ?? "").toLowerCase() === "true" ||
+      entry.cowitness_count >= 3 ||
+      /load[- ]bearing/i.test(text.split("\n").slice(0, 50).join("\n")),
+  };
+}
+
+function setSunsetStatus(entry: ContractEntry): ContractEntry {
+  return { ...entry, sunset_status: classifySunset(entry) };
+}
+
+async function readContract(filename: string): Promise<ContractEntry | null> {
+  const text = await tryOr(
+    () => Deno.readTextFile(join(CONTRACTS_DIR, filename)),
+    null as string | null,
+  );
+  if (text === null) return null;
+
+  const fm = parseFrontmatter(text);
+  const caches = await parallel({
+    addedAt: () => loadAddedAtCache(),
+    cowit: () => loadCowitnessCache(),
+  });
+
+  return pipe(
+    buildBaseEntry(filename, text, fm),
+    (entry) => enrichWithAge(entry, caches.addedAt.get(filename)),
+    (entry) => enrichWithCowitness(entry, caches.cowit.get(filename)),
+    (entry) => enrichWithLoadBearing(entry, text, fm),
+    setSunsetStatus,
+  );
 }
 
 async function listContracts(): Promise<ContractEntry[]> {

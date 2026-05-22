@@ -4,7 +4,11 @@
 // spawning with timeout/abort. Centralizes duplicated logic from
 // src/x0300_all.ts, src/x0400_each.ts, src/x0500_pipe.ts, and src/x5C00_cross_verify.ts.
 
-import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
+import {
+  dirname,
+  fromFileUrl,
+  join,
+} from "https://deno.land/std@0.224.0/path/mod.ts";
 
 const SUBSTRATE_ROOT = join(dirname(fromFileUrl(import.meta.url)), "..");
 const TIMEOUT_MS = 60000;
@@ -34,6 +38,7 @@ const POSITION_TO_FILE: Record<string, string> = {
   "2/C": "x2C00_cognition_phase_report.ts",
   "2/D": "x2D00_inbox.ts",
   "2/E": "x2E00_status.ts",
+  "2/F": "x2F00_self.ts",
   "3/5": "x3500_chord_play.ts",
   "3/A": "x3A00_balance.ts",
   "3/C": "x3C00_recipes.ts",
@@ -98,7 +103,11 @@ export function positionToPath(pos: string): string {
   const file = POSITION_TO_FILE[pos];
   if (file) return join(SUBSTRATE_ROOT, "src", file);
   // Fallback: synthesize an unregistered path. Caller's exists() will see it doesn't exist.
-  return join(SUBSTRATE_ROOT, "src", `unregistered_${pos.replace(/\//g, "_")}.ts`);
+  return join(
+    SUBSTRATE_ROOT,
+    "src",
+    `unregistered_${pos.replace(/\//g, "_")}.ts`,
+  );
 }
 
 /** Check if a file exists. */
@@ -117,7 +126,11 @@ export async function exists(path: string): Promise<boolean> {
 export async function runStep(pos: string): Promise<any> {
   const path = positionToPath(pos);
   if (!(await exists(path))) {
-    return { type: "error", position: pos, message: `no executable at ${path}` };
+    return {
+      type: "error",
+      position: pos,
+      message: `no executable at ${path}`,
+    };
   }
   const proc = new Deno.Command("deno", {
     args: ["run", "--allow-all", path],
@@ -137,7 +150,9 @@ export async function runStep(pos: string): Promise<any> {
  * Byte-for-byte compatible with the duplicated runSubstrate in
  * src/x0300_all.ts and src/x5C00_cross_verify.ts.
  */
-export async function runSubstrate(def: SubstrateDef): Promise<SubstrateResult> {
+export async function runSubstrate(
+  def: SubstrateDef,
+): Promise<SubstrateResult> {
   const start = performance.now();
 
   if (def.cmd === null) {

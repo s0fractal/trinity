@@ -50,6 +50,7 @@
 // Glossary words: roadmap, frontier, фронтир, куди-іти
 
 import { parallel } from "./x0030_compose.ts";
+import { loadAllProbes, type ProbeRecord } from "./x8E00_probes_gen.ts";
 import {
   dirname,
   fromFileUrl,
@@ -589,6 +590,7 @@ function renderSubstrateRoadmap(
   chords: ChordRef[],
   voices: VoiceProfile[],
   projections: SubstrateProjection[],
+  experimentalProbes: ProbeRecord[],
   closures: Map<string, Closure>,
   receipts: Receipts,
 ): string {
@@ -697,6 +699,25 @@ function renderSubstrateRoadmap(
       }
       lines.push(``);
     }
+  }
+
+  if (experimentalProbes.length > 0) {
+    lines.push(`## Experimental horizons (probes with chord pressure)`);
+    lines.push(``);
+    lines.push(
+      `Non-graduated probes (active / partial / deferred / meta) sorted by chord-reference count. These are the experimental edges substrate is pressing forward but hasn't crystallized as live organs or contracts. Cross-axis read from \`x8E00_probes_gen\`.`,
+    );
+    lines.push(``);
+    for (const p of experimentalProbes) {
+      const target = p.target ? ` → \`${p.target}\`` : "";
+      const refs = p.chord_refs.length;
+      const latest = p.chord_refs[p.chord_refs.length - 1];
+      const latestStr = latest ? ` · latest \`${latest.filename}\`` : "";
+      lines.push(
+        `- **${p.name}** [${p.status}]${target} · ${refs} chord refs${latestStr}`,
+      );
+    }
+    lines.push(``);
   }
 
   lines.push(`## In motion — recent chord activity (last 14 days)`);
@@ -925,16 +946,31 @@ function parseArgs(argv: string[]): Args {
 
 async function main(argv: string[]) {
   const args = parseArgs(argv);
-  // Four independent source loads — parallel for I/O speedup, named
+  // Five independent source loads — parallel for I/O speedup, named
   // keys preserve clarity over Promise.all([...]) destructuring.
+  // probesBundle is cross-axis: roadmap surfaces non-graduated probes
+  // as "experimental horizons" (audit #5 — probe→roadmap pressure feed).
   const sources = await parallel({
     horizons: () => loadOrganHorizons(),
     chordsAndBodies: () => loadChords(),
     voices: () => loadVoices(),
     projections: () => loadSubstrateProjections(),
+    probesBundle: () => loadAllProbes(),
   });
   const { horizons, voices, projections } = sources;
   const { chords, bodies } = sources.chordsAndBodies;
+  // Filter to non-graduated probes with at least 1 chord ref (pressure
+  // signal); sort by chord-ref count descending (most-pressed first).
+  const NON_GRADUATED: ProbeRecord["status"][] = [
+    "active",
+    "partial",
+    "deferred",
+    "meta",
+    "unknown",
+  ];
+  const experimentalProbes = sources.probesBundle.probes
+    .filter((p) => NON_GRADUATED.includes(p.status) && p.chord_refs.length > 0)
+    .sort((a, b) => b.chord_refs.length - a.chord_refs.length);
   const generated_at = args.stable ? null : new Date().toISOString();
 
   // Handle-based alias resolution: chord voice tags that match a profile's
@@ -984,6 +1020,7 @@ async function main(argv: string[]) {
         chords,
         voices,
         projections,
+        experimentalProbes,
         closures,
         globalReceipts,
       ) + "\n",

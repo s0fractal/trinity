@@ -70,7 +70,8 @@ const GRADUATED_TARGET_RE = /(?:→|->)\s*`?(src\/x[0-9A-Fa-f]{4}_[^`\s]+\.ts)`?
 const GRADUATED_CONTRACT_RE =
   /(?:→|->)\s*([A-Z_]+\.v\d+(?:\.\d+)?)\s*contract/i;
 
-type StatusKind =
+// Types exported for cross-axis consumers (x8D00_roadmap_gen, x2F00_self).
+export type StatusKind =
   | "graduated"
   | "graduated_contract"
   | "meta_graduated"
@@ -80,7 +81,7 @@ type StatusKind =
   | "active"
   | "unknown";
 
-interface ProbeRecord {
+export interface ProbeRecord {
   name: string;
   rel_path: string;
   status: StatusKind;
@@ -98,7 +99,7 @@ interface ProbeRecord {
   chord_refs: ChordRef[];
 }
 
-interface ChordRef {
+export interface ChordRef {
   filename: string;
   block_height: number;
   is_receipt: boolean;
@@ -502,11 +503,15 @@ function chordSource(c: ChordSource): SourceFile {
   };
 }
 
-async function main(argv: string[]) {
-  const args = parseArgs(argv);
+// Public loader — used by main() AND cross-axis consumers (x8D00 roadmap
+// surfaces non-graduated probes with chord pressure as "experimental
+// horizons"). Returns probes sorted alphabetically, plus the set of
+// chord filenames they referenced (for source-manifest building).
+export async function loadAllProbes(): Promise<
+  { probes: ProbeRecord[]; referencedChordFilenames: Set<string> }
+> {
   const trackedOrgans = await gitTrackedSet("src");
   const chords = await loadChordSources();
-
   const probes: ProbeRecord[] = [];
   const referencedChordFilenames = new Set<string>();
   for await (const entry of Deno.readDir(PROBES_DIR)) {
@@ -518,6 +523,13 @@ async function main(argv: string[]) {
     }
   }
   probes.sort((a, b) => a.name.localeCompare(b.name));
+  return { probes, referencedChordFilenames };
+}
+
+async function main(argv: string[]) {
+  const args = parseArgs(argv);
+  const chords = await loadChordSources();
+  const { probes, referencedChordFilenames } = await loadAllProbes();
 
   // Source manifest includes probe sources + ONLY chord files that actually
   // reference a probe (otherwise every chord change would invalidate x8E00,

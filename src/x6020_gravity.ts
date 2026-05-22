@@ -7,6 +7,11 @@
 //   bucket 6/02: primary axis harmony (6), bucket 6 ← MATCH
 //                secondary '02' → axis 2 mirror, dipole +0.40 (composes with primary)
 // placement_policy: axis
+// intent: analyze import gravity and report tension between filename coordinates
+// maturity: active
+// horizon: use AST instead of regex imports
+// skill_tag: gravity
+// skill_safe: yes
 //
 // gravity — edge tension report. Reads import statements via regex and
 // derives source→target edges by filename coordinates (no AST). Computes
@@ -29,7 +34,11 @@
 //
 // Glossary words: gravity, tension, drift, гравітація, натяг
 
-import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
+import {
+  dirname,
+  fromFileUrl,
+  join,
+} from "https://deno.land/std@0.224.0/path/mod.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const SRC = HERE;
@@ -38,7 +47,7 @@ const FILE_RE = /^x([0-9A-Fa-f]{4})_[^.]+\.ts$/;
 const IMPORT_RE = /from\s+["']([^"']+)["']/g;
 const TARGET_RE = /x([0-9A-Fa-f]{4})_[^"'/]+\.ts$/;
 
-interface Edge {
+export interface Edge {
   source: string;
   target: string;
   source_file: string;
@@ -47,7 +56,7 @@ interface Edge {
   delta_hamming: number;
 }
 
-interface Report {
+export interface Report {
   type: "gravity";
   position: "6/02";
   action: "gravity";
@@ -70,7 +79,7 @@ async function scanFiles(): Promise<string[]> {
   return out.sort();
 }
 
-function coordOf(filename: string): string | null {
+export function coordOf(filename: string): string | null {
   const m = FILE_RE.exec(filename);
   return m ? m[1].toUpperCase() : null;
 }
@@ -87,7 +96,7 @@ function hammingDigits(a: string, b: string): number {
   return d;
 }
 
-async function buildEdges(): Promise<Edge[]> {
+export async function buildEdges(): Promise<Edge[]> {
   const files = await scanFiles();
   const edges: Edge[] = [];
 
@@ -160,10 +169,16 @@ function renderHeatmap(counts: Record<string, Record<string, number>>): string {
   return lines.join("\n");
 }
 
-function renderHighTension(edges: Edge[], threshold: number, top: number): string {
+function renderHighTension(
+  edges: Edge[],
+  threshold: number,
+  top: number,
+): string {
   const filtered = edges
     .filter((e) => e.delta_primary >= threshold)
-    .sort((a, b) => b.delta_primary - a.delta_primary || b.delta_hamming - a.delta_hamming);
+    .sort((a, b) =>
+      b.delta_primary - a.delta_primary || b.delta_hamming - a.delta_hamming
+    );
 
   if (filtered.length === 0) return `(no edges with Δprimary ≥ ${threshold})`;
 
@@ -179,7 +194,7 @@ function renderHighTension(edges: Edge[], threshold: number, top: number): strin
   return lines.join("\n");
 }
 
-function buildReport(edges: Edge[]): Report {
+export function buildReport(edges: Edge[]): Report {
   const meanDp = edges.length === 0
     ? 0
     : edges.reduce((s, e) => s + e.delta_primary, 0) / edges.length;
@@ -189,12 +204,14 @@ function buildReport(edges: Edge[]): Report {
     type: "gravity",
     position: "6/02",
     action: "gravity",
-    note: "edge tension report by filename coordinates (no AST). Observation only, not enforcement.",
+    note:
+      "edge tension report by filename coordinates (no AST). Observation only, not enforcement.",
     total_edges: edges.length,
     mean_delta_primary: Number(meanDp.toFixed(3)),
     max_delta_primary: maxDp,
     edges_by_tension: [...edges].sort(
-      (a, b) => b.delta_primary - a.delta_primary || b.delta_hamming - a.delta_hamming,
+      (a, b) =>
+        b.delta_primary - a.delta_primary || b.delta_hamming - a.delta_hamming,
     ),
     heatmap: buildHeatmap(edges),
   };
@@ -216,8 +233,12 @@ if (import.meta.main) {
   if (isJson) {
     console.log(JSON.stringify(report, null, 2));
   } else {
-    console.log("# gravity @ 6/02 — edge tension report (filename coordinates, no AST)");
-    console.log("# ───────────────────────────────────────────────────────────────");
+    console.log(
+      "# gravity @ 6/02 — edge tension report (filename coordinates, no AST)",
+    );
+    console.log(
+      "# ───────────────────────────────────────────────────────────────",
+    );
     console.log("");
     console.log(
       `total edges: ${report.total_edges}   mean Δprimary: ${report.mean_delta_primary}   max Δprimary: ${report.max_delta_primary}`,

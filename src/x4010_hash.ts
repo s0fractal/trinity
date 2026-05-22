@@ -1,3 +1,15 @@
+// src/x4010_hash.ts — hash / identity / fqdn
+// position: 4/01 → foundation(4) × first-singular(01) = base identity primitive
+// hex_dipole: "00 00 00 00 6C 00 00 00"
+//   foundation_container+0.85 (PRIMARY)
+// placement_policy: axis
+// intent: compute canonical FQDN hashes and signatures
+// maturity: active
+// horizon: add schema verification
+// skill_tag: hash
+// skill_safe: yes
+//
+
 /**
  * Canonical hash kit for Trinity.
  *

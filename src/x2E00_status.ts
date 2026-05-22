@@ -271,7 +271,7 @@ if (import.meta.main) {
     healthOverall === "healthy" && typeof auditMatch === "number" &&
     typeof auditTotal === "number" && auditMatch >= auditTotal * 0.5
   ) {
-    overall = "well";
+    overall = externalCi.is_stale ? "well_stale" : "well";
   } else if (healthOverall === "healthy") {
     overall = "drifting"; // body ok but placement dissonant
   } else if (healthOverall === "degraded") {
@@ -283,7 +283,10 @@ if (import.meta.main) {
   // If any submodule reports not healthy, downgrade the composite status.
   const subs = [liquidAny, omegaAny, mycAny];
   for (const sub of subs) {
-    if (sub && sub.summary?.overall !== "healthy" && overall === "well") {
+    if (
+      sub && sub.summary?.overall !== "healthy" &&
+      (overall === "well" || overall === "well_stale")
+    ) {
       overall = "degraded";
     }
   }

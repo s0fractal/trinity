@@ -1,3 +1,15 @@
+// src/x0020_scanner_core.ts — scanner_core / scanner / parser
+// position: 0/02 → void(0) × mirror-pair(02) = void mirror scanning
+// hex_dipole: "6C 00 00 00 00 00 00 00"
+//   void_infinity+0.85 (PRIMARY)
+// placement_policy: axis
+// intent: scan files and build profile metadata
+// maturity: active
+// horizon: extend schema parsing
+// skill_tag: scan
+// skill_safe: yes
+//
+
 import { walk } from "https://deno.land/std@0.224.0/fs/walk.ts";
 import { join } from "https://deno.land/std@0.224.0/path/join.ts";
 import { parse as parseYaml } from "https://deno.land/std@0.224.0/yaml/mod.ts";

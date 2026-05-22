@@ -16,6 +16,8 @@
 // intent: read audit signals and propose where drifting files should be relocated
 // maturity: active
 // horizon: extend balance suggestions to use gravity metric (mean Δprimary) as secondary signal
+// skill_tag: balance
+// skill_safe: yes
 //
 // balance — dipole-driven rebalancing proposals (read-only)
 //
@@ -41,11 +43,20 @@
 // Glossary words: balance, suggest, recommend, rebalance, баланс,
 //                 балансуй, запропонуй, порадь
 
-import { dirname, fromFileUrl } from "https://deno.land/std@0.224.0/path/mod.ts";
+import {
+  dirname,
+  fromFileUrl,
+} from "https://deno.land/std@0.224.0/path/mod.ts";
 
 const DIPOLE_AXES = [
-  "void_infinity", "first_penultimate", "mirror_apex", "triangle_build",
-  "foundation_container", "action_decision", "harmony_emergence", "completion_frontier",
+  "void_infinity",
+  "first_penultimate",
+  "mirror_apex",
+  "triangle_build",
+  "foundation_container",
+  "action_decision",
+  "harmony_emergence",
+  "completion_frontier",
 ] as const;
 
 const HERE = dirname(fromFileUrl(import.meta.url));
@@ -64,8 +75,27 @@ interface AuditReport {
 interface AuditResponse {
   type: string;
   total: number;
-  summary: { match: number; mismatch: number; no_dipole: number; malformed: number };
+  summary: {
+    match: number;
+    mismatch: number;
+    no_dipole: number;
+    malformed: number;
+  };
   reports: AuditReport[];
+}
+
+interface GravityEdge {
+  source: string;
+  target: string;
+  source_file: string;
+  target_file: string;
+  delta_primary: number;
+  delta_hamming: number;
+}
+
+interface GravityResponse {
+  type: "gravity";
+  edges_by_tension: GravityEdge[];
 }
 
 async function call_audit(): Promise<AuditResponse> {
@@ -79,7 +109,27 @@ async function call_audit(): Promise<AuditResponse> {
   return JSON.parse(raw) as AuditResponse;
 }
 
-function secondaryAxis(signature: number[], primaryAxis: number): { axis: number; value: number } | null {
+async function call_gravity(): Promise<GravityResponse | null> {
+  const proc = new Deno.Command("deno", {
+    args: ["run", "--allow-all", DISPATCHER, "gravity", "--json"],
+    stdout: "piped",
+    stderr: "piped",
+  });
+  const out = await proc.output();
+  if (!out.success) return null;
+
+  try {
+    const raw = new TextDecoder().decode(out.stdout).trim();
+    return JSON.parse(raw) as GravityResponse;
+  } catch {
+    return null;
+  }
+}
+
+function secondaryAxis(
+  signature: number[],
+  primaryAxis: number,
+): { axis: number; value: number } | null {
   let bestAxis = -1;
   let bestMag = -1;
   for (let i = 0; i < signature.length; i++) {
@@ -90,7 +140,9 @@ function secondaryAxis(signature: number[], primaryAxis: number): { axis: number
       bestAxis = i;
     }
   }
-  return bestAxis === -1 || bestMag === 0 ? null : { axis: bestAxis, value: signature[bestAxis] };
+  return bestAxis === -1 || bestMag === 0
+    ? null
+    : { axis: bestAxis, value: signature[bestAxis] };
 }
 
 function compositeRescue(report: AuditReport): boolean {
@@ -113,67 +165,205 @@ function compositeRescue(report: AuditReport): boolean {
 if (import.meta.main) {
   const wantJson = Deno.args.includes("--json");
   const audit = await call_audit();
+  const gravity = await call_gravity();
+  const edges = gravity?.edges_by_tension ?? [];
+  const gravityWarning = gravity === null
+    ? "gravity unavailable; semantic balance only"
+    : null;
+
   const suggestions: Array<{
     path: string;
     current_bucket: string;
-    suggested_bucket: string;
-    primary_axis: string;
-    primary_value: number;
+    suggested_bucket: string | null;
+    pressures: ("semantic" | "coupling")[];
+    primary_axis: string | null;
+    primary_value: number | null;
     composite_rescue: boolean;
+    gravity_edges: Array<{
+      target: string;
+      target_file: string;
+      delta_primary: number;
+      delta_hamming: number;
+    }>;
+    strong_candidate: boolean;
+    aligned: boolean;
     note: string;
   }> = [];
 
   for (const r of audit.reports) {
-    if (r.match !== "mismatch") continue;
-    const primaryAxis = r.strongest_axes[0]; // tie-break: lowest index
-    const suggestedBucket = primaryAxis.toString(16).toUpperCase();
-    const primaryValue = r.signature[primaryAxis];
-    const rescue = compositeRescue(r);
+    const filename = r.path.split("/").pop()!;
+    const fileEdges = edges.filter(
+      (e) => e.source_file === filename && e.delta_primary >= 2,
+    );
+
+    const hasSemantic = r.match === "mismatch";
+    const hasCoupling = fileEdges.length > 0;
+
+    if (!hasSemantic && !hasCoupling) continue;
+
+    const pressures: ("semantic" | "coupling")[] = [];
+    if (hasSemantic) pressures.push("semantic");
+    if (hasCoupling) pressures.push("coupling");
+
+    let suggested_bucket: string | null = null;
+    let primary_axis: string | null = null;
+    let primary_value: number | null = null;
+    let rescue = false;
+
+    if (hasSemantic) {
+      const primaryAxis = r.strongest_axes[0];
+      suggested_bucket = "0x" + primaryAxis.toString(16).toUpperCase();
+      primary_axis = r.strongest_axes_names[0];
+      primary_value = r.signature[primaryAxis];
+      rescue = compositeRescue(r);
+    } else {
+      // Coupling is pressure, not authority: do not turn gravity-only edges into move advice.
+      suggested_bucket = null;
+    }
+
+    const strong_candidate = hasSemantic && hasCoupling;
+
+    // Check if suggested bucket aligns with any of the gravity target buckets
+    const targetBuckets = fileEdges.map((e) =>
+      "0x" + e.target[0].toUpperCase()
+    );
+    const aligned = strong_candidate &&
+      suggested_bucket !== null &&
+      targetBuckets.includes(suggested_bucket);
+
+    let note = "";
+    if (strong_candidate) {
+      note = aligned
+        ? "strong candidate (aligned: dipole mismatch matches high-tension gravity edge target)"
+        : "strong candidate (dissonant: dipole mismatch and gravity target point to different buckets)";
+    } else if (hasSemantic) {
+      note = rescue
+        ? "current placement defensible under composite reading (secondary matches second-axis)"
+        : "no composite rescue — clear projection-reading dissonance";
+    } else {
+      note =
+        `coupling pressure only — review dependency shape; no bucket move suggested (${fileEdges.length} high-tension edge(s))`;
+    }
+
     suggestions.push({
       path: r.path,
       current_bucket: r.bucket,
-      suggested_bucket: `0x${suggestedBucket}`,
-      primary_axis: r.strongest_axes_names[0],
-      primary_value: primaryValue,
+      suggested_bucket,
+      pressures,
+      primary_axis,
+      primary_value,
       composite_rescue: rescue,
-      note: rescue
-        ? "current placement defensible under composite reading (secondary matches second-axis)"
-        : "no composite rescue — clear projection-reading dissonance",
+      gravity_edges: fileEdges.map((e) => ({
+        target: e.target,
+        target_file: e.target_file,
+        delta_primary: e.delta_primary,
+        delta_hamming: e.delta_hamming,
+      })),
+      strong_candidate,
+      aligned,
+      note,
     });
   }
+
+  // Sort suggestions: strong candidates first, then semantic, then coupling, and then by path
+  suggestions.sort((a, b) => {
+    if (a.strong_candidate && !b.strong_candidate) return -1;
+    if (!a.strong_candidate && b.strong_candidate) return 1;
+
+    const aHasSemantic = a.pressures.includes("semantic");
+    const bHasSemantic = b.pressures.includes("semantic");
+    if (aHasSemantic && !bHasSemantic) return -1;
+    if (!aHasSemantic && bHasSemantic) return 1;
+
+    return a.path.localeCompare(b.path);
+  });
 
   const receipt = {
     type: "balance",
     position: "3/A",
     action: "suggest",
-    note: "triangle(3) × mirror-pair(A) — dipole-driven rebalance proposals (read-only)",
+    note:
+      "triangle(3) × mirror-pair(A) — gravity-informed dipole rebalance proposals (read-only)",
     summary: {
-      total_mismatches: suggestions.length,
-      with_composite_rescue: suggestions.filter((s) => s.composite_rescue).length,
-      clean_dissonance: suggestions.filter((s) => !s.composite_rescue).length,
+      total_recommendations: suggestions.length,
+      strong_candidates: suggestions.filter((s) => s.strong_candidate).length,
+      aligned_strong_candidates: suggestions.filter((s) =>
+        s.strong_candidate && s.aligned
+      ).length,
+      semantic_only: suggestions.filter((s) =>
+        s.pressures.includes("semantic") && !s.pressures.includes("coupling")
+      ).length,
+      coupling_only: suggestions.filter((s) =>
+        !s.pressures.includes("semantic") && s.pressures.includes("coupling")
+      ).length,
     },
+    gravity_warning: gravityWarning,
     suggestions,
-    topology: "audit (mismatch list) → primary-axis projection → suggested bucket; no moves performed",
-    synonyms: ["balance", "suggest", "recommend", "rebalance", "баланс", "балансуй", "запропонуй", "порадь"],
+    topology:
+      "audit + gravity → integrated placement pressure analysis; no moves performed",
+    synonyms: [
+      "balance",
+      "suggest",
+      "recommend",
+      "rebalance",
+      "баланс",
+      "балансуй",
+      "запропонуй",
+      "порадь",
+    ],
   };
 
   if (wantJson) {
     console.log(JSON.stringify(receipt, null, 2));
   } else {
-    // Human-friendly table (passes through dispatcher as raw text)
+    // Human-friendly table
     console.log("# balance @ 3/A (proposals only — no moves performed)");
-    console.log("# " + "─".repeat(74));
-    console.log(`# ${suggestions.length} mismatches, ${receipt.summary.with_composite_rescue} composite-rescued, ${receipt.summary.clean_dissonance} clean`);
-    console.log("# ");
-    console.log("# path".padEnd(22) + "current → suggested  strongest axis             rescue");
-    console.log("# " + "─".repeat(74));
-    for (const s of suggestions) {
-      const arrow = `0x${s.current_bucket} → ${s.suggested_bucket}`;
-      const axisLabel = `axis ${parseInt(s.suggested_bucket.slice(2), 16)} ${s.primary_axis}`.padEnd(28);
-      const rescue = s.composite_rescue ? "(composite-rescued)" : "";
-      console.log(`# ${s.path.padEnd(20)} ${arrow.padEnd(14)} ${axisLabel}  ${rescue}`);
+    console.log("# " + "─".repeat(78));
+    console.log(
+      `# ${receipt.summary.total_recommendations} recommendations: ` +
+        `${receipt.summary.strong_candidates} strong (${receipt.summary.aligned_strong_candidates} aligned), ` +
+        `${receipt.summary.semantic_only} semantic-only, ${receipt.summary.coupling_only} coupling-only`,
+    );
+    if (receipt.gravity_warning) {
+      console.log(`# warning: ${receipt.gravity_warning}`);
     }
-    console.log("# " + "─".repeat(74));
+    console.log("# ");
+    console.log(
+      "# " +
+        "path".padEnd(36) +
+        "current → suggested".padEnd(24) +
+        "pressure".padEnd(22) +
+        "details / rescue",
+    );
+    console.log("# " + "─".repeat(78));
+    for (const s of suggestions) {
+      const arrow = s.suggested_bucket === null
+        ? `0x${s.current_bucket} → review`
+        : `0x${s.current_bucket} → ${s.suggested_bucket}`;
+      const pressuresLabel = `[${s.pressures.join(", ")}]`;
+      const col1 = `# ${s.path.padEnd(34)}`;
+      const col2 = `${arrow.padEnd(22)} ${pressuresLabel.padEnd(20)}`;
+
+      let detail = "";
+      if (s.strong_candidate) {
+        detail = s.aligned ? "★ STRONG (aligned) ★" : "★ STRONG (dissonant) ★";
+      } else if (s.pressures.includes("semantic")) {
+        detail = s.composite_rescue
+          ? "(composite-rescued)"
+          : "(clear dissonance)";
+      } else {
+        const sortedEdges = [...s.gravity_edges].sort(
+          (a, b) =>
+            b.delta_primary - a.delta_primary ||
+            b.delta_hamming - a.delta_hamming,
+        );
+        const topEdge = sortedEdges[0];
+        detail =
+          `review coupling to x${topEdge.target}_* (Δp=${topEdge.delta_primary}); no move suggested`;
+      }
+      console.log(`${col1} ${col2} ${detail}`);
+    }
+    console.log("# " + "─".repeat(78));
     console.log(`# To execute moves: not yet implemented. Architect decision.`);
   }
 }

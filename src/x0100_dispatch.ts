@@ -20,7 +20,11 @@
 //   1. canonical match (record's 01 field)
 //   2. multilingual search (record's 10 field, '/' delimited per language)
 
-import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
+import {
+  dirname,
+  fromFileUrl,
+  join,
+} from "https://deno.land/std@0.224.0/path/mod.ts";
 import { positionToPath as libPositionToPath } from "./x0010_dispatch_runner.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
@@ -55,7 +59,9 @@ async function fn_load_words(): Promise<WordRec[]> {
       const r = JSON.parse(line);
       if (r["00"] !== "5") continue;
       if (!Array.isArray(r["02"]) || typeof r["04"] !== "string") continue;
-      const handles = (r["02"] as string[]).filter((s) => typeof s === "string");
+      const handles = (r["02"] as string[]).filter((s) =>
+        typeof s === "string"
+      );
       out.push({
         primary: handles[0] ?? "",
         handles,
@@ -74,7 +80,8 @@ async function fn_load_schemas(): Promise<Map<string, string[]>> {
       try {
         const r = JSON.parse(line);
         if (r["00"] === "07" && r["01"] && r["02"]) {
-          const required = String(r["02"]).split(",").map((s) => s.trim()).filter(Boolean);
+          const required = String(r["02"]).split(",").map((s) => s.trim())
+            .filter(Boolean);
           map.set(r["01"], required);
         }
       } catch { /* skip bad lines */ }
@@ -83,7 +90,9 @@ async function fn_load_schemas(): Promise<Map<string, string[]>> {
   return map;
 }
 
-function fn_validate_payload(payload: any): { valid: boolean; missing?: string[]; type?: string } {
+function fn_validate_payload(
+  payload: any,
+): { valid: boolean; missing?: string[]; type?: string } {
   if (!payload || typeof payload !== "object") {
     return { valid: false, missing: ["payload is not an object"] };
   }
@@ -95,7 +104,9 @@ function fn_validate_payload(payload: any): { valid: boolean; missing?: string[]
   for (const field of required) {
     if (!(field in payload)) missing.push(field);
   }
-  return missing.length === 0 ? { valid: true } : { valid: false, missing, type: t };
+  return missing.length === 0
+    ? { valid: true }
+    : { valid: false, missing, type: t };
 }
 
 function fn_resolve_word(input: string, records: WordRec[]): WordRec | null {
@@ -149,7 +160,7 @@ async function fn_run_at_position(
     args: ["run", "--allow-all", path, ...args],
     stdout: "piped",
     stderr: "inherit",
-    stdin: "inherit",  // pipe parent's stdin through to organ (enables `t cowitness --stdin` etc.)
+    stdin: "inherit", // pipe parent's stdin through to organ (enables `t cowitness --stdin` etc.)
   });
   const result = await proc.output();
   const raw = new TextDecoder().decode(result.stdout).trim();
@@ -171,7 +182,11 @@ async function fn_process_payload(raw: string, depth: number): Promise<number> {
   }
   // recursive continuation
   if (payload?.intent === "continue" && typeof payload.next === "string") {
-    return await fn_run_at_position(payload.next, payload.args ?? [], depth + 1);
+    return await fn_run_at_position(
+      payload.next,
+      payload.args ?? [],
+      depth + 1,
+    );
   }
   // schema validation (glossary-driven, type:07)
   const validation = fn_validate_payload(payload);
@@ -182,7 +197,8 @@ async function fn_process_payload(raw: string, depth: number): Promise<number> {
       expected_type: validation.type,
       missing_fields: validation.missing,
       actual_keys: Object.keys(payload ?? {}),
-      note: "Prediction Error: executable output does not match glossary schema (type:07)",
+      note:
+        "Prediction Error: executable output does not match glossary schema (type:07)",
     };
     fn_render_human(errorPayload);
     return 2; // non-zero: schema mismatch
@@ -256,9 +272,17 @@ function fn_render_human(p: any): void {
 
 function fn_render_spore_apply(p: any): void {
   console.log(`# apply @ ${p.position ?? "5/F"}`);
-  console.log(`# protocol: ${p.protocol ?? "spore.v0"}  backend: ${p.backend_kind ?? "unknown"}`);
+  console.log(
+    `# protocol: ${p.protocol ?? "spore.v0"}  backend: ${
+      p.backend_kind ?? "unknown"
+    }`,
+  );
   if (p.simulation === true) {
-    console.log(`# ⚠ SIMULATION — receipt_kind: ${p.receipt_kind ?? "simulated_spore_apply"} (not a verified SPORE.v0 receipt)`);
+    console.log(
+      `# ⚠ SIMULATION — receipt_kind: ${
+        p.receipt_kind ?? "simulated_spore_apply"
+      } (not a verified SPORE.v0 receipt)`,
+    );
   }
   console.log(`# mutator: ${p.mutator}`);
   console.log(`# state:   ${p.state}`);
@@ -276,47 +300,79 @@ function fn_render_cross_substrate_verify(p: any): void {
   console.log(`# ${label} @ ${p.position ?? "?"} (${mode} mode)`);
   console.log("# " + "─".repeat(50));
   for (const s of p.substrates ?? []) {
-    const icon = s.status === "passed" ? "✓" : s.status === "failed" ? "✗" : s.status === "timeout" ? "⏱" : "⊘";
+    const icon = s.status === "passed"
+      ? "✓"
+      : s.status === "failed"
+      ? "✗"
+      : s.status === "timeout"
+      ? "⏱"
+      : "⊘";
     const cmd = s.command ?? "not implemented";
     const shortCmd = cmd.length > 35 ? cmd.slice(0, 32) + "..." : cmd;
     const dur = s.duration_ms ?? 0;
-    console.log(`# ${s.substrate.padEnd(9)} ${icon} ${s.status.padEnd(14)} ${dur.toString().padStart(5)}ms  ${shortCmd}`);
+    console.log(
+      `# ${s.substrate.padEnd(9)} ${icon} ${s.status.padEnd(14)} ${
+        dur.toString().padStart(5)
+      }ms  ${shortCmd}`,
+    );
   }
   console.log("# " + "─".repeat(50));
   const overallIcon = summary.overall === "passed" ? "✓" : "✗";
-  console.log(`# overall:  ${overallIcon} ${summary.overall ?? "?"}  ${summary.passed ?? 0}/${summary.total ?? 0} passed`);
+  console.log(
+    `# overall:  ${overallIcon} ${summary.overall ?? "?"}  ${
+      summary.passed ?? 0
+    }/${summary.total ?? 0} passed`,
+  );
 }
 
 function fn_render_health(p: any): void {
   const summary = p.summary ?? {};
-  const icon = summary.overall === "healthy" ? "✓" : summary.overall === "degraded" ? "⚠" : "✗";
-  console.log(`# health @ ${p.position ?? "?"} — ${icon} ${summary.overall ?? "?"}`);
+  const icon = summary.overall === "healthy"
+    ? "✓"
+    : summary.overall === "degraded"
+    ? "⚠"
+    : "✗";
+  console.log(
+    `# health @ ${p.position ?? "?"} — ${icon} ${summary.overall ?? "?"}`,
+  );
   console.log("# " + "─".repeat(40));
   for (const c of p.checks ?? []) {
     const ci = c.status === "ok" ? "✓" : c.status === "warn" ? "⚠" : "✗";
     console.log(`# ${ci} ${c.name.padEnd(20)} ${c.detail}`);
   }
   console.log("# " + "─".repeat(40));
-  console.log(`# checks: ${summary.ok ?? 0} ok, ${summary.warn ?? 0} warn, ${summary.fail ?? 0} fail`);
+  console.log(
+    `# checks: ${summary.ok ?? 0} ok, ${summary.warn ?? 0} warn, ${
+      summary.fail ?? 0
+    } fail`,
+  );
 }
 
 function fn_render_help(p: any): void {
   if (p.mode === "list") {
-    console.log("# substrate words (exists, position, primary handle, handles count):");
+    console.log(
+      "# substrate words (exists, position, primary handle, handles count):",
+    );
     for (const r of p.records ?? []) {
       const exists = r.exists ? "✓" : "✗";
       console.log(
-        `  ${exists} ${r.position.padEnd(8)} ${r.primary.padEnd(14)} ${r.handles_count.toString().padStart(2)} handles`,
+        `  ${exists} ${r.position.padEnd(8)} ${r.primary.padEnd(14)} ${
+          r.handles_count.toString().padStart(2)
+        } handles`,
       );
     }
     console.log("\n# detail: t help <any-handle-any-language>");
   } else if (p.mode === "detail") {
     const r = p.record;
     console.log(`primary:   ${r.primary}`);
-    if (p.matched && p.matched !== r.primary) console.log(`matched:   ${p.matched} (equal handle)`);
+    if (p.matched && p.matched !== r.primary) {
+      console.log(`matched:   ${p.matched} (equal handle)`);
+    }
     console.log(`position:  ${r.position}`);
     console.log(`path:      ${r.path}`);
-    console.log(`status:    ${r.exists ? "✓ executable exists" : "✗ no executable"}`);
+    console.log(
+      `status:    ${r.exists ? "✓ executable exists" : "✗ no executable"}`,
+    );
     if (Array.isArray(r.handles)) {
       console.log("\nhandles (equal, no priority):");
       for (const h of r.handles) console.log(`  ${h}`);
@@ -338,19 +394,36 @@ function fn_render_status(p: any): void {
     const sh = p.substrate_health;
 
     // Use the more honest overall when SUBSTRATE_HEALTH is present.
-    const overall = sh?.overall ?? s.overall;
-    const icon =
-      overall === "healthy" || overall === "well" ? "✓"
-      : overall === "degraded" || overall === "drifting" ? "⚠"
+    let overall = sh?.overall ?? s.overall;
+    if (overall === "healthy" && sh?.external_ci?.is_stale) {
+      overall = "well_stale";
+    }
+    const icon = overall === "healthy" || overall === "well"
+      ? "✓"
+      : overall === "degraded" || overall === "drifting" ||
+          overall === "well_stale"
+      ? "⚠"
       : "✗";
-    const legacyNote = sh && sh.overall !== s.overall ? ` (legacy: ${s.overall})` : "";
-    console.log(`# status @ ${p.position ?? "?"} — ${icon} ${overall}${legacyNote}`);
+    const legacyNote = sh && sh.overall !== s.overall && overall !== s.overall
+      ? ` (legacy: ${s.overall})`
+      : "";
+    console.log(
+      `# status @ ${p.position ?? "?"} — ${icon} ${overall}${legacyNote}`,
+    );
     if (p.note) console.log(`# ${p.note}`);
     console.log("# " + "─".repeat(40));
 
     if (s.health) {
-      const hi = s.health.overall === "healthy" ? "✓" : s.health.overall === "degraded" ? "⚠" : "✗";
-      console.log(`# health:   ${hi} ${s.health.overall}  (${s.health.ok ?? 0} ok, ${s.health.fail ?? 0} fail)`);
+      const hi = s.health.overall === "healthy"
+        ? "✓"
+        : s.health.overall === "degraded"
+        ? "⚠"
+        : "✗";
+      console.log(
+        `# health:   ${hi} ${s.health.overall}  (${s.health.ok ?? 0} ok, ${
+          s.health.fail ?? 0
+        } fail)`,
+      );
     }
     if (s.audit) {
       const ai = s.audit.match > 0 && s.audit.mismatch === 0 ? "✓" : "⚠";
@@ -375,8 +448,13 @@ function fn_render_status(p: any): void {
       for (const [name, sub] of Object.entries(p.submodules)) {
         if (!sub) continue;
         const subData = sub as any;
-        const subOvr = subData.substrate_health?.overall ?? subData.summary?.overall ?? "unknown";
-        const si = subOvr === "healthy" ? "✓" : subOvr === "degraded" ? "⚠" : "✗";
+        const subOvr = subData.substrate_health?.overall ??
+          subData.summary?.overall ?? "unknown";
+        const si = subOvr === "healthy"
+          ? "✓"
+          : subOvr === "degraded"
+          ? "⚠"
+          : "✗";
         console.log(`# sub[${name.padEnd(6)}]: ${si} ${subOvr}`);
       }
     }
@@ -390,62 +468,98 @@ function fn_render_status(p: any): void {
 
 function fn_render_pipe(p: any): void {
   const icon = p.overall === "passed" ? "✓" : "✗";
-  const label = p.stoppedAt ? `stopped at ${p.stoppedAt}` : `${p.steps?.length ?? 0} steps passed`;
-  console.log(`# pipe @ ${p.position ?? "0/05"} — ${icon} ${p.overall ?? "?"} (${label})`);
+  const label = p.stoppedAt
+    ? `stopped at ${p.stoppedAt}`
+    : `${p.steps?.length ?? 0} steps passed`;
+  console.log(
+    `# pipe @ ${p.position ?? "0/05"} — ${icon} ${p.overall ?? "?"} (${label})`,
+  );
   if (p.note) console.log(`# ${p.note}`);
 }
 
 function fn_render_each(p: any): void {
   const icon = p.overall === "passed" ? "✓" : "✗";
-  console.log(`# each @ ${p.position ?? "0/04"} — ${icon} ${p.overall ?? "?"}  (${p.count ?? 0} steps, ${p.errors ?? 0} errors)`);
+  console.log(
+    `# each @ ${p.position ?? "0/04"} — ${icon} ${p.overall ?? "?"}  (${
+      p.count ?? 0
+    } steps, ${p.errors ?? 0} errors)`,
+  );
   if (p.note) console.log(`# ${p.note}`);
 }
 
 function fn_render_cond(p: any): void {
   const icon = p.overall === "passed" ? "✓" : "✗";
   const branch = p.taken ?? "?";
-  console.log(`# cond @ ${p.position ?? "0/07"} — ${icon} ${p.overall ?? "?"}  (took ${branch})`);
+  console.log(
+    `# cond @ ${p.position ?? "0/07"} — ${icon} ${
+      p.overall ?? "?"
+    }  (took ${branch})`,
+  );
   if (p.note) console.log(`# ${p.note}`);
 }
 
 function fn_render_try(p: any): void {
   const icon = p.overall === "passed" ? "✓" : "✗";
   const used = p.used ?? "?";
-  console.log(`# try @ ${p.position ?? "0/06"} — ${icon} ${p.overall ?? "?"}  (used: ${used})`);
+  console.log(
+    `# try @ ${p.position ?? "0/06"} — ${icon} ${
+      p.overall ?? "?"
+    }  (used: ${used})`,
+  );
   if (p.note) console.log(`# ${p.note}`);
 }
 
 function fn_render_join(p: any): void {
   const icon = p.overall === "passed" ? "✓" : "✗";
-  console.log(`# join @ ${p.position ?? "0/08"} — ${icon} ${p.overall ?? "?"}  (${p.count ?? 0} parallel, ${p.errors ?? 0} errors)`);
+  console.log(
+    `# join @ ${p.position ?? "0/08"} — ${icon} ${p.overall ?? "?"}  (${
+      p.count ?? 0
+    } parallel, ${p.errors ?? 0} errors)`,
+  );
   if (p.note) console.log(`# ${p.note}`);
 }
 
 function fn_render_repeat(p: any): void {
   const icon = p.overall === "passed" ? "✓" : "✗";
-  const err = p.first_error_at !== null ? `first error at ${p.first_error_at}` : "all ok";
-  console.log(`# repeat @ ${p.position ?? "0/09"} — ${icon} ${p.overall ?? "?"}  (${p.requested_count ?? 0}×, ${err})`);
+  const err = p.first_error_at !== null
+    ? `first error at ${p.first_error_at}`
+    : "all ok";
+  console.log(
+    `# repeat @ ${p.position ?? "0/09"} — ${icon} ${p.overall ?? "?"}  (${
+      p.requested_count ?? 0
+    }×, ${err})`,
+  );
   if (p.note) console.log(`# ${p.note}`);
 }
 
 function fn_render_tap(p: any): void {
   const picon = p.primary_ok ? "✓" : "✗";
   const sicon = p.side_ok ? "✓" : "✗";
-  console.log(`# tap @ ${p.position ?? "0/0A"} — primary ${picon}, side ${sicon}`);
+  console.log(
+    `# tap @ ${p.position ?? "0/0A"} — primary ${picon}, side ${sicon}`,
+  );
   if (p.note) console.log(`# ${p.note}`);
 }
 
 function fn_render_until(p: any): void {
   const icon = p.overall === "passed" ? "✓" : "✗";
-  const at = p.success_at !== null ? `success at attempt ${(p.success_at as number) + 1}` : `failed after ${p.attempts ?? 0}`;
-  console.log(`# until @ ${p.position ?? "0/0B"} — ${icon} ${p.overall ?? "?"}  (${at})`);
+  const at = p.success_at !== null
+    ? `success at attempt ${(p.success_at as number) + 1}`
+    : `failed after ${p.attempts ?? 0}`;
+  console.log(
+    `# until @ ${p.position ?? "0/0B"} — ${icon} ${p.overall ?? "?"}  (${at})`,
+  );
   if (p.note) console.log(`# ${p.note}`);
 }
 
 function fn_render_any(p: any): void {
   const icon = p.overall === "passed" ? "✓" : "✗";
-  const first = p.first_success_at !== null ? `first success: ${p.steps?.[p.first_success_at] ?? "?"}` : "all failed";
-  console.log(`# any @ ${p.position ?? "0/0C"} — ${icon} ${p.overall ?? "?"}  (${first})`);
+  const first = p.first_success_at !== null
+    ? `first success: ${p.steps?.[p.first_success_at] ?? "?"}`
+    : "all failed";
+  console.log(
+    `# any @ ${p.position ?? "0/0C"} — ${icon} ${p.overall ?? "?"}  (${first})`,
+  );
   if (p.note) console.log(`# ${p.note}`);
 }
 
@@ -480,11 +594,15 @@ async function fn_dispatch_word(word: string, rest: string[]): Promise<number> {
   const found = fn_resolve_word(word, records);
   if (!found) {
     console.error(`# unknown word: ${word}`);
-    console.error(`# known handles: ${records.flatMap((r) => r.handles).join(", ")}`);
+    console.error(
+      `# known handles: ${records.flatMap((r) => r.handles).join(", ")}`,
+    );
     return 1;
   }
   if (word !== found.primary) {
-    console.error(`# ${word} → ${found.primary} (equal handle) → ${found.position}`);
+    console.error(
+      `# ${word} → ${found.primary} (equal handle) → ${found.position}`,
+    );
   } else {
     console.error(`# ${word} → ${found.position}`);
   }

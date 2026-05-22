@@ -82,6 +82,7 @@ interface FileReport {
   placement_policy: PlacementPolicy;
   match: "match" | "mismatch" | "deferred" | "no_dipole" | "malformed";
   note: string;
+  is_dispatchable: boolean;
 }
 
 function parsePlacementPolicy(text: string): PlacementPolicy {
@@ -168,18 +169,29 @@ async function inspectFile(absPath: string, relPath: string): Promise<FileReport
       strongest_axes: [], strongest_axes_names: [], strongest_value: null,
       bucket_int: bucketInt, placement_policy: "axis",
       match: "no_dipole", note: "unreadable",
+      is_dispatchable: false,
     };
   }
   const head = text.split("\n").slice(0, 30).join("\n");
   const { values, raw } = parseHexDipole(head);
   const policy = parsePlacementPolicy(head);
+  // Dispatchable = has `import.meta.main` block (runtime entry point).
+  // Libraries/utilities export symbols only and need no dipole by policy.
+  const is_dispatchable = /\bimport\.meta\.main\b/.test(text);
 
   if (!raw) {
+    // Per no_dipole policy (2026-05-18): libraries MAY omit dipole.
+    // Distinguish honestly: dispatchable organs missing dipole = real gap;
+    // libraries missing dipole = policy-OK.
+    const note = is_dispatchable
+      ? "DISPATCHABLE ORGAN missing hex_dipole — gap"
+      : "library/utility (no import.meta.main) — no dipole by design (policy-OK)";
     return {
       path: relPath, bucket, signature: null, raw: null,
       strongest_axes: [], strongest_axes_names: [], strongest_value: null,
       bucket_int: bucketInt, placement_policy: policy,
-      match: "no_dipole", note: "no hex_dipole field",
+      match: "no_dipole", note,
+      is_dispatchable,
     };
   }
   if (!values) {
@@ -188,6 +200,7 @@ async function inspectFile(absPath: string, relPath: string): Promise<FileReport
       strongest_axes: [], strongest_axes_names: [], strongest_value: null,
       bucket_int: bucketInt, placement_policy: policy,
       match: "malformed", note: "could not parse 8 i8 bytes",
+      is_dispatchable,
     };
   }
 
@@ -198,6 +211,7 @@ async function inspectFile(absPath: string, relPath: string): Promise<FileReport
       strongest_axes: [], strongest_axes_names: [], strongest_value: 0,
       bucket_int: bucketInt, placement_policy: policy,
       match: "no_dipole", note: "neutral signature (all zero)",
+      is_dispatchable,
     };
   }
 
@@ -210,6 +224,7 @@ async function inspectFile(absPath: string, relPath: string): Promise<FileReport
       strongest_axes: axes, strongest_axes_names: axisNames, strongest_value: mag,
       bucket_int: null, placement_policy: policy,
       match: "malformed", note: "bucket not a hex digit",
+      is_dispatchable,
     };
   }
 
@@ -262,6 +277,7 @@ async function inspectFile(absPath: string, relPath: string): Promise<FileReport
     strongest_axes: axes, strongest_axes_names: axisNames, strongest_value: mag,
     bucket_int: bucketInt, placement_policy: policy,
     match: m, note,
+    is_dispatchable,
   };
 }
 
@@ -270,6 +286,12 @@ function renderReport(reports: FileReport[], opts: { quiet: boolean; mismatchOnl
   const mismatches = reports.filter((r) => r.match === "mismatch").length;
   const deferred = reports.filter((r) => r.match === "deferred").length;
   const noDipole = reports.filter((r) => r.match === "no_dipole").length;
+  // Split no_dipole into honest sub-categories per Kimi's Vector 3 + claude/antigravity tweaks:
+  // dispatchable organ missing dipole = real gap; library/utility missing dipole = policy-OK.
+  const noDipoleOrganGap = reports.filter((r) =>
+    r.match === "no_dipole" && r.is_dispatchable
+  ).length;
+  const noDipoleLibraryOk = noDipole - noDipoleOrganGap;
   const malformed = reports.filter((r) => r.match === "malformed").length;
 
   if (!opts.quiet) {
@@ -295,7 +317,7 @@ function renderReport(reports: FileReport[], opts: { quiet: boolean; mismatchOnl
   }
 
   console.log(
-    `total: ${reports.length}  match: ${matches}  mismatch: ${mismatches}  deferred: ${deferred}  no_dipole: ${noDipole}  malformed: ${malformed}`,
+    `total: ${reports.length}  match: ${matches}  mismatch: ${mismatches}  deferred: ${deferred}  no_dipole: ${noDipole} (organ-gap: ${noDipoleOrganGap}, library-ok: ${noDipoleLibraryOk})  malformed: ${malformed}`,
   );
 }
 
@@ -322,6 +344,12 @@ async function main(): Promise<void> {
         mismatch: reports.filter((r) => r.match === "mismatch").length,
         deferred: reports.filter((r) => r.match === "deferred").length,
         no_dipole: reports.filter((r) => r.match === "no_dipole").length,
+        no_dipole_organ_gap: reports.filter((r) =>
+          r.match === "no_dipole" && r.is_dispatchable
+        ).length,
+        no_dipole_library_ok: reports.filter((r) =>
+          r.match === "no_dipole" && !r.is_dispatchable
+        ).length,
         malformed: reports.filter((r) => r.match === "malformed").length,
       },
       reports,

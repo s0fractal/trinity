@@ -8,7 +8,7 @@
 // placement_policy: axis
 // intent: scan organ horizons + tracked chords + voices; render frontier tension per substrate and per voice
 // maturity: active
-// horizon: consume generated state/skill/memory outputs (currently reads sources directly); cross-bucket tension synthesis
+// horizon: per-voice rendering of substrate far-horizon signals (currently substrate-only); consume generated state/skill/memory outputs; cross-bucket tension synthesis
 //
 // roadmap generator — fourth axis "куди іти"
 //
@@ -232,7 +232,6 @@ async function loadOrganHorizons(): Promise<OrganHorizon[]> {
   const out: OrganHorizon[] = [];
   for await (const entry of Deno.readDir(SRC)) {
     if (!entry.isFile) continue;
-    if (entry.name === "x8D00_roadmap_gen.ts") continue; // skip self
     const m = ORGAN_FILE_RE.exec(entry.name);
     if (!m) continue;
     const relPath = `src/${entry.name}`;

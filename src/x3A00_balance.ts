@@ -15,7 +15,7 @@
 // lifecycle_phase: 0
 // intent: read audit signals and propose where drifting files should be relocated
 // maturity: active
-// horizon: extend balance suggestions to use gravity metric (mean Δprimary) as secondary signal
+// horizon: cross-link with x3C00_recipes — when a balance suggestion has a matching recipe, surface it as remediation candidate (pairs with x3C00's "recipe-as-remediation" horizon)
 // skill_tag: balance
 // skill_safe: yes
 //

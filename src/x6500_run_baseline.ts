@@ -125,10 +125,10 @@ async function main() {
     ]),
   ].join("\n");
 
-  await Deno.mkdir(`${root}/reports`, { recursive: true });
-  const reportPath = `${root}/reports/latest-${
+  await Deno.mkdir(`${root}/src`, { recursive: true });
+  const reportPath = `${root}/src/x6500_latest-${
     strict ? "strict" : "green"
-  }-audit.md`;
+  }-audit.myc.md`;
   await Deno.writeTextFile(reportPath, report);
   console.log(`\nReport written: ${reportPath}`);
 
@@ -153,10 +153,13 @@ async function main() {
       skipped: 0,
     },
   };
-  const sidecarPath = `${root}/reports/latest-${
+  const sidecarPath = `${root}/src/x6500_latest-${
     strict ? "strict" : "green"
-  }-audit.json`;
-  await Deno.writeTextFile(sidecarPath, JSON.stringify(sidecar, null, 2) + "\n");
+  }-audit.myc.json`;
+  await Deno.writeTextFile(
+    sidecarPath,
+    JSON.stringify(sidecar, null, 2) + "\n",
+  );
   console.log(`Sidecar written:  ${sidecarPath}`);
 
   const failed = results.filter((result) => result.code !== 0);

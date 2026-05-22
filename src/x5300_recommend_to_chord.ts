@@ -27,7 +27,7 @@ import { sha256Hex } from "./x4010_hash.ts";
  * own chords in response, in support, in dissonance, or unprompted.
  */
 
-const REC_PATH = "reports/cognition/recommendation.latest.json";
+const REC_PATH = "src/x5288_cognition_recommendation.latest.myc.json";
 const CHORDS_DIR = "jazz/chords";
 const ACTOR = "trinity-cognition";
 

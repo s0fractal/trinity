@@ -10,13 +10,13 @@ import { sha256Hex } from "./x4010_hash.ts";
 
 /**
  * cognition_recommend_receipt
- * 
+ *
  * Emits a formal receipt of the latest cognitive recommendation cycle.
  * This provides a deterministic bridge from "analysis" to "ranked action".
  */
 
-const REC_PATH = "reports/cognition/recommendation.latest.json";
-const RECEIPT_PATH = "reports/cognition/recommendation.receipt.json";
+const REC_PATH = "src/x5288_cognition_recommendation.latest.myc.json";
+const RECEIPT_PATH = "src/x5E88_cognition_recommendation.receipt.myc.json";
 
 async function main() {
   let descriptorText: string;
@@ -35,11 +35,13 @@ async function main() {
     version: "0.1",
     recommendation_hash: `h.${hash.slice(0, 12)}`,
     timestamp: new Date().toISOString(),
-    top_signal: descriptor.recommendations?.[0] ? {
-      repo: descriptor.recommendations[0].repo,
-      action: descriptor.recommendations[0].action,
-      pressure: descriptor.recommendations[0].pressure,
-    } : null,
+    top_signal: descriptor.recommendations?.[0]
+      ? {
+        repo: descriptor.recommendations[0].repo,
+        action: descriptor.recommendations[0].action,
+        pressure: descriptor.recommendations[0].pressure,
+      }
+      : null,
     status: "EMITTED",
   };
 

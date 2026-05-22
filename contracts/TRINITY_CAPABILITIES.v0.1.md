@@ -47,13 +47,13 @@ Minimum object shape:
   "phase": "receipt",
   "kind": "command",
   "command": "deno task cognition:field",
-  "reads": ["reports/cognition/recommendation.latest.json", "jazz/chords/"],
+  "reads": ["src/x5288_cognition_recommendation.latest.myc.json", "jazz/chords/"],
   "writes": [
-    "reports/cognition/field.latest.json",
-    "reports/cognition/field.latest.md"
+    "src/x2588_cognition_field.latest.myc.json",
+    "src/x2588_cognition_field.latest.myc.md"
   ],
   "side_effects": ["file-write"],
-  "receipt": "reports/cognition/field.latest.md",
+  "receipt": "src/x2588_cognition_field.latest.myc.md",
   "composes_with": ["trinity.cognition.recommend"]
 }
 ```

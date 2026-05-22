@@ -9,11 +9,15 @@
 import { parse as parseYaml } from "https://deno.land/std@0.224.0/yaml/mod.ts";
 import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { ensureDir } from "https://deno.land/std@0.224.0/fs/ensure_dir.ts";
-import { REPOS, scanEcosystem, type ThoughtPhase } from "./x0020_scanner_core.ts";
+import {
+  REPOS,
+  scanEcosystem,
+  type ThoughtPhase,
+} from "./x0020_scanner_core.ts";
 
-const REC_PATH = "reports/cognition/recommendation.latest.json";
-const OUT_JSON = "reports/cognition/field.latest.json";
-const OUT_MD = "reports/cognition/field.latest.md";
+const REC_PATH = "src/x5288_cognition_recommendation.latest.myc.json";
+const OUT_JSON = "src/x2588_cognition_field.latest.myc.json";
+const OUT_MD = "src/x2588_cognition_field.latest.myc.md";
 const CHORDS_DIR = "jazz/chords";
 
 const PHASES: ThoughtPhase[] = [
@@ -217,7 +221,7 @@ async function main() {
     },
   };
 
-  await ensureDir("reports/cognition");
+  await ensureDir("src");
   await Deno.writeTextFile(OUT_JSON, JSON.stringify(field, null, 2));
   await Deno.writeTextFile(OUT_MD, markdown(field));
 

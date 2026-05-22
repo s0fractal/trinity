@@ -6,14 +6,14 @@
 # 2026-05-20 and gitignored going forward. Treat as compromised — rotate
 # if it had any authority.
 .liquid/
-reports/latest-*.md
-reports/latest-*.json
-reports/*.tmp.md
-reports/trinity_clean_export.md
-reports/cognition/*.latest.json
-reports/cognition/*.latest.md
-reports/cognition/*.receipt.json
-reports/cognition/snapshot.*.json
+src/x6500_latest-*.myc.md
+src/x6500_latest-*.myc.json
+src/*.latest.myc.json
+src/*.latest.myc.md
+src/*.receipt.myc.json
+src/x2488_cognition_snapshot.*.myc.json
+state/audit/
+state/cognition/
 public-candidates/myc/process.ndjson
 
 # Python bytecode (probes/receipt-envelope-encoder-v0/python/)
@@ -42,7 +42,7 @@ src/x8888_skills.manifest.json
 # Auto-generated voice memory (recall projection) — `t memory`.
 # Per-voice memory at x8888_<voice>_memory.myc.md; substrate-wide voice index
 # at x2888_voices_state.myc.md. All gitignored: regenerable from tracked
-# state/voices/*.json + tracked jazz/chords/*.md via source manifest chain.
+# src/x8A*_voice_*.myc.json + tracked jazz/chords/*.md via source manifest chain.
 src/x8888_*_memory.myc.md
 src/x8888_*_memory.manifest.json
 src/x2888_voices_state.myc.md

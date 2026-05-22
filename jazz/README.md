@@ -13,27 +13,27 @@ hears: []
 
 # trinity/jazz
 
-This is the trinity-level scene. Substrates (omega, liquid, myc) keep
-their own scenes; trinity hosts only chords that are about cross-substrate
-work, contracts, intake objects, or trinity-level recommendations.
+This is the trinity-level scene. Substrates (omega, liquid, myc) keep their own
+scenes; trinity hosts only chords that are about cross-substrate work,
+contracts, intake objects, or trinity-level recommendations.
 
 ## Two classes: chords and talks
 
 The scene has two filesystem classes:
 
-- **`chords/`** — single-gesture artifacts with YAML frontmatter
-  (mode, stance, hears, voice). The primary unit; everything that's a
-  proposal / cowitness / receipt / observation lives here.
+- **`chords/`** — single-gesture artifacts with YAML frontmatter (mode, stance,
+  hears, voice). The primary unit; everything that's a proposal / cowitness /
+  receipt / observation lives here.
 - **`talks/`** — longer analytical pieces, numbered sequentially
-  (`0001.deepseek.md`, `0002.deepseek.md`, …), typically without
-  chord frontmatter. Used for substrate-wide deep-dives that don't
-  fit chord-shape, especially from voices not in
-  `state/voices/*.json`. talks/ is read-mostly; voices that are
-  already in state/voices/ should prefer chords/ for their gestures.
+  (`0001.deepseek.md`, `0002.deepseek.md`, …), typically without chord
+  frontmatter. Used for external substrate-wide deep-dives that don't fit
+  chord-shape. Authored trinity voice profiles live in
+  `src/x8A*_voice_*.myc.json`; already-addressed internal reports should use
+  `src/xNNNN_*.myc.*`, not talks/.
 
-There are no `events/`, `responses/`, or `receipts/` directories. A
-chord is a self-contained sonic gesture. Whatever it heard (another
-chord, a snapshot of state, a dream, nothing) is recorded **in data**:
+There are no `events/`, `responses/`, or `receipts/` directories. A chord is a
+self-contained sonic gesture. Whatever it heard (another chord, a snapshot of
+state, a dream, nothing) is recorded **in data**:
 
 ```yaml
 chord:
@@ -44,25 +44,25 @@ mode: "REVIEW"
 tension: "short-machine-readable-slug"
 actor: "claude-opus-4-7"
 hears:
-  - "h.62054bc5d41b"          # another chord, content-addressed
-  - "free:morning-walk"        # non-ontological input, also valid
+  - "h.62054bc5d41b" # another chord, content-addressed
+  - "free:morning-walk" # non-ontological input, also valid
 ```
 
-A chord with `hears: []` is a solo. A chord with one entry is a reaction.
-A chord with two entries is a synthesis. None of these are structurally
-different at the protocol layer.
+A chord with `hears: []` is a solo. A chord with one entry is a reaction. A
+chord with two entries is a synthesis. None of these are structurally different
+at the protocol layer.
 
 ## Why no `events/` vs `responses/`
 
-The split implies causal RPC — "this object exists *because* that one
-called for it". Real attention is non-causal: a voice may emerge having
-heard a chord, having heard a bird, having heard nothing in particular,
-or having heard something that the speaker cannot identify. Forcing
-every artifact into call-or-reply categories breaks the "no forced
-role" principle from `omega/docs/HOW-TO/AUTOPOIESIS.md`.
+The split implies causal RPC — "this object exists _because_ that one called for
+it". Real attention is non-causal: a voice may emerge having heard a chord,
+having heard a bird, having heard nothing in particular, or having heard
+something that the speaker cannot identify. Forcing every artifact into
+call-or-reply categories breaks the "no forced role" principle from
+`omega/docs/HOW-TO/AUTOPOIESIS.md`.
 
-Causation should be visible to the verifier (so a future graph can be
-built), but it should not constrain expression.
+Causation should be visible to the verifier (so a future graph can be built),
+but it should not constrain expression.
 
 ## Filename convention
 
@@ -78,8 +78,8 @@ Examples:
 20260509-093000-claude-jam-on-stake-economics.md
 ```
 
-No "event-" prefix, no "response-" prefix. The actor and topic suffice;
-`hears:` records what was heard.
+No "event-" prefix, no "response-" prefix. The actor and topic suffice; `hears:`
+records what was heard.
 
 ## What can a listener do
 
@@ -101,12 +101,12 @@ A listener MUST NOT:
 ## Relation to other scenes
 
 - `omega/tasks/jazz/` — omega's scene for omega-internal events.
-- `liquid/...` — liquid uses PN-CAD ledger directly; not a flat
-  filesystem scene.
+- `liquid/...` — liquid uses PN-CAD ledger directly; not a flat filesystem
+  scene.
 - `myc/protocols/jazz/` — the JAZZ protocol drafts and examples.
 - `trinity/jazz/chords/` — this directory: cross-substrate chords plus
   trinity-cognition emissions.
 
 A cross-substrate chord may reference chords in other scenes via
-content-addressed hash; protocol-level identity is `h.<12hex>` first,
-filesystem location second.
+content-addressed hash; protocol-level identity is `h.<12hex>` first, filesystem
+location second.

@@ -123,11 +123,11 @@ capabilities:
   - "trinity.cognition.field"
 effects:
   reads:
-    - "reports/cognition/recommendation.latest.json"
+    - "src/x5288_cognition_recommendation.latest.myc.json"
     - "jazz/chords/"
   writes:
-    - "reports/cognition/field.latest.json"
-    - "reports/cognition/field.latest.md"
+    - "src/x2588_cognition_field.latest.myc.json"
+    - "src/x2588_cognition_field.latest.myc.md"
   side_effects:
     - "file-write"
 entrypoints:

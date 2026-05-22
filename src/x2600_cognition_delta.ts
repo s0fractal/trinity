@@ -11,7 +11,9 @@ import { parse } from "https://deno.land/std@0.224.0/flags/mod.ts";
 
 async function getMostRecentSnapshots(): Promise<[string, string] | null> {
   const snapshots: string[] = [];
-  for await (const file of expandGlob("reports/cognition/snapshot.*.json")) {
+  for await (
+    const file of expandGlob("src/x2488_cognition_snapshot.*.myc.json")
+  ) {
     snapshots.push(file.path);
   }
   snapshots.sort();
@@ -25,10 +27,12 @@ async function main() {
   let fileB = flags.to;
 
   if (!fileA || !fileB) {
-    console.log("No --from and --to provided. Attempting to use the two most recent snapshots...");
+    console.log(
+      "No --from and --to provided. Attempting to use the two most recent snapshots...",
+    );
     const recent = await getMostRecentSnapshots();
     if (!recent) {
-      console.error("Not enough snapshots found in reports/cognition/");
+      console.error("Not enough snapshots found in src/");
       Deno.exit(1);
     }
     fileA = recent[0];
@@ -60,7 +64,15 @@ async function main() {
 
   console.log("\nOntology Coverage Shifts:");
   changed = false;
-  for (const key of ["L1_fqdn", "L2_parseable", "L4a_hash_claimed", "L4b_hash_verified", "L6_recipe"]) {
+  for (
+    const key of [
+      "L1_fqdn",
+      "L2_parseable",
+      "L4a_hash_claimed",
+      "L4b_hash_verified",
+      "L6_recipe",
+    ]
+  ) {
     const a = snapA.global[key];
     const b = snapB.global[key];
     if (a !== b) {
@@ -73,18 +85,25 @@ async function main() {
   if (!changed) console.log("  (no changes)");
 
   console.log("\nThermodynamic Interpretation:");
-  const diffRaw = snapB.global.thought_phases["raw-fantasy"] - snapA.global.thought_phases["raw-fantasy"];
-  const diffReceipt = snapB.global.thought_phases["receipt"] - snapA.global.thought_phases["receipt"];
-  const diffL4b = snapB.global.L4b_hash_verified - snapA.global.L4b_hash_verified;
+  const diffRaw = snapB.global.thought_phases["raw-fantasy"] -
+    snapA.global.thought_phases["raw-fantasy"];
+  const diffReceipt = snapB.global.thought_phases["receipt"] -
+    snapA.global.thought_phases["receipt"];
+  const diffL4b = snapB.global.L4b_hash_verified -
+    snapA.global.L4b_hash_verified;
 
   if (diffL4b > 0) {
-    console.log("  🟢 ATP Generated: System increased verified cryptographic reality.");
+    console.log(
+      "  🟢 ATP Generated: System increased verified cryptographic reality.",
+    );
   }
   if (diffReceipt > 0) {
     console.log("  🟢 ATP Generated: New verification receipts materialized.");
   }
   if (diffRaw > 0 && diffReceipt <= 0) {
-    console.log("  🔴 ATP Consumed: Speculation increased without verification.");
+    console.log(
+      "  🔴 ATP Consumed: Speculation increased without verification.",
+    );
   }
   if (diffRaw === 0 && diffReceipt === 0 && diffL4b === 0 && !changed) {
     console.log("  ⚪ Zero-Energy State: No cognitive movement detected.");

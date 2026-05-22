@@ -7,7 +7,7 @@
 // validate_schemas.ts — validate substrate artifacts against contracts/schema/*.json
 //
 // Walks jazz/chords/*.md and validates each chord's YAML frontmatter against
-// contracts/schema/chord.schema.json. Validates reports/cognition/recommendation.latest.json
+// contracts/schema/chord.schema.json. Validates src/x5288_cognition_recommendation.latest.myc.json
 // against recommendation.schema.json. Reports pass/fail counts and the first few errors.
 //
 // Adoption: this is a soft-validation pass. Failures are surfaced but do not block.
@@ -50,7 +50,9 @@ type AjvInstance = {
   compile(schema: unknown): AjvValidator;
 };
 
-type AjvConstructor = new (options: { allErrors: boolean; strict: boolean }) => AjvInstance;
+type AjvConstructor = new (
+  options: { allErrors: boolean; strict: boolean },
+) => AjvInstance;
 
 const Ajv2020 = Ajv2020Module as unknown as AjvConstructor;
 
@@ -69,7 +71,9 @@ function extractFrontmatter(content: string): unknown {
 function parseChordTimestamp(path: string): Date | null {
   const filename = path.split("/").pop() ?? path;
 
-  let match = filename.match(/^(\d{4})-?(\d{2})-?(\d{2})T(\d{2}):?(\d{2}):?(\d{2})Z/);
+  let match = filename.match(
+    /^(\d{4})-?(\d{2})-?(\d{2})T(\d{2}):?(\d{2}):?(\d{2})Z/,
+  );
   if (match) {
     const [, y, mo, d, h, mi, s] = match;
     return new Date(`${y}-${mo}-${d}T${h}:${mi}:${s}Z`);
@@ -171,7 +175,9 @@ async function validateChords(
         result.passed++;
       } else {
         const errs = validate.errors ?? [];
-        const msg = errs.slice(0, 2).map((e: AjvError) => `${e.instancePath || "/"} ${e.message}`).join("; ");
+        const msg = errs.slice(0, 2).map((e: AjvError) =>
+          `${e.instancePath || "/"} ${e.message}`
+        ).join("; ");
         recordFailure(result, path, msg, grandfathered);
       }
     } catch (e) {
@@ -182,9 +188,11 @@ async function validateChords(
   return result;
 }
 
-async function validateRecommendation(ajv: AjvInstance): Promise<ValidationResult | null> {
+async function validateRecommendation(
+  ajv: AjvInstance,
+): Promise<ValidationResult | null> {
   const schemaPath = `${ROOT}contracts/schema/recommendation.schema.json`;
-  const dataPath = `${ROOT}reports/cognition/recommendation.latest.json`;
+  const dataPath = `${ROOT}src/x5288_cognition_recommendation.latest.myc.json`;
   try {
     const schema = JSON.parse(await Deno.readTextFile(schemaPath));
     const data = JSON.parse(await Deno.readTextFile(dataPath));
@@ -196,12 +204,18 @@ async function validateRecommendation(ajv: AjvInstance): Promise<ValidationResul
       result.failed = 1;
       result.enforceFailed = 1;
       const errs = validate.errors ?? [];
-      const msg = errs.slice(0, 3).map((e: AjvError) => `${e.instancePath || "/"} ${e.message}`).join("; ");
+      const msg = errs.slice(0, 3).map((e: AjvError) =>
+        `${e.instancePath || "/"} ${e.message}`
+      ).join("; ");
       result.errors.push({ path: "recommendation.latest.json", message: msg });
     }
     return result;
   } catch (e) {
-    console.error(`recommendation validation skipped: ${e instanceof Error ? e.message : e}`);
+    console.error(
+      `recommendation validation skipped: ${
+        e instanceof Error ? e.message : e
+      }`,
+    );
     return null;
   }
 }
@@ -209,8 +223,12 @@ async function validateRecommendation(ajv: AjvInstance): Promise<ValidationResul
 function printResult(label: string, r: ValidationResult): void {
   const pct = r.total === 0 ? 0 : ((r.passed / r.total) * 100).toFixed(1);
   const debt = r.grandfathered > 0 ? `, ${r.grandfathered} grandfathered` : "";
-  const active = r.enforceFailed > 0 ? `, ${r.enforceFailed} active failures` : "";
-  console.log(`${label}: ${r.passed}/${r.total} passed (${pct}%), ${r.failed} failed${debt}${active}`);
+  const active = r.enforceFailed > 0
+    ? `, ${r.enforceFailed} active failures`
+    : "";
+  console.log(
+    `${label}: ${r.passed}/${r.total} passed (${pct}%), ${r.failed} failed${debt}${active}`,
+  );
   if (r.errors.length > 0) {
     console.log(`  first ${r.errors.length} active errors:`);
     for (const err of r.errors) {
@@ -218,7 +236,9 @@ function printResult(label: string, r: ValidationResult): void {
     }
   }
   if (r.grandfatheredErrors.length > 0) {
-    console.log(`  first ${r.grandfatheredErrors.length} grandfathered errors:`);
+    console.log(
+      `  first ${r.grandfatheredErrors.length} grandfathered errors:`,
+    );
     for (const err of r.grandfatheredErrors) {
       console.log(`    ${err.path}: ${err.message}`);
     }
@@ -237,20 +257,25 @@ function printResultJson(
   const total = chordResult.total + (recResult?.total ?? 0);
   const passed = chordResult.passed + (recResult?.passed ?? 0);
   const failed = chordResult.failed + (recResult?.failed ?? 0);
-  const activeFailures = chordResult.enforceFailed + (recResult?.enforceFailed ?? 0);
-  console.log(JSON.stringify({
-    type: "schema_validation",
-    options,
-    summary: {
-      total,
-      passed,
-      failed,
-      active_failures: activeFailures,
-      grandfathered_failures: chordResult.grandfathered,
+  const activeFailures = chordResult.enforceFailed +
+    (recResult?.enforceFailed ?? 0);
+  console.log(JSON.stringify(
+    {
+      type: "schema_validation",
+      options,
+      summary: {
+        total,
+        passed,
+        failed,
+        active_failures: activeFailures,
+        grandfathered_failures: chordResult.grandfathered,
+      },
+      chords: chordResult,
+      recommendation: recResult,
     },
-    chords: chordResult,
-    recommendation: recResult,
-  }, null, 2));
+    null,
+    2,
+  ));
 }
 
 if (import.meta.main) {
@@ -265,16 +290,24 @@ if (import.meta.main) {
       "max-errors": "5",
     },
   });
-  const grandfatherBefore = flags["grandfather-before"] ? parseCutoff(String(flags["grandfather-before"])) : null;
+  const grandfatherBefore = flags["grandfather-before"]
+    ? parseCutoff(String(flags["grandfather-before"]))
+    : null;
   const ajv = new Ajv2020({ allErrors: true, strict: false });
 
-  const chordResult = await validateChords(ajv, grandfatherBefore, Boolean(flags["tracked-only"]));
+  const chordResult = await validateChords(
+    ajv,
+    grandfatherBefore,
+    Boolean(flags["tracked-only"]),
+  );
 
   const recResult = await validateRecommendation(ajv);
 
   if (flags.json) {
     printResultJson(chordResult, recResult, {
-      grandfatherBefore: flags["grandfather-before"] ? String(flags["grandfather-before"]) : null,
+      grandfatherBefore: flags["grandfather-before"]
+        ? String(flags["grandfather-before"])
+        : null,
       trackedOnly: Boolean(flags["tracked-only"]),
       strict: Boolean(flags.strict),
     });
@@ -283,7 +316,10 @@ if (import.meta.main) {
     const originalActive = chordResult.errors;
     const originalGrandfathered = chordResult.grandfatheredErrors;
     chordResult.errors = originalActive.slice(0, maxErrors);
-    chordResult.grandfatheredErrors = originalGrandfathered.slice(0, Math.min(3, maxErrors));
+    chordResult.grandfatheredErrors = originalGrandfathered.slice(
+      0,
+      Math.min(3, maxErrors),
+    );
     printResult("chords", chordResult);
     chordResult.errors = originalActive;
     chordResult.grandfatheredErrors = originalGrandfathered;
@@ -293,9 +329,12 @@ if (import.meta.main) {
   const total = chordResult.total + (recResult?.total ?? 0);
   const passed = chordResult.passed + (recResult?.passed ?? 0);
   const failed = chordResult.failed + (recResult?.failed ?? 0);
-  const enforceFailed = chordResult.enforceFailed + (recResult?.enforceFailed ?? 0);
+  const enforceFailed = chordResult.enforceFailed +
+    (recResult?.enforceFailed ?? 0);
   if (!flags.json) {
-    console.log(`\noverall: ${passed}/${total} passed, ${failed} failed, ${enforceFailed} active failures`);
+    console.log(
+      `\noverall: ${passed}/${total} passed, ${failed} failed, ${enforceFailed} active failures`,
+    );
   }
   Deno.exit(flags.strict && enforceFailed > 0 ? 1 : 0);
 }

@@ -33,9 +33,9 @@ async function main() {
         "formula": 0,
         "crystal": 0,
         "compost": 0,
-      }
+      },
     },
-    repos: {} as Record<string, any>
+    repos: {} as Record<string, any>,
   };
 
   for (const repo of REPOS) {
@@ -50,7 +50,7 @@ async function main() {
         "formula": 0,
         "crystal": 0,
         "compost": 0,
-      }
+      },
     };
   }
 
@@ -70,9 +70,10 @@ async function main() {
     snapshot.repos[profile.repo].thought_phases[profile.thoughtPhase]++;
   }
 
-  const outDir = "reports/cognition";
+  const outDir = "src";
   await ensureDir(outDir);
-  const outPath = `${outDir}/snapshot.${snapshot.timestamp}.json`;
+  const outPath =
+    `${outDir}/x2488_cognition_snapshot.${snapshot.timestamp}.myc.json`;
   await Deno.writeTextFile(outPath, JSON.stringify(snapshot, null, 2));
 
   console.log(`✅ Snapshot saved to: ${outPath}`);

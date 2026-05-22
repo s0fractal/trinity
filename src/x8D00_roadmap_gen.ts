@@ -25,7 +25,8 @@
 // Reads (READ-ONLY, tracked-only via git ls-files):
 //   src/x*.ts          organ horizons
 //   jazz/chords/*.md   chord pressure
-//   state/voices/*.json voice profiles
+//   src/x8A*_voice_*.myc.json voice profiles
+//   state/voices/*.json legacy voice profiles
 //
 // Renders (gitignored):
 //   src/x8D00_roadmap.myc.md            substrate-wide frontier
@@ -50,9 +51,11 @@ const HERE = dirname(fromFileUrl(import.meta.url));
 const TRINITY_ROOT = dirname(HERE);
 const SRC = HERE;
 const CHORDS_DIR = join(TRINITY_ROOT, "jazz", "chords");
-const VOICES_DIR = join(TRINITY_ROOT, "state", "voices");
+const VOICES_DIR = HERE;
+const LEGACY_VOICES_DIR = join(TRINITY_ROOT, "state", "voices");
 const OUT = HERE;
 
+const VOICE_FILE_RE = /^x8A[0-9A-Fa-f]{2}_voice_([^.]+)\.myc\.json$/;
 const ORGAN_FILE_RE = /^x([0-9A-Fa-f])([0-9A-Fa-f]{3})_([^.]+)\.ts$/;
 const HEADER_RE = /^\/\/\s*(\w+):\s*(.+?)\s*$/;
 const OLD_FORM = /^(\d{4}-\d{2}-\d{2}T\d{6}Z)-([a-z]+)-(.+)\.md$/;
@@ -130,6 +133,7 @@ interface ChordRef {
 }
 interface VoiceProfile {
   filename: string;
+  rel_path: string;
   identity: string;
   key: string;
   comfort_field_axes?: Record<string, number>;
@@ -376,12 +380,14 @@ function detectClosures(
 }
 
 async function loadVoices(): Promise<VoiceProfile[]> {
-  const tracked = await gitTrackedSet("state/voices");
+  const trackedSrc = await gitTrackedSet("src");
+  const trackedLegacy = await gitTrackedSet("state/voices");
   const out: VoiceProfile[] = [];
+
   for await (const entry of Deno.readDir(VOICES_DIR)) {
-    if (!entry.isFile || !entry.name.endsWith(".json")) continue;
-    const relPath = `state/voices/${entry.name}`;
-    if (!tracked.has(relPath)) continue;
+    if (!entry.isFile || !VOICE_FILE_RE.test(entry.name)) continue;
+    const relPath = `src/${entry.name}`;
+    if (!trackedSrc.has(relPath)) continue;
     const bytes = await Deno.readFile(join(VOICES_DIR, entry.name));
     const text = new TextDecoder().decode(bytes);
     try {
@@ -390,6 +396,7 @@ async function loadVoices(): Promise<VoiceProfile[]> {
       const identity = raw.identity ?? entry.name.replace(/\.json$/, "");
       out.push({
         filename: entry.name,
+        rel_path: relPath,
         identity,
         key: identity.split("-")[0].toLowerCase(),
         comfort_field_axes: self.comfort_field_axes,
@@ -400,6 +407,36 @@ async function loadVoices(): Promise<VoiceProfile[]> {
       });
     } catch { /* skip */ }
   }
+
+  const seen = new Set(out.map((v) => v.key));
+  try {
+    for await (const entry of Deno.readDir(LEGACY_VOICES_DIR)) {
+      if (!entry.isFile || !entry.name.endsWith(".json")) continue;
+      const relPath = `state/voices/${entry.name}`;
+      if (!trackedLegacy.has(relPath)) continue;
+      const key = entry.name.replace(/\.json$/, "").toLowerCase();
+      if (seen.has(key)) continue;
+      const bytes = await Deno.readFile(join(LEGACY_VOICES_DIR, entry.name));
+      const text = new TextDecoder().decode(bytes);
+      try {
+        const raw = JSON.parse(text);
+        const self = raw.self_declared ?? {};
+        const identity = raw.identity ?? entry.name.replace(/\.json$/, "");
+        out.push({
+          filename: entry.name,
+          rel_path: relPath,
+          identity,
+          key: identity.split("-")[0].toLowerCase(),
+          comfort_field_axes: self.comfort_field_axes,
+          natural_styles: self.natural_styles,
+          telos_filters: raw.telos_filters,
+          source_hash: await sha256Hex(bytes),
+          source_size: bytes.length,
+        });
+      } catch { /* skip */ }
+    }
+  } catch { /* no legacy state/voices */ }
+
   return out.sort((a, b) => a.identity.localeCompare(b.identity));
 }
 
@@ -434,7 +471,7 @@ function chordSource(c: ChordRef): SourceFile {
 }
 function voiceSource(v: VoiceProfile): SourceFile {
   return {
-    path: `state/voices/${v.filename}`,
+    path: v.rel_path,
     hash: `sha256:${v.source_hash}`,
     size: v.source_size,
   };

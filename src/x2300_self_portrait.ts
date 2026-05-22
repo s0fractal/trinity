@@ -14,7 +14,7 @@
 // self-portrait — reconcile self-declared comfort field with historical
 //
 // For a given voice:
-//   1. Read state/voices/<voice>.json — self-declared comfort field
+//   1. Read src/x8A*_voice_<voice>.myc.json — self-declared comfort field
 //   2. Derive historical center-of-mass from chord history (reuses 0x2/0 logic)
 //   3. Compute divergence (cosine angle between self_declared and historical)
 //   4. Surface the gap — do NOT average them
@@ -31,12 +31,18 @@
 //
 // Glossary words: self-portrait, portrait, declare, самопортрет, портрет
 
-import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
+import {
+  dirname,
+  fromFileUrl,
+  join,
+} from "https://deno.land/std@0.224.0/path/mod.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
-const STATE_VOICES = join(ROOT, "state", "voices");
+const STATE_VOICES = join(ROOT, "src");
+const LEGACY_STATE_VOICES = join(ROOT, "state", "voices");
 const VOICES_ORGAN = join(ROOT, "src", "x2001_voices.ts");
+const VOICE_FILE_RE = /^x8A[0-9A-Fa-f]{2}_voice_([^.]+)\.myc\.json$/;
 
 // ── hex helpers (signed-byte CBOR-style; matches 0x2/0 + glossary convention) ──
 
@@ -48,7 +54,9 @@ function parseHexDipole(s: string): number[] {
 }
 
 function formatHexDipole(v: number[]): string {
-  return v.map((n) => ((n + 256) & 0xff).toString(16).padStart(2, "0").toUpperCase()).join(" ");
+  return v.map((n) =>
+    ((n + 256) & 0xff).toString(16).padStart(2, "0").toUpperCase()
+  ).join(" ");
 }
 
 function dot(a: number[], b: number[]): number {
@@ -84,7 +92,20 @@ interface VoiceRecord {
 
 async function loadVoiceRecord(voice: string): Promise<VoiceRecord | null> {
   try {
-    const text = await Deno.readTextFile(join(STATE_VOICES, `${voice}.json`));
+    for await (const entry of Deno.readDir(STATE_VOICES)) {
+      if (!entry.isFile) continue;
+      const m = VOICE_FILE_RE.exec(entry.name);
+      if (!m || m[1] !== voice) continue;
+      const text = await Deno.readTextFile(join(STATE_VOICES, entry.name));
+      return JSON.parse(text) as VoiceRecord;
+    }
+  } catch {
+    /* src voice record absent */
+  }
+  try {
+    const text = await Deno.readTextFile(
+      join(LEGACY_STATE_VOICES, `${voice}.json`),
+    );
     return JSON.parse(text) as VoiceRecord;
   } catch {
     return null;
@@ -95,14 +116,25 @@ async function listVoiceFiles(): Promise<string[]> {
   const out: string[] = [];
   try {
     for await (const entry of Deno.readDir(STATE_VOICES)) {
+      if (!entry.isFile) continue;
+      const m = VOICE_FILE_RE.exec(entry.name);
+      if (m) {
+        out.push(m[1]);
+      }
+    }
+  } catch {
+    /* src voice records do not exist yet */
+  }
+  try {
+    for await (const entry of Deno.readDir(LEGACY_STATE_VOICES)) {
       if (entry.isFile && entry.name.endsWith(".json")) {
         out.push(entry.name.replace(/\.json$/, ""));
       }
     }
   } catch {
-    /* state/voices/ does not exist yet */
+    /* legacy state/voices/ does not exist */
   }
-  return out.sort();
+  return [...new Set(out)].sort();
 }
 
 interface VoicesOrganRow {
@@ -139,11 +171,20 @@ interface Reconciliation {
   historical_hex: string | null;
   chords_observed: number;
   divergence_angle_degrees: number | null;
-  divergence_classification: "aligned" | "drifting" | "misaligned" | "no-self" | "no-history";
+  divergence_classification:
+    | "aligned"
+    | "drifting"
+    | "misaligned"
+    | "no-self"
+    | "no-history";
   note: string | null;
 }
 
-function classifyDivergence(angle: number | null, hasSelf: boolean, hasHist: boolean): Reconciliation["divergence_classification"] {
+function classifyDivergence(
+  angle: number | null,
+  hasSelf: boolean,
+  hasHist: boolean,
+): Reconciliation["divergence_classification"] {
   if (!hasSelf) return "no-self";
   if (!hasHist) return "no-history";
   if (angle === null || Number.isNaN(angle)) return "no-history";
@@ -152,7 +193,10 @@ function classifyDivergence(angle: number | null, hasSelf: boolean, hasHist: boo
   return "misaligned";
 }
 
-async function reconcile(voice: string, rows: VoicesOrganRow[]): Promise<Reconciliation> {
+async function reconcile(
+  voice: string,
+  rows: VoicesOrganRow[],
+): Promise<Reconciliation> {
   const record = await loadVoiceRecord(voice);
   const row = rows.find((r) => r.identity === voice);
 
@@ -187,7 +231,10 @@ function renderText(rs: Reconciliation[]): string {
   const lines: string[] = [];
   lines.push("# self-portrait @ 2/3 — voice self-declared vs historical");
   lines.push("# " + "─".repeat(76));
-  lines.push("# voice".padEnd(14) + "standing".padEnd(12) + "chords".padEnd(8) + "Δ angle".padEnd(12) + "classification");
+  lines.push(
+    "# voice".padEnd(14) + "standing".padEnd(12) + "chords".padEnd(8) +
+      "Δ angle".padEnd(12) + "classification",
+  );
   lines.push("# " + "─".repeat(76));
   for (const r of rs) {
     const angleStr = r.divergence_angle_degrees === null
@@ -195,19 +242,23 @@ function renderText(rs: Reconciliation[]): string {
       : `${r.divergence_angle_degrees.toFixed(1)}°`;
     lines.push(
       "# " +
-      r.voice.padEnd(12) +
-      r.standing.padEnd(12) +
-      String(r.chords_observed).padEnd(8) +
-      angleStr.padEnd(12) +
-      r.divergence_classification,
+        r.voice.padEnd(12) +
+        r.standing.padEnd(12) +
+        String(r.chords_observed).padEnd(8) +
+        angleStr.padEnd(12) +
+        r.divergence_classification,
     );
   }
   lines.push("# " + "─".repeat(76));
   lines.push("# Classification thresholds:");
   lines.push("#   aligned     Δ < 15°    (self-declaration matches action)");
   lines.push("#   drifting    15° ≤ Δ < 45°  (gap is signal; investigate)");
-  lines.push("#   misaligned  Δ ≥ 45°    (voice misrepresents itself or history misread)");
-  lines.push("#   no-self     no state/voices/<voice>.json — voice unauthored");
+  lines.push(
+    "#   misaligned  Δ ≥ 45°    (voice misrepresents itself or history misread)",
+  );
+  lines.push(
+    "#   no-self     no src/x8A*_voice_<voice>.myc.json — voice unauthored",
+  );
   lines.push("#   no-history  fewer than 1 chord observed");
   return lines.join("\n");
 }
@@ -236,9 +287,16 @@ if (import.meta.main) {
       type: "self_portrait",
       action: "self-portrait",
       position: "2/3",
-      note: "mirror(2) × triangle(3) — stable mirror reflection; voice self-declared vs historical",
+      note:
+        "mirror(2) × triangle(3) — stable mirror reflection; voice self-declared vs historical",
       voices: reconciliations,
-      synonyms: ["self-portrait", "portrait", "declare", "самопортрет", "портрет"],
+      synonyms: [
+        "self-portrait",
+        "portrait",
+        "declare",
+        "самопортрет",
+        "портрет",
+      ],
     };
     console.log(JSON.stringify(payload, null, 2));
   } else {

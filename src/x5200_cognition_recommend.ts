@@ -6,7 +6,11 @@
 //
 // cognition_recommend.ts — suggest recommendations
 
-import { REPOS, scanEcosystem, type ThoughtPhase } from "./x0020_scanner_core.ts";
+import {
+  REPOS,
+  scanEcosystem,
+  type ThoughtPhase,
+} from "./x0020_scanner_core.ts";
 type RepoName = typeof REPOS[number];
 
 interface RepoSignal {
@@ -250,9 +254,7 @@ function markdownReport(
         pct(ratio(s.L4b_hash_verified, s.total))
       } | ${pct(ratio(s.L6_recipe, s.total))} | ${
         pct(ratio(s.L7_receipt_backed, s.total))
-      } | ${
-        pct(ratio(s.L8_published, s.total))
-      } | ${
+      } | ${pct(ratio(s.L8_published, s.total))} | ${
         chooseDominantPhase(s)
       } | ${s.dirtyLines.length} |`,
     );
@@ -331,19 +333,19 @@ async function main() {
     recommendations,
   };
 
-  await Deno.mkdir("reports/cognition", { recursive: true });
+  await Deno.mkdir("src", { recursive: true });
   await Deno.writeTextFile(
-    "reports/cognition/recommendation.latest.json",
+    "src/x5288_cognition_recommendation.latest.myc.json",
     JSON.stringify(descriptor, null, 2),
   );
   await Deno.writeTextFile(
-    "reports/cognition/recommendation.latest.md",
+    "src/x5288_cognition_recommendation.latest.myc.md",
     markdownReport(timestamp, signalList, recommendations),
   );
 
   console.log("Cognitive recommendation written:");
-  console.log("  reports/cognition/recommendation.latest.md");
-  console.log("  reports/cognition/recommendation.latest.json");
+  console.log("  src/x5288_cognition_recommendation.latest.myc.md");
+  console.log("  src/x5288_cognition_recommendation.latest.myc.json");
   if (recommendations[0]) {
     console.log(
       `Top signal: ${recommendations[0].repo} -> ${recommendations[0].action}`,

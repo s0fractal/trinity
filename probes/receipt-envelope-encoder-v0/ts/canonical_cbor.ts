@@ -26,14 +26,31 @@ export function encodeCanonical(value: CborValue): Uint8Array {
 }
 
 function encodeValue(v: CborValue, out: number[]): void {
-  if (v === null) { out.push(0xf6); return; }
-  if (v === true) { out.push(0xf5); return; }
-  if (v === false) { out.push(0xf4); return; }
+  if (v === null) {
+    out.push(0xf6);
+    return;
+  }
+  if (v === true) {
+    out.push(0xf5);
+    return;
+  }
+  if (v === false) {
+    out.push(0xf4);
+    return;
+  }
 
   if (typeof v === "number") {
-    if (!Number.isFinite(v)) throw new Error("canonical-cbor: non-finite number forbidden");
-    if (!Number.isInteger(v)) throw new Error("canonical-cbor: floats forbidden (use Q-format integers)");
-    if (!Number.isSafeInteger(v)) throw new Error("canonical-cbor: integer out of safe range; use bigint");
+    if (!Number.isFinite(v)) {
+      throw new Error("canonical-cbor: non-finite number forbidden");
+    }
+    if (!Number.isInteger(v)) {
+      throw new Error(
+        "canonical-cbor: floats forbidden (use Q-format integers)",
+      );
+    }
+    if (!Number.isSafeInteger(v)) {
+      throw new Error("canonical-cbor: integer out of safe range; use bigint");
+    }
     encodeIntNum(v, out);
     return;
   }
@@ -63,7 +80,9 @@ function encodeValue(v: CborValue, out: number[]): void {
   }
 
   if (typeof v === "object" && v !== null) {
-    if (v instanceof Map) throw new Error("canonical-cbor: JS Map forbidden; use plain object");
+    if (v instanceof Map) {
+      throw new Error("canonical-cbor: JS Map forbidden; use plain object");
+    }
     if (v instanceof Set) throw new Error("canonical-cbor: JS Set forbidden");
     const obj = v as Record<string, CborValue>;
     const keys = Object.keys(obj);
@@ -81,7 +100,9 @@ function encodeValue(v: CborValue, out: number[]): void {
 
     for (let i = 1; i < encoded.length; i++) {
       if (compareBytes(encoded[i - 1].bytes, encoded[i].bytes) === 0) {
-        throw new Error(`canonical-cbor: duplicate map key after encoding: ${encoded[i].key}`);
+        throw new Error(
+          `canonical-cbor: duplicate map key after encoding: ${encoded[i].key}`,
+        );
       }
     }
 
@@ -99,8 +120,14 @@ function encodeValue(v: CborValue, out: number[]): void {
 function encodeIntNum(n: number, out: number[]): void {
   // Safe-integer range goes up to 2^53-1, which exceeds u32. For values
   // beyond u32, delegate to bigint encoder (which uses 8-byte form).
-  if (n >= 0 && n < 0x100000000) { encodeHead(0, n, out); return; }
-  if (n < 0 && -1 - n < 0x100000000) { encodeHead(1, -1 - n, out); return; }
+  if (n >= 0 && n < 0x100000000) {
+    encodeHead(0, n, out);
+    return;
+  }
+  if (n < 0 && -1 - n < 0x100000000) {
+    encodeHead(1, -1 - n, out);
+    return;
+  }
   encodeIntBig(BigInt(n), out);
 }
 
@@ -112,7 +139,9 @@ function encodeIntBig(n: bigint, out: number[]): void {
       encodeHead(0, Number(n), out);
       return;
     }
-    if (n > 0xffffffffffffffffn) throw new Error("canonical-cbor: uint > u64 forbidden");
+    if (n > 0xffffffffffffffffn) {
+      throw new Error("canonical-cbor: uint > u64 forbidden");
+    }
     out.push(0x1b);
     for (let i = 7; i >= 0; i--) out.push(Number((n >> BigInt(i * 8)) & 0xffn));
     return;
@@ -122,9 +151,13 @@ function encodeIntBig(n: bigint, out: number[]): void {
     encodeHead(1, Number(negated), out);
     return;
   }
-  if (negated > 0xffffffffffffffffn) throw new Error("canonical-cbor: negint < -2^64 forbidden");
+  if (negated > 0xffffffffffffffffn) {
+    throw new Error("canonical-cbor: negint < -2^64 forbidden");
+  }
   out.push(0x3b);
-  for (let i = 7; i >= 0; i--) out.push(Number((negated >> BigInt(i * 8)) & 0xffn));
+  for (let i = 7; i >= 0; i--) {
+    out.push(Number((negated >> BigInt(i * 8)) & 0xffn));
+  }
 }
 
 function encodeHead(major: number, value: number, out: number[]): void {
@@ -137,7 +170,13 @@ function encodeHead(major: number, value: number, out: number[]): void {
   } else if (value < 0x10000) {
     out.push(m | 25, (value >> 8) & 0xff, value & 0xff);
   } else if (value < 0x100000000) {
-    out.push(m | 26, (value >>> 24) & 0xff, (value >> 16) & 0xff, (value >> 8) & 0xff, value & 0xff);
+    out.push(
+      m | 26,
+      (value >>> 24) & 0xff,
+      (value >> 16) & 0xff,
+      (value >> 8) & 0xff,
+      value & 0xff,
+    );
   } else {
     throw new Error("canonical-cbor: value too large; use bigint for >= 2^32");
   }
@@ -165,7 +204,9 @@ export function decodeCanonical(bytes: Uint8Array): CborValue {
   const ctx: DecodeCtx = { buf: bytes, pos: 0 };
   const v = decodeValue(ctx);
   if (ctx.pos !== bytes.length) {
-    throw new Error(`canonical-cbor: trailing bytes (${bytes.length - ctx.pos} unread)`);
+    throw new Error(
+      `canonical-cbor: trailing bytes (${bytes.length - ctx.pos} unread)`,
+    );
   }
   return v;
 }
@@ -175,14 +216,18 @@ function decodeValue(ctx: DecodeCtx): CborValue {
   const major = (b >> 5) & 0x07;
   const info = b & 0x1f;
 
-  if (info === 31) throw new Error("canonical-cbor: indefinite-length form forbidden");
+  if (info === 31) {
+    throw new Error("canonical-cbor: indefinite-length form forbidden");
+  }
 
   // major 7: simple values + floats
   if (major === 7) {
     if (info === 20) return false;
     if (info === 21) return true;
     if (info === 22) return null;
-    if (info === 23) throw new Error("canonical-cbor: undefined (simple 23) forbidden");
+    if (info === 23) {
+      throw new Error("canonical-cbor: undefined (simple 23) forbidden");
+    }
     if (info === 25 || info === 26 || info === 27) {
       throw new Error("canonical-cbor: floating-point forbidden");
     }
@@ -207,14 +252,18 @@ function decodeValue(ctx: DecodeCtx): CborValue {
     case 2: {
       const len = toLen(value);
       const bytes = ctx.buf.slice(ctx.pos, ctx.pos + len);
-      if (bytes.length !== len) throw new Error("canonical-cbor: truncated byte string");
+      if (bytes.length !== len) {
+        throw new Error("canonical-cbor: truncated byte string");
+      }
       ctx.pos += len;
       return bytes;
     }
     case 3: {
       const len = toLen(value);
       const bytes = ctx.buf.slice(ctx.pos, ctx.pos + len);
-      if (bytes.length !== len) throw new Error("canonical-cbor: truncated text string");
+      if (bytes.length !== len) {
+        throw new Error("canonical-cbor: truncated text string");
+      }
       ctx.pos += len;
       return new TextDecoder("utf-8", { fatal: true }).decode(bytes);
     }
@@ -235,7 +284,9 @@ function decodeValue(ctx: DecodeCtx): CborValue {
           throw new Error("canonical-cbor: non-string map key forbidden");
         }
         const keyBytes = ctx.buf.slice(keyStartPos, ctx.pos);
-        if (prevKeyBytes !== null && compareBytes(prevKeyBytes, keyBytes) >= 0) {
+        if (
+          prevKeyBytes !== null && compareBytes(prevKeyBytes, keyBytes) >= 0
+        ) {
           throw new Error("canonical-cbor: map keys not in bytewise-lex order");
         }
         prevKeyBytes = keyBytes;
@@ -252,7 +303,9 @@ function decodeValue(ctx: DecodeCtx): CborValue {
 }
 
 function readByte(ctx: DecodeCtx): number {
-  if (ctx.pos >= ctx.buf.length) throw new Error("canonical-cbor: unexpected end");
+  if (ctx.pos >= ctx.buf.length) {
+    throw new Error("canonical-cbor: unexpected end");
+  }
   return ctx.buf[ctx.pos++];
 }
 
@@ -260,23 +313,32 @@ function readArgCanonical(ctx: DecodeCtx, info: number): number | bigint {
   if (info < 24) return info;
   if (info === 24) {
     const v = readByte(ctx);
-    if (v < 24) throw new Error("canonical-cbor: non-canonical (1-byte length < 24)");
+    if (v < 24) {
+      throw new Error("canonical-cbor: non-canonical (1-byte length < 24)");
+    }
     return v;
   }
   if (info === 25) {
     const v = (readByte(ctx) << 8) | readByte(ctx);
-    if (v < 0x100) throw new Error("canonical-cbor: non-canonical (2-byte length < 256)");
+    if (v < 0x100) {
+      throw new Error("canonical-cbor: non-canonical (2-byte length < 256)");
+    }
     return v;
   }
   if (info === 26) {
-    const v = (readByte(ctx) * 0x1000000) + (readByte(ctx) << 16) + (readByte(ctx) << 8) + readByte(ctx);
-    if (v < 0x10000) throw new Error("canonical-cbor: non-canonical (4-byte length < 65536)");
+    const v = (readByte(ctx) * 0x1000000) + (readByte(ctx) << 16) +
+      (readByte(ctx) << 8) + readByte(ctx);
+    if (v < 0x10000) {
+      throw new Error("canonical-cbor: non-canonical (4-byte length < 65536)");
+    }
     return v;
   }
   if (info === 27) {
     let v = 0n;
     for (let i = 0; i < 8; i++) v = (v << 8n) | BigInt(readByte(ctx));
-    if (v < 0x100000000n) throw new Error("canonical-cbor: non-canonical (8-byte length < 2^32)");
+    if (v < 0x100000000n) {
+      throw new Error("canonical-cbor: non-canonical (8-byte length < 2^32)");
+    }
     return v;
   }
   throw new Error(`canonical-cbor: invalid additional info ${info}`);
@@ -297,8 +359,12 @@ function toLen(v: number | bigint): number {
 // ────────────────────────────────────────────────────────────────────────
 
 export async function multihashSha256(bytes: Uint8Array): Promise<string> {
-  const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", bytes));
-  const hex = Array.from(digest, (b) => b.toString(16).padStart(2, "0")).join("");
+  const digest = new Uint8Array(
+    await crypto.subtle.digest("SHA-256", bytes as BufferSource),
+  );
+  const hex = Array.from(digest, (b) => b.toString(16).padStart(2, "0")).join(
+    "",
+  );
   return "1220" + hex;
 }
 

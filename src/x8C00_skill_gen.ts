@@ -8,7 +8,7 @@
 // placement_policy: axis
 // intent: scan organ headers + glossary, render xN888_skill.myc.md per bucket + x8888_skills.myc.md substrate index
 // maturity: active
-// horizon: extend with skill_tag/skill_safe consistency audit (currently warns invalid, doesn't validate tag-vs-actual-behavior)
+// horizon: extend tag-vs-actual-behavior audit beyond handle-matching (currently checks tag-in-glossary-handles-for-position; future: AST-based behavior check)
 //
 // skill_gen — substrate operating brief generator
 //
@@ -121,6 +121,7 @@ interface OrganMeta {
   skill_tag?: string;
   skill_safe?: string;
   invalid_skill_safe?: string;
+  skill_tag_drift?: string;
   source_hash: string;
   source_size: number;
 }
@@ -269,6 +270,46 @@ function bucketCommands(
     const primary = e.position.split("/")[0];
     return primary.toUpperCase() === bucket;
   });
+}
+
+/** Convert organ coordinate (e.g. "8C00", "0020", "8800") to glossary
+ *  position format (e.g. "8/C", "0/02", "8/8"). Glossary positions use
+ *  variable sub-position width — strip trailing zeros from the 3-char
+ *  sub, leaving the meaningful prefix. */
+function organCoordToGlossaryPos(coord: string): string {
+  if (coord.length !== 4) return coord;
+  const bucket = coord[0];
+  const sub = coord.slice(1).replace(/0+$/, "") || "0";
+  return `${bucket}/${sub}`;
+}
+
+/** For each organ with skill_tag declared, verify the tag matches the
+ *  glossary's declared handles for that organ's position. Sets
+ *  organ.skill_tag_drift if the tag is not consistent. This is a
+ *  weaker proxy for "tag-vs-actual-behavior" — relies on the glossary
+ *  being the source of truth for what each position means. */
+function auditSkillTagDrift(
+  organs: OrganMeta[],
+  glossary: GlossaryEntry[],
+): void {
+  const byPosition = new Map<string, GlossaryEntry>();
+  for (const e of glossary) byPosition.set(e.position, e);
+
+  for (const o of organs) {
+    if (!o.skill_tag) continue;
+    const pos = organCoordToGlossaryPos(o.coordinate);
+    const entry = byPosition.get(pos);
+    if (!entry) {
+      o.skill_tag_drift =
+        `position ${pos} has no glossary entry (tag "${o.skill_tag}" unverifiable)`;
+      continue;
+    }
+    if (!entry.handles.includes(o.skill_tag)) {
+      o.skill_tag_drift = `tag "${o.skill_tag}" not in glossary handles for ${pos} (handles: ${
+        entry.handles.slice(0, 4).join(", ")
+      }${entry.handles.length > 4 ? ", ..." : ""})`;
+    }
+  }
 }
 
 function bucketImportRules(bucket: string) {
@@ -504,6 +545,7 @@ function renderSubstrateSkill(
   const unclassified =
     allOrgans.filter((o) => !o.skill_safe && !o.invalid_skill_safe).length;
   const invalid = allOrgans.filter((o) => o.invalid_skill_safe).length;
+  const tagDrift = allOrgans.filter((o) => o.skill_tag_drift);
 
   const lines: string[] = [];
   lines.push(
@@ -517,9 +559,9 @@ function renderSubstrateSkill(
   lines.push(
     `<!-- buckets: ${buckets.size}   organs: ${allOrgans.length}   t-commands: ${glossary.length} -->`,
   );
-  if (unclassified > 0 || invalid > 0) {
+  if (unclassified > 0 || invalid > 0 || tagDrift.length > 0) {
     lines.push(
-      `<!-- unclassified: ${unclassified}   invalid_skill_safe: ${invalid} -->`,
+      `<!-- unclassified: ${unclassified}   invalid_skill_safe: ${invalid}   skill_tag_drift: ${tagDrift.length} -->`,
     );
   }
   lines.push(``);
@@ -547,7 +589,7 @@ function renderSubstrateSkill(
   lines.push(`6. Drill into per-bucket: \`src/xN888_skill.myc.md\`.`);
   lines.push(``);
 
-  if (unclassified > 0 || invalid > 0) {
+  if (unclassified > 0 || invalid > 0 || tagDrift.length > 0) {
     lines.push(`## ⚠️ Substrate classification gaps`);
     lines.push(``);
     if (unclassified > 0) {
@@ -560,9 +602,19 @@ function renderSubstrateSkill(
         `- ${invalid} organs have invalid \`skill_safe\` value — see per-bucket "Invalid skill_safe values" sections.`,
       );
     }
+    if (tagDrift.length > 0) {
+      lines.push(
+        `- ${tagDrift.length} organs have \`skill_tag\` drift (tag not in glossary handles for their position):`,
+      );
+      for (const o of tagDrift) {
+        lines.push(
+          `  - \`x${o.coordinate}_${o.handle}\`: ${o.skill_tag_drift}`,
+        );
+      }
+    }
     lines.push(``);
     lines.push(
-      `Classification follows "rename when touched" — no batch-add expected. Most organs predate the skill_tag/skill_safe convention (added 2026-05-19).`,
+      `Classification follows "rename when touched" — no batch-add expected. Most organs predate the skill_tag/skill_safe convention (added 2026-05-19). Tag drift is honest signal: either the organ needs a glossary entry (to become dispatchable) or the tag should align with existing handles.`,
     );
     lines.push(``);
   }
@@ -735,6 +787,7 @@ async function main(argv: string[]) {
   }
 
   const glossary = await loadGlossary();
+  auditSkillTagDrift(organs, glossary);
   const buckets = groupByBucket(organs);
   const generated_at = args.stable ? null : new Date().toISOString();
 

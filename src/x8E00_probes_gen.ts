@@ -10,6 +10,8 @@
 // intent: scan probes/ subdirs, classify each probe's status (graduated / partial / deferred / active / unknown), render x8E00_probes.myc.md
 // maturity: active
 // horizon: detect graduation drift (probe marked active but target organ exists); declarative graduation_target field in SPEC frontmatter for semantic links beyond lexical matching
+// skill_tag: probes
+// skill_safe: yes-with-care
 //
 // probes_gen — fifth self-description axis ("що я експериментую?")
 //

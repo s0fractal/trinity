@@ -9,6 +9,8 @@
 // intent: scan organ headers + glossary, render xN888_skill.myc.md per bucket + x8888_skills.myc.md substrate index
 // maturity: active
 // horizon: extend tag-vs-actual-behavior audit beyond handle-matching (currently checks tag-in-glossary-handles-for-position; future: AST-based behavior check)
+// skill_tag: skill
+// skill_safe: yes-with-care
 //
 // skill_gen — substrate operating brief generator
 //

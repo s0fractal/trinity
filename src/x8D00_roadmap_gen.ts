@@ -9,6 +9,8 @@
 // intent: scan organ horizons + tracked chords + voices; render frontier tension per substrate and per voice
 // maturity: active
 // horizon: per-voice rendering of substrate far-horizon signals (currently substrate-only); consume generated state/skill/memory outputs; cross-bucket tension synthesis
+// skill_tag: roadmap
+// skill_safe: yes-with-care
 //
 // roadmap generator — fourth axis "куди іти"
 //

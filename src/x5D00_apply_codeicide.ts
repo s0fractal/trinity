@@ -35,16 +35,28 @@
 //
 // Emits ApplyCodeicideReceipt payload.
 
-import { dirname, fromFileUrl, join, resolve } from "https://deno.land/std@0.224.0/path/mod.ts";
+import {
+  dirname,
+  fromFileUrl,
+  join,
+  resolve,
+} from "https://deno.land/std@0.224.0/path/mod.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
 
 const FORBIDDEN_PREFIXES = [
-  "omega/", "liquid/", "myc/",
-  "src/x0100_dispatch.ts", "src/x0001_glossary.ndjson",
-  "AGENTS.md", "CLAUDE.md", "CODEX.md", "GEMINI.md", "KIMI.md",
-  ".git/", ".gitmodules",
+  "omega/",
+  "liquid/",
+  "myc/",
+  "src/x0100_dispatch.ts",
+  "src/x0001_glossary.ndjson",
+  "AGENTS.md",
+  "SKILLS.md",
+  "src/x88F0_agents_bootstrap.myc.md",
+  "src/x8CF0_skills_bootstrap.myc.md",
+  ".git/",
+  ".gitmodules",
 ];
 
 function isForbidden(relPath: string): boolean {
@@ -57,11 +69,15 @@ function isForbidden(relPath: string): boolean {
 async function fileHash(absPath: string): Promise<string> {
   const data = await Deno.readFile(absPath);
   const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", data));
-  const hex = Array.from(digest, (b) => b.toString(16).padStart(2, "0")).join("");
+  const hex = Array.from(digest, (b) => b.toString(16).padStart(2, "0")).join(
+    "",
+  );
   return "1220" + hex;
 }
 
-function parseArgs(args: string[]): { proposal?: string; verdict?: string; dryRun: boolean } {
+function parseArgs(
+  args: string[],
+): { proposal?: string; verdict?: string; dryRun: boolean } {
   let proposal: string | undefined;
   let verdict: string | undefined;
   let dryRun = false;
@@ -80,13 +96,17 @@ async function readJson(path: string): Promise<any> {
 
 function findEnvelope(parsed: any): any {
   if (parsed?.schema === "trinity.receipt-envelope.v0.1") return parsed;
-  if (parsed?.envelope?.schema === "trinity.receipt-envelope.v0.1") return parsed.envelope;
+  if (parsed?.envelope?.schema === "trinity.receipt-envelope.v0.1") {
+    return parsed.envelope;
+  }
   return null;
 }
 
 function findVerdict(parsed: any): any {
   if (parsed?.schema === "trinity.codeicide-verdict.v0.1") return parsed;
-  if (parsed?.result?.schema === "trinity.codeicide-verdict.v0.1") return parsed.result;
+  if (parsed?.result?.schema === "trinity.codeicide-verdict.v0.1") {
+    return parsed.result;
+  }
   return null;
 }
 
@@ -101,10 +121,14 @@ function fail(msg: string, extra: Record<string, unknown> = {}): never {
 }
 
 async function main() {
-  const { proposal: proposalPath, verdict: verdictPath, dryRun } = parseArgs(Deno.args);
+  const { proposal: proposalPath, verdict: verdictPath, dryRun } = parseArgs(
+    Deno.args,
+  );
 
   if (!proposalPath || !verdictPath) {
-    fail("apply-codeicide requires --proposal <env.json> --verdict <verdict.json> [--dry-run]");
+    fail(
+      "apply-codeicide requires --proposal <env.json> --verdict <verdict.json> [--dry-run]",
+    );
   }
 
   const proposalParsed = await readJson(proposalPath!);
@@ -113,8 +137,12 @@ async function main() {
   const proposalEnv = findEnvelope(proposalParsed);
   const verdict = findVerdict(verdictParsed);
 
-  if (!proposalEnv) fail("--proposal does not contain a recognizable v0.1 envelope");
-  if (!verdict) fail("--verdict does not contain a recognizable CodeicideVerdict");
+  if (!proposalEnv) {
+    fail("--proposal does not contain a recognizable v0.1 envelope");
+  }
+  if (!verdict) {
+    fail("--verdict does not contain a recognizable CodeicideVerdict");
+  }
 
   // ── Gate 1: verdict must be AYE ───────────────────────────────────────
   if (verdict.agreement !== true || verdict.verdict !== "AYE") {
@@ -125,10 +153,13 @@ async function main() {
 
   // ── Gate 2: proposal envelope body_hash matches verdict expectation ──
   if (verdict.proposal_body_hash !== proposalEnv.body_hash) {
-    fail("verdict.proposal_body_hash does not match proposal envelope body_hash", {
-      verdict_proposal_body_hash: verdict.proposal_body_hash,
-      proposal_envelope_body_hash: proposalEnv.body_hash,
-    });
+    fail(
+      "verdict.proposal_body_hash does not match proposal envelope body_hash",
+      {
+        verdict_proposal_body_hash: verdict.proposal_body_hash,
+        proposal_envelope_body_hash: proposalEnv.body_hash,
+      },
+    );
   }
 
   // ── Gate 3: verdict target metadata matches proposal body ──
@@ -162,10 +193,13 @@ async function main() {
   // ── Gate 6: content hash still matches (no drift between propose and apply) ──
   const currentHash = await fileHash(targetAbs);
   if (currentHash !== propBody.target_hash) {
-    fail("target file content changed between propose and apply; re-propose required", {
-      proposal_target_hash: propBody.target_hash,
-      current_target_hash: currentHash,
-    });
+    fail(
+      "target file content changed between propose and apply; re-propose required",
+      {
+        proposal_target_hash: propBody.target_hash,
+        current_target_hash: currentHash,
+      },
+    );
   }
 
   // All structural gates passed.
@@ -181,9 +215,12 @@ async function main() {
   try {
     const existing = await Deno.stat(archiveTarget);
     if (existing) {
-      fail("archive collision: target already exists at intended archive path; refusing to overwrite", {
-        archive_target: `archive/${isoStamp}/${targetRel}`,
-      });
+      fail(
+        "archive collision: target already exists at intended archive path; refusing to overwrite",
+        {
+          archive_target: `archive/${isoStamp}/${targetRel}`,
+        },
+      );
     }
   } catch {
     // Expected path: not stat-able means no collision.
@@ -197,9 +234,21 @@ async function main() {
       target_path: targetRel,
       target_hash: currentHash,
       would_move_to: `archive/${isoStamp}/${targetRel}`,
-      would_write: [`archive/${isoStamp}/RECEIPT.json`, `archive/${isoStamp}/RESURRECT.sh`],
-      gates_passed: ["verdict-AYE", "body_hash-consistent", "target-fields-match", "not-forbidden", "file-exists", "hash-matches", "no-archive-collision"],
-      semantics: "ARCHIVE GOVERNANCE (reversible move to archive/), NOT DELETION. Not Omega's codeicide_law.",
+      would_write: [
+        `archive/${isoStamp}/RECEIPT.json`,
+        `archive/${isoStamp}/RESURRECT.sh`,
+      ],
+      gates_passed: [
+        "verdict-AYE",
+        "body_hash-consistent",
+        "target-fields-match",
+        "not-forbidden",
+        "file-exists",
+        "hash-matches",
+        "no-archive-collision",
+      ],
+      semantics:
+        "ARCHIVE GOVERNANCE (reversible move to archive/), NOT DELETION. Not Omega's codeicide_law.",
       note: "DRY RUN — no filesystem changes made. Remove --dry-run to apply.",
     }));
     Deno.exit(0);
@@ -213,7 +262,8 @@ async function main() {
   const receipt = {
     type: "ApplyCodeicideReceipt",
     schema: "trinity.codeicide-apply-receipt.v0.1",
-    semantics: "ARCHIVE GOVERNANCE (reversible). NOT DELETION. NOT Omega's codeicide_law (which governs synthetic agent termination under Senate warrant). This is a trinity meta-ledger move from live/ to archive/.",
+    semantics:
+      "ARCHIVE GOVERNANCE (reversible). NOT DELETION. NOT Omega's codeicide_law (which governs synthetic agent termination under Senate warrant). This is a trinity meta-ledger move from live/ to archive/.",
     target_path: targetRel,
     target_hash: currentHash,
     archived_at: isoStamp,
@@ -222,12 +272,14 @@ async function main() {
     verdict,
     resurrect_command: `bash archive/${isoStamp}/RESURRECT.sh`,
   };
-  await Deno.writeTextFile(join(archiveDir, "RECEIPT.json"), JSON.stringify(receipt, null, 2) + "\n");
+  await Deno.writeTextFile(
+    join(archiveDir, "RECEIPT.json"),
+    JSON.stringify(receipt, null, 2) + "\n",
+  );
 
   // RESURRECT.sh — refuses to overwrite live file unless --force.
   // Per Codex AYE_WITH_EXTRA_GUARD 2026-05-14T194732Z: keep reversibility honest.
-  const resurrectScript =
-    `#!/usr/bin/env bash\n` +
+  const resurrectScript = `#!/usr/bin/env bash\n` +
     `# Resurrect: archive/${isoStamp}/${targetRel}  →  ${targetRel}\n` +
     `# Auto-generated by t apply-codeicide on ${new Date().toISOString()}.\n` +
     `#\n` +
@@ -276,13 +328,15 @@ async function main() {
     type: "codeicide_apply_receipt",
     action: "apply-codeicide",
     position: "5/D",
-    semantics: "ARCHIVE GOVERNANCE (reversible move to archive/). NOT DELETION. NOT Omega's codeicide_law.",
+    semantics:
+      "ARCHIVE GOVERNANCE (reversible move to archive/). NOT DELETION. NOT Omega's codeicide_law.",
     target_path: targetRel,
     target_hash: currentHash,
     archived_to: `archive/${isoStamp}/${targetRel}`,
     receipt_at: `archive/${isoStamp}/RECEIPT.json`,
     resurrect_at: `archive/${isoStamp}/RESURRECT.sh`,
-    note: "Reversible. Run `bash archive/<ts>/RESURRECT.sh` to restore (refuses overwrite unless --force).",
+    note:
+      "Reversible. Run `bash archive/<ts>/RESURRECT.sh` to restore (refuses overwrite unless --force).",
   };
 
   console.log(JSON.stringify(payload));

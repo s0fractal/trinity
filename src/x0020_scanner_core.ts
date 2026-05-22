@@ -5,7 +5,15 @@ import { fqdnPrefix as calculateFqdnHash } from "./x4010_hash.ts";
 
 export const REPOS = ["myc", "liquid", "omega", "trinity"];
 
-export type ThoughtPhase = "raw-fantasy" | "hypothesis" | "proposal" | "experiment" | "receipt" | "formula" | "crystal" | "compost";
+export type ThoughtPhase =
+  | "raw-fantasy"
+  | "hypothesis"
+  | "proposal"
+  | "experiment"
+  | "receipt"
+  | "formula"
+  | "crystal"
+  | "compost";
 
 export interface FileProfile {
   path: string;
@@ -23,10 +31,17 @@ export interface FileProfile {
   thoughtPhase: ThoughtPhase;
 }
 
-const ENTRYPOINTS = new Set(["README.MD", "START_HERE.MD", "CONTRIBUTING.MD", "AGENTS.MD", "TRINITY.MD"]);
+const ENTRYPOINTS = new Set([
+  "README.MD",
+  "START_HERE.MD",
+  "CONTRIBUTING.MD",
+  "AGENTS.MD",
+  "SKILLS.MD",
+]);
 
 export function isLiquidNeuron(content: string): boolean {
-  return content.includes("Ξ ƒ[") && content.includes("λ\n") && content.includes("Σ\n");
+  return content.includes("Ξ ƒ[") && content.includes("λ\n") &&
+    content.includes("Σ\n");
 }
 
 export function parseFrontmatter(content: string): Record<string, any> | null {
@@ -52,30 +67,59 @@ export function hasJsonBlock(content: string): boolean {
   return content.includes("```json myc") || content.includes("```json");
 }
 
-export function classifyPhase(path: string, content: string, fm: Record<string, any> | null, isHashVerified: boolean): ThoughtPhase {
+export function classifyPhase(
+  path: string,
+  content: string,
+  fm: Record<string, any> | null,
+  isHashVerified: boolean,
+): ThoughtPhase {
   const filename = path.split("/").pop() || "";
   const isPublished = path.includes("/myc/public/objects/");
 
   if (fm && typeof fm.thought_phase === "string") {
     const p = fm.thought_phase.toLowerCase();
-    if (["raw-fantasy", "hypothesis", "proposal", "experiment", "receipt", "formula", "crystal", "compost"].includes(p)) {
+    if (
+      [
+        "raw-fantasy",
+        "hypothesis",
+        "proposal",
+        "experiment",
+        "receipt",
+        "formula",
+        "crystal",
+        "compost",
+      ].includes(p)
+    ) {
       return p as ThoughtPhase;
     }
   }
 
-  if (content.includes("receipt:") || content.includes("signature:") || content.includes("------- output -------")) {
+  if (
+    content.includes("receipt:") || content.includes("signature:") ||
+    content.includes("------- output -------")
+  ) {
     return "receipt";
   }
 
-  if ((fm && fm.type === "RecipeDescriptor") || content.includes("ƒ[") || filename.includes(".recipe.")) {
+  if (
+    (fm && fm.type === "RecipeDescriptor") || content.includes("ƒ[") ||
+    filename.includes(".recipe.")
+  ) {
     return "experiment";
   }
 
-  if ((fm && fm.formula_kind) || content.includes("invariant") || content.includes("∀") || content.includes("∈")) {
+  if (
+    (fm && fm.formula_kind) || content.includes("invariant") ||
+    content.includes("∀") || content.includes("∈")
+  ) {
     return "formula";
   }
 
-  if (fm && fm.type === "DecisionDescriptor" && (fm.status === "rejected" || fm.status === "superseded" || fm.status === "compost")) {
+  if (
+    fm && fm.type === "DecisionDescriptor" &&
+    (fm.status === "rejected" || fm.status === "superseded" ||
+      fm.status === "compost")
+  ) {
     return "compost";
   }
 
@@ -83,14 +127,22 @@ export function classifyPhase(path: string, content: string, fm: Record<string, 
     return "crystal";
   }
 
-  if (fm && (fm.type === "ProposalDescriptor" || fm.proposal_status || fm.status === "proposed")) {
+  if (
+    fm &&
+    (fm.type === "ProposalDescriptor" || fm.proposal_status ||
+      fm.status === "proposed")
+  ) {
     return "proposal";
   }
 
   return "hypothesis";
 }
 
-export async function analyzeFile(path: string, content: string, repo: string): Promise<FileProfile> {
+export async function analyzeFile(
+  path: string,
+  content: string,
+  repo: string,
+): Promise<FileProfile> {
   const filename = path.split("/").pop() || "";
   const isEntrypoint = ENTRYPOINTS.has(filename.toUpperCase());
 
@@ -112,7 +164,9 @@ export async function analyzeFile(path: string, content: string, repo: string): 
 
   if (isEntrypoint) return profile;
 
-  if (filename.split(".").length > 2 || filename.endsWith(".myc.md")) profile.L1_fqdn = true;
+  if (filename.split(".").length > 2 || filename.endsWith(".myc.md")) {
+    profile.L1_fqdn = true;
+  }
 
   const fm = parseFrontmatter(content);
   const isLiquid = isLiquidNeuron(content);
@@ -146,19 +200,33 @@ export async function analyzeFile(path: string, content: string, repo: string): 
     profile.L5_graph_linked = true;
   }
 
-  if (filename.includes(".recipe.") || content.includes("ƒ[") || content.includes('"type": "RecipeDescriptor"')) {
+  if (
+    filename.includes(".recipe.") || content.includes("ƒ[") ||
+    content.includes('"type": "RecipeDescriptor"')
+  ) {
     profile.L6_recipe = true;
   }
 
-  if ((fm && fm["receipt"]) || content.includes("receipt:") || content.includes("signature:")) {
+  if (
+    (fm && fm["receipt"]) || content.includes("receipt:") ||
+    content.includes("signature:")
+  ) {
     profile.L7_receipt_backed = true;
   }
 
-  if (path.includes("myc/public/objects/") || path.includes("myc/public/receipts/")) {
+  if (
+    path.includes("myc/public/objects/") ||
+    path.includes("myc/public/receipts/")
+  ) {
     profile.L8_published = true;
   }
 
-  profile.thoughtPhase = classifyPhase(path, content, fm, profile.L4b_hash_verified);
+  profile.thoughtPhase = classifyPhase(
+    path,
+    content,
+    fm,
+    profile.L4b_hash_verified,
+  );
 
   return profile;
 }
@@ -171,12 +239,21 @@ export async function scanEcosystem(cwd: string): Promise<FileProfile[]> {
     try {
       const walker = walk(repoPath, {
         exts: [".md"],
-        skip: [/node_modules/, /\.git/, /\.liquid\/autobiography/, /\.liquid\/autogen/],
+        skip: [
+          /node_modules/,
+          /\.git/,
+          /\.liquid\/autobiography/,
+          /\.liquid\/autogen/,
+        ],
         includeDirs: false,
       });
 
       for await (const entry of walker) {
-        if (repo === "trinity" && (entry.path.includes("/myc/") || entry.path.includes("/liquid/") || entry.path.includes("/omega/"))) {
+        if (
+          repo === "trinity" &&
+          (entry.path.includes("/myc/") || entry.path.includes("/liquid/") ||
+            entry.path.includes("/omega/"))
+        ) {
           continue;
         }
 

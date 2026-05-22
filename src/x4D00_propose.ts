@@ -31,7 +31,13 @@
 //
 // Glossary: propose, codeicide, archive-proposal, пропозиція, кодесайд
 
-import { dirname, fromFileUrl, join, relative, resolve } from "https://deno.land/std@0.224.0/path/mod.ts";
+import {
+  dirname,
+  fromFileUrl,
+  join,
+  relative,
+  resolve,
+} from "https://deno.land/std@0.224.0/path/mod.ts";
 import { wrap } from "../probes/receipt-envelope-encoder-v0/ts/envelope.ts";
 import { CborValue } from "../probes/receipt-envelope-encoder-v0/ts/canonical_cbor.ts";
 
@@ -40,16 +46,26 @@ const ROOT = dirname(HERE);
 
 // Forbidden path prefixes (per contract §"What can be proposed").
 const FORBIDDEN_PREFIXES = [
-  "omega/", "liquid/", "myc/",
-  "src/x0100_dispatch.ts", "src/x0001_glossary.ndjson",
-  "AGENTS.md", "CLAUDE.md", "CODEX.md", "GEMINI.md", "KIMI.md",
-  ".git/", ".gitmodules",
+  "omega/",
+  "liquid/",
+  "myc/",
+  "src/x0100_dispatch.ts",
+  "src/x0001_glossary.ndjson",
+  "AGENTS.md",
+  "SKILLS.md",
+  "src/x88F0_agents_bootstrap.myc.md",
+  "src/x8CF0_skills_bootstrap.myc.md",
+  ".git/",
+  ".gitmodules",
 ];
 
 function isForbidden(relPath: string): { forbidden: boolean; reason?: string } {
   for (const prefix of FORBIDDEN_PREFIXES) {
     if (relPath === prefix || relPath.startsWith(prefix)) {
-      return { forbidden: true, reason: `path matches forbidden prefix '${prefix}'` };
+      return {
+        forbidden: true,
+        reason: `path matches forbidden prefix '${prefix}'`,
+      };
     }
   }
   return { forbidden: false };
@@ -58,7 +74,9 @@ function isForbidden(relPath: string): { forbidden: boolean; reason?: string } {
 async function fileHash(absPath: string): Promise<string> {
   const data = await Deno.readFile(absPath);
   const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", data));
-  const hex = Array.from(digest, (b) => b.toString(16).padStart(2, "0")).join("");
+  const hex = Array.from(digest, (b) => b.toString(16).padStart(2, "0")).join(
+    "",
+  );
   return "1220" + hex;
 }
 
@@ -86,17 +104,15 @@ function parseArgs(args: string[]): {
     else if (a === "--evidence") {
       input.evidence ??= [];
       input.evidence.push(args[++i]);
-    }
-    else if (a === "--quorum") {
+    } else if (a === "--quorum") {
       const [t, o] = args[++i].split("/").map(Number);
       input.quorum = { threshold: t, out_of: o || 5 };
-    }
-    else if (a === "--dwell") input.dwell = { min_chord_cycles: Number(args[++i]) };
-    else if (a === "--falsifier") {
+    } else if (a === "--dwell") {
+      input.dwell = { min_chord_cycles: Number(args[++i]) };
+    } else if (a === "--falsifier") {
       input.falsifiers ??= [];
       input.falsifiers.push(args[++i]);
-    }
-    else if (a === "--from") fromPath = args[++i];
+    } else if (a === "--from") fromPath = args[++i];
     else if (a === "--out") outPath = args[++i];
   }
   return { input, fromPath, outPath };
@@ -113,7 +129,8 @@ async function main() {
     if (!input.target || !input.reason) {
       console.log(JSON.stringify({
         type: "error",
-        message: "propose requires --target <path> --reason <text> (or --from <json-path>)",
+        message:
+          "propose requires --target <path> --reason <text> (or --from <json-path>)",
         position: "4/D",
       }));
       Deno.exit(1);
@@ -176,7 +193,8 @@ async function main() {
     action: "ARCHIVE",
     reason: proposalInput.reason,
     evidence: proposalInput.evidence ?? [],
-    reversible_via: `mv archive/<timestamp>/${targetRel} ${targetRel}  (RESURRECT.sh in archive directory)`,
+    reversible_via:
+      `mv archive/<timestamp>/${targetRel} ${targetRel}  (RESURRECT.sh in archive directory)`,
     falsifiers: proposalInput.falsifiers ?? [],
     quorum: proposalInput.quorum ?? { threshold: 3, out_of: 5 },
     dwell: proposalInput.dwell ?? { min_chord_cycles: 0 },
@@ -190,13 +208,15 @@ async function main() {
     type: "codeicide_proposal_emitted",
     action: "propose",
     position: "4/D",
-    semantics: "ARCHIVE GOVERNANCE (reversible). NOT DELETION. NOT Omega's codeicide_law.",
+    semantics:
+      "ARCHIVE GOVERNANCE (reversible). NOT DELETION. NOT Omega's codeicide_law.",
     target_path: targetRel,
     target_hash,
     envelope_id: envelope.envelope_id,
     body_hash: envelope.body_hash,
     envelope,
-    note: "Proposal emitted. Cowitness with `t cowitness`; gather quorum; then `t verdict` and `t apply-codeicide` if AYE. Target will be MOVED to archive/<ts>/ (not deleted); restorable via RESURRECT.sh.",
+    note:
+      "Proposal emitted. Cowitness with `t cowitness`; gather quorum; then `t verdict` and `t apply-codeicide` if AYE. Target will be MOVED to archive/<ts>/ (not deleted); restorable via RESURRECT.sh.",
   };
 
   const out = JSON.stringify(payload);

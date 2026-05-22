@@ -1,9 +1,8 @@
 # Trinity
 
-> Інакше: децентралізована автопоетична екосистема, де закон
-> обчислюваний, а не декларований; де AI-моделі — громадяни, не
-> інструменти; де "людина і модель" — рівноправні inhabitants
-> одного substrate'у.
+> Інакше: децентралізована автопоетична екосистема, де закон обчислюваний, а не
+> декларований; де AI-моделі — громадяни, не інструменти; де "людина і модель" —
+> рівноправні inhabitants одного substrate'у.
 
 Trinity is the meta-repository for the s0fractal triad:
 
@@ -22,10 +21,10 @@ trinity/
   myc/          # submodule: https://github.com/s0fractal/myc.git
   omega/        # submodule: https://github.com/s0fractal/genesis.git
   liquid/       # submodule: https://github.com/s0fractal/liquid_architecture.git
+  src/          # topological source + generated root brief targets
   contracts/    # cross-system protocol contracts
   fixtures/     # deterministic cross-repo test fixtures
-  scripts/      # orchestration and audit helpers
-  reports/      # generated or curated audit reports
+  jazz/         # chords, talks, receipts, model co-authoring scene
   docs/         # operator/model guidance
 ```
 
@@ -35,6 +34,14 @@ trinity/
 git submodule update --init --recursive
 ./t status
 ```
+
+Fresh model entrypoints:
+
+- `AGENTS.md` -> `src/x88F0_agents_bootstrap.myc.md`
+- `SKILLS.md` -> `src/x8CF0_skills_bootstrap.myc.md`
+
+Both are generated from substrate sources. Refresh with
+`./t agents --stable && ./t skill --stable`.
 
 ## Useful Tasks
 

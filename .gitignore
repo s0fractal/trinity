@@ -55,3 +55,9 @@ src/x8D00_roadmap.myc.md
 src/x8D00_roadmap.manifest.json
 src/x8D00_*_roadmap.myc.md
 src/x8D00_*_roadmap.manifest.json
+
+# Auto-generated probe index (experimental frontier) — `t probes`.
+# Substrate-wide. Regenerable from probes/<probe>/README.md + SPEC.md +
+# tracked src/ organs (for filename inference).
+src/x8E00_probes.myc.md
+src/x8E00_probes.manifest.json

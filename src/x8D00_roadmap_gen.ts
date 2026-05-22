@@ -352,10 +352,12 @@ function detectClosures(
     const closedBy: ChordRef[] = [];
     let closureType: "explicit" | "heuristic" | null = null;
 
-    // First attempt: explicit content-addressed matching
+    // First attempt: explicit content-addressed matching.
+    // An explicit closes_hash / closes.body_hash that matches the proposal's
+    // source_hash overrides the sort_key check — same-session closures (where
+    // proposal + receipt land in the same Bitcoin block) are legitimate.
     for (const c of allChords) {
       if (c.filename === p.filename) continue;
-      if (c.sort_key <= p.sort_key) continue;
       const isReceiptLike = c.mode === "receipt" || c.stance === "RECEIPT" ||
         c.stance === "AYE";
       if (!isReceiptLike) continue;

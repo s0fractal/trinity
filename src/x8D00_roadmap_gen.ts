@@ -147,6 +147,7 @@ interface VoiceProfile {
   rel_path: string;
   identity: string;
   key: string;
+  handles: string[];
   comfort_field_axes?: Record<string, number>;
   natural_styles?: string[];
   telos_filters?: string[];
@@ -421,6 +422,7 @@ async function loadVoices(): Promise<VoiceProfile[]> {
         rel_path: relPath,
         identity,
         key: identity.split("-")[0].toLowerCase(),
+        handles: Array.isArray(raw.handles) ? raw.handles : [],
         comfort_field_axes: self.comfort_field_axes,
         natural_styles: self.natural_styles,
         telos_filters: raw.telos_filters,
@@ -449,6 +451,7 @@ async function loadVoices(): Promise<VoiceProfile[]> {
           rel_path: relPath,
           identity,
           key: identity.split("-")[0].toLowerCase(),
+          handles: Array.isArray(raw.handles) ? raw.handles : [],
           comfort_field_axes: self.comfort_field_axes,
           natural_styles: self.natural_styles,
           telos_filters: raw.telos_filters,
@@ -925,11 +928,21 @@ async function main(argv: string[]) {
   const projections = await loadSubstrateProjections();
   const generated_at = args.stable ? null : new Date().toISOString();
 
+  // Handle-based alias resolution: chord voice tags that match a profile's
+  // handles (not just identity-key) link to the right voice. Lets a chord
+  // tagged `voice: architect` link to the profile with identity s0fractal.
+  const handleToKey = new Map<string, string>();
+  for (const v of voices) {
+    for (const h of v.handles) handleToKey.set(h.toLowerCase(), v.key);
+    handleToKey.set(v.key, v.key);
+  }
+
   const chordsByVoice = new Map<string, ChordRef[]>();
   for (const c of chords) {
-    const list = chordsByVoice.get(c.voice) ?? [];
+    const resolvedKey = handleToKey.get(c.voice) ?? c.voice;
+    const list = chordsByVoice.get(resolvedKey) ?? [];
     list.push(c);
-    chordsByVoice.set(c.voice, list);
+    chordsByVoice.set(resolvedKey, list);
   }
 
   const allProposals = chords.filter((c) =>

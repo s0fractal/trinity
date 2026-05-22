@@ -538,11 +538,22 @@ async function main(argv: string[]) {
   const chords = await loadChords();
   const generated_at = args.stable ? null : new Date().toISOString();
 
+  // Build a handle→key resolver so chord voices that match any profile's
+  // handles (not just identity-key) link to the right voice. Lets a chord
+  // tagged `voice: architect` link to the profile with identity s0fractal,
+  // for example. Identity-key always wins; handles fill in aliases.
+  const handleToKey = new Map<string, string>();
+  for (const v of voices) {
+    for (const h of v.handles) handleToKey.set(h.toLowerCase(), v.key);
+    handleToKey.set(v.key, v.key);
+  }
+
   const chordsByVoice = new Map<string, Chord[]>();
   for (const c of chords) {
-    const list = chordsByVoice.get(c.voice) ?? [];
+    const resolvedKey = handleToKey.get(c.voice) ?? c.voice;
+    const list = chordsByVoice.get(resolvedKey) ?? [];
     list.push(c);
-    chordsByVoice.set(c.voice, list);
+    chordsByVoice.set(resolvedKey, list);
   }
 
   const voicesToProcess = args.voice

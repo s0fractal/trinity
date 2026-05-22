@@ -40,6 +40,8 @@ Codex / Gemini / Kimi review history.
   (e.g., `SPORE.v0`, `RECEIPT_ENVELOPE.v1.0`); probe is the test record.
 - **meta-graduated** → no single artifact; the whole-substrate
   convention IS the graduation (e.g., flat-src layout).
+- **meta** → watchdog or invariant-check pattern; no graduation
+  expected by design (e.g., honesty-checks).
 - **partial** → some components graduated, others remain probe-side.
 - **deferred** → pattern proved but rollout pending architect call.
 - **active** → still under construction or in TRIAL.

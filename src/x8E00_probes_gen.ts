@@ -70,6 +70,7 @@ type StatusKind =
   | "graduated"
   | "graduated_contract"
   | "meta_graduated"
+  | "meta"
   | "partial"
   | "deferred"
   | "active"
@@ -121,6 +122,7 @@ async function gitTrackedSet(subdir: string): Promise<Set<string>> {
 function classifyBannerStatus(label: string): StatusKind {
   const l = label.toLowerCase().trim();
   if (l.startsWith("meta-graduated")) return "meta_graduated";
+  if (l.startsWith("meta")) return "meta";
   if (l.startsWith("graduated (contract")) return "graduated_contract";
   if (l.startsWith("graduated")) return "graduated";
   if (l.startsWith("partial")) return "partial";
@@ -286,6 +288,7 @@ const STATUS_ORDER: StatusKind[] = [
   "graduated",
   "graduated_contract",
   "meta_graduated",
+  "meta",
   "partial",
   "deferred",
   "active",
@@ -296,6 +299,7 @@ const STATUS_LABEL: Record<StatusKind, string> = {
   graduated: "Graduated",
   graduated_contract: "Graduated (contract)",
   meta_graduated: "Meta-graduated",
+  meta: "Meta (no graduation expected)",
   partial: "Partial",
   deferred: "Deferred",
   active: "Active",

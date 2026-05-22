@@ -1,5 +1,7 @@
 # falsifier-v0-honesty-check-v0
 
+> **Status: meta — checks probe-output honesty itself.** No graduation expected; watchdog pattern.
+
 Probe of the **voices-routing-falsifier-v0 verdict itself**.
 
 ## Motivation

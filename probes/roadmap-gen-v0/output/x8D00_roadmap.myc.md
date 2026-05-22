@@ -60,4 +60,4 @@ Each voice has its own frontier tension, derived from its profile's natural styl
 
 Sources: 5 organ horizons + 270 chords + 4 voice profiles.
 Manifest hash is over the canonical JSON list of all sources (sorted by path, each with sha256+size).
-If memory/skill/state outputs change, the underlying organ files change too — manifest_hash reflects.
+v0 source set is direct sources only: organ horizons + tracked chords + tracked voice profiles. It does not read generated state/skill/memory outputs yet; that cross-axis dependency is deferred to v1.

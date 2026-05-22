@@ -1,8 +1,8 @@
 // gen.ts — roadmap-gen-v0 — fourth axis of substrate self-description
 //
-// Per Codex chord 2026-05-19T120243Z-codex-self-description-roadmap-axis.md
-// (stance: PROPOSE_FOURTH_AXIS_AS_FRONTIER), trinity now has three generated
-// self-description axes (state, skill, memory) and is missing the fourth:
+// Per Codex's local 2026-05-19 roadmap-axis proposal, trinity now has three
+// generated self-description axes (state, skill, memory) and is missing the
+// fourth:
 //
 //   state   — "що я бачу"    (x8800_agents_gen   live)
 //   skill   — "як рухатись"  (x8C00_skill_gen    live)
@@ -31,7 +31,8 @@
 //   - hand-authored canonical truth → duplicates contracts/governance
 //   - per-voice roadmap restating voice profile → belongs in skill
 //   - cannot cite source artifacts + hashes → not ready for live src
-//   - memory changes but roadmap doesn't react → fake dependency
+//   - claimed memory/state/skill dependency without reading those sources
+//     directly → fake dependency
 //
 // Run: deno run --config=probe.jsonc -A gen.ts [--voice=<name>] [--stable]
 
@@ -359,7 +360,7 @@ function renderSubstrateRoadmap(
   lines.push(``);
   lines.push(`Sources: ${horizons.length} organ horizons + ${chords.length} chords + ${voices.length} voice profiles.`);
   lines.push(`Manifest hash is over the canonical JSON list of all sources (sorted by path, each with sha256+size).`);
-  lines.push(`If memory/skill/state outputs change, the underlying organ files change too — manifest_hash reflects.`);
+  lines.push(`v0 source set is direct sources only: organ horizons + tracked chords + tracked voice profiles. It does not read generated state/skill/memory outputs yet; that cross-axis dependency is deferred to v1.`);
   return lines.join("\n");
 }
 

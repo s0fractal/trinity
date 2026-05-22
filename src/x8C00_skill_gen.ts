@@ -122,6 +122,7 @@ interface OrganMeta {
   skill_safe?: string;
   invalid_skill_safe?: string;
   skill_tag_drift?: string;
+  is_dispatchable: boolean;
   source_hash: string;
   source_size: number;
 }
@@ -190,6 +191,10 @@ async function scanOrgans(): Promise<OrganMeta[]> {
       else invalid_skill_safe = rawSafe;
     }
 
+    // Dispatchable = has main entry point; library = exports only.
+    // Distinguishes runtime commands (t-dispatched) from helper modules.
+    const is_dispatchable = /\bimport\.meta\.main\b/.test(content);
+
     out.push({
       filename: entry.name,
       coordinate: (bucket + sub).toUpperCase(),
@@ -201,6 +206,7 @@ async function scanOrgans(): Promise<OrganMeta[]> {
       skill_tag: fields.get("skill_tag"),
       skill_safe,
       invalid_skill_safe,
+      is_dispatchable,
       source_hash: await sha256Hex(bytes),
       source_size: bytes.length,
     });
@@ -297,11 +303,14 @@ function auditSkillTagDrift(
 
   for (const o of organs) {
     if (!o.skill_tag) continue;
+    // Library organs (no main) carry skill_tag as informational metadata,
+    // not as a runtime command claim — exempt from drift audit.
+    if (!o.is_dispatchable) continue;
     const pos = organCoordToGlossaryPos(o.coordinate);
     const entry = byPosition.get(pos);
     if (!entry) {
       o.skill_tag_drift =
-        `position ${pos} has no glossary entry (tag "${o.skill_tag}" unverifiable)`;
+        `dispatchable but position ${pos} has no glossary entry (tag "${o.skill_tag}" can't be resolved by t-dispatcher)`;
       continue;
     }
     if (!entry.handles.includes(o.skill_tag)) {
@@ -613,9 +622,12 @@ function renderSubstrateSkill(
       }
     }
     lines.push(``);
-    lines.push(
-      `Classification follows "rename when touched" — no batch-add expected. Most organs predate the skill_tag/skill_safe convention (added 2026-05-19). Tag drift is honest signal: either the organ needs a glossary entry (to become dispatchable) or the tag should align with existing handles.`,
-    );
+    const baseNote =
+      `Classification follows "rename when touched" — no batch-add expected. Most organs predate the skill_tag/skill_safe convention (added 2026-05-19).`;
+    const driftNote = tagDrift.length > 0
+      ? ` Tag drift indicates a dispatchable organ whose tag won't resolve through t-dispatcher — either add a glossary entry or rename the tag. Library organs (no \`import.meta.main\`) are exempt: their \`skill_tag\` is informational metadata.`
+      : "";
+    lines.push(baseNote + driftNote);
     lines.push(``);
   }
 

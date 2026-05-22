@@ -58,6 +58,21 @@ interface ContractEntry {
   pinned: boolean;
   related_count: number;
   body_lines: number;
+  // Vector 4 sunset audit (claude+kimi+antigravity tweak):
+  // surface draft age + cowitness extension without auto-action.
+  age_days: number | null;
+  cowitness_count: number;
+  cowitness_recent_days: number | null; // newest cowitness, days ago
+  load_bearing: boolean;
+  sunset_status:
+    | "pinned"
+    | "load-bearing"
+    | "fresh"
+    | "extended"
+    | "approaching-sunset"
+    | "past-sunset"
+    | "active" // not a draft; sunset n/a
+    | "unknown";
 }
 
 // Minimal YAML frontmatter parser — extracts only the flat scalar fields we need.
@@ -84,6 +99,117 @@ function parseFrontmatter(text: string): Record<string, string | number> {
   return out;
 }
 
+// Cache: first-commit timestamps for all contracts (one git call vs per-file).
+let _addedAtCache: Map<string, Date> | null = null;
+async function loadAddedAtCache(): Promise<Map<string, Date>> {
+  if (_addedAtCache) return _addedAtCache;
+  const out = new Map<string, Date>();
+  try {
+    const proc = new Deno.Command("git", {
+      args: [
+        "-C",
+        ROOT,
+        "log",
+        "--diff-filter=A",
+        "--name-only",
+        "--format=COMMIT %aI",
+        "--",
+        "contracts/",
+      ],
+      stdout: "piped",
+      stderr: "piped",
+    });
+    const { stdout } = await proc.output();
+    const text = new TextDecoder().decode(stdout);
+    let currentDate: Date | null = null;
+    for (const line of text.split("\n")) {
+      if (line.startsWith("COMMIT ")) {
+        currentDate = new Date(line.slice("COMMIT ".length).trim());
+      } else if (line.startsWith("contracts/") && currentDate) {
+        const f = line.slice("contracts/".length);
+        if (!out.has(f)) out.set(f, currentDate); // first-seen = oldest (--reverse not needed; log walks newest-first, so last write wins)
+        out.set(f, currentDate); // log goes newest→oldest; last set is oldest = the addition
+      }
+    }
+  } catch { /* git unavailable — leave cache empty */ }
+  _addedAtCache = out;
+  return out;
+}
+
+// Cache: chord-reference counts per contract.
+let _cowitnessCache: Map<string, { count: number; latestDaysAgo: number | null }> | null = null;
+async function loadCowitnessCache(): Promise<Map<string, { count: number; latestDaysAgo: number | null }>> {
+  if (_cowitnessCache) return _cowitnessCache;
+  const out = new Map<string, { count: number; latestDaysAgo: number | null }>();
+  const chordsDir = join(ROOT, "jazz", "chords");
+  const now = Date.now();
+  try {
+    for await (const entry of Deno.readDir(chordsDir)) {
+      if (!entry.isFile || !entry.name.endsWith(".md")) continue;
+      const text = await Deno.readTextFile(join(chordsDir, entry.name));
+      // Chord age from filename: x<coord>_<block>_... or YYYY-MM-DD timestamp.
+      let chordDate: Date | null = null;
+      const newM = /^x[0-9A-Fa-f]{4}_(\d+)_/.exec(entry.name);
+      if (newM) {
+        // Block height → approx epoch: ref 950000 = 2026-05-19T00:00Z
+        const block = parseInt(newM[1], 10);
+        const epoch = 1779148800 + (block - 950000) * 600;
+        chordDate = new Date(epoch * 1000);
+      } else {
+        const oldM = /^(\d{4})-(\d{2})-(\d{2})T(\d{2})(\d{2})(\d{2})Z/.exec(entry.name);
+        if (oldM) {
+          const [, y, mo, d, h, mi, s] = oldM;
+          chordDate = new Date(Date.UTC(+y, +mo - 1, +d, +h, +mi, +s));
+        }
+      }
+      // For each contract mentioned in body, record this chord's reference.
+      const matches = text.matchAll(/contracts\/([A-Za-z0-9_]+\.v[0-9.]+(?:\.draft)?\.md)/g);
+      const seenInThisChord = new Set<string>();
+      for (const m of matches) {
+        const f = m[1];
+        if (seenInThisChord.has(f)) continue;
+        seenInThisChord.add(f);
+        const prev = out.get(f) ?? { count: 0, latestDaysAgo: null };
+        prev.count++;
+        if (chordDate) {
+          // Clamp at 0: block-height→epoch can over-estimate (future blocks
+          // in same-session chords). Negative days-ago is unhelpful display.
+          const daysAgo = Math.max(0, Math.floor((now - chordDate.getTime()) / 86400000));
+          if (prev.latestDaysAgo === null || daysAgo < prev.latestDaysAgo) {
+            prev.latestDaysAgo = daysAgo;
+          }
+        }
+        out.set(f, prev);
+      }
+    }
+  } catch { /* chords dir missing — skip */ }
+  _cowitnessCache = out;
+  return out;
+}
+
+function classifySunset(
+  contract: {
+    status: string;
+    pinned: boolean;
+    age_days: number | null;
+    cowitness_recent_days: number | null;
+    load_bearing: boolean;
+  },
+): ContractEntry["sunset_status"] {
+  if (contract.status !== "draft") return "active";
+  if (contract.pinned) return "pinned";
+  if (contract.load_bearing) return "load-bearing";
+  if (contract.age_days === null) return "unknown";
+  // Cowitness within last 14 days extends sunset.
+  if (
+    contract.cowitness_recent_days !== null &&
+    contract.cowitness_recent_days <= 14
+  ) return "extended";
+  if (contract.age_days < 30) return "fresh";
+  if (contract.age_days < 60) return "approaching-sunset";
+  return "past-sunset";
+}
+
 async function readContract(filename: string): Promise<ContractEntry | null> {
   const path = join(CONTRACTS_DIR, filename);
   let text: string;
@@ -99,7 +225,21 @@ async function readContract(filename: string): Promise<ContractEntry | null> {
   const pinned = filename.includes("BOOTSTRAP_PIN") ||
     /bitcoin\s+attestation|op_return|inscribed/i.test(text);
 
-  return {
+  // Vector 4 sunset audit:
+  const addedAt = (await loadAddedAtCache()).get(filename);
+  const age_days = addedAt
+    ? Math.floor((Date.now() - addedAt.getTime()) / 86400000)
+    : null;
+  const cowit = (await loadCowitnessCache()).get(filename) ??
+    { count: 0, latestDaysAgo: null };
+  // Load-bearing detection: explicit frontmatter flag, OR referenced ≥3 times
+  // in chord trail (sustained substrate dependency), OR contains "load-bearing"
+  // marker in body. Pinned already separately flagged.
+  const load_bearing = String(fm.load_bearing ?? "").toLowerCase() === "true" ||
+    cowit.count >= 3 ||
+    /load[- ]bearing/i.test(text.split("\n").slice(0, 50).join("\n"));
+
+  const entry: ContractEntry = {
     filename,
     path: `contracts/${filename}`,
     type: String(fm.type ?? "Unknown"),
@@ -109,7 +249,14 @@ async function readContract(filename: string): Promise<ContractEntry | null> {
     pinned,
     related_count: Number(fm.related_count ?? 0),
     body_lines: bodyLines,
+    age_days,
+    cowitness_count: cowit.count,
+    cowitness_recent_days: cowit.latestDaysAgo,
+    load_bearing,
+    sunset_status: "unknown",
   };
+  entry.sunset_status = classifySunset(entry);
+  return entry;
 }
 
 async function listContracts(): Promise<ContractEntry[]> {
@@ -142,14 +289,15 @@ function renderTable(contracts: ContractEntry[]): void {
   console.log("# " + "─".repeat(86));
   console.log(`# ${contracts.length} contracts known`);
   console.log("");
-  console.log("# status      version    pin  lines  file");
+  console.log("# status      version    pin  lines  sunset                file");
   console.log("# " + "─".repeat(86));
   for (const c of contracts) {
     const pinIcon = c.pinned ? "🔒" : "  ";
     const status = c.status.padEnd(11);
     const ver = c.version.padEnd(10);
     const lines = c.body_lines.toString().padStart(4);
-    console.log(`# ${status} ${ver} ${pinIcon}  ${lines}  ${c.filename}`);
+    const sunsetCell = formatSunsetCell(c);
+    console.log(`# ${status} ${ver} ${pinIcon}  ${lines}  ${sunsetCell}  ${c.filename}`);
   }
   console.log("# " + "─".repeat(86));
   const byStatus = new Map<string, number>();
@@ -159,6 +307,60 @@ function renderTable(contracts: ContractEntry[]): void {
   const summary = Array.from(byStatus.entries()).map(([k, v]) => `${k}:${v}`).join("  ");
   const pinned = contracts.filter((c) => c.pinned).length;
   console.log(`# ${summary}  pinned:${pinned}`);
+  renderSunsetSummary(contracts);
+}
+
+function formatSunsetCell(c: ContractEntry): string {
+  if (c.status !== "draft") return "—".padEnd(21);
+  switch (c.sunset_status) {
+    case "pinned":
+      return "pinned".padEnd(21);
+    case "load-bearing":
+      return "load-bearing".padEnd(21);
+    case "extended": {
+      const ext = c.cowitness_recent_days !== null
+        ? `cowit ${c.cowitness_recent_days}d ago`
+        : "cowit";
+      return `extended (${ext})`.slice(0, 21).padEnd(21);
+    }
+    case "fresh":
+      return `fresh (${c.age_days}d)`.padEnd(21);
+    case "approaching-sunset":
+      return `nearing (${c.age_days}d)`.padEnd(21);
+    case "past-sunset":
+      return `past (${c.age_days}d)`.padEnd(21);
+    case "unknown":
+      return "age-unknown".padEnd(21);
+    default:
+      return "—".padEnd(21);
+  }
+}
+
+function renderSunsetSummary(contracts: ContractEntry[]): void {
+  const drafts = contracts.filter((c) => c.status === "draft");
+  if (drafts.length === 0) return;
+  const byStatus = new Map<string, number>();
+  for (const c of drafts) {
+    byStatus.set(c.sunset_status, (byStatus.get(c.sunset_status) ?? 0) + 1);
+  }
+  const parts = ["load-bearing", "extended", "fresh", "approaching-sunset", "past-sunset"]
+    .filter((k) => (byStatus.get(k) ?? 0) > 0)
+    .map((k) => `${k}: ${byStatus.get(k)}`);
+  if (parts.length > 0) {
+    console.log(`# draft sunset (${drafts.length} drafts): ${parts.join(", ")}`);
+  }
+  const pastOrNearing = drafts.filter((c) =>
+    c.sunset_status === "approaching-sunset" || c.sunset_status === "past-sunset"
+  );
+  if (pastOrNearing.length > 0) {
+    console.log(`#   ⚠ ${pastOrNearing.length} draft(s) need attention:`);
+    for (const c of pastOrNearing) {
+      const reason = c.cowitness_count === 0
+        ? `no cowitness in ${c.age_days}d`
+        : `last cowitness ${c.cowitness_recent_days}d ago`;
+      console.log(`#     ${c.filename}: ${c.sunset_status} (${reason})`);
+    }
+  }
 }
 
 function renderDetail(c: ContractEntry): void {
@@ -171,6 +373,10 @@ function renderDetail(c: ContractEntry): void {
   console.log(`# pinned:      ${c.pinned ? "yes (externally anchored — do not modify)" : "no (internal — editable per consensus)"}`);
   console.log(`# body lines:  ${c.body_lines}`);
   console.log(`# related:     ${c.related_count}`);
+  console.log(`# age:         ${c.age_days !== null ? `${c.age_days} days` : "unknown"}`);
+  console.log(`# cowitness:   ${c.cowitness_count} chord refs${c.cowitness_recent_days !== null ? `, latest ${c.cowitness_recent_days}d ago` : ""}`);
+  console.log(`# load-bearing: ${c.load_bearing ? "yes" : "no"}`);
+  console.log(`# sunset:      ${c.sunset_status}`);
   console.log("");
   console.log(`# To read body: cat ${c.path}`);
 }

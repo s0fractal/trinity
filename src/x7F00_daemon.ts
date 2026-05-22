@@ -287,14 +287,25 @@ async function loadNewChords(
 }
 
 async function getVoiceProfiles(): Promise<VoiceProfile[]> {
-  const cmd = new Deno.Command("t", {
+  // Resolve `t` via the substrate's own launcher (TRINITY_ROOT/t shim) rather
+  // than $PATH. The bare `t` invocation died on 2026-05-15 when the daemon
+  // started running from a context where `t` was not on PATH; using the shim
+  // makes invocation location-independent.
+  const tShim = join(ROOT, "t");
+  const cmd = new Deno.Command(tShim, {
     args: ["voices", "--json"],
     stdout: "piped",
     stderr: "piped",
   });
   const { stdout } = await cmd.output();
   const text = new TextDecoder().decode(stdout);
-  const data = JSON.parse(text);
+  // Dispatcher prepends a `# <action> → <position>` header line; find the
+  // first JSON-shaped line and parse it.
+  const jsonLine = text.split("\n").find((l) => l.trimStart().startsWith("{"));
+  if (!jsonLine) {
+    throw new Error(`getVoiceProfiles: no JSON in t voices output: ${text}`);
+  }
+  const data = JSON.parse(jsonLine);
   return (data.voices || []) as VoiceProfile[];
 }
 

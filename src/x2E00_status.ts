@@ -232,7 +232,10 @@ if (import.meta.main) {
       call_t("health"),
       call_submodule_organ("liquid", "0x2/E.ts"),
       call_submodule_organ("omega", "0x2/E.ts"),
-      call_submodule_organ("myc", "0x2/E.ts"),
+      // myc completed partial flat-src migration 2026-05-22 — status organ
+      // moved from 0x2/E.ts to src/x2E00_status.ts. Other submodules still
+      // use the older nested-coord convention.
+      call_submodule_organ("myc", "src/x2E00_status.ts"),
       loadCachedCi(),
     ]);
 

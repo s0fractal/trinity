@@ -171,9 +171,21 @@ async function callTApplyDryRun(): Promise<any> {
   }
 }
 
+function parseAspirationalAgeArg(args: string[]): number | null {
+  // --warn-aspirational-age           → default 30 days
+  // --warn-aspirational-age=N         → N days
+  for (const a of args) {
+    if (a === "--warn-aspirational-age") return 30;
+    const m = a.match(/^--warn-aspirational-age=(\d+)$/);
+    if (m) return Number(m[1]);
+  }
+  return null;
+}
+
 async function main() {
   const wantJson = Deno.args.includes("--json");
   const wantStrict = Deno.args.includes("--strict");
+  const aspirationalAgeThreshold = parseAspirationalAgeArg(Deno.args);
 
   const ci_present = await exists(
     join(ROOT, ".github", "workflows", "ci.yml"),
@@ -409,6 +421,26 @@ async function main() {
   }
   const strict_ok = strict_failures.length === 0;
 
+  // Soft warnings for contracts that have sat ASPIRATIONAL longer than the
+  // architect-set threshold. Surface as advice, never fail strict mode.
+  const aspirational_age_warnings: { filename: string; age_days: number }[] =
+    [];
+  if (aspirationalAgeThreshold !== null) {
+    for (const c of contractsList) {
+      if (
+        c.implementation_status === "aspirational" &&
+        typeof c.age_days === "number" &&
+        c.age_days > aspirationalAgeThreshold
+      ) {
+        aspirational_age_warnings.push({
+          filename: c.filename,
+          age_days: c.age_days,
+        });
+      }
+    }
+    aspirational_age_warnings.sort((a, b) => b.age_days - a.age_days);
+  }
+
   const payload = {
     type: "evidence",
     position: "7/B",
@@ -426,6 +458,8 @@ async function main() {
     strict_mode: wantStrict,
     strict_ok,
     strict_failures,
+    aspirational_age_threshold: aspirationalAgeThreshold,
+    aspirational_age_warnings,
     contracts_by_status: {
       implemented: contractsList.filter((c) =>
         c.implementation_status === "implemented"
@@ -591,6 +625,22 @@ async function main() {
       );
     }
     console.log("─".repeat(80));
+  }
+
+  // Soft warnings: aspirational contracts past threshold age. Never fail.
+  if (
+    aspirationalAgeThreshold !== null && aspirational_age_warnings.length > 0
+  ) {
+    console.error("");
+    console.error(
+      `# [ASPIRATIONAL-AGE WARNING] threshold=${aspirationalAgeThreshold} days; ${aspirational_age_warnings.length} contract(s) past threshold:`,
+    );
+    for (const w of aspirational_age_warnings) {
+      console.error(`#   ${w.filename} (${w.age_days}d aspirational)`);
+    }
+    console.error(
+      "# (warning only — not a failure; consider promotion to prototype or demotion to draft+sunset)",
+    );
   }
 
   // Exit with code 1 if strict checks fail

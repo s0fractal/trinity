@@ -153,35 +153,49 @@ async function scanDocs(includeVolatile: boolean): Promise<SurfaceEntry[]> {
     "AUDIT_MODEL.md": "src/x6C10_audit_model.myc.md",
     "COGNITIVE_THERMODYNAMICS.md": "src/x2C10_cognitive_thermodynamics.myc.md",
     "PROOF_CARRYING_RAW.md": "src/x5A10_proof_carrying_raw.myc.md",
-    "PUBLIC_PROCESS_TRACE.md": "src/x8F10_public_process_trace.myc.md",
+    "PUBLIC_PROCESS_TRACE.md": "src/x8F11_public_process_trace.myc.md",
   };
 
   try {
     for await (const entry of Deno.readDir(dir)) {
-      if (
-        entry.isFile &&
-        entry.name.endsWith(".md") &&
-        entry.name !== "README.md"
-      ) {
+      if (entry.name.endsWith(".md") && entry.name !== "README.md") {
         const relPath = `docs/${entry.name}`;
         const fullPath = join(dir, entry.name);
         const target = docTargets[entry.name] ?? "";
 
-        const item: SurfaceEntry = {
-          surface: relPath,
-          category: "compatibility",
-          canonical_status: "migration_input",
-          canonical_target: target,
-          next_action: target ? "migrate_to_src" : "keep",
-          blocked_by: "",
-        };
+        if (entry.isFile) {
+          const item: SurfaceEntry = {
+            surface: relPath,
+            category: "compatibility",
+            canonical_status: "migration_input",
+            canonical_target: target,
+            next_action: target ? "migrate_to_src" : "keep",
+            blocked_by: "",
+          };
 
-        if (includeVolatile) {
-          const { size, mtime } = await getFileInfo(fullPath);
-          item.size = size;
-          item.mtime = mtime;
+          if (includeVolatile) {
+            const { size, mtime } = await getFileInfo(fullPath);
+            item.size = size;
+            item.mtime = mtime;
+          }
+          out.push(item);
+        } else if (entry.isSymlink) {
+          const item: SurfaceEntry = {
+            surface: relPath,
+            category: "compatibility",
+            canonical_status: "compatibility",
+            canonical_target: target,
+            next_action: "keep",
+            blocked_by: "symlink shim",
+          };
+
+          if (includeVolatile) {
+            const { size, mtime } = await getFileInfo(fullPath);
+            item.size = size;
+            item.mtime = mtime;
+          }
+          out.push(item);
         }
-        out.push(item);
       }
     }
   } catch { /* ignore missing dir */ }

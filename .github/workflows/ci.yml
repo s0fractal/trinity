@@ -19,7 +19,7 @@ jobs:
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
-          deno-version: v1.x
+          deno-version: v2.x
 
       - name: Setup Rust
         uses: actions-rust-lang/setup-rust-toolchain@v1
@@ -43,3 +43,14 @@ jobs:
 
       - name: Verify external surfaces format
         run: ./t external-surfaces --json | jq -e '.type == "external_surfaces"'
+
+      - name: Verify evidence JSON format
+        run: ./t evidence --json | jq -e '.type == "evidence" and .position == "7/B"'
+
+      - name: Verify decisions JSON format
+        run: ./t decisions --json | jq -e '.type == "decisions" and .position == "8/B"'
+
+      - name: Verify decisions stable generation diff
+        run: |
+          ./t decisions --stable
+          git diff --exit-code src/x2B88_decisions.myc.md

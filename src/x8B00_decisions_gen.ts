@@ -31,13 +31,18 @@ interface DecisionEntry {
   title: string;
   author: string;
   timestamp: string;
-  falsifier: string | null;
+  claim_kind: string | null;
+  receipt: string | null;
+  closes_hash: string | null;
+  falsifiers: string[];
+  suggested_commands: string[];
+  expected_after_running: string[];
   open_debts: string[];
   closed_items: string[];
 }
 
-function parseFrontmatter(text: string): Record<string, string | number> {
-  const out: Record<string, string | number> = {};
+function parseFrontmatter(text: string): Record<string, any> {
+  const out: Record<string, any> = {};
   const m = text.match(/^---\n([\s\S]*?)\n---/);
   if (!m) return out;
   const fm = m[1];
@@ -53,7 +58,7 @@ function parseFrontmatter(text: string): Record<string, string | number> {
 
 function classifyCategory(
   filename: string,
-  fm: Record<string, string | number>,
+  fm: Record<string, any>,
 ): DecisionEntry["category"] {
   const name = filename.toLowerCase();
   const claimKind = String(fm.claim_kind ?? "").toLowerCase();
@@ -84,13 +89,176 @@ function classifyCategory(
   return "other";
 }
 
+function extractFalsifiers(text: string, fm: Record<string, any>): string[] {
+  const list: string[] = [];
+  if (fm.falsifier) list.push(String(fm.falsifier));
+  if (fm.falsifiers) {
+    if (Array.isArray(fm.falsifiers)) {
+      list.push(...fm.falsifiers.map(String));
+    } else {
+      list.push(String(fm.falsifiers));
+    }
+  }
+
+  const m = text.match(/^---\n([\s\S]*?)\n---/);
+  if (m) {
+    const fmText = m[1];
+    const lines = fmText.split("\n");
+    let inFalsifiers = false;
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (trimmed.startsWith("falsifiers:")) {
+        inFalsifiers = true;
+        continue;
+      }
+      if (inFalsifiers) {
+        if (trimmed.startsWith("-")) {
+          const val = trimmed.slice(1).trim().replace(/^"|"$/g, "");
+          if (val) list.push(val);
+        } else if (trimmed.includes(":") || trimmed === "") {
+          inFalsifiers = false;
+        }
+      }
+    }
+  }
+
+  const lines = text.split("\n");
+  for (const line of lines) {
+    const trimmed = line.trim();
+    const match = trimmed.match(/^falsifiers?:\s*(.*)$/i);
+    if (match && match[1].trim()) {
+      const val = match[1].trim().replace(/^"|"$/g, "");
+      if (val && !list.includes(val)) {
+        list.push(val);
+      }
+    }
+  }
+
+  return [...new Set(list)];
+}
+
+function extractSuggestedCommands(
+  text: string,
+  fm: Record<string, any>,
+): string[] {
+  const list: string[] = [];
+  if (fm.suggested_command) list.push(String(fm.suggested_command));
+  if (fm.suggested_commands) {
+    if (Array.isArray(fm.suggested_commands)) {
+      list.push(...fm.suggested_commands.map(String));
+    } else {
+      list.push(String(fm.suggested_commands));
+    }
+  }
+
+  const m = text.match(/^---\n([\s\S]*?)\n---/);
+  if (m) {
+    const fmText = m[1];
+    const lines = fmText.split("\n");
+    let inCmds = false;
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (trimmed.startsWith("suggested_commands:")) {
+        inCmds = true;
+        continue;
+      }
+      if (inCmds) {
+        if (trimmed.startsWith("-")) {
+          const val = trimmed.slice(1).trim().replace(/^"|"$/g, "");
+          if (val) list.push(val);
+        } else if (trimmed.includes(":") || trimmed === "") {
+          inCmds = false;
+        }
+      }
+    }
+  }
+
+  const lines = text.split("\n");
+  for (const line of lines) {
+    const trimmed = line.trim();
+    const match = trimmed.match(/^suggested_commands?:\s*(.*)$/i);
+    if (match && match[1].trim()) {
+      const val = match[1].trim().replace(/^"|"$/g, "");
+      if (val && !list.includes(val)) {
+        list.push(val);
+      }
+    }
+  }
+  return [...new Set(list)];
+}
+
+function extractExpectedAfterRunning(
+  text: string,
+  fm: Record<string, any>,
+): string[] {
+  const list: string[] = [];
+  if (fm.expected_after_running) list.push(String(fm.expected_after_running));
+
+  const m = text.match(/^---\n([\s\S]*?)\n---/);
+  if (m) {
+    const fmText = m[1];
+    const lines = fmText.split("\n");
+    let inExpected = false;
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (trimmed.startsWith("expected_after_running:")) {
+        inExpected = true;
+        continue;
+      }
+      if (inExpected) {
+        if (trimmed.startsWith("-")) {
+          const val = trimmed.slice(1).trim().replace(/^"|"$/g, "");
+          if (val) list.push(val);
+        } else if (trimmed.includes(":") || trimmed === "") {
+          inExpected = false;
+        }
+      }
+    }
+  }
+
+  const lines = text.split("\n");
+  for (const line of lines) {
+    const trimmed = line.trim();
+    const match = trimmed.match(/^expected_after_running:\s*(.*)$/i);
+    if (match && match[1].trim()) {
+      const val = match[1].trim().replace(/^"|"$/g, "");
+      if (val && !list.includes(val)) {
+        list.push(val);
+      }
+    }
+  }
+  return [...new Set(list)];
+}
+
+function extractClosesHash(
+  text: string,
+  fm: Record<string, any>,
+): string | null {
+  if (fm.closes_hash) return String(fm.closes_hash);
+  if (fm.closes && typeof fm.closes === "object" && fm.closes.body_hash) {
+    return String(fm.closes.body_hash);
+  }
+
+  const m = text.match(/^---\n([\s\S]*?)\n---/);
+  if (m) {
+    const fmText = m[1];
+    const closesMatch = fmText.match(/closes_hash:\s*"?([^"\n]+)"?/);
+    if (closesMatch) return closesMatch[1].trim();
+
+    const bodyHashMatch = fmText.match(
+      /closes:\s*[\s\S]*?body_hash:\s*"?([^"\n]+)"?/,
+    );
+    if (bodyHashMatch) return bodyHashMatch[1].trim();
+  }
+  return null;
+}
+
 async function scanChordFile(filename: string): Promise<DecisionEntry | null> {
   try {
     const path = join(CHORDS_DIR, filename);
     const text = await Deno.readTextFile(path);
     const fm = parseFrontmatter(text);
 
-    // Try to extract a clean title from the first H1 or H2, fallback to filename
     let title = filename;
     const h1Match = text.match(/^#\s+(.*)$/m);
     if (h1Match && h1Match[1].trim()) {
@@ -107,7 +275,6 @@ async function scanChordFile(filename: string): Promise<DecisionEntry | null> {
       fm.speaker ?? fm.actor ?? fm.author_identity ?? "unknown",
     );
 
-    // Attempt to extract timestamp from filename prefix or frontmatter id
     let timestamp = new Date().toISOString();
     const tsMatch = filename.match(/^(\d{4}-\d{2}-\d{2}T\d{6}Z|\d{8}-\d{6})/);
     if (tsMatch) {
@@ -116,8 +283,12 @@ async function scanChordFile(filename: string): Promise<DecisionEntry | null> {
       timestamp = fm.id.split("-").slice(0, 3).join("-");
     }
 
-    const falsifier = fm.falsifier || fm.falsifiers || null;
-    let falsifierStr = falsifier ? String(falsifier) : null;
+    const falsifiers = extractFalsifiers(text, fm);
+    const suggested_commands = extractSuggestedCommands(text, fm);
+    const expected_after_running = extractExpectedAfterRunning(text, fm);
+    const closes_hash = extractClosesHash(text, fm);
+    const claim_kind = fm.claim_kind ? String(fm.claim_kind).trim() : null;
+    const receipt = fm.receipt ? String(fm.receipt).trim() : null;
 
     const open_debts: string[] = [];
     const closed_items: string[] = [];
@@ -137,13 +308,6 @@ async function scanChordFile(filename: string): Promise<DecisionEntry | null> {
           open_debts.push(todoMatch[1].trim());
         }
       }
-
-      if (!falsifierStr) {
-        const m = trimmed.match(/^falsifiers?:\s*(.*)$/i);
-        if (m && m[1].trim()) {
-          falsifierStr = m[1].trim();
-        }
-      }
     }
 
     return {
@@ -153,7 +317,12 @@ async function scanChordFile(filename: string): Promise<DecisionEntry | null> {
       title,
       author,
       timestamp,
-      falsifier: falsifierStr,
+      claim_kind,
+      receipt,
+      closes_hash,
+      falsifiers,
+      suggested_commands,
+      expected_after_running,
       open_debts,
       closed_items,
     };
@@ -165,7 +334,8 @@ async function scanChordFile(filename: string): Promise<DecisionEntry | null> {
 async function main() {
   const args = Deno.args;
   const wantJson = args.includes("--json");
-  const stable = args.includes("--stable");
+  const wantVolatile = args.includes("--volatile");
+  const stable = args.includes("--stable") || !wantVolatile;
 
   const trackedFiles = await getGitTrackedFiles();
   const entries: DecisionEntry[] = [];
@@ -184,10 +354,8 @@ async function main() {
     }
   }
 
-  // Deterministic sorting: by filename ascending (chronological order)
   entries.sort((a, b) => a.filename.localeCompare(b.filename));
 
-  // Compute statistics
   const summary = {
     total_chords: entries.length,
     proposals: entries.filter((e) => e.category === "proposal").length,
@@ -238,7 +406,6 @@ async function main() {
   lines.push(`| Closed Items | ${summary.closed_items} |`);
   lines.push(``);
 
-  // Extract all open debts
   const allOpenDebts: { task: string; chord: string }[] = [];
   for (const e of entries) {
     for (const d of e.open_debts) {
@@ -263,18 +430,68 @@ async function main() {
   lines.push(`## Actionable Ledger`);
   lines.push(``);
   lines.push(
-    `| Chord | Category | Author | Falsifier | Debts | Closed |`,
+    `| Chord | Category | Author | Debts | Closed |`,
   );
   lines.push(
-    `| :--- | :--- | :--- | :--- | :---: | :---: |`,
+    `| :--- | :--- | :--- | :---: | :---: |`,
   );
   for (const e of entries) {
-    const falsifierCell = e.falsifier ? e.falsifier : "*none*";
     lines.push(
-      `| [${e.filename}](../jazz/chords/${e.filename}) | **${e.category.toUpperCase()}** | ${e.author} | ${falsifierCell} | ${e.open_debts.length} | ${e.closed_items.length} |`,
+      `| [${e.filename}](../jazz/chords/${e.filename}) | **${e.category.toUpperCase()}** | ${e.author} | ${e.open_debts.length} | ${e.closed_items.length} |`,
     );
   }
   lines.push(``);
+
+  // Section with details for chords containing actionable statements
+  const detailedEntries = entries.filter(
+    (e) =>
+      e.falsifiers.length > 0 ||
+      e.suggested_commands.length > 0 ||
+      e.expected_after_running.length > 0 ||
+      e.closes_hash !== null,
+  );
+
+  lines.push(`## Actionable Details`);
+  lines.push(``);
+  if (detailedEntries.length === 0) {
+    lines.push(`*No detailed actionable metadata found in the chord trail.*`);
+    lines.push(``);
+  } else {
+    for (const e of detailedEntries) {
+      lines.push(`### [${e.filename}](../jazz/chords/${e.filename})`);
+      lines.push(
+        `- **Category**: \`${e.category.toUpperCase()}\` (Author: \`${e.author}\`)`,
+      );
+      if (e.claim_kind) {
+        lines.push(`- **Claim Kind**: \`${e.claim_kind}\``);
+      }
+      if (e.receipt) {
+        lines.push(`- **Receipt Type**: \`${e.receipt}\``);
+      }
+      if (e.closes_hash) {
+        lines.push(`- **Closes**: \`${e.closes_hash}\``);
+      }
+      if (e.falsifiers.length > 0) {
+        lines.push(`- **Falsifiers**:`);
+        for (const f of e.falsifiers) {
+          lines.push(`  - *${f}*`);
+        }
+      }
+      if (e.suggested_commands.length > 0) {
+        lines.push(`- **Suggested Commands**:`);
+        for (const c of e.suggested_commands) {
+          lines.push(`  - \`${c}\``);
+        }
+      }
+      if (e.expected_after_running.length > 0) {
+        lines.push(`- **Expected After Running**:`);
+        for (const ex of e.expected_after_running) {
+          lines.push(`  - *${ex}*`);
+        }
+      }
+      lines.push(``);
+    }
+  }
 
   await Deno.writeTextFile(OUTPUT_PATH, lines.join("\n"));
   await formatGeneratedFile(OUTPUT_PATH);

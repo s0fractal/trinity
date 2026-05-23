@@ -90,8 +90,90 @@ async function callTStatus(): Promise<any> {
   }
 }
 
+async function callTExternalSurfaces(): Promise<any> {
+  const proc = new Deno.Command("deno", {
+    args: [
+      "run",
+      "--allow-all",
+      join(ROOT, "src", "x8F00_external_surfaces_gen.ts"),
+      "--json",
+    ],
+    stdout: "piped",
+    stderr: "piped",
+  });
+  try {
+    const out = await proc.output();
+    if (out.code !== 0) return null;
+    return JSON.parse(new TextDecoder().decode(out.stdout).trim());
+  } catch {
+    return null;
+  }
+}
+
+async function callTDecisions(): Promise<any> {
+  const proc = new Deno.Command("deno", {
+    args: [
+      "run",
+      "--allow-all",
+      join(ROOT, "src", "x8B00_decisions_gen.ts"),
+      "--json",
+    ],
+    stdout: "piped",
+    stderr: "piped",
+  });
+  try {
+    const out = await proc.output();
+    if (out.code !== 0) return null;
+    return JSON.parse(new TextDecoder().decode(out.stdout).trim());
+  } catch {
+    return null;
+  }
+}
+
+async function callTSelfPortrait(): Promise<any> {
+  const proc = new Deno.Command("deno", {
+    args: [
+      "run",
+      "--allow-all",
+      join(ROOT, "src", "x2300_self_portrait.ts"),
+      "--json",
+    ],
+    stdout: "piped",
+    stderr: "piped",
+  });
+  try {
+    const out = await proc.output();
+    if (out.code !== 0) return null;
+    return JSON.parse(new TextDecoder().decode(out.stdout).trim());
+  } catch {
+    return null;
+  }
+}
+
+async function callTApplyDryRun(): Promise<any> {
+  const proc = new Deno.Command("deno", {
+    args: [
+      "run",
+      "--allow-all",
+      join(ROOT, "src", "x5F00_apply.ts"),
+      "0000",
+      "0000",
+    ],
+    stdout: "piped",
+    stderr: "piped",
+  });
+  try {
+    const out = await proc.output();
+    if (out.code !== 0) return null;
+    return JSON.parse(new TextDecoder().decode(out.stdout).trim());
+  } catch {
+    return null;
+  }
+}
+
 async function main() {
   const wantJson = Deno.args.includes("--json");
+  const wantStrict = Deno.args.includes("--strict");
 
   const ci_present = await exists(
     join(ROOT, ".github", "workflows", "ci.yml"),
@@ -99,7 +181,16 @@ async function main() {
   const invocations = await countDaemonInvocations();
 
   // Query statuses in parallel to prevent bottlenecks
-  const [contractsList, surfaces, decisions, statusData] = await Promise.all([
+  const [
+    contractsList,
+    surfaces,
+    decisions,
+    statusData,
+    surfacesData,
+    decisionsData,
+    portraitData,
+    applyData,
+  ] = await Promise.all([
     listContracts().catch(() => []),
     collectExternalSurfaces({ stable: true, includeVolatile: false }).catch(
       () => [],
@@ -115,6 +206,10 @@ async function main() {
       entries: [],
     })),
     callTStatus(),
+    callTExternalSurfaces(),
+    callTDecisions(),
+    callTSelfPortrait(),
+    callTApplyDryRun(),
   ]);
 
   const executable_contracts = contractsList.filter(
@@ -135,6 +230,16 @@ async function main() {
 
   const decSummary = decisions.summary;
 
+  // Extract divergence metrics for antigravity
+  const antigravityVoice = portraitData?.voices?.find(
+    (v: any) => v.voice === "antigravity",
+  );
+  const divAngle = antigravityVoice?.divergence_angle_degrees;
+  const divAngleStr = divAngle !== undefined && divAngle !== null
+    ? `${divAngle.toFixed(1)}°`
+    : "unknown";
+  const divClass = antigravityVoice?.divergence_classification ?? "unknown";
+
   // Build the claims-to-evidence matrix
   const claims_matrix: ClaimEvidence[] = [
     {
@@ -147,7 +252,7 @@ async function main() {
       evidence: `trinity status: ${
         statusData?.substrate_health?.overall ?? "unknown"
       }`,
-      evidence_source: "live",
+      evidence_source: statusData ? "live" : "missing",
     },
     {
       claim: "External Surfaces Tracking",
@@ -156,9 +261,21 @@ async function main() {
       contract: "contracts/IN_LEDGER_SRC_PROJECTION.v0.2.md",
       command: "./t external-surfaces",
       test: "./t external-surfaces --json",
-      evidence:
-        `tracked: ${surfaces.length} items (${compCount} ABI, ${docsCount} docs, ${probeCount} probes, ${chordCount} chords)`,
-      evidence_source: "live",
+      evidence: `tracked: ${surfacesData?.entries?.length ?? 0} items (${
+        surfacesData?.entries?.filter((s: any) =>
+          s.category === "compatibility_abi"
+        ).length ?? 0
+      } ABI, ${
+        surfacesData?.entries?.filter((s: any) => s.category === "compatibility")
+          .length ?? 0
+      } docs, ${
+        surfacesData?.entries?.filter((s: any) => s.category === "experimental")
+          .length ?? 0
+      } probes, ${
+        surfacesData?.entries?.filter((s: any) => s.category === "live_chord")
+          .length ?? 0
+      } chords)`,
+      evidence_source: surfacesData ? "live" : "missing",
     },
     {
       claim: "Chord Decision Ledger",
@@ -167,9 +284,14 @@ async function main() {
       contract: "contracts/PROCESS_OBJECTS.v0.1.md",
       command: "./t decisions",
       test: "./t decisions --json",
-      evidence:
-        `${decSummary.total_chords} chords parsed: ${decSummary.proposals} proposals, ${decSummary.decisions} decisions, ${decSummary.receipts} receipts, ${decSummary.critiques} critiques`,
-      evidence_source: "live",
+      evidence: `${
+        decisionsData?.summary?.total_chords ?? 0
+      } chords parsed: ${decisionsData?.summary?.proposals ?? 0} proposals, ${
+        decisionsData?.summary?.decisions ?? 0
+      } decisions, ${decisionsData?.summary?.receipts ?? 0} receipts, ${
+        decisionsData?.summary?.critiques ?? 0
+      } critiques`,
+      evidence_source: decisionsData ? "live" : "missing",
     },
     {
       claim: "Ecosystem Submodule Federation",
@@ -183,7 +305,7 @@ async function main() {
       }, omega: ${
         statusData?.submodules?.omega?.summary?.overall ?? "missing"
       }, myc: ${statusData?.submodules?.myc?.summary?.overall ?? "missing"}`,
-      evidence_source: "live",
+      evidence_source: statusData?.submodules ? "live" : "missing",
     },
     {
       claim: "SPORE Runtime Execution",
@@ -191,10 +313,11 @@ async function main() {
       contract_status: null,
       contract: "contracts/SPORE.v0.draft.md",
       command: "./t apply",
-      test: "none",
-      evidence:
-        "SPORE simulation active (no production WASM verification runner)",
-      evidence_source: "live",
+      test: "./t apply 0000 0000",
+      evidence: `SPORE simulation active (backend: ${
+        applyData?.backend_kind ?? "unknown"
+      }, simulation: ${applyData?.simulation ?? false})`,
+      evidence_source: applyData ? "live" : "missing",
     },
     {
       claim: "AI Voice Citizenship & Daemon",
@@ -217,7 +340,7 @@ async function main() {
       evidence: `bitcoin_block: ${
         statusData?.substrate_health?.clock?.bitcoin_block ?? "null"
       } (no active transaction RPC)`,
-      evidence_source: "live",
+      evidence_source: statusData ? "live" : "missing",
     },
     {
       claim: "Free Energy Principle (FEP) Minimization",
@@ -246,9 +369,9 @@ async function main() {
       contract_status: null,
       contract: "contracts/VOICES.v0.1.md",
       command: "./t self-portrait",
-      test: "none",
-      evidence: "divergence angle: 16.4° (astrological model coordinates)",
-      evidence_source: "live",
+      test: "./t self-portrait antigravity --json",
+      evidence: `divergence angle: ${divAngleStr} (antigravity: ${divClass})`,
+      evidence_source: portraitData ? "live" : "missing",
     },
   ];
 
@@ -260,6 +383,37 @@ async function main() {
       if (match) {
         c.contract_status = match.implementation_status;
       }
+    }
+  }
+
+  // Strict mode validation
+  if (wantStrict) {
+    let hasStrictError = false;
+    for (const c of claims_matrix) {
+      if (c.claim_status === "implemented") {
+        if (!c.test || c.test === "none") {
+          console.error(
+            `# [STRICT FAIL] Claim "${c.claim}" is implemented but has no valid test command (test: "${c.test}")`,
+          );
+          hasStrictError = true;
+        }
+        if (!c.command || c.command === "none") {
+          console.error(
+            `# [STRICT FAIL] Claim "${c.claim}" is implemented but has no valid command (command: "${c.command}")`,
+          );
+          hasStrictError = true;
+        }
+        if (c.evidence_source !== "live" && c.evidence_source !== "cached") {
+          console.error(
+            `# [STRICT FAIL] Claim "${c.claim}" is implemented but has non-verifiable source (source: "${c.evidence_source}")`,
+          );
+          hasStrictError = true;
+        }
+      }
+    }
+    if (hasStrictError) {
+      console.error("# [STRICT FAILURE] Strict evidence validation failed.");
+      Deno.exit(1);
     }
   }
 

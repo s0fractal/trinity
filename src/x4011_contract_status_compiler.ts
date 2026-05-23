@@ -42,7 +42,7 @@ import {
 const HERE = dirname(fromFileUrl(import.meta.url));
 const GLOSSARY_PATH = join(HERE, "x0001_glossary.ndjson");
 
-interface LifecycleRecord {
+export interface LifecycleRecord {
   primary_handle: string;
   rank: number;
   position: string;
@@ -62,7 +62,11 @@ const ORACLE: { primary_handle: string; rank: number }[] = [
   { primary_handle: "superseded", rank: 4 },
 ];
 
-async function loadLifecycleFamily(): Promise<LifecycleRecord[]> {
+/** Public loader — used by x4F00_contracts.ts to derive status rank
+ *  from glossary. Exported alongside the LifecycleRecord type so
+ *  consumers can build their own rank Maps without duplicating
+ *  parsing logic. */
+export async function loadLifecycleFamily(): Promise<LifecycleRecord[]> {
   const text = await Deno.readTextFile(GLOSSARY_PATH);
   const out: LifecycleRecord[] = [];
   for (const line of text.trim().split("\n")) {

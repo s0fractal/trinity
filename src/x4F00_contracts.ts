@@ -48,6 +48,7 @@ import {
   join,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { parallel, pipe, tryOr } from "./x0030_compose.ts";
+import { loadLifecycleFamily } from "./x4011_contract_status_compiler.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
@@ -349,14 +350,20 @@ async function listContracts(): Promise<ContractEntry[]> {
     const c = await readContract(entry.name);
     if (c) out.push(c);
   }
-  // Sort: pinned first, then active, then draft, then others, alpha within
+  // Sort: pinned first, then by glossary-derived lifecycle rank, alpha
+  // within. Lifecycle family loaded from src/x0001_glossary.ndjson via
+  // x4011_contract_status_compiler — replaces previous hardcoded enum
+  // (active=1, draft=2, open=3, superseded=4) which was verified
+  // byte-identical to the glossary projection (Beta supervector probe
+  // 2026-05-23, codex Directive 1 integration).
+  // Fallback rank for unknown statuses = max+1 (alphabetical within).
+  const family = await loadLifecycleFamily();
+  const rankByHandle = new Map<string, number>();
+  for (const r of family) rankByHandle.set(r.primary_handle, r.rank);
+  const fallbackRank = family.length;
   const statusRank = (s: string, pinned: boolean): number => {
     if (pinned) return 0;
-    if (s === "active") return 1;
-    if (s === "draft") return 2;
-    if (s === "open") return 3;
-    if (s === "superseded") return 4;
-    return 5;
+    return rankByHandle.get(s) ?? fallbackRank;
   };
   out.sort((a, b) => {
     const r = statusRank(a.status, a.pinned) - statusRank(b.status, b.pinned);

@@ -31,6 +31,7 @@ const POSITION_TO_FILE: Record<string, string> = {
   "0/0C": "x0C00_any.ts",
   "0/0F": "x0F00_help.ts",
   "2/0": "x2001_voices.ts",
+  "2/2": "x2200_ecosystem.ts",
   "2/3": "x2300_self_portrait.ts",
   "2/4": "x2400_cognition_snapshot.ts",
   "2/5": "x2500_cognition_field.ts",

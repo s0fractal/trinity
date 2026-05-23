@@ -230,11 +230,10 @@ if (import.meta.main) {
     await Promise.all([
       call_t("audit", ["--json"]),
       call_t("health"),
-      // Substrate adoption order: myc 2026-05-22, liquid 2026-05-23,
-      // omega still at older 0x2/E.ts (no batch-migration per
-      // `feedback_liquid_not_trinity` policy applied substrate-wide).
+      // All 3 substrates adopted SUBSTRATE_SELF_ABI.v0.1 slot 2/E
+      // by 2026-05-23: myc 2026-05-22, liquid + omega 2026-05-23.
       call_submodule_organ("liquid", "src/x2E00_status.ts"),
-      call_submodule_organ("omega", "0x2/E.ts"),
+      call_submodule_organ("omega", "src/x2E00_status.ts"),
       call_submodule_organ("myc", "src/x2E00_status.ts"),
       loadCachedCi(),
     ]);

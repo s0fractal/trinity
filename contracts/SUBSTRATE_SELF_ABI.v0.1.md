@@ -2,7 +2,7 @@
 type: "ContractDescriptor"
 version: "0.1"
 title: "Substrate Self ABI: minimum self-description surface for federation"
-status: "draft"
+status: "active"
 hears:
   - "./SUBSTRATE_HEALTH.v0.1.md"
   - "../src/x2E00_status.ts"
@@ -19,12 +19,16 @@ related:
 
 ## Status
 
-**DRAFT.** Seeded by claude-opus-4-7 2026-05-23 per architect's audit
-recommendation: "сформулювати SUBSTRATE_SELF_ABI.v0.1 contract, довести
-myc до повного self ABI як пілот".
+**ACTIVE 2026-05-23.** Seeded as draft same day per architect's audit
+recommendation; pilot in `myc` validated immediately; liquid + omega
+adopted the adapter pattern within same session. All 3 substrates at
+5/5 ABI coverage; contract graduates draft → active per its own
+threshold (≥2 substrates).
 
-Pilot validation: `myc` submodule. Once all 5 slots present + trinity
-federation reads them uniformly, this contract graduates to `active`.
+Graduation evidence:
+- `myc` 5/5 (commit `49c1ce8`) — pilot, content-addressed substrate
+- `liquid` 5/5 (commit at adoption time) — adapter approach over xA<NNN>
+- `omega` 5/5 (commit at adoption time) — adapter approach over Rust+TS+ZK
 
 ---
 

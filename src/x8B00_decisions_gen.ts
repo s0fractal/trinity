@@ -24,7 +24,7 @@ const ROOT = dirname(HERE);
 const CHORDS_DIR = join(ROOT, "jazz", "chords");
 const OUTPUT_PATH = join(HERE, "x2B88_decisions.myc.md");
 
-interface DecisionEntry {
+export interface DecisionEntry {
   filename: string;
   id: string;
   category: "proposal" | "decision" | "receipt" | "critique" | "other";
@@ -41,6 +41,7 @@ interface DecisionEntry {
   closed_items: string[];
 }
 
+// Minimal YAML frontmatter parser — extracts only the flat scalar fields we need.
 function parseFrontmatter(text: string): Record<string, any> {
   const out: Record<string, any> = {};
   const m = text.match(/^---\n([\s\S]*?)\n---/);
@@ -331,12 +332,19 @@ async function scanChordFile(filename: string): Promise<DecisionEntry | null> {
   }
 }
 
-async function main() {
-  const args = Deno.args;
-  const wantJson = args.includes("--json");
-  const wantVolatile = args.includes("--volatile");
-  const stable = args.includes("--stable") || !wantVolatile;
-
+export async function collectDecisions(stable: boolean): Promise<{
+  summary: {
+    total_chords: number;
+    proposals: number;
+    decisions: number;
+    receipts: number;
+    critiques: number;
+    others: number;
+    open_debts: number;
+    closed_items: number;
+  };
+  entries: DecisionEntry[];
+}> {
   const trackedFiles = await getGitTrackedFiles();
   const entries: DecisionEntry[] = [];
 
@@ -366,6 +374,17 @@ async function main() {
     open_debts: entries.reduce((acc, e) => acc + e.open_debts.length, 0),
     closed_items: entries.reduce((acc, e) => acc + e.closed_items.length, 0),
   };
+
+  return { summary, entries };
+}
+
+async function main() {
+  const args = Deno.args;
+  const wantJson = args.includes("--json");
+  const wantVolatile = args.includes("--volatile");
+  const stable = args.includes("--stable") || !wantVolatile;
+
+  const { summary, entries } = await collectDecisions(stable);
 
   if (wantJson) {
     const payload = {

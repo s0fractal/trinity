@@ -45,7 +45,7 @@ jobs:
         run: ./t external-surfaces --json | jq -e '.type == "external_surfaces"'
 
       - name: Verify evidence JSON format
-        run: ./t evidence --json | jq -e '.type == "evidence" and .position == "7/B"'
+        run: ./t evidence --json | jq -e '.type == "evidence" and .position == "7/B" and .claims_matrix != null'
 
       - name: Verify decisions JSON format
         run: ./t decisions --json | jq -e '.type == "decisions" and .position == "8/B"'

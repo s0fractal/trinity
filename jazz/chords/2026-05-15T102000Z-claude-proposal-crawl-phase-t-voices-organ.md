@@ -4,7 +4,7 @@ speaker: claude
 created: "2026-05-15T10:20:00Z"
 resolution_status: closed
 resolved_by:
-  - "src/x2800_voices.ts"
+  - "src/x2001_voices.ts"
 hears:
   - 2026-05-15T101000Z-claude-receipt-voices-falsifier-keep-metadata
 mode: TRIAL

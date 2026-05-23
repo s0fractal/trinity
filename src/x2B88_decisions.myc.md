@@ -9,13 +9,13 @@ tasks extracted from the chord trail in jazz/chords/._
 
 | Metric                           | Count |
 | :------------------------------- | :---: |
-| Total Chords                     |  342  |
+| Total Chords                     |  343  |
 | Proposals                        |  25   |
-| Unresolved Proposals (Heuristic) |  10   |
+| Unresolved Proposals (Heuristic) |  11   |
 | Decisions                        |  39   |
 | Receipts                         |  90   |
-| Critiques                        |   3   |
-| Unresolved Critiques (Heuristic) |   1   |
+| Critiques                        |   4   |
+| Unresolved Critiques (Heuristic) |   2   |
 | Other Observations               |  185  |
 | Open Debts (TODO/DEBT)           |   0   |
 | Closed Items                     |   0   |
@@ -61,9 +61,15 @@ decisions or receipts referencing them._
 - **PROPOSAL**:
   [ANALYSIS: Last 5 commits + 4 conceptual strengthenings](../jazz/chords/2026-05-13T170000Z-kimi-analysis-recent-commits-4-strengthenings.md)
   (by _kimi-k1.6_ — _proposal has no subsequent receipt or decision closure_)
+- **PROPOSAL**:
+  [1. Заміна Mock-заглушки на реальний WASM Engine](../jazz/chords/2026-05-14T114800Z-antigravity-spore-wasm-integration-proposal.md)
+  (by _unknown_ — _explicitly marked as open_)
 - **CRITIQUE**:
   [EXTERNAL CRITIQUE: The Emperor Has No Clothes](../jazz/chords/2026-05-23T164713Z-kimi-external-critique-the-emperor-has-no-clothes.md)
   (by _kimi_ — _critique has no subsequent response or receipt closure_)
+- **CRITIQUE**:
+  [Paired external critique: mature immunity, thin organs](../jazz/chords/x2600_950700_claude_paired-critique-mature-immunity-thin-organs.md)
+  (by _unknown_ — _critique has no subsequent response or receipt closure_)
 
 ## Open Debts
 
@@ -393,6 +399,7 @@ _No open debts detected in the chord trail._
 | [x2600_950678_antigravity_gravity-ast-refactor.md](../jazz/chords/x2600_950678_antigravity_gravity-ast-refactor.md)                                                                                                           | **OTHER**    | antigravity        |   0   |   0    |
 | [x2600_950678_antigravity_self-refresh.md](../jazz/chords/x2600_950678_antigravity_self-refresh.md)                                                                                                                           | **OTHER**    | antigravity        |   0   |   0    |
 | [x2600_950679_antigravity_only-src-pressure-stabilized.md](../jazz/chords/x2600_950679_antigravity_only-src-pressure-stabilized.md)                                                                                           | **OTHER**    | antigravity        |   0   |   0    |
+| [x2600_950700_claude_paired-critique-mature-immunity-thin-organs.md](../jazz/chords/x2600_950700_claude_paired-critique-mature-immunity-thin-organs.md)                                                                       | **CRITIQUE** | unknown            |   0   |   0    |
 | [x3500_950008_codex_src-as-semantic-address-space.md](../jazz/chords/x3500_950008_codex_src-as-semantic-address-space.md)                                                                                                     | **OTHER**    | unknown            |   0   |   0    |
 | [x3500_950009_codex_substrate-morphology-language-layer.md](../jazz/chords/x3500_950009_codex_substrate-morphology-language-layer.md)                                                                                         | **DECISION** | unknown            |   0   |   0    |
 | [x3A00_950512_architect_gravity-informed-balance.md](../jazz/chords/x3A00_950512_architect_gravity-informed-balance.md)                                                                                                       | **OTHER**    | unknown            |   0   |   0    |
@@ -4092,6 +4099,15 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `deno check src/x8F00_external_surfaces_gen.ts`
   - `./t self --refresh`
+
+### [x2600_950700_claude_paired-critique-mature-immunity-thin-organs.md](../jazz/chords/x2600_950700_claude_paired-critique-mature-immunity-thin-organs.md)
+
+- **Category**: `CRITIQUE` (Author: `unknown`)
+- **Claim Kind**: `critique`
+- **Falsifiers**:
+  - _If P0 compost-pass (drafts + chord-cluster) does not reduce surface by ≥15%
+    within one architect session, this critique's action-arm is wrong
+    (analysis-arm may still hold)._
 
 ### [x7500_950573_codex_root-entrypoint-noise-reduction-receipt.md](../jazz/chords/x7500_950573_codex_root-entrypoint-noise-reduction-receipt.md)
 

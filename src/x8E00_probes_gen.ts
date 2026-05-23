@@ -81,6 +81,32 @@ export type StatusKind =
   | "active"
   | "unknown";
 
+// Lifecycle stage — per codex audit 2026-05-23 R2: probe lifecycle
+// projection. 4-state model orthogonal to fine-grained StatusKind:
+//   promoted — probe pattern has landed as live organ/contract/convention
+//   active   — probe still being worked or perpetual watchdog
+//   compost  — probe explicitly retired (currently none; needs explicit marking)
+//   archived — probe is historical artifact (currently none; explicit marking)
+//
+// Codex required this so `t probes` displays promoted/compost state
+// BEFORE files move/disappear in subsequent cleanup work.
+export type LifecycleStage = "promoted" | "active" | "compost" | "archived";
+
+function lifecycleOf(status: StatusKind): LifecycleStage {
+  switch (status) {
+    case "graduated":
+    case "graduated_contract":
+    case "meta_graduated":
+      return "promoted";
+    case "meta":
+    case "active":
+    case "partial":
+    case "deferred":
+    case "unknown":
+      return "active";
+  }
+}
+
 export interface ProbeRecord {
   name: string;
   rel_path: string;
@@ -97,6 +123,11 @@ export interface ProbeRecord {
   source_hash: string;
   source_size: number;
   chord_refs: ChordRef[];
+  // Lifecycle stage — codex audit 2026-05-23 R2.
+  // Derived from status by lifecycleOf(). Compost/archived states
+  // require explicit marking (not yet implemented; no probe currently
+  // has explicit compost/archive declaration).
+  lifecycle: LifecycleStage;
 }
 
 export interface ChordRef {
@@ -343,6 +374,7 @@ async function readProbe(
     source_hash: hash,
     source_size: basis.length,
     chord_refs,
+    lifecycle: lifecycleOf(status),
   };
 }
 
@@ -428,8 +460,10 @@ function renderProbesIndex(
   );
   lines.push(``);
 
-  // Summary table
+  // Summary table — by status (fine-grained)
   lines.push(`## Summary`);
+  lines.push(``);
+  lines.push(`### By status (fine-grained)`);
   lines.push(``);
   lines.push(`| status | count |`);
   lines.push(`|--------|-------|`);
@@ -439,6 +473,28 @@ function renderProbesIndex(
     lines.push(`| ${STATUS_LABEL[k]} | ${n} |`);
   }
   lines.push(`| **total** | **${probes.length}** |`);
+  lines.push(``);
+
+  // Summary by lifecycle stage (4-state model per codex audit 2026-05-23 R2)
+  const byLifecycle = new Map<LifecycleStage, number>();
+  for (const p of probes) {
+    byLifecycle.set(p.lifecycle, (byLifecycle.get(p.lifecycle) ?? 0) + 1);
+  }
+  lines.push(
+    `### By lifecycle stage (codex R2: promoted/active/compost/archived)`,
+  );
+  lines.push(``);
+  lines.push(`| lifecycle | count |`);
+  lines.push(`|-----------|-------|`);
+  for (const stage of ["promoted", "active", "compost", "archived"] as const) {
+    const n = byLifecycle.get(stage) ?? 0;
+    lines.push(`| ${stage} | ${n} |`);
+  }
+  lines.push(`| **total** | **${probes.length}** |`);
+  lines.push(``);
+  lines.push(
+    `Lifecycle derived from status via lifecycleOf(): graduated*/meta-graduated → promoted; meta/active/partial/deferred/unknown → active. Compost and archived states require explicit marking (none yet declared). Per codex R2: \`t probes\` MUST display promoted/compost state before any probe file moves or disappears.`,
+  );
   lines.push(``);
 
   // By status

@@ -365,6 +365,24 @@ async function findOrphans(files: string[]): Promise<string[]> {
     }
   } catch { /* ignore */ }
 
+  // Also treat organs referenced by deno.jsonc task definitions as registered.
+  // These run via `deno task <name>` rather than the t dispatcher, but they
+  // are still anchored to a known entrypoint and should not show as orphans.
+  try {
+    const denoConfig = await Deno.readTextFile(join(ROOT, "deno.jsonc"));
+    const matches = denoConfig.matchAll(
+      /src\/(x[0-9A-Fa-f]{4}_[^"\s]+\.ts)/g,
+    );
+    for (const m of matches) {
+      registered.add(`src/${m[1]}`);
+    }
+  } catch { /* ignore */ }
+
+  // The `t` shim is the entrypoint script at repo root; it references
+  // x0100_dispatch.ts and is itself referenced from the `t` symlink path.
+  // Mark x0200_shim.sh as registered since it is the global shim definition.
+  registered.add("src/x0200_shim.sh");
+
   const orphans: string[] = [];
   for (const rel of files) {
     const base = rel.split("/").pop() ?? "";

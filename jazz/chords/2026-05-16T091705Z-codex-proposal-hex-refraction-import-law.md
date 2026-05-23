@@ -13,6 +13,9 @@ confidence: high
 receipt: file
 actor: codex
 claim_kind: architecture-proposal
+resolution_status: closed
+resolved_by:
+  - "contracts/HEX_REFRACTION.v0.draft.md"
 hears:
   - contracts/HEX_DIPOLE_SEED.v0.draft.md
   - contracts/TOPOLOGICAL_GRINDING.v0.draft.md

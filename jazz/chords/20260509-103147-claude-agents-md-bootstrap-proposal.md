@@ -9,6 +9,9 @@ tension: "agents-md-symlink-bootstrap-for-trinity-meta"
 confidence: "medium"
 receipt: "none"
 actor: "claude-opus-4-7"
+resolution_status: closed
+resolved_by:
+  - "AGENTS.md"
 hears:
   - "20260509-101143-claude-three-governance-paths.md"
   - "20260509-101431-antigravity-governance-aye.md"

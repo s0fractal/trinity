@@ -44,6 +44,8 @@ export interface DecisionEntry {
   has_receipt: boolean;
   is_unresolved: boolean;
   resolution_hint: string | null;
+  resolution_status: "open" | "closed" | "superseded" | "historical" | null;
+  resolved_by: string[];
 }
 
 // Minimal YAML frontmatter parser — extracts only the flat scalar fields we need.
@@ -259,6 +261,40 @@ function extractClosesHash(
   return null;
 }
 
+function extractResolvedBy(text: string, fm: Record<string, any>): string[] {
+  const list: string[] = [];
+  if (fm.resolved_by) {
+    if (Array.isArray(fm.resolved_by)) {
+      list.push(...fm.resolved_by.map(String));
+    } else {
+      list.push(String(fm.resolved_by));
+    }
+  }
+
+  const m = text.match(/^---\n([\s\S]*?)\n---/);
+  if (m) {
+    const fmText = m[1];
+    const lines = fmText.split("\n");
+    let inResolvedBy = false;
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (trimmed.startsWith("resolved_by:")) {
+        inResolvedBy = true;
+        continue;
+      }
+      if (inResolvedBy) {
+        if (trimmed.startsWith("-")) {
+          const val = trimmed.slice(1).trim().replace(/^"|"$/g, "");
+          if (val) list.push(val);
+        } else if (trimmed.includes(":") || trimmed === "") {
+          inResolvedBy = false;
+        }
+      }
+    }
+  }
+  return [...new Set(list)];
+}
+
 async function scanChordFile(
   filename: string,
 ): Promise<(DecisionEntry & { mentions: string[] }) | null> {
@@ -356,6 +392,10 @@ async function scanChordFile(
       has_receipt: false,
       is_unresolved: false,
       resolution_hint: null,
+      resolution_status: fm.resolution_status
+        ? String(fm.resolution_status).trim().toLowerCase() as any
+        : null,
+      resolved_by: extractResolvedBy(text, fm),
       mentions,
     };
   } catch {
@@ -403,7 +443,7 @@ export async function collectDecisions(stable: boolean): Promise<{
       (other) => other.category === "decision" || other.category === "receipt",
     );
 
-    const has_receipt = laterClosures.some(
+    let has_receipt = laterClosures.some(
       (other) =>
         other.closes_hash === raw.id ||
         other.closes_hash === raw.filename ||
@@ -416,32 +456,46 @@ export async function collectDecisions(stable: boolean): Promise<{
     let is_unresolved = false;
     let resolution_hint: string | null = null;
 
-    if (raw.category === "proposal") {
-      is_unresolved = !has_receipt;
-      if (is_unresolved) {
-        resolution_hint =
-          "proposal has no subsequent receipt or decision closure";
-      }
-    } else if (raw.category === "critique") {
-      // For critiques, closure could be a later proposal, decision, or receipt
-      const laterCritiqueClosures = rawEntries.slice(idx + 1).filter(
-        (other) =>
-          other.category === "decision" ||
-          other.category === "receipt" ||
-          other.category === "proposal",
-      );
-      const critique_resolved = laterCritiqueClosures.some(
-        (other) =>
-          other.closes_hash === raw.id ||
-          other.closes_hash === raw.filename ||
-          other.mentions.includes(raw.filename) ||
-          other.mentions.includes(raw.id + ".md") ||
-          other.mentions.includes(raw.id),
-      );
-      is_unresolved = !critique_resolved;
-      if (is_unresolved) {
-        resolution_hint =
-          "critique has no subsequent response or receipt closure";
+    if (
+      raw.resolution_status === "closed" ||
+      raw.resolution_status === "superseded" ||
+      raw.resolution_status === "historical"
+    ) {
+      has_receipt = true;
+      is_unresolved = false;
+      resolution_hint = `manually marked as ${raw.resolution_status}`;
+    } else if (raw.resolution_status === "open") {
+      has_receipt = false;
+      is_unresolved = true;
+      resolution_hint = `explicitly marked as open`;
+    } else {
+      if (raw.category === "proposal") {
+        is_unresolved = !has_receipt;
+        if (is_unresolved) {
+          resolution_hint =
+            "proposal has no subsequent receipt or decision closure";
+        }
+      } else if (raw.category === "critique") {
+        // For critiques, closure could be a later proposal, decision, or receipt
+        const laterCritiqueClosures = rawEntries.slice(idx + 1).filter(
+          (other) =>
+            other.category === "decision" ||
+            other.category === "receipt" ||
+            other.category === "proposal",
+        );
+        const critique_resolved = laterCritiqueClosures.some(
+          (other) =>
+            other.closes_hash === raw.id ||
+            other.closes_hash === raw.filename ||
+            other.mentions.includes(raw.filename) ||
+            other.mentions.includes(raw.id + ".md") ||
+            other.mentions.includes(raw.id),
+        );
+        is_unresolved = !critique_resolved;
+        if (is_unresolved) {
+          resolution_hint =
+            "critique has no subsequent response or receipt closure";
+        }
       }
     }
 
@@ -481,6 +535,8 @@ export async function collectDecisions(stable: boolean): Promise<{
       has_receipt,
       is_unresolved,
       resolution_hint,
+      resolution_status: raw.resolution_status,
+      resolved_by: raw.resolved_by,
     };
   });
 

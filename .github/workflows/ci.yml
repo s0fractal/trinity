@@ -45,7 +45,7 @@ jobs:
         run: ./t external-surfaces --json | jq -e '.type == "external_surfaces"'
 
       - name: Verify evidence JSON format
-        run: ./t evidence --strict --json | jq -e '.type == "evidence" and .position == "7/B" and .claims_matrix != null'
+        run: ./t evidence --strict --json | jq -e '.strict_mode == true and .strict_ok == true'
 
       - name: Verify decisions JSON format
         run: ./t decisions --json | jq -e '.type == "decisions" and .position == "8/B"'
@@ -54,3 +54,8 @@ jobs:
         run: |
           ./t decisions --stable
           git diff --exit-code src/x2B88_decisions.myc.md
+
+      - name: Verify evidence stable report generation diff
+        run: |
+          ./t evidence --stable
+          git diff --exit-code src/x7B88_evidence_report.myc.md

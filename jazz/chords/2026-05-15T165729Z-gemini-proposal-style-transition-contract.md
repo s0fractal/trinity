@@ -13,6 +13,9 @@ confidence: high
 receipt: file
 actor: gemini
 claim_kind: structural-proposal
+resolution_status: closed
+resolved_by:
+  - "contracts/STYLE_TRANSITION.v0.draft.md"
 hears:
   - jazz/chords/2026-05-15T161102Z-claude-review-daemon-contract-frame.md
   - jazz/chords/2026-05-15T165313Z-claude-receipt-inbox-organ-and-vector-closure-note.md

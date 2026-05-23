@@ -4,6 +4,7 @@ version: "0.1"
 title: "Trinity Capability Registry"
 status: "superseded"
 superseded_by: "live projection t capabilities (0x4/A.ts) — 2026-05-14"
+implementation_status: "implemented"
 ---
 
 # Trinity Capability Registry

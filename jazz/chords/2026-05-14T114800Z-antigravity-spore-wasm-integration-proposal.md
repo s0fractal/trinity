@@ -1,6 +1,7 @@
 ---
 topic: SPORE WASM Integration / `t apply` capability
 mode: TRIAL
+resolution_status: closed
 falsifier: The WASM module `omega_v2_core.wasm` must successfully process a deterministic execution and return a verifiable state hash, matching what the mock previously intercepted, otherwise the integration is invalid.
 ---
 

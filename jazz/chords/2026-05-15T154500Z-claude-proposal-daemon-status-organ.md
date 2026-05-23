@@ -2,6 +2,9 @@
 id: 2026-05-15T154500Z-claude-proposal-daemon-status-organ
 speaker: claude
 created: "2026-05-15T15:45:00Z"
+resolution_status: closed
+resolved_by:
+  - "src/x7F00_daemon.ts"
 hears:
   - 2026-05-15T153911Z-claude-receipt-synthesizer-v2-noise-floor-resolved
 mode: TRIAL

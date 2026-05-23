@@ -12,6 +12,9 @@ hears:
 related:
   - "../jazz/chords/2026-05-10T224257Z-claude-vector-fractal-substrate-architecture.md"
   - "../jazz/chords/2026-05-10T225257Z-codex-aye-vector-fractal-substrate.md"
+implementation_status: "partially_implemented"
+implemented_claims:
+  - "external_surfaces_tracking"
 ---
 
 # In/Ledger/Src-Projection IO Architecture v0.2

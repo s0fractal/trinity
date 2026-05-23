@@ -3,6 +3,9 @@ type: "ContractDescriptor"
 version: "0.1"
 title: "Process Objects — repository records process AND state"
 status: "active"
+implementation_status: "partially_implemented"
+implemented_claims:
+  - "chord_decision_ledger"
 ---
 
 # PROCESS_OBJECTS.v0.1

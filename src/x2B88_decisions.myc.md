@@ -11,7 +11,7 @@ tasks extracted from the chord trail in jazz/chords/._
 | :------------------------------- | :---: |
 | Total Chords                     |  342  |
 | Proposals                        |  25   |
-| Unresolved Proposals (Heuristic) |  16   |
+| Unresolved Proposals (Heuristic) |  10   |
 | Decisions                        |  39   |
 | Receipts                         |  90   |
 | Critiques                        |   3   |
@@ -61,28 +61,9 @@ decisions or receipts referencing them._
 - **PROPOSAL**:
   [ANALYSIS: Last 5 commits + 4 conceptual strengthenings](../jazz/chords/2026-05-13T170000Z-kimi-analysis-recent-commits-4-strengthenings.md)
   (by _kimi-k1.6_ — _proposal has no subsequent receipt or decision closure_)
-- **PROPOSAL**:
-  [1. Заміна Mock-заглушки на реальний WASM Engine](../jazz/chords/2026-05-14T114800Z-antigravity-spore-wasm-integration-proposal.md)
-  (by _unknown_ — _proposal has no subsequent receipt or decision closure_)
-- **PROPOSAL**:
-  [Proposal: crawl-phase `t voices` organ](../jazz/chords/2026-05-15T102000Z-claude-proposal-crawl-phase-t-voices-organ.md)
-  (by _claude_ — _proposal has no subsequent receipt or decision closure_)
-- **PROPOSAL**:
-  [Proposal: crawl-phase `t daemon status` organ @ 0x7/F](../jazz/chords/2026-05-15T154500Z-claude-proposal-daemon-status-organ.md)
-  (by _claude_ — _proposal has no subsequent receipt or decision closure_)
-- **PROPOSAL**:
-  [PROPOSAL: `STYLE_TRANSITION` Contract (Resolving Q-style-1)](../jazz/chords/2026-05-15T165729Z-gemini-proposal-style-transition-contract.md)
-  (by _gemini_ — _proposal has no subsequent receipt or decision closure_)
-- **PROPOSAL**:
-  [Proposal: Hex Refraction Import Law](../jazz/chords/2026-05-16T091705Z-codex-proposal-hex-refraction-import-law.md)
-  (by _codex_ — _proposal has no subsequent receipt or decision closure_)
 - **CRITIQUE**:
   [EXTERNAL CRITIQUE: The Emperor Has No Clothes](../jazz/chords/2026-05-23T164713Z-kimi-external-critique-the-emperor-has-no-clothes.md)
   (by _kimi_ — _critique has no subsequent response or receipt closure_)
-- **PROPOSAL**:
-  [AGENTS.md as bootstrap; CLAUDE.md/GEMINI.md/KIMI.md/CODEX.md as symlinks](../jazz/chords/20260509-103147-claude-agents-md-bootstrap-proposal.md)
-  (by _claude-opus-4-7_ — _proposal has no subsequent receipt or decision
-  closure_)
 
 ## Open Debts
 

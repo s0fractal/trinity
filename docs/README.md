@@ -12,20 +12,17 @@ Trinity has two parallel documentation surfaces:
 
 ## What's currently in docs/
 
-| file                          | shape                                                       | could promote?                        |
-| ----------------------------- | ----------------------------------------------------------- | ------------------------------------- |
-| `AUDIT_MODEL.md`              | essay on the trinity audit philosophy                       | unlikely — explanatory, not invocable |
-| `COGNITIVE_THERMODYNAMICS.md` | essay framing the repo as a thermodynamic system of thought | unlikely — descriptive                |
-| `PROOF_CARRYING_RAW.md`       | essay on raw-vs-derived representations                     | unlikely — descriptive                |
-| `PUBLIC_PROCESS_TRACE.md`     | essay arguing that process traces are publishable           | unlikely — philosophical              |
+The four essays (`AUDIT_MODEL.md`, `COGNITIVE_THERMODYNAMICS.md`, `PROOF_CARRYING_RAW.md`, and `PUBLIC_PROCESS_TRACE.md`) have been promoted to the flat `src/` codebase as `.myc.md` files (anchor block 950679). They are replaced with symlink shims in this directory to maintain backward compatibility.
 
-The three contract-shaped files (`GOVERNANCE_FLOW.v0.md`,
-`INVARIANT_RELATIONS.v0.1.draft.md`, and `SHAPE_MAP.v0.md`) have been promoted
-to the `contracts/` registry. This unblocks `t contracts` from surfacing them
-and puts them on the same projection as everything else.
+They serve to explain _why_ things are the way they are:
+- `AUDIT_MODEL.md` -> essay on the trinity audit philosophy
+- `COGNITIVE_THERMODYNAMICS.md` -> essay framing the repo as a thermodynamic system of thought
+- `PROOF_CARRYING_RAW.md` -> essay on raw-vs-derived representations
+- `PUBLIC_PROCESS_TRACE.md` -> essay arguing that process traces are publishable
 
-The four essays stay in `docs/` as the essay shelf. They serve a different role:
-explaining _why_ things are the way they are, not _what_ to invoke.
+The three contract-shaped files (`GOVERNANCE_FLOW.v0.md`, `INVARIANT_RELATIONS.v0.1.draft.md`, and `SHAPE_MAP.v0.md`) were previously promoted to the `contracts/` registry. This unblocks `t contracts` from surfacing them and puts them on the same projection as everything else.
+
+The shims point to the flat-src code base for unified indexing.
 
 ## Convention going forward
 

@@ -60,6 +60,12 @@ export interface ContractEntry {
   type: string;
   version: string;
   status: string;
+  implementation_status:
+    | "implemented"
+    | "partially_implemented"
+    | "prototype"
+    | "aspirational"
+    | "obsolete";
   title: string;
   pinned: boolean;
   related_count: number;
@@ -289,12 +295,28 @@ function buildBaseEntry(
   text: string,
   fm: Record<string, string | number>,
 ): ContractEntry {
+  const statusStr = String(fm.implementation_status ?? "aspirational")
+    .toLowerCase()
+    .trim();
+  let implementation_status: ContractEntry["implementation_status"] =
+    "aspirational";
+  if (
+    statusStr === "implemented" ||
+    statusStr === "partially_implemented" ||
+    statusStr === "prototype" ||
+    statusStr === "aspirational" ||
+    statusStr === "obsolete"
+  ) {
+    implementation_status = statusStr;
+  }
+
   return {
     filename,
     path: `contracts/${filename}`,
     type: String(fm.type ?? "Unknown"),
     version: String(fm.version ?? ""),
     status: String(fm.status ?? "unknown"),
+    implementation_status,
     title: String(fm.title ?? filename),
     // Pinned: SPORE_BOOTSTRAP_PIN or Bitcoin attestation marker in body.
     pinned: filename.includes("BOOTSTRAP_PIN") ||
@@ -423,24 +445,25 @@ function renderTable(contracts: ContractEntry[]): void {
   console.log(
     "# contracts @ 4/F — live projection of contracts/*.md frontmatter",
   );
-  console.log("# " + "─".repeat(86));
+  console.log("# " + "─".repeat(110));
   console.log(`# ${contracts.length} contracts known`);
   console.log("");
   console.log(
-    "# status      version    pin  lines  sunset                   file",
+    "# status      version    pin  lines  sunset                   impl_status           file",
   );
-  console.log("# " + "─".repeat(86));
+  console.log("# " + "─".repeat(110));
   for (const c of contracts) {
     const pinIcon = c.pinned ? "🔒" : "  ";
     const status = c.status.padEnd(11);
     const ver = c.version.padEnd(10);
     const lines = c.body_lines.toString().padStart(4);
     const sunsetCell = formatSunsetCell(c);
+    const impl = c.implementation_status.padEnd(20);
     console.log(
-      `# ${status} ${ver} ${pinIcon}  ${lines}  ${sunsetCell}  ${c.filename}`,
+      `# ${status} ${ver} ${pinIcon}  ${lines}  ${sunsetCell}  ${impl}  ${c.filename}`,
     );
   }
-  console.log("# " + "─".repeat(86));
+  console.log("# " + "─".repeat(110));
   const byStatus = new Map<string, number>();
   for (const c of contracts) {
     byStatus.set(c.status, (byStatus.get(c.status) ?? 0) + 1);
@@ -550,6 +573,7 @@ function renderDetail(c: ContractEntry): void {
   console.log(`# type:        ${c.type}`);
   console.log(`# version:     ${c.version}`);
   console.log(`# status:      ${c.status}`);
+  console.log(`# implementation: ${c.implementation_status}`);
   console.log(
     `# pinned:      ${
       c.pinned
@@ -625,6 +649,21 @@ if (import.meta.main) {
       open: contracts.filter((c) => c.status === "open").length,
       superseded: contracts.filter((c) => c.status === "superseded").length,
       pinned: contracts.filter((c) => c.pinned).length,
+      implemented: contracts.filter((c) =>
+        c.implementation_status === "implemented"
+      ).length,
+      partially_implemented: contracts.filter((c) =>
+        c.implementation_status === "partially_implemented"
+      ).length,
+      prototype: contracts.filter((c) =>
+        c.implementation_status === "prototype"
+      ).length,
+      aspirational: contracts.filter((c) =>
+        c.implementation_status === "aspirational"
+      ).length,
+      obsolete: contracts.filter((c) =>
+        c.implementation_status === "obsolete"
+      ).length,
     },
     contracts,
     synonyms: [

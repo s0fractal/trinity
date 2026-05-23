@@ -1,0 +1,137 @@
+#!/usr/bin/env -S deno run --allow-all
+// src/x5910_compost_watchdog.ts — compost watchdog (archive sunset draft contracts)
+// position: 5/9 → action(5) × penultimate(9) = act-to-prevent-close / clear out stale drafts
+// hex_dipole: "26 4C 33 26 33 6C 26 26"
+//   axis 5 action_decision +0.85 (PRIMARY: decision/action to archive/compost)
+//   axis 1 first_penultimate +0.60 (secondary: hex 9 = axis 1 neg pole; sunset clearance)
+//   bucket 5/9: primary axis action (5), bucket 5 ← MATCH on axis 5
+//               secondary '9' → axis 1 penultimate-pole ← PAIR-MATCH
+//   measured by claude-opus-4-7-1m (antigravity alignment)
+// lifecycle_phase: 1
+// placement_policy: axis
+//
+// compost-watchdog — archive/compost past-sunset draft contracts to contracts/compost/
+//
+// Usage:
+//   t compost-watchdog [--dry-run]
+//
+// Glossary words: compost-watchdog, compost, компост, watchdog, compost_watchdog
+
+import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { listContracts, ContractEntry } from "./x4F00_contracts.ts";
+
+const HERE = dirname(fromFileUrl(import.meta.url));
+const ROOT = dirname(HERE);
+const CONTRACTS_DIR = join(ROOT, "contracts");
+const COMPOST_DIR = join(CONTRACTS_DIR, "compost");
+const CHORDS_DIR = join(ROOT, "jazz", "chords");
+
+function getBlockHeight(): number {
+  const epoch = Math.floor(Date.now() / 1000);
+  return 950000 + Math.floor((epoch - 1779148800) / 600);
+}
+
+async function runCommand(args: string[]): Promise<boolean> {
+  const proc = new Deno.Command(args[0], {
+    args: args.slice(1),
+    stdout: "inherit",
+    stderr: "inherit",
+  });
+  const out = await proc.output();
+  return out.code === 0;
+}
+
+async function main() {
+  const args = Deno.args;
+  const dryRun = args.includes("--dry-run");
+
+  const contracts = await listContracts();
+  const eligible = contracts.filter((c) => {
+    // Safety Assertions: Double check status constraints
+    if (c.status !== "draft") return false;
+    if (c.sunset_status !== "past-sunset") return false;
+    if (c.pinned) return false;
+    if (c.load_bearing) return false;
+    return true;
+  });
+
+  const composted: string[] = [];
+  const errors: string[] = [];
+
+  if (eligible.length > 0) {
+    if (!dryRun) {
+      await Deno.mkdir(COMPOST_DIR, { recursive: true });
+      for (const c of eligible) {
+        const srcPath = join(CONTRACTS_DIR, c.filename);
+        const destPath = join(COMPOST_DIR, c.filename);
+        try {
+          await Deno.rename(srcPath, destPath);
+          composted.push(c.filename);
+        } catch (e) {
+          errors.push(`Failed to move ${c.filename}: ${(e as Error).message}`);
+        }
+      }
+
+      if (composted.length > 0) {
+        // Generate receipt chord
+        const block = getBlockHeight();
+        const chordFilename = `x2600_${block}_antigravity_compost_receipt.md`;
+        const chordPath = join(CHORDS_DIR, chordFilename);
+
+        const chordContent = `---
+type: chord.receipt
+voice: antigravity
+mode: receipt
+created: ${new Date().toISOString()}
+bitcoin_block_height: ${block}
+notes: automatically archived past-sunset draft contracts to clean active namespace
+topic: compost-watchdog-cleanup
+stance: COMPOST
+closes: []
+references:
+${composted.map((f) => `  - contracts/${f}`).join("\n")}
+---
+
+# Compost Receipt: Retired past-sunset draft contracts
+
+The Compost Watchdog (\`x5910_compost_watchdog.ts\`) automatically archived the following expired draft contracts:
+
+${eligible
+  .filter((c) => composted.includes(c.filename))
+  .map((c) => `- \`contracts/${c.filename}\` (age: ${c.age_days} days, cowitness count: ${c.cowitness_count})`)
+  .join("\n")}
+
+These files have been moved to the \`contracts/compost/\` directory to clear them from active cataloging. They can be restored at any time by moving them back or using \`git restore\`.
+`;
+        await Deno.writeTextFile(chordPath, chordContent);
+
+        // Regenerate roadmap and skills
+        await runCommand(["deno", "run", "--allow-all", join(HERE, "x8D00_roadmap_gen.ts"), "--stable"]);
+        await runCommand(["deno", "run", "--allow-all", join(HERE, "x8C00_skill_gen.ts"), "--stable"]);
+      }
+    } else {
+      for (const c of eligible) {
+        composted.push(c.filename);
+      }
+    }
+  }
+
+  const result = {
+    type: "compost_watchdog",
+    position: "5/91",
+    action: "compost",
+    dry_run: dryRun,
+    note: dryRun
+      ? `dry run: would compost ${composted.length} draft contracts`
+      : `archived ${composted.length} past-sunset draft contracts to contracts/compost/`,
+    composted_count: composted.length,
+    composted_files: composted,
+    errors: errors.length > 0 ? errors : undefined,
+  };
+
+  console.log(JSON.stringify(result, null, 2));
+}
+
+if (import.meta.main) {
+  await main();
+}

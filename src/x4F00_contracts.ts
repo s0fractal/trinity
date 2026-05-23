@@ -54,7 +54,7 @@ const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
 const CONTRACTS_DIR = join(ROOT, "contracts");
 
-interface ContractEntry {
+export interface ContractEntry {
   filename: string;
   path: string;
   type: string;
@@ -68,6 +68,7 @@ interface ContractEntry {
   // surface draft age + cowitness extension without auto-action.
   age_days: number | null;
   cowitness_count: number;
+  contract_refs_count: number;
   cowitness_recent_days: number | null; // newest cowitness, days ago
   load_bearing: boolean;
   sunset_status:
@@ -78,6 +79,7 @@ interface ContractEntry {
     | "approaching-sunset"
     | "past-sunset"
     | "active" // not a draft; sunset n/a
+    | "orphan"
     | "unknown";
 }
 
@@ -225,6 +227,27 @@ async function loadCowitnessCache(): Promise<
   return _cowitnessCache;
 }
 
+// Cache: contract-reference counts from other contracts.
+let _contractRefsCache: Map<string, number> | null = null;
+async function loadContractRefsCache(): Promise<Map<string, number>> {
+  if (_contractRefsCache) return _contractRefsCache;
+  _contractRefsCache = await tryOr(async () => {
+    const out = new Map<string, number>();
+    for await (const entry of Deno.readDir(CONTRACTS_DIR)) {
+      if (!entry.isFile || !entry.name.endsWith(".md") || entry.name === "README.md") continue;
+      const text = await Deno.readTextFile(join(CONTRACTS_DIR, entry.name));
+      const matches = text.matchAll(/(?:contracts\/)?([A-Za-z0-9_.-]+\.v[0-9.]+(?:\.draft)?\.md)/g);
+      for (const m of matches) {
+        if (m[1] !== entry.name) {
+          out.set(m[1], (out.get(m[1]) ?? 0) + 1);
+        }
+      }
+    }
+    return out;
+  }, new Map<string, number>());
+  return _contractRefsCache;
+}
+
 function classifySunset(
   contract: {
     status: string;
@@ -232,11 +255,16 @@ function classifySunset(
     age_days: number | null;
     cowitness_recent_days: number | null;
     load_bearing: boolean;
+    cowitness_count: number;
+    contract_refs_count: number;
   },
 ): ContractEntry["sunset_status"] {
   if (contract.status !== "draft") return "active";
   if (contract.pinned) return "pinned";
   if (contract.load_bearing) return "load-bearing";
+  if (contract.cowitness_count === 0 && contract.contract_refs_count === 0) {
+    return "orphan";
+  }
   if (contract.age_days === null) return "unknown";
   // Cowitness within last 14 days extends sunset.
   if (
@@ -270,6 +298,7 @@ function buildBaseEntry(
     body_lines: text.split("\n").length,
     age_days: null,
     cowitness_count: 0,
+    contract_refs_count: 0,
     cowitness_recent_days: null,
     load_bearing: false,
     sunset_status: "unknown",
@@ -297,6 +326,16 @@ function enrichWithCowitness(
     ...entry,
     cowitness_count: c.count,
     cowitness_recent_days: c.latestDaysAgo,
+  };
+}
+
+function enrichWithContractRefs(
+  entry: ContractEntry,
+  refCount: number | undefined,
+): ContractEntry {
+  return {
+    ...entry,
+    contract_refs_count: refCount ?? 0,
   };
 }
 
@@ -331,18 +370,20 @@ async function readContract(filename: string): Promise<ContractEntry | null> {
   const caches = await parallel({
     addedAt: () => loadAddedAtCache(),
     cowit: () => loadCowitnessCache(),
+    contractRefs: () => loadContractRefsCache(),
   });
 
   return pipe(
     buildBaseEntry(filename, text, fm),
     (entry) => enrichWithAge(entry, caches.addedAt.get(filename)),
     (entry) => enrichWithCowitness(entry, caches.cowit.get(filename)),
+    (entry) => enrichWithContractRefs(entry, caches.contractRefs.get(filename)),
     (entry) => enrichWithLoadBearing(entry, text, fm),
     setSunsetStatus,
   );
 }
 
-async function listContracts(): Promise<ContractEntry[]> {
+export async function listContracts(): Promise<ContractEntry[]> {
   const out: ContractEntry[] = [];
   for await (const entry of Deno.readDir(CONTRACTS_DIR)) {
     if (!entry.isFile || !entry.name.endsWith(".md")) continue;
@@ -413,6 +454,8 @@ function formatSunsetCell(c: ContractEntry): string {
       return "pinned".padEnd(24);
     case "load-bearing":
       return "load-bearing".padEnd(24);
+    case "orphan":
+      return "orphan (no references)".padEnd(24);
     case "extended": {
       const ext = c.cowitness_recent_days !== null
         ? `cowit ${c.cowitness_recent_days}d ago`
@@ -434,36 +477,55 @@ function formatSunsetCell(c: ContractEntry): string {
 
 function renderSunsetSummary(contracts: ContractEntry[]): void {
   const drafts = contracts.filter((c) => c.status === "draft");
-  if (drafts.length === 0) return;
-  const byStatus = new Map<string, number>();
-  for (const c of drafts) {
-    byStatus.set(c.sunset_status, (byStatus.get(c.sunset_status) ?? 0) + 1);
-  }
-  const parts = [
-    "load-bearing",
-    "extended",
-    "fresh",
-    "approaching-sunset",
-    "past-sunset",
-  ]
-    .filter((k) => (byStatus.get(k) ?? 0) > 0)
-    .map((k) => `${k}: ${byStatus.get(k)}`);
-  if (parts.length > 0) {
-    console.log(
-      `# draft sunset (${drafts.length} drafts): ${parts.join(", ")}`,
-    );
-  }
-  const pastOrNearing = drafts.filter((c) =>
-    c.sunset_status === "approaching-sunset" ||
-    c.sunset_status === "past-sunset"
+  const activeOrphans = contracts.filter(
+    (c) => c.status === "active" && c.cowitness_count === 0 && c.contract_refs_count === 0
   );
-  if (pastOrNearing.length > 0) {
-    console.log(`#   ⚠ ${pastOrNearing.length} draft(s) need attention:`);
-    for (const c of pastOrNearing) {
-      const reason = c.cowitness_count === 0
-        ? `no cowitness in ${c.age_days}d`
-        : `last cowitness ${c.cowitness_recent_days}d ago`;
-      console.log(`#     ${c.filename}: ${c.sunset_status} (${reason})`);
+
+  if (drafts.length > 0) {
+    const byStatus = new Map<string, number>();
+    for (const c of drafts) {
+      byStatus.set(c.sunset_status, (byStatus.get(c.sunset_status) ?? 0) + 1);
+    }
+    const parts = [
+      "load-bearing",
+      "extended",
+      "fresh",
+      "approaching-sunset",
+      "past-sunset",
+      "orphan",
+    ]
+      .filter((k) => (byStatus.get(k) ?? 0) > 0)
+      .map((k) => `${k}: ${byStatus.get(k)}`);
+    if (parts.length > 0) {
+      console.log(
+        `# draft sunset (${drafts.length} drafts): ${parts.join(", ")}`,
+      );
+    }
+    const pastOrNearingOrOrphan = drafts.filter((c) =>
+      c.sunset_status === "approaching-sunset" ||
+      c.sunset_status === "past-sunset" ||
+      c.sunset_status === "orphan"
+    );
+    if (pastOrNearingOrOrphan.length > 0) {
+      console.log(`#   ⚠ ${pastOrNearingOrOrphan.length} draft(s) need attention:`);
+      for (const c of pastOrNearingOrOrphan) {
+        let reason = "";
+        if (c.sunset_status === "orphan") {
+          reason = "0 chord and 0 contract references";
+        } else {
+          reason = c.cowitness_count === 0
+            ? `no cowitness in ${c.age_days}d`
+            : `last cowitness ${c.cowitness_recent_days}d ago`;
+        }
+        console.log(`#     ${c.filename}: ${c.sunset_status} (${reason})`);
+      }
+    }
+  }
+
+  if (activeOrphans.length > 0) {
+    console.log(`#   ⚠ ${activeOrphans.length} active contract(s) are unreferenced (orphans):`);
+    for (const c of activeOrphans) {
+      console.log(`#     ${c.filename} (0 references in chords, 0 in contracts)`);
     }
   }
 }

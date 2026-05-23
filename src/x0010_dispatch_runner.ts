@@ -54,6 +54,7 @@ const POSITION_TO_FILE: Record<string, string> = {
   "5/3": "x5300_recommend_to_chord.ts",
   "5/4": "x5400_validate_schemas.ts",
   "5/9": "x5900_nay.ts",
+  "5/91": "x5910_compost_watchdog.ts",
   "5/A": "x5A00_fresh.ts",
   "5/C": "x5C00_cross_verify.ts",
   "5/D": "x5D00_apply_codeicide.ts",

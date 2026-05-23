@@ -57,6 +57,7 @@
 {"11":"26 00 59 40 6C 33 33 40","00":"5","02":["capabilities","affordances","can-do","спроможності","що-можу"],"04":"4/A","09":"foundation+mirror-pair = live affordance projection from glossary (per codex 2026-05-13T210236Z)"}
 {"00":"5","02":["contracts","agreements","schemas","pacts","контракти","угоди","схеми","пакти"],"04":"4/F","09":"foundation+frontier-pair = stabilized schemas (live projection of contracts/*.md frontmatter)","11":"26 26 40 33 6C 26 4C 59"}
 {"00":"5","02":["recipes","workflows","templates","sequences","рецепти","потоки-роботи","шаблони","послідовності"],"04":"3/C","09":"triangle+container-pair = workflow composition templates (live projection)","11":"19 00 40 66 33 40 40 33"}
+{"00":"5","02":["compost-watchdog","compost","компост","watchdog","compost_watchdog"],"04":"5/91","09":"action+penultimate = archive expired draft contracts","11":"26 4C 33 26 33 6C 26 26"}
 {"00":"6","02":["trinity","тринити","trinity-substrate","коренева"],"03":"5/A","04":".","05":"deno check 0x5/A.ts","09":"type-check verify executable"}
 {"00":"6","02":["omega","омега","ω"],"03":"5/A","04":"omega","05":"cargo check","09":"compile check (verify placeholder)"}
 {"00":"6","02":["liquid","ліквід","рідина"],"03":"5/A","04":"liquid","05":"deno check 00_core/liquid_pipe.ts","09":"type-check core (verify placeholder)"}

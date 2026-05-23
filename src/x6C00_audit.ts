@@ -344,16 +344,63 @@ async function inspectFile(
   };
 }
 
+async function findOrphans(files: string[]): Promise<string[]> {
+  const contents = new Map<string, string>();
+  for (const rel of files) {
+    try {
+      contents.set(rel, await Deno.readTextFile(join(ROOT, rel)));
+    } catch { /* ignore unreadable */ }
+  }
+
+  const registered = new Set<string>();
+  try {
+    const dispatchRunnerText = await Deno.readTextFile(join(ROOT, "src", "x0010_dispatch_runner.ts"));
+    const matches = dispatchRunnerText.matchAll(/"(x[0-9A-Fa-f]{4}_[^"]+\.ts)"/g);
+    for (const m of matches) {
+      registered.add(`src/${m[1]}`);
+    }
+  } catch { /* ignore */ }
+
+  const orphans: string[] = [];
+  for (const rel of files) {
+    const base = rel.split("/").pop() ?? "";
+    if (
+      base === "x0100_dispatch.ts" ||
+      base === "x0010_dispatch_runner.ts" ||
+      base === "x0011_glossary_parser.ts"
+    ) {
+      continue;
+    }
+
+    if (registered.has(rel)) {
+      continue;
+    }
+
+    let referenced = false;
+    for (const [otherRel, text] of contents.entries()) {
+      if (otherRel === rel) continue;
+      if (text.includes(base)) {
+        referenced = true;
+        break;
+      }
+    }
+
+    if (!referenced) {
+      orphans.push(rel);
+    }
+  }
+  return orphans.sort();
+}
+
 function renderReport(
   reports: FileReport[],
   opts: { quiet: boolean; mismatchOnly: boolean },
+  orphans: string[],
 ): void {
   const matches = reports.filter((r) => r.match === "match").length;
   const mismatches = reports.filter((r) => r.match === "mismatch").length;
   const deferred = reports.filter((r) => r.match === "deferred").length;
   const noDipole = reports.filter((r) => r.match === "no_dipole").length;
-  // Split no_dipole into honest sub-categories per Kimi's Vector 3 + claude/antigravity tweaks:
-  // dispatchable organ missing dipole = real gap; library/utility missing dipole = policy-OK.
   const noDipoleOrganGap =
     reports.filter((r) => r.match === "no_dipole" && r.is_dispatchable).length;
   const noDipoleLibraryOk = noDipole - noDipoleOrganGap;
@@ -391,6 +438,14 @@ function renderReport(
   console.log(
     `total: ${reports.length}  match: ${matches}  mismatch: ${mismatches}  deferred: ${deferred}  no_dipole: ${noDipole} (organ-gap: ${noDipoleOrganGap}, library-ok: ${noDipoleLibraryOk})  malformed: ${malformed}`,
   );
+
+  if (!opts.quiet && orphans.length > 0) {
+    console.log("-".repeat(86));
+    console.log(`# ⚠ ${orphans.length} orphan organs found (unreferenced and unregistered):`);
+    for (const o of orphans) {
+      console.log(`#     ${o}`);
+    }
+  }
 }
 
 async function main(): Promise<void> {
@@ -404,6 +459,8 @@ async function main(): Promise<void> {
   for (const rel of files) {
     reports.push(await inspectFile(join(ROOT, rel), rel));
   }
+
+  const orphans = await findOrphans(files);
 
   if (json) {
     console.log(JSON.stringify(
@@ -424,14 +481,16 @@ async function main(): Promise<void> {
             r.match === "no_dipole" && !r.is_dispatchable
           ).length,
           malformed: reports.filter((r) => r.match === "malformed").length,
+          orphans_count: orphans.length,
         },
+        orphans,
         reports,
       },
       null,
       2,
     ));
   } else {
-    renderReport(reports, { quiet, mismatchOnly });
+    renderReport(reports, { quiet, mismatchOnly }, orphans);
   }
 
   const mismatchCount = reports.filter((r) => r.match === "mismatch").length;

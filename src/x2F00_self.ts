@@ -39,6 +39,12 @@ import {
   join,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { parallel, tryOr } from "./x0030_compose.ts";
+import {
+  chooseNextMigration,
+  collectExternalSurfaces,
+  getGitTrackedFiles,
+  summarizeExternalSurfaces,
+} from "./x8F10_external_surfaces_core.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
@@ -93,16 +99,30 @@ async function scanVoices(): Promise<{ total: number; identities: string[] }> {
   return { total: identities.length, identities };
 }
 
-async function scanChords(): Promise<{ total: number; newForm: number }> {
+async function scanChords(): Promise<{
+  tracked: number;
+  local: number;
+  total: number;
+  newForm: number;
+}> {
   const dir = join(ROOT, "jazz", "chords");
   let total = 0;
   let newForm = 0;
+  let tracked = 0;
+  let local = 0;
+  const gitTracked = await getGitTrackedFiles();
   for await (const entry of Deno.readDir(dir)) {
     if (!entry.isFile || !entry.name.endsWith(".md")) continue;
     total++;
     if (/^x[0-9A-Fa-f]{4}_\d+_/.test(entry.name)) newForm++;
+    const relPath = `jazz/chords/${entry.name}`;
+    if (gitTracked.has(relPath)) {
+      tracked++;
+    } else {
+      local++;
+    }
   }
-  return { total, newForm };
+  return { tracked, local, total, newForm };
 }
 
 async function scanProbes(): Promise<{ total: number }> {
@@ -113,6 +133,27 @@ async function scanProbes(): Promise<{ total: number }> {
     total++;
   }
   return { total };
+}
+
+async function scanRegistry(): Promise<{
+  counts: Record<string, number>;
+  nextMigration: string;
+}> {
+  try {
+    const entries = await collectExternalSurfaces({
+      stable: true,
+      includeVolatile: false,
+    });
+    const counts = summarizeExternalSurfaces(entries);
+    const printCounts: Record<string, number> = {};
+    for (const [k, v] of Object.entries(counts)) {
+      printCounts[k.replace(/_/g, " ")] = v;
+    }
+    const nextMigration = chooseNextMigration(entries);
+    return { counts: printCounts, nextMigration };
+  } catch {
+    return { counts: {}, nextMigration: "none" };
+  }
 }
 
 async function countSubmoduleOrgans(sub: string): Promise<number> {
@@ -170,6 +211,7 @@ if (import.meta.main) {
     voices: scanVoices,
     chords: scanChords,
     probes: scanProbes,
+    registry: scanRegistry,
     liquidOrgans: () => countSubmoduleOrgans("liquid"),
     omegaOrgans: () => countSubmoduleOrgans("omega"),
     mycOrgans: () => countSubmoduleOrgans("myc"),
@@ -197,6 +239,7 @@ if (import.meta.main) {
     chords: data.chords,
     probes: data.probes,
     contracts: contracts?.summary ?? null,
+    external_surfaces: data.registry,
     submodules: {
       liquid: {
         health: submodules.liquid?.summary?.overall ?? "missing",
@@ -236,9 +279,7 @@ if (import.meta.main) {
       })`,
     );
     console.log(
-      `# chords:      ${data.chords.total} total, ${data.chords.newForm} flat-src form (${
-        ((data.chords.newForm / data.chords.total) * 100).toFixed(1)
-      }%)`,
+      `# chords:      ${data.chords.tracked} tracked, ${data.chords.local} local, ${data.chords.newForm} flat-src form`,
     );
     console.log(`# probes:      ${data.probes.total} experimental dirs`);
     if (contracts?.summary) {
@@ -246,6 +287,23 @@ if (import.meta.main) {
         `# contracts:   ${contracts.summary.total} total (active:${contracts.summary.active} draft:${contracts.summary.draft} pinned:${contracts.summary.pinned})`,
       );
     }
+    const reg = data.registry as {
+      counts: Record<string, number>;
+      nextMigration: string;
+    };
+    console.log(`# external surfaces:`);
+    console.log(
+      `#   compatibility ABI:   ${reg.counts["compatibility abi"] ?? 0}`,
+    );
+    console.log(
+      `#   docs compatibility:  ${reg.counts["compatibility"] ?? 0}`,
+    );
+    console.log(
+      `#   experimental probes: ${reg.counts["experimental"] ?? 0}`,
+    );
+    console.log(`#   live chords:         ${reg.counts["live chord"] ?? 0}`);
+    console.log(`#   runtime cache:       ignored`);
+    console.log(`#   next migration:      ${reg.nextMigration}`);
     console.log(`# submodules:`);
     console.log(
       `#   liquid   ${receipt.submodules.liquid.health} (${receipt.submodules.liquid.organs} organs)`,

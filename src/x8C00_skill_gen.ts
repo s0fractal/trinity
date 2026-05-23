@@ -44,6 +44,7 @@ import {
   join,
   relative,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { formatGeneratedFile } from "./x0012_generated_format.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const SRC = HERE;
@@ -878,10 +879,13 @@ async function main(argv: string[]) {
       bucketReceipts,
     );
     await Deno.writeTextFile(path, content + "\n");
+    await formatGeneratedFile(path);
+    const sidecarPath = join(OUT, `x${bucket}888_skill.manifest.json`);
     await Deno.writeTextFile(
-      join(OUT, `x${bucket}888_skill.manifest.json`),
+      sidecarPath,
       canonicalManifest(bucketSources) + "\n",
     );
+    await formatGeneratedFile(sidecarPath);
 
     const unc = bucketOrgans.filter((o) =>
       !o.skill_safe && !o.invalid_skill_safe
@@ -928,14 +932,19 @@ async function main(argv: string[]) {
       subsPath,
       renderSubstrateSkill(buckets, glossary, subsReceipts) + "\n",
     );
+    await formatGeneratedFile(subsPath);
+    const bootstrapPath = join(OUT, "x8CF0_skills_bootstrap.myc.md");
     await Deno.writeTextFile(
-      join(OUT, "x8CF0_skills_bootstrap.myc.md"),
+      bootstrapPath,
       renderSkillsBootstrap(buckets, glossary, subsReceipts) + "\n",
     );
+    await formatGeneratedFile(bootstrapPath);
+    const globalSidecarPath = join(OUT, "x8888_skills.manifest.json");
     await Deno.writeTextFile(
-      join(OUT, "x8888_skills.manifest.json"),
+      globalSidecarPath,
       canonicalManifest(allSources) + "\n",
     );
+    await formatGeneratedFile(globalSidecarPath);
     console.log(`[write] x8888_skills.myc.md (substrate-wide)`);
     console.log(
       `[write] x8CF0_skills_bootstrap.myc.md (root SKILLS.md target)`,

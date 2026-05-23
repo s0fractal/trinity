@@ -57,6 +57,7 @@ import {
   join,
   relative,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { formatGeneratedFile } from "./x0012_generated_format.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const TRINITY_ROOT = dirname(HERE);
@@ -89,6 +90,7 @@ const REFERENCE_EPOCH_SEC = 1779148800; // 2026-05-19T00:00:00Z
 function blockHeightToEpoch(b: number): number {
   return REFERENCE_EPOCH_SEC + (b - REFERENCE_BLOCK) * 600;
 }
+
 function wallclockToEpoch(ts: string): number {
   const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2})(\d{2})(\d{2})Z$/.exec(ts);
   if (!m) return 0;
@@ -1025,10 +1027,13 @@ async function main(argv: string[]) {
         globalReceipts,
       ) + "\n",
     );
+    await formatGeneratedFile(path);
+    const sidecarPath = join(OUT, "x8D00_roadmap.manifest.json");
     await Deno.writeTextFile(
-      join(OUT, "x8D00_roadmap.manifest.json"),
+      sidecarPath,
       canonicalManifest(allSources) + "\n",
     );
+    await formatGeneratedFile(sidecarPath);
     console.log(
       `[write] x8D00_roadmap.myc.md (substrate; ${horizons.length} horizons, ${chords.length} chords, ${projections.length} substrate projections)`,
     );
@@ -1056,10 +1061,16 @@ async function main(argv: string[]) {
       path,
       renderVoiceRoadmap(voice, vChords, horizons, closures, receipts) + "\n",
     );
+    await formatGeneratedFile(path);
+    const voiceSidecarPath = join(
+      OUT,
+      `x8D00_${voice.key}_roadmap.manifest.json`,
+    );
     await Deno.writeTextFile(
-      join(OUT, `x8D00_${voice.key}_roadmap.manifest.json`),
+      voiceSidecarPath,
       canonicalManifest(voiceSources) + "\n",
     );
+    await formatGeneratedFile(voiceSidecarPath);
     console.log(
       `[write] x8D00_${voice.key}_roadmap.myc.md (${vChords.length} chords)`,
     );

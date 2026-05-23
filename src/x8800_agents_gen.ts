@@ -50,6 +50,7 @@ import {
   join,
   relative,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { formatGeneratedFile } from "./x0012_generated_format.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const SRC = HERE; // organs live alongside this file in src/
@@ -661,14 +662,16 @@ async function main(argv: string[]) {
     const statePath = join(OUT, `x${bucket}888_state.myc.md`);
     const content = renderBucketState(bucket, bucketOrgans, bucketReceipts);
     await Deno.writeTextFile(statePath, content + "\n");
-    const bucketBytes = new TextEncoder().encode(content + "\n");
-    bucketHashes.set(bucket, `sha256:${await sha256Hex(bucketBytes)}`);
+    await formatGeneratedFile(statePath);
+    const formattedBytes = await Deno.readFile(statePath);
+    bucketHashes.set(bucket, `sha256:${await sha256Hex(formattedBytes)}`);
 
     const sidecarPath = join(OUT, `x${bucket}888_state.manifest.json`);
     await Deno.writeTextFile(
       sidecarPath,
       canonicalManifest(bucketOrgans) + "\n",
     );
+    await formatGeneratedFile(sidecarPath);
     written += 2;
 
     const invalidCount = bucketOrgans.filter((o) => o.invalid_maturity).length;
@@ -702,16 +705,19 @@ async function main(argv: string[]) {
       agentsReceipts,
     );
     await Deno.writeTextFile(agentsPath, agentsContent + "\n");
+    await formatGeneratedFile(agentsPath);
     const bootstrapPath = join(OUT, "x88F0_agents_bootstrap.myc.md");
     await Deno.writeTextFile(
       bootstrapPath,
       renderAgentsBootstrap(buckets, voices, agentsReceipts) + "\n",
     );
+    await formatGeneratedFile(bootstrapPath);
     const globalSidecarPath = join(OUT, "x8888_agents.manifest.json");
     await Deno.writeTextFile(
       globalSidecarPath,
       canonicalManifest(organs) + "\n",
     );
+    await formatGeneratedFile(globalSidecarPath);
     console.log(
       `[write] x8888_agents.myc.md (${buckets.size} buckets indexed)`,
     );

@@ -46,6 +46,7 @@ import {
   join,
   relative,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { formatGeneratedFile } from "./x0012_generated_format.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const TRINITY_ROOT = dirname(HERE);
@@ -579,10 +580,13 @@ async function main(argv: string[]) {
       path,
       renderVoiceMemory(voice, vChords, receipts) + "\n",
     );
+    await formatGeneratedFile(path);
+    const sidecarPath = join(OUT, `x8888_${voice.key}_memory.manifest.json`);
     await Deno.writeTextFile(
-      join(OUT, `x8888_${voice.key}_memory.manifest.json`),
+      sidecarPath,
       canonicalManifest(sources) + "\n",
     );
+    await formatGeneratedFile(sidecarPath);
     console.log(
       `[write] x8888_${voice.key}_memory.myc.md (${vChords.length} chords)`,
     );
@@ -605,10 +609,13 @@ async function main(argv: string[]) {
       statePath,
       renderVoicesState(voices, chordsByVoice, receipts) + "\n",
     );
+    await formatGeneratedFile(statePath);
+    const globalSidecarPath = join(OUT, "x2888_voices_state.manifest.json");
     await Deno.writeTextFile(
-      join(OUT, "x2888_voices_state.manifest.json"),
+      globalSidecarPath,
       canonicalManifest(allSources) + "\n",
     );
+    await formatGeneratedFile(globalSidecarPath);
     console.log(
       `[write] x2888_voices_state.myc.md (${voices.length} voices indexed)`,
     );

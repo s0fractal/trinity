@@ -56,6 +56,7 @@ import {
   fromFileUrl,
   join,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { formatGeneratedFile } from "./x0012_generated_format.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const TRINITY_ROOT = dirname(HERE);
@@ -609,10 +610,13 @@ async function main(argv: string[]) {
       source_files: allSources.length,
     }) + "\n",
   );
+  await formatGeneratedFile(indexPath);
+  const sidecarPath = join(OUT, "x8E00_probes.manifest.json");
   await Deno.writeTextFile(
-    join(OUT, "x8E00_probes.manifest.json"),
+    sidecarPath,
     canonicalManifest(allSources) + "\n",
   );
+  await formatGeneratedFile(sidecarPath);
 
   console.log(
     `[write] x8E00_probes.myc.md (${probes.length} probes, ${referencedChordSources.length} chord refs)`,

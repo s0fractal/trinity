@@ -6,13 +6,15 @@
 
 # SKILLS
 
-This root skill brief is generated from `src/x0001_glossary.ndjson` and organ headers. To refresh it:
+This root skill brief is generated from `src/x0001_glossary.ndjson` and organ
+headers. To refresh it:
 
 ```sh
 ./t skill --stable
 ```
 
-Detailed generated operating briefs live at `src/x8888_skills.myc.md` and `src/x?888_skill.myc.md`.
+Detailed generated operating briefs live at `src/x8888_skills.myc.md` and
+`src/x?888_skill.myc.md`.
 
 ## First Commands
 
@@ -27,96 +29,189 @@ Detailed generated operating briefs live at `src/x8888_skills.myc.md` and `src/x
 
 ### Bucket 0
 
-- `./t t` — foundation+byte01 = runtime entry (0/01; aliases: runtime, exec, ст, рантайм)
-- `./t help` — foundation+frontier-edge = boundary info (0/0F; aliases: info, describe, show, допомога, інфо, опиши, покажи)
-- `./t all` — foundation+trinity = map signal across all substrates (0/03; aliases: every, all-of, map, все, всі, все-разом, мап)
-- `./t each` — foundation+cardinal = sequential composition primitive (0/04; aliases: sequence, for, compose, кожен, послідовно, для, композиція)
-- `./t pipe` — foundation+action = conditional sequential composition with short-circuit (0/05; aliases: flow, conditional-compose, chain, труба, потік, умовна-композиція, ланцюг)
-- `./t try` — foundation+serpent = attempt with graceful fallback (0/06; aliases: attempt, recover, fallback, спроба, відновлення, запасний)
-- `./t cond` — foundation+threshold = conditional branch primitive (0/07; aliases: branch, if-then-else, умова, гілка, якщо-тоді-інакше)
-- `./t join` — foundation+infinity = parallel execution with result collection (0/08; aliases: zip, parallel-collect, bundle, об'єднання, пакет, паралельний-збір)
-- `./t repeat` — foundation+completion = iterate n times and collect (0/09; aliases: loop, iterate, stress, повторення, цикл, ітерація)
-- `./t tap` — foundation+apex = side-effect decorator (0/0A; aliases: touch, side-effect, observer, дотик, спостереження, побічний-ефект)
-- `./t until` — foundation+edge = retry until success or exhausted (0/0B; aliases: retry, loop-until-success, повторювати, доки-не-успіх)
-- `./t any` — foundation+cycle = parallel race, return first success (0/0C; aliases: race, first-success, speculate, будь-який, перший-успіх, перегонки)
+- `./t t` — foundation+byte01 = runtime entry (0/01; aliases: runtime, exec, ст,
+  рантайм)
+- `./t help` — foundation+frontier-edge = boundary info (0/0F; aliases: info,
+  describe, show, допомога, інфо, опиши, покажи)
+- `./t all` — foundation+trinity = map signal across all substrates (0/03;
+  aliases: every, all-of, map, все, всі, все-разом, мап)
+- `./t each` — foundation+cardinal = sequential composition primitive (0/04;
+  aliases: sequence, for, compose, кожен, послідовно, для, композиція)
+- `./t pipe` — foundation+action = conditional sequential composition with
+  short-circuit (0/05; aliases: flow, conditional-compose, chain, труба, потік,
+  умовна-композиція, ланцюг)
+- `./t try` — foundation+serpent = attempt with graceful fallback (0/06;
+  aliases: attempt, recover, fallback, спроба, відновлення, запасний)
+- `./t cond` — foundation+threshold = conditional branch primitive (0/07;
+  aliases: branch, if-then-else, умова, гілка, якщо-тоді-інакше)
+- `./t join` — foundation+infinity = parallel execution with result collection
+  (0/08; aliases: zip, parallel-collect, bundle, об'єднання, пакет,
+  паралельний-збір)
+- `./t repeat` — foundation+completion = iterate n times and collect (0/09;
+  aliases: loop, iterate, stress, повторення, цикл, ітерація)
+- `./t tap` — foundation+apex = side-effect decorator (0/0A; aliases: touch,
+  side-effect, observer, дотик, спостереження, побічний-ефект)
+- `./t until` — foundation+edge = retry until success or exhausted (0/0B;
+  aliases: retry, loop-until-success, повторювати, доки-не-успіх)
+- `./t any` — foundation+cycle = parallel race, return first success (0/0C;
+  aliases: race, first-success, speculate, будь-який, перший-успіх, перегонки)
 
 ### Bucket 2
 
-- `./t status` — mirror+harmony-pair = composite self-reflection across organs (2/E; aliases: state, how-are-you, статус, стан, як, ти-як)
-- `./t self` — mirror+frontier-pair = composed substrate self-introspection (status + organs + voices + chords + probes + contracts) (2/F; aliases: я, себе, substrate-self, substrate)
-- `./t ecosystem` — mirror+mirror = substrate federation mirror; reads SUBSTRATE_SELF_ABI.v0.1 slots from each substrate (omega/liquid/myc) in parallel and renders unified dashboard (2/2; aliases: federation, all-substrates, екосистема, ecosystem-mirror)
-- `./t cognition_snapshot` — mirror+foundation = capture cognitive state (2/4; aliases: cognition-snapshot, зліпок-когніції)
-- `./t cognition_delta` — mirror+harmony = measure cognitive delta (2/6; aliases: cognition-delta, дельта-когніції)
-- `./t cognition_field` — mirror+action = evaluate cognitive field (2/5; aliases: cognition-field, поле-когніції)
-- `./t cognition_phase_report` — mirror+build-pair = report cognitive phases (2/C; aliases: cognition-phase-report, звіт-фаз-когніції)
-- `./t voices` — mirror+void = synthetic voice profiles from chord history (2/0; aliases: voice, голоси, голос)
-- `./t self-portrait` — mirror+triangle = stable reflection of self_declared vs historical comfort field (divergence as signal) (2/3; aliases: portrait, declare, самопортрет, портрет)
-- `./t inbox` — mirror+decision = chords addressed_to voice that voice has not heard in any response chord (2/D; aliases: pending, backlog, очікує, скринька)
+- `./t status` — mirror+harmony-pair = composite self-reflection across organs
+  (2/E; aliases: state, how-are-you, статус, стан, як, ти-як)
+- `./t self` — mirror+frontier-pair = composed substrate self-introspection
+  (status + organs + voices + chords + probes + contracts) (2/F; aliases: я,
+  себе, substrate-self, substrate)
+- `./t ecosystem` — mirror+mirror = substrate federation mirror; reads
+  SUBSTRATE_SELF_ABI.v0.1 slots from each substrate (omega/liquid/myc) in
+  parallel and renders unified dashboard (2/2; aliases: federation,
+  all-substrates, екосистема, ecosystem-mirror)
+- `./t cognition_snapshot` — mirror+foundation = capture cognitive state (2/4;
+  aliases: cognition-snapshot, зліпок-когніції)
+- `./t cognition_delta` — mirror+harmony = measure cognitive delta (2/6;
+  aliases: cognition-delta, дельта-когніції)
+- `./t cognition_field` — mirror+action = evaluate cognitive field (2/5;
+  aliases: cognition-field, поле-когніції)
+- `./t cognition_phase_report` — mirror+build-pair = report cognitive phases
+  (2/C; aliases: cognition-phase-report, звіт-фаз-когніції)
+- `./t voices` — mirror+void = synthetic voice profiles from chord history (2/0;
+  aliases: voice, голоси, голос)
+- `./t self-portrait` — mirror+triangle = stable reflection of self_declared vs
+  historical comfort field (divergence as signal) (2/3; aliases: portrait,
+  declare, самопортрет, портрет)
+- `./t inbox` — mirror+decision = chords addressed_to voice that voice has not
+  heard in any response chord (2/D; aliases: pending, backlog, очікує, скринька)
 
 ### Bucket 3
 
-- `./t balance` — triangle+mirror-pair = dipole-driven rebalance proposals (read-only) (3/A; aliases: suggest, recommend, rebalance, баланс, балансуй, запропонуй, порадь)
-- `./t recipes` — triangle+container-pair = workflow composition templates (live projection) (3/C; aliases: workflows, templates, sequences, рецепти, потоки-роботи, шаблони, послідовності)
-- `./t chord_play` — triangle+action = parse and visualize chord structure (3/5; aliases: chord-play, програти-акорд)
+- `./t balance` — triangle+mirror-pair = dipole-driven rebalance proposals
+  (read-only) (3/A; aliases: suggest, recommend, rebalance, баланс, балансуй,
+  запропонуй, порадь)
+- `./t recipes` — triangle+container-pair = workflow composition templates (live
+  projection) (3/C; aliases: workflows, templates, sequences, рецепти,
+  потоки-роботи, шаблони, послідовності)
+- `./t chord_play` — triangle+action = parse and visualize chord structure (3/5;
+  aliases: chord-play, програти-акорд)
 
 ### Bucket 4
 
-- `./t chord` — foundation+void = chord scaffolding + dipole math toolkit (4/0; aliases: scaffold, frontmatter, акорд, скаффолд, каркас)
-- `./t capabilities` — foundation+mirror-pair = live affordance projection from glossary (per codex 2026-05-13T210236Z) (4/A; aliases: affordances, can-do, спроможності, що-можу)
-- `./t contracts` — foundation+frontier-pair = stabilized schemas (live projection of contracts/*.md frontmatter) (4/F; aliases: agreements, schemas, pacts, контракти, угоди, схеми, пакти)
-- `./t propose` — foundation+decision = emit reversible-archival proposal as envelope-wrapped CodeicideProposal body (4/D; aliases: codeicide, archive-proposal, propose-codeicide, пропозиція, кодесайд, запропонувати)
-- `./t snapshot` — foundation+edge = canonical envelope of trinity meta-ledger state (deterministic identity for same state) (4/E; aliases: identity, substrate-snapshot, знімок, ідентичність)
-- `./t style` — foundation+first = active music style per VOICES.v0.1 spectrum (4/1; aliases: стиль, music-style)
+- `./t chord` — foundation+void = chord scaffolding + dipole math toolkit (4/0;
+  aliases: scaffold, frontmatter, акорд, скаффолд, каркас)
+- `./t capabilities` — foundation+mirror-pair = live affordance projection from
+  glossary (per codex 2026-05-13T210236Z) (4/A; aliases: affordances, can-do,
+  спроможності, що-можу)
+- `./t contracts` — foundation+frontier-pair = stabilized schemas (live
+  projection of contracts/*.md frontmatter) (4/F; aliases: agreements, schemas,
+  pacts, контракти, угоди, схеми, пакти)
+- `./t propose` — foundation+decision = emit reversible-archival proposal as
+  envelope-wrapped CodeicideProposal body (4/D; aliases: codeicide,
+  archive-proposal, propose-codeicide, пропозиція, кодесайд, запропонувати)
+- `./t snapshot` — foundation+edge = canonical envelope of trinity meta-ledger
+  state (deterministic identity for same state) (4/E; aliases: identity,
+  substrate-snapshot, знімок, ідентичність)
+- `./t style` — foundation+first = active music style per VOICES.v0.1 spectrum
+  (4/1; aliases: стиль, music-style)
 
 ### Bucket 5
 
-- `./t verify` — action+apex = fresh verification (5/A; aliases: init, fresh-action, check, перевірити, ініціалізувати, свіжа-дія, створити)
-- `./t block` — action+void = pure fetch (5/0; aliases: height, timestamp, блок, висота, мітка)
-- `./t cross-verify` — action+container = compatibility wrapper over all 5/C map+join (5/C; aliases: verify-all, test-all, перехресна-перевірка, перевірити-все)
-- `./t compost-watchdog` — action+penultimate = archive expired draft contracts (5/91; aliases: compost, компост, watchdog, compost_watchdog)
-- `./t apply` — action+frontier = spore apply deterministic primitive (5/F; aliases: застосувати, виконати)
-- `./t apply-codeicide` — action+decision = reversibly archive target after AYE verdict; produces RECEIPT.json + RESURRECT.sh (5/D; aliases: archive-apply, execute-codeicide, застосувати-кодесайд, заархівувати)
-- `./t validate_schemas` — action+foundation = validate schemas (5/4; aliases: validate, валідація)
-- `./t cognition_recommend` — action+mirror = suggest recommendations (5/2; aliases: cognition-recommend, рекомендація)
-- `./t cognition_recommend_receipt` — action+harmony-pair = create recommend receipt (5/E; aliases: cognition-recommend-receipt, чек-рекомендації)
-- `./t recommend_to_chord` — action+triangle = convert recommendation to chord (5/3; aliases: recommend-to-chord, до-акорду)
-- `./t nay` — action+penultimate = emit CodeicideNay envelope to block a codeicide proposal (1-of-5 NAY terminates per contract) (5/9; aliases: reject, refuse, ні, ня, відмова, заперечити)
+- `./t verify` — action+apex = fresh verification (5/A; aliases: init,
+  fresh-action, check, перевірити, ініціалізувати, свіжа-дія, створити)
+- `./t block` — action+void = pure fetch (5/0; aliases: height, timestamp, блок,
+  висота, мітка)
+- `./t cross-verify` — action+container = compatibility wrapper over all 5/C
+  map+join (5/C; aliases: verify-all, test-all, перехресна-перевірка,
+  перевірити-все)
+- `./t compost-watchdog` — action+penultimate = archive expired draft contracts
+  (5/91; aliases: compost, компост, watchdog, compost_watchdog)
+- `./t apply` — action+frontier = spore apply deterministic primitive (5/F;
+  aliases: застосувати, виконати)
+- `./t apply-codeicide` — action+decision = reversibly archive target after AYE
+  verdict; produces RECEIPT.json + RESURRECT.sh (5/D; aliases: archive-apply,
+  execute-codeicide, застосувати-кодесайд, заархівувати)
+- `./t validate_schemas` — action+foundation = validate schemas (5/4; aliases:
+  validate, валідація)
+- `./t cognition_recommend` — action+mirror = suggest recommendations (5/2;
+  aliases: cognition-recommend, рекомендація)
+- `./t cognition_recommend_receipt` — action+harmony-pair = create recommend
+  receipt (5/E; aliases: cognition-recommend-receipt, чек-рекомендації)
+- `./t recommend_to_chord` — action+triangle = convert recommendation to chord
+  (5/3; aliases: recommend-to-chord, до-акорду)
+- `./t nay` — action+penultimate = emit CodeicideNay envelope to block a
+  codeicide proposal (1-of-5 NAY terminates per contract) (5/9; aliases: reject,
+  refuse, ні, ня, відмова, заперечити)
 
 ### Bucket 6
 
-- `./t health` — harmony+apex = fresh health check (6/A; aliases: harmony, здоров'я, гармонія)
-- `./t audit` — harmony+container-pair = bucket vs dipole self-introspection (6/C; aliases: аудит, place-check, перевірка-розміщення, introspect, інтроспекція, place)
-- `./t court` — harmony+completion-pair = multi-witness Substrate Court verdict (see probes/substrate-court-v0/) (6/E; aliases: verdict, witness-verdict, суд, вердикт)
-- `./t cowitness` — harmony+decision-pole = append oracle signature to envelope witness_chain (6/D; aliases: co-witness, sign, attest, cпів-свідок, підписати, засвідчити)
-- `./t ontology_coverage` — harmony+build = ontology coverage scanner (6/3; aliases: ontology, покриття)
-- `./t gravity` — harmony+void-mirror = edge tension report from filename coordinates (no AST) (6/02; aliases: tension, drift, гравітація, натяг)
+- `./t health` — harmony+apex = fresh health check (6/A; aliases: harmony,
+  здоров'я, гармонія)
+- `./t audit` — harmony+container-pair = bucket vs dipole self-introspection
+  (6/C; aliases: аудит, place-check, перевірка-розміщення, introspect,
+  інтроспекція, place)
+- `./t court` — harmony+completion-pair = multi-witness Substrate Court verdict
+  (see probes/substrate-court-v0/) (6/E; aliases: verdict, witness-verdict, суд,
+  вердикт)
+- `./t cowitness` — harmony+decision-pole = append oracle signature to envelope
+  witness_chain (6/D; aliases: co-witness, sign, attest, cпів-свідок, підписати,
+  засвідчити)
+- `./t ontology_coverage` — harmony+build = ontology coverage scanner (6/3;
+  aliases: ontology, покриття)
+- `./t gravity` — harmony+void-mirror = edge tension report from filename
+  coordinates (no AST) (6/02; aliases: tension, drift, гравітація, натяг)
 
 ### Bucket 7
 
-- `./t anchor-prep` — completion+edge = inscription-prep over N envelopes; Merkle root + inclusion proofs (see probes/envelope-bitcoin-anchor-v0/) (7/E; aliases: anchor, inscribe-prep, merkle-root, якір, інскрипція, корінь)
-- `./t verdict` — completion+decision = court over codeicide proposal + cowitness chain (AYE/NAY/PENDING) (7/D; aliases: codeicide-verdict, adjudicate, вердикт, рішення)
-- `./t grind` — completion+void = topological hex-dipole nonce grinding (7/0; aliases: grind-nonce, знайти-нонс)
-- `./t daemon` — completion+action = runtime state surface (lock file, invocation log) (7/F; aliases: демон)
+- `./t anchor-prep` — completion+edge = inscription-prep over N envelopes;
+  Merkle root + inclusion proofs (see probes/envelope-bitcoin-anchor-v0/) (7/E;
+  aliases: anchor, inscribe-prep, merkle-root, якір, інскрипція, корінь)
+- `./t verdict` — completion+decision = court over codeicide proposal +
+  cowitness chain (AYE/NAY/PENDING) (7/D; aliases: codeicide-verdict,
+  adjudicate, вердикт, рішення)
+- `./t grind` — completion+void = topological hex-dipole nonce grinding (7/0;
+  aliases: grind-nonce, знайти-нонс)
+- `./t daemon` — completion+action = runtime state surface (lock file,
+  invocation log) (7/F; aliases: демон)
 
 ### Bucket 8
 
-- `./t agents` — cache+cache = substrate self-brief generator (regenerates xN888_state.myc.md + x8888_agents.myc.md from organ headers) (8/8; aliases: agents-brief, self-brief, бриф, агенти)
-- `./t skill` — cache+chaos = operating brief generator (regenerates xN888_skill.myc.md + x8888_skills.myc.md from organ headers + glossary + embedded policy) (8/C; aliases: skills, operating-brief, навик, навички)
-- `./t memory` — cache+apex = voice recall projection (regenerates x8888_<voice>_memory.myc.md + x2888_voices_state.myc.md from tracked voices + tracked chords) (8/A; aliases: recall, спогади, memory-brief, пам'ять)
-- `./t roadmap` — cache+decision = frontier tension generator (regenerates x8D00_roadmap.myc.md + x8D00_<voice>_roadmap.myc.md from organ horizons + tracked chords + voices) (8/D; aliases: frontier, дорожня-карта, roadmap-brief, фронтир)
-- `./t probes` — cache+harmony-pair = probe index generator (regenerates x8E00_probes.myc.md from probes/ subdirs + graduation banners + filename inference) (8/E; aliases: experiments, trials, probe-index, експерименти)
-- `./t external-surfaces` — cache+decision-pair = external surfaces registry (generates x8F88_external_surfaces.myc.md indexing contracts/, docs/, probes/, jazz/, state/, and compost) (8/F; aliases: surfaces, поверхні, external_surfaces)
+- `./t agents` — cache+cache = substrate self-brief generator (regenerates
+  xN888_state.myc.md + x8888_agents.myc.md from organ headers) (8/8; aliases:
+  agents-brief, self-brief, бриф, агенти)
+- `./t skill` — cache+chaos = operating brief generator (regenerates
+  xN888_skill.myc.md + x8888_skills.myc.md from organ headers + glossary +
+  embedded policy) (8/C; aliases: skills, operating-brief, навик, навички)
+- `./t memory` — cache+apex = voice recall projection (regenerates
+  x8888_<voice>_memory.myc.md + x2888_voices_state.myc.md from tracked voices +
+  tracked chords) (8/A; aliases: recall, спогади, memory-brief, пам'ять)
+- `./t roadmap` — cache+decision = frontier tension generator (regenerates
+  x8D00_roadmap.myc.md + x8D00_<voice>_roadmap.myc.md from organ horizons +
+  tracked chords + voices) (8/D; aliases: frontier, дорожня-карта,
+  roadmap-brief, фронтир)
+- `./t probes` — cache+harmony-pair = probe index generator (regenerates
+  x8E00_probes.myc.md from probes/ subdirs + graduation banners + filename
+  inference) (8/E; aliases: experiments, trials, probe-index, експерименти)
+- `./t external-surfaces` — cache+decision-pair = external surfaces registry
+  (generates x8F88_external_surfaces.myc.md indexing contracts/, docs/, probes/,
+  jazz/, state/, and compost) (8/F; aliases: surfaces, поверхні,
+  external_surfaces)
 
 ## Operating Rules
 
-- Generated briefs are projections. Change source organs, glossary, contracts, or voice records, then regenerate.
-- Read before write: `./t status`, `./t audit`, and relevant `src/x?888_*.myc.md`.
-- Cross-bucket or governance-shaped moves should leave a chord with falsifier in `jazz/chords/`.
+- Generated briefs are projections. Change source organs, glossary, contracts,
+  or voice records, then regenerate.
+- Read before write: `./t status`, `./t audit`, and relevant
+  `src/x?888_*.myc.md`.
+- Cross-bucket or governance-shaped moves should leave a chord with falsifier in
+  `jazz/chords/`.
 - Destructive git/file operations require explicit architect instruction.
-- Do not treat ignored generated caches as canonical; tracked `src/xNNNN_*.myc.*` sources and root bootstrap targets are the ABI.
+- Do not treat ignored generated caches as canonical; tracked
+  `src/xNNNN_*.myc.*` sources and root bootstrap targets are the ABI.
 
 ## Falsifiers
 
-- A command appears in `./t help` but not here after `./t skill --stable` → glossary parsing is incomplete.
-- A command here routes to no organ → glossary position or dispatch mapping drifted.
-- Fresh checkout has a broken `SKILLS.md` symlink → root ABI failed; restore a tracked shim.
+- A command appears in `./t help` but not here after `./t skill --stable` →
+  glossary parsing is incomplete.
+- A command here routes to no organ → glossary position or dispatch mapping
+  drifted.
+- Fresh checkout has a broken `SKILLS.md` symlink → root ABI failed; restore a
+  tracked shim.

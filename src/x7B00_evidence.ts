@@ -30,16 +30,24 @@ const ROOT = dirname(HERE);
 
 interface ClaimEvidence {
   claim: string;
-  status:
+  claim_status:
     | "implemented"
     | "partially_implemented"
     | "prototype"
     | "aspirational"
     | "disproven";
+  contract_status:
+    | "implemented"
+    | "partially_implemented"
+    | "prototype"
+    | "aspirational"
+    | "obsolete"
+    | null;
   contract: string | null;
   command: string | null;
   test: string | null;
   evidence: string | null;
+  evidence_source: "live" | "cached" | "declared" | "hardcoded_v0" | "missing";
 }
 
 async function exists(path: string): Promise<boolean> {
@@ -131,35 +139,42 @@ async function main() {
   const claims_matrix: ClaimEvidence[] = [
     {
       claim: "Substrate Health Check",
-      status: "implemented",
+      claim_status: "implemented",
+      contract_status: null,
       contract: "contracts/SUBSTRATE_HEALTH.v0.1.md",
       command: "./t status",
       test: "deno fmt --check && ./t status",
       evidence: `trinity status: ${
         statusData?.substrate_health?.overall ?? "unknown"
       }`,
+      evidence_source: "live",
     },
     {
       claim: "External Surfaces Tracking",
-      status: "implemented",
+      claim_status: "implemented",
+      contract_status: null,
       contract: "contracts/IN_LEDGER_SRC_PROJECTION.v0.2.md",
       command: "./t external-surfaces",
       test: "./t external-surfaces --json",
       evidence:
         `tracked: ${surfaces.length} items (${compCount} ABI, ${docsCount} docs, ${probeCount} probes, ${chordCount} chords)`,
+      evidence_source: "live",
     },
     {
       claim: "Chord Decision Ledger",
-      status: "implemented",
+      claim_status: "implemented",
+      contract_status: null,
       contract: "contracts/PROCESS_OBJECTS.v0.1.md",
       command: "./t decisions",
       test: "./t decisions --json",
       evidence:
         `${decSummary.total_chords} chords parsed: ${decSummary.proposals} proposals, ${decSummary.decisions} decisions, ${decSummary.receipts} receipts, ${decSummary.critiques} critiques`,
+      evidence_source: "live",
     },
     {
       claim: "Ecosystem Submodule Federation",
-      status: "partially_implemented",
+      claim_status: "partially_implemented",
+      contract_status: null,
       contract: "contracts/TRINITY_CAPABILITIES.v0.1.md",
       command: "git submodule status",
       test: "deno task submodules:status",
@@ -168,61 +183,85 @@ async function main() {
       }, omega: ${
         statusData?.submodules?.omega?.summary?.overall ?? "missing"
       }, myc: ${statusData?.submodules?.myc?.summary?.overall ?? "missing"}`,
+      evidence_source: "live",
     },
     {
       claim: "SPORE Runtime Execution",
-      status: "prototype",
+      claim_status: "prototype",
+      contract_status: null,
       contract: "contracts/SPORE.v0.draft.md",
       command: "./t apply",
       test: "none",
       evidence:
         "SPORE simulation active (no production WASM verification runner)",
+      evidence_source: "live",
     },
     {
       claim: "AI Voice Citizenship & Daemon",
-      status: "prototype",
+      claim_status: "prototype",
+      contract_status: null,
       contract: "contracts/VOICE_DAEMON.v0.draft.md",
       command: "./t daemon",
       test: "none",
       evidence:
         `${invocations} daemon invocation records, autonomous voice triggers: 0 (manual loop)`,
+      evidence_source: "live",
     },
     {
       claim: "Bitcoin History Anchoring",
-      status: "aspirational",
+      claim_status: "aspirational",
+      contract_status: null,
       contract: "contracts/SPORE_BOOTSTRAP_PIN.v0.md",
       command: "./t anchor-prep",
       test: "none",
       evidence: `bitcoin_block: ${
         statusData?.substrate_health?.clock?.bitcoin_block ?? "null"
       } (no active transaction RPC)`,
+      evidence_source: "live",
     },
     {
       claim: "Free Energy Principle (FEP) Minimization",
-      status: "aspirational",
+      claim_status: "aspirational",
+      contract_status: null,
       contract: "contracts/FREE_ENERGY_PRINCIPLE.v0.1.md",
       command: "none",
       test: "none",
       evidence:
         "F_total calculation: null (no active variational entropy phase coherence)",
+      evidence_source: "hardcoded_v0",
     },
     {
       claim: "Kuramoto Phase Coherence",
-      status: "aspirational",
+      claim_status: "aspirational",
+      contract_status: null,
       contract: "contracts/HEX_DIPOLE_SEED.v0.draft.md",
       command: "none",
       test: "none",
       evidence: "phase_coherence: null",
+      evidence_source: "hardcoded_v0",
     },
     {
       claim: "Voice comfort-field divergence",
-      status: "prototype",
+      claim_status: "prototype",
+      contract_status: null,
       contract: "contracts/VOICES.v0.1.md",
       command: "./t self-portrait",
       test: "none",
       evidence: "divergence angle: 16.4° (astrological model coordinates)",
+      evidence_source: "live",
     },
   ];
+
+  // Dynamically resolve contract status
+  for (const c of claims_matrix) {
+    if (c.contract) {
+      const filename = c.contract.split("/").pop();
+      const match = contractsList.find((x) => x.filename === filename);
+      if (match) {
+        c.contract_status = match.implementation_status;
+      }
+    }
+  }
 
   const payload = {
     type: "evidence",
@@ -312,10 +351,10 @@ async function main() {
     console.log("## Claims-to-Evidence Matrix");
     console.log("");
     console.log(
-      "| Core Claim | Status | Contract Specification | Verification Command | Live Evidence / Value |",
+      "| Core Claim | Claim Status | Contract | Contract Status | Command | Source | Live Evidence |",
     );
     console.log(
-      "| :--- | :--- | :--- | :--- | :--- |",
+      "| :--- | :--- | :--- | :--- | :--- | :--- | :--- |",
     );
     for (const c of claims_matrix) {
       const contractCell = c.contract
@@ -324,8 +363,11 @@ async function main() {
       const cmdCell = c.command && c.command !== "none"
         ? `\`${c.command}\``
         : "*none*";
+      const contractStatusCell = c.contract_status
+        ? `**${c.contract_status.toUpperCase()}**`
+        : "*none*";
       console.log(
-        `| ${c.claim} | **${c.status.toUpperCase()}** | ${contractCell} | ${cmdCell} | ${c.evidence} |`,
+        `| ${c.claim} | **${c.claim_status.toUpperCase()}** | ${contractCell} | ${contractStatusCell} | ${cmdCell} | \`${c.evidence_source}\` | ${c.evidence} |`,
       );
     }
     console.log("─".repeat(80));

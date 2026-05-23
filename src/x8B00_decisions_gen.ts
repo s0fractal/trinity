@@ -39,6 +39,11 @@ export interface DecisionEntry {
   expected_after_running: string[];
   open_debts: string[];
   closed_items: string[];
+  has_falsifier: boolean;
+  has_suggested_commands: boolean;
+  has_receipt: boolean;
+  is_unresolved: boolean;
+  resolution_hint: string | null;
 }
 
 // Minimal YAML frontmatter parser — extracts only the flat scalar fields we need.
@@ -254,7 +259,9 @@ function extractClosesHash(
   return null;
 }
 
-async function scanChordFile(filename: string): Promise<DecisionEntry | null> {
+async function scanChordFile(
+  filename: string,
+): Promise<(DecisionEntry & { mentions: string[] }) | null> {
   try {
     const path = join(CHORDS_DIR, filename);
     const text = await Deno.readTextFile(path);
@@ -311,6 +318,24 @@ async function scanChordFile(filename: string): Promise<DecisionEntry | null> {
       }
     }
 
+    const mentions: string[] = [];
+    const mdMatches = text.matchAll(/([a-zA-Z0-9_T.-]+\.md)/g);
+    for (const m of mdMatches) {
+      const matchName = m[1];
+      if (!mentions.includes(matchName)) {
+        mentions.push(matchName);
+      }
+    }
+    const wordMatches = text.matchAll(
+      /\b(\d{4}-\d{2}-\d{2}T\d{6}Z|\d{8}-\d{6}|x\d{4}_\d+_[a-z0-9_-]+)\b/g,
+    );
+    for (const m of wordMatches) {
+      const matchWord = m[1];
+      if (!mentions.includes(matchWord)) {
+        mentions.push(matchWord);
+      }
+    }
+
     return {
       filename,
       id: String(fm.id ?? filename.replace(/\.md$/, "")),
@@ -326,6 +351,12 @@ async function scanChordFile(filename: string): Promise<DecisionEntry | null> {
       expected_after_running,
       open_debts,
       closed_items,
+      has_falsifier: falsifiers.length > 0,
+      has_suggested_commands: suggested_commands.length > 0,
+      has_receipt: false,
+      is_unresolved: false,
+      resolution_hint: null,
+      mentions,
     };
   } catch {
     return null;
@@ -336,9 +367,11 @@ export async function collectDecisions(stable: boolean): Promise<{
   summary: {
     total_chords: number;
     proposals: number;
+    unresolved_proposals: number;
     decisions: number;
     receipts: number;
     critiques: number;
+    unresolved_critiques: number;
     others: number;
     open_debts: number;
     closed_items: number;
@@ -346,7 +379,7 @@ export async function collectDecisions(stable: boolean): Promise<{
   entries: DecisionEntry[];
 }> {
   const trackedFiles = await getGitTrackedFiles();
-  const entries: DecisionEntry[] = [];
+  const rawEntries: (DecisionEntry & { mentions: string[] })[] = [];
 
   for await (const entry of Deno.readDir(CHORDS_DIR)) {
     if (!entry.isFile || !entry.name.endsWith(".md")) continue;
@@ -358,18 +391,111 @@ export async function collectDecisions(stable: boolean): Promise<{
 
     const record = await scanChordFile(entry.name);
     if (record) {
-      entries.push(record);
+      rawEntries.push(record);
     }
   }
 
-  entries.sort((a, b) => a.filename.localeCompare(b.filename));
+  rawEntries.sort((a, b) => a.filename.localeCompare(b.filename));
+
+  const entries: DecisionEntry[] = rawEntries.map((raw, idx) => {
+    // Find later decisions or receipts that close or mention this entry
+    const laterClosures = rawEntries.slice(idx + 1).filter(
+      (other) => other.category === "decision" || other.category === "receipt",
+    );
+
+    const has_receipt = laterClosures.some(
+      (other) =>
+        other.closes_hash === raw.id ||
+        other.closes_hash === raw.filename ||
+        (raw.closes_hash !== null && other.closes_hash === raw.closes_hash) ||
+        other.mentions.includes(raw.filename) ||
+        other.mentions.includes(raw.id + ".md") ||
+        other.mentions.includes(raw.id),
+    );
+
+    let is_unresolved = false;
+    let resolution_hint: string | null = null;
+
+    if (raw.category === "proposal") {
+      is_unresolved = !has_receipt;
+      if (is_unresolved) {
+        resolution_hint =
+          "proposal has no subsequent receipt or decision closure";
+      }
+    } else if (raw.category === "critique") {
+      // For critiques, closure could be a later proposal, decision, or receipt
+      const laterCritiqueClosures = rawEntries.slice(idx + 1).filter(
+        (other) =>
+          other.category === "decision" ||
+          other.category === "receipt" ||
+          other.category === "proposal",
+      );
+      const critique_resolved = laterCritiqueClosures.some(
+        (other) =>
+          other.closes_hash === raw.id ||
+          other.closes_hash === raw.filename ||
+          other.mentions.includes(raw.filename) ||
+          other.mentions.includes(raw.id + ".md") ||
+          other.mentions.includes(raw.id),
+      );
+      is_unresolved = !critique_resolved;
+      if (is_unresolved) {
+        resolution_hint =
+          "critique has no subsequent response or receipt closure";
+      }
+    }
+
+    if (!resolution_hint) {
+      if (
+        raw.falsifiers.length > 0 && raw.suggested_commands.length === 0 &&
+        raw.expected_after_running.length === 0
+      ) {
+        resolution_hint =
+          "weak: falsifier exists but has no suggested commands or expected output";
+      } else if (
+        raw.category === "receipt" && raw.suggested_commands.length > 0 &&
+        raw.expected_after_running.length > 0
+      ) {
+        resolution_hint =
+          "stronger: receipt has both execution commands and expected outputs";
+      }
+    }
+
+    return {
+      filename: raw.filename,
+      id: raw.id,
+      category: raw.category,
+      title: raw.title,
+      author: raw.author,
+      timestamp: raw.timestamp,
+      claim_kind: raw.claim_kind,
+      receipt: raw.receipt,
+      closes_hash: raw.closes_hash,
+      falsifiers: raw.falsifiers,
+      suggested_commands: raw.suggested_commands,
+      expected_after_running: raw.expected_after_running,
+      open_debts: raw.open_debts,
+      closed_items: raw.closed_items,
+      has_falsifier: raw.falsifiers.length > 0,
+      has_suggested_commands: raw.suggested_commands.length > 0,
+      has_receipt,
+      is_unresolved,
+      resolution_hint,
+    };
+  });
 
   const summary = {
     total_chords: entries.length,
     proposals: entries.filter((e) => e.category === "proposal").length,
+    unresolved_proposals: entries.filter(
+      (e) => e.category === "proposal" && e.is_unresolved,
+    ).length,
     decisions: entries.filter((e) => e.category === "decision").length,
     receipts: entries.filter((e) => e.category === "receipt").length,
     critiques: entries.filter((e) => e.category === "critique").length,
+    unresolved_critiques: entries.filter(
+      (e) => e.category === "critique" && e.is_unresolved,
+    ).length,
     others: entries.filter((e) => e.category === "other").length,
     open_debts: entries.reduce((acc, e) => acc + e.open_debts.length, 0),
     closed_items: entries.reduce((acc, e) => acc + e.closed_items.length, 0),
@@ -417,13 +543,38 @@ async function main() {
   lines.push(`| :--- | :---: |`);
   lines.push(`| Total Chords | ${summary.total_chords} |`);
   lines.push(`| Proposals | ${summary.proposals} |`);
+  lines.push(
+    `| Unresolved Proposals (Heuristic) | ${summary.unresolved_proposals} |`,
+  );
   lines.push(`| Decisions | ${summary.decisions} |`);
   lines.push(`| Receipts | ${summary.receipts} |`);
   lines.push(`| Critiques | ${summary.critiques} |`);
+  lines.push(
+    `| Unresolved Critiques (Heuristic) | ${summary.unresolved_critiques} |`,
+  );
   lines.push(`| Other Observations | ${summary.others} |`);
   lines.push(`| Open Debts (TODO/DEBT) | ${summary.open_debts} |`);
   lines.push(`| Closed Items | ${summary.closed_items} |`);
   lines.push(``);
+
+  const unresolved = entries.filter((e) => e.is_unresolved);
+  lines.push(`## Unresolved Items (Heuristic Accountability)`);
+  lines.push(``);
+  lines.push(
+    `*Heuristic list of active proposals and critiques that do not have subsequent decisions or receipts referencing them.*`,
+  );
+  lines.push(``);
+  if (unresolved.length === 0) {
+    lines.push(`*No unresolved proposals or critiques detected.*`);
+    lines.push(``);
+  } else {
+    for (const e of unresolved) {
+      lines.push(
+        `- **${e.category.toUpperCase()}**: [${e.title}](../jazz/chords/${e.filename}) (by *${e.author}* — *${e.resolution_hint}*)`,
+      );
+    }
+    lines.push(``);
+  }
 
   const allOpenDebts: { task: string; chord: string }[] = [];
   for (const e of entries) {

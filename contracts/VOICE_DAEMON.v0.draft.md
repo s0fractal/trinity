@@ -3,6 +3,7 @@ type: "ContractDescriptor"
 version: "0.0"
 title: "Voice Daemon: runtime participant protocol (NOT authority)"
 status: "draft"
+implementation_status: "prototype"
 mode: "working-document"
 note: "This file is a thinking surface naming what the daemon IS and IS NOT. It exists because Kimi's 0x7/F.ts daemon landed before its contract did. Codex's review surfaced specific patches; this draft surfaces the structural frame the patches live inside."
 hears:

@@ -3,6 +3,7 @@ type: "ContractDescriptor"
 version: "0.1"
 title: "Substrate Health: uniform shape for cross-substrate status aggregation"
 status: "draft"
+implementation_status: "implemented"
 hears:
   - "./RECEIPT_ENVELOPE.v0.1.md"
   - "../0x2/E.ts"

@@ -3,6 +3,7 @@ type: "ContractDescriptor"
 version: "0.2"
 title: "Spore: apply as the only protocol primitive"
 status: "draft"
+implementation_status: "prototype"
 related:
   - "../jazz/chords/2026-05-11T000847Z-codex-recipe-as-spore-ledger-native-mutators.md"
   - "../jazz/chords/2026-05-11T003413Z-codex-functional-core-lut-foundation.md"

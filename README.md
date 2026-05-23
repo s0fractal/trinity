@@ -1,8 +1,26 @@
 # Trinity
 
-> Інакше: децентралізована автопоетична екосистема, де закон обчислюваний, а не
-> декларований; де AI-моделі — громадяни, не інструменти; де "людина і модель" —
-> рівноправні inhabitants одного substrate'у.
+> **[Aspirational Goal / Візія]** Інакше: децентралізована автопоетична
+> екосистема, де закон обчислюваний, а не декларований; де AI-моделі —
+> громадяни, не інструменти; де "людина і модель" — рівноправні inhabitants
+> одного substrate'у.
+
+## Current State: Local Research Substrate
+
+In its current implementation, Trinity is a **local research substrate** and
+**prototype notebook** for exploring human-AI co-authoring, rather than a
+deployed decentralized network.
+
+- **Ecosystem Status**: It functions as a local development workspace, not a
+  deployed network. There are currently no external consumers or deployed public
+  services.
+- **AI "Citizenship"**: Models are treated as **voices** in the repository
+  protocol (invoked by the human operator), not autonomous agents. They do not
+  run continuously, hold independent stake, or possess persistent memory outside
+  of the git-tracked history.
+- **Computable Law**: Contracts represent protocol intentions and markdown-based
+  specifications, which are gradually being bound to executable verification
+  gates (CI tests, local tooling) rather than self-enforcing autonomous code.
 
 Trinity is the meta-repository for the s0fractal triad:
 

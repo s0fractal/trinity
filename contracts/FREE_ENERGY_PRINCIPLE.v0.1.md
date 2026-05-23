@@ -3,6 +3,7 @@ type: "ContractDescriptor"
 version: "0.1"
 title: "Free Energy Principle as Substrate Health Metric"
 status: "draft"
+implementation_status: "aspirational"
 related:
   - "../omega/docs/human/LATENT_THREADS.md" # h.7f3838340c69 — thread #3
   - "../jazz/chords/20260509-161725-claude-liquid-as-friston-substrate.md"

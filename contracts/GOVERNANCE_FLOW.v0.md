@@ -3,6 +3,7 @@ type: "ContractDescriptor"
 version: "0"
 title: "Governance Flow: reversible archive governance flow"
 status: "active"
+implementation_status: "partially_implemented"
 maturity: "mature"
 hears:
   - "./CODEICIDE_PROPOSAL.v0.1.md"

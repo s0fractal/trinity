@@ -2,6 +2,7 @@
 type: "BootstrapPinDescriptor"
 version: "v0"
 status: "active"
+implementation_status: "prototype"
 elevated_at: "2026-05-12T04:53Z"
 elevation_chord: "../jazz/chords/2026-05-12T045351Z-claude-aye-spore-v0-elevation-with-asymmetric-quorum.md"
 algorithm: "blake3-256"

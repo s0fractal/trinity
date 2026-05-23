@@ -3,6 +3,7 @@ type: "ContractDescriptor"
 version: "0.1"
 title: "Substrate Self ABI: minimum self-description surface for federation"
 status: "active"
+implementation_status: "partially_implemented"
 hears:
   - "./SUBSTRATE_HEALTH.v0.1.md"
   - "../src/x2E00_status.ts"

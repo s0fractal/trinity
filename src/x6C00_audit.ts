@@ -454,6 +454,48 @@ function renderReport(
   }
 }
 
+async function checkCoordinateUniqueness(root: string): Promise<{
+  duplicates: Record<string, string[]>;
+  ok: boolean;
+}> {
+  const proc = new Deno.Command("git", {
+    args: ["ls-files", "src/x*"],
+    stdout: "piped",
+    stderr: "piped",
+  });
+  const { code, stdout, stderr } = await proc.output();
+  if (code !== 0) {
+    const errText = new TextDecoder().decode(stderr).trim();
+    throw new Error(`git ls-files failed (code ${code}): ${errText}`);
+  }
+  const text = new TextDecoder().decode(stdout);
+  const files = text.split("\n").map((f) => f.trim()).filter(Boolean);
+
+  const coordMap: Record<string, string[]> = {};
+  for (const file of files) {
+    const name = file.split("/").pop() ?? "";
+    const m = name.match(/^x([0-9A-Fa-f]{4})_/);
+    if (m) {
+      const coord = `x${m[1].toLowerCase()}`;
+      if (!coordMap[coord]) {
+        coordMap[coord] = [];
+      }
+      coordMap[coord].push(file);
+    }
+  }
+
+  const duplicates: Record<string, string[]> = {};
+  let ok = true;
+  for (const [coord, paths] of Object.entries(coordMap)) {
+    if (paths.length > 1) {
+      duplicates[coord] = paths;
+      ok = false;
+    }
+  }
+
+  return { duplicates, ok };
+}
+
 async function main(): Promise<void> {
   const args = new Set(Deno.args);
   const quiet = args.has("--quiet");
@@ -467,6 +509,7 @@ async function main(): Promise<void> {
   }
 
   const orphans = await findOrphans(files);
+  const uniqueness = await checkCoordinateUniqueness(ROOT);
 
   if (json) {
     console.log(JSON.stringify(
@@ -489,6 +532,10 @@ async function main(): Promise<void> {
           malformed: reports.filter((r) => r.match === "malformed").length,
           orphans_count: orphans.length,
         },
+        coordinate_uniqueness: {
+          ok: uniqueness.ok,
+          duplicates: uniqueness.duplicates,
+        },
         orphans,
         reports,
       },
@@ -497,10 +544,25 @@ async function main(): Promise<void> {
     ));
   } else {
     renderReport(reports, { quiet, mismatchOnly }, orphans);
+    if (!quiet && !uniqueness.ok) {
+      console.error("-".repeat(86));
+      console.error(
+        `# ✗ ${
+          Object.keys(uniqueness.duplicates).length
+        } coordinate conflicts found (duplicate xNNNN prefixes):`,
+      );
+      for (const [coord, paths] of Object.entries(uniqueness.duplicates)) {
+        console.error(`#     ${coord}:`);
+        for (const p of paths) {
+          console.error(`#       - ${p}`);
+        }
+      }
+    }
   }
 
   const mismatchCount = reports.filter((r) => r.match === "mismatch").length;
   const malformedCount = reports.filter((r) => r.match === "malformed").length;
+  if (!uniqueness.ok) Deno.exit(2);
   if (malformedCount > 0) Deno.exit(2);
   if (mismatchCount > 0) Deno.exit(1);
   Deno.exit(0);

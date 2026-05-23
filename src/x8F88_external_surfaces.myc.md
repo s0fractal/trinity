@@ -10,17 +10,19 @@ documents, and local caches outside the core Deno flat-src code base._
 | Category          | File Count |
 | :---------------- | :--------: |
 | compatibility     |     4      |
-| compatibility abi |     38     |
+| compatibility abi |     40     |
 | compost           |     0      |
 | experimental      |     26     |
 | live chord        |    341     |
 | local cache       |     0      |
-| **Total**         |  **409**   |
+| **Total**         |  **411**   |
 
 ## Registered Surfaces
 
 | Category          | Surface                                                                                                                                                                                                                                   | Canonical Status | Canonical Target                          | Next Action | Blocked By                   |
 | :---------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------- | :---------------------------------------- | :---------- | :--------------------------- |
+| compatibility abi | [AGENTS.md](../AGENTS.md)                                                                                                                                                                                                                 | compatibility    | src/x88F0_agents_bootstrap.myc.md         | keep        | symlink shim                 |
+| compatibility abi | [SKILLS.md](../SKILLS.md)                                                                                                                                                                                                                 | compatibility    | src/x8CF0_skills_bootstrap.myc.md         | keep        | symlink shim                 |
 | compatibility abi | [contracts/CANONICAL_HASH.v0.1.md](../contracts/CANONICAL_HASH.v0.1.md)                                                                                                                                                                   | compatibility    |                                           | keep        | active contract              |
 | compatibility abi | [contracts/CHORD_CLAIM.v0.1.md](../contracts/CHORD_CLAIM.v0.1.md)                                                                                                                                                                         | compatibility    |                                           | keep        | active contract              |
 | compatibility abi | [contracts/CODEICIDE_PROPOSAL.v0.1.md](../contracts/CODEICIDE_PROPOSAL.v0.1.md)                                                                                                                                                           | compatibility    |                                           | keep        | draft status                 |

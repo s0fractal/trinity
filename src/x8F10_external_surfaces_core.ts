@@ -6,6 +6,7 @@ import {
   dirname,
   fromFileUrl,
   join,
+  relative,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { parseFrontmatter } from "./x0020_scanner_core.ts";
 
@@ -57,6 +58,19 @@ async function getFileInfo(
   }
 }
 
+async function getSymlinkTarget(
+  fullPath: string,
+): Promise<string> {
+  try {
+    const target = await Deno.readLink(fullPath);
+    const dir = dirname(fullPath);
+    const resolved = join(dir, target);
+    return relative(ROOT, resolved);
+  } catch {
+    return "";
+  }
+}
+
 export async function getGitTrackedFiles(): Promise<Set<string>> {
   const proc = new Deno.Command("git", {
     args: ["ls-files"],
@@ -80,56 +94,65 @@ async function scanContracts(
   try {
     for await (const entry of Deno.readDir(dir)) {
       if (
-        entry.isFile &&
+        (entry.isFile || entry.isSymlink) &&
         entry.name.endsWith(".md") &&
         entry.name !== "README.md"
       ) {
         const relPath = `contracts/${entry.name}`;
         const fullPath = join(dir, entry.name);
-        const text = await Deno.readTextFile(fullPath);
-        const fm = parseFrontmatter(text.replace(/\r\n/g, "\n"));
-
-        const isPinned = entry.name.includes("BOOTSTRAP_PIN") ||
-          /bitcoin\s+attestation|op_return|inscribed/i.test(text) ||
-          String(fm?.pinned ?? "").toLowerCase() === "true" ||
-          fm?.status === "pinned";
 
         let canonical_status: SurfaceEntry["canonical_status"] =
           "compatibility";
         let next_action: SurfaceEntry["next_action"] = "keep";
         let blocked_by = "";
+        let canonical_target = "";
 
-        if (entry.name === "TRINITY_CAPABILITIES.v0.1.md") {
-          canonical_status = "compost";
-          next_action = "compost";
-          blocked_by = "codeicide pending";
-        } else if (entry.name === "IN_LEDGER_OUT.v0.1.md") {
+        if (entry.isSymlink) {
+          canonical_target = await getSymlinkTarget(fullPath);
           canonical_status = "compatibility";
           next_action = "keep";
-          blocked_by = "blocked by liquid v0.1 tools";
-        } else if (isPinned) {
-          canonical_status = "compatibility";
-          next_action = "keep";
-          blocked_by = "pinned invariant";
-        } else if (fm?.status === "superseded") {
-          canonical_status = "compost";
-          next_action = "compost";
-          blocked_by = "";
-        } else if (fm?.status === "draft") {
-          canonical_status = "compatibility";
-          next_action = "keep";
-          blocked_by = "draft status";
+          blocked_by = "symlink shim";
         } else {
-          canonical_status = "compatibility";
-          next_action = "keep";
-          blocked_by = "active contract";
+          const text = await Deno.readTextFile(fullPath);
+          const fm = parseFrontmatter(text.replace(/\r\n/g, "\n"));
+
+          const isPinned = entry.name.includes("BOOTSTRAP_PIN") ||
+            /bitcoin\s+attestation|op_return|inscribed/i.test(text) ||
+            String(fm?.pinned ?? "").toLowerCase() === "true" ||
+            fm?.status === "pinned";
+
+          if (entry.name === "TRINITY_CAPABILITIES.v0.1.md") {
+            canonical_status = "compost";
+            next_action = "compost";
+            blocked_by = "codeicide pending";
+          } else if (entry.name === "IN_LEDGER_OUT.v0.1.md") {
+            canonical_status = "compatibility";
+            next_action = "keep";
+            blocked_by = "blocked by liquid v0.1 tools";
+          } else if (isPinned) {
+            canonical_status = "compatibility";
+            next_action = "keep";
+            blocked_by = "pinned invariant";
+          } else if (fm?.status === "superseded") {
+            canonical_status = "compost";
+            next_action = "compost";
+            blocked_by = "";
+          } else if (fm?.status === "draft") {
+            canonical_status = "compatibility";
+            next_action = "keep";
+            blocked_by = "draft status";
+          } else {
+            canonical_status = "compatibility";
+            next_action = "keep";
+            blocked_by = "active contract";
+          }
         }
 
         const item: SurfaceEntry = {
           surface: relPath,
           category: "compatibility_abi",
           canonical_status,
-          canonical_target: "",
+          canonical_target,
           next_action,
           blocked_by,
         };
@@ -158,12 +181,16 @@ async function scanDocs(includeVolatile: boolean): Promise<SurfaceEntry[]> {
 
   try {
     for await (const entry of Deno.readDir(dir)) {
-      if (entry.name.endsWith(".md") && entry.name !== "README.md") {
+      if (
+        (entry.isFile || entry.isSymlink) &&
+        entry.name.endsWith(".md") &&
+        entry.name !== "README.md"
+      ) {
         const relPath = `docs/${entry.name}`;
         const fullPath = join(dir, entry.name);
-        const target = docTargets[entry.name] ?? "";
 
         if (entry.isFile) {
+          const target = docTargets[entry.name] ?? "";
           const item: SurfaceEntry = {
             surface: relPath,
             category: "compatibility",
@@ -180,6 +207,7 @@ async function scanDocs(includeVolatile: boolean): Promise<SurfaceEntry[]> {
           }
           out.push(item);
         } else if (entry.isSymlink) {
+          const target = await getSymlinkTarget(fullPath);
           const item: SurfaceEntry = {
             surface: relPath,
             category: "compatibility",
@@ -358,6 +386,36 @@ async function scanCompost(includeVolatile: boolean): Promise<SurfaceEntry[]> {
   return out;
 }
 
+async function scanRoot(includeVolatile: boolean): Promise<SurfaceEntry[]> {
+  const out: SurfaceEntry[] = [];
+  try {
+    for await (const entry of Deno.readDir(ROOT)) {
+      if (entry.isSymlink && entry.name.endsWith(".md")) {
+        const relPath = entry.name;
+        const fullPath = join(ROOT, entry.name);
+        const target = await getSymlinkTarget(fullPath);
+
+        const item: SurfaceEntry = {
+          surface: relPath,
+          category: "compatibility_abi",
+          canonical_status: "compatibility",
+          canonical_target: target,
+          next_action: "keep",
+          blocked_by: "symlink shim",
+        };
+
+        if (includeVolatile) {
+          const { size, mtime } = await getFileInfo(fullPath);
+          item.size = size;
+          item.mtime = mtime;
+        }
+        out.push(item);
+      }
+    }
+  } catch { /* ignore */ }
+  return out;
+}
+
 export async function collectExternalSurfaces(options: {
   stable: boolean;
   includeVolatile: boolean;
@@ -366,6 +424,7 @@ export async function collectExternalSurfaces(options: {
 
   entries.push(...(await scanContracts(options.includeVolatile)));
   entries.push(...(await scanDocs(options.includeVolatile)));
+  entries.push(...(await scanRoot(options.includeVolatile)));
   entries.push(...(await scanProbes(options.includeVolatile)));
   entries.push(...(await scanChords(options.includeVolatile)));
   entries.push(...(await scanState(options.includeVolatile)));

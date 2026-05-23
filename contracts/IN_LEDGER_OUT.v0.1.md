@@ -2,7 +2,11 @@
 type: "ContractDescriptor"
 version: "0.1"
 title: "In/Ledger/Out IO Architecture for Substrate"
-status: "draft"
+status: "superseded"
+superseded_by:
+  - "./IN_LEDGER_SRC_PROJECTION.v0.2.md"
+superseded_at: "2026-05-23"
+superseded_rationale: "v0.1's out/ folder was correct pre-flat-src prototype. After SUBSTRATE_SELF_ABI.v0.1 graduated 2026-05-23 with 3/3 substrates emitting projections at src/ coords, the out/ folder became vestigial. v0.2 collapses OUT into src/ projection class."
 related:
   - "../jazz/chords/2026-05-10T224257Z-claude-vector-fractal-substrate-architecture.md"
   - "../jazz/chords/2026-05-10T225257Z-codex-aye-vector-fractal-substrate.md"

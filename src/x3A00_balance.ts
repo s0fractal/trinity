@@ -91,6 +91,10 @@ interface GravityEdge {
   target_file: string;
   delta_primary: number;
   delta_hamming: number;
+  // Added 2026-05-23 by x6020_gravity: true if target file lacks
+  // `import.meta.main` entry-point. Cross-bucket import of a library
+  // is policy-OK (foundation utilities are imported widely by design).
+  target_is_library?: boolean;
 }
 
 interface GravityResponse {
@@ -192,8 +196,15 @@ if (import.meta.main) {
 
   for (const r of audit.reports) {
     const filename = r.path.split("/").pop()!;
+    // Exclude library-target edges from coupling pressure: cross-bucket
+    // import of foundation utility (x0030_compose, x4010_hash, etc.) is
+    // by-design, not drift signal. Pre-2026-05-23 gravity didn't
+    // annotate this; balance flagged all long edges as coupling.
     const fileEdges = edges.filter(
-      (e) => e.source_file === filename && e.delta_primary >= 2,
+      (e) =>
+        e.source_file === filename &&
+        e.delta_primary >= 2 &&
+        !e.target_is_library,
     );
 
     const hasSemantic = r.match === "mismatch";

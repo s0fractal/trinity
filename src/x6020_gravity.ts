@@ -54,6 +54,11 @@ export interface Edge {
   target_file: string;
   delta_primary: number;
   delta_hamming: number;
+  // True if target file lacks `import.meta.main` — i.e., it's a
+  // library/utility imported by other organs, not a dispatchable
+  // organ. Long edges to libraries are by design (foundation utilities
+  // like x0030_compose are meant to be cross-bucket), not drift signal.
+  target_is_library: boolean;
 }
 
 export interface Report {
@@ -96,8 +101,30 @@ function hammingDigits(a: string, b: string): number {
   return d;
 }
 
+// Detect library status: file has no `import.meta.main` entry point,
+// meaning it's imported by other organs (library/utility), not
+// dispatch-invoked. Cross-bucket imports of libraries are policy-OK
+// (foundation utilities are MEANT to be imported widely).
+async function buildLibraryMap(files: string[]): Promise<Map<string, boolean>> {
+  const map = new Map<string, boolean>();
+  // Match `if (import.meta.main)` entry-point pattern rather than the
+  // bare token, so library files that MENTION the term in comments
+  // ("// no import.meta.main") aren't misclassified as having main.
+  const MAIN_RE = /\bif\s*\(\s*import\.meta\.main\b/;
+  for (const file of files) {
+    try {
+      const content = await Deno.readTextFile(join(SRC, file));
+      map.set(file, !MAIN_RE.test(content));
+    } catch {
+      map.set(file, false);
+    }
+  }
+  return map;
+}
+
 export async function buildEdges(): Promise<Edge[]> {
   const files = await scanFiles();
+  const libraryMap = await buildLibraryMap(files);
   const edges: Edge[] = [];
 
   for (const sourceFile of files) {
@@ -124,6 +151,10 @@ export async function buildEdges(): Promise<Edge[]> {
       const targetCoord = targetMatch[1].toUpperCase();
       if (targetCoord === sourceCoord) continue; // self-reference
 
+      // Resolve target filename for library-status lookup.
+      const targetFileMatch = /([^/]+\.ts)$/.exec(importPath);
+      const targetFileName = targetFileMatch ? targetFileMatch[1] : "";
+
       edges.push({
         source: sourceCoord,
         target: targetCoord,
@@ -131,6 +162,7 @@ export async function buildEdges(): Promise<Edge[]> {
         target_file: importPath,
         delta_primary: digitDelta(sourceCoord, targetCoord, 0),
         delta_hamming: hammingDigits(sourceCoord, targetCoord),
+        target_is_library: libraryMap.get(targetFileName) ?? false,
       });
     }
   }
@@ -183,13 +215,31 @@ function renderHighTension(
   if (filtered.length === 0) return `(no edges with Δprimary ≥ ${threshold})`;
 
   const lines: string[] = [];
+  let libCount = 0;
   for (const e of filtered.slice(0, top)) {
     const src = e.source_file.padEnd(42);
     const tgt = `x${e.target}_*`.padEnd(18);
-    lines.push(`  ${src}→ ${tgt} Δp=${e.delta_primary} Δh=${e.delta_hamming}`);
+    // [lib] tag = target has no import.meta.main; cross-bucket import
+    // of a library is policy-OK (foundation utilities ARE meant to be
+    // imported widely). Tension display kept for transparency.
+    const libTag = e.target_is_library ? " [lib]" : "";
+    if (e.target_is_library) libCount++;
+    lines.push(
+      `  ${src}→ ${tgt} Δp=${e.delta_primary} Δh=${e.delta_hamming}${libTag}`,
+    );
   }
   if (filtered.length > top) {
     lines.push(`  ... and ${filtered.length - top} more`);
+  }
+  if (libCount > 0) {
+    lines.push(
+      `\n  [lib] = target is library (no import.meta.main); cross-bucket import is policy-OK`,
+    );
+    lines.push(
+      `  ${libCount}/${
+        Math.min(top, filtered.length)
+      } flagged edges target libraries (not drift)`,
+    );
   }
   return lines.join("\n");
 }

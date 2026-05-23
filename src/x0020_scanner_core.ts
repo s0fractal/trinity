@@ -127,15 +127,33 @@ export function classifyPhase(
     return "formula";
   }
 
+  // Compost: per canonical THOUGHT_PHASES.v0.1 "rejected proposal,
+  // failed experiment, superseded theory, deprecated file". Was
+  // previously over-narrow (DecisionDescriptor only); expanded to
+  // cover any descriptor that explicitly marks itself out of the
+  // active path.
   if (
-    fm && fm.type === "DecisionDescriptor" &&
+    fm &&
     (fm.status === "rejected" || fm.status === "superseded" ||
-      fm.status === "compost")
+      fm.status === "compost" || fm.status === "deprecated")
   ) {
     return "compost";
   }
 
+  // Crystal: per canonical THOUGHT_PHASES.v0.1 "replayable contract,
+  // verified descriptor, receipt-backed invariant, green baseline,
+  // frozen protocol, content-addressed object with stable projection".
+  // Was previously over-narrow (hash-verified AND published only);
+  // expanded to recognize active ContractDescriptors and pinned
+  // contracts (Bitcoin-anchored = strongest crystal signal).
   if (isHashVerified && isPublished) {
+    return "crystal";
+  }
+  if (
+    fm &&
+    fm.type === "ContractDescriptor" &&
+    (fm.status === "active" || fm.status === "pinned")
+  ) {
     return "crystal";
   }
 

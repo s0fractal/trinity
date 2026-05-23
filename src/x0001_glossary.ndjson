@@ -165,3 +165,4 @@
 {"11":"93 00 00 00 00 00 00 33","00":"5","02":["decisions","ledger","chords-ledger","рішення","леджер","децізії"],"04":"8/B","09":"action+apex = chord decision ledger generation"}
 
 {"00":"5","02":["contract-audit","контракт-аудит","contracts-audit","ref-graph","refs-audit"],"04":"4/F1","09":"foundation+frontier-sub1 = ref-graph classification of contracts (non-destructive read)","11":"26 26 40 33 6C 26 4C 33"}
+{"00":"5","02":["heartbeat","pulse","cadence","tempo","серцебиття","пульс","темп","активність"],"04":"2/7","09":"mirror+completion-pair = rolling chord+commit cadence over 28-day window","11":"00 00 6C 33 00 00 00 59"}

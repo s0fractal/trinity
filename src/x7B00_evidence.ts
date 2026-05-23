@@ -266,7 +266,9 @@ async function main() {
           s.category === "compatibility_abi"
         ).length ?? 0
       } ABI, ${
-        surfacesData?.entries?.filter((s: any) => s.category === "compatibility")
+        surfacesData?.entries?.filter((s: any) =>
+          s.category === "compatibility"
+        )
           .length ?? 0
       } docs, ${
         surfacesData?.entries?.filter((s: any) => s.category === "experimental")
@@ -284,13 +286,11 @@ async function main() {
       contract: "contracts/PROCESS_OBJECTS.v0.1.md",
       command: "./t decisions",
       test: "./t decisions --json",
-      evidence: `${
-        decisionsData?.summary?.total_chords ?? 0
-      } chords parsed: ${decisionsData?.summary?.proposals ?? 0} proposals, ${
-        decisionsData?.summary?.decisions ?? 0
-      } decisions, ${decisionsData?.summary?.receipts ?? 0} receipts, ${
-        decisionsData?.summary?.critiques ?? 0
-      } critiques`,
+      evidence: `${decisionsData?.summary?.total_chords ?? 0} chords parsed: ${
+        decisionsData?.summary?.proposals ?? 0
+      } proposals, ${decisionsData?.summary?.decisions ?? 0} decisions, ${
+        decisionsData?.summary?.receipts ?? 0
+      } receipts, ${decisionsData?.summary?.critiques ?? 0} critiques`,
       evidence_source: decisionsData ? "live" : "missing",
     },
     {

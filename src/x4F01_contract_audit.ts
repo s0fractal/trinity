@@ -1,4 +1,4 @@
-#!/usr/bin/env -S deno run --allow-read
+#!/usr/bin/env -S deno run --allow-read --allow-run
 // src/x4F01_contract_audit.ts — contract classification audit (refs-graph)
 // position: 4/F1 → foundation(4) × frontier(F) sub-1 = classification probe
 // hex_dipole: "26 26 40 33 6C 26 4C 33"
@@ -38,6 +38,7 @@ import { type ContractEntry, listContracts } from "./x4F00_contracts.ts";
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
 const SRC_DIR = HERE;
+const SUBMODULE_DIRS = ["myc", "omega", "liquid"] as const;
 
 export type AuditClassification =
   | "pinned_or_binding"
@@ -58,6 +59,8 @@ export interface AuditEntry {
   organ_refs_count: number;
   chord_refs_count: number;
   contract_refs_count: number;
+  submodule_refs_count: number;
+  submodule_refs_by_dir: Record<string, number>;
   classification: AuditClassification;
   rationale: string;
 }
@@ -71,6 +74,9 @@ async function buildOrganRefsMap(
   for await (const entry of Deno.readDir(SRC_DIR)) {
     if (!entry.isFile) continue;
     if (!entry.name.endsWith(".ts")) continue;
+    // Skip self — this organ's docs/scope notes reference contract names
+    // as examples; counting them would be a false positive.
+    if (entry.name === "x4F01_contract_audit.ts") continue;
     let text: string;
     try {
       text = await Deno.readTextFile(join(SRC_DIR, entry.name));
@@ -86,9 +92,81 @@ async function buildOrganRefsMap(
   return counts;
 }
 
+// Cross-substrate scan: ripgrep contracts/*.md filenames against
+// myc/, omega/, liquid/. Uses git grep when available (fast, respects
+// .gitignore) and falls back to rg if not. Per-submodule counts are
+// surfaced so the architect can see which substrate consumes a given
+// contract.
+async function buildSubmoduleRefsMap(
+  contracts: ContractEntry[],
+): Promise<Map<string, { total: number; by_dir: Record<string, number> }>> {
+  const result = new Map<
+    string,
+    { total: number; by_dir: Record<string, number> }
+  >();
+  for (const c of contracts) {
+    result.set(c.filename, { total: 0, by_dir: {} });
+  }
+
+  for (const dir of SUBMODULE_DIRS) {
+    const dirPath = join(ROOT, dir);
+    try {
+      await Deno.stat(dirPath);
+    } catch {
+      continue;
+    }
+    // git grep -l from inside each submodule. Fast and respects .gitignore.
+    const proc = new Deno.Command("git", {
+      args: [
+        "-C",
+        dirPath,
+        "grep",
+        "-l",
+        "-F",
+        "--",
+        // We pass one filename at a time below; build a single combined
+        // regex would be brittle for special chars in contract names.
+        // Instead, do per-contract --any-of via -e flags.
+        ...contracts.flatMap((c) => ["-e", c.filename]),
+      ],
+      stdout: "piped",
+      stderr: "null",
+    });
+    let stdoutText = "";
+    try {
+      const out = await proc.output();
+      stdoutText = new TextDecoder().decode(out.stdout);
+    } catch {
+      continue;
+    }
+    // For each matched path, count one ref per contract whose filename
+    // appears in the file.
+    const matchedPaths = stdoutText.trim().split("\n").filter((s) => s.length);
+    for (const relPath of matchedPaths) {
+      const fullPath = join(dirPath, relPath);
+      let text: string;
+      try {
+        text = await Deno.readTextFile(fullPath);
+      } catch {
+        continue;
+      }
+      for (const c of contracts) {
+        if (text.includes(c.filename)) {
+          const r = result.get(c.filename)!;
+          r.total++;
+          r.by_dir[dir] = (r.by_dir[dir] ?? 0) + 1;
+        }
+      }
+    }
+  }
+  return result;
+}
+
 function classify(
   c: ContractEntry,
   organ_refs: number,
+  submodule_refs: number,
+  submodule_by_dir: Record<string, number>,
 ): { classification: AuditClassification; rationale: string } {
   if (c.pinned) {
     return {
@@ -109,6 +187,17 @@ function classify(
         `${organ_refs} organ ref(s) in src/*.ts; falsified-hypothesis ≠ unused contract`,
     };
   }
+  if (submodule_refs > 0) {
+    const where = Object.entries(submodule_by_dir)
+      .filter(([_, n]) => n > 0)
+      .map(([dir, n]) => `${dir}:${n}`)
+      .join(",");
+    return {
+      classification: "active_reference",
+      rationale:
+        `${submodule_refs} submodule ref(s) [${where}]; cross-substrate consumer`,
+    };
+  }
   if (c.contract_refs_count > 0) {
     return {
       classification: "active_reference",
@@ -118,20 +207,20 @@ function classify(
   }
 
   const noRefs = c.cowitness_count === 0 && c.contract_refs_count === 0 &&
-    organ_refs === 0;
+    organ_refs === 0 && submodule_refs === 0;
 
   if (noRefs && c.status === "draft") {
     return {
       classification: "safe_to_compost",
       rationale:
-        "draft with 0 organ/chord/contract refs; compost candidate (manual AYE per file)",
+        "draft with 0 organ/chord/contract/submodule refs; compost candidate (manual AYE per file)",
     };
   }
   if (noRefs && c.status === "active") {
     return {
       classification: "needs_review",
       rationale:
-        "active status but 0 refs anywhere; orphan — promote use-site or demote to draft",
+        "active status but 0 refs anywhere (incl. submodules); orphan — promote use-site or demote to draft",
     };
   }
   if (c.cowitness_count > 0 && c.status === "draft") {
@@ -152,11 +241,20 @@ export async function collectAudit(): Promise<{
   entries: AuditEntry[];
 }> {
   const contracts = await listContracts();
-  const organMap = await buildOrganRefsMap(contracts);
+  const [organMap, submoduleMap] = await Promise.all([
+    buildOrganRefsMap(contracts),
+    buildSubmoduleRefsMap(contracts),
+  ]);
 
   const entries: AuditEntry[] = contracts.map((c) => {
     const organ_refs = organMap.get(c.filename) ?? 0;
-    const { classification, rationale } = classify(c, organ_refs);
+    const subRefs = submoduleMap.get(c.filename) ?? { total: 0, by_dir: {} };
+    const { classification, rationale } = classify(
+      c,
+      organ_refs,
+      subRefs.total,
+      subRefs.by_dir,
+    );
     return {
       filename: c.filename,
       status: c.status,
@@ -168,6 +266,8 @@ export async function collectAudit(): Promise<{
       organ_refs_count: organ_refs,
       chord_refs_count: c.cowitness_count,
       contract_refs_count: c.contract_refs_count,
+      submodule_refs_count: subRefs.total,
+      submodule_refs_by_dir: subRefs.by_dir,
       classification,
       rationale,
     };
@@ -222,7 +322,7 @@ function renderTable(entries: AuditEntry[]): void {
 }
 
 const SCOPE_NOTE =
-  "scan scope: trinity src/*.ts + chords/* + contracts/* (submodules myc/omega/liquid NOT scanned — cross-substrate refs may register as 0 here)";
+  "scan scope: trinity src/*.ts + chords/* + contracts/* + submodules myc/omega/liquid (git grep, .gitignore-respecting). Caveat: cross-substrate references typically use concept names rather than full filenames; filename scan will miss those. A contract reported as needs_review may still be semantically referenced under a different identifier.";
 
 if (import.meta.main) {
   const args = Deno.args;

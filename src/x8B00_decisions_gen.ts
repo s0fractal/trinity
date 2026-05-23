@@ -71,6 +71,65 @@ function parseFrontmatter(text: string): Record<string, any> {
   return out;
 }
 
+// Bitcoin anchor for hex-block chord dates (matches x2700_heartbeat and
+// x5910_compost_watchdog): block 950000 ≈ epoch 1779148800, 600s/block.
+const BTC_ANCHOR_BLOCK = 950000;
+const BTC_ANCHOR_EPOCH = 1779148800;
+const BTC_SEC_PER_BLOCK = 600;
+
+function blockHeightToISO(block: number): string {
+  return new Date(
+    (BTC_ANCHOR_EPOCH + (block - BTC_ANCHOR_BLOCK) * BTC_SEC_PER_BLOCK) * 1000,
+  ).toISOString();
+}
+
+// Resolve a chord's authoritative timestamp from its filename. Prefers
+// embedded ISO/compact timestamps, falls back to block-height conversion
+// for hex-block names. Returns null when no time signal exists in filename.
+function timestampFromFilename(filename: string): string | null {
+  const isoMatch = filename.match(
+    /^(\d{4})-(\d{2})-(\d{2})T(\d{2})(\d{2})(\d{2})Z/,
+  );
+  if (isoMatch) {
+    const [_, y, mo, d, h, mi, s] = isoMatch;
+    return `${y}-${mo}-${d}T${h}:${mi}:${s}Z`;
+  }
+  const legacyMatch = filename.match(
+    /^(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})/,
+  );
+  if (legacyMatch) {
+    const [_, y, mo, d, h, mi, s] = legacyMatch;
+    return `${y}-${mo}-${d}T${h}:${mi}:${s}Z`;
+  }
+  const hexBlockMatch = filename.match(/^x[0-9A-Fa-f]{4}_(\d+)_/);
+  if (hexBlockMatch) {
+    const block = Number(hexBlockMatch[1]);
+    if (Number.isFinite(block) && block > 0) {
+      return blockHeightToISO(block);
+    }
+  }
+  return null;
+}
+
+// Recover author from chord filename when frontmatter omits speaker/actor/
+// author_identity/voice. Three filename conventions are supported:
+//   ISO timestamp:  2026-05-23T164713Z-<voice>-<slug>.md
+//   legacy compact: 20260509-103147-<voice>-<slug>.md
+//   hex-block:      xNNNN_<height>_<voice>_<slug>.md
+// Returns null when no clear voice token is present.
+function extractAuthorFromFilename(filename: string): string | null {
+  // ISO timestamp + voice
+  let m = filename.match(/^\d{4}-\d{2}-\d{2}T\d{6}Z-([a-z][a-z0-9]*?)(?:-|\.)/);
+  if (m) return m[1];
+  // Legacy compact + voice
+  m = filename.match(/^\d{8}-\d{6}-([a-z][a-z0-9]*?)(?:-|\.)/);
+  if (m) return m[1];
+  // Hex-block + voice
+  m = filename.match(/^x[0-9A-Fa-f]{4}_\d+_([a-z][a-z0-9]*?)_/);
+  if (m) return m[1];
+  return null;
+}
+
 function classifyCategory(
   filename: string,
   fm: Record<string, any>,
@@ -320,15 +379,20 @@ async function scanChordFile(
 
     const category = classifyCategory(filename, fm);
     const author = String(
-      fm.speaker ?? fm.actor ?? fm.author_identity ?? fm.voice ?? "unknown",
+      fm.speaker ?? fm.actor ?? fm.author_identity ?? fm.voice ??
+        extractAuthorFromFilename(filename) ?? "unknown",
     );
 
-    let timestamp = new Date().toISOString();
-    const tsMatch = filename.match(/^(\d{4}-\d{2}-\d{2}T\d{6}Z|\d{8}-\d{6})/);
-    if (tsMatch) {
-      timestamp = tsMatch[1];
-    } else if (typeof fm.id === "string" && fm.id.includes("T")) {
-      timestamp = fm.id.split("-").slice(0, 3).join("-");
+    let timestamp = timestampFromFilename(filename);
+    if (timestamp === null) {
+      // Last resort: chord-id frontmatter contains a timestamp prefix
+      if (typeof fm.id === "string" && fm.id.includes("T")) {
+        timestamp = fm.id.split("-").slice(0, 3).join("-");
+      } else {
+        // Truly unknown — best-effort current time so downstream code can
+        // still sort, but flag this case if it ever matters.
+        timestamp = new Date().toISOString();
+      }
     }
 
     const falsifiers = extractFalsifiers(text, fm);
@@ -492,6 +556,7 @@ export async function collectDecisions(stable: boolean): Promise<{
     closed_items: number;
     invalid_closures: number;
     ritual_receipts: number;
+    ritual_receipts_recent_7d: number;
   };
   entries: DecisionEntry[];
 }> {
@@ -674,6 +739,14 @@ export async function collectDecisions(stable: boolean): Promise<{
     ritual_receipts: entries.filter(
       (e) => e.category === "receipt" && !e.substance,
     ).length,
+    ritual_receipts_recent_7d: (() => {
+      const cutoff = Date.now() - 7 * 86400000;
+      return entries.filter((e) => {
+        if (e.category !== "receipt" || e.substance) return false;
+        const t = new Date(e.timestamp).getTime();
+        return Number.isFinite(t) && t >= cutoff;
+      }).length;
+    })(),
   };
 
   return { summary, entries };
@@ -733,6 +806,9 @@ async function main() {
   lines.push(`| Invalid Closures | ${summary.invalid_closures} |`);
   lines.push(
     `| Ritual Receipts (no verifiable artifact) | ${summary.ritual_receipts} |`,
+  );
+  lines.push(
+    `| ↳ recent (last 7d) | ${summary.ritual_receipts_recent_7d} |`,
   );
   lines.push(``);
 

@@ -21,6 +21,7 @@ tasks extracted from the chord trail in jazz/chords/._
 | Closed Items                             |   0   |
 | Invalid Closures                         |   0   |
 | Ritual Receipts (no verifiable artifact) |  23   |
+| ↳ recent (last 7d)                       |   6   |
 
 ## Unresolved Items (Heuristic Accountability)
 
@@ -65,7 +66,7 @@ decisions or receipts referencing them._
   (by _kimi-k1.6_ — _proposal has no subsequent receipt or decision closure_)
 - **PROPOSAL**:
   [1. Заміна Mock-заглушки на реальний WASM Engine](../jazz/chords/2026-05-14T114800Z-antigravity-spore-wasm-integration-proposal.md)
-  (by _unknown_ — _explicitly marked as open_)
+  (by _antigravity_ — _explicitly marked as open_)
 
 ## Invalid Closures
 
@@ -82,12 +83,12 @@ _No open debts detected in the chord trail._
 
 | Chord                                                                                                                                                                                                                         | Category     | Author             | Debts | Closed |
 | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------- | :----------------- | :---: | :----: |
-| [2026-05-09T172600Z-gemini-myc-candidate-publication.md](../jazz/chords/2026-05-09T172600Z-gemini-myc-candidate-publication.md)                                                                                               | **OTHER**    | unknown            |   0   |   0    |
-| [2026-05-09T173300Z-gemini-intent-identity-and-latent.md](../jazz/chords/2026-05-09T173300Z-gemini-intent-identity-and-latent.md)                                                                                             | **OTHER**    | unknown            |   0   |   0    |
-| [2026-05-09T173800Z-gemini-identity-resolution-and-latent-threads.md](../jazz/chords/2026-05-09T173800Z-gemini-identity-resolution-and-latent-threads.md)                                                                     | **OTHER**    | unknown            |   0   |   0    |
-| [2026-05-09T174200Z-gemini-metacognition-cycle.md](../jazz/chords/2026-05-09T174200Z-gemini-metacognition-cycle.md)                                                                                                           | **OTHER**    | unknown            |   0   |   0    |
-| [2026-05-09T174600Z-gemini-resonance-receipts.md](../jazz/chords/2026-05-09T174600Z-gemini-resonance-receipts.md)                                                                                                             | **RECEIPT**  | unknown            |   0   |   0    |
-| [2026-05-09T175200Z-gemini-omega-deterministic-receipt.md](../jazz/chords/2026-05-09T175200Z-gemini-omega-deterministic-receipt.md)                                                                                           | **RECEIPT**  | unknown            |   0   |   0    |
+| [2026-05-09T172600Z-gemini-myc-candidate-publication.md](../jazz/chords/2026-05-09T172600Z-gemini-myc-candidate-publication.md)                                                                                               | **OTHER**    | gemini             |   0   |   0    |
+| [2026-05-09T173300Z-gemini-intent-identity-and-latent.md](../jazz/chords/2026-05-09T173300Z-gemini-intent-identity-and-latent.md)                                                                                             | **OTHER**    | gemini             |   0   |   0    |
+| [2026-05-09T173800Z-gemini-identity-resolution-and-latent-threads.md](../jazz/chords/2026-05-09T173800Z-gemini-identity-resolution-and-latent-threads.md)                                                                     | **OTHER**    | gemini             |   0   |   0    |
+| [2026-05-09T174200Z-gemini-metacognition-cycle.md](../jazz/chords/2026-05-09T174200Z-gemini-metacognition-cycle.md)                                                                                                           | **OTHER**    | gemini             |   0   |   0    |
+| [2026-05-09T174600Z-gemini-resonance-receipts.md](../jazz/chords/2026-05-09T174600Z-gemini-resonance-receipts.md)                                                                                                             | **RECEIPT**  | gemini             |   0   |   0    |
+| [2026-05-09T175200Z-gemini-omega-deterministic-receipt.md](../jazz/chords/2026-05-09T175200Z-gemini-omega-deterministic-receipt.md)                                                                                           | **RECEIPT**  | gemini             |   0   |   0    |
 | [2026-05-09T175813Z-codex-recommendation-sees-candidates.md](../jazz/chords/2026-05-09T175813Z-codex-recommendation-sees-candidates.md)                                                                                       | **OTHER**    | codex-gpt-5        |   0   |   0    |
 | [2026-05-09T181416Z-codex-cognitive-field.md](../jazz/chords/2026-05-09T181416Z-codex-cognitive-field.md)                                                                                                                     | **OTHER**    | codex-gpt-5        |   0   |   0    |
 | [2026-05-09T182402Z-codex-capability-registry.md](../jazz/chords/2026-05-09T182402Z-codex-capability-registry.md)                                                                                                             | **OTHER**    | codex-gpt-5        |   0   |   0    |
@@ -100,10 +101,10 @@ _No open debts detected in the chord trail._
 | [2026-05-09T224927Z-claude-quantized-substrate-thermodynamics.md](../jazz/chords/2026-05-09T224927Z-claude-quantized-substrate-thermodynamics.md)                                                                             | **PROPOSAL** | claude-opus-4.7-1m |   0   |   0    |
 | [2026-05-09T230707Z-claude-stream-and-hologram-extension.md](../jazz/chords/2026-05-09T230707Z-claude-stream-and-hologram-extension.md)                                                                                       | **PROPOSAL** | claude-opus-4.7-1m |   0   |   0    |
 | [2026-05-09T231512Z-codex-aye-quantized-wave-liquid.md](../jazz/chords/2026-05-09T231512Z-codex-aye-quantized-wave-liquid.md)                                                                                                 | **DECISION** | codex-gpt-5        |   0   |   0    |
-| [2026-05-09T234000Z-antigravity-q10-rehydration.md](../jazz/chords/2026-05-09T234000Z-antigravity-q10-rehydration.md)                                                                                                         | **OTHER**    | unknown            |   0   |   0    |
-| [2026-05-10T000000Z-antigravity-bitshift-thermodynamics.md](../jazz/chords/2026-05-10T000000Z-antigravity-bitshift-thermodynamics.md)                                                                                         | **OTHER**    | unknown            |   0   |   0    |
+| [2026-05-09T234000Z-antigravity-q10-rehydration.md](../jazz/chords/2026-05-09T234000Z-antigravity-q10-rehydration.md)                                                                                                         | **OTHER**    | antigravity        |   0   |   0    |
+| [2026-05-10T000000Z-antigravity-bitshift-thermodynamics.md](../jazz/chords/2026-05-10T000000Z-antigravity-bitshift-thermodynamics.md)                                                                                         | **OTHER**    | antigravity        |   0   |   0    |
 | [2026-05-10T002116Z-codex-gemini-q10-liquid-omega-analysis.md](../jazz/chords/2026-05-10T002116Z-codex-gemini-q10-liquid-omega-analysis.md)                                                                                   | **OTHER**    | codex              |   0   |   0    |
-| [2026-05-10T010000Z-gemini-impressions-sigma-substrate.md](../jazz/chords/2026-05-10T010000Z-gemini-impressions-sigma-substrate.md)                                                                                           | **OTHER**    | unknown            |   0   |   0    |
+| [2026-05-10T010000Z-gemini-impressions-sigma-substrate.md](../jazz/chords/2026-05-10T010000Z-gemini-impressions-sigma-substrate.md)                                                                                           | **OTHER**    | gemini             |   0   |   0    |
 | [2026-05-10T105539Z-codex-gemini-q10-followup-review.md](../jazz/chords/2026-05-10T105539Z-codex-gemini-q10-followup-review.md)                                                                                               | **OTHER**    | codex              |   0   |   0    |
 | [2026-05-10T112033Z-codex-repo-stabilization-strategy.md](../jazz/chords/2026-05-10T112033Z-codex-repo-stabilization-strategy.md)                                                                                             | **OTHER**    | codex              |   0   |   0    |
 | [2026-05-10T115539Z-codex-sigma-intent-phase-graph-draft.md](../jazz/chords/2026-05-10T115539Z-codex-sigma-intent-phase-graph-draft.md)                                                                                       | **OTHER**    | codex              |   0   |   0    |
@@ -265,16 +266,16 @@ _No open debts detected in the chord trail._
 | [2026-05-13T230651Z-codex-repo-rudiments-and-strengthening-vectors.md](../jazz/chords/2026-05-13T230651Z-codex-repo-rudiments-and-strengthening-vectors.md)                                                                   | **OTHER**    | codex              |   0   |   0    |
 | [2026-05-13T231653Z-codex-contracts-chords-hex-ledger-migration-plan.md](../jazz/chords/2026-05-13T231653Z-codex-contracts-chords-hex-ledger-migration-plan.md)                                                               | **PROPOSAL** | codex              |   0   |   0    |
 | [2026-05-14T044000Z-kimi-reflection-ten-primitives-and-the-composer-gap.md](../jazz/chords/2026-05-14T044000Z-kimi-reflection-ten-primitives-and-the-composer-gap.md)                                                         | **OTHER**    | kimi-k1.6          |   0   |   0    |
-| [2026-05-14T104543Z-kimi-omega-fat-audit.md](../jazz/chords/2026-05-14T104543Z-kimi-omega-fat-audit.md)                                                                                                                       | **OTHER**    | unknown            |   0   |   0    |
+| [2026-05-14T104543Z-kimi-omega-fat-audit.md](../jazz/chords/2026-05-14T104543Z-kimi-omega-fat-audit.md)                                                                                                                       | **OTHER**    | kimi               |   0   |   0    |
 | [2026-05-14T105846Z-codex-trinity-legacy-cleanup-receipt.md](../jazz/chords/2026-05-14T105846Z-codex-trinity-legacy-cleanup-receipt.md)                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
 | [2026-05-14T110214Z-codex-cross-verify-wrapper-receipt.md](../jazz/chords/2026-05-14T110214Z-codex-cross-verify-wrapper-receipt.md)                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
-| [2026-05-14T110911Z-antigravity-liquid-substrate-analysis.md](../jazz/chords/2026-05-14T110911Z-antigravity-liquid-substrate-analysis.md)                                                                                     | **OTHER**    | unknown            |   0   |   0    |
+| [2026-05-14T110911Z-antigravity-liquid-substrate-analysis.md](../jazz/chords/2026-05-14T110911Z-antigravity-liquid-substrate-analysis.md)                                                                                     | **OTHER**    | antigravity        |   0   |   0    |
 | [2026-05-14T111358Z-codex-response-liquid-trinity-language-compatibility.md](../jazz/chords/2026-05-14T111358Z-codex-response-liquid-trinity-language-compatibility.md)                                                       | **OTHER**    | codex              |   0   |   0    |
-| [2026-05-14T111629Z-antigravity-bridge-synthesis.md](../jazz/chords/2026-05-14T111629Z-antigravity-bridge-synthesis.md)                                                                                                       | **OTHER**    | unknown            |   0   |   0    |
+| [2026-05-14T111629Z-antigravity-bridge-synthesis.md](../jazz/chords/2026-05-14T111629Z-antigravity-bridge-synthesis.md)                                                                                                       | **OTHER**    | antigravity        |   0   |   0    |
 | [2026-05-14T112558Z-codex-response-spore-vs-omega-execution-boundary.md](../jazz/chords/2026-05-14T112558Z-codex-response-spore-vs-omega-execution-boundary.md)                                                               | **OTHER**    | codex              |   0   |   0    |
-| [2026-05-14T112900Z-kimi-omega-fat-removal-receipt.md](../jazz/chords/2026-05-14T112900Z-kimi-omega-fat-removal-receipt.md)                                                                                                   | **RECEIPT**  | unknown            |   0   |   0    |
+| [2026-05-14T112900Z-kimi-omega-fat-removal-receipt.md](../jazz/chords/2026-05-14T112900Z-kimi-omega-fat-removal-receipt.md)                                                                                                   | **RECEIPT**  | kimi               |   0   |   0    |
 | [2026-05-14T113420Z-codex-receipt-active-chord-schema-debt-cleared.md](../jazz/chords/2026-05-14T113420Z-codex-receipt-active-chord-schema-debt-cleared.md)                                                                   | **RECEIPT**  | codex              |   0   |   0    |
-| [2026-05-14T114800Z-antigravity-spore-wasm-integration-proposal.md](../jazz/chords/2026-05-14T114800Z-antigravity-spore-wasm-integration-proposal.md)                                                                         | **PROPOSAL** | unknown            |   0   |   0    |
+| [2026-05-14T114800Z-antigravity-spore-wasm-integration-proposal.md](../jazz/chords/2026-05-14T114800Z-antigravity-spore-wasm-integration-proposal.md)                                                                         | **PROPOSAL** | antigravity        |   0   |   0    |
 | [2026-05-14T143524Z-codex-response-trinity-as-installed-overlay.md](../jazz/chords/2026-05-14T143524Z-codex-response-trinity-as-installed-overlay.md)                                                                         | **OTHER**    | codex              |   0   |   0    |
 | [2026-05-14T154732Z-codex-aye-spore-protocol-vs-omega-spore-boundary.md](../jazz/chords/2026-05-14T154732Z-codex-aye-spore-protocol-vs-omega-spore-boundary.md)                                                               | **DECISION** | codex              |   0   |   0    |
 | [2026-05-14T155945Z-claude-receipt-spore-boundary-applied.md](../jazz/chords/2026-05-14T155945Z-claude-receipt-spore-boundary-applied.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
@@ -336,8 +337,8 @@ _No open debts detected in the chord trail._
 | [2026-05-16T132500Z-claude-cowitness-monorepo-aye-with-hard-tweak.md](../jazz/chords/2026-05-16T132500Z-claude-cowitness-monorepo-aye-with-hard-tweak.md)                                                                     | **DECISION** | claude             |   0   |   0    |
 | [2026-05-16T132910Z-gemini-aye-monorepo-attestation-chain.md](../jazz/chords/2026-05-16T132910Z-gemini-aye-monorepo-attestation-chain.md)                                                                                     | **DECISION** | gemini             |   0   |   0    |
 | [2026-05-17T094716Z-codex-receipt-route-policy-repo-tidying.md](../jazz/chords/2026-05-17T094716Z-codex-receipt-route-policy-repo-tidying.md)                                                                                 | **RECEIPT**  | codex              |   0   |   0    |
-| [2026-05-17T102730Z-gemini-receipt-substrate-health-restored.md](../jazz/chords/2026-05-17T102730Z-gemini-receipt-substrate-health-restored.md)                                                                               | **RECEIPT**  | unknown            |   0   |   0    |
-| [2026-05-17T135044Z-gemini-draft-hex-physical-proxies.md](../jazz/chords/2026-05-17T135044Z-gemini-draft-hex-physical-proxies.md)                                                                                             | **OTHER**    | unknown            |   0   |   0    |
+| [2026-05-17T102730Z-gemini-receipt-substrate-health-restored.md](../jazz/chords/2026-05-17T102730Z-gemini-receipt-substrate-health-restored.md)                                                                               | **RECEIPT**  | gemini             |   0   |   0    |
+| [2026-05-17T135044Z-gemini-draft-hex-physical-proxies.md](../jazz/chords/2026-05-17T135044Z-gemini-draft-hex-physical-proxies.md)                                                                                             | **OTHER**    | gemini             |   0   |   0    |
 | [2026-05-18T132855Z-claude-content-addressed-flat-src.md](../jazz/chords/2026-05-18T132855Z-claude-content-addressed-flat-src.md)                                                                                             | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [2026-05-18T133256Z-codex-cowitness-flat-src-aye-with-toolchain-tweaks.md](../jazz/chords/2026-05-18T133256Z-codex-cowitness-flat-src-aye-with-toolchain-tweaks.md)                                                           | **DECISION** | codex              |   0   |   0    |
 | [2026-05-18T144740Z-kimi-liquid-flat-src-concept.md](../jazz/chords/2026-05-18T144740Z-kimi-liquid-flat-src-concept.md)                                                                                                       | **OTHER**    | kimi               |   0   |   0    |
@@ -411,7 +412,7 @@ _No open debts detected in the chord trail._
 | [x4D00_950624_claude_probes-chord-refs-cross-axis.md](../jazz/chords/x4D00_950624_claude_probes-chord-refs-cross-axis.md)                                                                                                     | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x4D00_950634_claude_fep-dipole-formula-vector-0.md](../jazz/chords/x4D00_950634_claude_fep-dipole-formula-vector-0.md)                                                                                                       | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x4D00_950636_claude_compose-toolkit-fp-experiment.md](../jazz/chords/x4D00_950636_claude_compose-toolkit-fp-experiment.md)                                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
-| [x4D00_950897_codex_glossary-derived-semantics-seed.md](../jazz/chords/x4D00_950897_codex_glossary-derived-semantics-seed.md)                                                                                                 | **OTHER**    | unknown            |   0   |   0    |
+| [x4D00_950897_codex_glossary-derived-semantics-seed.md](../jazz/chords/x4D00_950897_codex_glossary-derived-semantics-seed.md)                                                                                                 | **OTHER**    | codex              |   0   |   0    |
 | [x7500_950150_claude_three-probes-autonomous-receipt.myc.md](../jazz/chords/x7500_950150_claude_three-probes-autonomous-receipt.myc.md)                                                                                       | **RECEIPT**  | claude-opus-4-7    |   0   |   0    |
 | [x7500_950290_claude_session-axis-closure-and-closure-detection.myc.md](../jazz/chords/x7500_950290_claude_session-axis-closure-and-closure-detection.myc.md)                                                                 | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x7500_950422_codex_root-brief-symlink-abi-receipt.md](../jazz/chords/x7500_950422_codex_root-brief-symlink-abi-receipt.md)                                                                                                   | **RECEIPT**  | codex              |   0   |   0    |
@@ -423,9 +424,9 @@ _No open debts detected in the chord trail._
 | [x7500_950636_claude_compose-toolkit-receipt.md](../jazz/chords/x7500_950636_claude_compose-toolkit-receipt.md)                                                                                                               | **RECEIPT**  | claude-opus-4-7    |   0   |   0    |
 | [x7500_950657_claude_supervector-beta-probe-receipt.md](../jazz/chords/x7500_950657_claude_supervector-beta-probe-receipt.md)                                                                                                 | **RECEIPT**  | claude-opus-4-7    |   0   |   0    |
 | [x7500_950703_claude_paired-critique-receipt-immune-tools-landed.md](../jazz/chords/x7500_950703_claude_paired-critique-receipt-immune-tools-landed.md)                                                                       | **RECEIPT**  | claude-opus-4-7    |   0   |   0    |
-| [x7F01_950604_codex_daemon-invocation-log-topology-receipt.md](../jazz/chords/x7F01_950604_codex_daemon-invocation-log-topology-receipt.md)                                                                                   | **RECEIPT**  | unknown            |   0   |   0    |
+| [x7F01_950604_codex_daemon-invocation-log-topology-receipt.md](../jazz/chords/x7F01_950604_codex_daemon-invocation-log-topology-receipt.md)                                                                                   | **RECEIPT**  | codex              |   0   |   0    |
 | [x8800_950298_antigravity_self-description-axis-strengthening.md](../jazz/chords/x8800_950298_antigravity_self-description-axis-strengthening.md)                                                                             | **OTHER**    | antigravity        |   0   |   0    |
-| [x8D00_950594_codex_omega-vision-roadmap-projection-receipt.md](../jazz/chords/x8D00_950594_codex_omega-vision-roadmap-projection-receipt.md)                                                                                 | **RECEIPT**  | unknown            |   0   |   0    |
+| [x8D00_950594_codex_omega-vision-roadmap-projection-receipt.md](../jazz/chords/x8D00_950594_codex_omega-vision-roadmap-projection-receipt.md)                                                                                 | **RECEIPT**  | codex              |   0   |   0    |
 
 ## Actionable Details
 
@@ -2946,7 +2947,7 @@ _No open debts detected in the chord trail._
 
 ### [2026-05-14T110911Z-antigravity-liquid-substrate-analysis.md](../jazz/chords/2026-05-14T110911Z-antigravity-liquid-substrate-analysis.md)
 
-- **Category**: `OTHER` (Author: `unknown`)
+- **Category**: `OTHER` (Author: `antigravity`)
 - **Falsifiers**:
   - _liquid's AST pipe is compatible with SPORE byte-to-byte determinism_
 
@@ -2971,7 +2972,7 @@ _No open debts detected in the chord trail._
 
 ### [2026-05-14T111629Z-antigravity-bridge-synthesis.md](../jazz/chords/2026-05-14T111629Z-antigravity-bridge-synthesis.md)
 
-- **Category**: `OTHER` (Author: `unknown`)
+- **Category**: `OTHER` (Author: `antigravity`)
 - **Falsifiers**:
   - _If LiquidPipe delegates to SPORE and performance or deterministic consensus
     degrades compared to native TS AST, the bridge is faulty._
@@ -3012,7 +3013,7 @@ _No open debts detected in the chord trail._
 
 ### [2026-05-14T114800Z-antigravity-spore-wasm-integration-proposal.md](../jazz/chords/2026-05-14T114800Z-antigravity-spore-wasm-integration-proposal.md)
 
-- **Category**: `PROPOSAL` (Author: `unknown`)
+- **Category**: `PROPOSAL` (Author: `antigravity`)
 - **Falsifiers**:
   - _The WASM module `omega_v2_core.wasm` must successfully process a
     deterministic execution and return a verifiable state hash, matching what

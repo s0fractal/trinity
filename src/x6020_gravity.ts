@@ -1,4 +1,4 @@
-#!/usr/bin/env -S deno run --allow-read
+#!/usr/bin/env -S deno run --allow-read --allow-run
 // src/x6020_gravity.ts — gravity / edge tension report / drift meter
 // position: 6/02 → harmony(6) × void-singular(02) = audit primitive mirroring own topology
 // hex_dipole: "00 00 33 00 00 00 6C 00"
@@ -13,8 +13,8 @@
 // skill_tag: gravity
 // skill_safe: yes
 //
-// gravity — edge tension report. Reads import statements via regex and
-// derives source→target edges by filename coordinates (no AST). Computes
+// gravity — edge tension report. Reads import statements via Deno info AST and
+// derives source→target edges by filename coordinates. Computes
 // Hamming distance per coord-digit; reports high-tension edges and a
 // 16×16 source-bucket × target-bucket heatmap.
 //
@@ -38,6 +38,7 @@ import {
   dirname,
   fromFileUrl,
   join,
+  toFileUrl,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
@@ -122,38 +123,80 @@ async function buildLibraryMap(files: string[]): Promise<Map<string, boolean>> {
   return map;
 }
 
+async function getDependenciesOfFile(filePath: string): Promise<string[]> {
+  const process = new Deno.Command(Deno.execPath(), {
+    args: ["info", "--json", filePath],
+    stdout: "piped",
+    stderr: "null",
+  });
+  const { code, stdout } = await process.output();
+  if (code !== 0) return [];
+  try {
+    const data = JSON.parse(new TextDecoder().decode(stdout));
+    const root = data.roots[0];
+    const mod = data.modules.find((m: any) => m.specifier === root);
+    if (!mod || !mod.dependencies) return [];
+    const deps = new Set<string>();
+    for (const d of mod.dependencies) {
+      if (d.code?.specifier) deps.add(d.code.specifier);
+      if (d.type?.specifier) deps.add(d.type.specifier);
+    }
+    return Array.from(deps);
+  } catch {
+    return [];
+  }
+}
+
+async function pool<T, R>(
+  items: T[],
+  concurrency: number,
+  fn: (item: T) => Promise<R>,
+): Promise<R[]> {
+  const results: R[] = new Array(items.length);
+  let index = 0;
+  async function worker() {
+    while (index < items.length) {
+      const current = index++;
+      results[current] = await fn(items[current]);
+    }
+  }
+  const workers = Array.from(
+    { length: Math.min(concurrency, items.length) },
+    worker,
+  );
+  await Promise.all(workers);
+  return results;
+}
+
 export async function buildEdges(): Promise<Edge[]> {
   const files = await scanFiles();
   const libraryMap = await buildLibraryMap(files);
   const edges: Edge[] = [];
+  const srcUrlPrefix = toFileUrl(SRC).href.endsWith("/")
+    ? toFileUrl(SRC).href
+    : toFileUrl(SRC).href + "/";
 
-  for (const sourceFile of files) {
+  const fileDeps = await pool(files, 12, async (file) => {
+    const absPath = join(SRC, file);
+    const deps = await getDependenciesOfFile(absPath);
+    return { file, deps };
+  });
+
+  for (const { file: sourceFile, deps } of fileDeps) {
     const sourceCoord = coordOf(sourceFile);
     if (!sourceCoord) continue;
 
-    let content: string;
-    try {
-      content = await Deno.readTextFile(join(SRC, sourceFile));
-    } catch {
-      continue;
-    }
+    for (const depSpecifier of deps) {
+      if (!depSpecifier.startsWith(srcUrlPrefix)) continue;
 
-    IMPORT_RE.lastIndex = 0;
-    let m: RegExpExecArray | null;
-    while ((m = IMPORT_RE.exec(content)) !== null) {
-      const importPath = m[1];
-      // Skip URL imports (https://, npm:, jsr:, file://, etc.)
-      if (/^[a-z]+:/.test(importPath)) continue;
-      // Only files in trinity/src that match the coordinate pattern
-      const targetMatch = TARGET_RE.exec(importPath);
-      if (!targetMatch) continue;
+      const targetFileName = depSpecifier.split("/").pop() ?? "";
+      if (!FILE_RE.test(targetFileName)) continue;
 
-      const targetCoord = targetMatch[1].toUpperCase();
+      const targetCoord = coordOf(targetFileName);
+      if (!targetCoord) continue;
       if (targetCoord === sourceCoord) continue; // self-reference
 
-      // Resolve target filename for library-status lookup.
-      const targetFileMatch = /([^/]+\.ts)$/.exec(importPath);
-      const targetFileName = targetFileMatch ? targetFileMatch[1] : "";
+      const importPath = `./${targetFileName}`;
 
       edges.push({
         source: sourceCoord,
@@ -255,7 +298,7 @@ export function buildReport(edges: Edge[]): Report {
     position: "6/02",
     action: "gravity",
     note:
-      "edge tension report by filename coordinates (no AST). Observation only, not enforcement.",
+      "edge tension report by filename coordinates (Deno AST). Observation only, not enforcement.",
     total_edges: edges.length,
     mean_delta_primary: Number(meanDp.toFixed(3)),
     max_delta_primary: maxDp,
@@ -284,7 +327,7 @@ if (import.meta.main) {
     console.log(JSON.stringify(report, null, 2));
   } else {
     console.log(
-      "# gravity @ 6/02 — edge tension report (filename coordinates, no AST)",
+      "# gravity @ 6/02 — edge tension report (filename coordinates, Deno AST)",
     );
     console.log(
       "# ───────────────────────────────────────────────────────────────",

@@ -7,19 +7,20 @@ tasks extracted from the chord trail in jazz/chords/._
 
 ## Summary
 
-| Metric                           | Count |
-| :------------------------------- | :---: |
-| Total Chords                     |  343  |
-| Proposals                        |  25   |
-| Unresolved Proposals (Heuristic) |  11   |
-| Decisions                        |  39   |
-| Receipts                         |  90   |
-| Critiques                        |   4   |
-| Unresolved Critiques (Heuristic) |   2   |
-| Other Observations               |  185  |
-| Open Debts (TODO/DEBT)           |   0   |
-| Closed Items                     |   0   |
-| Invalid Closures                 |   0   |
+| Metric                                   | Count |
+| :--------------------------------------- | :---: |
+| Total Chords                             |  343  |
+| Proposals                                |  25   |
+| Unresolved Proposals (Heuristic)         |  11   |
+| Decisions                                |  39   |
+| Receipts                                 |  90   |
+| Critiques                                |   4   |
+| Unresolved Critiques (Heuristic)         |   2   |
+| Other Observations                       |  185  |
+| Open Debts (TODO/DEBT)                   |   0   |
+| Closed Items                             |   0   |
+| Invalid Closures                         |   0   |
+| Ritual Receipts (no verifiable artifact) |  23   |
 
 ## Unresolved Items (Heuristic Accountability)
 

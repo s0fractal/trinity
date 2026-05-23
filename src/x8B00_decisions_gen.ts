@@ -48,6 +48,11 @@ export interface DecisionEntry {
   resolved_by: string[];
   resolved_by_valid: boolean;
   resolution_validation_errors: string[];
+  // For receipt-category entries: true if the chord references a contract,
+  // a closing hash, suggested commands, or falsifiers. A "ritual receipt"
+  // (substance=false) is a narrative chord that claims work was done without
+  // pointing at any verifiable artifact. Always true for non-receipt categories.
+  substance: boolean;
 }
 
 // Minimal YAML frontmatter parser — extracts only the flat scalar fields we need.
@@ -400,6 +405,7 @@ async function scanChordFile(
       resolved_by: extractResolvedBy(text, fm),
       resolved_by_valid: true,
       resolution_validation_errors: [],
+      substance: true,
       mentions,
     };
   } catch {
@@ -488,6 +494,7 @@ export async function collectDecisions(stable: boolean): Promise<{
     open_debts: number;
     closed_items: number;
     invalid_closures: number;
+    ritual_receipts: number;
   };
   entries: DecisionEntry[];
 }> {
@@ -632,6 +639,16 @@ export async function collectDecisions(stable: boolean): Promise<{
       resolved_by: raw.resolved_by,
       resolved_by_valid: validation.valid,
       resolution_validation_errors: validation.errors,
+      substance: raw.category !== "receipt" || (
+        raw.closes_hash !== null ||
+        raw.suggested_commands.length > 0 ||
+        raw.falsifiers.length > 0 ||
+        raw.resolved_by.length > 0 ||
+        raw.mentions.some((m) =>
+          m.startsWith("contracts/") ||
+          /\.md$/.test(m) && m.includes("contracts")
+        )
+      ),
     };
   });
 
@@ -656,6 +673,9 @@ export async function collectDecisions(stable: boolean): Promise<{
           e.resolution_status === "superseded" ||
           e.resolution_status === "historical") &&
         !e.resolved_by_valid,
+    ).length,
+    ritual_receipts: entries.filter(
+      (e) => e.category === "receipt" && !e.substance,
     ).length,
   };
 
@@ -714,6 +734,9 @@ async function main() {
   lines.push(`| Open Debts (TODO/DEBT) | ${summary.open_debts} |`);
   lines.push(`| Closed Items | ${summary.closed_items} |`);
   lines.push(`| Invalid Closures | ${summary.invalid_closures} |`);
+  lines.push(
+    `| Ritual Receipts (no verifiable artifact) | ${summary.ritual_receipts} |`,
+  );
   lines.push(``);
 
   const unresolved = entries.filter((e) => e.is_unresolved);

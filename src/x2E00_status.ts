@@ -230,11 +230,11 @@ if (import.meta.main) {
     await Promise.all([
       call_t("audit", ["--json"]),
       call_t("health"),
-      call_submodule_organ("liquid", "0x2/E.ts"),
+      // Substrate adoption order: myc 2026-05-22, liquid 2026-05-23,
+      // omega still at older 0x2/E.ts (no batch-migration per
+      // `feedback_liquid_not_trinity` policy applied substrate-wide).
+      call_submodule_organ("liquid", "src/x2E00_status.ts"),
       call_submodule_organ("omega", "0x2/E.ts"),
-      // myc completed partial flat-src migration 2026-05-22 — status organ
-      // moved from 0x2/E.ts to src/x2E00_status.ts. Other submodules still
-      // use the older nested-coord convention.
       call_submodule_organ("myc", "src/x2E00_status.ts"),
       loadCachedCi(),
     ]);

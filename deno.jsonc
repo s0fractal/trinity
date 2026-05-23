@@ -33,5 +33,13 @@
     "chord:init": "deno run --allow-net src/x4001_chord.ts init",
     "chord:translate": "deno run --allow-net src/x4001_chord.ts translate",
     "chord:parse": "deno run --allow-net src/x4001_chord.ts parse"
+  },
+  "fmt": {
+    "exclude": [
+      "liquid/",
+      "myc/",
+      "omega/",
+      "jazz/chords/"
+    ]
   }
 }

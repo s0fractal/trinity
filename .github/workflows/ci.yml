@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout codebase
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+
+      - name: Setup Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+
+      - name: Verify formatting
+        run: deno fmt --check
+
+      - name: Type check core source files
+        run: deno check src/*.ts
+
+      - name: Substrate status check
+        run: ./t status
+
+      - name: Audit coordinates
+        run: ./t audit
+
+      - name: Verify contracts
+        run: ./t contracts
+
+      - name: Verify external surfaces format
+        run: ./t external-surfaces --json | jq -e '.type == "external_surfaces"'

@@ -157,7 +157,7 @@ async function main() {
     fail("nay: input does not contain a recognizable RECEIPT_ENVELOPE.v0.1");
   }
 
-  if (proposalEnv!.body_kind !== "codeicide_proposal") {
+  if ((proposalEnv!.body_kind as string) !== "codeicide_proposal") {
     fail(
       `nay: target envelope body_kind is "${
         proposalEnv!.body_kind

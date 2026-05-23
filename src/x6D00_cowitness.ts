@@ -206,7 +206,9 @@ async function main() {
     let targetPath: string | null = null;
     if (persistTo) {
       targetPath = persistTo;
-    } else if (envelopePath && envelope.body_kind === "codeicide_proposal") {
+    } else if (
+      envelopePath && (envelope.body_kind as string) === "codeicide_proposal"
+    ) {
       targetPath = inferPersistPath(
         envelopePath,
         substrate,

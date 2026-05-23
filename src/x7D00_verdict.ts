@@ -174,7 +174,8 @@ if (import.meta.main) {
       });
       continue;
     }
-    if (body.type === "CodeicideProposal") {
+    const bodyType = (body as any).type;
+    if (bodyType === "CodeicideProposal") {
       // Sanity: re-hash body and verify against envelope.body_hash
       const recomputed = await multihashSha256(
         encodeCanonical(body as unknown as CborValue),
@@ -187,12 +188,12 @@ if (import.meta.main) {
         continue;
       }
       proposalEnvs.push(env);
-    } else if (body.type === "CodeicideNay") {
+    } else if (bodyType === "CodeicideNay") {
       nayEnvs.push(env);
     } else {
       malformed.push({
         envelope_id: env.envelope_id,
-        reason: `unsupported body type: ${body.type}`,
+        reason: `unsupported body type: ${bodyType}`,
       });
     }
   }

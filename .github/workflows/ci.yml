@@ -50,6 +50,16 @@ jobs:
       - name: Verify decisions JSON format
         run: ./t decisions --json | jq -e '.type == "decisions" and .position == "8/B"'
 
+      - name: Verify decisions closure validity (no invalid manual closures)
+        run: |
+          ./t decisions --json | jq -e '
+            [ .entries[]
+              | select(.resolution_status == "closed"
+                       or .resolution_status == "superseded"
+                       or .resolution_status == "historical")
+              | select((.resolved_by_valid // true) == false)
+            ] | length == 0'
+
       - name: Verify decisions stable generation diff
         run: |
           ./t decisions --stable

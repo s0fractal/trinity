@@ -46,6 +46,8 @@ export interface DecisionEntry {
   resolution_hint: string | null;
   resolution_status: "open" | "closed" | "superseded" | "historical" | null;
   resolved_by: string[];
+  resolved_by_valid: boolean;
+  resolution_validation_errors: string[];
 }
 
 // Minimal YAML frontmatter parser — extracts only the flat scalar fields we need.
@@ -316,7 +318,7 @@ async function scanChordFile(
 
     const category = classifyCategory(filename, fm);
     const author = String(
-      fm.speaker ?? fm.actor ?? fm.author_identity ?? "unknown",
+      fm.speaker ?? fm.actor ?? fm.author_identity ?? fm.voice ?? "unknown",
     );
 
     let timestamp = new Date().toISOString();
@@ -396,11 +398,81 @@ async function scanChordFile(
         ? String(fm.resolution_status).trim().toLowerCase() as any
         : null,
       resolved_by: extractResolvedBy(text, fm),
+      resolved_by_valid: true,
+      resolution_validation_errors: [],
       mentions,
     };
   } catch {
     return null;
   }
+}
+
+function validateResolvedByEntries(
+  resolved_by: string[],
+  resolution_status: DecisionEntry["resolution_status"],
+  trackedFiles: Set<string>,
+  chordIdSet: Set<string>,
+  stable: boolean,
+): { valid: boolean; errors: string[] } {
+  const errors: string[] = [];
+
+  if (resolved_by.length === 0) {
+    // No resolved_by is only an error if the entry is manually marked closed/
+    // superseded/historical without any pointer to evidence.
+    if (
+      resolution_status === "closed" ||
+      resolution_status === "superseded" ||
+      resolution_status === "historical"
+    ) {
+      errors.push(
+        `resolution_status is ${resolution_status} but resolved_by is empty`,
+      );
+      return { valid: false, errors };
+    }
+    return { valid: true, errors };
+  }
+
+  for (const raw of resolved_by) {
+    const ref = raw.trim();
+    if (!ref) continue;
+
+    if (ref.includes("/") || /\.(md|ts|json|sh)$/.test(ref)) {
+      // Path-like reference.
+      const normalized = ref.replace(/^\.\//, "");
+      if (stable) {
+        if (!trackedFiles.has(normalized)) {
+          // Allow root-level symlinks like AGENTS.md / SKILLS.md / HUMAN.md
+          // that may not be tracked as files but resolve via filesystem.
+          let fsOk = false;
+          try {
+            const stat = Deno.statSync(join(ROOT, normalized));
+            fsOk = stat.isFile || stat.isDirectory;
+          } catch {
+            fsOk = false;
+          }
+          if (!fsOk) {
+            errors.push(`resolved_by path not tracked: ${normalized}`);
+          }
+        }
+      } else {
+        try {
+          const stat = Deno.statSync(join(ROOT, normalized));
+          if (!(stat.isFile || stat.isDirectory)) {
+            errors.push(`resolved_by path not a file/dir: ${normalized}`);
+          }
+        } catch {
+          errors.push(`resolved_by path missing on disk: ${normalized}`);
+        }
+      }
+    } else {
+      // Bare reference — treat as chord-ID.
+      if (!chordIdSet.has(ref) && !chordIdSet.has(ref + ".md")) {
+        errors.push(`resolved_by chord-id not found: ${ref}`);
+      }
+    }
+  }
+
+  return { valid: errors.length === 0, errors };
 }
 
 export async function collectDecisions(stable: boolean): Promise<{
@@ -415,6 +487,7 @@ export async function collectDecisions(stable: boolean): Promise<{
     others: number;
     open_debts: number;
     closed_items: number;
+    invalid_closures: number;
   };
   entries: DecisionEntry[];
 }> {
@@ -456,14 +529,34 @@ export async function collectDecisions(stable: boolean): Promise<{
     let is_unresolved = false;
     let resolution_hint: string | null = null;
 
+    // Validate resolved_by against tracked files / chord-ID universe.
+    const chordIdSet = new Set(rawEntries.map((r) => r.filename));
+    const validation = validateResolvedByEntries(
+      raw.resolved_by,
+      raw.resolution_status,
+      trackedFiles,
+      chordIdSet,
+      stable,
+    );
+
     if (
       raw.resolution_status === "closed" ||
       raw.resolution_status === "superseded" ||
       raw.resolution_status === "historical"
     ) {
-      has_receipt = true;
-      is_unresolved = false;
-      resolution_hint = `manually marked as ${raw.resolution_status}`;
+      if (!validation.valid) {
+        // Manual closure with invalid evidence — surface as unresolved.
+        has_receipt = false;
+        is_unresolved = true;
+        resolution_hint =
+          `marked ${raw.resolution_status} but resolved_by validation failed: ${
+            validation.errors.join("; ")
+          }`;
+      } else {
+        has_receipt = true;
+        is_unresolved = false;
+        resolution_hint = `manually marked as ${raw.resolution_status}`;
+      }
     } else if (raw.resolution_status === "open") {
       has_receipt = false;
       is_unresolved = true;
@@ -537,6 +630,8 @@ export async function collectDecisions(stable: boolean): Promise<{
       resolution_hint,
       resolution_status: raw.resolution_status,
       resolved_by: raw.resolved_by,
+      resolved_by_valid: validation.valid,
+      resolution_validation_errors: validation.errors,
     };
   });
 
@@ -555,6 +650,13 @@ export async function collectDecisions(stable: boolean): Promise<{
     others: entries.filter((e) => e.category === "other").length,
     open_debts: entries.reduce((acc, e) => acc + e.open_debts.length, 0),
     closed_items: entries.reduce((acc, e) => acc + e.closed_items.length, 0),
+    invalid_closures: entries.filter(
+      (e) =>
+        (e.resolution_status === "closed" ||
+          e.resolution_status === "superseded" ||
+          e.resolution_status === "historical") &&
+        !e.resolved_by_valid,
+    ).length,
   };
 
   return { summary, entries };
@@ -611,6 +713,7 @@ async function main() {
   lines.push(`| Other Observations | ${summary.others} |`);
   lines.push(`| Open Debts (TODO/DEBT) | ${summary.open_debts} |`);
   lines.push(`| Closed Items | ${summary.closed_items} |`);
+  lines.push(`| Invalid Closures | ${summary.invalid_closures} |`);
   lines.push(``);
 
   const unresolved = entries.filter((e) => e.is_unresolved);
@@ -628,6 +731,34 @@ async function main() {
       lines.push(
         `- **${e.category.toUpperCase()}**: [${e.title}](../jazz/chords/${e.filename}) (by *${e.author}* — *${e.resolution_hint}*)`,
       );
+    }
+    lines.push(``);
+  }
+
+  const invalidClosures = entries.filter(
+    (e) =>
+      (e.resolution_status === "closed" ||
+        e.resolution_status === "superseded" ||
+        e.resolution_status === "historical") &&
+      !e.resolved_by_valid,
+  );
+  lines.push(`## Invalid Closures`);
+  lines.push(``);
+  lines.push(
+    `*Entries manually marked as closed/superseded/historical whose resolved_by paths or chord-IDs failed validation. These are surfaced as unresolved above.*`,
+  );
+  lines.push(``);
+  if (invalidClosures.length === 0) {
+    lines.push(`*No invalid closures detected.*`);
+    lines.push(``);
+  } else {
+    for (const e of invalidClosures) {
+      lines.push(
+        `- **${e.category.toUpperCase()}** [${e.filename}](../jazz/chords/${e.filename}) marked \`${e.resolution_status}\`:`,
+      );
+      for (const err of e.resolution_validation_errors) {
+        lines.push(`  - ${err}`);
+      }
     }
     lines.push(``);
   }

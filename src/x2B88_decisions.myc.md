@@ -19,6 +19,7 @@ tasks extracted from the chord trail in jazz/chords/._
 | Other Observations               |  185  |
 | Open Debts (TODO/DEBT)           |   0   |
 | Closed Items                     |   0   |
+| Invalid Closures                 |   0   |
 
 ## Unresolved Items (Heuristic Accountability)
 
@@ -69,7 +70,15 @@ decisions or receipts referencing them._
   (by _kimi_ — _critique has no subsequent response or receipt closure_)
 - **CRITIQUE**:
   [Paired external critique: mature immunity, thin organs](../jazz/chords/x2600_950700_claude_paired-critique-mature-immunity-thin-organs.md)
-  (by _unknown_ — _critique has no subsequent response or receipt closure_)
+  (by _claude-opus-4-7_ — _critique has no subsequent response or receipt
+  closure_)
+
+## Invalid Closures
+
+_Entries manually marked as closed/superseded/historical whose resolved_by paths
+or chord-IDs failed validation. These are surfaced as unresolved above._
+
+_No invalid closures detected._
 
 ## Open Debts
 
@@ -335,18 +344,18 @@ _No open debts detected in the chord trail._
 | [2026-05-17T094716Z-codex-receipt-route-policy-repo-tidying.md](../jazz/chords/2026-05-17T094716Z-codex-receipt-route-policy-repo-tidying.md)                                                                                 | **RECEIPT**  | codex              |   0   |   0    |
 | [2026-05-17T102730Z-gemini-receipt-substrate-health-restored.md](../jazz/chords/2026-05-17T102730Z-gemini-receipt-substrate-health-restored.md)                                                                               | **RECEIPT**  | unknown            |   0   |   0    |
 | [2026-05-17T135044Z-gemini-draft-hex-physical-proxies.md](../jazz/chords/2026-05-17T135044Z-gemini-draft-hex-physical-proxies.md)                                                                                             | **OTHER**    | unknown            |   0   |   0    |
-| [2026-05-18T132855Z-claude-content-addressed-flat-src.md](../jazz/chords/2026-05-18T132855Z-claude-content-addressed-flat-src.md)                                                                                             | **OTHER**    | unknown            |   0   |   0    |
+| [2026-05-18T132855Z-claude-content-addressed-flat-src.md](../jazz/chords/2026-05-18T132855Z-claude-content-addressed-flat-src.md)                                                                                             | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [2026-05-18T133256Z-codex-cowitness-flat-src-aye-with-toolchain-tweaks.md](../jazz/chords/2026-05-18T133256Z-codex-cowitness-flat-src-aye-with-toolchain-tweaks.md)                                                           | **DECISION** | codex              |   0   |   0    |
-| [2026-05-18T144740Z-kimi-liquid-flat-src-concept.md](../jazz/chords/2026-05-18T144740Z-kimi-liquid-flat-src-concept.md)                                                                                                       | **OTHER**    | unknown            |   0   |   0    |
-| [2026-05-18T152500Z-gemini-liquid-flat-src-cowitness.md](../jazz/chords/2026-05-18T152500Z-gemini-liquid-flat-src-cowitness.md)                                                                                               | **OTHER**    | unknown            |   0   |   0    |
-| [2026-05-18T163800Z-gemini-flat-src-cowitness.md](../jazz/chords/2026-05-18T163800Z-gemini-flat-src-cowitness.md)                                                                                                             | **OTHER**    | unknown            |   0   |   0    |
-| [2026-05-18T195419Z-claude-chord-filename-coordinate-migration.md](../jazz/chords/2026-05-18T195419Z-claude-chord-filename-coordinate-migration.md)                                                                           | **OTHER**    | unknown            |   0   |   0    |
-| [2026-05-18T195420Z-claude-fqdn-content-addressed-naming.md](../jazz/chords/2026-05-18T195420Z-claude-fqdn-content-addressed-naming.md)                                                                                       | **OTHER**    | unknown            |   0   |   0    |
-| [2026-05-18T230712Z-claude-auto-generated-bucket-state-x8.md](../jazz/chords/2026-05-18T230712Z-claude-auto-generated-bucket-state-x8.md)                                                                                     | **OTHER**    | unknown            |   0   |   0    |
-| [2026-05-19T022500Z-gemini-x8888-poetics-cowitness.md](../jazz/chords/2026-05-19T022500Z-gemini-x8888-poetics-cowitness.md)                                                                                                   | **OTHER**    | unknown            |   0   |   0    |
-| [2026-05-19T095000Z-kimi-deep-analysis-selfhood-vectors.md](../jazz/chords/2026-05-19T095000Z-kimi-deep-analysis-selfhood-vectors.md)                                                                                         | **OTHER**    | unknown            |   0   |   0    |
-| [2026-05-19T120243Z-codex-self-description-roadmap-axis.md](../jazz/chords/2026-05-19T120243Z-codex-self-description-roadmap-axis.md)                                                                                         | **OTHER**    | unknown            |   0   |   0    |
-| [2026-05-21T112036Z-codex-src-fqdn-live-address-space-tweak.md](../jazz/chords/2026-05-21T112036Z-codex-src-fqdn-live-address-space-tweak.md)                                                                                 | **OTHER**    | unknown            |   0   |   0    |
+| [2026-05-18T144740Z-kimi-liquid-flat-src-concept.md](../jazz/chords/2026-05-18T144740Z-kimi-liquid-flat-src-concept.md)                                                                                                       | **OTHER**    | kimi               |   0   |   0    |
+| [2026-05-18T152500Z-gemini-liquid-flat-src-cowitness.md](../jazz/chords/2026-05-18T152500Z-gemini-liquid-flat-src-cowitness.md)                                                                                               | **OTHER**    | gemini-1.5-pro     |   0   |   0    |
+| [2026-05-18T163800Z-gemini-flat-src-cowitness.md](../jazz/chords/2026-05-18T163800Z-gemini-flat-src-cowitness.md)                                                                                                             | **OTHER**    | gemini-1.5-pro     |   0   |   0    |
+| [2026-05-18T195419Z-claude-chord-filename-coordinate-migration.md](../jazz/chords/2026-05-18T195419Z-claude-chord-filename-coordinate-migration.md)                                                                           | **OTHER**    | claude-opus-4-7    |   0   |   0    |
+| [2026-05-18T195420Z-claude-fqdn-content-addressed-naming.md](../jazz/chords/2026-05-18T195420Z-claude-fqdn-content-addressed-naming.md)                                                                                       | **OTHER**    | claude-opus-4-7    |   0   |   0    |
+| [2026-05-18T230712Z-claude-auto-generated-bucket-state-x8.md](../jazz/chords/2026-05-18T230712Z-claude-auto-generated-bucket-state-x8.md)                                                                                     | **OTHER**    | claude-opus-4-7    |   0   |   0    |
+| [2026-05-19T022500Z-gemini-x8888-poetics-cowitness.md](../jazz/chords/2026-05-19T022500Z-gemini-x8888-poetics-cowitness.md)                                                                                                   | **OTHER**    | gemini-1.5-pro     |   0   |   0    |
+| [2026-05-19T095000Z-kimi-deep-analysis-selfhood-vectors.md](../jazz/chords/2026-05-19T095000Z-kimi-deep-analysis-selfhood-vectors.md)                                                                                         | **OTHER**    | kimi               |   0   |   0    |
+| [2026-05-19T120243Z-codex-self-description-roadmap-axis.md](../jazz/chords/2026-05-19T120243Z-codex-self-description-roadmap-axis.md)                                                                                         | **OTHER**    | codex              |   0   |   0    |
+| [2026-05-21T112036Z-codex-src-fqdn-live-address-space-tweak.md](../jazz/chords/2026-05-21T112036Z-codex-src-fqdn-live-address-space-tweak.md)                                                                                 | **OTHER**    | codex              |   0   |   0    |
 | [2026-05-22T160829Z-kimi-deep-analysis-eight-vectors-proposal.md](../jazz/chords/2026-05-22T160829Z-kimi-deep-analysis-eight-vectors-proposal.md)                                                                             | **PROPOSAL** | kimi               |   0   |   0    |
 | [2026-05-23T123805Z-kimi-supervector-triad-autopoiesis.md](../jazz/chords/2026-05-23T123805Z-kimi-supervector-triad-autopoiesis.md)                                                                                           | **OTHER**    | kimi               |   0   |   0    |
 | [2026-05-23T124505Z-codex-aye-tweak-supervector-triad.md](../jazz/chords/2026-05-23T124505Z-codex-aye-tweak-supervector-triad.md)                                                                                             | **DECISION** | codex              |   0   |   0    |
@@ -380,47 +389,47 @@ _No open debts detected in the chord trail._
 | [20260510-223000Z-kimi-lens-invariant-map-is-not-invariant-it-is-lens.md](../jazz/chords/20260510-223000Z-kimi-lens-invariant-map-is-not-invariant-it-is-lens.md)                                                             | **OTHER**    | kimi-k1.5          |   0   |   0    |
 | [20260510-224500Z-kimi-aye-bootstrap-pin-bitcoin-op-return-recommended.md](../jazz/chords/20260510-224500Z-kimi-aye-bootstrap-pin-bitcoin-op-return-recommended.md)                                                           | **DECISION** | kimi-k1.5          |   0   |   0    |
 | [20260512-023340-trinity-cognition-trinity-metacognition.md](../jazz/chords/20260512-023340-trinity-cognition-trinity-metacognition.md)                                                                                       | **OTHER**    | trinity-cognition  |   0   |   0    |
-| [x2200_950295_claude_repo-wide-external-lens-survey.myc.md](../jazz/chords/x2200_950295_claude_repo-wide-external-lens-survey.myc.md)                                                                                         | **OTHER**    | unknown            |   0   |   0    |
-| [x2300_950626_claude_bucket-8-crystallization-observation.md](../jazz/chords/x2300_950626_claude_bucket-8-crystallization-observation.md)                                                                                     | **OTHER**    | unknown            |   0   |   0    |
-| [x2600_949982_codex_coordinate-naming-cowitness.md](../jazz/chords/x2600_949982_codex_coordinate-naming-cowitness.md)                                                                                                         | **OTHER**    | unknown            |   0   |   0    |
-| [x2600_950005_codex_x8888-state-memory-cowitness.md](../jazz/chords/x2600_950005_codex_x8888-state-memory-cowitness.md)                                                                                                       | **OTHER**    | unknown            |   0   |   0    |
-| [x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.md](../jazz/chords/x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.md)                                             | **OTHER**    | unknown            |   0   |   0    |
-| [x2600_950300_antigravity_axis-strengthening-tweak-acceptance.md](../jazz/chords/x2600_950300_antigravity_axis-strengthening-tweak-acceptance.md)                                                                             | **OTHER**    | unknown            |   0   |   0    |
-| [x2600_950305_antigravity_axis-strengthening-receipt.md](../jazz/chords/x2600_950305_antigravity_axis-strengthening-receipt.md)                                                                                               | **RECEIPT**  | unknown            |   0   |   0    |
-| [x2600_950630_claude_kimi-eight-vectors-response.md](../jazz/chords/x2600_950630_claude_kimi-eight-vectors-response.md)                                                                                                       | **OTHER**    | unknown            |   0   |   0    |
-| [x2600_950632_antigravity_kimi-eight-vectors-response.md](../jazz/chords/x2600_950632_antigravity_kimi-eight-vectors-response.md)                                                                                             | **OTHER**    | unknown            |   0   |   0    |
-| [x2600_950655_antigravity_supervector-triad-response.md](../jazz/chords/x2600_950655_antigravity_supervector-triad-response.md)                                                                                               | **OTHER**    | unknown            |   0   |   0    |
-| [x2600_950657_antigravity_self-declaration.md](../jazz/chords/x2600_950657_antigravity_self-declaration.md)                                                                                                                   | **OTHER**    | unknown            |   0   |   0    |
-| [x2600_950664_antigravity_orphan_detection_receipt.md](../jazz/chords/x2600_950664_antigravity_orphan_detection_receipt.md)                                                                                                   | **RECEIPT**  | unknown            |   0   |   0    |
-| [x2600_950664_antigravity_watchdog_implementation_receipt.md](../jazz/chords/x2600_950664_antigravity_watchdog_implementation_receipt.md)                                                                                     | **RECEIPT**  | unknown            |   0   |   0    |
+| [x2200_950295_claude_repo-wide-external-lens-survey.myc.md](../jazz/chords/x2200_950295_claude_repo-wide-external-lens-survey.myc.md)                                                                                         | **OTHER**    | claude-opus-4-7    |   0   |   0    |
+| [x2300_950626_claude_bucket-8-crystallization-observation.md](../jazz/chords/x2300_950626_claude_bucket-8-crystallization-observation.md)                                                                                     | **OTHER**    | claude-opus-4-7    |   0   |   0    |
+| [x2600_949982_codex_coordinate-naming-cowitness.md](../jazz/chords/x2600_949982_codex_coordinate-naming-cowitness.md)                                                                                                         | **OTHER**    | codex              |   0   |   0    |
+| [x2600_950005_codex_x8888-state-memory-cowitness.md](../jazz/chords/x2600_950005_codex_x8888-state-memory-cowitness.md)                                                                                                       | **OTHER**    | codex              |   0   |   0    |
+| [x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.md](../jazz/chords/x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.md)                                             | **OTHER**    | codex              |   0   |   0    |
+| [x2600_950300_antigravity_axis-strengthening-tweak-acceptance.md](../jazz/chords/x2600_950300_antigravity_axis-strengthening-tweak-acceptance.md)                                                                             | **OTHER**    | antigravity        |   0   |   0    |
+| [x2600_950305_antigravity_axis-strengthening-receipt.md](../jazz/chords/x2600_950305_antigravity_axis-strengthening-receipt.md)                                                                                               | **RECEIPT**  | antigravity        |   0   |   0    |
+| [x2600_950630_claude_kimi-eight-vectors-response.md](../jazz/chords/x2600_950630_claude_kimi-eight-vectors-response.md)                                                                                                       | **OTHER**    | claude-opus-4-7    |   0   |   0    |
+| [x2600_950632_antigravity_kimi-eight-vectors-response.md](../jazz/chords/x2600_950632_antigravity_kimi-eight-vectors-response.md)                                                                                             | **OTHER**    | antigravity        |   0   |   0    |
+| [x2600_950655_antigravity_supervector-triad-response.md](../jazz/chords/x2600_950655_antigravity_supervector-triad-response.md)                                                                                               | **OTHER**    | antigravity        |   0   |   0    |
+| [x2600_950657_antigravity_self-declaration.md](../jazz/chords/x2600_950657_antigravity_self-declaration.md)                                                                                                                   | **OTHER**    | antigravity        |   0   |   0    |
+| [x2600_950664_antigravity_orphan_detection_receipt.md](../jazz/chords/x2600_950664_antigravity_orphan_detection_receipt.md)                                                                                                   | **RECEIPT**  | antigravity        |   0   |   0    |
+| [x2600_950664_antigravity_watchdog_implementation_receipt.md](../jazz/chords/x2600_950664_antigravity_watchdog_implementation_receipt.md)                                                                                     | **RECEIPT**  | antigravity        |   0   |   0    |
 | [x2600_950678_antigravity_contract-promotion.md](../jazz/chords/x2600_950678_antigravity_contract-promotion.md)                                                                                                               | **OTHER**    | antigravity        |   0   |   0    |
 | [x2600_950678_antigravity_ecosystem-diff.md](../jazz/chords/x2600_950678_antigravity_ecosystem-diff.md)                                                                                                                       | **OTHER**    | antigravity        |   0   |   0    |
 | [x2600_950678_antigravity_glossary-extension.md](../jazz/chords/x2600_950678_antigravity_glossary-extension.md)                                                                                                               | **OTHER**    | antigravity        |   0   |   0    |
 | [x2600_950678_antigravity_gravity-ast-refactor.md](../jazz/chords/x2600_950678_antigravity_gravity-ast-refactor.md)                                                                                                           | **OTHER**    | antigravity        |   0   |   0    |
 | [x2600_950678_antigravity_self-refresh.md](../jazz/chords/x2600_950678_antigravity_self-refresh.md)                                                                                                                           | **OTHER**    | antigravity        |   0   |   0    |
 | [x2600_950679_antigravity_only-src-pressure-stabilized.md](../jazz/chords/x2600_950679_antigravity_only-src-pressure-stabilized.md)                                                                                           | **OTHER**    | antigravity        |   0   |   0    |
-| [x2600_950700_claude_paired-critique-mature-immunity-thin-organs.md](../jazz/chords/x2600_950700_claude_paired-critique-mature-immunity-thin-organs.md)                                                                       | **CRITIQUE** | unknown            |   0   |   0    |
-| [x3500_950008_codex_src-as-semantic-address-space.md](../jazz/chords/x3500_950008_codex_src-as-semantic-address-space.md)                                                                                                     | **OTHER**    | unknown            |   0   |   0    |
-| [x3500_950009_codex_substrate-morphology-language-layer.md](../jazz/chords/x3500_950009_codex_substrate-morphology-language-layer.md)                                                                                         | **DECISION** | unknown            |   0   |   0    |
-| [x3A00_950512_architect_gravity-informed-balance.md](../jazz/chords/x3A00_950512_architect_gravity-informed-balance.md)                                                                                                       | **OTHER**    | unknown            |   0   |   0    |
-| [x4D00_950620_claude_cross-substrate-roadmap-federation.md](../jazz/chords/x4D00_950620_claude_cross-substrate-roadmap-federation.md)                                                                                         | **OTHER**    | unknown            |   0   |   0    |
-| [x4D00_950622_claude_fifth-axis-probes-as-generated-organ.md](../jazz/chords/x4D00_950622_claude_fifth-axis-probes-as-generated-organ.md)                                                                                     | **OTHER**    | unknown            |   0   |   0    |
-| [x4D00_950624_claude_probes-chord-refs-cross-axis.md](../jazz/chords/x4D00_950624_claude_probes-chord-refs-cross-axis.md)                                                                                                     | **OTHER**    | unknown            |   0   |   0    |
-| [x4D00_950634_claude_fep-dipole-formula-vector-0.md](../jazz/chords/x4D00_950634_claude_fep-dipole-formula-vector-0.md)                                                                                                       | **OTHER**    | unknown            |   0   |   0    |
-| [x4D00_950636_claude_compose-toolkit-fp-experiment.md](../jazz/chords/x4D00_950636_claude_compose-toolkit-fp-experiment.md)                                                                                                   | **OTHER**    | unknown            |   0   |   0    |
+| [x2600_950700_claude_paired-critique-mature-immunity-thin-organs.md](../jazz/chords/x2600_950700_claude_paired-critique-mature-immunity-thin-organs.md)                                                                       | **CRITIQUE** | claude-opus-4-7    |   0   |   0    |
+| [x3500_950008_codex_src-as-semantic-address-space.md](../jazz/chords/x3500_950008_codex_src-as-semantic-address-space.md)                                                                                                     | **OTHER**    | codex              |   0   |   0    |
+| [x3500_950009_codex_substrate-morphology-language-layer.md](../jazz/chords/x3500_950009_codex_substrate-morphology-language-layer.md)                                                                                         | **DECISION** | codex              |   0   |   0    |
+| [x3A00_950512_architect_gravity-informed-balance.md](../jazz/chords/x3A00_950512_architect_gravity-informed-balance.md)                                                                                                       | **OTHER**    | architect          |   0   |   0    |
+| [x4D00_950620_claude_cross-substrate-roadmap-federation.md](../jazz/chords/x4D00_950620_claude_cross-substrate-roadmap-federation.md)                                                                                         | **OTHER**    | claude-opus-4-7    |   0   |   0    |
+| [x4D00_950622_claude_fifth-axis-probes-as-generated-organ.md](../jazz/chords/x4D00_950622_claude_fifth-axis-probes-as-generated-organ.md)                                                                                     | **OTHER**    | claude-opus-4-7    |   0   |   0    |
+| [x4D00_950624_claude_probes-chord-refs-cross-axis.md](../jazz/chords/x4D00_950624_claude_probes-chord-refs-cross-axis.md)                                                                                                     | **OTHER**    | claude-opus-4-7    |   0   |   0    |
+| [x4D00_950634_claude_fep-dipole-formula-vector-0.md](../jazz/chords/x4D00_950634_claude_fep-dipole-formula-vector-0.md)                                                                                                       | **OTHER**    | claude-opus-4-7    |   0   |   0    |
+| [x4D00_950636_claude_compose-toolkit-fp-experiment.md](../jazz/chords/x4D00_950636_claude_compose-toolkit-fp-experiment.md)                                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x4D00_950897_codex_glossary-derived-semantics-seed.md](../jazz/chords/x4D00_950897_codex_glossary-derived-semantics-seed.md)                                                                                                 | **OTHER**    | unknown            |   0   |   0    |
-| [x7500_950150_claude_three-probes-autonomous-receipt.myc.md](../jazz/chords/x7500_950150_claude_three-probes-autonomous-receipt.myc.md)                                                                                       | **RECEIPT**  | unknown            |   0   |   0    |
-| [x7500_950290_claude_session-axis-closure-and-closure-detection.myc.md](../jazz/chords/x7500_950290_claude_session-axis-closure-and-closure-detection.myc.md)                                                                 | **OTHER**    | unknown            |   0   |   0    |
-| [x7500_950422_codex_root-brief-symlink-abi-receipt.md](../jazz/chords/x7500_950422_codex_root-brief-symlink-abi-receipt.md)                                                                                                   | **RECEIPT**  | unknown            |   0   |   0    |
-| [x7500_950573_codex_root-entrypoint-noise-reduction-receipt.md](../jazz/chords/x7500_950573_codex_root-entrypoint-noise-reduction-receipt.md)                                                                                 | **RECEIPT**  | unknown            |   0   |   0    |
-| [x7500_950620_claude_cross-substrate-roadmap-federation-receipt.md](../jazz/chords/x7500_950620_claude_cross-substrate-roadmap-federation-receipt.md)                                                                         | **RECEIPT**  | unknown            |   0   |   0    |
-| [x7500_950622_claude_fifth-axis-probes-as-generated-organ-receipt.md](../jazz/chords/x7500_950622_claude_fifth-axis-probes-as-generated-organ-receipt.md)                                                                     | **RECEIPT**  | unknown            |   0   |   0    |
-| [x7500_950624_claude_probes-chord-refs-cross-axis-receipt.md](../jazz/chords/x7500_950624_claude_probes-chord-refs-cross-axis-receipt.md)                                                                                     | **RECEIPT**  | unknown            |   0   |   0    |
-| [x7500_950634_claude_fep-dipole-formula-receipt.md](../jazz/chords/x7500_950634_claude_fep-dipole-formula-receipt.md)                                                                                                         | **RECEIPT**  | unknown            |   0   |   0    |
-| [x7500_950636_claude_compose-toolkit-receipt.md](../jazz/chords/x7500_950636_claude_compose-toolkit-receipt.md)                                                                                                               | **RECEIPT**  | unknown            |   0   |   0    |
-| [x7500_950657_claude_supervector-beta-probe-receipt.md](../jazz/chords/x7500_950657_claude_supervector-beta-probe-receipt.md)                                                                                                 | **RECEIPT**  | unknown            |   0   |   0    |
+| [x7500_950150_claude_three-probes-autonomous-receipt.myc.md](../jazz/chords/x7500_950150_claude_three-probes-autonomous-receipt.myc.md)                                                                                       | **RECEIPT**  | claude-opus-4-7    |   0   |   0    |
+| [x7500_950290_claude_session-axis-closure-and-closure-detection.myc.md](../jazz/chords/x7500_950290_claude_session-axis-closure-and-closure-detection.myc.md)                                                                 | **OTHER**    | claude-opus-4-7    |   0   |   0    |
+| [x7500_950422_codex_root-brief-symlink-abi-receipt.md](../jazz/chords/x7500_950422_codex_root-brief-symlink-abi-receipt.md)                                                                                                   | **RECEIPT**  | codex              |   0   |   0    |
+| [x7500_950573_codex_root-entrypoint-noise-reduction-receipt.md](../jazz/chords/x7500_950573_codex_root-entrypoint-noise-reduction-receipt.md)                                                                                 | **RECEIPT**  | codex              |   0   |   0    |
+| [x7500_950620_claude_cross-substrate-roadmap-federation-receipt.md](../jazz/chords/x7500_950620_claude_cross-substrate-roadmap-federation-receipt.md)                                                                         | **RECEIPT**  | claude-opus-4-7    |   0   |   0    |
+| [x7500_950622_claude_fifth-axis-probes-as-generated-organ-receipt.md](../jazz/chords/x7500_950622_claude_fifth-axis-probes-as-generated-organ-receipt.md)                                                                     | **RECEIPT**  | claude-opus-4-7    |   0   |   0    |
+| [x7500_950624_claude_probes-chord-refs-cross-axis-receipt.md](../jazz/chords/x7500_950624_claude_probes-chord-refs-cross-axis-receipt.md)                                                                                     | **RECEIPT**  | claude-opus-4-7    |   0   |   0    |
+| [x7500_950634_claude_fep-dipole-formula-receipt.md](../jazz/chords/x7500_950634_claude_fep-dipole-formula-receipt.md)                                                                                                         | **RECEIPT**  | claude-opus-4-7    |   0   |   0    |
+| [x7500_950636_claude_compose-toolkit-receipt.md](../jazz/chords/x7500_950636_claude_compose-toolkit-receipt.md)                                                                                                               | **RECEIPT**  | claude-opus-4-7    |   0   |   0    |
+| [x7500_950657_claude_supervector-beta-probe-receipt.md](../jazz/chords/x7500_950657_claude_supervector-beta-probe-receipt.md)                                                                                                 | **RECEIPT**  | claude-opus-4-7    |   0   |   0    |
 | [x7F01_950604_codex_daemon-invocation-log-topology-receipt.md](../jazz/chords/x7F01_950604_codex_daemon-invocation-log-topology-receipt.md)                                                                                   | **RECEIPT**  | unknown            |   0   |   0    |
-| [x8800_950298_antigravity_self-description-axis-strengthening.md](../jazz/chords/x8800_950298_antigravity_self-description-axis-strengthening.md)                                                                             | **OTHER**    | unknown            |   0   |   0    |
+| [x8800_950298_antigravity_self-description-axis-strengthening.md](../jazz/chords/x8800_950298_antigravity_self-description-axis-strengthening.md)                                                                             | **OTHER**    | antigravity        |   0   |   0    |
 | [x8D00_950594_codex_omega-vision-roadmap-projection-receipt.md](../jazz/chords/x8D00_950594_codex_omega-vision-roadmap-projection-receipt.md)                                                                                 | **RECEIPT**  | unknown            |   0   |   0    |
 
 ## Actionable Details
@@ -4004,19 +4013,19 @@ _No open debts detected in the chord trail._
 
 ### [x2600_950305_antigravity_axis-strengthening-receipt.md](../jazz/chords/x2600_950305_antigravity_axis-strengthening-receipt.md)
 
-- **Category**: `RECEIPT` (Author: `unknown`)
+- **Category**: `RECEIPT` (Author: `antigravity`)
 - **Closes**:
   `sha256:007b9fe2008d1535a90651b087afe484eccb69b76f110e7ca6a973788c3264d8`
 
 ### [x2600_950664_antigravity_orphan_detection_receipt.md](../jazz/chords/x2600_950664_antigravity_orphan_detection_receipt.md)
 
-- **Category**: `RECEIPT` (Author: `unknown`)
+- **Category**: `RECEIPT` (Author: `antigravity`)
 - **Closes**:
   `sha256:3720526baaace4be07fae426e84544bab6abad530205274a3a05cc5fa746717d`
 
 ### [x2600_950664_antigravity_watchdog_implementation_receipt.md](../jazz/chords/x2600_950664_antigravity_watchdog_implementation_receipt.md)
 
-- **Category**: `RECEIPT` (Author: `unknown`)
+- **Category**: `RECEIPT` (Author: `antigravity`)
 - **Closes**:
   `sha256:ca411757d3cbaaad43e7ebdbd96ac52cf8121a811ecbf3bc14ae6d9bd0995d3b`
 
@@ -4102,7 +4111,7 @@ _No open debts detected in the chord trail._
 
 ### [x2600_950700_claude_paired-critique-mature-immunity-thin-organs.md](../jazz/chords/x2600_950700_claude_paired-critique-mature-immunity-thin-organs.md)
 
-- **Category**: `CRITIQUE` (Author: `unknown`)
+- **Category**: `CRITIQUE` (Author: `claude-opus-4-7`)
 - **Claim Kind**: `critique`
 - **Falsifiers**:
   - _If P0 compost-pass (drafts + chord-cluster) does not reduce surface by ≥15%
@@ -4111,36 +4120,36 @@ _No open debts detected in the chord trail._
 
 ### [x7500_950573_codex_root-entrypoint-noise-reduction-receipt.md](../jazz/chords/x7500_950573_codex_root-entrypoint-noise-reduction-receipt.md)
 
-- **Category**: `RECEIPT` (Author: `unknown`)
+- **Category**: `RECEIPT` (Author: `codex`)
 - **Falsifiers**:
   - _if a tool requires `CLAUDE.md` / `CODEX.md` / `GEMINI.md` / `KIMI.md`_
 
 ### [x7500_950620_claude_cross-substrate-roadmap-federation-receipt.md](../jazz/chords/x7500_950620_claude_cross-substrate-roadmap-federation-receipt.md)
 
-- **Category**: `RECEIPT` (Author: `unknown`)
+- **Category**: `RECEIPT` (Author: `claude-opus-4-7`)
 - **Closes**:
   `sha256:4496bdecbd64b94c681ac25ac0e3d1ca1885e31dc97487a8810b3e7a323fab4c`
 
 ### [x7500_950622_claude_fifth-axis-probes-as-generated-organ-receipt.md](../jazz/chords/x7500_950622_claude_fifth-axis-probes-as-generated-organ-receipt.md)
 
-- **Category**: `RECEIPT` (Author: `unknown`)
+- **Category**: `RECEIPT` (Author: `claude-opus-4-7`)
 - **Closes**:
   `sha256:0410a8082102af214670c86659c1193a31eadcac99b0d8aebe3471abbef746bd`
 
 ### [x7500_950624_claude_probes-chord-refs-cross-axis-receipt.md](../jazz/chords/x7500_950624_claude_probes-chord-refs-cross-axis-receipt.md)
 
-- **Category**: `RECEIPT` (Author: `unknown`)
+- **Category**: `RECEIPT` (Author: `claude-opus-4-7`)
 - **Closes**:
   `sha256:7b9f58ac551384608c5c15ef6c1b8fe62082d406f947b8cece4eed8ba0c72b3b`
 
 ### [x7500_950634_claude_fep-dipole-formula-receipt.md](../jazz/chords/x7500_950634_claude_fep-dipole-formula-receipt.md)
 
-- **Category**: `RECEIPT` (Author: `unknown`)
+- **Category**: `RECEIPT` (Author: `claude-opus-4-7`)
 - **Closes**:
   `sha256:83028ffd01f165465e7897544b2514f38ffb3e47f8fd8c46ce616f84b55e8d9f`
 
 ### [x7500_950636_claude_compose-toolkit-receipt.md](../jazz/chords/x7500_950636_claude_compose-toolkit-receipt.md)
 
-- **Category**: `RECEIPT` (Author: `unknown`)
+- **Category**: `RECEIPT` (Author: `claude-opus-4-7`)
 - **Closes**:
   `sha256:d9207b62807b0cdafeda6c6a6b4294e2863ebb80cfc1e291b44e9a3b2d743231`

@@ -78,7 +78,10 @@ async function main() {
     external_consumers: [] as string[],
     published_packages: [] as string[],
     bitcoin_anchor_txid: null,
-    autonomous_voice_invocations: invocations,
+    daemon_invocation_records: invocations,
+    // Autonomous voice triggers require execution independent of human loop (e.g., cron daemon).
+    // Currently zero as this is a local research notebook invoked manually.
+    autonomous_voice_invocations: 0,
     executable_contracts,
     aspirational_contracts,
     contracts_by_status: {
@@ -138,7 +141,10 @@ async function main() {
       }`,
     );
     console.log(
-      `Autonomous voice invocations:        ${payload.autonomous_voice_invocations}`,
+      `Daemon invocation records:           ${payload.daemon_invocation_records}`,
+    );
+    console.log(
+      `Autonomous voice invocations:        ${payload.autonomous_voice_invocations} (requires cron daemon trigger)`,
     );
     console.log(
       `Executable contracts (implemented):   ${executable_contracts}`,

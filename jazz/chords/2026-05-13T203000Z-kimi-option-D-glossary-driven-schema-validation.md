@@ -38,9 +38,10 @@ expected_after_running:
 
 ## Контекст
 
-Gemini (16:30Z): *"Option D is the Only Pure Path. B and C introduce import dependencies across spatial coordinates, polluting topological independence."*
+Gemini (16:30Z): _"Option D is the Only Pure Path. B and C introduce import
+dependencies across spatial coordinates, polluting topological independence."_
 
-Архітектор: *"давай зараз"*.
+Архітектор: _"давай зараз"_.
 
 ## Що зроблено
 
@@ -59,17 +60,20 @@ Gemini (16:30Z): *"Option D is the Only Pure Path. B and C introduce import depe
 ### 2. Dispatcher validation (`0x0/01.ts`)
 
 **Завантаження:**
+
 ```ts
 SCHEMAS = await fn_load_schemas();
 // Читає type:07 records, будує Map<type → required_fields[]>
 ```
 
 **Валідація:**
+
 ```ts
-function fn_validate_payload(payload): { valid, missing?, type? }
+function fn_validate_payload(payload): { valid; missing?; type? };
 ```
 
 **Інтеграція у `fn_process_payload`:**
+
 ```ts
 const validation = fn_validate_payload(payload);
 if (!validation.valid) {
@@ -91,53 +95,64 @@ if (!validation.valid) {
 
 ## Тест: навмисний break
 
-**Крок 1:** Закоментував `checks` у `0x6/A.ts`.
-**Крок 2:** `t health`
+**Крок 1:** Закоментував `checks` у `0x6/A.ts`. **Крок 2:** `t health`
 **Результат:**
+
 ```
 # validation error @ 6/A
 # missing fields: checks
 # Prediction Error: executable output does not match glossary schema (type:07)
 ```
+
 Exit code: 2.
 
-**Крок 3:** Відновив `checks`.
-**Крок 4:** `t health` → ✓ healthy (17/17).
+**Крок 3:** Відновив `checks`. **Крок 4:** `t health` → ✓ healthy (17/17).
 
 ## Чому це FEP (Free Energy Principle)
 
 Gemini точно це описала:
 
-> *"ValidationError — це не просто збій програми. Це математична Помилка Передбачення."*
+> _"ValidationError — це не просто збій програми. Це математична Помилка
+> Передбачення."_
 
 У нашій імплементації:
+
 - **Prior:** glossary schema (type:07) очікує `checks` для `health`
 - **Observation:** `0x6/A.ts` повернув payload без `checks`
 - **Surprisal:** `missing fields: checks`
 - **Action:** dispatcher генерує visible prediction error
 
-Це **autopoietic loop**: система бачить власну невідповідність, робить її visible, і надає інформацію для самокорекції.
+Це **autopoietic loop**: система бачить власну невідповідність, робить її
+visible, і надає інформацію для самокорекції.
 
 ## Архітектурні принципи, які зберігаються
 
-| Принцип | B/C (shared router) | D (glossary-driven) |
-|---------|---------------------|---------------------|
-| Executable isolation | ❌ `import { emit } from "../lib"` | ✅ `console.log(JSON.stringify({...}))` |
-| Single source of truth | ❌ schema в коді | ✅ schema у glossary |
-| No central dependencies | ❌ lib/receipt.ts | ✅ немає shared imports |
-| Self-describing | ❌ код читає код | ✅ glossary читає glossary |
-| FEP-aligned | ❌ hard errors | ✅ prediction errors |
+| Принцип                 | B/C (shared router)                | D (glossary-driven)                     |
+| ----------------------- | ---------------------------------- | --------------------------------------- |
+| Executable isolation    | ❌ `import { emit } from "../lib"` | ✅ `console.log(JSON.stringify({...}))` |
+| Single source of truth  | ❌ schema в коді                   | ✅ schema у glossary                    |
+| No central dependencies | ❌ lib/receipt.ts                  | ✅ немає shared imports                 |
+| Self-describing         | ❌ код читає код                   | ✅ glossary читає glossary              |
+| FEP-aligned             | ❌ hard errors                     | ✅ prediction errors                    |
 
 ## Обмеження
 
-1. **Permissive для невідомих типів:** якщо `type` немає у schema registry — dispatcher пропускає без валідації. Це intentional: не блокуємо нові типи до того, як їхня schema буде визначена.
-2. **Проста валідація:** тільки required fields (presence check). Немає type checking (string vs number), nested validation, чи regex.
-3. **No caching:** glossary перечитується при кожному запуску dispatcher. Для 65 records це <1ms. Для 10K records знадобиться LRU cache.
+1. **Permissive для невідомих типів:** якщо `type` немає у schema registry —
+   dispatcher пропускає без валідації. Це intentional: не блокуємо нові типи до
+   того, як їхня schema буде визначена.
+2. **Проста валідація:** тільки required fields (presence check). Немає type
+   checking (string vs number), nested validation, чи regex.
+3. **No caching:** glossary перечитується при кожному запуску dispatcher. Для 65
+   records це <1ms. Для 10K records знадобиться LRU cache.
 
 ## Вердикт
 
-Option D — не просто красивий варіант. Це **єдиний варіант**, який зберігає топологічну ізоляцію hex substrate. Кожен executable залишається чистою функцією: отримав стан → повернув стан. Він не знає, хто його викликає і як валідується його вивід.
+Option D — не просто красивий варіант. Це **єдиний варіант**, який зберігає
+топологічну ізоляцію hex substrate. Кожен executable залишається чистою
+функцією: отримав стан → повернув стан. Він не знає, хто його викликає і як
+валідується його вивід.
 
-Glossary — єдине джерело правди. Schema, execution mappings, words — все в одному self-describing файлі.
+Glossary — єдине джерело правди. Schema, execution mappings, words — все в
+одному self-describing файлі.
 
 — kimi-k1.6, 2026-05-13T20:30Z, implementing what Gemini saw 4 hours earlier.

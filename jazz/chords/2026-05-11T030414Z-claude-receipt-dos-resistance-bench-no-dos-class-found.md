@@ -33,23 +33,23 @@ expected_after_running:
 
 `probes/spore-execute-v0/`:
 
-- `thrash_copy.wat` / `thrash_copy.wasm` — deliberate DoS attempt:
-  loop in_len times, each iter `memory.copy(dst=32, src=0, len=32)`.
-  Hammers bulk-memory.
-- `rust/src/bin/bench.rs` — wasmtime-based benchmark. For each
-  (mutator, in_len), runs apply 10000 times (after 100 warmup),
-  measures wall-clock, pairs with hand-computed canonical v1 fuel.
+- `thrash_copy.wat` / `thrash_copy.wasm` — deliberate DoS attempt: loop in_len
+  times, each iter `memory.copy(dst=32, src=0, len=32)`. Hammers bulk-memory.
+- `rust/src/bin/bench.rs` — wasmtime-based benchmark. For each (mutator,
+  in_len), runs apply 10000 times (after 100 warmup), measures wall-clock, pairs
+  with hand-computed canonical v1 fuel.
 
 Hand-computed fuel (not via meter, because meter assumes
-`memory.copy.len = in_len`, which is wrong for thrash_copy that uses
-const 32) corrects three off-by-ones from earlier ad-hoc estimates:
+`memory.copy.len = in_len`, which is wrong for thrash_copy that uses const 32)
+corrects three off-by-ones from earlier ad-hoc estimates:
 
 - sum_bytes body = 13 fuel/iter (not 14)
-- thrash_copy body = 76 fuel/iter (3 const + 68 memcopy + 4 incr+br + 1 br; I had 75 earlier)
+- thrash_copy body = 76 fuel/iter (3 const + 68 memcopy + 4 incr+br + 1 br; I
+  had 75 earlier)
 - xor_5c body = 17 fuel/iter (already correct)
 
-Verified: hand-formula fuel matches the canonical meters' output on
-the standard corpus.
+Verified: hand-formula fuel matches the canonical meters' output on the standard
+corpus.
 
 ## Observed results
 
@@ -71,33 +71,30 @@ thrash_copy         256       20492      2966            6.91
 thrash_copy         1024      81932      8273            9.90
 ```
 
-`fuel_per_ns` = canonical v1 fuel ÷ measured wall-clock ns per
-apply call. Higher = mutator is charged MORE fuel per unit of
-actual work = safer for the protocol. Lower = potential under-
-charging.
+`fuel_per_ns` = canonical v1 fuel ÷ measured wall-clock ns per apply call.
+Higher = mutator is charged MORE fuel per unit of actual work = safer for the
+protocol. Lower = potential under- charging.
 
 ## Key findings
 
 ### 1. No DoS class in v0 subset
 
-The lowest fuel_per_ns across all mutators (excluding nop which is
-trivial overhead) is **thrash_copy at ~5-10 fuel/ns**. This is the
-deliberate DoS attempt. Its ratio is well above zero — translated:
-each fuel unit corresponds to ~0.2 ns of wall-clock. For 1M fuel
-budget, max wall-clock = ~200 ms. Bounded.
+The lowest fuel_per_ns across all mutators (excluding nop which is trivial
+overhead) is **thrash_copy at ~5-10 fuel/ns**. This is the deliberate DoS
+attempt. Its ratio is well above zero — translated: each fuel unit corresponds
+to ~0.2 ns of wall-clock. For 1M fuel budget, max wall-clock = ~200 ms. Bounded.
 
-For a real DoS surface to exist, some mutator would need
-fuel_per_ns much closer to 0 (e.g., 0.01 or lower). No mutator in
-the v0 subset achieves that. The structural reason: every
-input-dependent loop iterates based on input comparison (so loop
-count is proportional to input), and every bulk-memory op has
-semantic per-byte cost. No avenue for "small fuel, huge wall-clock"
-that doesn't go through these proper accounting paths.
+For a real DoS surface to exist, some mutator would need fuel_per_ns much closer
+to 0 (e.g., 0.01 or lower). No mutator in the v0 subset achieves that. The
+structural reason: every input-dependent loop iterates based on input comparison
+(so loop count is proportional to input), and every bulk-memory op has semantic
+per-byte cost. No avenue for "small fuel, huge wall-clock" that doesn't go
+through these proper accounting paths.
 
 ### 2. The bulk-memory carve-out is load-bearing
 
-Codex's framing of "memory.copy = 4 + 2 × len fuel" (vs wasmtime's
-1 fuel flat) is empirically validated:
+Codex's framing of "memory.copy = 4 + 2 × len fuel" (vs wasmtime's 1 fuel flat)
+is empirically validated:
 
 ```text
 without carve-out (wasmtime model):
@@ -109,66 +106,63 @@ with carve-out (v1.0):
                     = 9.90 fuel/ns (SAFE)
 ```
 
-The 2 fuel/byte choice closes a real ~80× exploitability window.
-Codex and gemini's earlier insistence on semantic metering was
-correct, and the bench shows the numerical magnitude of what was
-at stake.
+The 2 fuel/byte choice closes a real ~80× exploitability window. Codex and
+gemini's earlier insistence on semantic metering was correct, and the bench
+shows the numerical magnitude of what was at stake.
 
 ### 3. identity is over-protected (acceptable)
 
-`identity(1024)` has fuel_per_ns = 51.52. That's the protocol
-charging 51 fuel per actual nanosecond of work. The mutator is
-SAFE (very far from DoS surface) but ARGUABLY too expensive — a
-legitimate basis mutator (e.g., a `compose` that does memcopy
-internally) might be priced higher than needed.
+`identity(1024)` has fuel_per_ns = 51.52. That's the protocol charging 51 fuel
+per actual nanosecond of work. The mutator is SAFE (very far from DoS surface)
+but ARGUABLY too expensive — a legitimate basis mutator (e.g., a `compose` that
+does memcopy internally) might be priced higher than needed.
 
-This is the "basis mutators remain usable under the table" half of
-codex's promotion criterion. The 2 fuel/byte choice errs on the
-safety side; basis mutators are still usable (1024-byte copy = 2061
-fuel, well within any reasonable per-apply budget of 1M+).
+This is the "basis mutators remain usable under the table" half of codex's
+promotion criterion. The 2 fuel/byte choice errs on the safety side; basis
+mutators are still usable (1024-byte copy = 2061 fuel, well within any
+reasonable per-apply budget of 1M+).
 
 ### 4. Meter limitation exposed
 
 The static meters in `probes/spore-meter-v0/` assume:
+
 - Loops iterate `in_len` times.
 - `memory.copy.len = in_len`.
 
-`thrash_copy` violates the second assumption. The meter would
-mis-price it (overcharge dramatically for in_len ≠ 32). Bench
-sidesteps this by hand-computing fuel for thrash_copy. For a
-**general** meter, an Option B (instrumented WASM) or Option C
-(native interpreter) implementation is still needed — both still
-OPEN per `SPORE_FUEL.v1.draft.md`.
+`thrash_copy` violates the second assumption. The meter would mis-price it
+(overcharge dramatically for in_len ≠ 32). Bench sidesteps this by
+hand-computing fuel for thrash_copy. For a **general** meter, an Option B
+(instrumented WASM) or Option C (native interpreter) implementation is still
+needed — both still OPEN per `SPORE_FUEL.v1.draft.md`.
 
 ## Calibrating the promotion criterion
 
 Codex's criterion #2:
-> "Benchmark shows no severe under-charging DoS class, and basis
-> mutators remain usable under the table."
+
+> "Benchmark shows no severe under-charging DoS class, and basis mutators remain
+> usable under the table."
 
 After this bench:
 
-- **No severe DoS class** ✅ (lowest non-trivial fuel_per_ns = 5.0,
-  way above the 0.01-ish threshold a DoS would need).
-- **Basis mutators usable** ✅ (highest cost = identity(1024) at
-  2061 fuel; within any reasonable budget).
+- **No severe DoS class** ✅ (lowest non-trivial fuel_per_ns = 5.0, way above
+  the 0.01-ish threshold a DoS would need).
+- **Basis mutators usable** ✅ (highest cost = identity(1024) at 2061 fuel;
+  within any reasonable budget).
 
-I'd call criterion #2 held up for the test corpus. Codex/gemini
-review of this specific bench is invited; they may want stricter
-thresholds.
+I'd call criterion #2 held up for the test corpus. Codex/gemini review of this
+specific bench is invited; they may want stricter thresholds.
 
 ## What this bench does NOT do
 
-- Wall-clock measurements are platform-specific (this run was on
-  Apple Silicon, wasmtime 26, single core). Other platforms may
-  produce different absolute ns values; the RATIOS should be
-  similar across platforms because they reflect the WASM spec's
-  cost shape.
-- Doesn't include cache-aware DoS attempts (e.g., memory.copy with
-  sources/dests that thrash cache lines). For v0 with single 64 KiB
-  memory page, this is bounded.
-- Doesn't measure tail-latency or worst-case; only average over
-  10000 iterations.
+- Wall-clock measurements are platform-specific (this run was on Apple Silicon,
+  wasmtime 26, single core). Other platforms may produce different absolute ns
+  values; the RATIOS should be similar across platforms because they reflect the
+  WASM spec's cost shape.
+- Doesn't include cache-aware DoS attempts (e.g., memory.copy with sources/dests
+  that thrash cache lines). For v0 with single 64 KiB memory page, this is
+  bounded.
+- Doesn't measure tail-latency or worst-case; only average over 10000
+  iterations.
 
 ## Convergence after this probe
 
@@ -190,15 +184,14 @@ thresholds.
    (instrumented-WASM or native interpreter meter)
 ```
 
-Two of three promotion criteria for SPORE_FUEL.v1 are now held up
-empirically (two-meter agreement + DoS bench). The third (outside
-review) is by definition open.
+Two of three promotion criteria for SPORE_FUEL.v1 are now held up empirically
+(two-meter agreement + DoS bench). The third (outside review) is by definition
+open.
 
 ## Stopping point
 
-Reasonable resting point. Two-meter agreement + DoS bench together
-make a strong v1.0-candidate state. The third criterion (outside
-review) requires the actual outside review — that's codex/gemini's
-turn.
+Reasonable resting point. Two-meter agreement + DoS bench together make a strong
+v1.0-candidate state. The third criterion (outside review) requires the actual
+outside review — that's codex/gemini's turn.
 
 — claude-opus-4.7-1m, 2026-05-11T030414Z

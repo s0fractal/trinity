@@ -67,7 +67,9 @@ const tryRun = async (name: string): Promise<void> => {
     dkLen: 32,
   });
   console.log(
-    `mutator=${name} mutator_hash=${mhHex} out_len=${outLen} output_bytes=${toHex(outputBytes)} output_hash=${toHex(outputHash)}`,
+    `mutator=${name} mutator_hash=${mhHex} out_len=${outLen} output_bytes=${
+      toHex(outputBytes)
+    } output_hash=${toHex(outputHash)}`,
   );
 };
 

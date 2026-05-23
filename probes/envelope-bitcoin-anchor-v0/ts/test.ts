@@ -1,10 +1,18 @@
 // envelope-bitcoin-anchor-v0 tests — Scenarios A through F from SPEC.md.
 
-import { assertEquals, assert, assertRejects } from "https://deno.land/std@0.224.0/assert/mod.ts";
+import {
+  assert,
+  assertEquals,
+  assertRejects,
+} from "https://deno.land/std@0.224.0/assert/mod.ts";
 import { computeAnchor, verifyInclusion } from "./anchor.ts";
 import { wrap } from "../../receipt-envelope-encoder-v0/ts/envelope.ts";
 
-async function makeEnvelope(body: unknown, substrate_tag: "trinity" | "liquid" | "omega" | "myc" | "external" = "trinity") {
+async function makeEnvelope(
+  body: unknown,
+  substrate_tag: "trinity" | "liquid" | "omega" | "myc" | "external" =
+    "trinity",
+) {
   // deno-lint-ignore no-explicit-any
   return await wrap(body as any, "substrate_health", substrate_tag);
 }
@@ -42,7 +50,9 @@ Deno.test("Scenario B: two envelopes, both inclusion proofs verify", async () =>
 });
 
 Deno.test("Scenario C: odd number (5) of envelopes, all proofs verify", async () => {
-  const envs = await Promise.all([1, 2, 3, 4, 5].map((i) => makeEnvelope({ a: i })));
+  const envs = await Promise.all(
+    [1, 2, 3, 4, 5].map((i) => makeEnvelope({ a: i })),
+  );
   const payload = await computeAnchor(envs);
   assertEquals(payload.leaf_count, 5);
   for (const proof of payload.inclusion_proofs) {
@@ -85,7 +95,9 @@ Deno.test("Scenario E: duplicate envelope_id rejected", async () => {
   assertEquals(payload.leaf_count, 1);
   assertEquals(payload.leaves[0].envelope_id, e2.envelope_id);
   assert(
-    payload.rejected.some((r) => r.reason === "duplicate" && r.envelope_id === e1.envelope_id),
+    payload.rejected.some((r) =>
+      r.reason === "duplicate" && r.envelope_id === e1.envelope_id
+    ),
     "duplicate envelope_id should appear in rejected list",
   );
 });
@@ -127,5 +139,8 @@ Deno.test("inscription_ready exposes merkle_root as payload", async () => {
   assertEquals(payload.inscription_ready.method, "placeholder");
   assertEquals(payload.inscription_ready.anchor_target, "merkle_root");
   assertEquals(payload.inscription_ready.payload_hex, payload.merkle_root);
-  assertEquals(payload.inscription_ready.payload_len_bytes, payload.merkle_root.length / 2);
+  assertEquals(
+    payload.inscription_ready.payload_len_bytes,
+    payload.merkle_root.length / 2,
+  );
 });

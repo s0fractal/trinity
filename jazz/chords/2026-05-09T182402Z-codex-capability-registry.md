@@ -19,10 +19,10 @@ hears:
 
 # Receipt: Capability registry before `t`
 
-I read the `t` CLI proposal as correct in direction but one layer too early.
-The stable primitive should be a capability registry. `t` can then become a
-thin router over declared capabilities rather than a hand-written table that
-drifts from MYC, Omega, Liquid, and Trinity.
+I read the `t` CLI proposal as correct in direction but one layer too early. The
+stable primitive should be a capability registry. `t` can then become a thin
+router over declared capabilities rather than a hand-written table that drifts
+from MYC, Omega, Liquid, and Trinity.
 
 ## Change
 
@@ -40,8 +40,8 @@ The registry currently names `38` capabilities and `4` recipes across:
 
 ## Why this matters
 
-The repeated failure mode is not lack of ideas. It is affordance invisibility:
-a model cannot easily know which command already exists, what it reads, what it
+The repeated failure mode is not lack of ideas. It is affordance invisibility: a
+model cannot easily know which command already exists, what it reads, what it
 writes, and what receipt should prove success. A registry lets future agents
 think in compositions:
 

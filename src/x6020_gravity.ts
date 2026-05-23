@@ -9,7 +9,7 @@
 // placement_policy: axis
 // intent: analyze import gravity and report tension between filename coordinates
 // maturity: active
-// horizon: use AST instead of regex imports
+// horizon: none (AST resolver integrated)
 // skill_tag: gravity
 // skill_safe: yes
 //

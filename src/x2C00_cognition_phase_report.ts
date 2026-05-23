@@ -41,7 +41,7 @@ function determineArchetype(stats: RepoStats): string {
 async function main() {
   const cwd = Deno.cwd();
   const profiles = await scanEcosystem(cwd);
-  
+
   const repoStats: Record<string, RepoStats> = {};
   for (const repo of REPOS) {
     repoStats[repo] = {
@@ -63,30 +63,42 @@ async function main() {
     repoStats[profile.repo][profile.thoughtPhase]++;
   }
 
-  console.log("\n==========================================================================");
-  console.log("                      COGNITIVE PHASE REPORT                              ");
-  console.log("==========================================================================\n");
+  console.log(
+    "\n==========================================================================",
+  );
+  console.log(
+    "                      COGNITIVE PHASE REPORT                              ",
+  );
+  console.log(
+    "==========================================================================\n",
+  );
 
-  console.log("Repo      Raw   Hyp   Prop  Exp   Rcpt  Form  Cryst Comp  Archetype");
-  console.log("--------------------------------------------------------------------------");
-  
+  console.log(
+    "Repo      Raw   Hyp   Prop  Exp   Rcpt  Form  Cryst Comp  Archetype",
+  );
+  console.log(
+    "--------------------------------------------------------------------------",
+  );
+
   for (const repo of REPOS) {
     const s = repoStats[repo];
     const arch = determineArchetype(s);
     console.log(
       `${repo.padEnd(9)} ` +
-      `${String(s["raw-fantasy"]).padEnd(5)} ` +
-      `${String(s["hypothesis"]).padEnd(5)} ` +
-      `${String(s["proposal"]).padEnd(5)} ` +
-      `${String(s["experiment"]).padEnd(5)} ` +
-      `${String(s["receipt"]).padEnd(5)} ` +
-      `${String(s["formula"]).padEnd(5)} ` +
-      `${String(s["crystal"]).padEnd(5)} ` +
-      `${String(s["compost"]).padEnd(5)} ` +
-      `${arch}`
+        `${String(s["raw-fantasy"]).padEnd(5)} ` +
+        `${String(s["hypothesis"]).padEnd(5)} ` +
+        `${String(s["proposal"]).padEnd(5)} ` +
+        `${String(s["experiment"]).padEnd(5)} ` +
+        `${String(s["receipt"]).padEnd(5)} ` +
+        `${String(s["formula"]).padEnd(5)} ` +
+        `${String(s["crystal"]).padEnd(5)} ` +
+        `${String(s["compost"]).padEnd(5)} ` +
+        `${arch}`,
     );
   }
-  console.log("==========================================================================\n");
+  console.log(
+    "==========================================================================\n",
+  );
 }
 
 main();

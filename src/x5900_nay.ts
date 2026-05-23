@@ -33,8 +33,15 @@
 //
 // Glossary words: nay, reject, refuse, ні, ня, відмова, заперечити
 
-import { dirname, fromFileUrl, resolve } from "https://deno.land/std@0.224.0/path/mod.ts";
-import { wrap, Envelope } from "../probes/receipt-envelope-encoder-v0/ts/envelope.ts";
+import {
+  dirname,
+  fromFileUrl,
+  resolve,
+} from "https://deno.land/std@0.224.0/path/mod.ts";
+import {
+  Envelope,
+  wrap,
+} from "../probes/receipt-envelope-encoder-v0/ts/envelope.ts";
 import { CborValue } from "../probes/receipt-envelope-encoder-v0/ts/canonical_cbor.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
@@ -80,7 +87,10 @@ async function readStdin(): Promise<string> {
   const total = chunks.reduce((a, c) => a + c.length, 0);
   const buf = new Uint8Array(total);
   let off = 0;
-  for (const c of chunks) { buf.set(c, off); off += c.length; }
+  for (const c of chunks) {
+    buf.set(c, off);
+    off += c.length;
+  }
   return new TextDecoder().decode(buf);
 }
 
@@ -90,7 +100,9 @@ function findEnvelope(parsed: unknown): Envelope | null {
   if (p.schema === "trinity.receipt-envelope.v0.1") return parsed as Envelope;
   if (p.envelope && typeof p.envelope === "object") {
     const e = p.envelope as Record<string, unknown>;
-    if (e.schema === "trinity.receipt-envelope.v0.1") return p.envelope as Envelope;
+    if (e.schema === "trinity.receipt-envelope.v0.1") {
+      return p.envelope as Envelope;
+    }
   }
   return null;
 }
@@ -106,15 +118,19 @@ function fail(msg: string, extra: Record<string, unknown> = {}): never {
 }
 
 async function main() {
-  const { proposal: proposalPath, stdin, reason, oracle, substrate, out } = parseArgs(Deno.args);
+  const { proposal: proposalPath, stdin, reason, oracle, substrate, out } =
+    parseArgs(Deno.args);
 
   if (!reason || reason.trim().length === 0) {
-    fail("nay requires --reason \"<text>\" — NAY without a reason is silent objection; objection must be witnessed");
+    fail(
+      'nay requires --reason "<text>" — NAY without a reason is silent objection; objection must be witnessed',
+    );
   }
 
   if (!proposalPath && !stdin) {
     fail("nay requires --proposal <env.json> OR --stdin", {
-      available: "t nay --proposal <env.json> --reason \"...\"  |  t nay --stdin --reason \"...\"",
+      available:
+        't nay --proposal <env.json> --reason "..."  |  t nay --stdin --reason "..."',
     });
   }
 
@@ -142,14 +158,25 @@ async function main() {
   }
 
   if (proposalEnv!.body_kind !== "codeicide_proposal") {
-    fail(`nay: target envelope body_kind is "${proposalEnv!.body_kind}", expected "codeicide_proposal"`, {
-      hint: "t nay rejects codeicide proposals specifically; general NAY for other body_kinds is future work",
-    });
+    fail(
+      `nay: target envelope body_kind is "${
+        proposalEnv!.body_kind
+      }", expected "codeicide_proposal"`,
+      {
+        hint:
+          "t nay rejects codeicide proposals specifically; general NAY for other body_kinds is future work",
+      },
+    );
   }
 
   const propBody = proposalEnv!.body as CodeicideProposalBody | undefined;
-  if (!propBody || propBody.type !== "CodeicideProposal" || !propBody.target_path || !propBody.target_hash) {
-    fail("nay: proposal envelope body is not a valid CodeicideProposal (missing target_path or target_hash)");
+  if (
+    !propBody || propBody.type !== "CodeicideProposal" ||
+    !propBody.target_path || !propBody.target_hash
+  ) {
+    fail(
+      "nay: proposal envelope body is not a valid CodeicideProposal (missing target_path or target_hash)",
+    );
   }
 
   // Anti-self-NAY warning (not a hard block — a proposer NAY'ing their own
@@ -168,11 +195,16 @@ async function main() {
     timestamp_utc: new Date().toISOString(),
   };
 
-  const nayEnvelope = await wrap(nayBody, "codeicide_nay" as never, substrate as never, {
-    created_at_logical: { wall_time_utc: new Date().toISOString() },
-    parent_envelope_id: proposalEnv!.envelope_id,
-    parent_relation: "refinement",
-  });
+  const nayEnvelope = await wrap(
+    nayBody,
+    "codeicide_nay" as never,
+    substrate as never,
+    {
+      created_at_logical: { wall_time_utc: new Date().toISOString() },
+      parent_envelope_id: proposalEnv!.envelope_id,
+      parent_relation: "refinement",
+    },
+  );
 
   const payload = {
     type: "codeicide_nay_emitted",

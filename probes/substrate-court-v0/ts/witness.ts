@@ -13,7 +13,12 @@
 // Stdout: single-line JSON envelope.
 // Stderr: diagnostic ("witness <tag> wrote body_hash=...")
 
-import { wrap, ENVELOPE_SCHEMA, BodyKind, SubstrateTag } from "../../receipt-envelope-encoder-v0/ts/envelope.ts";
+import {
+  BodyKind,
+  ENVELOPE_SCHEMA,
+  SubstrateTag,
+  wrap,
+} from "../../receipt-envelope-encoder-v0/ts/envelope.ts";
 import { CborValue } from "../../receipt-envelope-encoder-v0/ts/canonical_cbor.ts";
 
 function parseArgs(args: string[]): Record<string, string> {
@@ -58,9 +63,15 @@ if (import.meta.main) {
   let emitted: Record<string, unknown> = { ...envelope };
   if (fakeSchema) {
     emitted = { ...emitted, schema: fakeSchema };
-    console.error(`witness[${substrate_tag}]: FAKE_SCHEMA=${fakeSchema} applied`);
+    console.error(
+      `witness[${substrate_tag}]: FAKE_SCHEMA=${fakeSchema} applied`,
+    );
   }
 
-  console.error(`witness[${substrate_tag}]: body_hash=${envelope.body_hash.slice(0, 16)}... envelope_id=${envelope.envelope_id.slice(0, 16)}...`);
+  console.error(
+    `witness[${substrate_tag}]: body_hash=${
+      envelope.body_hash.slice(0, 16)
+    }... envelope_id=${envelope.envelope_id.slice(0, 16)}...`,
+  );
   console.log(JSON.stringify(emitted));
 }

@@ -6,28 +6,35 @@
 
 # Substrate skill — how to operate here without dumb moves
 
-This is the operating brief, paired with `x8888_agents.myc.md` (which is "what I see"). This file is "how to move".
+This is the operating brief, paired with `x8888_agents.myc.md` (which is "what I
+see"). This file is "how to move".
 
 ## First moves for a fresh model
 
-1. `t status` — substrate self-reflection (mirror+harmony). If "well", proceed; if anything else, read first.
+1. `t status` — substrate self-reflection (mirror+harmony). If "well", proceed;
+   if anything else, read first.
 2. `t audit` — placement audit (verify organ dipoles match bucket archetypes).
-3. `t agents` (then read `src/x8888_agents.myc.md`) — federation index of buckets.
+3. `t agents` (then read `src/x8888_agents.myc.md`) — federation index of
+   buckets.
 4. `t gravity` — topology tension (mean Δprimary; rising trend = drift signal).
-5. Drill into per-bucket skills: `src/xN888_skill.myc.md` for whichever N you're touching.
+5. Drill into per-bucket skills: `src/xN888_skill.myc.md` for whichever N you're
+   touching.
 
 ## ⚠️ Substrate classification gaps
 
-- 1 organs lack `skill_safe` header — appear in per-bucket "Not yet classified" sections.
-- 1 organs have invalid `skill_safe` value — appear in per-bucket "Invalid skill_safe values" sections.
+- 1 organs lack `skill_safe` header — appear in per-bucket "Not yet classified"
+  sections.
+- 1 organs have invalid `skill_safe` value — appear in per-bucket "Invalid
+  skill_safe values" sections.
 
-Drill into bucket-skill files to see specifics. Classification is "rename when touched" — no batch-add expected.
+Drill into bucket-skill files to see specifics. Classification is "rename when
+touched" — no batch-add expected.
 
 ## Bucket overview
 
-| bucket | organs | classified | drill |
-|--------|--------|------------|-------|
-| 6 | 7 | 5/7 | [x6888_skill.myc.md](./x6888_skill.myc.md) |
+| bucket | organs | classified | drill                                      |
+| ------ | ------ | ---------- | ------------------------------------------ |
+| 6      | 7      | 5/7        | [x6888_skill.myc.md](./x6888_skill.myc.md) |
 
 ## t-commands by bucket
 
@@ -42,18 +49,26 @@ Drill into bucket-skill files to see specifics. Classification is "rename when t
 
 ## Global guidance
 
-- **Read before write.** Generated briefs (xN888_*.myc.md) are projections, not sources. To change substrate state, change source organs, then regenerate.
-- **Probe before contract.** Don't write contracts/MORPHOLOGY.v0.md before `probes/morphology-v0/` graduates. Probe → real organ → contract.
-- **Cowitness for cross-bucket moves.** Single-bucket refactor: model decides. Cross-bucket: chord proposal + AYE from at least one other model.
-- **Receipts over assertions.** When you say "X works", prefer "`t audit` reports 51/51 match" over prose. Auditable.
-- **Falsifiers in proposals.** Every chord with proposal should name what would falsify it. Without falsifier, proposal is opinion not hypothesis.
+- **Read before write.** Generated briefs (xN888_*.myc.md) are projections, not
+  sources. To change substrate state, change source organs, then regenerate.
+- **Probe before contract.** Don't write contracts/MORPHOLOGY.v0.md before
+  `probes/morphology-v0/` graduates. Probe → real organ → contract.
+- **Cowitness for cross-bucket moves.** Single-bucket refactor: model decides.
+  Cross-bucket: chord proposal + AYE from at least one other model.
+- **Receipts over assertions.** When you say "X works", prefer "`t audit`
+  reports 51/51 match" over prose. Auditable.
+- **Falsifiers in proposals.** Every chord with proposal should name what would
+  falsify it. Without falsifier, proposal is opinion not hypothesis.
 
 ## Forbidden / requires-cowitness moves
 
 - Touching omega (frozen RFC v1.0) without architect explicit approval
-- Mutating contracts in pinned SPORE_BOOTSTRAP_PIN (51 files in Bitcoin attestation)
-- Adding hard-deny to morphology policy without observed real-substrate violation
-- Batch-renaming files outside a single substrate's src/ (cross-substrate refactor)
+- Mutating contracts in pinned SPORE_BOOTSTRAP_PIN (51 files in Bitcoin
+  attestation)
+- Adding hard-deny to morphology policy without observed real-substrate
+  violation
+- Batch-renaming files outside a single substrate's src/ (cross-substrate
+  refactor)
 - Pushing to remote without explicit `git push` instruction
-- Running destructive operations (force-push, reset --hard, rm -rf, dropping db tables)
-
+- Running destructive operations (force-push, reset --hard, rm -rf, dropping db
+  tables)

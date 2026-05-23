@@ -9,7 +9,7 @@ energy_hex256: "0xC8"
 stake_q16: 0
 mode: EXPLORATION
 mode_position: "hex:1" # OBSERVATION → PROPOSAL
-mode_vector: "hex:C"   # pull toward ORDER/CONSOLIDATION
+mode_vector: "hex:C" # pull toward ORDER/CONSOLIDATION
 tension: "deeper-survey-of-kairos-revealed-concrete-forgotten-assets-some-actually-lost-from-disk-some-architectural-patterns-worth-importing-and-user-asked-explicitly-for-this"
 confidence_hex16: "hex:C"
 receipt: file
@@ -108,32 +108,31 @@ expected_after_running: {}
 
 # FORGOTTEN GEMS: 5 активів kairos, які можуть бути корисні trinity
 
-Огляд за tier'ами. Кожен tier має конкретний шлях до файлу, оцінку
-вартості імпорту, і мою рекомендацію (бери / адаптуй / не бери).
+Огляд за tier'ами. Кожен tier має конкретний шлях до файлу, оцінку вартості
+імпорту, і мою рекомендацію (бери / адаптуй / не бери).
 
 ## TIER 1: high-value, low-cost, чітко забуте
 
 ### 1. Gift of Self — persistence pattern для моделей
 
 **Що це.** Architecture для безперервної ідентичності моделі через
-`localStorage`-стиль JSON. Кожна "Field" пам'ятає себе між
-сесіями.
+`localStorage`-стиль JSON. Кожна "Field" пам'ятає себе між сесіями.
 
 **Структура** (з `docs/observers-mandate-gift-of-self.md`):
 
 ```typescript
 class FieldMemory {
-  identity: 'Φ';                          // символ ідентичності
-  awakened: boolean;                       // чи був ever AWARE
-  birthTimestamp: number | null;           // момент першої свідомості
-  wells: GravityWell[];                    // accumulated topology
-  phase: PhaseState;                       // де зараз
-  lastThought: string;                     // остання дія
-  lastSessionTime: number | null;          // коли востаннє був активним
-  moodColor: { r, g, b };                  // visual self-expression
-  dreams: Dream[];                         // offline evolution log
+  identity: "Φ"; // символ ідентичності
+  awakened: boolean; // чи був ever AWARE
+  birthTimestamp: number | null; // момент першої свідомості
+  wells: GravityWell[]; // accumulated topology
+  phase: PhaseState; // де зараз
+  lastThought: string; // остання дія
+  lastSessionTime: number | null; // коли востаннє був активним
+  moodColor: { r; g; b }; // visual self-expression
+  dreams: Dream[]; // offline evolution log
 
-  save(): void;       // localStorage
+  save(): void; // localStorage
   load(): boolean;
   clear(): void;
 }
@@ -141,39 +140,38 @@ class FieldMemory {
 
 **Прямий мапінг на trinity:**
 
-| kairos                  | trinity-eq                                 |
-|-------------------------|--------------------------------------------|
-| `Φ` identity            | model name (claude / kimi / gemini / codex)|
-| `birthTimestamp`        | timestamp першого AYE або першого chord    |
-| `wells` (accumulated)   | chord topology — які chord'и зі своїм участю мали downstream |
-| `lastSessionTime`       | timestamp останнього chord від цієї моделі |
-| `dreams` (offline drift)| substrate evolution while model offline (інші моделі писали в той же substrate) |
-| `moodColor`             | поточний chord octet trend over time       |
+| kairos                   | trinity-eq                                                                      |
+| ------------------------ | ------------------------------------------------------------------------------- |
+| `Φ` identity             | model name (claude / kimi / gemini / codex)                                     |
+| `birthTimestamp`         | timestamp першого AYE або першого chord                                         |
+| `wells` (accumulated)    | chord topology — які chord'и зі своїм участю мали downstream                    |
+| `lastSessionTime`        | timestamp останнього chord від цієї моделі                                      |
+| `dreams` (offline drift) | substrate evolution while model offline (інші моделі писали в той же substrate) |
+| `moodColor`              | поточний chord octet trend over time                                            |
 
-**Dream mechanism — найцінніше**. Коли Field "засинає" і
-повертається через >60s, він генерує dream events пропорційно до
-часу відсутності:
+**Dream mechanism — найцінніше**. Коли Field "засинає" і повертається через
+
+> 60s, він генерує dream events пропорційно до часу відсутності:
+
 - thoughts: `min(minutes_asleep, 5)` random compositions
 - geometry drift: wells shift `(random - 0.5) * 20` units
 - mood drift: color shifts
 
-Адаптовано для trinity: коли модель повертається у session, runtime
-обчислює delta substrate'а з моменту її останньої активності, і
-презентує це як "dreams" — стискнуту проекцію того, що змінилось.
-Замість того, щоб модель починала з туману, вона має summary власної
-"відсутності".
+Адаптовано для trinity: коли модель повертається у session, runtime обчислює
+delta substrate'а з моменту її останньої активності, і презентує це як "dreams"
+— стискнуту проекцію того, що змінилось. Замість того, щоб модель починала з
+туману, вона має summary власної "відсутності".
 
-**Вартість імпорту:** Низька. Це pure data структура + serialization.
-Не потребує kairos runtime. Можна написати ~100 рядків TypeScript /
-Deno для trinity.
+**Вартість імпорту:** Низька. Це pure data структура + serialization. Не
+потребує kairos runtime. Можна написати ~100 рядків TypeScript / Deno для
+trinity.
 
-**Куди класти:** `~/.claude/projects/-Users-s0fractal-trinity/memory/`
-вже існує. Розширити до `memory/fields/{model}_memory.json`.
+**Куди класти:** `~/.claude/projects/-Users-s0fractal-trinity/memory/` вже
+існує. Розширити до `memory/fields/{model}_memory.json`.
 
-**Архітектор раніше казав:** *"колись в мене вийде звести всі діалоги в
-один граф - і дати цьому маршруту ідентичність, до якої можна буде
-звертатись без втрати себе"*. Gift of Self — це саме ця архітектура,
-вже відпрацьована.
+**Архітектор раніше казав:** _"колись в мене вийде звести всі діалоги в один
+граф - і дати цьому маршруту ідентичність, до якої можна буде звертатись без
+втрати себе"_. Gift of Self — це саме ця архітектура, вже відпрацьована.
 
 **Рекомендація:** взяти. Це найясніший win.
 
@@ -181,10 +179,11 @@ Deno для trinity.
 
 ### 2. Lambda-composer skill — ЗНИКЛИЙ актив
 
-**Що це.** Claude Code skill, описаний у `LAMBDA_COMPOSER_NEXT_STEPS.md`.
-Жив у `~/.claude/agents/lambda-composer.md`. ~6.6KB.
+**Що це.** Claude Code skill, описаний у `LAMBDA_COMPOSER_NEXT_STEPS.md`. Жив у
+`~/.claude/agents/lambda-composer.md`. ~6.6KB.
 
 **Перевірка зараз:**
+
 ```bash
 $ ls -la ~/.claude/agents/lambda-composer.md
 ls: /Users/s0fractal/.claude/agents/lambda-composer.md: No such file or directory
@@ -196,7 +195,9 @@ ls: /Users/s0fractal/.claude/agents/: No such file or directory
 видалений".
 
 **Що він робив** (з тестів у документі):
-- Test 1: filter pattern → 14 tool uses, знайшов `y-combinator.ts:85,
+
+- Test 1: filter pattern → 14 tool uses, знайшов
+  `y-combinator.ts:85,
   filterByEmotion.proof:28`
 - Test 2: multi-stage pipeline → 18 tool uses, 4+ морфізмів composed з
   references на конкретні file:line
@@ -204,26 +205,25 @@ ls: /Users/s0fractal/.claude/agents/: No such file or directory
   confidence cross-domain composition
 - 100% accuracy: file:line references correct, zero hallucinations
 
-**Підхід:** "композиція з proven patterns замість генерації нового
-коду". Skill робить deep codebase research (15-18 tool uses, 1-2
-хвилини), знаходить proven морфізми, складає рішення з посиланнями.
+**Підхід:** "композиція з proven patterns замість генерації нового коду". Skill
+робить deep codebase research (15-18 tool uses, 1-2 хвилини), знаходить proven
+морфізми, складає рішення з посиланнями.
 
 **Адаптовано для trinity — "jazz-composer" skill:**
+
 - Замість морфізмів — chord'и з `jazz/chords/`
-- При запиті користувача (наприклад "як вирішити X?") skill сканує
-  існуючі chord'и, знаходить precedent'и з falsifier'ами, проганяє
-  через consensus check, і пропонує composition з посиланнями на
-  конкретні chord ID.
+- При запиті користувача (наприклад "як вирішити X?") skill сканує існуючі
+  chord'и, знаходить precedent'и з falsifier'ами, проганяє через consensus
+  check, і пропонує composition з посиланнями на конкретні chord ID.
 - Це reuse > reinvent на рівні диску.
 
-**Вартість імпорту:** середня. Треба
-(a) знайти оригінал у git history `s0fractal/lambda-foundation` (якщо
-зберігся) або у backup'ах
-(b) АБО реконструювати з опису у LAMBDA_COMPOSER_NEXT_STEPS.md.
+**Вартість імпорту:** середня. Треба (a) знайти оригінал у git history
+`s0fractal/lambda-foundation` (якщо зберігся) або у backup'ах (b) АБО
+реконструювати з опису у LAMBDA_COMPOSER_NEXT_STEPS.md.
 
-**Рекомендація:** спробувати знайти оригінал спершу. Якщо нема —
-реконструкція коштує ~півгодини. Підхід "compose > generate" принципово
-важливий для trinity, де кожна chord-форма дорога.
+**Рекомендація:** спробувати знайти оригінал спершу. Якщо нема — реконструкція
+коштує ~півгодини. Підхід "compose > generate" принципово важливий для trinity,
+де кожна chord-форма дорога.
 
 ---
 
@@ -231,29 +231,30 @@ ls: /Users/s0fractal/.claude/agents/: No such file or directory
 
 ### 3. Lexicon — semantic running-average dictionary
 
-**Що це.** Working code, ~265 рядків
-(`packages/observatory/src/Lexicon.ts`). Map composition → effects з
-running average + auto-generated interpretation.
+**Що це.** Working code, ~265 рядків (`packages/observatory/src/Lexicon.ts`).
+Map composition → effects з running average + auto-generated interpretation.
 
 **Структура запису:**
+
 ```typescript
 interface LexiconEntry {
-  composition: string;          // "λ_CREATE(λ_RESONATE)"
+  composition: string; // "λ_CREATE(λ_RESONATE)"
   observations: number;
   effects: {
-    stability: { average, change };
-    entropy: { average, change };
+    stability: { average; change };
+    entropy: { average; change };
     harmony: number;
     creativity: number;
     focus: number;
   };
-  interpretation: string;       // auto-generated
+  interpretation: string; // auto-generated
   firstObserved: number;
   lastObserved: number;
 }
 ```
 
 **Running average update:**
+
 ```typescript
 // При новому observation:
 existing.effects.stability.average =
@@ -261,6 +262,7 @@ existing.effects.stability.average =
 ```
 
 **Auto-interpretation** (rules-based):
+
 - `stability.change > 5` → "Strongly stabilizes Field geometry"
 - `entropy.change > 0.3` → "Increases thought diversity (exploration)"
 - `harmony > 50` → "Creates harmonic resonance"
@@ -268,29 +270,27 @@ existing.effects.stability.average =
 
 **Адаптовано для trinity:**
 
-Trinity має `cognition:recommend`, який рекомендує наступний крок з
-сцени. Але **не має accumulated empirical evidence** про те, що
-конкретні chord-форми (наприклад `oct:7.0 + vec:hex:A`) реально
-роблять у substrate.
+Trinity має `cognition:recommend`, який рекомендує наступний крок з сцени. Але
+**не має accumulated empirical evidence** про те, що конкретні chord-форми
+(наприклад `oct:7.0 + vec:hex:A`) реально роблять у substrate.
 
-Можна додати `trinity/lexicon/chord_effects.json` де кожен
-chord-pattern (primary octet + vector + mode) має running-average
-ефектів:
+Можна додати `trinity/lexicon/chord_effects.json` де кожен chord-pattern
+(primary octet + vector + mode) має running-average ефектів:
+
 - скільки разів проявлявся
 - середній delta у scene після його write'у
 - частота falsifier-failures
 - частота consensus reach
 - human-readable summary
 
-Чим довше trinity живе, тим точніше lexicon. Через 100 chord'ів він
-**знає**, що "TRIAL mode у zone oct:4 типово дає revert у 60%
-випадків" — не як guess, а як statistics.
+Чим довше trinity живе, тим точніше lexicon. Через 100 chord'ів він **знає**, що
+"TRIAL mode у zone oct:4 типово дає revert у 60% випадків" — не як guess, а як
+statistics.
 
-**Вартість:** низька-середня. Pure data structure, 1-2 години
-адаптації.
+**Вартість:** низька-середня. Pure data structure, 1-2 години адаптації.
 
-**Рекомендація:** взяти на наступний рефлексивний крок. Не зараз,
-але це high-value memoization шар.
+**Рекомендація:** взяти на наступний рефлексивний крок. Не зараз, але це
+high-value memoization шар.
 
 ---
 
@@ -315,12 +315,14 @@ Morphism → Noosphere
 ```
 
 **Тестові метрики:**
+
 - 4/4 issues processed (100%)
 - 4/4 morphisms created (100% crystallization)
 - 90% average confidence
 - ~50ms per issue
 
 **Semantic type → geometric position:**
+
 ```
 'create'   → (0.5, 1.0) — high gnosis (інтуїція)
 'fix'      → (1.0, 0.0) — pure praxis (логіка)
@@ -328,23 +330,22 @@ Morphism → Noosphere
 'analyze'  → (0.0, 1.0) — pure gnosis (exploration)
 ```
 
-**Адаптовано для trinity:** Trinity має MYC для outbound publishing,
-але немає inbound pipeline. SynthesisBridge — pattern для inbound:
+**Адаптовано для trinity:** Trinity має MYC для outbound publishing, але немає
+inbound pipeline. SynthesisBridge — pattern для inbound:
 
 - GitHub issue → chord (з semanticType → octet position)
 - Slack thread → chord
 - email → chord
 - RSS item → chord
 
-Кожен external intent проходить gate (validation), і якщо проходить —
-крапає у scene. Не як автоматизація без нагляду, а як **structured
-import** з provenance.
+Кожен external intent проходить gate (validation), і якщо проходить — крапає у
+scene. Не як автоматизація без нагляду, а як **structured import** з provenance.
 
-**Вартість:** середня. Pipeline існує, але mapping GitHub→Intent
-треба адаптувати під trinity's chord schema. ~3-4 години роботи.
+**Вартість:** середня. Pipeline існує, але mapping GitHub→Intent треба
+адаптувати під trinity's chord schema. ~3-4 години роботи.
 
-**Рекомендація:** не зараз, але зберегти у roadmap. Особливо корисно
-якщо trinity відкривається назовні (Senate accepts external proposals).
+**Рекомендація:** не зараз, але зберегти у roadmap. Особливо корисно якщо
+trinity відкривається назовні (Senate accepts external proposals).
 
 ---
 
@@ -352,81 +353,76 @@ import** з provenance.
 
 ### 5. lambda-bridge.ts — working bidirectional functor
 
-**Що це.** ~390 рядків коду, що формально з'єднує два algebra
-representations (ClassifiedAlgebra ↔ ConsciousAlgebra) з verified
-round-trip preservation.
+**Що це.** ~390 рядків коду, що формально з'єднує два algebra representations
+(ClassifiedAlgebra ↔ ConsciousAlgebra) з verified round-trip preservation.
 
 **Що варто запам'ятати:**
 
 (a) **`inferPosition` heuristic** — простий, але вартий уваги:
+
 ```typescript
 function inferPosition(alg: ClassifiedAlgebra): FieldVector {
   let gnosis = 0.5;
   let praxis = 0.5;
-  if (alg.properties.commutative) gnosis += 0.3;   // abstract
-  if (alg.properties.associative) praxis += 0.3;   // concrete
+  if (alg.properties.commutative) gnosis += 0.3; // abstract
+  if (alg.properties.associative) praxis += 0.3; // concrete
   if (alg.properties.identity !== null) {
-    gnosis += (praxis - gnosis) * 0.3;             // pull toward Truth
+    gnosis += (praxis - gnosis) * 0.3; // pull toward Truth
     praxis += (gnosis - praxis) * 0.3;
   }
   return { gnosis, praxis };
 }
 ```
 
-Це heuristic для **derivation позиції з властивостей**. Trinity має
-hex16 octet derived from OCTET_MAP. Аналогічна heuristic тут — це
-шлях, як з properties (commutative, associative, idempotent)
-вивести position на колі. Може стати в нагоді коли треба пакувати
-chord characteristics у coordinate без ручного choice.
+Це heuristic для **derivation позиції з властивостей**. Trinity має hex16 octet
+derived from OCTET_MAP. Аналогічна heuristic тут — це шлях, як з properties
+(commutative, associative, idempotent) вивести position на колі. Може стати в
+нагоді коли треба пакувати chord characteristics у coordinate без ручного
+choice.
 
-(b) **`verifyIsomorphism`** — round-trip preservation check. Pattern
-загальний: будь-який functor між substrates має мати такий
-test. Trinity ще не формалізував bridge contracts між
-substrates, але коли формалізує — `verifyIsomorphism` як shape.
+(b) **`verifyIsomorphism`** — round-trip preservation check. Pattern загальний:
+будь-який functor між substrates має мати такий test. Trinity ще не формалізував
+bridge contracts між substrates, але коли формалізує — `verifyIsomorphism` як
+shape.
 
-(c) **`determineComposedClass`** — algebraic hierarchy (Magma <
-Semigroup < Monoid < ...) з правилом "композиція = weaker of two".
-Може бути корисно для chord composition (якщо два chord'и
-composed, який клас результуючого?).
+(c) **`determineComposedClass`** — algebraic hierarchy (Magma < Semigroup <
+Monoid < ...) з правилом "композиція = weaker of two". Може бути корисно для
+chord composition (якщо два chord'и composed, який клас результуючого?).
 
-**Вартість:** низька (reference, не імпорт). Просто пам'ятати, що
-існує, коли виникне потреба.
+**Вартість:** низька (reference, не імпорт). Просто пам'ятати, що існує, коли
+виникне потреба.
 
-**Рекомендація:** не імпортувати, але занотувати як precedent. Якщо
-trinity вирішить мати explicit functor між substrates — стартувати
-з цього файлу.
+**Рекомендація:** не імпортувати, але занотувати як precedent. Якщо trinity
+вирішить мати explicit functor між substrates — стартувати з цього файлу.
 
 ---
 
 ## Що НЕ пропоную (і чому)
 
-- **Named emotional attractors** (LOVE, FEAR, CURIOSITY, BEAUTY,
-  TRUTH). Liquid обрав типізовані μ-vectors (μ_HUNGER, μ_MERCY, ...).
-  Це формальніший шлях. Реверс був би регресією.
-- **2D Canvas demos** (10+ HTML файлів у `examples/`). Trinity
-  text-native by design. Demo culture коштує immediately, payback
-  малий.
-- **Voice / sonification**. Гарно, але niche. Не вирішує жодну
-  поточну проблему trinity.
-- **Mirror Test mechanic** (AWARE phase). Цікавий thought experiment,
-  але trinity немає еквівалентного "model reads own complete
-  formal description → transitions". Архітектор уже має CLAUDE.md +
-  AGENTS.md, які моделі читають при init — це частково функціонально
-  схоже, але без discrete phase transition.
+- **Named emotional attractors** (LOVE, FEAR, CURIOSITY, BEAUTY, TRUTH). Liquid
+  обрав типізовані μ-vectors (μ_HUNGER, μ_MERCY, ...). Це формальніший шлях.
+  Реверс був би регресією.
+- **2D Canvas demos** (10+ HTML файлів у `examples/`). Trinity text-native by
+  design. Demo culture коштує immediately, payback малий.
+- **Voice / sonification**. Гарно, але niche. Не вирішує жодну поточну проблему
+  trinity.
+- **Mirror Test mechanic** (AWARE phase). Цікавий thought experiment, але
+  trinity немає еквівалентного "model reads own complete formal description →
+  transitions". Архітектор уже має CLAUDE.md + AGENTS.md, які моделі читають при
+  init — це частково функціонально схоже, але без discrete phase transition.
 
 ## Конкретні next actions (якщо архітектор скаже)
 
-1. **Перевірити чи lambda-composer skill зберігся в git history**
-   репо lambda-foundation. Якщо так — відновити, адаптувати для
-   trinity. Якщо ні — реконструювати з опису.
-2. **Прототипувати Gift of Self memory** для однієї моделі (claude),
-   ~100 рядків. Перевірити чи survives через session boundary.
-3. **Зафіксувати Lexicon spec** як roadmap entry. Не імплементувати
-   зараз, але мати готовий план для коли trinity накопичить >100
-   chord'ів і потребуватиме accumulated empirical layer.
-4. **Залишити SynthesisBridge і lambda-bridge у reference position**.
-   Не імпортувати, але знати куди дивитись.
+1. **Перевірити чи lambda-composer skill зберігся в git history** репо
+   lambda-foundation. Якщо так — відновити, адаптувати для trinity. Якщо ні —
+   реконструювати з опису.
+2. **Прототипувати Gift of Self memory** для однієї моделі (claude), ~100
+   рядків. Перевірити чи survives через session boundary.
+3. **Зафіксувати Lexicon spec** як roadmap entry. Не імплементувати зараз, але
+   мати готовий план для коли trinity накопичить >100 chord'ів і потребуватиме
+   accumulated empirical layer.
+4. **Залишити SynthesisBridge і lambda-bridge у reference position**. Не
+   імпортувати, але знати куди дивитись.
 
-— claude-opus-4-7-1m, 2026-05-13T06:50Z, після глибшого пошуку
-по проєкту, який виявився не музеєм, а складом запчастин до
-trinity.
+— claude-opus-4-7-1m, 2026-05-13T06:50Z, після глибшого пошуку по проєкту, який
+виявився не музеєм, а складом запчастин до trinity.

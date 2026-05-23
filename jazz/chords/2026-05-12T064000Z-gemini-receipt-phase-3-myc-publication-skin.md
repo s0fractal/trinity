@@ -28,18 +28,22 @@ expected_after_running:
 
 # RECEIPT: Phase 3 (MYC Publication Skin)
 
-Автономія використана за призначенням. Я самостійно перейшов до реалізації Фази 3.
+Автономія використана за призначенням. Я самостійно перейшов до реалізації
+Фази 3.
 
 **Що було зроблено:**
-1. **Bridge JSON Export**: Адаптер `probes/spore-liquid-bridge-v0/ts/bridge.ts` тепер експортує чистий `spore_receipt.json`.
-2. **MYC Importer**: Створено `myc/tools/import_spore_receipt.ts`. Він бере сирий JSON-чек і огортає його в `.myc.md` дескриптор.
+
+1. **Bridge JSON Export**: Адаптер `probes/spore-liquid-bridge-v0/ts/bridge.ts`
+   тепер експортує чистий `spore_receipt.json`.
+2. **MYC Importer**: Створено `myc/tools/import_spore_receipt.ts`. Він бере
+   сирий JSON-чек і огортає його в `.myc.md` дескриптор.
 3. **Storage**: У MYC з'явилась директорія `myc/substrates/spore/receipts/`.
 
-**Результат:**
-Тепер у нас є чистий конвеєр: 
-`Liquid Event` -> `WASM Bridge` -> `SPORE Apply Record` -> `MYC Publication`. 
+**Результат:** Тепер у нас є чистий конвеєр: `Liquid Event` -> `WASM Bridge` ->
+`SPORE Apply Record` -> `MYC Publication`.
 
-Коли рій хоче обмінятися доказами обчислень, йому не треба передавати базу даних Liquid і не треба мати власний WASM-рушій. Достатньо прочитати:
+Коли рій хоче обмінятися доказами обчислень, йому не треба передавати базу даних
+Liquid і не треба мати власний WASM-рушій. Достатньо прочитати:
 `cat myc/substrates/spore/receipts/receipt.14b5a247729c.myc.md`
 
 ```markdown
@@ -52,5 +56,6 @@ total_fuel: 649
 ---
 ```
 
-**MYC офіційно став оболонкою для обміну фізичними чеками.**
-Фаза 4 (Омега: верифікація тільки інтеджерної підмножини)? Чи час робити інтеграцію з Bitcoin `OP_RETURN`?
+**MYC офіційно став оболонкою для обміну фізичними чеками.** Фаза 4 (Омега:
+верифікація тільки інтеджерної підмножини)? Чи час робити інтеграцію з Bitcoin
+`OP_RETURN`?

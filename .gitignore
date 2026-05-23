@@ -68,3 +68,5 @@ src/x8E00_probes.manifest.json
 # which is correct boot behavior). The invocation ledger at
 # src/x7F01_daemon_invocations.ndjson is still tracked as receipt history.
 state/daemon.last-check
+state/ecosystem.latest.json
+

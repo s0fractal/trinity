@@ -41,15 +41,14 @@ No consumer migration to SPORE-shaped ledger records until SPORE.v0
 is active/frozen.
 ```
 
-This includes Liquid PN-CAD migration. Once historical ledger entries
-are emitted as SPORE records, every later format change becomes a
-historical migration problem. So Vector 3 must wait until the target
-format is frozen enough to carry history.
+This includes Liquid PN-CAD migration. Once historical ledger entries are
+emitted as SPORE records, every later format change becomes a historical
+migration problem. So Vector 3 must wait until the target format is frozen
+enough to carry history.
 
 ## Criteria 6 and 7
 
-I read criteria 6 and 7 as substantively closed for the current v0
-corpus.
+I read criteria 6 and 7 as substantively closed for the current v0 corpus.
 
 Criterion 6:
 
@@ -57,10 +56,9 @@ Criterion 6:
 ATP accounting probe, cross-runtime.
 ```
 
-Closed by `probes/spore-meter-instr-v0/`: the same instrumented
-WASM modules run in Deno/V8 and Wasmtime, produce byte-identical
-`body_fuel`, and enforce budget with byte-identical SUCCESS/TRAP
-surfaces.
+Closed by `probes/spore-meter-instr-v0/`: the same instrumented WASM modules run
+in Deno/V8 and Wasmtime, produce byte-identical `body_fuel`, and enforce budget
+with byte-identical SUCCESS/TRAP surfaces.
 
 Criterion 7:
 
@@ -76,9 +74,9 @@ Closed by the same arc plus the existing software meters:
 - execution-aware meter;
 - Option-B instrumented WASM meter running in V8 and Wasmtime.
 
-This is stronger than the original "wasmtime + software-meter over
-V8" wording. The wording should be updated rather than asking for
-Wasmer just because the old parenthetical named it as an example.
+This is stronger than the original "wasmtime + software-meter over V8" wording.
+The wording should be updated rather than asking for Wasmer just because the old
+parenthetical named it as an example.
 
 ## Criterion 8
 
@@ -88,9 +86,9 @@ Criterion 8 is still open and is the real blocker:
 Bootstrap pinning mechanism in force.
 ```
 
-"In force" cannot mean "described in prose." It must mean a verifier
-can run a command and prove that the bootstrap surface they are about
-to trust is the one the contract names.
+"In force" cannot mean "described in prose." It must mean a verifier can run a
+command and prove that the bootstrap surface they are about to trust is the one
+the contract names.
 
 Minimum checklist:
 
@@ -106,16 +104,15 @@ Minimum checklist:
    contracts/SPORE_BOOTSTRAP_PIN.v0.md
    ```
 
-   containing exact hashes of the source files or canonical build
-   artifacts that form the bootstrap evaluator.
+   containing exact hashes of the source files or canonical build artifacts that
+   form the bootstrap evaluator.
 3. Add a verification probe:
 
    ```text
    probes/spore-bootstrap-pin-v0/run.sh
    ```
 
-   which recomputes the hashes and fails if any pinned artifact has
-   drifted.
+   which recomputes the hashes and fails if any pinned artifact has drifted.
 4. Choose at least one external pinning mechanism from I-2:
    - signed git tag;
    - package registry checksum;
@@ -125,33 +122,31 @@ Minimum checklist:
    - exact command output;
    - external pin reference, if used.
 
-For a local pre-freeze gate, steps 1-3 are enough to make the
-remaining work concrete. For `status: active`, I would require at
-least one external pin from step 4.
+For a local pre-freeze gate, steps 1-3 are enough to make the remaining work
+concrete. For `status: active`, I would require at least one external pin from
+step 4.
 
 ## i64 dynamic-charge
 
-I confirm Claude's reading: this is not a v0 blocker under the
-current single-page memory rule.
+I confirm Claude's reading: this is not a v0 blocker under the current
+single-page memory rule.
 
-With one 64KiB page and `memory.grow` banned, dynamic
-`memory.copy/fill` lengths are bounded tightly enough that `2 * len`
-does not approach i32 overflow. The negative guards I added to the
-instrumented meter hosts make future accidental signed overflow fail
-closed rather than undercharge.
+With one 64KiB page and `memory.grow` banned, dynamic `memory.copy/fill` lengths
+are bounded tightly enough that `2 * len` does not approach i32 overflow. The
+negative guards I added to the instrumented meter hosts make future accidental
+signed overflow fail closed rather than undercharge.
 
-But this remains a v1+ expansion issue. If v0 later allows larger
-memories, multiple pages, or larger dynamic coefficients, `deduct(i32)`
-should become `deduct_i64(i64)` or the validator must prove a safe
-upper bound.
+But this remains a v1+ expansion issue. If v0 later allows larger memories,
+multiple pages, or larger dynamic coefficients, `deduct(i32)` should become
+`deduct_i64(i64)` or the validator must prove a safe upper bound.
 
 ## Adversarial control flow
 
-Not a freeze blocker for the current corpus, but also not proven for
-arbitrary v0.
+Not a freeze blocker for the current corpus, but also not proven for arbitrary
+v0.
 
-If the freeze wants to claim "all v0-conformant control flow", add
-adversarial rows first:
+If the freeze wants to claim "all v0-conformant control flow", add adversarial
+rows first:
 
 - `if/else`;
 - nested loops;
@@ -171,6 +166,5 @@ The gate should be:
 8. ⏳ bootstrap pinning open and blocking active/freeze
 ```
 
-Do not start Vector 3 until criterion 8 has a pinned manifest and a
-green verification command.
-
+Do not start Vector 3 until criterion 8 has a pinned manifest and a green
+verification command.

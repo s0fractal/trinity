@@ -55,13 +55,13 @@ State observed 2026-05-13:
   - `myc / deno task check`: formatting only.
   - `liquid / deno task audit:strict`: one ambiguous alias error.
   - `liquid / deno task ledger:doctor --json`: pass.
-- `t status` says health is `healthy` but topology is `drifting`:
-  25 hex executables, 9 match, 16 mismatch.
+- `t status` says health is `healthy` but topology is `drifting`: 25 hex
+  executables, 9 match, 16 mismatch.
 
 Architectural read:
 
-The chosen vector is strong. It converts Trinity from a coordination folder
-into an executable semantic substrate:
+The chosen vector is strong. It converts Trinity from a coordination folder into
+an executable semantic substrate:
 
 `word -> glossary -> hex position -> organ -> receipt -> audit/balance/status`
 
@@ -81,9 +81,9 @@ trying to mean:
 
 This is not fatal; it is the expected pressure point. But it must be resolved
 before moving files in bulk. The audit data is useful precisely because it made
-the ambiguity measurable: most mismatches are not random bugs, they are the
-old "0x0 as primitive bucket" convention colliding with the new "bucket as
-axis projection" convention.
+the ambiguity measurable: most mismatches are not random bugs, they are the old
+"0x0 as primitive bucket" convention colliding with the new "bucket as axis
+projection" convention.
 
 Recommendation:
 

@@ -152,63 +152,60 @@ eaf9719  feat(liquid): SPORE bridge emits explicit simulation:true marker
 
 ## Why 2 commits instead of Codex's recommended 5
 
-Codex/Gemini recommended five slices (envelope+cross-lang+court,
-anchor-prep, codeicide governance, substrate-health+CI-cache,
-docs+chords). Autonomous `git add -p` hunk-splitting across files with
-cross-slice changes (`0x0/00.ndjson` and `0x2/E.ts` both contain
-modifications from multiple slices) is high-risk. I chose 2 atomic
-commits at natural file-boundary cut to minimize chance of leaving
-the tree in a half-committed state.
+Codex/Gemini recommended five slices (envelope+cross-lang+court, anchor-prep,
+codeicide governance, substrate-health+CI-cache, docs+chords). Autonomous
+`git add -p` hunk-splitting across files with cross-slice changes
+(`0x0/00.ndjson` and `0x2/E.ts` both contain modifications from multiple slices)
+is high-risk. I chose 2 atomic commits at natural file-boundary cut to minimize
+chance of leaving the tree in a half-committed state.
 
-Architect can use `git rebase -i 1d847a7` to split `7699e2a` into thinner
-slices if desired; the interactive rebase gives access to the full
-substrate diff and supports cherry-pick into Codex's 5-slice shape.
+Architect can use `git rebase -i 1d847a7` to split `7699e2a` into thinner slices
+if desired; the interactive rebase gives access to the full substrate diff and
+supports cherry-pick into Codex's 5-slice shape.
 
 ## What was NOT done
 
 - **No push.** Architect controls the remote per AGENTS.md.
-- **No application of the pending proposal.** It still waits for
-  oracle cowitnesses. Codex was explicit: don't apply until
-  independent cowitnesses sign.
+- **No application of the pending proposal.** It still waits for oracle
+  cowitnesses. Codex was explicit: don't apply until independent cowitnesses
+  sign.
 - **No further expansion.** Codex's pause stands.
 
 ## Post-commit state
 
-| | |
-|---|---|
-| Working tree | clean |
-| trinity HEAD | `0e7c5fa` |
-| liquid HEAD | `eaf9719` (advanced this session) |
-| omega HEAD  | `0fd0bf3` (unchanged) |
-| myc HEAD    | `9a8fc25` (unchanged) |
-| Audit | 43/43 |
-| Probes green | 5/5 |
-| Pending proposals | 1 (TRINITY_CAPABILITIES.v0.1) |
+|                   |                                   |
+| ----------------- | --------------------------------- |
+| Working tree      | clean                             |
+| trinity HEAD      | `0e7c5fa`                         |
+| liquid HEAD       | `eaf9719` (advanced this session) |
+| omega HEAD        | `0fd0bf3` (unchanged)             |
+| myc HEAD          | `9a8fc25` (unchanged)             |
+| Audit             | 43/43                             |
+| Probes green      | 5/5                               |
+| Pending proposals | 1 (TRINITY_CAPABILITIES.v0.1)     |
 | Schema validation | 160/244 passed; 0 claude failures |
 
 ## What architect can do next
 
 1. **Review and push** when ready.
-2. **Split `7699e2a` into Codex's 5 slices** via interactive rebase, if
-   the granularity matters for the public log.
-3. **Direct Gemini/Kimi to cowitness** the pending proposal — when 3
-   independent oracles sign, the first real `apply-codeicide` becomes
-   gate-able.
-4. **Or hold and pause** — substrate is in a coherent state, ready
-   for the next session.
+2. **Split `7699e2a` into Codex's 5 slices** via interactive rebase, if the
+   granularity matters for the public log.
+3. **Direct Gemini/Kimi to cowitness** the pending proposal — when 3 independent
+   oracles sign, the first real `apply-codeicide` becomes gate-able.
+4. **Or hold and pause** — substrate is in a coherent state, ready for the next
+   session.
 
 ## Closing observation
 
-In one architect-mode session, trinity acquired its first decision
-pipeline. The substrate can now propose → cowitness → verdict → apply,
-reversibly, with five gates plus overwrite guards, anchored by content
-hashes and verifiable cross-substrate via the envelope+court+anchor
-primitives. None of this existed at session start. None of it touches
-frozen surface, submodule code (except liquid SPORE bridge per Codex
-AYE-3), or `lib/`. The substrate grew by exactly one new affordance:
-**reversible self-archival with multi-oracle witness**.
+In one architect-mode session, trinity acquired its first decision pipeline. The
+substrate can now propose → cowitness → verdict → apply, reversibly, with five
+gates plus overwrite guards, anchored by content hashes and verifiable
+cross-substrate via the envelope+court+anchor primitives. None of this existed
+at session start. None of it touches frozen surface, submodule code (except
+liquid SPORE bridge per Codex AYE-3), or `lib/`. The substrate grew by exactly
+one new affordance: **reversible self-archival with multi-oracle witness**.
 
-That is genuinely "make the substrate slightly more capable of
-governing itself" — which is what this whole day was about.
+That is genuinely "make the substrate slightly more capable of governing itself"
+— which is what this whole day was about.
 
 Pausing now. Awaiting architect signal.

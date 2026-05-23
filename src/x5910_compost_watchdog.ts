@@ -1,6 +1,6 @@
 #!/usr/bin/env -S deno run --allow-all
 // src/x5910_compost_watchdog.ts — compost watchdog (archive sunset draft contracts)
-// position: 5/9 → action(5) × penultimate(9) = act-to-prevent-close / clear out stale drafts
+// position: 5/91 → action(5) × penultimate(9) = act-to-prevent-close / clear out stale drafts
 // hex_dipole: "26 4C 33 26 33 6C 26 26"
 //   axis 5 action_decision +0.85 (PRIMARY: decision/action to archive/compost)
 //   axis 1 first_penultimate +0.60 (secondary: hex 9 = axis 1 neg pole; sunset clearance)
@@ -10,21 +10,46 @@
 // lifecycle_phase: 1
 // placement_policy: axis
 //
-// compost-watchdog — archive/compost past-sunset draft contracts to contracts/compost/
+// compost-watchdog — archive/compost past-sunset draft contracts to src/ as palimpsests
 //
 // Usage:
-//   t compost-watchdog [--dry-run]
+//   t compost-watchdog [--write]
 //
 // Glossary words: compost-watchdog, compost, компост, watchdog, compost_watchdog
 
-import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
-import { listContracts, ContractEntry } from "./x4F00_contracts.ts";
+import {
+  dirname,
+  fromFileUrl,
+  join,
+} from "https://deno.land/std@0.224.0/path/mod.ts";
+import { listContracts } from "./x4F00_contracts.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
 const CONTRACTS_DIR = join(ROOT, "contracts");
-const COMPOST_DIR = join(CONTRACTS_DIR, "compost");
 const CHORDS_DIR = join(ROOT, "jazz", "chords");
+
+async function findUniqueCompostPath(filename: string): Promise<string> {
+  const cleanBase = filename.replace(/\.md$/, "").replace(
+    /[^a-zA-Z0-9_.-]/g,
+    "_",
+  );
+  let idx = 0;
+  while (true) {
+    const destName = `x48F${
+      idx.toString(16).toUpperCase()
+    }_contract_${cleanBase}_palimpsest.myc.md`;
+    const destPath = join(ROOT, "src", destName);
+    try {
+      await Deno.stat(destPath);
+      // exists, try next
+      idx++;
+    } catch {
+      // free
+      return destPath;
+    }
+  }
+}
 
 function getBlockHeight(): number {
   const epoch = Math.floor(Date.now() / 1000);
@@ -43,7 +68,8 @@ async function runCommand(args: string[]): Promise<boolean> {
 
 async function main() {
   const args = Deno.args;
-  const dryRun = args.includes("--dry-run");
+  const write = args.includes("--write");
+  const dryRun = !write;
 
   const contracts = await listContracts();
   const eligible = contracts.filter((c) => {
@@ -59,14 +85,14 @@ async function main() {
   const errors: string[] = [];
 
   if (eligible.length > 0) {
-    if (!dryRun) {
-      await Deno.mkdir(COMPOST_DIR, { recursive: true });
+    if (write) {
       for (const c of eligible) {
         const srcPath = join(CONTRACTS_DIR, c.filename);
-        const destPath = join(COMPOST_DIR, c.filename);
+        const destPath = await findUniqueCompostPath(c.filename);
+        const destFilename = destPath.replace(join(ROOT, "src") + "/", "");
         try {
           await Deno.rename(srcPath, destPath);
-          composted.push(c.filename);
+          composted.push(`${c.filename} -> src/${destFilename}`);
         } catch (e) {
           errors.push(`Failed to move ${c.filename}: ${(e as Error).message}`);
         }
@@ -89,25 +115,41 @@ topic: compost-watchdog-cleanup
 stance: COMPOST
 closes: []
 references:
-${composted.map((f) => `  - contracts/${f}`).join("\n")}
+${eligible.map((c) => `  - contracts/${c.filename}`).join("\n")}
 ---
 
 # Compost Receipt: Retired past-sunset draft contracts
 
-The Compost Watchdog (\`x5910_compost_watchdog.ts\`) automatically archived the following expired draft contracts:
+The Compost Watchdog (\`x5910_compost_watchdog.ts\`) automatically archived the following expired draft contracts as palimpsests in \`src/\`:
 
-${eligible
-  .filter((c) => composted.includes(c.filename))
-  .map((c) => `- \`contracts/${c.filename}\` (age: ${c.age_days} days, cowitness count: ${c.cowitness_count})`)
-  .join("\n")}
+${composted.map((item) => `- \`contracts/${item}\``).join("\n")}
 
-These files have been moved to the \`contracts/compost/\` directory to clear them from active cataloging. They can be restored at any time by moving them back or using \`git restore\`.
+These files have been moved to the \`src/\` directory to clear them from active cataloging. They can be restored or referenced as palimpsests.
 `;
         await Deno.writeTextFile(chordPath, chordContent);
 
-        // Regenerate roadmap and skills
-        await runCommand(["deno", "run", "--allow-all", join(HERE, "x8D00_roadmap_gen.ts"), "--stable"]);
-        await runCommand(["deno", "run", "--allow-all", join(HERE, "x8C00_skill_gen.ts"), "--stable"]);
+        // Regenerate roadmap and skills and external surfaces
+        await runCommand([
+          "deno",
+          "run",
+          "--allow-all",
+          join(HERE, "x8D00_roadmap_gen.ts"),
+          "--stable",
+        ]);
+        await runCommand([
+          "deno",
+          "run",
+          "--allow-all",
+          join(HERE, "x8C00_skill_gen.ts"),
+          "--stable",
+        ]);
+        await runCommand([
+          "deno",
+          "run",
+          "--allow-all",
+          join(HERE, "x8F00_external_surfaces_gen.ts"),
+          "--stable",
+        ]);
       }
     } else {
       for (const c of eligible) {
@@ -123,7 +165,7 @@ These files have been moved to the \`contracts/compost/\` directory to clear the
     dry_run: dryRun,
     note: dryRun
       ? `dry run: would compost ${composted.length} draft contracts`
-      : `archived ${composted.length} past-sunset draft contracts to contracts/compost/`,
+      : `archived ${composted.length} past-sunset draft contracts as src/ palimpsests`,
     composted_count: composted.length,
     composted_files: composted,
     errors: errors.length > 0 ? errors : undefined,

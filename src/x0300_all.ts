@@ -27,7 +27,7 @@
 // Returns unified receipt with per-substrate results.
 // Does NOT hardcode substrate commands — reads from glossary type:06.
 
-import { resolveWord, loadSubstrateMappings } from "./x0011_glossary_parser.ts";
+import { loadSubstrateMappings, resolveWord } from "./x0011_glossary_parser.ts";
 import { runSubstrate, type SubstrateResult } from "./x0010_dispatch_runner.ts";
 
 const TIMEOUT_MS = 60000;
@@ -102,7 +102,10 @@ if (import.meta.main) {
   // Apply deep override
   if (deepSubstrate) {
     substrates = substrates.map((d) => {
-      if (d.name === deepSubstrate && d.cmd && d.cmd[0] === "cargo" && d.cmd[1] === "check") {
+      if (
+        d.name === deepSubstrate && d.cmd && d.cmd[0] === "cargo" &&
+        d.cmd[1] === "check"
+      ) {
         return { ...d, cmd: ["cargo", "test"], note: d.note + " (deep mode)" };
       }
       return d;
@@ -121,7 +124,11 @@ if (import.meta.main) {
     type: "all",
     position,
     action: "map",
-    mode: deepSubstrate ? `deep:${deepSubstrate}` : onlySubstrate ? `only:${onlySubstrate}` : "quick",
+    mode: deepSubstrate
+      ? `deep:${deepSubstrate}`
+      : onlySubstrate
+      ? `only:${onlySubstrate}`
+      : "quick",
     note: `map(${position}) across ${substrates.length} substrates`,
     summary: {
       total: results.length,
@@ -133,7 +140,8 @@ if (import.meta.main) {
     },
     substrates: results,
     topology: "map + join (functional composition)",
-    falsifier: "If type:06 registry is empty, all is useless — it becomes a fancy no-op",
+    falsifier:
+      "If type:06 registry is empty, all is useless — it becomes a fancy no-op",
   };
 
   console.log(JSON.stringify(receipt, null, 2));

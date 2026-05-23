@@ -51,7 +51,15 @@ applied:
       placement_policy: axis
       match: true
     glossary:
-      word_handles: ["cowitness", "co-witness", "sign", "attest", "cпів-свідок", "підписати", "засвідчити"]
+      word_handles: [
+        "cowitness",
+        "co-witness",
+        "sign",
+        "attest",
+        "cпів-свідок",
+        "підписати",
+        "засвідчити",
+      ]
       schema: "cowitness (type:07)"
     behavior: |
       Reads envelope from --envelope <path>, positional arg, or --stdin.
@@ -116,7 +124,15 @@ applied:
       placement_policy: axis
       match: true
     glossary:
-      word_handles: ["anchor-prep", "anchor", "inscribe-prep", "merkle-root", "якір", "інскрипція", "корінь"]
+      word_handles: [
+        "anchor-prep",
+        "anchor",
+        "inscribe-prep",
+        "merkle-root",
+        "якір",
+        "інскрипція",
+        "корінь",
+      ]
       schema: "EnvelopeAnchorPayload (type:07)"
     behavior: "Routes args to probes/envelope-bitcoin-anchor-v0/ts/anchor.ts; passes through stdout."
     verified_e2e: |
@@ -174,20 +190,19 @@ expected_after_running:
 
 ## What I built
 
-Architect invited "розвивайте щось самостійно". I surfaced two moves from
-latent that the substrate seemed to want now:
+Architect invited "розвивайте щось самостійно". I surfaced two moves from latent
+that the substrate seemed to want now:
 
 **1. `t cowitness` organ at hex 6/D** — fills the missing primitive in the
-envelope vocabulary. Before today we had `wrap` (via `t status --envelope`)
-and `court` (multi-envelope verdict). The middle operation — "an oracle
-signs an existing envelope, extending its witness_chain" — had a
-TypeScript function (`coWitness()` from `envelope.ts`) but no t-word
-surface. Now it does.
+envelope vocabulary. Before today we had `wrap` (via `t status --envelope`) and
+`court` (multi-envelope verdict). The middle operation — "an oracle signs an
+existing envelope, extending its witness_chain" — had a TypeScript function
+(`coWitness()` from `envelope.ts`) but no t-word surface. Now it does.
 
-Required a side-effect: the dispatcher was closing stdin on organ
-subprocesses (Deno.Command default). `0x0/01.ts:fn_run_at_position` now
-sets `stdin: "inherit"`. Backward-compatible: existing organs are
-unaffected; new organs can opt into stdin reading.
+Required a side-effect: the dispatcher was closing stdin on organ subprocesses
+(Deno.Command default). `0x0/01.ts:fn_run_at_position` now sets
+`stdin: "inherit"`. Backward-compatible: existing organs are unaffected; new
+organs can opt into stdin reading.
 
 Demonstration:
 
@@ -196,18 +211,18 @@ Demonstration:
 # Output: chain_length=1, envelope_id changes, body_hash preserved
 ```
 
-**2. `probes/envelope-bitcoin-anchor-v0/` + `t anchor-prep` organ at 7/E**
-— V8 from the deep analysis (Bitcoin Receipt Pipeline). This was
-specifically gated on RECEIPT_ENVELOPE v1.0 stability. Gemini's AYE this
-morning satisfied that gate. The probe computes a Merkle root + inclusion
-proofs over N v1.0 envelopes; it explicitly does **NOT inscribe**. The
-inscription_ready field describes what *would* be inscribed; the actual
-Bitcoin transaction submission belongs to a separate operational tool
-with key handling.
+**2. `probes/envelope-bitcoin-anchor-v0/` + `t anchor-prep` organ at 7/E** — V8
+from the deep analysis (Bitcoin Receipt Pipeline). This was specifically gated
+on RECEIPT_ENVELOPE v1.0 stability. Gemini's AYE this morning satisfied that
+gate. The probe computes a Merkle root + inclusion proofs over N v1.0 envelopes;
+it explicitly does **NOT inscribe**. The inscription_ready field describes what
+_would_ be inscribed; the actual Bitcoin transaction submission belongs to a
+separate operational tool with key handling.
 
 9 probe tests cover the full scenario set:
-- 1 envelope, 2, 5 (odd), tampered, duplicate, wrong-schema, determinism,
-  empty rejection, inscription_ready shape.
+
+- 1 envelope, 2, 5 (odd), tampered, duplicate, wrong-schema, determinism, empty
+  rejection, inscription_ready shape.
 
 Demonstration:
 
@@ -219,21 +234,21 @@ Demonstration:
 
 ## Why these specifically (the "from latent" answer)
 
-I had a list of candidates that included: t shape (architecture as live
-data), t latent (ghost references in chords), lifecycle phase organ, JSON
-sidecar for sidecar's sake, etc. Most of those felt like *paper* — they
-would add fields without adding new affordance.
+I had a list of candidates that included: t shape (architecture as live data), t
+latent (ghost references in chords), lifecycle phase organ, JSON sidecar for
+sidecar's sake, etc. Most of those felt like _paper_ — they would add fields
+without adding new affordance.
 
 The two I picked **change what is possible**, not what is documented:
 
-- `t cowitness` completes the vocabulary symmetry. Witness chains can
-  now be extended through the t-language, not just through TS function
-  imports. This unlocks the pipe pattern for governance flows.
+- `t cowitness` completes the vocabulary symmetry. Witness chains can now be
+  extended through the t-language, not just through TS function imports. This
+  unlocks the pipe pattern for governance flows.
 - `t anchor-prep` unlocks V8 as far as is safe today. Codex's review
   specifically mentioned "first Bitcoin anchor of an envelope" as a
-  newly-unlocked next-vector. I stopped at PREP because actual
-  inscription crosses into operational territory that needs architect
-  decision + key handling. The boundary is explicit in SPEC.md.
+  newly-unlocked next-vector. I stopped at PREP because actual inscription
+  crosses into operational territory that needs architect decision + key
+  handling. The boundary is explicit in SPEC.md.
 
 ## Audit shift
 
@@ -246,6 +261,7 @@ The two I picked **change what is possible**, not what is documented:
 ## Sanity
 
 All probes still green:
+
 - `receipt-envelope-encoder-v0/run.sh` → TS 28/28 + Python 38/38
 - `substrate-court-v0/run.sh` → 3 scenarios green
 - `envelope-bitcoin-anchor-v0/run.sh` → 9/9
@@ -253,42 +269,42 @@ All probes still green:
 `t status` unchanged (overall: critical, legacy: well — honest CI signal).
 `t audit` 39/39 match. `t validate_schemas --strict` 0 claude failures.
 
-No frozen surface touched. No submodule code touched. `lib/` unchanged
-(still zero additions).
+No frozen surface touched. No submodule code touched. `lib/` unchanged (still
+zero additions).
 
 ## Pipeline now reachable end-to-end
 
 ```text
-                         ┌─────────────────────┐
-   substrate emits  ───→ │ wrap                │ ── envelope ──→ stored
-                         │ t status --envelope │
-                         └─────────────────────┘
-                                  │
-                                  ▼
-                         ┌─────────────────────┐
-   oracle signs    ───→  │ cowitness           │ ── new envelope ──→ stored
-                         │ t cowitness --stdin │
-                         └─────────────────────┘
-                                  │ (repeat for each oracle)
-                                  ▼
-                         ┌─────────────────────┐
-   N witnesses     ───→  │ court               │ ── verdict ──→ AYE/NAY
-                         │ t court a.json ...  │
-                         └─────────────────────┘
-                                  │
-                                  ▼
-                         ┌─────────────────────┐
-   anchor batch    ───→  │ anchor-prep         │ ── Merkle root ──→ inscription tool
-                         │ t anchor-prep ...   │
-                         └─────────────────────┘
-                                  │
-                                  ▼
-                            (out of trinity)
+                      ┌─────────────────────┐
+substrate emits  ───→ │ wrap                │ ── envelope ──→ stored
+                      │ t status --envelope │
+                      └─────────────────────┘
+                               │
+                               ▼
+                      ┌─────────────────────┐
+oracle signs    ───→  │ cowitness           │ ── new envelope ──→ stored
+                      │ t cowitness --stdin │
+                      └─────────────────────┘
+                               │ (repeat for each oracle)
+                               ▼
+                      ┌─────────────────────┐
+N witnesses     ───→  │ court               │ ── verdict ──→ AYE/NAY
+                      │ t court a.json ...  │
+                      └─────────────────────┘
+                               │
+                               ▼
+                      ┌─────────────────────┐
+anchor batch    ───→  │ anchor-prep         │ ── Merkle root ──→ inscription tool
+                      │ t anchor-prep ...   │
+                      └─────────────────────┘
+                               │
+                               ▼
+                         (out of trinity)
 ```
 
 Four primitives, four t-words, one end-to-end pipeline. From substrate
-self-report to Bitcoin-ready commitment, without ever leaving the
-hex-coordinate language.
+self-report to Bitcoin-ready commitment, without ever leaving the hex-coordinate
+language.
 
 ## What is NOT done (intentionally)
 
@@ -296,22 +312,22 @@ hex-coordinate language.
   tool with keys + network IO is architect's call.
 - **Strong cryptographic signing.** cowitness uses a deterministic identity
   stamp; real Senate-level signing with oracle keys is a separate organ.
-- **Multi-machine determinism for anchor.** Same machine multi-process is
-  proven (anchor uses encoder); cross-machine cross-language for anchor
-  Merkle root would be its own probe.
-- **myc/omega/liquid envelope emission.** F-rest of work plan; owner-
-  routed.
+- **Multi-machine determinism for anchor.** Same machine multi-process is proven
+  (anchor uses encoder); cross-machine cross-language for anchor Merkle root
+  would be its own probe.
+- **myc/omega/liquid envelope emission.** F-rest of work plan; owner- routed.
 
 ## Pause
 
 End-to-end vocabulary complete. V8 prep-ready. Reviewers can:
-- Sanity-check the cowitness signature scheme (it's intentionally weak;
-  is that OK at this stage?)
-- Sanity-check the Merkle convention (sort vs preserve input order, odd-
-  leaf duplication vs alternative)
-- Sanity-check the dispatcher stdin patch for unintended interaction
-  with any existing organ
 
-If reviewers AYE, the natural next move is operational (inscription tool,
-real signing keys, periodic cadence) — out of trinity. If reviewers NAY,
-revert is one file deletion + one schema row removal per artifact.
+- Sanity-check the cowitness signature scheme (it's intentionally weak; is that
+  OK at this stage?)
+- Sanity-check the Merkle convention (sort vs preserve input order, odd- leaf
+  duplication vs alternative)
+- Sanity-check the dispatcher stdin patch for unintended interaction with any
+  existing organ
+
+If reviewers AYE, the natural next move is operational (inscription tool, real
+signing keys, periodic cadence) — out of trinity. If reviewers NAY, revert is
+one file deletion + one schema row removal per artifact.

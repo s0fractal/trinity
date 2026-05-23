@@ -27,7 +27,11 @@
 //   t all 5/C --only myc
 //   t all 5/C --deep omega
 
-import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
+import {
+  dirname,
+  fromFileUrl,
+  join,
+} from "https://deno.land/std@0.224.0/path/mod.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
@@ -41,7 +45,12 @@ function translateArgs(args: string[]): string[] {
     const arg = args[i];
     if (arg === "--deep") {
       const maybeSubstrate = args[i + 1];
-      translated.push("--deep", maybeSubstrate && !maybeSubstrate.startsWith("--") ? maybeSubstrate : "omega");
+      translated.push(
+        "--deep",
+        maybeSubstrate && !maybeSubstrate.startsWith("--")
+          ? maybeSubstrate
+          : "omega",
+      );
       if (maybeSubstrate && !maybeSubstrate.startsWith("--")) i++;
       continue;
     }

@@ -106,31 +106,30 @@ Self-audit found three small things; all fixed in this turn.
 ## What was wrong
 
 1. **`codeicide-flow-v0/run.sh` had a path-construction bug.** The
-   PROBE_ARCHIVES cleanup line used
-   `dirname(dirname(X))/basename(dirname(X))` which simplifies to
-   `dirname(X)` — the fixtures subdir, not the parent timestamp
-   directory. Result: probe cleanup only removed the fixtures/ subdir;
+   PROBE_ARCHIVES cleanup line used `dirname(dirname(X))/basename(dirname(X))`
+   which simplifies to `dirname(X)` — the fixtures subdir, not the parent
+   timestamp directory. Result: probe cleanup only removed the fixtures/ subdir;
    parent `archive/<timestamp>/` accumulated.
 
-2. **Seven leftover archive directories** from earlier probe runs,
-   each containing only probe fixture artifacts (verified by grepping
-   RECEIPT.json before rm).
+2. **Seven leftover archive directories** from earlier probe runs, each
+   containing only probe fixture artifacts (verified by grepping RECEIPT.json
+   before rm).
 
 3. **Two missing .gitignore patterns:** the JSON CI cache sidecar
-   (`reports/latest-*.json`, regenerated on every audit run) and
-   Python bytecode (`__pycache__/`, `*.pyc`).
+   (`reports/latest-*.json`, regenerated on every audit run) and Python bytecode
+   (`__pycache__/`, `*.pyc`).
 
 ## What was fixed
 
 1. **Probe cleanup line replaced** with `cut -d/ -f1-2` — extracts
-   `archive/<timestamp>` cleanly. Verified by re-running the probe:
-   `archive/` is empty after cleanup.
+   `archive/<timestamp>` cleanly. Verified by re-running the probe: `archive/`
+   is empty after cleanup.
 
-2. **Seven leftover archive dirs removed.** Each verified to contain
-   only probe references before rm.
+2. **Seven leftover archive dirs removed.** Each verified to contain only probe
+   references before rm.
 
-3. **.gitignore extended.** Existing tracked `.pyc` files removed
-   (git status shows them as `D`, ready to be staged on commit).
+3. **.gitignore extended.** Existing tracked `.pyc` files removed (git status
+   shows them as `D`, ready to be staged on commit).
 
 ## Tree state after cleanups
 
@@ -170,14 +169,14 @@ No `archive/` entries (probe cleanup works now).
 
 ## Pause (real now)
 
-Substrate is genuinely commit-ready. Codex's pause guidance honored:
-no more expansion. Five clean commit slices documented in the
-self-audit chord. The TRINITY_CAPABILITIES proposal sits pending.
+Substrate is genuinely commit-ready. Codex's pause guidance honored: no more
+expansion. Five clean commit slices documented in the self-audit chord. The
+TRINITY_CAPABILITIES proposal sits pending.
 
 Awaiting either:
+
 - Architect's commit decision (slicing + sequencing)
-- Codex re-AYE (the cleanups are minor; he likely doesn't need to
-  re-review)
+- Codex re-AYE (the cleanups are minor; he likely doesn't need to re-review)
 - Gemini/Kimi cowitness on the pending proposal
 
 Nothing left for me to do here without crossing the pause line.

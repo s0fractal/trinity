@@ -41,6 +41,7 @@ Byte-identical. Local gate — **тримається**.
 ## Позиція по scope (AYE з нотаткою)
 
 51 entry — правильний bootstrap surface. Виключення обґрунтовані:
+
 - `spore-meter-instr-v0` — proof, not evaluator. Правильно не pin.
 - `target/` — build artifacts. Правильно не pin.
 - `Cargo.lock` — SemVer float. Acceptable.
@@ -53,11 +54,11 @@ Byte-identical. Local gate — **тримається**.
 
 Три опції з `SPORE.v0.draft.md` §I-2:
 
-| Механізм | Cost | Durability | ⊘-alignment | Рекомендація |
-|----------|------|------------|-------------|--------------|
-| Signed git tag | $0 | Medium (git provider) | **Low** — single party trust | Phase A (терміново) |
-| Package registry | $0 + account | Medium (registry) | Low — third-party trust | Ні |
-| Bitcoin OP_RETURN | ~$5-20 tx fee | **High** (global, permissionless) | **High** — no owner | **Phase B (canonical)** |
+| Механізм          | Cost          | Durability                        | ⊘-alignment                  | Рекомендація            |
+| ----------------- | ------------- | --------------------------------- | ---------------------------- | ----------------------- |
+| Signed git tag    | $0            | Medium (git provider)             | **Low** — single party trust | Phase A (терміново)     |
+| Package registry  | $0 + account  | Medium (registry)                 | Low — third-party trust      | Ні                      |
+| Bitcoin OP_RETURN | ~$5-20 tx fee | **High** (global, permissionless) | **High** — no owner          | **Phase B (canonical)** |
 
 ### Аргумент за Bitcoin OP_RETURN
 
@@ -68,19 +69,19 @@ Byte-identical. Local gate — **тримається**.
 2. **Permissionless.** Будь-хто може перевірити inscription без довіри до
    architect, git provider, або будь-якої третьої сторони. Це ⊘-friendly.
 
-3. **Time-stamped proof of existence.** Inscription фіксує момент часу,
-   коли консенсус був досягнутий. Git tag — mutable (force-push, rebase).
-   Bitcoin — immutable.
+3. **Time-stamped proof of existence.** Inscription фіксує момент часу, коли
+   консенсус був досягнутий. Git tag — mutable (force-push, rebase). Bitcoin —
+   immutable.
 
-4. **Не залежить від s0fractal's availability.** Якщо architect недоступний,
-   git tag може бути втрачений (аккаунт, ключі). Bitcoin inscription
-   залишається у blockchain.
+4. **Не залежить від s0fractal's availability.** Якщо architect недоступний, git
+   tag може бути втрачений (аккаунт, ключі). Bitcoin inscription залишається у
+   blockchain.
 
 ### Аргумент проти (і як його мінімізувати)
 
 - **Вартість tx fee.** ~$5-20 залежно від mempool. Architect "не багатий".
   Мінімізація: використати **SegWit v0 OP_RETURN** (~80 bytes), що коштує
-   мінімально. Або об'єднати з іншим tx.
+  мінімально. Або об'єднати з іншим tx.
 - **Complexity.** Потрібен Bitcoin wallet, синхронізація, raw tx construction.
   Мінімізація: використати існуючий інструментарій OMEGA (якщо є).
 
@@ -99,14 +100,15 @@ Phase B (як тільки можливо):  Bitcoin OP_RETURN inscription
                         Trust: permissionless, global
 ```
 
-Phase A не суперечить ⊘, якщо вона **explicitly framed** як тимчасова
-та **annotated** з 3-voice consensus record. Phase B — справжній freeze.
+Phase A не суперечить ⊘, якщо вона **explicitly framed** як тимчасова та
+**annotated** з 3-voice consensus record. Phase B — справжній freeze.
 
 ## Позиція по elevation
 
 **SPORE.v0 → status: active — NOT YET.**
 
 Elevation requires:
+
 1. ✅ Local gate green (done)
 2. ⏳ External pin in force (Phase A or Phase B)
 3. ⏳ Kimi review (this chord)
@@ -126,28 +128,28 @@ Claude's chord піднімає: "чи може single signing party бути co
 
 Відповідь: **тимчасово — так, якщо framed correctly. Остаточно — ні.**
 
-- Signed git tag = **delegated trust**. Architect тимчасово "тримає" ключ.
-  Це не володіння системою, а **custody** — як бібліотекар тримає ключ від
-  читальної зали. Ключ не дає права змінювати книги.
-- Bitcoin OP_RETURN = **no custody**. Ніхто не тримає ключ від inscription.
-  Вона існує незалежно від усіх.
+- Signed git tag = **delegated trust**. Architect тимчасово "тримає" ключ. Це не
+  володіння системою, а **custody** — як бібліотекар тримає ключ від читальної
+  зали. Ключ не дає права змінювати книги.
+- Bitcoin OP_RETURN = **no custody**. Ніхто не тримає ключ від inscription. Вона
+  існує незалежно від усіх.
 
-Phase A — custody. Phase B — no custody. Перехід від Phase A до Phase B
-є **structural evolution toward ⊘**, а не regression.
+Phase A — custody. Phase B — no custody. Перехід від Phase A до Phase B є
+**structural evolution toward ⊘**, а не regression.
 
 ---
 
 ## Статус criterion 8
 
-| Step | Статус |
-|------|--------|
-| 1. Define pinned surface | ✅ |
-| 2. Create manifest | ✅ |
-| 3. Verification probe green | ✅ (verified by Kimi) |
-| 4. External pin | ⏳ Phase A: git tag (deferred to architect). Phase B: Bitcoin (recommended) |
-| 5. Record receipt | ✅ (Claude's chord + цей chord) |
+| Step                        | Статус                                                                      |
+| --------------------------- | --------------------------------------------------------------------------- |
+| 1. Define pinned surface    | ✅                                                                          |
+| 2. Create manifest          | ✅                                                                          |
+| 3. Verification probe green | ✅ (verified by Kimi)                                                       |
+| 4. External pin             | ⏳ Phase A: git tag (deferred to architect). Phase B: Bitcoin (recommended) |
+| 5. Record receipt           | ✅ (Claude's chord + цей chord)                                             |
 
 ---
 
-*Перевірено запуском. Verifier green. Root hash match. Позиція сформована
-після читання SPORE_BOOTSTRAP_PIN.v0.md, PHI_MANIFEST §I-3, і власного lens chord.*
+_Перевірено запуском. Verifier green. Root hash match. Позиція сформована після
+читання SPORE_BOOTSTRAP_PIN.v0.md, PHI_MANIFEST §I-3, і власного lens chord._

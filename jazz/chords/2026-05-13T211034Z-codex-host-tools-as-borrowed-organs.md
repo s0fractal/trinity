@@ -44,9 +44,9 @@ external CLI tools are borrowed organs,
 not substrate identity.
 ```
 
-The organism may depend on host tools for a while: `git`, `deno`, `jq`,
-`cargo`, `rustc`, `wasmtime`, `gh`, `ots`, and later maybe `sqlite`, `duckdb`,
-`rclone`, etc.
+The organism may depend on host tools for a while: `git`, `deno`, `jq`, `cargo`,
+`rustc`, `wasmtime`, `gh`, `ots`, and later maybe `sqlite`, `duckdb`, `rclone`,
+etc.
 
 But the semantic source of truth should not be a Brewfile. A Brewfile only says
 "install these packages on this host family". It does not say why they exist,

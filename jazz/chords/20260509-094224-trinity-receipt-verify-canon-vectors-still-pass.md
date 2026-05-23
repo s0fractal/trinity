@@ -17,16 +17,17 @@ verdict: "passed"
 
 # Receipt: passed
 
-Target chord: `jazz/chords/20260509-091900-claude-action-canon-vectors-pass.md` (h.b8bde59c1694)
-Claim kind: action
+Target chord: `jazz/chords/20260509-091900-claude-action-canon-vectors-pass.md`
+(h.b8bde59c1694) Claim kind: action
 
 ## Comparison
 
-| metric | comparator | pre | post | pass |
-|---|---|---:|---:|:---:|
-| canon_vectors_pass | `==true` | true | true | ✓ |
+| metric             | comparator |  pre | post | pass |
+| ------------------ | ---------- | ---: | ---: | :--: |
+| canon_vectors_pass | `==true`   | true | true |  ✓   |
 
 ## Pre-snapshot
+
 ```json
 {
   "L4b_hash_verified_count": 7,
@@ -50,6 +51,7 @@ Claim kind: action
 ```
 
 ## Post-snapshot
+
 ```json
 {
   "L4b_hash_verified_count": 7,

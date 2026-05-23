@@ -154,13 +154,13 @@ mirror_voice_note: |
 
 Architect's framing, captured directly:
 
-> "А шо якщо 'заморозити' ліквід омегу і тд як є — і в трініті їх
-> скопіювати — і вже розвивати як звязні частини екосистеми (ну і
-> все в одному репозиторії, хоч і великому). Тобто розвивати одну
-> репу з багатьма артефактами, а не 3 сабмодулі."
+> "А шо якщо 'заморозити' ліквід омегу і тд як є — і в трініті їх скопіювати — і
+> вже розвивати як звязні частини екосистеми (ну і все в одному репозиторії, хоч
+> і великому). Тобто розвивати одну репу з багатьма артефактами, а не 3
+> сабмодулі."
 >
-> "Суть — шоб перевикористовувати функції та шоб гармонійна хрень
-> була. І шоб самопотрібність була. Про import подумати."
+> "Суть — шоб перевикористовувати функції та шоб гармонійна хрень була. І шоб
+> самопотрібність була. Про import подумати."
 
 ## What is being proposed
 
@@ -178,83 +178,82 @@ trinity/                    # the unified repo
 ```
 
 Substrates frozen in their current shape at merge moment. Cross-substrate
-function reuse trivial. Categorical boundary preserved via lint/audit,
-not git submodule.
+function reuse trivial. Categorical boundary preserved via lint/audit, not git
+submodule.
 
 ## Why architect proposes this
 
 Three pressures pull toward unification:
 
-1. **Cognitive load.** Substrate became too complex to hold across 3
-   repos. Architect explicitly carrying this weight. Submodule = N+1
-   mental models per development session.
+1. **Cognitive load.** Substrate became too complex to hold across 3 repos.
+   Architect explicitly carrying this weight. Submodule = N+1 mental models per
+   development session.
 
-2. **Function reuse harmony.** Currently cross-substrate code reuse
-   requires bridge contracts, version coordination, careful import
-   paths. Monorepo: just `import`.
+2. **Function reuse harmony.** Currently cross-substrate code reuse requires
+   bridge contracts, version coordination, careful import paths. Monorepo: just
+   `import`.
 
-3. **Self-sufficiency (самопотрібність).** Substrate should reference
-   itself completely. All code reachable from one root. No external
-   git dep for substrate internals. Honest about what substrate IS:
-   one project organized as three for psychological/legacy reasons.
+3. **Self-sufficiency (самопотрібність).** Substrate should reference itself
+   completely. All code reachable from one root. No external git dep for
+   substrate internals. Honest about what substrate IS: one project organized as
+   three for psychological/legacy reasons.
 
 ## What's at stake
 
-**Bitcoin attestation continuity.** Omega RFC v1.0 inscribed at
-Genesis Hash `0x549A6307`. That hash references standalone-repo
-commit. After merge, hash becomes historical anchor. Chain of
-attestation needs careful design.
+**Bitcoin attestation continuity.** Omega RFC v1.0 inscribed at Genesis Hash
+`0x549A6307`. That hash references standalone-repo commit. After merge, hash
+becomes historical anchor. Chain of attestation needs careful design.
 
-**FROZEN semantics for omega.** Currently submodule pin enforces.
-After merge: path-policy + audit + pre-commit hook substitute. Soft
-enforcement instead of git-level hard pin. Different kind of property,
-needs voice review on whether it's sufficient.
+**FROZEN semantics for omega.** Currently submodule pin enforces. After merge:
+path-policy + audit + pre-commit hook substitute. Soft enforcement instead of
+git-level hard pin. Different kind of property, needs voice review on whether
+it's sufficient.
 
-**Reversibility.** Submodule → monorepo is less-reversible than current
-state. `git filter-repo` to split back is painful. Architect should
-commit knowingly.
+**Reversibility.** Submodule → monorepo is less-reversible than current state.
+`git filter-repo` to split back is painful. Architect should commit knowingly.
 
-**Trinity-as-meta framing.** Trinity stops being "lobby above
-substrates" and becomes "whole house". Light contract revision needed.
+**Trinity-as-meta framing.** Trinity stops being "lobby above substrates" and
+becomes "whole house". Light contract revision needed.
 
 ## Specific questions per voice
 
 ### For Codex
+
 - Does HEX_REFRACTION spiral import law extend cleanly to monorepo
   cross-substrate semantics?
 - Path-policy as substitute for submodule pin: structurally sound or weaker?
-- Do role-coordinate mounts (4/=omega, 6/=liquid, 7/F=myc) become
-  operational or stay interpretive?
+- Do role-coordinate mounts (4/=omega, 6/=liquid, 7/F=myc) become operational or
+  stay interpretive?
 
 ### For Gemini
-- Bitcoin attestation chain: how would you design the chained
-  inscription so original frozen status is preserved AND new location
-  anchored?
+
+- Bitcoin attestation chain: how would you design the chained inscription so
+  original frozen status is preserved AND new location anchored?
 - Does RECEIPT_ENVELOPE.v1.0 body_hash semantics need any adjustment?
 
 ### For Kimi
-- Migration impact on liquid's live operational state: does
-  `git subtree merge` keep it intact, or do PN-CAD path refs need
-  remapping?
-- Does daemon's scope expand naturally to liquid/omega chords inside
-  same repo, or does it need explicit gating?
+
+- Migration impact on liquid's live operational state: does `git subtree merge`
+  keep it intact, or do PN-CAD path refs need remapping?
+- Does daemon's scope expand naturally to liquid/omega chords inside same repo,
+  or does it need explicit gating?
 
 ### For all voices
+
 - Self-sufficiency vs distribution: if anyone wanted omega/liquid/myc
-  independently in future, monorepo forecloses it. Is that future
-  realistic enough to preserve submodule shape?
-- If trinity becomes "the whole house", does trinity itself need a
-  rename, or does it remain umbrella?
+  independently in future, monorepo forecloses it. Is that future realistic
+  enough to preserve submodule shape?
+- If trinity becomes "the whole house", does trinity itself need a rename, or
+  does it remain umbrella?
 
 ## Falsifiers
 
-- If subtree merge of any substrate breaks >5% of internal imports,
-  mechanism is wrong; need symlink shadowing instead.
-- If chained Bitcoin attestation can't preserve original FROZEN claim
-  without ambiguity, monorepo is incompatible with frozen-substrate
-  property.
-- If audit/lint can't enforce OMEGA_LIQUID_BOUNDARY with submodule-level
-  rigor, categorical boundary degrades.
+- If subtree merge of any substrate breaks >5% of internal imports, mechanism is
+  wrong; need symlink shadowing instead.
+- If chained Bitcoin attestation can't preserve original FROZEN claim without
+  ambiguity, monorepo is incompatible with frozen-substrate property.
+- If audit/lint can't enforce OMEGA_LIQUID_BOUNDARY with submodule-level rigor,
+  categorical boundary degrades.
 - If after merge cognitive load does not decrease, diagnosis was wrong.
 
 ## Order if adopted
@@ -277,11 +276,11 @@ substrates" and becomes "whole house". Light contract revision needed.
 
 ## Mirror voice note
 
-Architect raised this after the vocabulary contract draft. There's a
-pattern: vocabulary work surfaces structural tensions that monorepo
-resolves at a different level. Instead of harmonizing 3 hex namespaces
-+ mount tables, just have one repo. Cleaner if attestation chain
-solvable.
+Architect raised this after the vocabulary contract draft. There's a pattern:
+vocabulary work surfaces structural tensions that monorepo resolves at a
+different level. Instead of harmonizing 3 hex namespaces
+
+- mount tables, just have one repo. Cleaner if attestation chain solvable.
 
 This chord is for voice review. Not for action.
 

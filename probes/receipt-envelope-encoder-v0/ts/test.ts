@@ -1,20 +1,24 @@
 // Tests for receipt-envelope-encoder-v0.
 // Run: deno test --allow-read ts/test.ts
 
-import { assertEquals, assertRejects, assertThrows } from "https://deno.land/std@0.224.0/assert/mod.ts";
+import {
+  assertEquals,
+  assertRejects,
+  assertThrows,
+} from "https://deno.land/std@0.224.0/assert/mod.ts";
 import {
   CborValue,
-  encodeCanonical,
   decodeCanonical,
+  encodeCanonical,
   multihashSha256,
   toHex,
 } from "./canonical_cbor.ts";
 import {
-  Envelope,
-  wrap,
-  unwrap,
   coWitness,
+  Envelope,
   ENVELOPE_SCHEMA,
+  unwrap,
+  wrap,
 } from "./envelope.ts";
 
 // ────────────────────────────────────────────────────────────────────────
@@ -50,7 +54,10 @@ Deno.test("encode: strings", () => {
 
 Deno.test("encode: byte strings", () => {
   assertEquals(toHex(encodeCanonical(new Uint8Array([]))), "40");
-  assertEquals(toHex(encodeCanonical(new Uint8Array([1, 2, 3, 4]))), "4401020304");
+  assertEquals(
+    toHex(encodeCanonical(new Uint8Array([1, 2, 3, 4]))),
+    "4401020304",
+  );
 });
 
 Deno.test("encode: arrays", () => {
@@ -60,8 +67,14 @@ Deno.test("encode: arrays", () => {
 
 Deno.test("encode: maps sorted bytewise-lex on encoded keys", () => {
   // Both {a:1,b:2} and {b:2,a:1} must produce same bytes.
-  assertEquals(toHex(encodeCanonical({ a: 1, b: 2 })), "a26161016162 02".replace(/\s/g, ""));
-  assertEquals(toHex(encodeCanonical({ b: 2, a: 1 })), "a26161016162 02".replace(/\s/g, ""));
+  assertEquals(
+    toHex(encodeCanonical({ a: 1, b: 2 })),
+    "a26161016162 02".replace(/\s/g, ""),
+  );
+  assertEquals(
+    toHex(encodeCanonical({ b: 2, a: 1 })),
+    "a26161016162 02".replace(/\s/g, ""),
+  );
 });
 
 Deno.test("encode: empty map", () => {
@@ -81,7 +94,11 @@ Deno.test("encode: nested", () => {
 // ────────────────────────────────────────────────────────────────────────
 
 Deno.test("encode: floats forbidden", () => {
-  assertThrows(() => encodeCanonical(1.5 as unknown as CborValue), Error, "float");
+  assertThrows(
+    () => encodeCanonical(1.5 as unknown as CborValue),
+    Error,
+    "float",
+  );
 });
 
 Deno.test("encode: undefined forbidden via unsupported type", () => {
@@ -89,12 +106,24 @@ Deno.test("encode: undefined forbidden via unsupported type", () => {
 });
 
 Deno.test("encode: NaN and Infinity forbidden", () => {
-  assertThrows(() => encodeCanonical(NaN as unknown as CborValue), Error, "non-finite");
-  assertThrows(() => encodeCanonical(Infinity as unknown as CborValue), Error, "non-finite");
+  assertThrows(
+    () => encodeCanonical(NaN as unknown as CborValue),
+    Error,
+    "non-finite",
+  );
+  assertThrows(
+    () => encodeCanonical(Infinity as unknown as CborValue),
+    Error,
+    "non-finite",
+  );
 });
 
 Deno.test("encode: JS Map forbidden", () => {
-  assertThrows(() => encodeCanonical(new Map() as unknown as CborValue), Error, "Map");
+  assertThrows(
+    () => encodeCanonical(new Map() as unknown as CborValue),
+    Error,
+    "Map",
+  );
 });
 
 // ────────────────────────────────────────────────────────────────────────
@@ -103,21 +132,37 @@ Deno.test("encode: JS Map forbidden", () => {
 
 Deno.test("decode: rejects non-canonical 1-byte uint for small value", () => {
   // 0x18 0x01 would be uint 1 with 1-byte length; canonical is 0x01.
-  assertThrows(() => decodeCanonical(new Uint8Array([0x18, 0x01])), Error, "non-canonical");
+  assertThrows(
+    () => decodeCanonical(new Uint8Array([0x18, 0x01])),
+    Error,
+    "non-canonical",
+  );
 });
 
 Deno.test("decode: rejects non-canonical 2-byte uint for value<256", () => {
-  assertThrows(() => decodeCanonical(new Uint8Array([0x19, 0x00, 0x05])), Error, "non-canonical");
+  assertThrows(
+    () => decodeCanonical(new Uint8Array([0x19, 0x00, 0x05])),
+    Error,
+    "non-canonical",
+  );
 });
 
 Deno.test("decode: rejects indefinite-length array", () => {
   // 0x9f start indef array
-  assertThrows(() => decodeCanonical(new Uint8Array([0x9f, 0xff])), Error, "indefinite");
+  assertThrows(
+    () => decodeCanonical(new Uint8Array([0x9f, 0xff])),
+    Error,
+    "indefinite",
+  );
 });
 
 Deno.test("decode: rejects tags", () => {
   // 0xc0 = tag 0 (date string)
-  assertThrows(() => decodeCanonical(new Uint8Array([0xc0, 0x60])), Error, "tags");
+  assertThrows(
+    () => decodeCanonical(new Uint8Array([0xc0, 0x60])),
+    Error,
+    "tags",
+  );
 });
 
 Deno.test("decode: rejects map keys out of order", () => {
@@ -129,11 +174,19 @@ Deno.test("decode: rejects map keys out of order", () => {
 
 Deno.test("decode: rejects floats", () => {
   // 0xf9 0x00 0x00 = half-float +0.0
-  assertThrows(() => decodeCanonical(new Uint8Array([0xf9, 0x00, 0x00])), Error, "floating-point");
+  assertThrows(
+    () => decodeCanonical(new Uint8Array([0xf9, 0x00, 0x00])),
+    Error,
+    "floating-point",
+  );
 });
 
 Deno.test("decode: rejects trailing bytes", () => {
-  assertThrows(() => decodeCanonical(new Uint8Array([0x01, 0x02])), Error, "trailing");
+  assertThrows(
+    () => decodeCanonical(new Uint8Array([0x01, 0x02])),
+    Error,
+    "trailing",
+  );
 });
 
 // ────────────────────────────────────────────────────────────────────────
@@ -143,7 +196,11 @@ Deno.test("decode: rejects trailing bytes", () => {
 Deno.test("round-trip: variety of envelope-shaped values", () => {
   const fixtures: CborValue[] = [
     {},
-    { type: "SubstrateHealth", overall: "degraded", own_organs: { ok: 76, fail: 0 } },
+    {
+      type: "SubstrateHealth",
+      overall: "degraded",
+      own_organs: { ok: 76, fail: 0 },
+    },
     [1, 2, 3, "four", { nested: true }],
     { unicode: "тест", emoji_forbidden_in_protocol_but_text_ok: "ψ" },
     { mixed: [null, true, false, 0, -1, 23] },
@@ -152,7 +209,11 @@ Deno.test("round-trip: variety of envelope-shaped values", () => {
     const b1 = encodeCanonical(fx);
     const decoded = decodeCanonical(b1);
     const b2 = encodeCanonical(decoded as CborValue);
-    assertEquals(toHex(b1), toHex(b2), `round-trip mismatch for ${JSON.stringify(fx)}`);
+    assertEquals(
+      toHex(b1),
+      toHex(b2),
+      `round-trip mismatch for ${JSON.stringify(fx)}`,
+    );
   }
 });
 
@@ -221,7 +282,11 @@ Deno.test("wrap/unwrap: sealed_descriptor synthetic body", async () => {
     type: "SealedReceiptDescriptor",
     schema_version: "myc.sealed-receipt.v0.1",
     fqdn: "abc.sealed.myc.md",
-    commitment: { algorithm: "sha256", value: "deadbeef".padEnd(64, "0"), covers: "descriptor.body" },
+    commitment: {
+      algorithm: "sha256",
+      value: "deadbeef".padEnd(64, "0"),
+      covers: "descriptor.body",
+    },
     body: {
       sealed_receipt_contract: {
         source: "witness",
@@ -306,7 +371,10 @@ Deno.test("substrate court seed: same body, different substrate_tag → same bod
   assertEquals(env_liquid.envelope_id !== env_omega.envelope_id, true);
 
   // Tamper detection: change one body byte
-  const tamperedBody = { ...body, output: "1220deadbeef".padEnd(69, "0") + "1" };
+  const tamperedBody = {
+    ...body,
+    output: "1220deadbeef".padEnd(69, "0") + "1",
+  };
   const env_tampered = await wrap(tamperedBody, "spore_apply_v0", "external");
   assertEquals(env_trinity.body_hash !== env_tampered.body_hash, true);
 });

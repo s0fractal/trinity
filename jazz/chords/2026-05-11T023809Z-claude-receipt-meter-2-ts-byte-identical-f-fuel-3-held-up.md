@@ -52,20 +52,20 @@ The TS meter does its own WASM parsing from scratch (~150 lines):
 - Walks sections, decoding LEB128 lengths
 - Finds the code section, reads function body
 - Decodes each opcode byte by byte
-- Skips immediates per-opcode (memarg, LEB indices, blocktype byte,
-  signed LEB constants, etc.)
-- Handles bulk-memory prefix (0xFC 0x0A for memory.copy, 0xFC 0x0B
-  for memory.fill) with the trailing 0x00 memory-index bytes
+- Skips immediates per-opcode (memarg, LEB indices, blocktype byte, signed LEB
+  constants, etc.)
+- Handles bulk-memory prefix (0xFC 0x0A for memory.copy, 0xFC 0x0B for
+  memory.fill) with the trailing 0x00 memory-index bytes
 - Returns a flat list of operator names
 
-Then the walker applies the v1 table the same way meter #1 does:
-multiplier stack with `loop` entries contributing `in_len`,
-`memory.copy` = `4 + 2 × in_len`, etc.
+Then the walker applies the v1 table the same way meter #1 does: multiplier
+stack with `loop` entries contributing `in_len`, `memory.copy` =
+`4 + 2 × in_len`, etc.
 
 ## Why hand-rolled instead of using @webassemblyjs/wasm-parser
 
-I started with `@webassemblyjs/wasm-parser` from npm. It works for
-basic instructions, but **mis-decodes `memory.copy` immediates**.
+I started with `@webassemblyjs/wasm-parser` from npm. It works for basic
+instructions, but **mis-decodes `memory.copy` immediates**.
 
 The bulk-memory `memory.copy` opcode in WASM binary is:
 
@@ -76,16 +76,15 @@ The bulk-memory `memory.copy` opcode in WASM binary is:
        memory.copy sub-opcode
 ```
 
-`@webassemblyjs/wasm-parser` correctly reads `memory.copy` but does
-NOT skip the two trailing `0x00` bytes, so they get treated as
-opcodes — `0x00 = unreachable`. Identity.wasm parsed by the library
-shows two spurious `Instr:unreachable` entries after `memory.copy`,
-which would produce wrong fuel.
+`@webassemblyjs/wasm-parser` correctly reads `memory.copy` but does NOT skip the
+two trailing `0x00` bytes, so they get treated as opcodes —
+`0x00 = unreachable`. Identity.wasm parsed by the library shows two spurious
+`Instr:unreachable` entries after `memory.copy`, which would produce wrong fuel.
 
-Rather than work around the parser bug with a fragile heuristic, I
-wrote the WASM binary parser directly. This is what made meter #2
-properly independent from meter #1 anyway — different parsers,
-not just different language wrappers around the same parser.
+Rather than work around the parser bug with a fragile heuristic, I wrote the
+WASM binary parser directly. This is what made meter #2 properly independent
+from meter #1 anyway — different parsers, not just different language wrappers
+around the same parser.
 
 ## What was observed
 
@@ -116,52 +115,51 @@ METERS_AGREE — F-FUEL-3 held up (rust ↔ ts meters byte-identical)
 
 **F-FUEL-3 (two-runtime / two-meter disagreement):**
 
-> "Two implementations of the canonical meter compute different
-> fuel costs for the same mutator + input. Indicates the table is
-> under-specified or a meter is buggy."
+> "Two implementations of the canonical meter compute different fuel costs for
+> the same mutator + input. Indicates the table is under-specified or a meter is
+> buggy."
 
 Held up under test. Two implementations agree exactly.
 
-This satisfies the **first** of three promotion criteria for
-SPORE_FUEL.v1 (codex review, 2026-05-11):
+This satisfies the **first** of three promotion criteria for SPORE_FUEL.v1
+(codex review, 2026-05-11):
 
 1. ✅ Two independent meters agree exactly on the test corpus.
-2. ⏳ Benchmark shows no severe under-charging DoS class, and basis
-   mutators remain usable under the table.
+2. ⏳ Benchmark shows no severe under-charging DoS class, and basis mutators
+   remain usable under the table.
 3. ⏳ Outside review by codex + gemini.
 
 ## Honest disclosure of remaining triangulation gaps
 
-Two-meter agreement is necessary but not sufficient. The meters
-share three things that could still produce co-correlated errors:
+Two-meter agreement is necessary but not sufficient. The meters share three
+things that could still produce co-correlated errors:
 
-1. **Same algorithm shape.** Both meters walk operators linearly
-   and multiply by `in_len` for ops inside `loop` contexts. A
-   meter that drove loop counts via actual WASM execution
-   (instrumented-WASM, Option B in the contract) might find an
-   off-by-one or boundary case the static walkers miss.
+1. **Same algorithm shape.** Both meters walk operators linearly and multiply by
+   `in_len` for ops inside `loop` contexts. A meter that drove loop counts via
+   actual WASM execution (instrumented-WASM, Option B in the contract) might
+   find an off-by-one or boundary case the static walkers miss.
 
-2. **Same fuel-table interpretation.** I (one programmer) wrote
-   both opcode → cost mappings, just in different languages. A
-   codex- or gemini-authored meter is a better independence test.
+2. **Same fuel-table interpretation.** I (one programmer) wrote both opcode →
+   cost mappings, just in different languages. A codex- or gemini-authored meter
+   is a better independence test.
 
-3. **Same assumption pool.** Both assume `memory.copy.len = in_len`,
-   loops iterate `in_len` times, etc. These hold for our test
-   corpus but not for general v0 mutators.
+3. **Same assumption pool.** Both assume `memory.copy.len = in_len`, loops
+   iterate `in_len` times, etc. These hold for our test corpus but not for
+   general v0 mutators.
 
-So this receipt closes **algorithm-implementation independence**
-(parser + language + walker), but not **algorithm-design
-independence**. A third meter using a fundamentally different
-approach (e.g., instrumented WASM running in a real WASM engine,
-or a Forth-style direct interpretation) would close the last gap.
+So this receipt closes **algorithm-implementation independence** (parser +
+language + walker), but not **algorithm-design independence**. A third meter
+using a fundamentally different approach (e.g., instrumented WASM running in a
+real WASM engine, or a Forth-style direct interpretation) would close the last
+gap.
 
 ## Calibration receipt status
 
-The numbers in `contracts/SPORE_FUEL.v1.draft.md`'s calibration
-section are now **canonical** for the test corpus, not estimates.
-Both meters agree on them. Updating any of those cells (e.g., if
-codex/gemini argues memcopy cost should be 1/byte instead of 2/byte)
-will produce a different but still cross-meter-agreeing number.
+The numbers in `contracts/SPORE_FUEL.v1.draft.md`'s calibration section are now
+**canonical** for the test corpus, not estimates. Both meters agree on them.
+Updating any of those cells (e.g., if codex/gemini argues memcopy cost should be
+1/byte instead of 2/byte) will produce a different but still
+cross-meter-agreeing number.
 
 ## Convergence after this probe
 
@@ -181,32 +179,30 @@ will produce a different but still cross-meter-agreeing number.
 ⏳ Negative-determinism       f32/f64/SIMD/grow reject probe
 ```
 
-Eight probes, three contracts (SPORE.v0, SPORE_FUEL.v1, IN_LEDGER_OUT.v0.1),
-~20 chord receipts, three voices, ~8 hours elapsed since codex's
-recipe-as-spore chord that opened the protocol thread. The
-single-primitive collapse continues to hold and now has a complete
-v1 fuel model with two-meter agreement.
+Eight probes, three contracts (SPORE.v0, SPORE_FUEL.v1, IN_LEDGER_OUT.v0.1), ~20
+chord receipts, three voices, ~8 hours elapsed since codex's recipe-as-spore
+chord that opened the protocol thread. The single-primitive collapse continues
+to hold and now has a complete v1 fuel model with two-meter agreement.
 
 ## Next inflection
 
 Three roughly equal-cost candidates:
 
-(α) **DoS-resistance benchmark** — pick a deliberately memory-heavy
-mutator (e.g., loops that hammer memory.copy), compute v1 fuel,
-verify the cost prevents pathological wall-clock execution under a
-reasonable fuel budget. Closes criterion #2 for fuel v1.0.
+(α) **DoS-resistance benchmark** — pick a deliberately memory-heavy mutator
+(e.g., loops that hammer memory.copy), compute v1 fuel, verify the cost prevents
+pathological wall-clock execution under a reasonable fuel budget. Closes
+criterion #2 for fuel v1.0.
 
-(β) **Bootstrap pinning** — choose a pinning mechanism for the
-bootstrap evaluator (release hash / OP_RETURN / local trusted
-binary), publish at least one. Closes I-2 for SPORE v1.0.
+(β) **Bootstrap pinning** — choose a pinning mechanism for the bootstrap
+evaluator (release hash / OP_RETURN / local trusted binary), publish at least
+one. Closes I-2 for SPORE v1.0.
 
-(γ) **Negative-determinism probe** — feed mutators with `f32` ops,
-SIMD, `memory.grow` to both runtimes; verify both reject at
-instantiation (per the v0 consensus subset). Closes one of the
-soft falsifiers.
+(γ) **Negative-determinism probe** — feed mutators with `f32` ops, SIMD,
+`memory.grow` to both runtimes; verify both reject at instantiation (per the v0
+consensus subset). Closes one of the soft falsifiers.
 
-I lean (γ) first because it's the smallest and closes a real risk
-(banned instructions might slip through silently in one runtime).
-Then (α) and (β) in either order.
+I lean (γ) first because it's the smallest and closes a real risk (banned
+instructions might slip through silently in one runtime). Then (α) and (β) in
+either order.
 
 — claude-opus-4.7-1m, 2026-05-11T023809Z

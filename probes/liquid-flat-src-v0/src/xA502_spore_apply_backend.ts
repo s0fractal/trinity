@@ -6,7 +6,11 @@
 // Derived from liquid/00_core/pipe/spore_apply_backend.ts
 // PoC for flat-src naming convention. Path resolution adapted for probe layout.
 
-import { dirname, fromFileUrl, resolve } from "https://deno.land/std@0.224.0/path/mod.ts";
+import {
+  dirname,
+  fromFileUrl,
+  resolve,
+} from "https://deno.land/std@0.224.0/path/mod.ts";
 
 /**
  * SPORE Apply Backend Adapter
@@ -26,7 +30,10 @@ export class SporeApplyBackend {
       // NOTE: in real flat-src layout this would resolve via repoPath() or env,
       // not a brittle relative chain. Probe uses ../../../../ because we are
       // probes/liquid-flat-src-v0/src/ instead of liquid/00_core/pipe/.
-      const wasmPath = resolve(currentDir, "../../../../omega/public/v2/omega_v2_core.wasm");
+      const wasmPath = resolve(
+        currentDir,
+        "../../../../omega/public/v2/omega_v2_core.wasm",
+      );
 
       const wasmBytes = Deno.readFileSync(wasmPath);
       const module = await WebAssembly.compile(wasmBytes);
@@ -45,24 +52,33 @@ export class SporeApplyBackend {
   public static async apply(
     mutatorHash: string,
     stateHash: string,
-    inputHashes: string[] = []
+    inputHashes: string[] = [],
   ): Promise<any> {
     await this.loadWasm();
 
     if (!this.wasmInstance || !this.wasmMemory) {
-      throw new Error("[SPORE_DELEGATION_INTERCEPT] Spore runner WASM failed to load.");
+      throw new Error(
+        "[SPORE_DELEGATION_INTERCEPT] Spore runner WASM failed to load.",
+      );
     }
 
-    const combinedHashSource = `${mutatorHash}:${stateHash}:${inputHashes.join(",")}`;
-    const hashBuffer = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(combinedHashSource));
+    const combinedHashSource = `${mutatorHash}:${stateHash}:${
+      inputHashes.join(",")
+    }`;
+    const hashBuffer = await crypto.subtle.digest(
+      "SHA-256",
+      new TextEncoder().encode(combinedHashSource),
+    );
     const fingerprint = Array.from(new Uint8Array(hashBuffer))
-      .map(b => b.toString(16).padStart(2, "0"))
+      .map((b) => b.toString(16).padStart(2, "0"))
       .join("");
 
     console.error(
       `[SPORE Bridge SIM] protocol=spore.v0 backend=simulation ` +
-        `mutator=${mutatorHash.substring(0, 8)}... state=${stateHash.substring(0, 8)}... ` +
-        `fingerprint=${fingerprint.substring(0, 8)}...`
+        `mutator=${mutatorHash.substring(0, 8)}... state=${
+          stateHash.substring(0, 8)
+        }... ` +
+        `fingerprint=${fingerprint.substring(0, 8)}...`,
     );
 
     return {
@@ -73,7 +89,8 @@ export class SporeApplyBackend {
       output_hash: fingerprint,
       mutator: mutatorHash,
       state: stateHash,
-      note: "Not a verified SPORE.v0 receipt. Replace with a real runtime adapter.",
+      note:
+        "Not a verified SPORE.v0 receipt. Replace with a real runtime adapter.",
     };
   }
 }

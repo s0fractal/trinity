@@ -32,8 +32,16 @@
 //
 // Glossary words: cowitness, co-witness, sign, attest, cпів-свідок, підписати
 
-import { dirname, basename, join } from "https://deno.land/std@0.224.0/path/mod.ts";
-import { coWitness, Envelope, WitnessEntry } from "../probes/receipt-envelope-encoder-v0/ts/envelope.ts";
+import {
+  basename,
+  dirname,
+  join,
+} from "https://deno.land/std@0.224.0/path/mod.ts";
+import {
+  coWitness,
+  Envelope,
+  WitnessEntry,
+} from "../probes/receipt-envelope-encoder-v0/ts/envelope.ts";
 
 function parseArgs(args: string[]): {
   envelopePath?: string;
@@ -55,8 +63,10 @@ function parseArgs(args: string[]): {
     else if (a === "--oracle") oracle = args[++i] ?? oracle;
     else if (a === "--substrate") substrate = args[++i] ?? substrate;
     else if (a === "--persist") persist = true;
-    else if (a === "--persist-to") { persist = true; persistTo = args[++i]; }
-    else if (!a.startsWith("--")) envelopePath = a;
+    else if (a === "--persist-to") {
+      persist = true;
+      persistTo = args[++i];
+    } else if (!a.startsWith("--")) envelopePath = a;
   }
   return { envelopePath, stdin, oracle, substrate, persist, persistTo };
 }
@@ -75,8 +85,9 @@ function inferPersistPath(
   // Strip .proposal.json or .json suffix to get the base name.
   const dir = dirname(envelopePath);
   let base = basename(envelopePath);
-  if (base.endsWith(".proposal.json")) base = base.slice(0, -".proposal.json".length);
-  else if (base.endsWith(".json")) base = base.slice(0, -".json".length);
+  if (base.endsWith(".proposal.json")) {
+    base = base.slice(0, -".proposal.json".length);
+  } else if (base.endsWith(".json")) base = base.slice(0, -".json".length);
   const tsForPath = timestamp_iso.replace(/[:.]/g, "-");
   return join(dir, `${base}.cowitnesses`, `${substrateTag}-${tsForPath}.json`);
 }
@@ -87,7 +98,10 @@ async function readStdin(): Promise<string> {
   const total = chunks.reduce((a, c) => a + c.length, 0);
   const buf = new Uint8Array(total);
   let off = 0;
-  for (const c of chunks) { buf.set(c, off); off += c.length; }
+  for (const c of chunks) {
+    buf.set(c, off);
+    off += c.length;
+  }
   return new TextDecoder().decode(buf);
 }
 
@@ -98,13 +112,20 @@ async function signatureFor(
   timestamp_iso: string,
 ): Promise<string> {
   const src = `${oracle}|${substrate_tag}|${envelope_id}|${timestamp_iso}`;
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(src));
-  const hex = Array.from(new Uint8Array(buf), (b) => b.toString(16).padStart(2, "0")).join("");
+  const buf = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(src),
+  );
+  const hex = Array.from(
+    new Uint8Array(buf),
+    (b) => b.toString(16).padStart(2, "0"),
+  ).join("");
   return "1220" + hex;
 }
 
 async function main() {
-  const { envelopePath, stdin, oracle, substrate, persist, persistTo } = parseArgs(Deno.args);
+  const { envelopePath, stdin, oracle, substrate, persist, persistTo } =
+    parseArgs(Deno.args);
 
   let envelopeText: string;
   if (stdin || !envelopePath) {
@@ -129,14 +150,21 @@ async function main() {
     // Accept either a bare envelope OR a wrapper payload like
     // {type: "codeicide_proposal_emitted", envelope: {...}} that propose
     // organ emits. Unwrap the envelope from wrapper.
-    if (parsed && typeof parsed === "object" && parsed.schema === "trinity.receipt-envelope.v0.1") {
+    if (
+      parsed && typeof parsed === "object" &&
+      parsed.schema === "trinity.receipt-envelope.v0.1"
+    ) {
       envelope = parsed as Envelope;
-    } else if (parsed && typeof parsed === "object" && parsed.envelope && parsed.envelope.schema === "trinity.receipt-envelope.v0.1") {
+    } else if (
+      parsed && typeof parsed === "object" && parsed.envelope &&
+      parsed.envelope.schema === "trinity.receipt-envelope.v0.1"
+    ) {
       envelope = parsed.envelope as Envelope;
     } else {
       console.log(JSON.stringify({
         type: "error",
-        message: `cowitness: input is neither a bare RECEIPT_ENVELOPE.v0.1 nor a wrapper with .envelope`,
+        message:
+          `cowitness: input is neither a bare RECEIPT_ENVELOPE.v0.1 nor a wrapper with .envelope`,
         position: "6/D",
       }));
       Deno.exit(1);
@@ -179,15 +207,25 @@ async function main() {
     if (persistTo) {
       targetPath = persistTo;
     } else if (envelopePath && envelope.body_kind === "codeicide_proposal") {
-      targetPath = inferPersistPath(envelopePath, substrate, envelope.body_kind, timestamp_iso);
+      targetPath = inferPersistPath(
+        envelopePath,
+        substrate,
+        envelope.body_kind,
+        timestamp_iso,
+      );
     } else if (!envelopePath) {
-      persistSkippedReason = "--persist with --stdin requires --persist-to <path> (cannot infer convention path without source file)";
+      persistSkippedReason =
+        "--persist with --stdin requires --persist-to <path> (cannot infer convention path without source file)";
     } else {
-      persistSkippedReason = `--persist convention applies only to codeicide_proposal envelopes; this envelope body_kind is ${envelope.body_kind}`;
+      persistSkippedReason =
+        `--persist convention applies only to codeicide_proposal envelopes; this envelope body_kind is ${envelope.body_kind}`;
     }
     if (targetPath) {
       await Deno.mkdir(dirname(targetPath), { recursive: true });
-      await Deno.writeTextFile(targetPath, JSON.stringify(newEnvelope, null, 2) + "\n");
+      await Deno.writeTextFile(
+        targetPath,
+        JSON.stringify(newEnvelope, null, 2) + "\n",
+      );
       persistedTo = targetPath;
     }
   }

@@ -5,7 +5,9 @@
 
 # hermes — memory digest (generated stigmergy projection)
 
-*This is a recall projection auto-generated from source artifacts. Voice profile lives at `state/voices/hermes.json` (authored, identity). This file is "what you left behind in substrate" — read it on session start to recover continuity.*
+_This is a recall projection auto-generated from source artifacts. Voice profile
+lives at `state/voices/hermes.json` (authored, identity). This file is "what you
+left behind in substrate" — read it on session start to recover continuity._
 
 ## Profile (from voice record)
 
@@ -13,20 +15,19 @@
 
 ## Chord activity (0 total)
 
-| category | count |
-|----------|-------|
-| proposals authored | 0 |
-| cowitness on others | 0 |
-| receipts | 0 |
-| observations | 0 |
-| other | 0 |
+| category            | count |
+| ------------------- | ----- |
+| proposals authored  | 0     |
+| cowitness on others | 0     |
+| receipts            | 0     |
+| observations        | 0     |
+| other               | 0     |
 
 ## Recent chord trail (last 5 — sorted by ts)
-
 
 ## Next vector — "what's mine to do here"
 
 Based on voice profile:
 
-If chord trail's most recent topic is unresolved, that's likely the next vector. Otherwise consult `t status` + `t gravity` for substrate-current signals.
-
+If chord trail's most recent topic is unresolved, that's likely the next vector.
+Otherwise consult `t status` + `t gravity` for substrate-current signals.

@@ -15,9 +15,9 @@ This is the falsifier gate requested by the VOICES review chain:
 
 ## Status
 
-**RUNNABLE.** The probe reads `jazz/chords/*.md`, extracts valid
-frontmatter with `id` and `speaker`, builds source -> next-response
-samples, compares a 1D baseline against a synthetic 8D baseline, and writes:
+**RUNNABLE.** The probe reads `jazz/chords/*.md`, extracts valid frontmatter
+with `id` and `speaker`, builds source -> next-response samples, compares a 1D
+baseline against a synthetic 8D baseline, and writes:
 
 - `result.latest.json`
 - `result.latest.md`
@@ -43,8 +43,8 @@ For each source chord, the target label is the next different speaker whose
 later chord explicitly hears the source chord by `hears` id/path. Ambiguous
 near-simultaneous responses are skipped and reported.
 
-No human after-the-fact labels are allowed. The labels come from chord graph
-and time order only.
+No human after-the-fact labels are allowed. The labels come from chord graph and
+time order only.
 
 ## Leakage Guard
 
@@ -84,22 +84,22 @@ should not be promoted to scheduler authority.
 
 - `adopt_8d`: 8D top-1 hit rate beats 1D by at least 10 percentage points and
   there are at least 25 labeled samples.
-- `keep_metadata`: 8D is within +/-10 percentage points of 1D, or the sample
-  is underpowered.
+- `keep_metadata`: 8D is within +/-10 percentage points of 1D, or the sample is
+  underpowered.
 - `reject_8d_scheduler`: 8D top-1 hit rate is more than 10 percentage points
   worse than 1D.
 
 ## Acceptance
 
 - `run.sh` exits 0.
-- `result.latest.json` contains `candidateSamples`, `labeledSamples`,
-  `oneD`, `eightD`, `deltaPp`, `verdict`, and `config`.
+- `result.latest.json` contains `candidateSamples`, `labeledSamples`, `oneD`,
+  `eightD`, `deltaPp`, `verdict`, and `config`.
 - The result verdict is one of `adopt_8d`, `keep_metadata`,
   `reject_8d_scheduler`.
 - The probe does not modify `0x0/00.ndjson` or `state/voices/`.
 
 ## Current Interpretation
 
-If the verdict is `keep_metadata`, `VOICES.v0.1` should not make 8D routing
-the default scheduler. Mood/Focus and dipole vectors still remain useful for
+If the verdict is `keep_metadata`, `VOICES.v0.1` should not make 8D routing the
+default scheduler. Mood/Focus and dipole vectors still remain useful for
 metadata, style transitions, snapshots, and voice self-reading.

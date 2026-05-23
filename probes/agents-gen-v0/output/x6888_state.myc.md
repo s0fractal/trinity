@@ -6,48 +6,63 @@
 
 # Bucket 6 state
 
-7 organs in bucket 6 — 3 active, 1 frozen, 2 draft, 0 archived, 1 INVALID-maturity.
+7 organs in bucket 6 — 3 active, 1 frozen, 2 draft, 0 archived, 1
+INVALID-maturity.
 
-> ⚠️ 1 organs have invalid `maturity:` value (typo or unknown enum). See section at end.
+> ⚠️ 1 organs have invalid `maturity:` value (typo or unknown enum). See section
+> at end.
 
 ---
 
-## є — current state  (sub-positions 6880..6887)
+## є — current state (sub-positions 6880..6887)
 
 ### 6884 — foundation (active organs)
 
-- **x6010_scanner_core** — shared filesystem walker that other audit organs compose with
+- **x6010_scanner_core** — shared filesystem walker that other audit organs
+  compose with
 - **x6020_gravity** — edge tension report by filename coordinates (no AST)
-- **x6C00_audit** — verify each organ's declared hex_dipole matches its filename bucket
+- **x6C00_audit** — verify each organ's declared hex_dipole matches its filename
+  bucket
 
 ### 6887 — sealed (frozen organs)
 
-- **x6500_run_baseline** — run cross-substrate test gates (myc check, omega test, liquid audit), emit baseline receipt
+- **x6500_run_baseline** — run cross-substrate test gates (myc check, omega
+  test, liquid audit), emit baseline receipt
 
 ---
 
-## буде — intent vector  (sub-positions 6889..688F)
+## буде — intent vector (sub-positions 6889..688F)
 
 ### 6889 — next step (draft organs in flight)
 
-- **x6030_resonance_meter** — count how often each chord is referenced by later chords (resonance metric) — horizon: foundation for memory-decay-by-resonance — high-reference chords stay alive, low ones fade
-- **x6F00_audit_planner** — chain placement audit + content audit + gravity into single t-audit-strict pass — horizon: become the canonical pre-commit gate substrate uses to refuse incoherent commits
+- **x6030_resonance_meter** — count how often each chord is referenced by later
+  chords (resonance metric) — horizon: foundation for memory-decay-by-resonance
+  — high-reference chords stay alive, low ones fade
+- **x6F00_audit_planner** — chain placement audit + content audit + gravity into
+  single t-audit-strict pass — horizon: become the canonical pre-commit gate
+  substrate uses to refuse incoherent commits
 
 ### 688F — frontier (horizon synthesis from all organs)
 
-- *from x6010:* extend with content-hash fingerprinting once FQDN probe graduates
-- *from x6020:* extend to chord-level edges; add temporal slicing per block-height
-- *from x6030:* foundation for memory-decay-by-resonance — high-reference chords stay alive, low ones fade
-- *from x6500:* replace markdown sidecar with substrate.health.envelope.v1 once that lands
-- *from x6C00:* split into placement audit and content audit; content audit checks BLAKE3 prefix once FQDN convention lands
-- *from x6F00:* become the canonical pre-commit gate substrate uses to refuse incoherent commits
-- *from x6FFF:* this organ exists to show that gen.ts catches typos
+- _from x6010:_ extend with content-hash fingerprinting once FQDN probe
+  graduates
+- _from x6020:_ extend to chord-level edges; add temporal slicing per
+  block-height
+- _from x6030:_ foundation for memory-decay-by-resonance — high-reference chords
+  stay alive, low ones fade
+- _from x6500:_ replace markdown sidecar with substrate.health.envelope.v1 once
+  that lands
+- _from x6C00:_ split into placement audit and content audit; content audit
+  checks BLAKE3 prefix once FQDN convention lands
+- _from x6F00:_ become the canonical pre-commit gate substrate uses to refuse
+  incoherent commits
+- _from x6FFF:_ this organ exists to show that gen.ts catches typos
 
 ---
 
 ## ⚠️ invalid maturity values
 
-The following organs declared `maturity:` values not in the canonical enum (`draft | active | frozen | archived`):
+The following organs declared `maturity:` values not in the canonical enum
+(`draft | active | frozen | archived`):
 
 - **x6FFF_typo_demo** — declared `maturity: activ` (likely typo)
-

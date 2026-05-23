@@ -38,7 +38,11 @@
 //
 // Glossary words: capabilities, affordances, can-do, спроможності, що-можу
 
-import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
+import {
+  dirname,
+  fromFileUrl,
+  join,
+} from "https://deno.land/std@0.224.0/path/mod.ts";
 import { positionToPath } from "./x0010_dispatch_runner.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
@@ -84,8 +88,14 @@ interface Capability {
 }
 
 const DIPOLE_AXES = [
-  "void_infinity", "first_penultimate", "mirror_apex", "triangle_build",
-  "foundation_container", "action_decision", "harmony_emergence", "completion_frontier",
+  "void_infinity",
+  "first_penultimate",
+  "mirror_apex",
+  "triangle_build",
+  "foundation_container",
+  "action_decision",
+  "harmony_emergence",
+  "completion_frontier",
 ] as const;
 
 async function loadGlossary(): Promise<{
@@ -105,7 +115,9 @@ async function loadGlossary(): Promise<{
       if (kind === "5") {
         // Word record: handles in 02 (mirror), position in 04 (foundation)
         if (Array.isArray(r["02"]) && typeof r["04"] === "string") {
-          const handles = (r["02"] as string[]).filter((s) => typeof s === "string");
+          const handles = (r["02"] as string[]).filter((s) =>
+            typeof s === "string"
+          );
           words.push({
             primary: handles[0] ?? "",
             handles,
@@ -118,7 +130,9 @@ async function loadGlossary(): Promise<{
         // Substrate mapping: handles in 02 (multilingual substrate name),
         // position served in 03, cwd in 04, command in 05, note in 09
         if (Array.isArray(r["02"]) && typeof r["03"] === "string") {
-          const handles = (r["02"] as string[]).filter((s) => typeof s === "string");
+          const handles = (r["02"] as string[]).filter((s) =>
+            typeof s === "string"
+          );
           mappings.push({
             substrate: handles[0] ?? "",
             position: r["03"],
@@ -128,8 +142,10 @@ async function loadGlossary(): Promise<{
           });
         }
       } else if (kind === "07") {
-        const required = String(r["02"] ?? "").split(",").map((s) => s.trim()).filter(Boolean);
-        const optional = String(r["03"] ?? "").split(",").map((s) => s.trim()).filter(Boolean);
+        const required = String(r["02"] ?? "").split(",").map((s) => s.trim())
+          .filter(Boolean);
+        const optional = String(r["03"] ?? "").split(",").map((s) => s.trim())
+          .filter(Boolean);
         schemas.push({
           type: r["01"],
           required,
@@ -143,7 +159,9 @@ async function loadGlossary(): Promise<{
   return { words, mappings, schemas };
 }
 
-function parseDipole(raw: string): Array<{ axis: number; name: string; value: number }> {
+function parseDipole(
+  raw: string,
+): Array<{ axis: number; name: string; value: number }> {
   const clean = raw.replace(/\s+/g, "").toUpperCase();
   if (clean.length !== 16) return [];
   const out: Array<{ axis: number; name: string; value: number }> = [];
@@ -156,7 +174,12 @@ function parseDipole(raw: string): Array<{ axis: number; name: string; value: nu
 }
 
 async function fileExists(p: string): Promise<boolean> {
-  try { await Deno.stat(p); return true; } catch { return false; }
+  try {
+    await Deno.stat(p);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 async function legacyTasksFor(word: string): Promise<string[]> {
@@ -169,7 +192,9 @@ async function legacyTasksFor(word: string): Promise<string[]> {
       tasks.push(m[1]);
     }
     return tasks;
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }
 
 async function buildCapability(
@@ -198,14 +223,23 @@ async function buildCapability(
   };
 }
 
-function strongestAxis(decoded: Array<{ axis: number; value: number }>): { axis: number; value: number; name: string } | null {
+function strongestAxis(
+  decoded: Array<{ axis: number; value: number }>,
+): { axis: number; value: number; name: string } | null {
   let best = -1, bestAxis = -1;
   for (const d of decoded) {
     const m = Math.abs(d.value);
-    if (m > best) { best = m; bestAxis = d.axis; }
+    if (m > best) {
+      best = m;
+      bestAxis = d.axis;
+    }
   }
   if (bestAxis < 0 || best === 0) return null;
-  return { axis: bestAxis, value: decoded[bestAxis].value, name: DIPOLE_AXES[bestAxis] };
+  return {
+    axis: bestAxis,
+    value: decoded[bestAxis].value,
+    name: DIPOLE_AXES[bestAxis],
+  };
 }
 
 function renderTable(caps: Capability[]): void {
@@ -213,7 +247,10 @@ function renderTable(caps: Capability[]): void {
   console.log("# " + "─".repeat(82));
   console.log(`# ${caps.length} words known to substrate`);
   console.log("");
-  console.log("# primary".padEnd(18) + "pos".padEnd(9) + "primary axis".padEnd(28) + "subs  schema");
+  console.log(
+    "# primary".padEnd(18) + "pos".padEnd(9) + "primary axis".padEnd(28) +
+      "subs  schema",
+  );
   console.log("# " + "─".repeat(76));
   for (const c of caps) {
     const strong = strongestAxis(c.dipole_decoded);
@@ -223,7 +260,11 @@ function renderTable(caps: Capability[]): void {
     const exists = c.exists ? "✓" : "✗";
     const subs = c.substrate_implementations.length.toString().padStart(2);
     const schema = c.receipt_schema ? "✓" : "·";
-    console.log(`# ${exists} ${c.primary.padEnd(16)} ${c.position.padEnd(7)} ${axisStr}  ${subs}    ${schema}`);
+    console.log(
+      `# ${exists} ${c.primary.padEnd(16)} ${
+        c.position.padEnd(7)
+      } ${axisStr}  ${subs}    ${schema}`,
+    );
   }
   console.log("# " + "─".repeat(76));
 }
@@ -262,7 +303,9 @@ function renderDetail(cap: Capability): void {
   }
 }
 
-function validate(caps: Capability[]): { errors: string[]; warnings: string[] } {
+function validate(
+  caps: Capability[],
+): { errors: string[]; warnings: string[] } {
   const errors: string[] = [];
   const warnings: string[] = [];
   const positions = new Set<string>();
@@ -272,7 +315,9 @@ function validate(caps: Capability[]): { errors: string[]; warnings: string[] } 
     }
     positions.add(c.position);
     if (!c.exists) {
-      errors.push(`word "${c.primary}" maps to ${c.position} but file does not exist`);
+      errors.push(
+        `word "${c.primary}" maps to ${c.position} but file does not exist`,
+      );
     }
     const strong = strongestAxis(c.dipole_decoded);
     if (!strong) {
@@ -291,7 +336,8 @@ function legacyJsonFor(caps: Capability[]): unknown {
     version: "0.2-derived",
     status: "live-projection",
     generated_by: "0x4/A.ts (t capabilities)",
-    purpose: "Live affordance projection from glossary + headers. Replaces hand-maintained capabilities registry files per codex 2026-05-13T210236Z.",
+    purpose:
+      "Live affordance projection from glossary + headers. Replaces hand-maintained capabilities registry files per codex 2026-05-13T210236Z.",
     capabilities: caps.map((c) => ({
       id: `trinity.${c.primary.replace(/-/g, ".")}`,
       owner: "trinity",
@@ -301,8 +347,12 @@ function legacyJsonFor(caps: Capability[]): unknown {
       position: c.position,
       reads: ["unknown — header convention pending"],
       writes: ["unknown — header convention pending"],
-      side_effects: c.substrate_implementations.length > 0 ? ["substrate-call"] : ["unknown"],
-      receipt: c.receipt_schema ? `type:${c.receipt_schema.type}` : "unspecified",
+      side_effects: c.substrate_implementations.length > 0
+        ? ["substrate-call"]
+        : ["unknown"],
+      receipt: c.receipt_schema
+        ? `type:${c.receipt_schema.type}`
+        : "unspecified",
       composes_with: [], // derived from composite-organ scan: future
       substrate_implementations: c.substrate_implementations.length,
       legacy_tasks: c.legacy_tasks,
@@ -326,7 +376,9 @@ if (import.meta.main) {
     const target = args[1];
     const cap = caps.find((c) => c.handles.includes(target));
     if (!cap) {
-      console.log(JSON.stringify({ type: "error", message: `unknown word: ${target}` }));
+      console.log(
+        JSON.stringify({ type: "error", message: `unknown word: ${target}` }),
+      );
       Deno.exit(1);
     }
     if (wantJson) {
@@ -355,7 +407,9 @@ if (import.meta.main) {
       console.log(JSON.stringify(result, null, 2));
     } else {
       console.log(`# capabilities validation @ 4/A`);
-      console.log(`# total: ${caps.length}  errors: ${errors.length}  warnings: ${warnings.length}`);
+      console.log(
+        `# total: ${caps.length}  errors: ${errors.length}  warnings: ${warnings.length}`,
+      );
       for (const e of errors) console.log(`# ✗ ${e}`);
       for (const w of warnings) console.log(`# ⚠ ${w}`);
     }
@@ -373,16 +427,26 @@ if (import.meta.main) {
     position: "4/A",
     action: "list",
     note: "foundation+mirror-pair = live affordance projection from glossary",
-    source_of_truth: "src/x0001_glossary.ndjson (type:05/06/07) + per-file headers + deno.jsonc",
-    legacy_artifact: "deleted; use t capabilities --legacy to regenerate compatibility shape when needed",
+    source_of_truth:
+      "src/x0001_glossary.ndjson (type:05/06/07) + per-file headers + deno.jsonc",
+    legacy_artifact:
+      "deleted; use t capabilities --legacy to regenerate compatibility shape when needed",
     summary: {
       total_words: caps.length,
       with_schema: caps.filter((c) => c.receipt_schema).length,
-      with_substrate_impl: caps.filter((c) => c.substrate_implementations.length > 0).length,
+      with_substrate_impl: caps.filter((c) =>
+        c.substrate_implementations.length > 0
+      ).length,
       missing_executable: caps.filter((c) => !c.exists).length,
     },
     capabilities: caps,
-    synonyms: ["capabilities", "affordances", "can-do", "спроможності", "що-можу"],
+    synonyms: [
+      "capabilities",
+      "affordances",
+      "can-do",
+      "спроможності",
+      "що-можу",
+    ],
     topology: "live read of glossary + headers; not a stored registry",
   };
 

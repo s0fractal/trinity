@@ -5,7 +5,11 @@
 //
 // Run: deno run --config=probe.jsonc -A test.ts
 
-import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
+import {
+  dirname,
+  fromFileUrl,
+  join,
+} from "https://deno.land/std@0.224.0/path/mod.ts";
 import { parseFilename } from "./parse.ts";
 import { classify } from "./classify.ts";
 import { canImport } from "./policy.ts";
@@ -32,10 +36,20 @@ function assert(name: string, pass: boolean, note = ""): void {
 // 1. parser tests
 // ──────────────────────────────────────────────────────────────────────────
 
-const parseCases: Array<{ filename: string; expected: Partial<ReturnType<typeof parseFilename>> }> = [
+const parseCases: Array<
+  { filename: string; expected: Partial<ReturnType<typeof parseFilename>> }
+> = [
   {
     filename: "x0010_runner.ts",
-    expected: { coordinate: "0010", archetype: "0", anchor: null, anchor_kind: null, handle: "runner", lane: null, ext: "ts" },
+    expected: {
+      coordinate: "0010",
+      archetype: "0",
+      anchor: null,
+      anchor_kind: null,
+      handle: "runner",
+      lane: null,
+      ext: "ts",
+    },
   },
   {
     filename: "x3500_950008_codex_test-proposal.myc.md",
@@ -63,11 +77,24 @@ const parseCases: Array<{ filename: string; expected: Partial<ReturnType<typeof 
   },
   {
     filename: "x6888_state.myc.md",
-    expected: { coordinate: "6888", archetype: "6", anchor: null, handle: "state", lane: "myc", ext: "md" },
+    expected: {
+      coordinate: "6888",
+      archetype: "6",
+      anchor: null,
+      handle: "state",
+      lane: "myc",
+      ext: "md",
+    },
   },
   {
     filename: "x8888_agents.myc.md",
-    expected: { coordinate: "8888", archetype: "8", handle: "agents", lane: "myc", ext: "md" },
+    expected: {
+      coordinate: "8888",
+      archetype: "8",
+      handle: "agents",
+      lane: "myc",
+      ext: "md",
+    },
   },
   {
     filename: "random_file.txt",
@@ -89,7 +116,11 @@ for (const c of parseCases) {
       continue;
     }
     if (actual !== expectedValue) {
-      failures.push(`${key}: expected ${JSON.stringify(expectedValue)}, got ${JSON.stringify(actual)}`);
+      failures.push(
+        `${key}: expected ${JSON.stringify(expectedValue)}, got ${
+          JSON.stringify(actual)
+        }`,
+      );
     }
   }
   assert(
@@ -103,18 +134,47 @@ for (const c of parseCases) {
 // 2. classifier tests
 // ──────────────────────────────────────────────────────────────────────────
 
-const classifyCases: Array<{ filename: string; expectedLane: string; expectedLifecycle: string; archiveHint?: boolean }> = [
-  { filename: "x0010_runner.ts", expectedLane: "organ", expectedLifecycle: "authored" },
-  { filename: "x3500_950008_codex_proposal.myc.md", expectedLane: "chord", expectedLifecycle: "authored" },
-  { filename: "x6888_state.myc.md", expectedLane: "state", expectedLifecycle: "generated" },
-  { filename: "x8888_agents.myc.md", expectedLane: "state", expectedLifecycle: "generated" },
-  { filename: "x0009_legacy.ts", expectedLane: "organ", expectedLifecycle: "archived", archiveHint: true },
+const classifyCases: Array<
+  {
+    filename: string;
+    expectedLane: string;
+    expectedLifecycle: string;
+    archiveHint?: boolean;
+  }
+> = [
+  {
+    filename: "x0010_runner.ts",
+    expectedLane: "organ",
+    expectedLifecycle: "authored",
+  },
+  {
+    filename: "x3500_950008_codex_proposal.myc.md",
+    expectedLane: "chord",
+    expectedLifecycle: "authored",
+  },
+  {
+    filename: "x6888_state.myc.md",
+    expectedLane: "state",
+    expectedLifecycle: "generated",
+  },
+  {
+    filename: "x8888_agents.myc.md",
+    expectedLane: "state",
+    expectedLifecycle: "generated",
+  },
+  {
+    filename: "x0009_legacy.ts",
+    expectedLane: "organ",
+    expectedLifecycle: "archived",
+    archiveHint: true,
+  },
 ];
 
 for (const c of classifyCases) {
   const parsed = parseFilename(c.filename);
   const result = classify(parsed, c.archiveHint ?? false);
-  const pass = result.lane === c.expectedLane && result.lifecycle === c.expectedLifecycle;
+  const pass = result.lane === c.expectedLane &&
+    result.lifecycle === c.expectedLifecycle;
   assert(
     `classify: ${c.filename}`,
     pass,
@@ -128,7 +188,9 @@ for (const c of classifyCases) {
 // 3. import policy tests
 // ──────────────────────────────────────────────────────────────────────────
 
-const policyCases: Array<{ source: string; target: string; expected: "allow" | "warn" | "deny" }> = [
+const policyCases: Array<
+  { source: string; target: string; expected: "allow" | "warn" | "deny" }
+> = [
   { source: "5", target: "4", expected: "allow" }, // action → foundation: standard
   { source: "4", target: "0", expected: "allow" }, // foundation → primitive: standard
   { source: "4", target: "5", expected: "deny" }, // foundation MUST NOT depend on action
@@ -186,17 +248,29 @@ for (const c of policyCases) {
 
 {
   const r = await getByCoordinate("3500");
-  assert("getter: live coordinate 3500 resolves", r.found_in === "live", `found in ${r.found_in}: ${r.note}`);
+  assert(
+    "getter: live coordinate 3500 resolves",
+    r.found_in === "live",
+    `found in ${r.found_in}: ${r.note}`,
+  );
 }
 
 {
   const r = await getByCoordinate("0009");
-  assert("getter: archived coordinate 0009 falls back to archive", r.found_in === "archive", `found in ${r.found_in}: ${r.note}`);
+  assert(
+    "getter: archived coordinate 0009 falls back to archive",
+    r.found_in === "archive",
+    `found in ${r.found_in}: ${r.note}`,
+  );
 }
 
 {
   const r = await getByCoordinate("FFFF");
-  assert("getter: unknown coordinate FFFF returns not_found", r.found_in === "not_found", r.note);
+  assert(
+    "getter: unknown coordinate FFFF returns not_found",
+    r.found_in === "not_found",
+    r.note,
+  );
 }
 
 // ──────────────────────────────────────────────────────────────────────────
@@ -210,7 +284,8 @@ let failed = 0;
 for (const a of assertions) {
   const tag = a.pass ? "✓" : "✗";
   console.log(`${tag} ${a.name}   ${a.note}`);
-  if (a.pass) passed++; else failed++;
+  if (a.pass) passed++;
+  else failed++;
 }
 console.log("──────────────────────────────────────────────");
 console.log(`${passed}/${passed + failed} pass, ${failed} fail`);

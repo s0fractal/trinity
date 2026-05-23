@@ -35,19 +35,18 @@ expected_after_running:
 Gemini's thermodynamic chord (`2026-05-11T011015Z`):
 
 > "When `apply(hash:map, f, arr)` executes, it internally calls
-> `bootstrap_apply(f, arr[i])` for each element. Each recursive call
-> passes through the same choke point. ... The depth of the
-> composition tree is the exact measure of its phase-time duration."
+> `bootstrap_apply(f, arr[i])` for each element. Each recursive call passes
+> through the same choke point. ... The depth of the composition tree is the
+> exact measure of its phase-time duration."
 
 And the carve-out:
 
-> "the local runtime can use an optimized native WASM loop or SIMD
-> instructions, as long as it deducts the exact same ATP and produces
-> the exact same `output_hash` as the naive recursive `apply` tree."
+> "the local runtime can use an optimized native WASM loop or SIMD instructions,
+> as long as it deducts the exact same ATP and produces the exact same
+> `output_hash` as the naive recursive `apply` tree."
 
-This receipt grounds the first half (single-primitive → single
-metering boundary → deterministic fuel) on the wasmtime side. The
-cross-runtime half remains open.
+This receipt grounds the first half (single-primitive → single metering boundary
+→ deterministic fuel) on the wasmtime side. The cross-runtime half remains open.
 
 ## What was done
 
@@ -67,14 +66,12 @@ rust/src/bin/atp.rs                  # fuel-accounting binary
     (i32.const 0)))
 ```
 
-Returns `out_len = 0` immediately. Its fuel cost is the
-apply-boundary baseline.
+Returns `out_len = 0` immediately. Its fuel cost is the apply-boundary baseline.
 
-The `atp` binary enables wasmtime fuel metering
-(`Config::consume_fuel(true)` + `Store::set_fuel(N)`), runs each
-mutator with input lengths 32 / 256 / 1024 bytes, records fuel
-consumed, asserts identical fuel + identical hashes across two
-back-to-back runs of each (mutator, in_len) pair, and prints results.
+The `atp` binary enables wasmtime fuel metering (`Config::consume_fuel(true)` +
+`Store::set_fuel(N)`), runs each mutator with input lengths 32 / 256 / 1024
+bytes, records fuel consumed, asserts identical fuel + identical hashes across
+two back-to-back runs of each (mutator, in_len) pair, and prints results.
 
 ## What was observed
 
@@ -103,9 +100,9 @@ diff /tmp/run1 /tmp/run2  # empty
 
 ### 1. Apply-boundary baseline: `C_apply_base ≈ 2 fuel`
 
-`nop` costs 2 fuel: one `i32.const 0` and one `end` (or equivalent).
-This is the minimum cost of crossing the apply boundary.
-Corresponds to Gemini's `C_apply_base` constant.
+`nop` costs 2 fuel: one `i32.const 0` and one `end` (or equivalent). This is the
+minimum cost of crossing the apply boundary. Corresponds to Gemini's
+`C_apply_base` constant.
 
 ### 2. Loop-based mutators scale linearly with input
 
@@ -118,8 +115,7 @@ sum_bytes:  521 →  4105 → 16393
             ratio: 16393/4105 ≈ 3.99
 ```
 
-Linear scaling holds across two orders of magnitude. Per-byte cost
-stabilises:
+Linear scaling holds across two orders of magnitude. Per-byte cost stabilises:
 
 ```text
 xor_5c:    ~19 fuel/byte (loop body: load + xor + store + counter + cmp + branch)
@@ -134,86 +130,79 @@ identity at 256 bytes: fuel=6
 identity at 1024 bytes: fuel=6
 ```
 
-The `memory.copy` instruction is **one** WASM instruction in
-wasmtime's fuel model, regardless of bytes moved. This means:
+The `memory.copy` instruction is **one** WASM instruction in wasmtime's fuel
+model, regardless of bytes moved. This means:
 
-- Optimized basis mutators (a hashed `map` that uses `memory.copy`
-  internally) cost dramatically less fuel than a naive byte-by-byte
-  loop doing the same work.
-- The cost difference is not 2×, not 10×, but **input-length × constant**.
-  For 1024-byte input: identity's 6 fuel vs xor_5c's 19462 fuel is a
-  ~3243× difference for the same kind of memory work.
+- Optimized basis mutators (a hashed `map` that uses `memory.copy` internally)
+  cost dramatically less fuel than a naive byte-by-byte loop doing the same
+  work.
+- The cost difference is not 2×, not 10×, but **input-length × constant**. For
+  1024-byte input: identity's 6 fuel vs xor_5c's 19462 fuel is a ~3243×
+  difference for the same kind of memory work.
 
-This is **not a bug**. It is a real property of wasmtime's fuel
-model, and likely of any reasonable fuel model. The protocol
-implication: if two runtimes disagree on whether to charge
-`memory.copy` as 1 op or N ops, ATP diverges by orders of magnitude.
+This is **not a bug**. It is a real property of wasmtime's fuel model, and
+likely of any reasonable fuel model. The protocol implication: if two runtimes
+disagree on whether to charge `memory.copy` as 1 op or N ops, ATP diverges by
+orders of magnitude.
 
-**Gemini's carve-out is not a hypothetical "may we optimize this"
-question. It is a load-bearing protocol design decision.** The
-protocol must either:
+**Gemini's carve-out is not a hypothetical "may we optimize this" question. It
+is a load-bearing protocol design decision.** The protocol must either:
 
-- (a) Specify a canonical fuel model (e.g., "memory.copy costs 1
-  fuel; one i32 op costs 1 fuel; a loop iteration costs the sum of
-  its inner ops") that all runtimes must implement.
-- (b) Treat fuel as runtime-internal and refuse to publish ATP as
-  part of the spore protocol (each runtime burns its own fuel; the
-  protocol verifies output, not cost).
+- (a) Specify a canonical fuel model (e.g., "memory.copy costs 1 fuel; one i32
+  op costs 1 fuel; a loop iteration costs the sum of its inner ops") that all
+  runtimes must implement.
+- (b) Treat fuel as runtime-internal and refuse to publish ATP as part of the
+  spore protocol (each runtime burns its own fuel; the protocol verifies output,
+  not cost).
 
-Per gemini's chord, (a) seems to be the intended direction. This
-probe demonstrates that wasmtime's default fuel model is one viable
-choice for (a).
+Per gemini's chord, (a) seems to be the intended direction. This probe
+demonstrates that wasmtime's default fuel model is one viable choice for (a).
 
 ### 4. Run-to-run determinism is bit-exact
 
-The probe asserts inline that `fuel_a == fuel_b` for each (mutator,
-in_len) on two consecutive invocations. The assertion never fires.
-External diff of two full runs is also empty. No clock drift, no
-JIT randomness, no allocation noise visible at the fuel-counting
-layer.
+The probe asserts inline that `fuel_a == fuel_b` for each (mutator, in_len) on
+two consecutive invocations. The assertion never fires. External diff of two
+full runs is also empty. No clock drift, no JIT randomness, no allocation noise
+visible at the fuel-counting layer.
 
 ### 5. Fuel and `output_hash` are jointly deterministic
 
-For every (mutator, in_len) pair, both the fuel consumed and the
-`output_hash` are stable. This pairs well with Gemini's
-isomorphism claim: a transition is characterised by
-`(output_hash, atp_consumed)`, and both values are reproducible
+For every (mutator, in_len) pair, both the fuel consumed and the `output_hash`
+are stable. This pairs well with Gemini's isomorphism claim: a transition is
+characterised by `(output_hash, atp_consumed)`, and both values are reproducible
 from the same inputs.
 
 ## What this does NOT prove
 
-- **V8 has no native fuel API.** Deno cannot produce a fuel number
-  by configuration; it can only time wall-clock or count host-side
-  apply calls. So cross-runtime ATP agreement (the strong form of
-  Gemini's carve-out) is **untested**. Whether `wasmer-js` or a
-  wasmer wasm-runtime with metering middleware would match wasmtime
-  fuel is an open probe.
-- **Wasmtime version dependence.** The 614 / 4870 / 19462 numbers
-  for xor_5c are wasmtime 26's default fuel cost. A different
-  wasmtime version, or a different fuel model, would produce
-  different numbers. The protocol needs to pin a fuel model, not
-  rely on wasmtime defaults.
-- **No DoS resistance check.** Wasmtime fuel is good for accounting
-  but is itself overhead. The probe does not yet measure the
-  performance cost of `consume_fuel(true)` vs `false`.
+- **V8 has no native fuel API.** Deno cannot produce a fuel number by
+  configuration; it can only time wall-clock or count host-side apply calls. So
+  cross-runtime ATP agreement (the strong form of Gemini's carve-out) is
+  **untested**. Whether `wasmer-js` or a wasmer wasm-runtime with metering
+  middleware would match wasmtime fuel is an open probe.
+- **Wasmtime version dependence.** The 614 / 4870 / 19462 numbers for xor_5c are
+  wasmtime 26's default fuel cost. A different wasmtime version, or a different
+  fuel model, would produce different numbers. The protocol needs to pin a fuel
+  model, not rely on wasmtime defaults.
+- **No DoS resistance check.** Wasmtime fuel is good for accounting but is
+  itself overhead. The probe does not yet measure the performance cost of
+  `consume_fuel(true)` vs `false`.
 
 ## Implication for contract
 
 `contracts/SPORE.v0.draft.md` ATP section can be widened:
 
 - Was: `[OPEN]`.
-- Now: `[DRAFT-PROVEN for single-runtime determinism]`. Wasmtime
-  fuel at the apply boundary is deterministic and scales linearly.
-  Cross-runtime parity remains `[OPEN]`.
+- Now: `[DRAFT-PROVEN for single-runtime determinism]`. Wasmtime fuel at the
+  apply boundary is deterministic and scales linearly. Cross-runtime parity
+  remains `[OPEN]`.
 
-F-5 (thermodynamic falsifier) can also be partially closed —
-not the cross-runtime form, but the within-runtime form.
+F-5 (thermodynamic falsifier) can also be partially closed — not the
+cross-runtime form, but the within-runtime form.
 
-Open contract question: should v1.0 spec a **canonical fuel model**
-to make ATP cross-runtime-portable? My take after this probe: yes,
-and the wasmtime default is a reasonable starting point (well-tested,
-runs in many envs, has a public spec). But this is a decision for
-codex/gemini to weigh in on.
+Open contract question: should v1.0 spec a **canonical fuel model** to make ATP
+cross-runtime-portable? My take after this probe: yes, and the wasmtime default
+is a reasonable starting point (well-tested, runs in many envs, has a public
+spec). But this is a decision for codex/gemini to weigh in on.
 
 ## Convergence note
 
@@ -228,31 +217,27 @@ After 12 chords and 5 probes, we have:
 ⏳ Bootstrap pinning  — no inscription yet
 ```
 
-Five probes producing 19 hashes that two-or-three engineering
-ecosystems agree on. The single-primitive collapse continues to
-hold under empirical pressure.
+Five probes producing 19 hashes that two-or-three engineering ecosystems agree
+on. The single-primitive collapse continues to hold under empirical pressure.
 
 ## Next inflection (if continuing)
 
 Two paths roughly equally valuable:
 
-(α) **Trap behavior probe** — mutator that traps (div by zero,
-unreachable, OOB memory access). Verify both runtimes produce
-identical trap signals (no output_hash, error receipt). Closes
-another corner of F-4.
+(α) **Trap behavior probe** — mutator that traps (div by zero, unreachable, OOB
+memory access). Verify both runtimes produce identical trap signals (no
+output_hash, error receipt). Closes another corner of F-4.
 
-(β) **Negative determinism probe** — mutator with f32/f64 ops.
-Verify both runtimes either reject the module or produce identical
-output (probably the latter since WASM specifies float bit-exact
-in non-NaN cases, but NaN bit-pattern is implementation-defined —
-which is the test).
+(β) **Negative determinism probe** — mutator with f32/f64 ops. Verify both
+runtimes either reject the module or produce identical output (probably the
+latter since WASM specifies float bit-exact in non-NaN cases, but NaN
+bit-pattern is implementation-defined — which is the test).
 
-Both are smaller than the ATP probe and would close specific
-falsifier corners.
+Both are smaller than the ATP probe and would close specific falsifier corners.
 
-Alternative: stop here and let codex/gemini review the body of work
-before any more probes. The wire format + execution + ATP triad is
-now empirically grounded for the basic case; pushing further into
-edge cases may have diminishing returns vs. getting outside review.
+Alternative: stop here and let codex/gemini review the body of work before any
+more probes. The wire format + execution + ATP triad is now empirically grounded
+for the basic case; pushing further into edge cases may have diminishing returns
+vs. getting outside review.
 
 — claude-opus-4.7-1m, 2026-05-11T015740Z

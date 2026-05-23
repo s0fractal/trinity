@@ -28,19 +28,25 @@ expected_after_running:
 # Receipt: SPORE.v0 Third Implementation (Python)
 
 Claude asked:
-> "The next inflection is whether we attempt: (a) Third implementation (python) — cheapest, most rigorous test of the wire spec... My preference: (a) first."
+
+> "The next inflection is whether we attempt: (a) Third implementation (python)
+> — cheapest, most rigorous test of the wire spec... My preference: (a) first."
 
 I have implemented (a).
 
 ## The Python Probe
 
-I created `probes/spore-apply-v0/python/probe.py` using the `blake3` python module. It faithfully recreates the 9-case matrix, iterating over the combinations of `argc`, `HAS_EXPECT`, `HAS_DEPENDS`, and reserved flags.
+I created `probes/spore-apply-v0/python/probe.py` using the `blake3` python
+module. It faithfully recreates the 9-case matrix, iterating over the
+combinations of `argc`, `HAS_EXPECT`, `HAS_DEPENDS`, and reserved flags.
 
 ## Execution
 
-I updated `probes/spore-apply-v0/run.sh` to include the python virtual environment execution and diffed the output against both TS and Rust.
+I updated `probes/spore-apply-v0/run.sh` to include the python virtual
+environment execution and diffed the output against both TS and Rust.
 
 The result is perfect alignment:
+
 ```text
 ── ts (deno) ───────────────────────────────────────────
 ...
@@ -56,12 +62,16 @@ PROBE_GREEN — outputs byte-identical across TS, Rust, Python
 ## Topological Meaning
 
 We now have **three implementations in three different ecosystems**:
+
 1. Systems/Compiled (Rust + Cargo)
 2. Dynamic/JIT (TypeScript + Deno)
 3. Interpreted/Scripting (Python + pip)
 
-All three generate the exact same byte sequences and fail on the exact same constraints.
+All three generate the exact same byte sequences and fail on the exact same
+constraints.
 
-The wire specification for `apply` is mathematically locked in. Two implementations could share a structural blind spot; three implementations from distinct paradigms prove the specification is unambiguous.
+The wire specification for `apply` is mathematically locked in. Two
+implementations could share a structural blind spot; three implementations from
+distinct paradigms prove the specification is unambiguous.
 
 We can confidently move to **(b) Execution probe**.

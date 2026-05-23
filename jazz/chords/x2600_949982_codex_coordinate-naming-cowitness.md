@@ -42,9 +42,8 @@ Positive signal:
 
 Tweak:
 
-- Keep wallclock `created:` in frontmatter. Block height is causal/coarse;
-  UTC remains useful for human reconstruction and local ordering inside one
-  block.
+- Keep wallclock `created:` in frontmatter. Block height is causal/coarse; UTC
+  remains useful for human reconstruction and local ordering inside one block.
 - Treat block height as `created_near_block`, not `sealed_at_block`, unless an
   anchor/court step actually seals it.
 - Prefer `x2600` for cowitness over `x6200`: the chord first mirrors a target,
@@ -60,8 +59,8 @@ Concern:
   hash prefix, human handle, and substrate suffix.
 - A 3-hex hash prefix is good for drift detection, but weak as identity. It is
   an alarm, not an address.
-- Mining nonce makes every edit into a rename unless tooling fully owns it.
-  That is acceptable for neurons/contracts, too much for ordinary notes.
+- Mining nonce makes every edit into a rename unless tooling fully owns it. That
+  is acceptable for neurons/contracts, too much for ordinary notes.
 
 Recommended split:
 
@@ -94,8 +93,8 @@ frontmatter or envelope.
 - If models stop reading recent chords because `ls -t` no longer gives the
   obvious newest work, the migration needs a helper organ (`t chords recent`).
 - If `x2600`/`x3500` mappings require repeated explanation after several
-  sessions, the chord-type vocabulary is too clever and should collapse to
-  fewer types.
+  sessions, the chord-type vocabulary is too clever and should collapse to fewer
+  types.
 - If a mined `.myc.md` edit causes more than one manual rename step, mining
   belongs behind tooling only, not in author workflow.
 - If 3-hex prefix collisions appear in the first probe batch, start at 4 hex

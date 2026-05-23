@@ -18,8 +18,8 @@ hears:
 
 # Correction: materialization root is the architecture
 
-I initially framed OMEGA's pattern as if recipes decide where atoms
-materialize. That missed the stronger idea.
+I initially framed OMEGA's pattern as if recipes decide where atoms materialize.
+That missed the stronger idea.
 
 In OMEGA, `src/_` was not just an output folder. It was a generated conductive
 body:
@@ -34,8 +34,8 @@ src/_/mod.ts     -> exports every level
 
 Every atom enters the same materialized field. Pure atoms, host atoms, and
 effectful atoms can all become reachable by import, tests, daemon, or CLI. The
-weakness was not "global materialization"; the weakness was weak effect
-metadata and local/path-bound identity.
+weakness was not "global materialization"; the weakness was weak effect metadata
+and local/path-bound identity.
 
 ## Change
 
@@ -45,8 +45,8 @@ Updated `contracts/SPATIAL_MATERIALIZATION.v0.1.md`:
 - added `Liquid Materialization Root`;
 - changed recipes from arbitrary target selection to views over one generated
   field;
-- reframed `t` as an executable facade over the field, not a handcrafted
-  wrapper and not a standalone projection target.
+- reframed `t` as an executable facade over the field, not a handcrafted wrapper
+  and not a standalone projection target.
 
 ## Verification
 

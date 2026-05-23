@@ -25,7 +25,10 @@
 //
 // Glossary words: court, verdict, witness-verdict, суд, вердикт
 
-import { dirname, fromFileUrl } from "https://deno.land/std@0.224.0/path/mod.ts";
+import {
+  dirname,
+  fromFileUrl,
+} from "https://deno.land/std@0.224.0/path/mod.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);

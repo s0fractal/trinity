@@ -36,7 +36,11 @@ export type AnchorPayload = {
     directions: ("L" | "R")[];
   }[];
   inscription_ready: {
-    method: "placeholder" | "bitcoin-op-return" | "bitcoin-witness" | "ipfs-cid";
+    method:
+      | "placeholder"
+      | "bitcoin-op-return"
+      | "bitcoin-witness"
+      | "ipfs-cid";
     payload_hex: string;
     payload_len_bytes: number;
     anchor_target: "merkle_root";
@@ -70,7 +74,10 @@ async function leafHash(envelope_id: string): Promise<Uint8Array> {
   return sha256(hexToBytes(envelope_id));
 }
 
-async function nodeHash(left: Uint8Array, right: Uint8Array): Promise<Uint8Array> {
+async function nodeHash(
+  left: Uint8Array,
+  right: Uint8Array,
+): Promise<Uint8Array> {
   const combined = new Uint8Array(left.length + right.length);
   combined.set(left, 0);
   combined.set(right, left.length);
@@ -148,14 +155,20 @@ export async function verifyInclusion(
 // Main anchor computation
 // ────────────────────────────────────────────────────────────────────────
 
-export async function computeAnchor(envelopes: Envelope[]): Promise<AnchorPayload> {
+export async function computeAnchor(
+  envelopes: Envelope[],
+): Promise<AnchorPayload> {
   const rejected: RejectedLeaf[] = [];
 
   // Filter to v1.0 schema. Reject wrong schema.
   const schemaFiltered: Envelope[] = [];
   for (const env of envelopes) {
     if (!env || typeof env !== "object") {
-      rejected.push({ envelope_id: null, reason: "malformed", detail: "not an object" });
+      rejected.push({
+        envelope_id: null,
+        reason: "malformed",
+        detail: "not an object",
+      });
       continue;
     }
     if (env.schema !== ENVELOPE_SCHEMA) {
@@ -166,11 +179,14 @@ export async function computeAnchor(envelopes: Envelope[]): Promise<AnchorPayloa
       });
       continue;
     }
-    if (typeof env.envelope_id !== "string" || !env.envelope_id.startsWith("1220")) {
+    if (
+      typeof env.envelope_id !== "string" || !env.envelope_id.startsWith("1220")
+    ) {
       rejected.push({
         envelope_id: env.envelope_id ?? null,
         reason: "malformed",
-        detail: "envelope_id must be a sha256 multihash hex string starting with 1220",
+        detail:
+          "envelope_id must be a sha256 multihash hex string starting with 1220",
       });
       continue;
     }
@@ -204,7 +220,9 @@ export async function computeAnchor(envelopes: Envelope[]): Promise<AnchorPayloa
   accepted.sort((a, b) => a.envelope_id.localeCompare(b.envelope_id));
 
   // Build leaf hashes.
-  const leafHashes = await Promise.all(accepted.map((e) => leafHash(e.envelope_id)));
+  const leafHashes = await Promise.all(
+    accepted.map((e) => leafHash(e.envelope_id)),
+  );
 
   // Build tree.
   const levels = await buildMerkleTree(leafHashes);
@@ -232,7 +250,10 @@ export async function computeAnchor(envelopes: Envelope[]): Promise<AnchorPayloa
     protocol: "trinity-envelope-anchor",
     version: "0.1",
     leaf_count: accepted.length,
-    leaves: accepted.map((env, idx) => ({ envelope_id: env.envelope_id, index: idx })),
+    leaves: accepted.map((env, idx) => ({
+      envelope_id: env.envelope_id,
+      index: idx,
+    })),
     merkle_root: rootHex,
     inclusion_proofs,
     inscription_ready: {
@@ -267,7 +288,10 @@ async function readEnvelopes(args: string[]): Promise<Envelope[]> {
     const total = chunks.reduce((a, c) => a + c.length, 0);
     const buf = new Uint8Array(total);
     let off = 0;
-    for (const c of chunks) { buf.set(c, off); off += c.length; }
+    for (const c of chunks) {
+      buf.set(c, off);
+      off += c.length;
+    }
     const text = new TextDecoder().decode(buf).trim();
     // Accept JSON array OR newline-delimited JSON.
     if (text.startsWith("[")) {
@@ -290,7 +314,9 @@ async function readEnvelopes(args: string[]): Promise<Envelope[]> {
 if (import.meta.main) {
   const envs = await readEnvelopes(Deno.args);
   if (envs.length === 0) {
-    console.error("anchor: no envelopes provided (use --envelope <path> or --stdin)");
+    console.error(
+      "anchor: no envelopes provided (use --envelope <path> or --stdin)",
+    );
     Deno.exit(2);
   }
   try {

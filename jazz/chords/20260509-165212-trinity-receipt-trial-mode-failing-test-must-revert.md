@@ -17,16 +17,17 @@ verdict: "trial-reverted"
 
 # Receipt: trial-reverted
 
-Target chord: `jazz/chords/20260509-165200-claude-trial-test-failing.md` (h.0020fa0f5e66)
-Claim kind: action
+Target chord: `jazz/chords/20260509-165200-claude-trial-test-failing.md`
+(h.0020fa0f5e66) Claim kind: action
 
 ## Comparison
 
-| metric | comparator | pre | post | pass |
-|---|---|---:|---:|:---:|
-| duplicate_index_rows | `>=+1` | 0 | 0 | ✗ |
+| metric               | comparator | pre | post | pass |
+| -------------------- | ---------- | --: | ---: | :--: |
+| duplicate_index_rows | `>=+1`     |   0 |    0 |  ✗   |
 
 ## Pre-snapshot
+
 ```json
 {
   "L4b_hash_verified_count": 7,
@@ -50,6 +51,7 @@ Claim kind: action
 ```
 
 ## Post-snapshot
+
 ```json
 {
   "L4b_hash_verified_count": 7,

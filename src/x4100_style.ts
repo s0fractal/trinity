@@ -19,7 +19,11 @@
 //
 // Glossary words: style, стиль, music-style
 
-import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
+import {
+  dirname,
+  fromFileUrl,
+  join,
+} from "https://deno.land/std@0.224.0/path/mod.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
@@ -38,9 +42,15 @@ interface StyleResult {
 
 // ── helpers ────────────────────────────────────────────────────────────────
 
-async function readDaemonStatus(): Promise<{ locked: boolean; last_invocation: string | null }> {
+async function readDaemonStatus(): Promise<
+  { locked: boolean; last_invocation: string | null }
+> {
   try {
-    const cmd = new Deno.Command("t", { args: ["daemon", "status", "--json"], stdout: "piped", stderr: "piped" });
+    const cmd = new Deno.Command("t", {
+      args: ["daemon", "status", "--json"],
+      stdout: "piped",
+      stderr: "piped",
+    });
     const { stdout } = await cmd.output();
     const data = JSON.parse(new TextDecoder().decode(stdout));
     return {
@@ -54,7 +64,11 @@ async function readDaemonStatus(): Promise<{ locked: boolean; last_invocation: s
 
 async function readHealth(): Promise<string | null> {
   try {
-    const cmd = new Deno.Command("t", { args: ["health", "--json"], stdout: "piped", stderr: "piped" });
+    const cmd = new Deno.Command("t", {
+      args: ["health", "--json"],
+      stdout: "piped",
+      stderr: "piped",
+    });
     const { stdout } = await cmd.output();
     const data = JSON.parse(new TextDecoder().decode(stdout));
     return data.summary?.overall ?? null;
@@ -109,7 +123,10 @@ function determineStyle(
   }
 
   // Improvisation (jazz): daemon running, recent activity, healthy/degraded
-  if (!locked && (health === "healthy" || health === "degraded") && minutes !== null && minutes <= 30) {
+  if (
+    !locked && (health === "healthy" || health === "degraded") &&
+    minutes !== null && minutes <= 30
+  ) {
     return {
       style: "improvisation",
       trigger: "daemon_unlocked + healthy_or_degraded + recent_chords",
@@ -152,7 +169,11 @@ function renderTable(result: StyleResult): string {
     `# style:        ${result.style}`,
     `# trigger:      ${result.trigger}`,
     `# confidence:   ${result.confidence}`,
-    `# last chord:   ${result.since_last_chord_minutes !== null ? result.since_last_chord_minutes + " min ago" : "unknown"}`,
+    `# last chord:   ${
+      result.since_last_chord_minutes !== null
+        ? result.since_last_chord_minutes + " min ago"
+        : "unknown"
+    }`,
     `# daemon:       ${result.daemon_locked ? "locked" : "unlocked"}`,
     `# health:       ${result.health_overall ?? "unknown"}`,
   ];
@@ -160,11 +181,15 @@ function renderTable(result: StyleResult): string {
 }
 
 function renderJson(result: StyleResult): string {
-  return JSON.stringify({
-    type: "style_projection",
-    schema: "trinity.style.v0.1",
-    ...result,
-  }, null, 2);
+  return JSON.stringify(
+    {
+      type: "style_projection",
+      schema: "trinity.style.v0.1",
+      ...result,
+    },
+    null,
+    2,
+  );
 }
 
 // ── main ───────────────────────────────────────────────────────────────────

@@ -7,7 +7,12 @@
 // Output: markdown report of per-file classification + lane/lifecycle
 // distribution + import-policy scan (regex over import statements).
 
-import { dirname, fromFileUrl, join, resolve } from "https://deno.land/std@0.224.0/path/mod.ts";
+import {
+  dirname,
+  fromFileUrl,
+  join,
+  resolve,
+} from "https://deno.land/std@0.224.0/path/mod.ts";
 import { parseFilename } from "./parse.ts";
 import { classify, type Lane, type Lifecycle } from "./classify.ts";
 import { canImport } from "./policy.ts";
@@ -57,7 +62,10 @@ function parseArgs(argv: string[]): { root: string; out: string | null } {
   return { root, out };
 }
 
-async function scanFile(rootPath: string, name: string): Promise<{ report: FileReport; violations: PolicyViolation[] } | null> {
+async function scanFile(
+  rootPath: string,
+  name: string,
+): Promise<{ report: FileReport; violations: PolicyViolation[] } | null> {
   const parsed = parseFilename(name);
   if (!parsed.is_morphology) return null;
 
@@ -139,10 +147,19 @@ async function scan(rootPath: string): Promise<Report> {
   files.sort((a, b) => a.coordinate.localeCompare(b.coordinate));
 
   const lane_counts: Record<Lane, number> = {
-    organ: 0, chord: 0, state: 0, receipt: 0, proof: 0, unknown: 0,
+    organ: 0,
+    chord: 0,
+    state: 0,
+    receipt: 0,
+    proof: 0,
+    unknown: 0,
   };
   const lifecycle_counts: Record<Lifecycle, number> = {
-    authored: 0, generated: 0, checkpoint: 0, sealed: 0, archived: 0,
+    authored: 0,
+    generated: 0,
+    checkpoint: 0,
+    sealed: 0,
+    archived: 0,
   };
   const archetype_counts: Record<string, number> = {};
   for (const f of files) {
@@ -167,7 +184,9 @@ function render(report: Report): string {
   lines.push(`# morphology report`);
   lines.push(``);
   lines.push(`Root: ${report.root}`);
-  lines.push(`Scanned: ${report.scanned} files (filtered to morphology-shaped names only).`);
+  lines.push(
+    `Scanned: ${report.scanned} files (filtered to morphology-shaped names only).`,
+  );
   lines.push(``);
 
   // Distribution tables
@@ -203,21 +222,37 @@ function render(report: Report): string {
   // Per-file
   lines.push(`## per-file classification`);
   lines.push(``);
-  lines.push(`| coordinate | archetype | lane | lifecycle | filename | prefix |`);
-  lines.push(`|------------|-----------|------|-----------|----------|--------|`);
+  lines.push(
+    `| coordinate | archetype | lane | lifecycle | filename | prefix |`,
+  );
+  lines.push(
+    `|------------|-----------|------|-----------|----------|--------|`,
+  );
   for (const f of report.files) {
-    lines.push(`| ${f.coordinate} | ${f.archetype} | ${f.lane} | ${f.lifecycle} | ${f.filename} | ${f.prefix_check} |`);
+    lines.push(
+      `| ${f.coordinate} | ${f.archetype} | ${f.lane} | ${f.lifecycle} | ${f.filename} | ${f.prefix_check} |`,
+    );
   }
   lines.push(``);
 
   // Policy violations — scanner caveat
   lines.push(`## import-policy violations`);
   lines.push(``);
-  lines.push(`> ⚠️ Scanner is probe-v0 regex-only: catches \`from "./xNNNN_*.ts"\` static imports only.`);
-  lines.push(`> Misses: side-effect imports (\`import "./x..."\`), dynamic imports (\`await import(...)\`),`);
-  lines.push(`> re-export forms (\`export * from\`), aliases via import map, non-\`.ts\` lanes,`);
-  lines.push(`> and submodule imports. Treat the count as "detected by static-from scanner", not as`);
-  lines.push(`> "complete policy coverage". A real \`t audit --policy\` mode would need full AST or`);
+  lines.push(
+    `> ⚠️ Scanner is probe-v0 regex-only: catches \`from "./xNNNN_*.ts"\` static imports only.`,
+  );
+  lines.push(
+    `> Misses: side-effect imports (\`import "./x..."\`), dynamic imports (\`await import(...)\`),`,
+  );
+  lines.push(
+    `> re-export forms (\`export * from\`), aliases via import map, non-\`.ts\` lanes,`,
+  );
+  lines.push(
+    `> and submodule imports. Treat the count as "detected by static-from scanner", not as`,
+  );
+  lines.push(
+    `> "complete policy coverage". A real \`t audit --policy\` mode would need full AST or`,
+  );
   lines.push(`> Deno module graph parsing.`);
   lines.push(``);
   if (report.violations.length > 0) {
@@ -226,11 +261,15 @@ function render(report: Report): string {
     lines.push(`| source | target | result | imported | rationale |`);
     lines.push(`|--------|--------|--------|----------|-----------|`);
     for (const v of report.violations) {
-      lines.push(`| ${v.source_file} (x${v.source_archetype}) | x${v.target_archetype} | ${v.result} | ${v.imported_filename} | ${v.rationale} |`);
+      lines.push(
+        `| ${v.source_file} (x${v.source_archetype}) | x${v.target_archetype} | ${v.result} | ${v.imported_filename} | ${v.rationale} |`,
+      );
     }
     lines.push(``);
   } else {
-    lines.push(`None detected by static-from scanner. (See caveat above — broader scan needed for confidence.)`);
+    lines.push(
+      `None detected by static-from scanner. (See caveat above — broader scan needed for confidence.)`,
+    );
     lines.push(``);
   }
 
@@ -244,7 +283,9 @@ async function main(argv: string[]) {
   if (args.out) {
     await Deno.writeTextFile(args.out, md + "\n");
     console.log(`report written to ${args.out}`);
-    console.log(`summary: scanned=${report.scanned} violations=${report.violations.length}`);
+    console.log(
+      `summary: scanned=${report.scanned} violations=${report.violations.length}`,
+    );
   } else {
     console.log(md);
   }

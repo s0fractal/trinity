@@ -18,11 +18,13 @@ Trinity already has two separate organs:
 - `t gravity` sees topology tension from filename/import edges.
 - `t balance` proposes placement/rebalance moves from dipole placement.
 
-These should connect. `balance` should consume gravity as a secondary signal, so topology tension becomes actionable instead of only observable.
+These should connect. `balance` should consume gravity as a secondary signal, so
+topology tension becomes actionable instead of only observable.
 
 ## Claim
 
-`src/x3A00_balance.ts` should incorporate `t gravity` output into its recommendations.
+`src/x3A00_balance.ts` should incorporate `t gravity` output into its
+recommendations.
 
 Not as a replacement for dipole placement, but as a second lens:
 
@@ -38,10 +40,12 @@ When running:
 ./t balance
 ```
 
-It should output rebalance suggestions incorporating both dipole mismatches and high-tension gravity edges.
+It should output rebalance suggestions incorporating both dipole mismatches and
+high-tension gravity edges.
 
 ## Falsifiers
 
 - Running `./t balance` fails to execute or output valid JSON/text.
-- `t balance` does not report coupling pressure for high-tension files like `x6300_ontology_coverage.ts`.
+- `t balance` does not report coupling pressure for high-tension files like
+  `x6300_ontology_coverage.ts`.
 - The compilation of `src/x3A00_balance.ts` or `src/x6020_gravity.ts` fails.

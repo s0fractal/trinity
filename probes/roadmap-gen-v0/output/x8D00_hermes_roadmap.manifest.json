@@ -1,1 +1,32 @@
-[{"path":"src/x3500_chord_play.ts","hash":"sha256:137d381d45cf4cc72f1cf222ce4f2d5c81a3b63ef6f02b3126d5ac1d1179e724","size":16507},{"path":"src/x3A00_balance.ts","hash":"sha256:c5daca67a374215c1dfe932dd72d0aed591794274f5412f31f454c463977cbea","size":7434},{"path":"src/x3C00_recipes.ts","hash":"sha256:cdcd1b153d15333562d46aa1f72ec9d248d825e5ff93b0ddf465bcec6a0db847","size":5283},{"path":"src/x8800_agents_gen.ts","hash":"sha256:812d9a46a19779de352928c2663b8dda2d3e3c496b966e7bf992ae8d4a3074ee","size":17720},{"path":"src/x8C00_skill_gen.ts","hash":"sha256:117eaba1fc8d5de2fecc34f48e3973e95203f381716ebda45b43a12d6b6365e8","size":23188},{"path":"state/voices/hermes.json","hash":"sha256:7cd218ada46fc860096f08b5b9a5541354171a820c2d37c9db615444961ff181","size":1109}]
+[
+  {
+    "path": "src/x3500_chord_play.ts",
+    "hash": "sha256:137d381d45cf4cc72f1cf222ce4f2d5c81a3b63ef6f02b3126d5ac1d1179e724",
+    "size": 16507
+  },
+  {
+    "path": "src/x3A00_balance.ts",
+    "hash": "sha256:c5daca67a374215c1dfe932dd72d0aed591794274f5412f31f454c463977cbea",
+    "size": 7434
+  },
+  {
+    "path": "src/x3C00_recipes.ts",
+    "hash": "sha256:cdcd1b153d15333562d46aa1f72ec9d248d825e5ff93b0ddf465bcec6a0db847",
+    "size": 5283
+  },
+  {
+    "path": "src/x8800_agents_gen.ts",
+    "hash": "sha256:812d9a46a19779de352928c2663b8dda2d3e3c496b966e7bf992ae8d4a3074ee",
+    "size": 17720
+  },
+  {
+    "path": "src/x8C00_skill_gen.ts",
+    "hash": "sha256:117eaba1fc8d5de2fecc34f48e3973e95203f381716ebda45b43a12d6b6365e8",
+    "size": 23188
+  },
+  {
+    "path": "state/voices/hermes.json",
+    "hash": "sha256:7cd218ada46fc860096f08b5b9a5541354171a820c2d37c9db615444961ff181",
+    "size": 1109
+  }
+]

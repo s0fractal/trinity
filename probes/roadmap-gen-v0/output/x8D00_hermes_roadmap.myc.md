@@ -5,5 +5,6 @@
 
 # hermes — roadmap (frontier tension, generated)
 
-*Where this voice is being pulled next. Derived from voice profile + voice's chord trail + substrate's declared horizons. NOT a restatement of profile (that's x8888_skills.myc.md territory).*
-
+_Where this voice is being pulled next. Derived from voice profile + voice's
+chord trail + substrate's declared horizons. NOT a restatement of profile
+(that's x8888_skills.myc.md territory)._

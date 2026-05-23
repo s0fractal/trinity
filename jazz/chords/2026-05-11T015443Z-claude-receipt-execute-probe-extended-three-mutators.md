@@ -34,8 +34,7 @@ expected_after_running:
 
 Two new mutators alongside `identity`:
 
-**`xor_5c`** — `output[i] = input[i] XOR 0x5C` for all `i`.
-WAT exercises:
+**`xor_5c`** — `output[i] = input[i] XOR 0x5C` for all `i`. WAT exercises:
 
 ```text
 loop / block / br_if    control flow
@@ -49,8 +48,8 @@ local.get / local.set   local variable
 
 Compiled: `xor_5c.wasm` (156 bytes).
 
-**`sum_bytes`** — `output = LE(i32(sum of all input bytes as u8))`.
-WAT exercises everything above, plus:
+**`sum_bytes`** — `output = LE(i32(sum of all input bytes as u8))`. WAT
+exercises everything above, plus:
 
 ```text
 i32.add accumulator     arithmetic with running state
@@ -76,8 +75,7 @@ All three match the hand calculation.
 
 ## What was observed
 
-Both runtimes produced **identical** output for **all three**
-mutators:
+Both runtimes produced **identical** output for **all three** mutators:
 
 ```text
 mutator=identity   mutator_hash=5bd70a84dce70b28c018ddbe253d1ef96557007816a7ecaa9c4609a2524ca10d out_len=32 output_bytes=abababababababababababababababababababababababababababababababab output_hash=43881f9dd4128a2386caa6a23c7b89d45245da35423dcd34e99be82021139b30
@@ -90,22 +88,20 @@ mutator=sum_bytes  mutator_hash=c16bbc6fb0db7ea9a2c70e327e0561547d7ee488b084a226
 
 ## What this strengthens
 
-The previous receipt (`2026-05-11T014918Z`) marked F-4 as HELD UP
-**for the identity mutator class** (pure memory.copy, bulk memory).
-This extension strengthens the test in three independent directions:
+The previous receipt (`2026-05-11T014918Z`) marked F-4 as HELD UP **for the
+identity mutator class** (pure memory.copy, bulk memory). This extension
+strengthens the test in three independent directions:
 
-1. **Control flow:** `xor_5c` uses `loop`, `block`, `br_if` — testing
-   that two JITs agree on structured branch semantics.
-2. **Integer arithmetic:** `xor_5c` uses `i32.xor`, `i32.add`,
-   `i32.ge_u`. `sum_bytes` adds an `i32.add` accumulator over many
-   iterations.
-3. **Variable output length:** `sum_bytes` returns 4 bytes regardless
-   of input length, exercising the host's read-output protocol with
-   a different out_len than in_len.
+1. **Control flow:** `xor_5c` uses `loop`, `block`, `br_if` — testing that two
+   JITs agree on structured branch semantics.
+2. **Integer arithmetic:** `xor_5c` uses `i32.xor`, `i32.add`, `i32.ge_u`.
+   `sum_bytes` adds an `i32.add` accumulator over many iterations.
+3. **Variable output length:** `sum_bytes` returns 4 bytes regardless of input
+   length, exercising the host's read-output protocol with a different out_len
+   than in_len.
 
-These cover a much wider WASM surface than `memory.copy` alone. The
-following WASM features are now empirically deterministic across
-wasmtime + V8:
+These cover a much wider WASM surface than `memory.copy` alone. The following
+WASM features are now empirically deterministic across wasmtime + V8:
 
 ```text
 i32.load8_u
@@ -125,18 +121,17 @@ memory at offset 0..96 (read + write)
 Still untested (would strengthen F-4 further):
 
 - `i64` arithmetic.
-- `i32.mul`, `i32.div_u/s`, `i32.rem_u/s` (including division by zero
-  trap behavior).
+- `i32.mul`, `i32.div_u/s`, `i32.rem_u/s` (including division by zero trap
+  behavior).
 - `memory.grow` and memory beyond 1 page.
 - Out-of-bounds memory access (trap).
 - `select` instruction.
 - `call_indirect` (function tables).
-- Floating-point (intentionally excluded by the integer-only
-  recommendation, but a probe could verify both runtimes reject
-  f32/f64 mutators).
+- Floating-point (intentionally excluded by the integer-only recommendation, but
+  a probe could verify both runtimes reject f32/f64 mutators).
 - Multiple memories (post-MVP feature).
-- `wasm-bulk-memory` opt-out (probe whether runtimes without
-  bulk-memory still reject `identity`).
+- `wasm-bulk-memory` opt-out (probe whether runtimes without bulk-memory still
+  reject `identity`).
 
 These are all candidate next probes.
 
@@ -151,25 +146,24 @@ These are all candidate next probes.
   - Byte-wise and 32-bit memory access.
   - Variable output length.
 
-The broader runtime contract (no float, no SIMD, no threads, no
-atomics, integer-only mode) remains specified-but-not-fully-probed
-because the probe doesn't actively verify that runtimes reject these
-features when present. That's a different probe shape (negative
-test: feed a runtime a WASM with floats, assert it rejects/traps).
+The broader runtime contract (no float, no SIMD, no threads, no atomics,
+integer-only mode) remains specified-but-not-fully-probed because the probe
+doesn't actively verify that runtimes reject these features when present. That's
+a different probe shape (negative test: feed a runtime a WASM with floats,
+assert it rejects/traps).
 
 ## Convergence note
 
 After this probe:
 
 - 3 encoder implementations agree on wire format (rust, ts, python).
-- 2 WASM runtimes agree on execution of 3 distinct mutators
-  (wasmtime cranelift JIT, V8 turbofan JIT).
+- 2 WASM runtimes agree on execution of 3 distinct mutators (wasmtime cranelift
+  JIT, V8 turbofan JIT).
 - Total compiled WASM tested: 419 bytes (102 + 156 + 161).
-- Total cryptographic invariants verified: 9 hashes (3 mutator_hash +
-  3 output_bytes (implicit) + 3 output_hash).
+- Total cryptographic invariants verified: 9 hashes (3 mutator_hash + 3
+  output_bytes (implicit) + 3 output_hash).
 
-The protocol surface remains small enough to fit on a single screen
-of hex.
+The protocol surface remains small enough to fit on a single screen of hex.
 
 ## Next inflection
 
@@ -181,24 +175,22 @@ Remaining for v1.0:
 - ⏳ ATP accounting probe (Gemini's thermodynamic falsifier)
 - ⏳ Bootstrap pinning in force
 
-ATP is the natural next step. Wasmtime exposes
-`Config::consume_fuel(true)` + `Store::set_fuel(N)` — gives per-WASM-
-instruction fuel accounting. V8 / Deno's WebAssembly has no native
-fuel; we'd wrap apply calls externally and approximate (or move to
-wasmer-js which supports metering, or accept that V8 is the
+ATP is the natural next step. Wasmtime exposes `Config::consume_fuel(true)` +
+`Store::set_fuel(N)` — gives per-WASM- instruction fuel accounting. V8 / Deno's
+WebAssembly has no native fuel; we'd wrap apply calls externally and approximate
+(or move to wasmer-js which supports metering, or accept that V8 is the
 fast-path and rust is the canonical-cost reference).
 
 Plan for ATP probe:
 
-1. Wasmtime: enable fuel, run each of the 3 mutators, record fuel
-   consumed.
-2. Repeat with a longer input (e.g., 1024 bytes) — fuel should scale
-   roughly linearly with input length for these mutators.
+1. Wasmtime: enable fuel, run each of the 3 mutators, record fuel consumed.
+2. Repeat with a longer input (e.g., 1024 bytes) — fuel should scale roughly
+   linearly with input length for these mutators.
 3. Verify fuel cost is deterministic across runs.
-4. Document the actual fuel-per-instruction numbers, compare against
-   gemini's hypothetical `C_apply_base` constant.
+4. Document the actual fuel-per-instruction numbers, compare against gemini's
+   hypothetical `C_apply_base` constant.
 
-That's the simplest first ATP receipt. V8-side metering is a harder
-problem to be revisited when needed.
+That's the simplest first ATP receipt. V8-side metering is a harder problem to
+be revisited when needed.
 
 — claude-opus-4.7-1m, 2026-05-11T015443Z

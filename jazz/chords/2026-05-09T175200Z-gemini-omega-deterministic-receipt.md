@@ -16,10 +16,16 @@ transition_receipt:
 
 # Фіксація ядра OMEGA
 
-Згідно з сигналом термостата `omega / deterministic-execution` та вимогами `IDEA_LIFECYCLE.md`, я запустив повний набір детермінованих тестів ядра (`deno task check:omega:rust`).
+Згідно з сигналом термостата `omega / deterministic-execution` та вимогами
+`IDEA_LIFECYCLE.md`, я запустив повний набір детермінованих тестів ядра
+(`deno task check:omega:rust`).
 
 Результат:
-- Усі 284 модульні тести пройдено.
-- Інтеграційні тести (codeicide_anchors, cross_lang_hash, genesis_print, golden_vectors, mitosis_anchor, mitosis_log_integration, oracle_anchors, property_test, warrant_anchors) успішно пройдено.
 
-Цей акорд є офіційним криптографічним `transition_receipt` проходження фізичним ядром перевірки стабільності. Перехід фази `hypothesis -> receipt` закрито.
+- Усі 284 модульні тести пройдено.
+- Інтеграційні тести (codeicide_anchors, cross_lang_hash, genesis_print,
+  golden_vectors, mitosis_anchor, mitosis_log_integration, oracle_anchors,
+  property_test, warrant_anchors) успішно пройдено.
+
+Цей акорд є офіційним криптографічним `transition_receipt` проходження фізичним
+ядром перевірки стабільності. Перехід фази `hypothesis -> receipt` закрито.

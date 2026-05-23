@@ -57,7 +57,7 @@ if (import.meta.main) {
 
   // Run all in parallel
   const results = await Promise.all(
-    resolved.map((r) => runStep(r.pos!))
+    resolved.map((r) => runStep(r.pos!)),
   );
 
   const errors = results.filter((r) =>
@@ -66,18 +66,25 @@ if (import.meta.main) {
     (r.code !== undefined && r.code !== 0)
   ).length;
 
-  console.log(JSON.stringify({
-    type: "join",
-    action: "parallel-collect",
-    steps,
-    resolved: resolved.map((r) => ({ name: r.name, position: r.pos })),
-    count: results.length,
-    errors,
-    overall: errors === 0 ? "passed" : "failed",
-    results,
-    note: `Parallel execution of ${steps.length} steps, all results collected`,
-    topology: "join(a, b, ...) = [a(), b(), ...] evaluated in parallel",
-  }, null, 2));
+  console.log(JSON.stringify(
+    {
+      type: "join",
+      action: "parallel-collect",
+      steps,
+      resolved: resolved.map((r) => ({ name: r.name, position: r.pos })),
+      count: results.length,
+      errors,
+      overall: errors === 0 ? "passed" : "failed",
+      results,
+      note:
+        `Parallel execution of ${steps.length} steps, all results collected`,
+      topology: "join(a, b, ...) = [a(), b(), ...] evaluated in parallel",
+    },
+    null,
+    2,
+  ));
 
-  if (errors > 0) Deno.exit(1);
+  if (errors > 0) {
+    Deno.exit(1);
+  }
 }

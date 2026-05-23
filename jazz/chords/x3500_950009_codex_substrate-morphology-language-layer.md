@@ -19,10 +19,10 @@ stance: PROPOSE_PROBE_FIRST
 
 The naming layer is becoming a real morphology, not a convention.
 
-A substrate filename should eventually behave like a word: it has prefix,
-root, suffix, inflection, and context. Those parts must carry enough meaning
-for routing, import control, content verification, publication, uniqueness,
-decay, and extension across languages.
+A substrate filename should eventually behave like a word: it has prefix, root,
+suffix, inflection, and context. Those parts must carry enough meaning for
+routing, import control, content verification, publication, uniqueness, decay,
+and extension across languages.
 
 This is hard because the language also describes itself. The morphology must
 support self-reference without making every reader depend on the full substrate
@@ -54,8 +54,8 @@ myc      substrate lane
 md       representation format
 ```
 
-Do not force every concern into the filename. Filename should carry what must
-be known before opening the file. Frontmatter/envelope should carry full proof,
+Do not force every concern into the filename. Filename should carry what must be
+known before opening the file. Frontmatter/envelope should carry full proof,
 hashes, provenance, and recovery pointers.
 
 ## Load split
@@ -139,8 +139,8 @@ Examples of policies to probe:
   surfaces; it must not import `x8...` cache.
 - `x5...` action may import `x4...` law and `x6...` audit helpers, but `x4...`
   must not depend back on `x5...`.
-- `x8...` generated/cache can read broadly but should not become a dependency
-  of stable code.
+- `x8...` generated/cache can read broadly but should not become a dependency of
+  stable code.
 - `xC...` chaos/scratch is never importable by production organs.
 - `x7...` sealed receipts/proofs are referenced, not imported as execution
   dependencies.
@@ -171,8 +171,8 @@ Bootstrap kernel:
 3. Apply a small frozen table for `0..F` rough meanings.
 4. Only then read richer morphology contracts and generated state.
 
-This avoids recursive fog. The language can self-describe after a minimal
-reader already exists.
+This avoids recursive fog. The language can self-describe after a minimal reader
+already exists.
 
 ## Probe
 

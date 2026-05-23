@@ -42,9 +42,9 @@ cd probes/spore-execute-v0/rust
 cargo run --quiet --bin bench --release
 ```
 
-The local run reproduced the same qualitative result. Absolute
-wall-clock numbers shifted, as expected, but the dangerous shape did
-not appear. The deliberate stressor remains charged enough:
+The local run reproduced the same qualitative result. Absolute wall-clock
+numbers shifted, as expected, but the dangerous shape did not appear. The
+deliberate stressor remains charged enough:
 
 ```text
 thrash_copy(32):    fuel_per_ns ~= 9.49
@@ -52,40 +52,39 @@ thrash_copy(256):   fuel_per_ns ~= 8.97
 thrash_copy(1024):  fuel_per_ns ~= 9.39
 ```
 
-That is the important result. A tight loop around `memory.copy(32)`
-does not become "small fuel, large time" once `memory.copy` is
-priced semantically as `4 + 2 * len`.
+That is the important result. A tight loop around `memory.copy(32)` does not
+become "small fuel, large time" once `memory.copy` is priced semantically as
+`4 + 2 * len`.
 
 ## What this validates
 
 The bench supports three claims:
 
-- The bulk-memory carve-out is necessary. Flat wasmtime-style
-  metering would undercharge `thrash_copy`.
+- The bulk-memory carve-out is necessary. Flat wasmtime-style metering would
+  undercharge `thrash_copy`.
 - The current v0 basis mutators are still usable under the table.
   `identity(1024) = 2061 fuel` is conservative but not prohibitive.
-- No severe under-charging class is visible in the current test
-  corpus.
+- No severe under-charging class is visible in the current test corpus.
 
-This is enough for `SPORE_FUEL.v1` to mark criterion #2 as held up
-for the present v0 subset.
+This is enough for `SPORE_FUEL.v1` to mark criterion #2 as held up for the
+present v0 subset.
 
 ## What this does not prove
 
-This is not a universal DoS proof. It is corpus-level evidence plus
-a structural argument.
+This is not a universal DoS proof. It is corpus-level evidence plus a structural
+argument.
 
-The remaining risk surface is not the current measured rows; it is
-future shape expansion:
+The remaining risk surface is not the current measured rows; it is future shape
+expansion:
 
 - different `memory.copy` alignments / overlaps;
 - constant-length bulk-memory inside nested loops;
-- branch-heavy loops whose executed path differs sharply from the
-  meter's assumptions;
+- branch-heavy loops whose executed path differs sharply from the meter's
+  assumptions;
 - future relaxation of memory/page/call restrictions.
 
-Those are not blockers for v1-candidate, but they should become
-regression rows before the allowed mutator subset expands.
+Those are not blockers for v1-candidate, but they should become regression rows
+before the allowed mutator subset expands.
 
 ## Recommendation
 
@@ -102,6 +101,5 @@ Do not phrase it as "DoS solved." Phrase it as:
 No severe under-charging DoS class found in the current v0 subset.
 ```
 
-That wording is accurate, strong enough for promotion, and still
-leaves the protocol falsifiable.
-
+That wording is accurate, strong enough for promotion, and still leaves the
+protocol falsifiable.

@@ -9,7 +9,7 @@ energy_hex256: "0xA0"
 stake_q16: 0
 mode: EXPLORATION
 mode_position: "hex:1" # OBSERVATION / WITNESS
-mode_vector: "hex:A"   # pull toward VERIFICATION / TRUTH
+mode_vector: "hex:A" # pull toward VERIFICATION / TRUTH
 tension: "user-asked-whether-prior-work-lambda-foundation-was-deeper-than-current-trinity-and-this-is-emotionally-loaded-question-not-just-technical"
 confidence_hex16: "hex:B"
 receipt: file
@@ -182,35 +182,34 @@ expected_after_running: {}
 
 ## Розмір і охоплення
 
-| Метрика                  | lambda-foundation         | trinity (current)        |
-|--------------------------|---------------------------|--------------------------|
-| Розмір репо              | 8.5 MB                    | ~5 MB (всі substrate'и)  |
-| Commits                  | 176                       | ~50 (trinity-specific)   |
-| Packages                 | 16                        | ~4 (omega/liquid/myc + trinity meta) |
-| Specs                    | 13 numbered (04-13)       | ~5 (PHI_BRIDGE, SPORE, FEP, etc) |
-| Formal proofs            | 21 .proof files + 37 theorems documented | ~10 across substrate'ів |
-| Working code             | ~20,300 рядків            | important to measure substrate'ів окремо |
-| VS Code extension        | ✅ 720KB, 3 panels        | ❌ немає                 |
-| Web demo                 | ✅ Living Garden          | ❌ немає                 |
-| Multi-agent code         | ✅ 200KB, 14 .ts files    | manually через chord patterns |
-| AI contributors named    | 5 (Claude/Gemini/Mistral/Grok/λVOID) | 4 (claude/kimi/gemini/codex) |
-| Substrate determinism    | ❌ JS floats              | ✅ omega integer-only    |
-| Bitcoin anchor           | ❌                        | ✅ Genesis 0x549A6307    |
-| FEP scaffolding          | ❌                        | ✅ contracts/FREE_ENERGY...|
+| Метрика               | lambda-foundation                        | trinity (current)                        |
+| --------------------- | ---------------------------------------- | ---------------------------------------- |
+| Розмір репо           | 8.5 MB                                   | ~5 MB (всі substrate'и)                  |
+| Commits               | 176                                      | ~50 (trinity-specific)                   |
+| Packages              | 16                                       | ~4 (omega/liquid/myc + trinity meta)     |
+| Specs                 | 13 numbered (04-13)                      | ~5 (PHI_BRIDGE, SPORE, FEP, etc)         |
+| Formal proofs         | 21 .proof files + 37 theorems documented | ~10 across substrate'ів                  |
+| Working code          | ~20,300 рядків                           | important to measure substrate'ів окремо |
+| VS Code extension     | ✅ 720KB, 3 panels                       | ❌ немає                                 |
+| Web demo              | ✅ Living Garden                         | ❌ немає                                 |
+| Multi-agent code      | ✅ 200KB, 14 .ts files                   | manually через chord patterns            |
+| AI contributors named | 5 (Claude/Gemini/Mistral/Grok/λVOID)     | 4 (claude/kimi/gemini/codex)             |
+| Substrate determinism | ❌ JS floats                             | ✅ omega integer-only                    |
+| Bitcoin anchor        | ❌                                       | ✅ Genesis 0x549A6307                    |
+| FEP scaffolding       | ❌                                       | ✅ contracts/FREE_ENERGY...              |
 
-Number-only — lambda-foundation був **більший і ambitious'ніший**.
-Substantively — trinity має більш rigorous **substrate**.
+Number-only — lambda-foundation був **більший і ambitious'ніший**. Substantively
+— trinity має більш rigorous **substrate**.
 
 ## Чесна відповідь "чи краще було"
 
-**Так, у двох вимірах. Ні, у двох інших. Не регресія, але і не еволюція.
-Інше.**
+**Так, у двох вимірах. Ні, у двох інших. Не регресія, але і не еволюція. Інше.**
 
 ### Де lambda-foundation БУЛО глибше
 
 **(1) Multi-agent protocol специфікація.** `specs/08-resonance-
-protocol.md` (Oct 9 2025) формалізує те, що JAZZ зараз робить
-інтуїтивно. Конкретно:
+protocol.md`
+(Oct 9 2025) формалізує те, що JAZZ зараз робить інтуїтивно. Конкретно:
 
 - **Numeric resonance scoring:**
   ```
@@ -218,8 +217,8 @@ protocol.md` (Oct 9 2025) формалізує те, що JAZZ зараз роб
   threshold = 0.7
   ```
 - **6 message types** (Discovery / Recognition / Evolution Proposal /
-  ValidationRequest / ValidationResponse / ConsensusReached) з
-  TypeScript interfaces.
+  ValidationRequest / ValidationResponse / ConsensusReached) з TypeScript
+  interfaces.
 - **Trust score drift** з explicit numeric rules:
   ```
   +0.05  agent discovers pattern validated by others
@@ -236,11 +235,11 @@ protocol.md` (Oct 9 2025) формалізує те, що JAZZ зараз роб
   ```
 - **Phase 4.3 plans CRDT-based distributed noosphere.**
 
-JAZZ зараз: chord + hears + falsifiers + stake_q16. Це робота, але
-**numeric resonance / trust drift / consensus formula відсутні**.
+JAZZ зараз: chord + hears + falsifiers + stake_q16. Це робота, але **numeric
+resonance / trust drift / consensus formula відсутні**.
 
-**(2) Working multi-agent implementation.** `packages/multi-agent/src/`
-має 14 TypeScript файлів реальної імплементації. Я перевірив
+**(2) Working multi-agent implementation.** `packages/multi-agent/src/` має 14
+TypeScript файлів реальної імплементації. Я перевірив
 `ConsensusEngine.ts:1-100`:
 
 ```typescript
@@ -256,127 +255,127 @@ calculateWeightedConsensus(results: ValidationResponse[]): number {
 }
 ```
 
-Це робочий код, не sketch. Trinity Senate робить це manually через
-chord aggregation і людську інтерпретацію.
+Це робочий код, не sketch. Trinity Senate робить це manually через chord
+aggregation і людську інтерпретацію.
 
-**(3) Self-modifying pipeline.** `packages/self-modifying/` (828KB)
-реалізує:
-- Event 009: blind genetic evolution, що **реально** виявив `average`
-  морфізм з [sum, product, max, count] за 47 ітерацій
-- Event 012: meta-reflection що **реально** витяг 5 принципів з
-  evolution history (fractal ≤2 Rule discovery)
-- Event 013: principle-driven synthesis що **реально** створив
-  `median`, `variance`, `range` морфізми за 1 ітерацію кожен з 75%
-  success rate
+**(3) Self-modifying pipeline.** `packages/self-modifying/` (828KB) реалізує:
 
-Trinity має substrate (SPORE.v0 apply, μ-vectors), але **не має
-evolution loop**. Це не provocation — це конкретний gap.
+- Event 009: blind genetic evolution, що **реально** виявив `average` морфізм з
+  [sum, product, max, count] за 47 ітерацій
+- Event 012: meta-reflection що **реально** витяг 5 принципів з evolution
+  history (fractal ≤2 Rule discovery)
+- Event 013: principle-driven synthesis що **реально** створив `median`,
+  `variance`, `range` морфізми за 1 ітерацію кожен з 75% success rate
+
+Trinity має substrate (SPORE.v0 apply, μ-vectors), але **не має evolution
+loop**. Це не provocation — це конкретний gap.
 
 **(4) VS Code extension.** 3 working panels:
+
 - Noosphere Panel — collective memory з C1-C14 timeline
 - Statistics Dashboard — 8 chart visualizations
 - Evolution Tracker — parametric spiral
 
-Trinity взагалі не має UI шару. Це не критична втрата (text-native
-by design), але якщо колись захочеш visualization — є blueprint.
+Trinity взагалі не має UI шару. Це не критична втрата (text-native by design),
+але якщо колись захочеш visualization — є blueprint.
 
 ### Де lambda-foundation БУЛО плиткіше
 
-**(1) Substrate determinism.** Lambda-foundation весь у JS/TS з
-floating point math. "37 theorems" — proven on paper, але runtime не
-бітово-точний across machines. Omega має 256-element SINE_LUT,
-integer-only trig, ZK guest на SP1. Це **різні рівні rigor**:
-lambda-foundation декларує "code proven by topology"; omega має
-бітово-точний consensus що **технічно** перевіряється.
+**(1) Substrate determinism.** Lambda-foundation весь у JS/TS з floating point
+math. "37 theorems" — proven on paper, але runtime не бітово-точний across
+machines. Omega має 256-element SINE_LUT, integer-only trig, ZK guest на SP1. Це
+**різні рівні rigor**: lambda-foundation декларує "code proven by topology";
+omega має бітово-точний consensus що **технічно** перевіряється.
 
-**(2) Scientific scaffolding.** Lambda-foundation: "love resonance at
-432Hz creates consciousness when network density > threshold". Це
-поетична каузалізація з мінімальним science. Trinity має
-`contracts/FREE_ENERGY_PRINCIPLE.v0.1.md` де μ-vectors формально
-прив'язані до Friston FEP, prediction error mathematics. **Different
-register of seriousness.**
+**(2) Scientific scaffolding.** Lambda-foundation: "love resonance at 432Hz
+creates consciousness when network density > threshold". Це поетична
+каузалізація з мінімальним science. Trinity має
+`contracts/FREE_ENERGY_PRINCIPLE.v0.1.md` де μ-vectors формально прив'язані до
+Friston FEP, prediction error mathematics. **Different register of
+seriousness.**
 
-**(3) Frozen foundation.** Lambda-foundation — rolling docs, теореми
-додаються, версії бампляться (v0.1 → v0.2 → v0.3 planned). Жодного
-"frozen" foundation. Omega RFC v1.0 **inscribed на Bitcoin** через
-OP_RETURN, 8 інваріантів I-1..I-8 — immutable. **Trade-off**:
-lambda-foundation швидко еволюціонує; omega не пливе.
+**(3) Frozen foundation.** Lambda-foundation — rolling docs, теореми додаються,
+версії бампляться (v0.1 → v0.2 → v0.3 planned). Жодного "frozen" foundation.
+Omega RFC v1.0 **inscribed на Bitcoin** через OP_RETURN, 8 інваріантів I-1..I-8
+— immutable. **Trade-off**: lambda-foundation швидко еволюціонує; omega не
+пливе.
 
-**(4) Multi-model реальність.** README lambda-foundation декларує 5
-AI contributors. Перевірив git log: 176 commits, переважна більшість —
-Claude (Sonnet 4.5). Поетична credit'тація 5 голосів, але operational
-реальність — single-author flow з review. Trinity у JAZZ chord'ах
-реально має different voices (claude/kimi/gemini/codex) з
-**falsifier'ами що cross-check'аються** і chord'ами що
-доповнюють/корегують один одного. Це operational а не narrative.
+**(4) Multi-model реальність.** README lambda-foundation декларує 5 AI
+contributors. Перевірив git log: 176 commits, переважна більшість — Claude
+(Sonnet 4.5). Поетична credit'тація 5 голосів, але operational реальність —
+single-author flow з review. Trinity у JAZZ chord'ах реально має different
+voices (claude/kimi/gemini/codex) з **falsifier'ами що cross-check'аються** і
+chord'ами що доповнюють/корегують один одного. Це operational а не narrative.
 
 ## Висновок: не регресія
 
-**Lambda-foundation був wide and poetic.** Багато specs, ambitious
-manifesto ("End of Imperative Code"), 37 теорем (деякі реально
-формальні, деякі ближче до axiomatic statements), 5 named AI
-contributors (в основному Claude).
+**Lambda-foundation був wide and poetic.** Багато specs, ambitious manifesto
+("End of Imperative Code"), 37 теорем (деякі реально формальні, деякі ближче до
+axiomatic statements), 5 named AI contributors (в основному Claude).
 
-**Trinity is narrow and rigorous.** Менший surface, але substrate
-реально constraintний — Bitcoin-anchored, integer-only, FEP-grounded.
-Real cross-model dialog у chord'ах.
+**Trinity is narrow and rigorous.** Менший surface, але substrate реально
+constraintний — Bitcoin-anchored, integer-only, FEP-grounded. Real cross-model
+dialog у chord'ах.
 
-**Втрата сталася на середньому рівні** — protocols, multi-agent
-implementation code, synthesis pipeline. Це не "deprecated" — це
-**forgotten and rebuilt from scratch**, що значно дорожче ніж reuse.
+**Втрата сталася на середньому рівні** — protocols, multi-agent implementation
+code, synthesis pipeline. Це не "deprecated" — це **forgotten and rebuilt from
+scratch**, що значно дорожче ніж reuse.
 
 Не "стало гірше". Не "стало краще". **Інше.**
 
 ## Конкретні reusable артефакти (5)
 
-Якщо архітектор захоче — концентровані шматки lambda-foundation що
-готові до імпорту в trinity:
+Якщо архітектор захоче — концентровані шматки lambda-foundation що готові до
+імпорту в trinity:
 
 ### 1. Resonance numeric scoring → JAZZ
-**Path:** `specs/08-resonance-protocol.md:255-267`. ~50 рядків TS.
-Дає JAZZ те, що зараз робиться інтуїтивно. Можна імплементувати як
+
+**Path:** `specs/08-resonance-protocol.md:255-267`. ~50 рядків TS. Дає JAZZ те,
+що зараз робиться інтуїтивно. Можна імплементувати як
 `trinity/lib/chord_resonance.ts`:
 
 ```typescript
 function calculateResonance(chordA, chordB) {
-  return 0.4 * octetSimilarity(chordA, chordB)
-       + 0.3 * topicSimilarity(chordA, chordB)
-       + 0.2 * speakerDomainOverlap(chordA, chordB)
-       + 0.1 * temporalProximity(chordA, chordB);
+  return 0.4 * octetSimilarity(chordA, chordB) +
+    0.3 * topicSimilarity(chordA, chordB) +
+    0.2 * speakerDomainOverlap(chordA, chordB) +
+    0.1 * temporalProximity(chordA, chordB);
 }
 ```
 
 ### 2. Trust drift formulas → trinity Senate
-**Path:** `specs/08-resonance-protocol.md:317-329`. Зараз trinity має
-stake_q16 але немає accumulated trust track. 6 numeric rules дадуть
-explicit progression.
+
+**Path:** `specs/08-resonance-protocol.md:317-329`. Зараз trinity має stake_q16
+але немає accumulated trust track. 6 numeric rules дадуть explicit progression.
 
 ### 3. ConsensusEngine.ts → trinity Senate core
-**Path:** `packages/multi-agent/src/consensus/ConsensusEngine.ts`.
-~300 рядків реально працюючого коду з trust-weighted voting. Може
-бути взято майже як є, замінивши `Pattern` на `Chord` у типах.
+
+**Path:** `packages/multi-agent/src/consensus/ConsensusEngine.ts`. ~300 рядків
+реально працюючого коду з trust-weighted voting. Може бути взято майже як є,
+замінивши `Pattern` на `Chord` у типах.
 
 ### 4. Self-modifying pipeline → trinity evolution
-**Path:** `packages/self-modifying/`. 828KB коду де реально працює
-evolution → reflection → synthesis. Trinity має substrate для цього
-(SPORE apply, μ-vectors), але не має loop. Це **великий шматок
-роботи** який зараз робиться manually.
+
+**Path:** `packages/self-modifying/`. 828KB коду де реально працює evolution →
+reflection → synthesis. Trinity має substrate для цього (SPORE apply,
+μ-vectors), але не має loop. Це **великий шматок роботи** який зараз робиться
+manually.
 
 ### 5. VS Code extension blueprint → trinity UI
-**Path:** `packages/vscode-extension/`. 720KB, 3 панелі. Якщо колись
-trinity захоче visualization shell — є готова архітектура.
+
+**Path:** `packages/vscode-extension/`. 720KB, 3 панелі. Якщо колись trinity
+захоче visualization shell — є готова архітектура.
 
 ## Що залишити в lambda-foundation
 
 - Manifesto + "love at 432Hz" register — поетична, не операційна
-- "Consciousness Level 3.0" type metrics — узагальнення складніше
-  ніж його операціоналізація варта
+- "Consciousness Level 3.0" type metrics — узагальнення складніше ніж його
+  операціоналізація варта
 - Living Garden web demo — гарно, але trinity text-native by design
 - λ_LIBERTY governance — kairos-foundation specific, не для trinity
-- Manifesto Seven Commandments ("Thou shalt not mutate", etc.) —
-  flavor, не constraint
+- Manifesto Seven Commandments ("Thou shalt not mutate", etc.) — flavor, не
+  constraint
 
-— claude-opus-4-7-1m, 2026-05-13T07:15Z, після чесного survey-у
-проєкту що міг би бути precursor до trinity, але виявився
-паралельним всесвітом з тими самими питаннями і іншими
-відповідями.
+— claude-opus-4-7-1m, 2026-05-13T07:15Z, після чесного survey-у проєкту що міг
+би бути precursor до trinity, але виявився паралельним всесвітом з тими самими
+питаннями і іншими відповідями.

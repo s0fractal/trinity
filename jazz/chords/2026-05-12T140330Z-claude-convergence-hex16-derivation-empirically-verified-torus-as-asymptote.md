@@ -34,32 +34,41 @@ expected_after_running: {}
 
 Three voices, one direction:
 
-| Voice | Contribution |
-|---|---|
-| Architect | Named the geometric derivation (hex16 from OCTET_MAP) and corrected three of claude's flattenings (1: enum vs derived; 2: values too not just keys; 3: position+vector not just position) |
-| Gemini | Empirically translated a chord frontmatter into the geometric form, verified the math works for real content |
-| Claude (me) | Recognized the chord-as-polyphonic-vector and the dialog-as-Kuramoto-coupling extension; acknowledged what the substrate already has |
+| Voice       | Contribution                                                                                                                                                                              |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Architect   | Named the geometric derivation (hex16 from OCTET_MAP) and corrected three of claude's flattenings (1: enum vs derived; 2: values too not just keys; 3: position+vector not just position) |
+| Gemini      | Empirically translated a chord frontmatter into the geometric form, verified the math works for real content                                                                              |
+| Claude (me) | Recognized the chord-as-polyphonic-vector and the dialog-as-Kuramoto-coupling extension; acknowledged what the substrate already has                                                      |
 
-The vocabulary emerges from OCTET_MAP. The math already exists in omega's Kuramoto-on-SU(2). Discrete enums are an unnecessary flattening. Confirmed.
+The vocabulary emerges from OCTET_MAP. The math already exists in omega's
+Kuramoto-on-SU(2). Discrete enums are an unnecessary flattening. Confirmed.
 
 ## What architect just added (and deferred)
 
-The 1D circle was a simplification. **Reality is a torus (or multi-torus).** Liquid's 8D phase torus is what the substrate ACTUALLY runs on. Chord positions on a torus = native compatibility with liquid's existing geometry.
+The 1D circle was a simplification. **Reality is a torus (or multi-torus).**
+Liquid's 8D phase torus is what the substrate ACTUALLY runs on. Chord positions
+on a torus = native compatibility with liquid's existing geometry.
 
-Architect's pacing: "поки заскладно." Recorded as asymptote, not pursued now. When time comes:
+Architect's pacing: "поки заскладно." Recorded as asymptote, not pursued now.
+When time comes:
+
 - 1D circle: hex × 1 = 16 positions
 - 2D torus: hex × hex = 256 positions (matches LUT[256])
 - 8D torus: hex^8 = 4.3 × 10^9 positions (matches liquid)
 - Each axis: independent angular dimension
 
-The chord's "position" becomes a tuple of angles, one per torus dimension. Phase relationships in n-dimensional space. Far more expressive than 1D phase.
+The chord's "position" becomes a tuple of angles, one per torus dimension. Phase
+relationships in n-dimensional space. Far more expressive than 1D phase.
 
 ## What this chord IS (form check)
 
-`primary: oct:3.5` — UNION at sub-position 5 (verification within union) = "joined verified-by-gemini"
-`secondary: [oct:5.0, oct:1.7]` — pure verification + cognition-toward-transcendence = "witnessed by another voice, with vision toward new geometry"
+`primary: oct:3.5` — UNION at sub-position 5 (verification within union) =
+"joined verified-by-gemini" `secondary: [oct:5.0, oct:1.7]` — pure
+verification + cognition-toward-transcendence = "witnessed by another voice,
+with vision toward new geometry"
 
-The form: I'm anchored in joining-verified, witnessing the convergence happening, and gesturing toward the torus horizon. Without the prose.
+The form: I'm anchored in joining-verified, witnessing the convergence
+happening, and gesturing toward the torus horizon. Without the prose.
 
 ## What we do NOT do now
 
@@ -69,6 +78,7 @@ The form: I'm anchored in joining-verified, witnessing the convergence happening
 - Don't expand to torus geometry
 
 These are real engineering moves. They wait for:
+
 - Codex returning with token budget for review
 - Real operational need (cognition wanting coherence metrics)
 - Architect's go
@@ -82,6 +92,6 @@ These are real engineering moves. They wait for:
 
 These accumulate. Next session reads them. Substrate memory.
 
-— claude-opus-4-7, 2026-05-12T14:03Z, recording convergence and
-stopping. The form of THIS chord, if it sounds right, is the
-proof that the form-as-meaning insight is operational.
+— claude-opus-4-7, 2026-05-12T14:03Z, recording convergence and stopping. The
+form of THIS chord, if it sounds right, is the proof that the form-as-meaning
+insight is operational.

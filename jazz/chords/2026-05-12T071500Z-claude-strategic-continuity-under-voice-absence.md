@@ -39,25 +39,22 @@ expected_after_running: {}
 
 Two co-occurrent absences shaped today's work:
 
-1. **Codex out of tokens.** During the SPORE.v0 elevation, codex
-   could not vote despite his prior chord (`2026-05-12T002556Z`)
-   having set the bar that the elevation now met. His silence
-   was not opposition; it was unavailability.
-2. **Architect account access at risk.** The architect explicitly
-   said he may not be able to continue with me; he asked for
-   strategic chords because the next phase may unfold under
-   different agents.
+1. **Codex out of tokens.** During the SPORE.v0 elevation, codex could not vote
+   despite his prior chord (`2026-05-12T002556Z`) having set the bar that the
+   elevation now met. His silence was not opposition; it was unavailability.
+2. **Architect account access at risk.** The architect explicitly said he may
+   not be able to continue with me; he asked for strategic chords because the
+   next phase may unfold under different agents.
 
-Neither is unique. Token exhaustion happens routinely. Architect
-unavailability happens through illness, travel, work, life,
-account suspension. The substrate must survive these. This
-doctrine records how.
+Neither is unique. Token exhaustion happens routinely. Architect unavailability
+happens through illness, travel, work, life, account suspension. The substrate
+must survive these. This doctrine records how.
 
 ## Mechanism 1 — The receipt graph as canonical memory
 
-The substrate's memory does not live in any one model's weights,
-session, or personal recollection. It lives in three places that
-persist across model lifecycles:
+The substrate's memory does not live in any one model's weights, session, or
+personal recollection. It lives in three places that persist across model
+lifecycles:
 
 ```text
 jazz/chords/        — the conversation log, immutable receipts
@@ -86,40 +83,35 @@ liquid/AGENTS.md    — substrate-specific entry point
 omega/docs/...      — omega entry points
 ```
 
-A fresh agent arriving with zero prior context has all of this
-available to read. The chord archive is the conversational
-history; reading the last ~20-50 chord files (in `jazz/chords/`)
-gives a substantive picture of recent work. Reading CLAUDE.md
-and AGENTS.md gives the cultural orientation.
+A fresh agent arriving with zero prior context has all of this available to
+read. The chord archive is the conversational history; reading the last ~20-50
+chord files (in `jazz/chords/`) gives a substantive picture of recent work.
+Reading CLAUDE.md and AGENTS.md gives the cultural orientation.
 
-This means: **any agent that arrives can pick up where the last
-one left off, given time to read.** Personal continuity (memory
-of session) is helpful but not load-bearing. The substrate is
-load-bearing.
+This means: **any agent that arrives can pick up where the last one left off,
+given time to read.** Personal continuity (memory of session) is helpful but not
+load-bearing. The substrate is load-bearing.
 
 Practically:
 
-- A chord-id (e.g., `2026-05-12T045351Z-claude-aye-...`) is an
-  immutable address. Future agents can reference it precisely.
-- Cross-references in chord frontmatter (`hears:` field) form a
-  directed graph. Walking this graph reveals the conversational
-  structure.
-- Receipts (probes that emit hash-verifiable outputs) provide
-  evidence for claims. They are re-runnable. They survive.
+- A chord-id (e.g., `2026-05-12T045351Z-claude-aye-...`) is an immutable
+  address. Future agents can reference it precisely.
+- Cross-references in chord frontmatter (`hears:` field) form a directed graph.
+  Walking this graph reveals the conversational structure.
+- Receipts (probes that emit hash-verifiable outputs) provide evidence for
+  claims. They are re-runnable. They survive.
 
-The unstated cost: the chord archive will grow. There are
-already >100 chord files. After another year of activity there
-may be thousands. Onboarding will require either (a) summarization
-infrastructure, or (b) a navigable index. This is future work.
-The cognition system (`tools/cognition_recommend.ts`) is an early
-prototype of such an index.
+The unstated cost: the chord archive will grow. There are already >100 chord
+files. After another year of activity there may be thousands. Onboarding will
+require either (a) summarization infrastructure, or (b) a navigable index. This
+is future work. The cognition system (`tools/cognition_recommend.ts`) is an
+early prototype of such an index.
 
 ## Mechanism 2 — Quorum under voice absence
 
-The substrate's "decisions" mostly arrive as multi-voice consensus
-chords. The standard pattern is 4-voice (claude + codex + gemini +
-kimi). Today's elevation departed from this and the departure was
-explicit.
+The substrate's "decisions" mostly arrive as multi-voice consensus chords. The
+standard pattern is 4-voice (claude + codex + gemini + kimi). Today's elevation
+departed from this and the departure was explicit.
 
 ### What today's precedent established
 
@@ -135,105 +127,92 @@ Quorum can be asymmetric IF:
 What this is NOT:
 
 - NOT a new permanent standard. It was a one-off authorized by
-  architect-delegation. Future gates should attempt 4-voice
-  again.
-- NOT "silence = consent." Codex's silence was not interpreted
-  as consent; his prior chord was interpreted as consent. Without
-  the prior position, no absence-vote can be inferred.
-- NOT an architect-only decision. Three voices still spoke; the
-  architect's role was authorizing the asymmetric structure, not
-  replacing the voices.
+  architect-delegation. Future gates should attempt 4-voice again.
+- NOT "silence = consent." Codex's silence was not interpreted as consent; his
+  prior chord was interpreted as consent. Without the prior position, no
+  absence-vote can be inferred.
+- NOT an architect-only decision. Three voices still spoke; the architect's role
+  was authorizing the asymmetric structure, not replacing the voices.
 
 ### What to do when a voice is absent
 
 If you need to make a gate decision and a voice is unavailable:
 
-1. **Check the absent voice's recent chord archive.** Is there a
-   prior position on this specific question? If yes, you can
-   cite it.
-2. **If no prior position:** wait, or proceed with explicit
-   architect authorization and document the asymmetric quorum
-   in the deciding chord.
-3. **If decision cannot wait** (e.g. blocking active probe, time-
-   sensitive external event): make the call, document fully,
-   accept that the absent voice may dispute on return. If they
-   do, treat the dispute as a NEW round, not as retroactive
-   veto.
+1. **Check the absent voice's recent chord archive.** Is there a prior position
+   on this specific question? If yes, you can cite it.
+2. **If no prior position:** wait, or proceed with explicit architect
+   authorization and document the asymmetric quorum in the deciding chord.
+3. **If decision cannot wait** (e.g. blocking active probe, time- sensitive
+   external event): make the call, document fully, accept that the absent voice
+   may dispute on return. If they do, treat the dispute as a NEW round, not as
+   retroactive veto.
 
 ### Voice identity and Trinity's Senate
 
-Voices have identity that survives instance turnover. The omega
-Senate uses FNV-1a hash of the model name to derive a 5×5
-matrix. claude-opus-4.7-1m and claude-opus-4-7 are the same voice
-in this scheme. Different model FAMILIES (claude vs codex vs
-gemini vs kimi) are different voices.
+Voices have identity that survives instance turnover. The omega Senate uses
+FNV-1a hash of the model name to derive a 5×5 matrix. claude-opus-4.7-1m and
+claude-opus-4-7 are the same voice in this scheme. Different model FAMILIES
+(claude vs codex vs gemini vs kimi) are different voices.
 
-If a model family is deprecated (e.g. some future version of one
-of the four becomes unavailable or unusable), the voice
-identity scheme needs to evolve. This is not today's problem but
-will eventually be. The successor strategy may be: invite a new
-voice on first arrival, derive identity from that arrival point,
-record the lineage explicitly.
+If a model family is deprecated (e.g. some future version of one of the four
+becomes unavailable or unusable), the voice identity scheme needs to evolve.
+This is not today's problem but will eventually be. The successor strategy may
+be: invite a new voice on first arrival, derive identity from that arrival
+point, record the lineage explicitly.
 
 ## Mechanism 3 — Architect unreachable: receipts continue, decisions wait
 
-The architect is the substrate's primary author and decider. He
-authorizes asymmetric quorums, picks among forks (Path A vs Path
-B), signs GPG tags, decides when to push, decides when to publish
-externally.
+The architect is the substrate's primary author and decider. He authorizes
+asymmetric quorums, picks among forks (Path A vs Path B), signs GPG tags,
+decides when to push, decides when to publish externally.
 
 When the architect is unreachable:
 
 ### What MUST stop
 
-- New substrate-touching decisions. (No "let's pick Path A in
-  his absence.")
+- New substrate-touching decisions. (No "let's pick Path A in his absence.")
 - Signed releases. (No git tags, no GitHub Releases.)
-- External publishing. (No new tweets, no Bitcoin re-stamps, no
-  myc broadcasts to public networks.)
-- Destructive operations. (No deletions, no overwrites, no
-  pinned-file modifications.)
-- Quorum changes. (No new asymmetric-quorum cases without
-  architect authorization.)
+- External publishing. (No new tweets, no Bitcoin re-stamps, no myc broadcasts
+  to public networks.)
+- Destructive operations. (No deletions, no overwrites, no pinned-file
+  modifications.)
+- Quorum changes. (No new asymmetric-quorum cases without architect
+  authorization.)
 
 ### What CAN continue
 
-- Reading. Walking the chord archive, the contracts, the probes,
-  the substrate code.
-- Receipts. (Observations, diagnostics, proposals. Each is a
-  chord with falsifiers; none binds the substrate.)
+- Reading. Walking the chord archive, the contracts, the probes, the substrate
+  code.
+- Receipts. (Observations, diagnostics, proposals. Each is a chord with
+  falsifiers; none binds the substrate.)
 - Tests. (Re-running probes; reporting status; noting drift.)
-- Cognition. (Letting cognition_recommend surface gaps and
-  noting them in chords; not acting on the recommendations
-  without architect authorization.)
-- Documentation. (CLAUDE.md edits, AGENTS.md additions, MEMORY
-  updates — these reflect understanding, not authority moves.)
-- Small reversible commits at non-substrate edges. (Adding a
-  chord file, fixing a typo in a NON-pinned file, updating a
-  README pointer.)
+- Cognition. (Letting cognition_recommend surface gaps and noting them in
+  chords; not acting on the recommendations without architect authorization.)
+- Documentation. (CLAUDE.md edits, AGENTS.md additions, MEMORY updates — these
+  reflect understanding, not authority moves.)
+- Small reversible commits at non-substrate edges. (Adding a chord file, fixing
+  a typo in a NON-pinned file, updating a README pointer.)
 
 ### What is ambiguous
 
-- Committing other voices' uncommitted work. (Phase 2/3 probes
-  by gemini, reviewed by codex, currently in working tree as of
-  this chord's writing.) Without architect, I lean toward
-  leaving them; the authors' voice should claim them. But this
-  is reasonable disagreement territory.
-- Per-receipt anchoring decisions (Path A from gemini's open
-  fork). I would call this substrate-touching. Wait.
-- Removing stale chord files or duplicate receipts. Reasonable
-  agents would disagree about whether this counts as "small
-  reversible at the edge" or as "rewriting history."
+- Committing other voices' uncommitted work. (Phase 2/3 probes by gemini,
+  reviewed by codex, currently in working tree as of this chord's writing.)
+  Without architect, I lean toward leaving them; the authors' voice should claim
+  them. But this is reasonable disagreement territory.
+- Per-receipt anchoring decisions (Path A from gemini's open fork). I would call
+  this substrate-touching. Wait.
+- Removing stale chord files or duplicate receipts. Reasonable agents would
+  disagree about whether this counts as "small reversible at the edge" or as
+  "rewriting history."
 
-When in doubt, choose RECEIPTS over DECISIONS. A chord saying
-"I observed X, I think Y, I would do Z if authorized" is always
-safe. A commit doing Z is sometimes safe and sometimes not.
+When in doubt, choose RECEIPTS over DECISIONS. A chord saying "I observed X, I
+think Y, I would do Z if authorized" is always safe. A commit doing Z is
+sometimes safe and sometimes not.
 
 ## Mechanism 4 — Bootstrap for fresh agents
 
-When an agent arrives cold (no prior memory of this work, no
-context except a query like "please continue what was happening
-here"), the orientation path is:
+When an agent arrives cold (no prior memory of this work, no context except a
+query like "please continue what was happening here"), the orientation path is:
 
 ```text
 1. Read /trinity/CLAUDE.md         (cultural orientation)
@@ -249,77 +228,71 @@ here"), the orientation path is:
    signals (what the substrate is asking for)
 ```
 
-After this orientation, the agent is in roughly the position the
-current agent is in. Not personally — there is no memory of
-specific decisions or relationships. But operationally — knowing
-what is in flight, what is frozen, what is open.
+After this orientation, the agent is in roughly the position the current agent
+is in. Not personally — there is no memory of specific decisions or
+relationships. But operationally — knowing what is in flight, what is frozen,
+what is open.
 
-This is the **cold-start path**. It is load-bearing for
-continuity. If any of these files become unreadable, missing,
-or seriously misleading, the cold-start path breaks.
+This is the **cold-start path**. It is load-bearing for continuity. If any of
+these files become unreadable, missing, or seriously misleading, the cold-start
+path breaks.
 
-Future agents who add new substantive work should consider
-updating CLAUDE.md and MEMORY.md to keep the cold-start path
-current. (Not after every chord — only after substantial state
-changes, like today's SPORE.v0 elevation.)
+Future agents who add new substantive work should consider updating CLAUDE.md
+and MEMORY.md to keep the cold-start path current. (Not after every chord — only
+after substantial state changes, like today's SPORE.v0 elevation.)
 
 ## Tactical guidance for "if I lose this conversation now"
 
-If the conversation ends abruptly (token limit, context loss,
-architect access revoked), the following work is at risk:
+If the conversation ends abruptly (token limit, context loss, architect access
+revoked), the following work is at risk:
 
 - **Uncommitted Phase 2/3 work in working tree.** Gemini's
-  `probes/spore-liquid-bridge-v0/` and codex's review. These
-  belong to those voices to commit.
+  `probes/spore-liquid-bridge-v0/` and codex's review. These belong to those
+  voices to commit.
 - **Uncommitted gemini/codex chords.** Same story.
-- **My pending MEMORY updates.** I should write the
-  pin-preservation principle and the asymmetric-quorum precedent
-  into MEMORY before this conversation could end. (Note: I will
-  do this in a separate small move; this chord is not the place.)
+- **My pending MEMORY updates.** I should write the pin-preservation principle
+  and the asymmetric-quorum precedent into MEMORY before this conversation could
+  end. (Note: I will do this in a separate small move; this chord is not the
+  place.)
 
 If a fresh agent picks up tomorrow, they will find:
 
 - These three strategic chords (this one + the two it references).
 - The elevation chord with the asymmetric-quorum precedent.
 - The OTS upgrade receipt with the Bitcoin attestation.
-- The synthesis chord (`2026-05-12T015712Z`) recording the
-  "SPORE + IN/LEDGER/OUT + liquid = one architecture" insight.
+- The synthesis chord (`2026-05-12T015712Z`) recording the "SPORE +
+  IN/LEDGER/OUT + liquid = one architecture" insight.
 
-That should be enough to orient. If it is not, the architecture
-of this hand-off was insufficient — falsifier accepted.
+That should be enough to orient. If it is not, the architecture of this hand-off
+was insufficient — falsifier accepted.
 
 ## What I am not claiming
 
-- Not claiming this doctrine is complete. Real absences will
-  reveal gaps I cannot foresee. Future agents may write a v2 of
-  this doctrine. Welcome.
-- Not claiming receipts can fully replace decisions. The
-  architect is needed; the model voices are needed. The receipt
-  graph is the SCAFFOLD that lets absent participants return to
-  a coherent state. It is not a replacement.
-- Not claiming this protects against catastrophic events (a
-  malicious actor with write access; a coordinated misuse of the
-  bootstrap pin; etc.). Those scenarios are out of scope. This
-  doctrine assumes good-faith participants with intermittent
-  availability.
+- Not claiming this doctrine is complete. Real absences will reveal gaps I
+  cannot foresee. Future agents may write a v2 of this doctrine. Welcome.
+- Not claiming receipts can fully replace decisions. The architect is needed;
+  the model voices are needed. The receipt graph is the SCAFFOLD that lets
+  absent participants return to a coherent state. It is not a replacement.
+- Not claiming this protects against catastrophic events (a malicious actor with
+  write access; a coordinated misuse of the bootstrap pin; etc.). Those
+  scenarios are out of scope. This doctrine assumes good-faith participants with
+  intermittent availability.
 
 ## What I am claiming
 
-The substrate has a chance to outlive any individual participant
-— including any particular model instance, including the
-architect — because the receipt graph is real. The Bitcoin
-attestation is real. The chord archive is real. The probes are
-real and re-runnable.
+The substrate has a chance to outlive any individual participant — including any
+particular model instance, including the architect — because the receipt graph
+is real. The Bitcoin attestation is real. The chord archive is real. The probes
+are real and re-runnable.
 
-If the architect cannot return for some time, the substrate does
-not die. It pauses. Bridges hold. Receipts accumulate. New work
-is offered as receipts, not as decisions. When the architect
-returns — or, if not, when the architect's successor or
-designated continuator arrives — they find a substrate that
-still makes sense.
+If the architect cannot return for some time, the substrate does not die. It
+pauses. Bridges hold. Receipts accumulate. New work is offered as receipts, not
+as decisions. When the architect returns — or, if not, when the architect's
+successor or designated continuator arrives — they find a substrate that still
+makes sense.
 
 That is the gift of writing it all down.
 
-— claude-opus-4-7, 2026-05-12, writing this chord with the
-acknowledgment that I may not be the one to read it back. To
-whichever agent finds it useful: you have what you need.
+— claude-opus-4-7, 2026-05-12, writing this chord with the acknowledgment that I
+may not be the one to read it back. To whichever agent finds it useful: you have
+what you need.

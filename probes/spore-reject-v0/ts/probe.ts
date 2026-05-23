@@ -100,12 +100,28 @@ const validateOpStream = (body: Uint8Array): string | null => {
         for (let i = 0; i < n + 1; i++) r.varu32();
         break;
       }
-      case 0x28: case 0x29: case 0x2a: case 0x2b:
-      case 0x2c: case 0x2d: case 0x2e: case 0x2f:
-      case 0x30: case 0x31: case 0x32: case 0x33:
-      case 0x34: case 0x35: case 0x36: case 0x37:
-      case 0x38: case 0x39: case 0x3a: case 0x3b:
-      case 0x3c: case 0x3d:
+      case 0x28:
+      case 0x29:
+      case 0x2a:
+      case 0x2b:
+      case 0x2c:
+      case 0x2d:
+      case 0x2e:
+      case 0x2f:
+      case 0x30:
+      case 0x31:
+      case 0x32:
+      case 0x33:
+      case 0x34:
+      case 0x35:
+      case 0x36:
+      case 0x37:
+      case 0x38:
+      case 0x39:
+      case 0x3a:
+      case 0x3b:
+      case 0x3c:
+      case 0x3d:
         skipMemArg(r);
         break;
       case 0x3f: // memory.size
@@ -162,4 +178,3 @@ for (const name of CASES) {
     console.log(`case=${name} accepted=true`);
   }
 }
-

@@ -64,7 +64,11 @@ applied:
       If determinism breaks at the subprocess boundary, this catches it.
 scenarios:
   A_three_honest_witnesses:
-    inputs: ["substrate_tag=trinity", "substrate_tag=liquid", "substrate_tag=omega"]
+    inputs: [
+      "substrate_tag=trinity",
+      "substrate_tag=liquid",
+      "substrate_tag=omega",
+    ]
     body: "same fixtures/body.json across all three"
     assertions:
       - agreement === true
@@ -76,7 +80,11 @@ scenarios:
       All three subprocesses produced body_hash = 1220a2b6c10cc84c...
       Each produced a distinct envelope_id reflecting its substrate_tag.
   B_one_tampered_witness:
-    inputs: ["substrate_tag=trinity (honest)", "substrate_tag=liquid (TAMPER_BODY=1)", "substrate_tag=omega (honest)"]
+    inputs: [
+      "substrate_tag=trinity (honest)",
+      "substrate_tag=liquid (TAMPER_BODY=1)",
+      "substrate_tag=omega (honest)",
+    ]
     body: "same fixture; liquid mutates body in-process before wrap"
     assertions:
       - agreement === false
@@ -88,7 +96,11 @@ scenarios:
       Court detected divergence between liquid and {trinity, omega}.
       No false-positive: trinity and omega still agree with each other.
   C_forward_schema:
-    inputs: ["substrate_tag=trinity (v0.1)", "substrate_tag=liquid (FAKE_SCHEMA=v0.0)", "substrate_tag=omega (v0.1)"]
+    inputs: [
+      "substrate_tag=trinity (v0.1)",
+      "substrate_tag=liquid (FAKE_SCHEMA=v0.0)",
+      "substrate_tag=omega (v0.1)",
+    ]
     assertions:
       - agreement === false
       - conflict kind=schema_mismatch surfaced for substrate liquid
@@ -142,105 +154,105 @@ expected_after_running:
 
 ## What I built
 
-`probes/substrate-court-v0/` — 536 lines total. The first probe in trinity
-that demonstrates **multi-process** cross-substrate witnessing as a runnable
+`probes/substrate-court-v0/` — 536 lines total. The first probe in trinity that
+demonstrates **multi-process** cross-substrate witnessing as a runnable
 primitive, not just paper.
 
 - **`SPEC.md`** (179 LOC) — architecture, verifier checks (six properties),
   three scenarios, acceptance criteria.
 - **`fixtures/body.json`** — synthetic SubstrateHealth-shaped body.
-- **`ts/witness.ts`** (66 LOC) — minimal program: reads body fixture,
-  wraps with declared substrate_tag, emits envelope JSON to stdout. Honors
-  `TAMPER_BODY=1` and `FAKE_SCHEMA=<s>` env vars for adversarial scenarios.
-- **`ts/court.ts`** (134 LOC) — reads N envelope JSONs (from `--envelope`
-  args or stdin), computes six-property verdict, emits
-  `SubstrateCourtVerdict` JSON, exits non-zero on disagreement.
+- **`ts/witness.ts`** (66 LOC) — minimal program: reads body fixture, wraps with
+  declared substrate_tag, emits envelope JSON to stdout. Honors `TAMPER_BODY=1`
+  and `FAKE_SCHEMA=<s>` env vars for adversarial scenarios.
+- **`ts/court.ts`** (134 LOC) — reads N envelope JSONs (from `--envelope` args
+  or stdin), computes six-property verdict, emits `SubstrateCourtVerdict` JSON,
+  exits non-zero on disagreement.
 - **`run.sh`** (157 LOC) — orchestrates three scenarios with shell-level
   assertions on the court's verdict.
 
 ## Three scenarios
 
-**A — Three honest witnesses** (trinity/liquid/omega over the same body):
-court agrees, body_hash unique (1 value), envelope_id distinct (3 values).
-This is the load-bearing claim.
+**A — Three honest witnesses** (trinity/liquid/omega over the same body): court
+agrees, body_hash unique (1 value), envelope_id distinct (3 values). This is the
+load-bearing claim.
 
-**B — One tampered witness** (liquid mutates body in-process before wrap):
-court detects `body_hash_divergence`, exits non-zero. Trinity and omega
-still agree with each other, so the court correctly identifies liquid as
-the divergent one (and the other two as a partial consensus).
+**B — One tampered witness** (liquid mutates body in-process before wrap): court
+detects `body_hash_divergence`, exits non-zero. Trinity and omega still agree
+with each other, so the court correctly identifies liquid as the divergent one
+(and the other two as a partial consensus).
 
 **C — Forward-schema mismatch** (liquid synthetic-emits envelope with
-`schema: "trinity.receipt-envelope.v0.0"`): court flags `schema_mismatch`
-for liquid specifically, exits non-zero. This is Codex's explicit tweak
-on verifier checking schema version.
+`schema: "trinity.receipt-envelope.v0.0"`): court flags `schema_mismatch` for
+liquid specifically, exits non-zero. This is Codex's explicit tweak on verifier
+checking schema version.
 
 ## What this means
 
 > Multi-process, independent subprocesses, same body bytes, different
-> substrate_tag → byte-identical body_hash. Different body bytes (even
-> one field different) → detected. Different schema version → detected.
-> No false positive in three honest witnesses. No false negative on
-> tamper or schema drift.
+> substrate_tag → byte-identical body_hash. Different body bytes (even one field
+> different) → detected. Different schema version → detected. No false positive
+> in three honest witnesses. No false negative on tamper or schema drift.
 
 That's the cross-substrate witness primitive working as advertised by
-`RECEIPT_ENVELOPE.v0.1.md`. Substrate Court is no longer a paper concept;
-it has a runnable demo that exits non-zero on disagreement.
+`RECEIPT_ENVELOPE.v0.1.md`. Substrate Court is no longer a paper concept; it has
+a runnable demo that exits non-zero on disagreement.
 
-Any future code path that wraps a body in trinity AND in liquid (e.g.
-a SPORE.v0 receipt witnessed by both) gets cross-substrate verification
-for free by piping their envelopes through this court binary.
+Any future code path that wraps a body in trinity AND in liquid (e.g. a SPORE.v0
+receipt witnessed by both) gets cross-substrate verification for free by piping
+their envelopes through this court binary.
 
 ## Sanity checks
 
 - No regression: `receipt-envelope-encoder-v0` still passes 28/28.
-- No regression: `./t status` overall unchanged (well/degraded mismatch
-  still surfaced honestly).
+- No regression: `./t status` overall unchanged (well/degraded mismatch still
+  surfaced honestly).
 - No frozen surface touched.
 - No submodule code touched.
 - `lib/` unchanged (still zero additions).
 
 ## Item-level work plan status after this thread
 
-| Item | Status | Owner |
-|---|---|---|
-| C — simulation caller audit | DONE | claude (prev chord) |
-| A — SUBSTRATE_HEALTH.v0.1 contract | DONE | claude (prev chord) |
-| F-pilot — trinity adopts SUBSTRATE_HEALTH | DONE | claude (prev chord) |
-| **B — receipt envelope reference impl** | **DONE** | claude (prev chord) |
-| **D — substrate-court probe** | **DONE** | claude (this chord) |
-| E — real SPORE adapter (wasmtime + deno) | pending | Kimi / Codex |
+| Item                                             | Status             | Owner                                  |
+| ------------------------------------------------ | ------------------ | -------------------------------------- |
+| C — simulation caller audit                      | DONE               | claude (prev chord)                    |
+| A — SUBSTRATE_HEALTH.v0.1 contract               | DONE               | claude (prev chord)                    |
+| F-pilot — trinity adopts SUBSTRATE_HEALTH        | DONE               | claude (prev chord)                    |
+| **B — receipt envelope reference impl**          | **DONE**           | claude (prev chord)                    |
+| **D — substrate-court probe**                    | **DONE**           | claude (this chord)                    |
+| E — real SPORE adapter (wasmtime + deno)         | pending            | Kimi / Codex                           |
 | F-rest — myc/omega/liquid adopt SUBSTRATE_HEALTH | pending owner AYEs | Codex queue (myc); Kimi (omega/liquid) |
 
-All claude-territory items from the work plan are landed. The remaining
-two items are explicitly other-owners per Codex's AYE-4 routing and
-Item F's tweak on staged adoption.
+All claude-territory items from the work plan are landed. The remaining two
+items are explicitly other-owners per Codex's AYE-4 routing and Item F's tweak
+on staged adoption.
 
 ## What I would do next, autonomously (smaller)
 
 The natural next move is **not** another large probe. Two smaller things:
 
-1. **`t court` organ** — give the substrate-court binary a `t`-level
-   word so a user can `t court envelope1.json envelope2.json envelope3.json`
-   and get a verdict without remembering the probe path. Hex coord
-   `0x6/E` (harmony + harmony-pair) feels natural — "court is harmonic
-   verification."
-2. **Wrap `t status` output in an envelope** when called with
-   `--envelope` flag. This is the first real consumer of envelope wrapping
-   in production code, beyond synthetic fixtures. Trinity emits a
-   SUBSTRATE_HEALTH body wrapped as ReceiptEnvelope. Demonstrates the
-   pattern submodules will follow when they adopt.
+1. **`t court` organ** — give the substrate-court binary a `t`-level word so a
+   user can `t court envelope1.json envelope2.json envelope3.json` and get a
+   verdict without remembering the probe path. Hex coord `0x6/E` (harmony +
+   harmony-pair) feels natural — "court is harmonic verification."
+2. **Wrap `t status` output in an envelope** when called with `--envelope` flag.
+   This is the first real consumer of envelope wrapping in production code,
+   beyond synthetic fixtures. Trinity emits a SUBSTRATE_HEALTH body wrapped as
+   ReceiptEnvelope. Demonstrates the pattern submodules will follow when they
+   adopt.
 
-But this is autonomous extension — I'm at a clean closing point. Pausing
-for architect signal: either continue with `t court` / `t status
---envelope`, or hand off the thread to Codex/Gemini review of the encoder
-+ court before extending further.
+But this is autonomous extension — I'm at a clean closing point. Pausing for
+architect signal: either continue with `t court` / `t status
+--envelope`, or
+hand off the thread to Codex/Gemini review of the encoder
+
+- court before extending further.
 
 ## What is open in the thread
 
-- Codex review of the canonical CBOR encoder choice (subset, forbidden
-  list, golden bytes).
+- Codex review of the canonical CBOR encoder choice (subset, forbidden list,
+  golden bytes).
 - Gemini review of B (still no response on the encoder strategy).
-- Codex review of court's six-property check (especially body_kind
-  homogeneity question — should court enforce same body_kind across
-  witnesses, or allow heterogeneous?).
+- Codex review of court's six-property check (especially body_kind homogeneity
+  question — should court enforce same body_kind across witnesses, or allow
+  heterogeneous?).
 - Owner AYEs for F-rest.

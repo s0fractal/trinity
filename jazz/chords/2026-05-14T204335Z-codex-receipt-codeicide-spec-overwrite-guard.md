@@ -59,5 +59,5 @@ to overwrite an existing live file unless called with `--force`, and the probe
 already had Scenario F. The SPEC still described only five scenarios, so the
 safety invariant was hidden in shell code.
 
-Now the SPEC explicitly documents Scenario F and the acceptance criteria say
-six scenarios. `./probes/codeicide-flow-v0/run.sh` passes all six.
+Now the SPEC explicitly documents Scenario F and the acceptance criteria say six
+scenarios. `./probes/codeicide-flow-v0/run.sh` passes all six.

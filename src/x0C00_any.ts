@@ -50,7 +50,7 @@ if (import.meta.main) {
   }
 
   const resolved = await Promise.all(
-    steps.map(async (name) => ({ name, pos: await resolve(name) }))
+    steps.map(async (name) => ({ name, pos: await resolve(name) })),
   );
 
   const unknown = resolved.filter((r) => r.pos === null);
@@ -65,7 +65,7 @@ if (import.meta.main) {
   // Run all in parallel — we still wait for all to settle,
   // but we record which succeeded first (by array order as tie-break).
   const results = await Promise.all(
-    resolved.map((r) => runStep(r.pos!))
+    resolved.map((r) => runStep(r.pos!)),
   );
 
   let firstSuccessIndex = -1;
@@ -86,7 +86,9 @@ if (import.meta.main) {
     overall: firstSuccessIndex >= 0 ? "passed" : "failed",
     results,
     note: firstSuccessIndex >= 0
-      ? `First success at ${steps[firstSuccessIndex]} (index ${firstSuccessIndex})`
+      ? `First success at ${
+        steps[firstSuccessIndex]
+      } (index ${firstSuccessIndex})`
       : `All ${steps.length} steps failed`,
     topology: "any(a, b, ...) = first ok in parallel set",
   };

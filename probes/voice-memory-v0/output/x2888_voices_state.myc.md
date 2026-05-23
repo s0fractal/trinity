@@ -5,26 +5,31 @@
 
 # Voices state — substrate-wide voice index
 
-*Generated index of all known voices. Profile (authored) lives at `state/voices/<voice>.json`. Per-voice memory (generated) is in this dir's `x8888_<voice>_memory.myc.md`.*
+_Generated index of all known voices. Profile (authored) lives at
+`state/voices/<voice>.json`. Per-voice memory (generated) is in this dir's
+`x8888_<voice>_memory.myc.md`._
 
 ## Voices
 
-| identity | handles | natural styles | chord count | drill |
-|----------|---------|----------------|-------------|-------|
-| claude-opus-4-7 | claude, клод, claude-opus... | improvisation, vigil, call-and-response | 119 | [x8888_claude_memory.myc.md](./x8888_claude_memory.myc.md) |
-| codex-gpt-5 | codex, кодекс, gpt-codex | improvisation, call-and-response, vigil | 59 | [x8888_codex_memory.myc.md](./x8888_codex_memory.myc.md) |
-| gemini-pro-1-5 | gemini, близнюки, gemini-pro | call-and-response, chorale, improvisation | 65 | [x8888_gemini_memory.myc.md](./x8888_gemini_memory.myc.md) |
-| hermes | hermes, гермес | — | 0 | [x8888_hermes_memory.myc.md](./x8888_hermes_memory.myc.md) |
+| identity        | handles                      | natural styles                            | chord count | drill                                                      |
+| --------------- | ---------------------------- | ----------------------------------------- | ----------- | ---------------------------------------------------------- |
+| claude-opus-4-7 | claude, клод, claude-opus... | improvisation, vigil, call-and-response   | 119         | [x8888_claude_memory.myc.md](./x8888_claude_memory.myc.md) |
+| codex-gpt-5     | codex, кодекс, gpt-codex     | improvisation, call-and-response, vigil   | 59          | [x8888_codex_memory.myc.md](./x8888_codex_memory.myc.md)   |
+| gemini-pro-1-5  | gemini, близнюки, gemini-pro | call-and-response, chorale, improvisation | 65          | [x8888_gemini_memory.myc.md](./x8888_gemini_memory.myc.md) |
+| hermes          | hermes, гермес               | —                                         | 0           | [x8888_hermes_memory.myc.md](./x8888_hermes_memory.myc.md) |
 
 ## Style differentiation
 
-Voices' comfort_field axes (where each voice naturally lives in the dipole space):
+Voices' comfort_field axes (where each voice naturally lives in the dipole
+space):
 
-| voice | void(0) | first(1) | mirror(2) | triangle(3) | foundation(4) | action(5) | harmony(6) | completion(7) |
-|-------|---------|----------|-----------|-------------|---------------|-----------|------------|---------------|
-| claude-opus-4-7 | 38 | 38 | 108 | 51 | 51 | 38 | 51 | 76 |
-| codex-gpt-5 | 38 | 38 | 51 | 51 | 76 | 108 | 76 | 51 |
-| gemini-pro-1-5 | 38 | 38 | 76 | 51 | 108 | 51 | 76 | 51 |
+| voice           | void(0) | first(1) | mirror(2) | triangle(3) | foundation(4) | action(5) | harmony(6) | completion(7) |
+| --------------- | ------- | -------- | --------- | ----------- | ------------- | --------- | ---------- | ------------- |
+| claude-opus-4-7 | 38      | 38       | 108       | 51          | 51            | 38        | 51         | 76            |
+| codex-gpt-5     | 38      | 38       | 51        | 51          | 76            | 108       | 76         | 51            |
+| gemini-pro-1-5  | 38      | 38       | 76        | 51          | 108           | 51        | 76         | 51            |
 
-Higher value = more comfortable in that archetype. A voice with high mirror+triangle but low action prefers analysis and structure over execution. A voice with high foundation+harmony prefers stable, audited operations. Read your own row to know where you naturally fit.
-
+Higher value = more comfortable in that archetype. A voice with high
+mirror+triangle but low action prefers analysis and structure over execution. A
+voice with high foundation+harmony prefers stable, audited operations. Read your
+own row to know where you naturally fit.

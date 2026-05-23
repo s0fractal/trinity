@@ -37,7 +37,11 @@
 // Glossary words: recipes, workflows, templates, sequences,
 //                 рецепти, потоки-роботи, шаблони, послідовності
 
-import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
+import {
+  dirname,
+  fromFileUrl,
+  join,
+} from "https://deno.land/std@0.224.0/path/mod.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
@@ -108,11 +112,14 @@ if (import.meta.main) {
 
   if (args[0] === "show" && args[1]) {
     const target = args[1].toLowerCase();
-    const r = recipes.find((r) =>
-      r.id.toLowerCase().includes(target)
-    );
+    const r = recipes.find((r) => r.id.toLowerCase().includes(target));
     if (!r) {
-      console.log(JSON.stringify({ type: "error", message: `unknown recipe: ${args[1]}` }));
+      console.log(
+        JSON.stringify({
+          type: "error",
+          message: `unknown recipe: ${args[1]}`,
+        }),
+      );
       Deno.exit(1);
     }
     if (wantJson) {
@@ -133,8 +140,18 @@ if (import.meta.main) {
       total: recipes.length,
     },
     recipes,
-    synonyms: ["recipes", "workflows", "templates", "sequences", "рецепти", "потоки-роботи", "шаблони", "послідовності"],
-    topology: "live projection from ledger records; templates compose existing t/workflow steps into sequences",
+    synonyms: [
+      "recipes",
+      "workflows",
+      "templates",
+      "sequences",
+      "рецепти",
+      "потоки-роботи",
+      "шаблони",
+      "послідовності",
+    ],
+    topology:
+      "live projection from ledger records; templates compose existing t/workflow steps into sequences",
   };
 
   if (wantJson) {

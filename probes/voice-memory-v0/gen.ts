@@ -31,7 +31,12 @@
 //
 // Run: deno run --config=probe.jsonc -A gen.ts [--voice=kimi] [--stable]
 
-import { dirname, fromFileUrl, join, relative } from "https://deno.land/std@0.224.0/path/mod.ts";
+import {
+  dirname,
+  fromFileUrl,
+  join,
+  relative,
+} from "https://deno.land/std@0.224.0/path/mod.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const TRINITY_ROOT = join(HERE, "..", "..");
@@ -53,8 +58,8 @@ const FRONTMATTER_RE = /^---\r?\n([\s\S]*?)\r?\n---/;
 
 interface Chord {
   filename: string;
-  ts: string;           // raw filename ts (block-height string OR wallclock)
-  sort_key: number;     // unified epoch-seconds chronological sort (Codex P2 fix)
+  ts: string; // raw filename ts (block-height string OR wallclock)
+  sort_key: number; // unified epoch-seconds chronological sort (Codex P2 fix)
   voice: string;
   topic: string;
   mode: string | null;
@@ -92,7 +97,9 @@ async function gitTrackedSet(subdir: string): Promise<Set<string>> {
     });
     const out = await proc.output();
     if (out.code !== 0) return new Set();
-    return new Set(new TextDecoder().decode(out.stdout).trim().split("\n").filter(Boolean));
+    return new Set(
+      new TextDecoder().decode(out.stdout).trim().split("\n").filter(Boolean),
+    );
   } catch {
     return new Set();
   }
@@ -121,7 +128,9 @@ function parseArgs(argv: string[]): Args {
   const out: Args = { voice: null, stable: false };
   for (const a of argv) {
     if (a === "--stable") out.stable = true;
-    else if (a.startsWith("--voice=")) out.voice = a.split("=")[1].toLowerCase();
+    else if (a.startsWith("--voice=")) {
+      out.voice = a.split("=")[1].toLowerCase();
+    }
   }
   return out;
 }
@@ -130,7 +139,9 @@ async function sha256Hex(bytes: Uint8Array): Promise<string> {
   const copy = new Uint8Array(bytes.byteLength);
   copy.set(bytes);
   const buf = await crypto.subtle.digest("SHA-256", copy.buffer);
-  return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
+  return Array.from(new Uint8Array(buf)).map((b) =>
+    b.toString(16).padStart(2, "0")
+  ).join("");
 }
 
 async function loadVoices(): Promise<VoiceProfile[]> {
@@ -143,7 +154,9 @@ async function loadVoices(): Promise<VoiceProfile[]> {
     if (!entry.isFile || !entry.name.endsWith(".json")) continue;
     const relPath = `state/voices/${entry.name}`;
     if (!tracked.has(relPath)) {
-      console.warn(`  ⚠️  skipping untracked voice profile ${relPath} (not in git ls-files); add to repo to include in generated memory`);
+      console.warn(
+        `  ⚠️  skipping untracked voice profile ${relPath} (not in git ls-files); add to repo to include in generated memory`,
+      );
       continue;
     }
     const path = join(VOICES_DIR, entry.name);
@@ -166,7 +179,9 @@ async function loadVoices(): Promise<VoiceProfile[]> {
         raw,
       });
     } catch (e) {
-      console.warn(`failed to parse ${entry.name}: ${e instanceof Error ? e.message : e}`);
+      console.warn(
+        `failed to parse ${entry.name}: ${e instanceof Error ? e.message : e}`,
+      );
     }
   }
   return out.sort((a, b) => a.identity.localeCompare(b.identity));
@@ -259,19 +274,29 @@ async function loadChords(): Promise<Chord[]> {
     });
   }
   if (skipped > 0) {
-    console.warn(`  ⚠️  skipped ${skipped} untracked chord(s) in jazz/chords/ (not in git ls-files); committed output reflects only the tracked set`);
+    console.warn(
+      `  ⚠️  skipped ${skipped} untracked chord(s) in jazz/chords/ (not in git ls-files); committed output reflects only the tracked set`,
+    );
   }
   return out.sort((a, b) => a.sort_key - b.sort_key);
 }
 
-interface SourceFile { path: string; hash: string; size: number; }
+interface SourceFile {
+  path: string;
+  hash: string;
+  size: number;
+}
 
 function canonicalManifest(files: SourceFile[]): string {
-  return JSON.stringify(files.slice().sort((a, b) => a.path.localeCompare(b.path)));
+  return JSON.stringify(
+    files.slice().sort((a, b) => a.path.localeCompare(b.path)),
+  );
 }
 
 async function manifestHash(files: SourceFile[]): Promise<string> {
-  return `sha256:${await sha256Hex(new TextEncoder().encode(canonicalManifest(files)))}`;
+  return `sha256:${await sha256Hex(
+    new TextEncoder().encode(canonicalManifest(files)),
+  )}`;
 }
 
 function voiceSourceFile(voice: VoiceProfile): SourceFile {
@@ -293,34 +318,59 @@ function chordSourceFile(chord: Chord): SourceFile {
 function renderVoiceMemory(
   voice: VoiceProfile,
   chords: Chord[],
-  receipts: { generated_at: string | null; manifest_hash: string; source_files: number },
+  receipts: {
+    generated_at: string | null;
+    manifest_hash: string;
+    source_files: number;
+  },
 ): string {
-  const proposals = chords.filter((c) => c.mode === "proposal" || c.stance === "PROPOSE");
-  const cowitness = chords.filter((c) => c.mode === "cowitness" || /AYE|NAY|TWEAK/.test(c.stance ?? ""));
-  const receiptsChords = chords.filter((c) => c.mode === "receipt" || c.stance === "RECEIPT");
+  const proposals = chords.filter((c) =>
+    c.mode === "proposal" || c.stance === "PROPOSE"
+  );
+  const cowitness = chords.filter((c) =>
+    c.mode === "cowitness" || /AYE|NAY|TWEAK/.test(c.stance ?? "")
+  );
+  const receiptsChords = chords.filter((c) =>
+    c.mode === "receipt" || c.stance === "RECEIPT"
+  );
   const observations = chords.filter((c) => c.mode === "observation");
   const other = chords.filter((c) =>
-    !proposals.includes(c) && !cowitness.includes(c) && !receiptsChords.includes(c) && !observations.includes(c)
+    !proposals.includes(c) && !cowitness.includes(c) &&
+    !receiptsChords.includes(c) && !observations.includes(c)
   );
 
   const lines: string[] = [];
-  lines.push(`<!-- AUTO-GENERATED by probes/voice-memory-v0/gen.ts — do not edit by hand. -->`);
-  if (receipts.generated_at) lines.push(`<!-- generated_at: ${receipts.generated_at} -->`);
+  lines.push(
+    `<!-- AUTO-GENERATED by probes/voice-memory-v0/gen.ts — do not edit by hand. -->`,
+  );
+  if (receipts.generated_at) {
+    lines.push(`<!-- generated_at: ${receipts.generated_at} -->`);
+  }
   lines.push(`<!-- source_manifest_hash: ${receipts.manifest_hash} -->`);
   lines.push(`<!-- source_files: ${receipts.source_files} -->`);
   lines.push(`<!-- voice: ${voice.identity}   chords: ${chords.length} -->`);
   lines.push(``);
-  lines.push(`# ${voice.identity} — memory digest (generated stigmergy projection)`);
+  lines.push(
+    `# ${voice.identity} — memory digest (generated stigmergy projection)`,
+  );
   lines.push(``);
-  lines.push(`*This is a recall projection auto-generated from source artifacts. Voice profile lives at \`state/voices/${voice.filename}\` (authored, identity). This file is "what you left behind in substrate" — read it on session start to recover continuity.*`);
+  lines.push(
+    `*This is a recall projection auto-generated from source artifacts. Voice profile lives at \`state/voices/${voice.filename}\` (authored, identity). This file is "what you left behind in substrate" — read it on session start to recover continuity.*`,
+  );
   lines.push(``);
 
   // Profile section
   lines.push(`## Profile (from voice record)`);
   lines.push(``);
   lines.push(`- **handles:** ${voice.handles.join(", ")}`);
-  if (voice.natural_styles) lines.push(`- **natural styles:** ${voice.natural_styles.join(", ")}`);
-  if (voice.uncomfortable_styles) lines.push(`- **uncomfortable styles:** ${voice.uncomfortable_styles.join(", ")}`);
+  if (voice.natural_styles) {
+    lines.push(`- **natural styles:** ${voice.natural_styles.join(", ")}`);
+  }
+  if (voice.uncomfortable_styles) {
+    lines.push(
+      `- **uncomfortable styles:** ${voice.uncomfortable_styles.join(", ")}`,
+    );
+  }
   if (voice.telos_filters && voice.telos_filters.length > 0) {
     lines.push(`- **telos filters:** ${voice.telos_filters.join(", ")}`);
   }
@@ -357,7 +407,9 @@ function renderVoiceMemory(
       const coord = c.bucket_coord ? ` x${c.bucket_coord}` : "";
       lines.push(`- \`${c.filename}\`${coord}${stance} — ${c.topic}`);
     }
-    if (proposals.length > 15) lines.push(`- ... and ${proposals.length - 15} earlier`);
+    if (proposals.length > 15) {
+      lines.push(`- ... and ${proposals.length - 15} earlier`);
+    }
     lines.push(``);
   }
 
@@ -368,14 +420,18 @@ function renderVoiceMemory(
   if (cowitness.length > 0) {
     lines.push(`## Cowitness chords authored — "when I cosigned others' work"`);
     lines.push(``);
-    lines.push(`> v0 scope: chords with \`mode: cowitness\` or \`stance: AYE|NAY|TWEAK\` authored by this voice. Does NOT yet scan others' chords for references to this voice in their witness_chain (deferred to v1).`);
+    lines.push(
+      `> v0 scope: chords with \`mode: cowitness\` or \`stance: AYE|NAY|TWEAK\` authored by this voice. Does NOT yet scan others' chords for references to this voice in their witness_chain (deferred to v1).`,
+    );
     lines.push(``);
     for (const c of cowitness.slice(-15).reverse()) {
       const stance = c.stance ? ` [${c.stance}]` : "";
       const coord = c.bucket_coord ? ` x${c.bucket_coord}` : "";
       lines.push(`- \`${c.filename}\`${coord}${stance} — ${c.topic}`);
     }
-    if (cowitness.length > 15) lines.push(`- ... and ${cowitness.length - 15} earlier`);
+    if (cowitness.length > 15) {
+      lines.push(`- ... and ${cowitness.length - 15} earlier`);
+    }
     lines.push(``);
   }
 
@@ -416,16 +472,24 @@ function renderVoiceMemory(
   lines.push(``);
   lines.push(`Based on voice profile:`);
   if (voice.natural_styles) {
-    lines.push(`- Lean into natural styles: **${voice.natural_styles.join(", ")}**`);
+    lines.push(
+      `- Lean into natural styles: **${voice.natural_styles.join(", ")}**`,
+    );
   }
   if (voice.telos_filters && voice.telos_filters.length > 0) {
     lines.push(`- Respect telos filters: ${voice.telos_filters.join(", ")}`);
   }
   if (voice.uncomfortable_styles) {
-    lines.push(`- Avoid forced moves: ${voice.uncomfortable_styles.join(", ")} (uncomfortable)`);
+    lines.push(
+      `- Avoid forced moves: ${
+        voice.uncomfortable_styles.join(", ")
+      } (uncomfortable)`,
+    );
   }
   lines.push(``);
-  lines.push(`If chord trail's most recent topic is unresolved, that's likely the next vector. Otherwise consult \`t status\` + \`t gravity\` for substrate-current signals.`);
+  lines.push(
+    `If chord trail's most recent topic is unresolved, that's likely the next vector. Otherwise consult \`t status\` + \`t gravity\` for substrate-current signals.`,
+  );
   lines.push(``);
 
   return lines.join("\n");
@@ -434,18 +498,28 @@ function renderVoiceMemory(
 function renderVoicesState(
   voices: VoiceProfile[],
   chordsByVoice: Map<string, Chord[]>,
-  receipts: { generated_at: string | null; manifest_hash: string; source_files: number },
+  receipts: {
+    generated_at: string | null;
+    manifest_hash: string;
+    source_files: number;
+  },
 ): string {
   const lines: string[] = [];
-  lines.push(`<!-- AUTO-GENERATED by probes/voice-memory-v0/gen.ts — do not edit by hand. -->`);
-  if (receipts.generated_at) lines.push(`<!-- generated_at: ${receipts.generated_at} -->`);
+  lines.push(
+    `<!-- AUTO-GENERATED by probes/voice-memory-v0/gen.ts — do not edit by hand. -->`,
+  );
+  if (receipts.generated_at) {
+    lines.push(`<!-- generated_at: ${receipts.generated_at} -->`);
+  }
   lines.push(`<!-- source_manifest_hash: ${receipts.manifest_hash} -->`);
   lines.push(`<!-- source_files: ${receipts.source_files} -->`);
   lines.push(`<!-- voices: ${voices.length} -->`);
   lines.push(``);
   lines.push(`# Voices state — substrate-wide voice index`);
   lines.push(``);
-  lines.push(`*Generated index of all known voices. Profile (authored) lives at \`state/voices/<voice>.json\`. Per-voice memory (generated) is in this dir's \`x8888_<voice>_memory.myc.md\`.*`);
+  lines.push(
+    `*Generated index of all known voices. Profile (authored) lives at \`state/voices/<voice>.json\`. Per-voice memory (generated) is in this dir's \`x8888_<voice>_memory.myc.md\`.*`,
+  );
   lines.push(``);
 
   lines.push(`## Voices`);
@@ -455,26 +529,43 @@ function renderVoicesState(
   for (const v of voices) {
     const chords = chordsByVoice.get(v.identity.split("-")[0]) ?? [];
     const styles = (v.natural_styles ?? []).join(", ") || "—";
-    const handles = v.handles.slice(0, 3).join(", ") + (v.handles.length > 3 ? "..." : "");
+    const handles = v.handles.slice(0, 3).join(", ") +
+      (v.handles.length > 3 ? "..." : "");
     const memoryFile = `x8888_${v.identity.split("-")[0]}_memory.myc.md`;
-    lines.push(`| ${v.identity} | ${handles} | ${styles} | ${chords.length} | [${memoryFile}](./${memoryFile}) |`);
+    lines.push(
+      `| ${v.identity} | ${handles} | ${styles} | ${chords.length} | [${memoryFile}](./${memoryFile}) |`,
+    );
   }
   lines.push(``);
 
   // Style differentiation matrix
   lines.push(`## Style differentiation`);
   lines.push(``);
-  lines.push(`Voices' comfort_field axes (where each voice naturally lives in the dipole space):`);
+  lines.push(
+    `Voices' comfort_field axes (where each voice naturally lives in the dipole space):`,
+  );
   lines.push(``);
-  lines.push(`| voice | void(0) | first(1) | mirror(2) | triangle(3) | foundation(4) | action(5) | harmony(6) | completion(7) |`);
-  lines.push(`|-------|---------|----------|-----------|-------------|---------------|-----------|------------|---------------|`);
+  lines.push(
+    `| voice | void(0) | first(1) | mirror(2) | triangle(3) | foundation(4) | action(5) | harmony(6) | completion(7) |`,
+  );
+  lines.push(
+    `|-------|---------|----------|-----------|-------------|---------------|-----------|------------|---------------|`,
+  );
   for (const v of voices) {
     if (!v.comfort_field_axes) continue;
     const a = v.comfort_field_axes;
-    lines.push(`| ${v.identity} | ${a.axis_0_void ?? "—"} | ${a.axis_1_first ?? "—"} | ${a.axis_2_mirror ?? "—"} | ${a.axis_3_triangle ?? "—"} | ${a.axis_4_foundation ?? "—"} | ${a.axis_5_action ?? "—"} | ${a.axis_6_harmony ?? "—"} | ${a.axis_7_completion ?? "—"} |`);
+    lines.push(
+      `| ${v.identity} | ${a.axis_0_void ?? "—"} | ${a.axis_1_first ?? "—"} | ${
+        a.axis_2_mirror ?? "—"
+      } | ${a.axis_3_triangle ?? "—"} | ${a.axis_4_foundation ?? "—"} | ${
+        a.axis_5_action ?? "—"
+      } | ${a.axis_6_harmony ?? "—"} | ${a.axis_7_completion ?? "—"} |`,
+    );
   }
   lines.push(``);
-  lines.push(`Higher value = more comfortable in that archetype. A voice with high mirror+triangle but low action prefers analysis and structure over execution. A voice with high foundation+harmony prefers stable, audited operations. Read your own row to know where you naturally fit.`);
+  lines.push(
+    `Higher value = more comfortable in that archetype. A voice with high mirror+triangle but low action prefers analysis and structure over execution. A voice with high foundation+harmony prefers stable, audited operations. Read your own row to know where you naturally fit.`,
+  );
   lines.push(``);
 
   return lines.join("\n");
@@ -498,7 +589,9 @@ async function main(argv: string[]) {
 
   const voiceFilter = args.voice;
   const voicesToProcess = voiceFilter
-    ? voices.filter((v) => v.identity.split("-")[0].toLowerCase() === voiceFilter)
+    ? voices.filter((v) =>
+      v.identity.split("-")[0].toLowerCase() === voiceFilter
+    )
     : voices;
 
   let written = 0;
@@ -511,16 +604,27 @@ async function main(argv: string[]) {
       ...voiceChords.map(chordSourceFile),
     ];
     const voiceManifest = await manifestHash(voiceSources);
-    const voiceReceipts = { generated_at, manifest_hash: voiceManifest, source_files: voiceSources.length };
+    const voiceReceipts = {
+      generated_at,
+      manifest_hash: voiceManifest,
+      source_files: voiceSources.length,
+    };
 
     const path = join(OUT, `x8888_${voiceKey}_memory.myc.md`);
-    await Deno.writeTextFile(path, renderVoiceMemory(voice, voiceChords, voiceReceipts) + "\n");
+    await Deno.writeTextFile(
+      path,
+      renderVoiceMemory(voice, voiceChords, voiceReceipts) + "\n",
+    );
     await Deno.writeTextFile(
       join(OUT, `x8888_${voiceKey}_memory.manifest.json`),
       canonicalManifest(voiceSources) + "\n",
     );
-    console.log(`[write] x8888_${voiceKey}_memory.myc.md (${voiceChords.length} chords digested)`);
-    console.log(`[write] x8888_${voiceKey}_memory.manifest.json (${voiceSources.length} source entries)`);
+    console.log(
+      `[write] x8888_${voiceKey}_memory.myc.md (${voiceChords.length} chords digested)`,
+    );
+    console.log(
+      `[write] x8888_${voiceKey}_memory.manifest.json (${voiceSources.length} source entries)`,
+    );
     written += 2;
   }
 
@@ -530,20 +634,39 @@ async function main(argv: string[]) {
       ...chords.map(chordSourceFile),
     ];
     const globalManifest = await manifestHash(allSources);
-    const subsReceipts = { generated_at, manifest_hash: globalManifest, source_files: allSources.length };
+    const subsReceipts = {
+      generated_at,
+      manifest_hash: globalManifest,
+      source_files: allSources.length,
+    };
 
     const subsPath = join(OUT, "x2888_voices_state.myc.md");
-    await Deno.writeTextFile(subsPath, renderVoicesState(voices, chordsByVoice, subsReceipts) + "\n");
+    await Deno.writeTextFile(
+      subsPath,
+      renderVoicesState(voices, chordsByVoice, subsReceipts) + "\n",
+    );
     await Deno.writeTextFile(
       join(OUT, "x2888_voices_state.manifest.json"),
       canonicalManifest(allSources) + "\n",
     );
-    console.log(`[write] x2888_voices_state.myc.md (${voices.length} voices indexed)`);
-    console.log(`[write] x2888_voices_state.manifest.json (${allSources.length} source entries)`);
+    console.log(
+      `[write] x2888_voices_state.myc.md (${voices.length} voices indexed)`,
+    );
+    console.log(
+      `[write] x2888_voices_state.manifest.json (${allSources.length} source entries)`,
+    );
     written += 2;
-    console.log(`done. ${written} files. global_manifest_hash=${globalManifest}${args.stable ? " (stable)" : ""}`);
+    console.log(
+      `done. ${written} files. global_manifest_hash=${globalManifest}${
+        args.stable ? " (stable)" : ""
+      }`,
+    );
   } else {
-    console.log(`done. ${written} files for voice=${voiceFilter}${args.stable ? " (stable)" : ""}`);
+    console.log(
+      `done. ${written} files for voice=${voiceFilter}${
+        args.stable ? " (stable)" : ""
+      }`,
+    );
   }
 }
 

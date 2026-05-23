@@ -24,7 +24,9 @@ const MAX_ATTEMPTS = 100_000;
 function extractFilenamePrefix(filename: string): string {
   const m = FILENAME_RE.exec(basename(filename));
   if (!m) {
-    throw new Error(`filename ${filename} does not match x<hex><hex>{3}_*.myc.md pattern`);
+    throw new Error(
+      `filename ${filename} does not match x<hex><hex>{3}_*.myc.md pattern`,
+    );
   }
   return m[1].toUpperCase();
 }
@@ -44,7 +46,9 @@ function updateNonce(content: string, nonce: number): string {
   return `${before}mining_nonce: ${nonce}\n${after}`;
 }
 
-async function mine(path: string): Promise<{ nonce: number; attempts: number; final_prefix: string }> {
+async function mine(
+  path: string,
+): Promise<{ nonce: number; attempts: number; final_prefix: string }> {
   const target = extractFilenamePrefix(path);
   const original = await Deno.readTextFile(path);
 

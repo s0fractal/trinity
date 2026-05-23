@@ -28,7 +28,10 @@ export interface ShortPrefixCheck {
 
 const FILENAME_RE = /^x[0-9A-Fa-f]([0-9A-Fa-f]{3})_/;
 
-export async function checkShortPrefix(filename: string, content: string): Promise<ShortPrefixCheck> {
+export async function checkShortPrefix(
+  filename: string,
+  content: string,
+): Promise<ShortPrefixCheck> {
   const m = FILENAME_RE.exec(filename.split("/").pop() ?? "");
   if (!m) {
     return {
@@ -36,7 +39,8 @@ export async function checkShortPrefix(filename: string, content: string): Promi
       filename_prefix: null,
       content_prefix: "",
       match: false,
-      note: "filename does not match x<hex><3hex>_ pattern (no prefix to check)",
+      note:
+        "filename does not match x<hex><3hex>_ pattern (no prefix to check)",
     };
   }
   const filenamePrefix = m[1].toUpperCase();
@@ -62,22 +66,30 @@ export interface FullHashCheck {
 }
 
 const FULL_HASH_RE = /^---\r?\n([\s\S]*?)\r?\n---\r?\n/;
-const HASH_FIELD_RE = /^(content_hash|envelope_hash|sha256):\s*([0-9a-fA-F]{32,})/m;
+const HASH_FIELD_RE =
+  /^(content_hash|envelope_hash|sha256):\s*([0-9a-fA-F]{32,})/m;
 // Strip the declared hash field from content before re-hashing to avoid
 // the circular self-reference. Replaces "<key>: <hex>" with empty content
 // while preserving the line so other byte-offset-dependent invariants
 // (rare) remain stable; the line content itself becomes a fixed marker.
-const HASH_FIELD_STRIP_RE = /^(content_hash|envelope_hash|sha256):\s*[0-9a-fA-F]{32,}\s*$/m;
+const HASH_FIELD_STRIP_RE =
+  /^(content_hash|envelope_hash|sha256):\s*[0-9a-fA-F]{32,}\s*$/m;
 
 function canonicalizeForHash(content: string): string {
   // Replace the declared hash field with a fixed placeholder so the
   // content hashes to a deterministic value regardless of what hash was
   // claimed. The placeholder preserves the field name to keep the YAML
   // structurally valid for parsing.
-  return content.replace(HASH_FIELD_STRIP_RE, (_match, field) => `${field}: <stripped-for-hash>`);
+  return content.replace(
+    HASH_FIELD_STRIP_RE,
+    (_match, field) => `${field}: <stripped-for-hash>`,
+  );
 }
 
-export async function checkFullHash(filename: string, content: string): Promise<FullHashCheck> {
+export async function checkFullHash(
+  filename: string,
+  content: string,
+): Promise<FullHashCheck> {
   const fm = FULL_HASH_RE.exec(content);
   if (!fm) {
     const actual_hash = await sha256Hex(content);
@@ -86,7 +98,8 @@ export async function checkFullHash(filename: string, content: string): Promise<
       declared_hash: null,
       actual_hash,
       match: false,
-      note: "no frontmatter — full hash check requires declared hash in --- block",
+      note:
+        "no frontmatter — full hash check requires declared hash in --- block",
     };
   }
   const declared = HASH_FIELD_RE.exec(fm[1]);
@@ -118,6 +131,8 @@ export async function checkFullHash(filename: string, content: string): Promise<
       ? "ok (exact, canonicalized)"
       : prefixMatch
       ? "ok (declared is prefix of canonical hash)"
-      : `drift: declared ${declaredHash.slice(0, 16)}..., actual (canonicalized) ${actual_hash.slice(0, 16)}...`,
+      : `drift: declared ${
+        declaredHash.slice(0, 16)
+      }..., actual (canonicalized) ${actual_hash.slice(0, 16)}...`,
   };
 }

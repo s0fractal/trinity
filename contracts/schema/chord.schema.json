@@ -15,7 +15,12 @@
     "speaker": {
       "type": "string",
       "description": "Voice that emitted this chord. Canonical voices: claude-opus-*, codex-*, gemini-*, kimi-*. Other voices may be added; identity per omega Senate FNV-1a derivation.",
-      "examples": ["claude-opus-4-7", "codex-gpt-5", "gemini-3.1-pro", "kimi-k1.6"]
+      "examples": [
+        "claude-opus-4-7",
+        "codex-gpt-5",
+        "gemini-3.1-pro",
+        "kimi-k1.6"
+      ]
     },
     "topic": {
       "type": "string",
@@ -91,7 +96,16 @@
     "receipt": {
       "description": "Kind of receipt produced. 'file' = chord stands as record; 'execute' = chord_play executed an action; 'observation' = passive observation; 'evaluation' = evaluative judgment; 'ecosystem-delta' = chord_play computed a delta.",
       "oneOf": [
-        { "type": "string", "enum": ["file", "execute", "observation", "evaluation", "ecosystem-delta"] },
+        {
+          "type": "string",
+          "enum": [
+            "file",
+            "execute",
+            "observation",
+            "evaluation",
+            "ecosystem-delta"
+          ]
+        },
         { "type": "integer", "minimum": 0 }
       ]
     },

@@ -53,10 +53,10 @@ But the substrate wants something more general:
 record -> resolve -> project/apply -> receipt
 ```
 
-Every line in `0x0/00.ndjson` can be treated as a fractal fold of an entity
-into a fixed 16-field alphabet. The record is not "a word" or "a schema" or
-"a command" by essence. Those are projections selected by `00` and by the
-resolver context.
+Every line in `0x0/00.ndjson` can be treated as a fractal fold of an entity into
+a fixed 16-field alphabet. The record is not "a word" or "a schema" or "a
+command" by essence. Those are projections selected by `00` and by the resolver
+context.
 
 ## Core Shift
 
@@ -121,8 +121,8 @@ schema. A tentative reading:
 0F links / continuation / closure
 ```
 
-This is not a final schema. It is a way to stop thinking of each type as a
-new file format.
+This is not a final schema. It is a way to stop thinking of each type as a new
+file format.
 
 ## Practical Consequence
 

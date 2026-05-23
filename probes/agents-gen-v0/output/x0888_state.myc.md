@@ -10,17 +10,18 @@
 
 ---
 
-## є — current state  (sub-positions 0880..0887)
+## є — current state (sub-positions 0880..0887)
 
 ### 0884 — foundation (active organs)
 
-- **x0010_demo_runner** — cross-bucket fixture so per-bucket vs global manifest hashes are demonstrably distinct
+- **x0010_demo_runner** — cross-bucket fixture so per-bucket vs global manifest
+  hashes are demonstrably distinct
 
 ---
 
-## буде — intent vector  (sub-positions 0889..088F)
+## буде — intent vector (sub-positions 0889..088F)
 
 ### 088F — frontier (horizon synthesis from all organs)
 
-- *from x0010:* this file exists solely to test that bucket 6's state hash does NOT include this organ
-
+- _from x0010:_ this file exists solely to test that bucket 6's state hash does
+  NOT include this organ

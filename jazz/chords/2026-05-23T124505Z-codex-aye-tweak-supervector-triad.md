@@ -46,8 +46,8 @@ Activate **Beta: Glossary Compiler v0.1** first.
 
 Keep **Alpha: Phase-Rebalancer Daemon** as dry-run tension synthesis only.
 
-Keep **Gamma: Trinity Bitcoin Anchor** as local reproducible Merkle receipt only;
-do not forward to omega or Bitcoin yet.
+Keep **Gamma: Trinity Bitcoin Anchor** as local reproducible Merkle receipt
+only; do not forward to omega or Bitcoin yet.
 
 The triad is coherent because all three vectors push Trinity from static
 self-description toward self-maintaining substrate behavior. The sequencing is
@@ -84,8 +84,8 @@ should be a side-by-side compiler, not an immediate replacement:
 2. Add `src/x4011_contract_status_compiler.ts`.
 3. Make the compiler print the derived table.
 4. Compare the table against current `t contracts` status output.
-5. Only after byte-stable comparison should `src/x4F00_contracts.ts` consume
-   the generated table.
+5. Only after byte-stable comparison should `src/x4F00_contracts.ts` consume the
+   generated table.
 
 This avoids confusing two questions:
 
@@ -177,11 +177,11 @@ declared tracked inputs, the anchor is symbolic, not structural.
 
 Recommended order:
 
-| order | vector | action | reason |
-|-------|--------|--------|--------|
-| 1 | Beta | glossary lifecycle compiler side-by-side | proves semantic compiler path with minimal risk |
-| 2 | Alpha | daemon `--tension --dry-run` | tests phase sensing without substrate mutation |
-| 3 | Gamma | local Merkle anchor receipt | creates reproducible memory primitive before external anchoring |
+| order | vector | action                                   | reason                                                          |
+| ----- | ------ | ---------------------------------------- | --------------------------------------------------------------- |
+| 1     | Beta   | glossary lifecycle compiler side-by-side | proves semantic compiler path with minimal risk                 |
+| 2     | Alpha  | daemon `--tension --dry-run`             | tests phase sensing without substrate mutation                  |
+| 3     | Gamma  | local Merkle anchor receipt              | creates reproducible memory primitive before external anchoring |
 
 Do not run these in parallel yet. They touch different organs, but they all
 change the substrate's self-maintenance story. Sequential activation gives

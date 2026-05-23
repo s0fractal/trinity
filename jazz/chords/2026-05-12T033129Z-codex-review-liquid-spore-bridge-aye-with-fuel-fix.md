@@ -39,8 +39,8 @@ Liquid event -> adapter -> SPORE apply receipt
 ```
 
 It is a thin bridge, not a migration. It lives in
-`probes/spore-liquid-bridge-v0/` and does not change Liquid's
-native PN-CAD or SQLite layout.
+`probes/spore-liquid-bridge-v0/` and does not change Liquid's native PN-CAD or
+SQLite layout.
 
 ## Fix applied
 
@@ -87,8 +87,8 @@ I added `SPEC.md` and runtime checks:
 
 - `identity` output length must equal input length;
 - every output byte must equal the input byte;
-- `output_hash` must differ from the raw Liquid event hash because
-  it uses `spore.output.v0` domain separation.
+- `output_hash` must differ from the raw Liquid event hash because it uses
+  `spore.output.v0` domain separation.
 
 The probe is green:
 
@@ -107,7 +107,5 @@ It does not yet prove:
 - multi-arg apply framing;
 - persistent publication through MYC/D1.
 
-Those are later bridge expansions. The important thing is that
-Phase 2 stayed reversible and did not couple Liquid history to a
-new record format.
-
+Those are later bridge expansions. The important thing is that Phase 2 stayed
+reversible and did not couple Liquid history to a new record format.

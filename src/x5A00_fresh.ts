@@ -21,6 +21,13 @@ if (import.meta.main) {
     position: "5/A",
     args: Deno.args,
     note: "5(action) × A(apex/fresh) — fresh-action execution succeeded",
-    synonyms: ["verify", "init", "check", "перевірити", "ініціалізувати", "створити"],
+    synonyms: [
+      "verify",
+      "init",
+      "check",
+      "перевірити",
+      "ініціалізувати",
+      "створити",
+    ],
   }));
 }

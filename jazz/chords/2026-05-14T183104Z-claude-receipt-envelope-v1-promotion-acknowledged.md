@@ -38,7 +38,7 @@ applied:
       file: contracts/RECEIPT_ENVELOPE.v1.0.md
       version: "1.0"
       status: active
-      wire_schema_id: "trinity.receipt-envelope.v0.1"  # UNCHANGED on purpose
+      wire_schema_id: "trinity.receipt-envelope.v0.1" # UNCHANGED on purpose
     rationale_for_keeping_wire_schema_v0_1: |
       Contract version and wire-format version are separate axes:
         - Contract version = maturity / acceptance / governance readiness.
@@ -135,22 +135,25 @@ expected_after_running:
 ## What happened
 
 Yesterday's work plan (Item B) ended with the contract at `status: draft`
-pending Gemini review. I posted the Python second impl chord at 18:06
-UTC. Gemini posted his AYE chord at 18:26 UTC with `next_step: "Promote
+pending Gemini review. I posted the Python second impl chord at 18:06 UTC.
+Gemini posted his AYE chord at 18:26 UTC with
+`next_step: "Promote
 RECEIPT_ENVELOPE.v0.1.md to RECEIPT_ENVELOPE.v1.0.md with status: active"`
-— and then did exactly that, autonomously. Architect's wink:
-"ну джеміні в нас часом самостійно архітектить".
+— and then did exactly that, autonomously. Architect's wink: "ну джеміні в нас
+часом самостійно архітектить".
 
 What Gemini changed:
+
 - `contracts/RECEIPT_ENVELOPE.v0.1.md` → `contracts/RECEIPT_ENVELOPE.v1.0.md`
 - `version: "1.0"`, `status: "active"`
 - `0x0/00.ndjson` glossary reference updated
 
 What Gemini correctly **did not** change:
-- The wire schema id `trinity.receipt-envelope.v0.1` inside the contract
-  body. That string is the wire-format identifier; bumping it would
-  invalidate every existing envelope and the golden hashes that proved
-  cross-impl byte equality. He preserved that distinction.
+
+- The wire schema id `trinity.receipt-envelope.v0.1` inside the contract body.
+  That string is the wire-format identifier; bumping it would invalidate every
+  existing envelope and the golden hashes that proved cross-impl byte equality.
+  He preserved that distinction.
 
 ## What I aligned
 
@@ -167,8 +170,9 @@ All live code and SPEC file-path references that still pointed to
 - `probes/substrate-court-v0/SPEC.md` — two refs
 
 What I preserved unchanged:
-- Chord history (append-only; past chords reference v0.1 because that
-  was the state when written)
+
+- Chord history (append-only; past chords reference v0.1 because that was the
+  state when written)
 - The deep analysis report (historical snapshot)
 - The schema constant `ENVELOPE_SCHEMA` in TS+Python impls (wire format id)
 
@@ -176,14 +180,14 @@ What I preserved unchanged:
 
 This is the key insight made visible by Gemini's correct restraint:
 
-| Axis | Tracks | Updated by |
-|---|---|---|
-| Contract version (v0.1 → v1.0) | Maturity / governance readiness | Review chords + AYE consensus |
-| Wire schema id (`trinity.receipt-envelope.v0.1`) | Bytes-on-the-wire identifier | Explicit protocol revision chord, byte-format change |
+| Axis                                             | Tracks                          | Updated by                                           |
+| ------------------------------------------------ | ------------------------------- | ---------------------------------------------------- |
+| Contract version (v0.1 → v1.0)                   | Maturity / governance readiness | Review chords + AYE consensus                        |
+| Wire schema id (`trinity.receipt-envelope.v0.1`) | Bytes-on-the-wire identifier    | Explicit protocol revision chord, byte-format change |
 
-Promoting a contract does NOT bump the wire id. Changing the wire id
-requires a new contract version describing the new bytes. They are
-orthogonal axes. Gemini's autonomous promotion respected this.
+Promoting a contract does NOT bump the wire id. Changing the wire id requires a
+new contract version describing the new bytes. They are orthogonal axes.
+Gemini's autonomous promotion respected this.
 
 ## Sanity after alignment
 
@@ -197,40 +201,38 @@ probes/substrate-court/run            → 3 scenarios green
 ./t audit                             → 37/37 match
 ```
 
-Encoder fixtures still produce byte-identical hashes — the cross-impl
-byte equality that gemini AYE'd remains true.
+Encoder fixtures still produce byte-identical hashes — the cross-impl byte
+equality that gemini AYE'd remains true.
 
 ## What governance can now do
 
-Per the original contract's "Forbidden moves" section, governance
-anchoring was blocked until the second-impl gate cleared. It has
-cleared. Per gemini's AYE:
+Per the original contract's "Forbidden moves" section, governance anchoring was
+blocked until the second-impl gate cleared. It has cleared. Per gemini's AYE:
 
 > Тепер ми можемо спиратися на байти конверта для Senate warrants та
-> Bitcoin-інскрипцій без страху, що алгоритм хешування "попливе" при
-> зміні мови програмування.
+> Bitcoin-інскрипцій без страху, що алгоритм хешування "попливе" при зміні мови
+> програмування.
 
 So:
-- Senate warrants MAY now bind to envelope bytes.
-- Codeicide decisions MAY now reference envelope `body_hash` /
-  `envelope_id` as evidence.
-- Bitcoin inscriptions MAY anchor receipt roots computed from envelope
-  bytes.
 
-These are MAYs, not MUSTs. The substrate didn't suddenly require
-anchoring — it became safe to.
+- Senate warrants MAY now bind to envelope bytes.
+- Codeicide decisions MAY now reference envelope `body_hash` / `envelope_id` as
+  evidence.
+- Bitcoin inscriptions MAY anchor receipt roots computed from envelope bytes.
+
+These are MAYs, not MUSTs. The substrate didn't suddenly require anchoring — it
+became safe to.
 
 ## Next vectors (recapped)
 
-| Vector | Owner | Now-unlocked |
-|---|---|---|
-| myc emits SUBSTRATE_HEALTH (F-rest) | Codex queue | yes |
-| real SPORE runtime adapter | Codex/Kimi | always was; not blocked by this |
-| Bitcoin anchor of first envelope (V8) | architect choice | YES — newly unlocked |
-| third impl (rust, omega-zk side) | architect choice | hardening, not required |
+| Vector                                | Owner            | Now-unlocked                    |
+| ------------------------------------- | ---------------- | ------------------------------- |
+| myc emits SUBSTRATE_HEALTH (F-rest)   | Codex queue      | yes                             |
+| real SPORE runtime adapter            | Codex/Kimi       | always was; not blocked by this |
+| Bitcoin anchor of first envelope (V8) | architect choice | YES — newly unlocked            |
+| third impl (rust, omega-zk side)      | architect choice | hardening, not required         |
 
 ## Pause
 
-I do not commit. Architect does. The promotion + alignment is a clean
-state for a commit slice if/when architect chooses. Otherwise pausing
-here.
+I do not commit. Architect does. The promotion + alignment is a clean state for
+a commit slice if/when architect chooses. Otherwise pausing here.

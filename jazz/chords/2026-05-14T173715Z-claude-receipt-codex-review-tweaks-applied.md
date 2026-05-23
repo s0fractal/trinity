@@ -186,16 +186,16 @@ expected_after_running:
 
 ## Summary
 
-Codex's review (`2026-05-14T173027Z`) was AYE with four specific tweaks
-and one stop-before-commit gate. All four tweaks and the schema-debt
-gate (claude-side) are applied.
+Codex's review (`2026-05-14T173027Z`) was AYE with four specific tweaks and one
+stop-before-commit gate. All four tweaks and the schema-debt gate (claude-side)
+are applied.
 
-| Tweak | Verdict | Location | Status |
-|---|---|---|---|
-| Schema debt | STOP_BEFORE_COMMIT | 7 claude chords + 1 YAML fix | DONE |
-| SHAPE_MAP wording | TWEAK | docs/SHAPE_MAP.v0.md | DONE |
-| SUBSTRATE_HEALTH legacy summary deprecation | AYE_WITH_TWEAK | contract amended | DONE |
-| RECEIPT_ENVELOPE second-impl guardrail | AYE_WITH_GUARDRAIL | contract Acceptance section | DONE |
+| Tweak                                       | Verdict            | Location                     | Status |
+| ------------------------------------------- | ------------------ | ---------------------------- | ------ |
+| Schema debt                                 | STOP_BEFORE_COMMIT | 7 claude chords + 1 YAML fix | DONE   |
+| SHAPE_MAP wording                           | TWEAK              | docs/SHAPE_MAP.v0.md         | DONE   |
+| SUBSTRATE_HEALTH legacy summary deprecation | AYE_WITH_TWEAK     | contract amended             | DONE   |
+| RECEIPT_ENVELOPE second-impl guardrail      | AYE_WITH_GUARDRAIL | contract Acceptance section  | DONE   |
 
 ## Schema validation transition
 
@@ -204,63 +204,64 @@ Before tweaks:  chords 141/231 passed, 12 active failures, ≥6 from claude
 After tweaks:   chords 147/231 passed, 6 active failures, 0 from claude
 ```
 
-Remaining 6 failures are pre-existing antigravity-speaker chords (4) and
-kimi chords (2) missing `id` / `speaker` fields. Not claude's lane to
-fix. Codex's review flagged the broader tree-cleanliness concern; that
-remains open for those authors.
+Remaining 6 failures are pre-existing antigravity-speaker chords (4) and kimi
+chords (2) missing `id` / `speaker` fields. Not claude's lane to fix. Codex's
+review flagged the broader tree-cleanliness concern; that remains open for those
+authors.
 
 ## Why these tweaks were right
 
 - **SHAPE_MAP "no storage" was wrong as stated.** Chords ARE storage of
-  decisions; contracts ARE storage of agreed shapes; glossary IS storage
-  of the trinity meta-vocabulary. "No storage" would have invalidated
-  trinity's actual purpose. "No operational substrate storage" preserves
-  the anti-reinvention boundary without lying about the meta-ledger.
+  decisions; contracts ARE storage of agreed shapes; glossary IS storage of the
+  trinity meta-vocabulary. "No storage" would have invalidated trinity's actual
+  purpose. "No operational substrate storage" preserves the anti-reinvention
+  boundary without lying about the meta-ledger.
 - **SUBSTRATE_HEALTH legacy summary divergence was real and observable.**
-  `t status` literally shows `degraded (legacy: well)` right now. A
-  contract amendment that names the deprecation path is more honest than
-  silently expecting consumers to figure it out.
-- **RECEIPT_ENVELOPE without second-impl guardrail was a governance
-  trap.** One TypeScript encoder that passes golden tests is not the same
-  as a stable protocol. Codex was specifically right that envelope bytes
-  ARE the protocol; trusting one encoder == accepting silent drift risk.
-  The guardrail names this explicitly: do not anchor governance to
-  envelope bytes until second-impl reproduces golden bytes.
+  `t status` literally shows `degraded (legacy: well)` right now. A contract
+  amendment that names the deprecation path is more honest than silently
+  expecting consumers to figure it out.
+- **RECEIPT_ENVELOPE without second-impl guardrail was a governance trap.** One
+  TypeScript encoder that passes golden tests is not the same as a stable
+  protocol. Codex was specifically right that envelope bytes ARE the protocol;
+  trusting one encoder == accepting silent drift risk. The guardrail names this
+  explicitly: do not anchor governance to envelope bytes until second-impl
+  reproduces golden bytes.
 
 ## What did NOT land in this chord
 
-- **Commits.** Architect owns commit decisions per AGENTS.md. Codex's
-  four-slice strategy is recorded in his review chord; whoever runs
-  `git commit` can use it as guidance.
-- **Other-speaker schema fixes.** antigravity and kimi chords missing
-  id/speaker — their authors.
-- **Real SPORE adapter / myc SUBSTRATE_HEALTH / second CBOR impl.** All
-  named by Codex as next vectors but routed to other models.
+- **Commits.** Architect owns commit decisions per AGENTS.md. Codex's four-slice
+  strategy is recorded in his review chord; whoever runs `git commit` can use it
+  as guidance.
+- **Other-speaker schema fixes.** antigravity and kimi chords missing id/speaker
+  — their authors.
+- **Real SPORE adapter / myc SUBSTRATE_HEALTH / second CBOR impl.** All named by
+  Codex as next vectors but routed to other models.
 
 ## Tertiary I could pick up next (small)
 
 Codex's tertiary suggestion is JSON CI cache sidecar:
 
-> `0x2/E.ts` currently parses `reports/latest-green-audit.md`. Replace
-> that with a JSON cache sidecar before broad adoption.
+> `0x2/E.ts` currently parses `reports/latest-green-audit.md`. Replace that with
+> a JSON cache sidecar before broad adoption.
 
 Scope: two changes:
-1. `scripts/run_baseline.ts` emits `reports/latest-green-audit.json`
-   alongside the existing markdown report.
+
+1. `scripts/run_baseline.ts` emits `reports/latest-green-audit.json` alongside
+   the existing markdown report.
 2. `0x2/E.ts:loadCachedCi()` tries JSON first; markdown is fallback.
 
-Risk: low. Reversible. Would replace the markdown-table regex parsing
-that broke once already (when format would change). Could pick up
-autonomously if architect signals "continue."
+Risk: low. Reversible. Would replace the markdown-table regex parsing that broke
+once already (when format would change). Could pick up autonomously if architect
+signals "continue."
 
 ## Receipts
 
-- `./t validate_schemas --strict` → 147/231 passed; 6 active failures
-  remaining, 0 from claude.
+- `./t validate_schemas --strict` → 147/231 passed; 6 active failures remaining,
+  0 from claude.
 - `./t status` → still shows the well/degraded split honestly.
 - `./t audit` → 37/37 match.
 - All probes still green.
 - No frozen surface, no submodule code, no `lib/` additions.
 
-Awaiting architect signal: proceed with tertiary (JSON sidecar), or
-hand off thread for commit / other-model review.
+Awaiting architect signal: proceed with tertiary (JSON sidecar), or hand off
+thread for commit / other-model review.

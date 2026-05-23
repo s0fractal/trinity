@@ -7,59 +7,77 @@
 
 ## Use first (t-commands routing to this bucket)
 
-- `t audit` — placement audit  (position 6/C)
-- `t gravity` — edge tension report  (position 6/02)
-- `t cowitness` — append oracle signature  (position 6/D)
-- `t court` — substrate court verifier  (position 6/E)
-- `t audit:green` — baseline gates runner  (position 6/5)
-- `t health` — fresh health check  (position 6/A)
+- `t audit` — placement audit (position 6/C)
+- `t gravity` — edge tension report (position 6/02)
+- `t cowitness` — append oracle signature (position 6/D)
+- `t court` — substrate court verifier (position 6/E)
+- `t audit:green` — baseline gates runner (position 6/5)
+- `t health` — fresh health check (position 6/A)
 
 ## Safe to invoke — pure read (`skill_safe: yes`)
 
-- **x6020_gravity** [read-only-report] — edge tension report by filename coordinates
-- **x6C00_audit** [read-only-report] — verify organs' declared dipoles match filename buckets
-- **x6E00_court** [read-only-verify] — verify cross-substrate envelopes (cowitness chain, manifest hashes)
+- **x6020_gravity** [read-only-report] — edge tension report by filename
+  coordinates
+- **x6C00_audit** [read-only-report] — verify organs' declared dipoles match
+  filename buckets
+- **x6E00_court** [read-only-verify] — verify cross-substrate envelopes
+  (cowitness chain, manifest hashes)
 
 ## Readonly but external / expensive (`skill_safe: yes-readonly`)
 
-These don't mutate substrate state, but they reach external dependencies, take time, or emit receipts by intent. Run deliberately.
+These don't mutate substrate state, but they reach external dependencies, take
+time, or emit receipts by intent. Run deliberately.
 
-- **x6500_run_baseline** [external-dependency] — run cross-substrate test gates, emit receipt
+- **x6500_run_baseline** [external-dependency] — run cross-substrate test gates,
+  emit receipt
 
 ## Use with care — emits substrate-state changes (`skill_safe: yes-with-care`)
 
-- **x6D00_cowitness** [emits-envelope] — emit cowitness signature on a target envelope (AYE/NAY/TWEAK stance)
+- **x6D00_cowitness** [emits-envelope] — emit cowitness signature on a target
+  envelope (AYE/NAY/TWEAK stance)
 
 ## ⚠️ Not yet classified — DO NOT invoke without inspection
 
-These organs lack a `skill_safe` header field. Until classified, treat as unknown effects; read source before invoking.
+These organs lack a `skill_safe` header field. Until classified, treat as
+unknown effects; read source before invoking.
 
-- **x6F00_unclassified_demo** — demonstrate that organs missing skill_safe render as "Not yet classified"  (no skill_safe declared)
+- **x6F00_unclassified_demo** — demonstrate that organs missing skill_safe
+  render as "Not yet classified" (no skill_safe declared)
 
 ## ⚠️ Invalid skill_safe values
 
-- **x6FFF_invalid_safe_demo** — declared `skill_safe: maybe` (not in {yes | yes-readonly | yes-with-care})
+- **x6FFF_invalid_safe_demo** — declared `skill_safe: maybe` (not in {yes |
+  yes-readonly | yes-with-care})
 
 ## Import policy for x6
 
 **May import:** x0, x4, x5, x6, x7
 
 **Warn (pattern, not deny):**
+
 - x8 (audit reading cache should be receipt-style not dependency)
 
 ## Before editing x6... organs
 
 - Run `t audit` and `t gravity` first; note current baseline metrics.
-- If adding a new organ, ensure its hex_dipole declares the bucket axis as primary (audit will flag mismatch).
-- If adding header fields (intent/maturity/horizon/skill_tag/skill_safe), they appear in the next `t agents` / skills regen.
-- Bucket 6 is audit-flavored. Prefer adding **read-only verifiers / reports** over mutating organs.
-- Do not introduce a new x6 → x8 (cache) dependency; cache is downstream of audit, not upstream.
-- Audit signals are observation, not enforcement: don't add exit-1 gates without architect approval.
+- If adding a new organ, ensure its hex_dipole declares the bucket axis as
+  primary (audit will flag mismatch).
+- If adding header fields (intent/maturity/horizon/skill_tag/skill_safe), they
+  appear in the next `t agents` / skills regen.
+- Bucket 6 is audit-flavored. Prefer adding **read-only verifiers / reports**
+  over mutating organs.
+- Do not introduce a new x6 → x8 (cache) dependency; cache is downstream of
+  audit, not upstream.
+- Audit signals are observation, not enforcement: don't add exit-1 gates without
+  architect approval.
 
 ## Falsifiers
 
-- New organ that does NOT appear in this skill brief after regen → header parsing failed or organ missed glossary entry.
-- "Safe to invoke" organ that produced state-mutating side effect → `skill_safe: yes` is wrong; reclassify.
-- Policy warning that fires on every PR → policy table is too strict for actual workflow; refine vocabulary via cowitness.
-- Unclassified count stays above 0 after a week of normal work → `skill_safe` is not being added; either tool / norm / both broken.
-
+- New organ that does NOT appear in this skill brief after regen → header
+  parsing failed or organ missed glossary entry.
+- "Safe to invoke" organ that produced state-mutating side effect →
+  `skill_safe: yes` is wrong; reclassify.
+- Policy warning that fires on every PR → policy table is too strict for actual
+  workflow; refine vocabulary via cowitness.
+- Unclassified count stays above 0 after a week of normal work → `skill_safe` is
+  not being added; either tool / norm / both broken.

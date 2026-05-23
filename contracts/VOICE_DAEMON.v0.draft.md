@@ -86,8 +86,8 @@ surface-state.
 
 ## Invocation receipt schema
 
-Append-only NDJSON at `src/x7F01_daemon_invocations.ndjson`. One line per receipt.
-Required fields:
+Append-only NDJSON at `src/x7F01_daemon_invocations.ndjson`. One line per
+receipt. Required fields:
 
 ```json
 {

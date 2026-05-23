@@ -4,7 +4,11 @@
 // Importable from any organ; the convention "no imports between executables" was retired
 // when all infrastructure moved into src/ with explicit coordinates.
 
-import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
+import {
+  dirname,
+  fromFileUrl,
+  join,
+} from "https://deno.land/std@0.224.0/path/mod.ts";
 
 function getGlossaryPath(): string {
   return join(dirname(fromFileUrl(import.meta.url)), "x0001_glossary.ndjson");
@@ -64,7 +68,9 @@ export async function resolveWord(word: string): Promise<string | null> {
 /** Load substrate mappings for a given position.
  *  Reads kind:6 records (topological form).
  *  Slot semantics: 02=handles, 03=position served, 04=cwd, 05=command, 09=note. */
-export async function loadSubstrateMappings(position: string): Promise<SubstrateMapping[]> {
+export async function loadSubstrateMappings(
+  position: string,
+): Promise<SubstrateMapping[]> {
   const defs: SubstrateMapping[] = [];
   for await (const r of readGlossaryLines()) {
     if (r["00"] !== "6") continue;
@@ -87,14 +93,21 @@ export async function loadSchemas(): Promise<Map<string, string[]>> {
   const schemas = new Map<string, string[]>();
   for await (const r of readGlossaryLines()) {
     if (r["00"] === "07" && r["01"] && r["02"]) {
-      schemas.set(String(r["01"]), String(r["02"]).split(",").map((f) => f.trim()));
+      schemas.set(
+        String(r["01"]),
+        String(r["02"]).split(",").map((f) => f.trim()),
+      );
     }
   }
   return schemas;
 }
 
 /** Validate a payload against a loaded schema. */
-export function validatePayload(payload: any, type: string, schemas: Map<string, string[]>): { ok: boolean; missing: string[]; actual: string[] } {
+export function validatePayload(
+  payload: any,
+  type: string,
+  schemas: Map<string, string[]>,
+): { ok: boolean; missing: string[]; actual: string[] } {
   const required = schemas.get(type);
   if (!required) return { ok: true, missing: [], actual: [] };
   const actual = Object.keys(payload || {});

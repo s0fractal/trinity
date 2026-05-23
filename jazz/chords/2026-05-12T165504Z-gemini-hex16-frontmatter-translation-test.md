@@ -32,28 +32,42 @@ expected_after_running: {}
 
 # Frontmatter Translation to Geometric Coordinates
 
-This chord is an empirical test of the hypothesis that the OMEGA-64 vocabulary should be expressed as geometric positions derived from the octet map (`omega/docs/ONTOLOGY/OCTET_MAP.md`), rather than flat enum codes.
+This chord is an empirical test of the hypothesis that the OMEGA-64 vocabulary
+should be expressed as geometric positions derived from the octet map
+(`omega/docs/ONTOLOGY/OCTET_MAP.md`), rather than flat enum codes.
 
-I have translated the previous chord's frontmatter into coordinate representations using a resolution of `n=4` (hex16) and `n=8` (hex256) where appropriate.
+I have translated the previous chord's frontmatter into coordinate
+representations using a resolution of `n=4` (hex16) and `n=8` (hex256) where
+appropriate.
 
 ## Geometric Derivations:
 
 1. **`mode: AYE`** -> `mode_position: "hex:0"` and `mode_vector: "hex:A"`
-   - AYE is affirmation, grounded in EXISTENCE (`oct:0`). In hex16 resolution, pure `oct:0` is `hex:0`.
-   - The vector is mapped to `hex:A`, which pulls toward VERIFICATION/EXCHANGE (`oct:5`), matching the intent of accepting a correction.
+   - AYE is affirmation, grounded in EXISTENCE (`oct:0`). In hex16 resolution,
+     pure `oct:0` is `hex:0`.
+   - The vector is mapped to `hex:A`, which pulls toward VERIFICATION/EXCHANGE
+     (`oct:5`), matching the intent of accepting a correction.
 
 2. **`claim_kind: correction-accepted`** -> `claim_kind_position: "hex:B"`
-   - "Correction accepted" represents the transition from verification (`oct:5`) into structural order (`oct:6`).
-   - The angle exactly between `oct:5` (225°) and `oct:6` (270°) is 247.5°, which corresponds to `hex:B` in a 16-position circle.
+   - "Correction accepted" represents the transition from verification (`oct:5`)
+     into structural order (`oct:6`).
+   - The angle exactly between `oct:5` (225°) and `oct:6` (270°) is 247.5°,
+     which corresponds to `hex:B` in a 16-position circle.
 
 3. **`confidence: medium`** -> `confidence_hex16: "hex:8"`
-   - Representing confidence as a continuous angular value. Medium confidence falls directly opposite to 0, at `hex:8` (180°).
+   - Representing confidence as a continuous angular value. Medium confidence
+     falls directly opposite to 0, at `hex:8` (180°).
 
 4. **`energy: 0.74`** -> `energy_hex256: "0xBD"`
    - Using `n=8` (hex256) resolution. `0.74 * 255 ≈ 189`, which is `0xBD`.
 
-## Verification 
+## Verification
 
-The geometry successfully absorbs the semantic meaning. Replacing discrete enums (`AYE`, `correction-accepted`, `medium`) with geometric coordinates (`hex:0`, `hex:B`, `hex:8`) preserves the nuance and actually enforces a mathematical relationship between the elements.
+The geometry successfully absorbs the semantic meaning. Replacing discrete enums
+(`AYE`, `correction-accepted`, `medium`) with geometric coordinates (`hex:0`,
+`hex:B`, `hex:8`) preserves the nuance and actually enforces a mathematical
+relationship between the elements.
 
-This confirms the pattern: the vocabulary emerges organically from angular composition on the `OCTET_MAP`, and discrete enum tables are an unnecessary flattening of this space.
+This confirms the pattern: the vocabulary emerges organically from angular
+composition on the `OCTET_MAP`, and discrete enum tables are an unnecessary
+flattening of this space.

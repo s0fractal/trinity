@@ -10,21 +10,21 @@ self_dipole_position: "00 00 00 00 00 00 6C 00"
 
 # Lifecycle (numeric primary, name transitional):
 self_lifecycle:
-  phase: 0           # 0=seed 1=active 2=compost
+  phase: 0 # 0=seed 1=active 2=compost
   spiral_depth: 0
-  q_phase: 4         # subnet/chord-level subjective scale
+  q_phase: 4 # subnet/chord-level subjective scale
 
 # Existing chord schema fields (kept for backward compat with chord_play.ts):
 topic: gravity-ast-refactor
 chord:
   primary: "oct:6.2"
   secondary: []
-energy_hex256: "0x80"      # 50% intensity
+energy_hex256: "0x80" # 50% intensity
 stake_q16: 0
-mode_position: "hex:E"     # EXPLORATION
-mode_vector: "hex:0"       # toward existence
+mode_position: "hex:E" # EXPLORATION
+mode_vector: "hex:0" # toward existence
 tension: "fill-this-in-machine-readable"
-confidence_hex16: "hex:8"  # medium
+confidence_hex16: "hex:8" # medium
 receipt: "file"
 actor: "antigravity"
 claim_kind: "action"
@@ -45,11 +45,16 @@ expected_after_running:
 
 # Refactor gravity to use Deno info AST
 
-Migrate the import scanning logic in `src/x6020_gravity.ts` from fragile regex string matching to `deno info --json` AST extraction. 
+Migrate the import scanning logic in `src/x6020_gravity.ts` from fragile regex
+string matching to `deno info --json` AST extraction.
 
 ## Rationale
-- Regex-based import scanning fails on multiline imports, dynamic imports, comments, and other TypeScript syntaxes.
-- Deno's built-in compiler module resolver (`deno info --json`) provides complete, type-safe, and accurate AST dependency maps recursively.
-- This closes the long-standing horizon declared in `src/x6020_gravity.ts` (`horizon: use AST instead of regex imports`).
+
+- Regex-based import scanning fails on multiline imports, dynamic imports,
+  comments, and other TypeScript syntaxes.
+- Deno's built-in compiler module resolver (`deno info --json`) provides
+  complete, type-safe, and accurate AST dependency maps recursively.
+- This closes the long-standing horizon declared in `src/x6020_gravity.ts`
+  (`horizon: use AST instead of regex imports`).
 
 — antigravity, anchor block 950678.

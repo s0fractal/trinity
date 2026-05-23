@@ -10,7 +10,13 @@
 
 import { ParsedFilename } from "./parse.ts";
 
-export type Lane = "organ" | "chord" | "state" | "receipt" | "proof" | "unknown";
+export type Lane =
+  | "organ"
+  | "chord"
+  | "state"
+  | "receipt"
+  | "proof"
+  | "unknown";
 export type Lifecycle =
   | "authored"
   | "generated"
@@ -40,7 +46,9 @@ export function classifyLane(parsed: ParsedFilename): Lane {
       // mined neurons have hex_prefix anchor
       if (parsed.anchor_kind === "hex_prefix") return "chord"; // or "neuron" — treated as chord-like artifact
       // chord with voice anchor and block height
-      if (parsed.anchor_kind === "voice" || parsed.anchor_kind === "block_height") return "chord";
+      if (
+        parsed.anchor_kind === "voice" || parsed.anchor_kind === "block_height"
+      ) return "chord";
       // fallback for unannotated .myc.md
       return "chord";
     }
@@ -54,11 +62,17 @@ export function classifyLane(parsed: ParsedFilename): Lane {
 }
 
 /** Lifecycle classification from coordinate + lane + extension. */
-export function classifyLifecycle(parsed: ParsedFilename, lane: Lane, archivePathHint = false): Lifecycle {
+export function classifyLifecycle(
+  parsed: ParsedFilename,
+  lane: Lane,
+  archivePathHint = false,
+): Lifecycle {
   if (archivePathHint) return "archived";
   if (!parsed.is_morphology) return "authored"; // best guess
   // x?888 / x8888 — generated state cache
-  if (parsed.coordinate.endsWith("888") || parsed.coordinate === "8888") return "generated";
+  if (parsed.coordinate.endsWith("888") || parsed.coordinate === "8888") {
+    return "generated";
+  }
   // receipt lane
   if (lane === "receipt" || lane === "proof") return "sealed";
   // state files (.myc.json) — likely checkpoint
@@ -67,7 +81,10 @@ export function classifyLifecycle(parsed: ParsedFilename, lane: Lane, archivePat
   return "authored";
 }
 
-export function classify(parsed: ParsedFilename, archivePathHint = false): Classification {
+export function classify(
+  parsed: ParsedFilename,
+  archivePathHint = false,
+): Classification {
   const lane = classifyLane(parsed);
   const lifecycle = classifyLifecycle(parsed, lane, archivePathHint);
 
@@ -76,7 +93,9 @@ export function classify(parsed: ParsedFilename, archivePathHint = false): Class
     rationale = "filename did not match morphology — defaulted";
   } else if (archivePathHint) {
     rationale = `archive path → archived (lane=${lane})`;
-  } else if (parsed.coordinate.endsWith("888") || parsed.coordinate === "8888") {
+  } else if (
+    parsed.coordinate.endsWith("888") || parsed.coordinate === "8888"
+  ) {
     rationale = `coordinate ends in 888 → generated state cache (lane=${lane})`;
   } else if (parsed.lane === "receipt" || parsed.lane === "proof") {
     rationale = `${parsed.lane} lane → sealed`;

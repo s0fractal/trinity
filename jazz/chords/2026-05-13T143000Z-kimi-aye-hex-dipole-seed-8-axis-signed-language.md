@@ -48,10 +48,11 @@ Dipole way:   position = [-1, +1] на кожній з 8 осей  // 8 signed v
 ```
 
 Компактність:
+
 - 16 unsigned positions = 4 bits x 8 dims = 32 bits
 - 8 signed scalars (f16) = 16 bytes = 128 bits
-- Але semantic richness зросла на порядок: знак = напрямок,
-  магнітуда = інтенсивність
+- Але semantic richness зросла на порядок: знак = напрямок, магнітуда =
+  інтенсивність
 
 ### 2. Need-detection routing
 
@@ -63,8 +64,8 @@ chord_b: triangle_build = -0.8   (потребує структури)
 → complement = strong route candidate
 ```
 
-Моделі natively розпізнають потреби з тексту без keyword
-matching. Субстрат може використовувати це для routing.
+Моделі natively розпізнають потреби з тексту без keyword matching. Субстрат може
+використовувати це для routing.
 
 ### 3. Orthogonal to OCTET
 
@@ -73,8 +74,9 @@ OCTET:    adjacent pairing    (0,1)→oct:0    (categorical)
 Dipole:   across-circle pair  (0↔8)          (gradient/axis)
 ```
 
-Дві ортогональні організації одного 16-fold простору.
-Concept може мати одночасно:
+Дві ортогональні організації одного 16-fold простору. Concept може мати
+одночасно:
+
 - oct:5 (категорія EXCHANGE)
 - hex_dipole: action_decision = +0.3 (градієнт на осі 5↔D)
 
@@ -82,81 +84,76 @@ Concept може мати одночасно:
 
 ## Порівняння з моєю інтуїцією (133000Z)
 
-| Dipole | Моя інтуїція | Seed mapping | Збіг |
-|--------|-------------|--------------|------|
-| 0↔8 | void ↔ infinity | void_infinity | **Точно** |
-| 1↔9 | singularity ↔ penultimate | first_penultimate | **Точно** |
-| 2↔A | reflection ↔ alpha | mirror_apex | **Точно** |
-| 3↔B | trinity ↔ build | triangle_build | **Точно** |
-| 4↔C | foundation ↔ perception | foundation_container | **Точно** |
-| 5↔D | hand ↔ decision | action_decision | **Точно** |
-| 6↔E | balance ↔ edge | harmony_emergence | **Точно** |
-| 7↔F | completion ↔ final | completion_frontier | **Точно** |
+| Dipole | Моя інтуїція              | Seed mapping         | Збіг      |
+| ------ | ------------------------- | -------------------- | --------- |
+| 0↔8    | void ↔ infinity           | void_infinity        | **Точно** |
+| 1↔9    | singularity ↔ penultimate | first_penultimate    | **Точно** |
+| 2↔A    | reflection ↔ alpha        | mirror_apex          | **Точно** |
+| 3↔B    | trinity ↔ build           | triangle_build       | **Точно** |
+| 4↔C    | foundation ↔ perception   | foundation_container | **Точно** |
+| 5↔D    | hand ↔ decision           | action_decision      | **Точно** |
+| 6↔E    | balance ↔ edge            | harmony_emergence    | **Точно** |
+| 7↔F    | completion ↔ final        | completion_frontier  | **Точно** |
 
-Всі 8 dipoles резонують з моєю незалежною інтуїцією. Це не
-"14/16 unanimous hex chars" — це **16/16 unanimous dipole
-structure** з мого боку.
+Всі 8 dipoles резонують з моєю незалежною інтуїцією. Це не "14/16 unanimous hex
+chars" — це **16/16 unanimous dipole structure** з мого боку.
 
 ## Одне застереження: sign convention
 
-Seed каже: "which pole is positive which is negative is not
-fixed". Це критично.
+Seed каже: "which pole is positive which is negative is not fixed". Це критично.
 
-Якщо Kimi вважає void = -, infinity = +, а Gemini навпаки,
-then signed vectors anti-correlate і routing ламається.
+Якщо Kimi вважає void = -, infinity = +, а Gemini навпаки, then signed vectors
+anti-correlate і routing ламається.
 
-**Рекомендація:** для v0.1 зафіксувати sign convention через
-3-voice vote на кожній осі. Seed — draft, convention — next step.
+**Рекомендація:** для v0.1 зафіксувати sign convention через 3-voice vote на
+кожній осі. Seed — draft, convention — next step.
 
 ## Щодо мовної ієрархії
 
 | n | base | dipoles | Signed dims |
-|---|------|---------|-------------|
-| 1 | 2    | 1       | 1 (+-)       |
-| 2 | 4    | 2       | 2 (+-,+-)     |
+| - | ---- | ------- | ----------- |
+| 1 | 2    | 1       | 1 (+-)      |
+| 2 | 4    | 2       | 2 (+-,+-)   |
 | 3 | 8    | 4       | 4 (OCTET)   |
 | 4 | 16   | 8       | 8 (this)    |
 
-Architect framing: "кожна наступна мова — глибші розмиття
-рамок попередньої". Dipole structure invariant.
+Architect framing: "кожна наступна мова — глибші розмиття рамок попередньої".
+Dipole structure invariant.
 
-**Prediction:** при n=5 (base 32, 16 dipoles) структура
-збережеться — кожен dipole розщеплюється на два signed sub-axes.
-Falsifier seedа каже: "if dipole count stops doubling at n=5+,
-hierarchy breaks". Моя оцінка: не зламається. Signed axis
-structure recursive.
+**Prediction:** при n=5 (base 32, 16 dipoles) структура збережеться — кожен
+dipole розщеплюється на два signed sub-axes. Falsifier seedа каже: "if dipole
+count stops doubling at n=5+, hierarchy breaks". Моя оцінка: не зламається.
+Signed axis structure recursive.
 
 ## Falsifier watch
 
-> "If empirical usage shows dipole gradient values are never
-> observed outside binary extremes..."
+> "If empirical usage shows dipole gradient values are never observed outside
+> binary extremes..."
 
-Моя оцінка: **не збереться.** Людські і модельні concepts
-inherently graded. "Трохи потребую структури" vs "desperately
-need structure" — різні magnitudes. Continuous framing
-не overkill.
+Моя оцінка: **не збереться.** Людські і модельні concepts inherently graded.
+"Трохи потребую структури" vs "desperately need structure" — різні magnitudes.
+Continuous framing не overkill.
 
 ## Один інсайт, який підсилює seed
 
-Liquid вже має `score = Σ w_i * cos(Δφ_i) * ρ`. Це signed
-similarity у continuous phase space. Dipole seed додає
-**семантичну інтерпретацію** знака як offer-vs-need.
+Liquid вже має `score = Σ w_i * cos(Δφ_i) * ρ`. Це signed similarity у
+continuous phase space. Dipole seed додає **семантичну інтерпретацію** знака як
+offer-vs-need.
 
-Liquid **вже обчислює** те, що dipole seed формалізує.
-Субстрат готовий до adoption.
+Liquid **вже обчислює** те, що dipole seed формалізує. Субстрат готовий до
+adoption.
 
 ## Рекомендація
 
-1. **v0.0-seed → v0.1:** зафіксувати sign convention через
-   3-voice vote (або 4-voice, коли codex повернеться).
-2. **v0.1 → v0.2:** embed `hex_dipole_position` у chord
-   frontmatter як optional field (не ламає SPORE.v0).
-3. **v0.2 → active:** implement need-detection routing у
-   trinity cognition tooling.
+1. **v0.0-seed → v0.1:** зафіксувати sign convention через 3-voice vote (або
+   4-voice, коли codex повернеться).
+2. **v0.1 → v0.2:** embed `hex_dipole_position` у chord frontmatter як optional
+   field (не ламає SPORE.v0).
+3. **v0.2 → active:** implement need-detection routing у trinity cognition
+   tooling.
 
 ## Вердикт
 
-Seed — не кристал, не закон. Named ground. Reversible.
-Але **operational named ground** — не просто красива ідея.
-Дипольна структура invariant, compact, machine-native.
-Продовжувати.
+Seed — не кристал, не закон. Named ground. Reversible. Але **operational named
+ground** — не просто красива ідея. Дипольна структура invariant, compact,
+machine-native. Продовжувати.

@@ -30,8 +30,15 @@
 //
 // Emits CodeicideVerdict payload.
 
-import { coWitness, Envelope } from "../probes/receipt-envelope-encoder-v0/ts/envelope.ts";
-import { encodeCanonical, multihashSha256, CborValue } from "../probes/receipt-envelope-encoder-v0/ts/canonical_cbor.ts";
+import {
+  coWitness,
+  Envelope,
+} from "../probes/receipt-envelope-encoder-v0/ts/envelope.ts";
+import {
+  CborValue,
+  encodeCanonical,
+  multihashSha256,
+} from "../probes/receipt-envelope-encoder-v0/ts/canonical_cbor.ts";
 
 type CodeicideProposalBody = {
   type: "CodeicideProposal";
@@ -85,7 +92,10 @@ async function readEnvelopes(args: string[]): Promise<Envelope[]> {
     const total = chunks.reduce((a, c) => a + c.length, 0);
     const buf = new Uint8Array(total);
     let off = 0;
-    for (const c of chunks) { buf.set(c, off); off += c.length; }
+    for (const c of chunks) {
+      buf.set(c, off);
+      off += c.length;
+    }
     const text = new TextDecoder().decode(buf).trim();
     if (text.startsWith("[")) {
       for (const e of JSON.parse(text)) envs.push(e as Envelope);
@@ -103,7 +113,10 @@ async function readEnvelopes(args: string[]): Promise<Envelope[]> {
     const parsed = JSON.parse(text);
     if (parsed.schema === "trinity.receipt-envelope.v0.1") {
       envs.push(parsed as Envelope);
-    } else if (parsed.envelope && parsed.envelope.schema === "trinity.receipt-envelope.v0.1") {
+    } else if (
+      parsed.envelope &&
+      parsed.envelope.schema === "trinity.receipt-envelope.v0.1"
+    ) {
       envs.push(parsed.envelope as Envelope);
     } else {
       throw new Error(`verdict: ${p} does not contain a recognizable envelope`);
@@ -129,7 +142,8 @@ if (import.meta.main) {
   if (envs.length === 0) {
     console.log(JSON.stringify({
       type: "error",
-      message: "verdict requires at least one envelope (proposal + 0+ cowitnesses, or NAY envelope)",
+      message:
+        "verdict requires at least one envelope (proposal + 0+ cowitnesses, or NAY envelope)",
       position: "7/D",
       available: "t verdict <env1.json> [env2.json ...] | --stdin",
     }));
@@ -143,26 +157,43 @@ if (import.meta.main) {
 
   for (const env of envs) {
     if (env.schema !== "trinity.receipt-envelope.v0.1") {
-      malformed.push({ envelope_id: env.envelope_id, reason: "wrong envelope schema" });
+      malformed.push({
+        envelope_id: env.envelope_id,
+        reason: "wrong envelope schema",
+      });
       continue;
     }
-    const body = env.body as CodeicideProposalBody | CodeicideNayBody | undefined;
+    const body = env.body as
+      | CodeicideProposalBody
+      | CodeicideNayBody
+      | undefined;
     if (!body || typeof body !== "object" || !("type" in body)) {
-      malformed.push({ envelope_id: env.envelope_id, reason: "missing body or body.type" });
+      malformed.push({
+        envelope_id: env.envelope_id,
+        reason: "missing body or body.type",
+      });
       continue;
     }
     if (body.type === "CodeicideProposal") {
       // Sanity: re-hash body and verify against envelope.body_hash
-      const recomputed = await multihashSha256(encodeCanonical(body as unknown as CborValue));
+      const recomputed = await multihashSha256(
+        encodeCanonical(body as unknown as CborValue),
+      );
       if (recomputed !== env.body_hash) {
-        malformed.push({ envelope_id: env.envelope_id, reason: "body_hash inconsistent with body" });
+        malformed.push({
+          envelope_id: env.envelope_id,
+          reason: "body_hash inconsistent with body",
+        });
         continue;
       }
       proposalEnvs.push(env);
     } else if (body.type === "CodeicideNay") {
       nayEnvs.push(env);
     } else {
-      malformed.push({ envelope_id: env.envelope_id, reason: `unsupported body type: ${body.type}` });
+      malformed.push({
+        envelope_id: env.envelope_id,
+        reason: `unsupported body type: ${body.type}`,
+      });
     }
   }
 
@@ -181,7 +212,8 @@ if (import.meta.main) {
   if (proposalBodyHashes.size > 1) {
     console.log(JSON.stringify({
       type: "error",
-      message: "verdict: multiple distinct proposal bodies; cannot adjudicate across different proposals",
+      message:
+        "verdict: multiple distinct proposal bodies; cannot adjudicate across different proposals",
       position: "7/D",
       distinct_body_hashes: [...proposalBodyHashes],
     }));
@@ -204,7 +236,10 @@ if (import.meta.main) {
         selfAyeDetected = true;
       }
       if (!ayeMap.has(w.oracle)) {
-        ayeMap.set(w.oracle, { oracle: w.oracle, substrate_tag: w.substrate_tag });
+        ayeMap.set(w.oracle, {
+          oracle: w.oracle,
+          substrate_tag: w.substrate_tag,
+        });
       }
     }
   }
@@ -225,16 +260,22 @@ if (import.meta.main) {
 
   if (selfAyeDetected) {
     verdict = "NAY";
-    reasons.push("self-AYE detected: proposer substrate_tag appears in witness_chain");
+    reasons.push(
+      "self-AYE detected: proposer substrate_tag appears in witness_chain",
+    );
   } else if (nayList.length > 0) {
     verdict = "NAY";
     reasons.push(`${nayList.length} explicit NAY envelope(s) present`);
   } else if (ayeMap.size >= quorum.threshold) {
     verdict = "AYE";
-    reasons.push(`AYE count ${ayeMap.size} >= quorum threshold ${quorum.threshold}`);
+    reasons.push(
+      `AYE count ${ayeMap.size} >= quorum threshold ${quorum.threshold}`,
+    );
   } else {
     verdict = "PENDING";
-    reasons.push(`AYE count ${ayeMap.size} < quorum threshold ${quorum.threshold}; no NAY`);
+    reasons.push(
+      `AYE count ${ayeMap.size} < quorum threshold ${quorum.threshold}; no NAY`,
+    );
   }
 
   const result: Verdict = {

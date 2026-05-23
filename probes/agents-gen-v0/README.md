@@ -1,13 +1,13 @@
 # agents-gen-v0
 
-> **Status: graduated 2026-05-19 → `src/x8800_agents_gen.ts` (commit `e78e51c`).**
-> Pattern proved out and was promoted to a live organ. Live invocation:
-> `t agents` (handle at glossary 8/8). This directory remains as review
-> trail (Codex P1/P2 fixes, falsifier history); the canonical
+> **Status: graduated 2026-05-19 → `src/x8800_agents_gen.ts` (commit
+> `e78e51c`).** Pattern proved out and was promoted to a live organ. Live
+> invocation: `t agents` (handle at glossary 8/8). This directory remains as
+> review trail (Codex P1/P2 fixes, falsifier history); the canonical
 > implementation now lives in `src/`.
 
-Probe of auto-generated bucket-state documentation at `xN888_state.myc.md`
-plus substrate-level federation index at `x8888_agents.myc.md`.
+Probe of auto-generated bucket-state documentation at `xN888_state.myc.md` plus
+substrate-level federation index at `x8888_agents.myc.md`.
 
 ## Trigger
 
@@ -16,16 +16,16 @@ plus substrate-level federation index at `x8888_agents.myc.md`.
   proposing xN888 sub-coordinate convention with bi-half є/буде split
 - Codex cowitness `x2600_950005_codex_x8888-state-memory-cowitness.md`
   AYE-with-separation-of-loads (generated cache ≠ authored memory)
-- Gemini cowitness `2026-05-19T022500Z-gemini-x8888-poetics-cowitness.md`
-  AYE on coordinate-as-time
+- Gemini cowitness `2026-05-19T022500Z-gemini-x8888-poetics-cowitness.md` AYE on
+  coordinate-as-time
 
 ## What this probe demonstrates
 
-1. **Header-driven generation.** Six fixture organs in `src/` carry the
-   proposed minimal header fields (`intent`, `maturity`, `horizon`) plus
-   the existing ones (`position`, `hex_dipole`, `placement_policy`).
-2. **Bi-half rendering.** Generator splits organs by maturity and renders
-   into the proposed temporal halves:
+1. **Header-driven generation.** Six fixture organs in `src/` carry the proposed
+   minimal header fields (`intent`, `maturity`, `horizon`) plus the existing
+   ones (`position`, `hex_dipole`, `placement_policy`).
+2. **Bi-half rendering.** Generator splits organs by maturity and renders into
+   the proposed temporal halves:
    - `є` (current state, sub-positions `xN880..xN887`):
      - `xN884` active organs (foundation)
      - `xN887` frozen organs (sealed)
@@ -33,29 +33,30 @@ plus substrate-level federation index at `x8888_agents.myc.md`.
    - `буде` (intent vector, sub-positions `xN889..xN88F`):
      - `xN889` draft organs in flight
      - `xN88F` horizon synthesis (aggregated horizon fields from all organs)
-3. **Substrate-level federation index** at `x8888_agents.myc.md` — list
-   of buckets with active/draft counts plus pointers to per-substrate
-   federation files (liquid/omega/myc each regenerate their own).
-4. **Self-contained.** Fixture organs (`probes/agents-gen-v0/src/`) are
-   stubs. Real `trinity/src/` is NOT touched. Output goes to local
-   `output/`, NOT to trinity's coordinate space.
+3. **Substrate-level federation index** at `x8888_agents.myc.md` — list of
+   buckets with active/draft counts plus pointers to per-substrate federation
+   files (liquid/omega/myc each regenerate their own).
+4. **Self-contained.** Fixture organs (`probes/agents-gen-v0/src/`) are stubs.
+   Real `trinity/src/` is NOT touched. Output goes to local `output/`, NOT to
+   trinity's coordinate space.
 
 ## What this probe does NOT demonstrate
 
-- Reading from real trinity src/ (would require adding `intent / maturity /
-  horizon` fields to 50 real organs — separate move after probe resonates)
-- Gitignore wiring (output committed for review; real rollout would
-  gitignore `**/x?888_*.myc.md` + `**/x8888_*.myc.md`)
+- Reading from real trinity src/ (would require adding
+  `intent / maturity /
+  horizon` fields to 50 real organs — separate move after
+  probe resonates)
+- Gitignore wiring (output committed for review; real rollout would gitignore
+  `**/x?888_*.myc.md` + `**/x8888_*.myc.md`)
 - `t agents` dispatcher integration (probe is standalone script; organ at
   `x8800_agents_gen.ts` or similar would come after pattern lands)
-- Cross-substrate federation actually walking liquid/omega/myc (currently
-  just emits static pointers — real federation requires each submodule
-  to generate its own x8888 file independently)
-- Block-height anchoring in `generated_at` (uses ISO timestamp; Bitcoin
-  block height integration deferred to chord-naming-coordinate migration)
-- Model episodic memory (Gemini's `x8888.GEMINI.md` proposal) —
-  intentionally separated per Codex tweak (different load: authored
-  memory ≠ generated cache)
+- Cross-substrate federation actually walking liquid/omega/myc (currently just
+  emits static pointers — real federation requires each submodule to generate
+  its own x8888 file independently)
+- Block-height anchoring in `generated_at` (uses ISO timestamp; Bitcoin block
+  height integration deferred to chord-naming-coordinate migration)
+- Model episodic memory (Gemini's `x8888.GEMINI.md` proposal) — intentionally
+  separated per Codex tweak (different load: authored memory ≠ generated cache)
 
 ## Layout
 
@@ -88,21 +89,21 @@ deno task --config=probe.jsonc gen --bucket=6     # one bucket only (no x8888 pr
 Per Codex's `x2600_..._codex_substrate-morphology` review of this probe:
 
 - **`--stable` mode**: omits `generated_at` so identical source produces
-  byte-identical output. Diff-friendly. Two runs with no source change →
-  same `source_manifest_hash`. Verified by `diff` between consecutive runs.
+  byte-identical output. Diff-friendly. Two runs with no source change → same
+  `source_manifest_hash`. Verified by `diff` between consecutive runs.
 - **`source_manifest_hash`** in output header: SHA-256 of canonical JSON
   manifest of all source files (sorted by path, each entry has hash + size).
-  Output stops being "cache", becomes "receipt-like projection" — you can
-  tell exactly which source bytes produced this artifact.
-- **`bucket_hashes:` block** in `x8888_agents.myc.md`: SHA-256 of each
-  bucket's `xN888_state.myc.md` output. Substrate index doesn't re-hash
-  everything as soup; it cites bucket-level projections by hash.
-- **Maturity validation**: typos like `maturity: activ` are flagged with
-  warning on stderr AND surfaced in output's "invalid maturity" section.
-  The `x6FFF_typo_demo.ts` fixture exists permanently to demonstrate this
-  policy stays working.
-- **`--bucket=N` arg**: now actually honored (was documented in v1 but
-  silently ignored — a contract-breaker if shipped).
+  Output stops being "cache", becomes "receipt-like projection" — you can tell
+  exactly which source bytes produced this artifact.
+- **`bucket_hashes:` block** in `x8888_agents.myc.md`: SHA-256 of each bucket's
+  `xN888_state.myc.md` output. Substrate index doesn't re-hash everything as
+  soup; it cites bucket-level projections by hash.
+- **Maturity validation**: typos like `maturity: activ` are flagged with warning
+  on stderr AND surfaced in output's "invalid maturity" section. The
+  `x6FFF_typo_demo.ts` fixture exists permanently to demonstrate this policy
+  stays working.
+- **`--bucket=N` arg**: now actually honored (was documented in v1 but silently
+  ignored — a contract-breaker if shipped).
 
 Chain of trust:
 
@@ -148,37 +149,38 @@ source files bytes
 ## What's worth testing on a fresh model
 
 A bootstrap experiment per Codex falsifier: a fresh model reads
-`output/x8888_agents.myc.md` first, then drills into
-`output/x6888_state.myc.md` if interested in bucket 6 specifically.
-Time-to-orientation should be < 30 seconds. If the model still feels lost
-without reading AGENTS.md or organ source, the generator's synthesis is
-too mechanical — generates table-of-contents but not actual map.
+`output/x8888_agents.myc.md` first, then drills into `output/x6888_state.myc.md`
+if interested in bucket 6 specifically. Time-to-orientation should be < 30
+seconds. If the model still feels lost without reading AGENTS.md or organ
+source, the generator's synthesis is too mechanical — generates
+table-of-contents but not actual map.
 
 ## Tweaks landed in this probe (from cowitness round)
 
-- **From Codex:** minimal header field set `intent / maturity / horizon`,
-  no `requires` / `audience` / vector objects. Free-text `horizon`.
-- **From Codex:** `maturity` values restricted to `draft | active |
+- **From Codex:** minimal header field set `intent / maturity / horizon`, no
+  `requires` / `audience` / vector objects. Free-text `horizon`.
+- **From Codex:** `maturity` values restricted to
+  `draft | active |
   frozen | archived`.
-- **From Gemini:** coordinate-as-time is the truth source; no
-  `temporal_pole` metadata. Sub-positions `880..887` vs `889..88F` carry
-  the temporal split intrinsically.
+- **From Gemini:** coordinate-as-time is the truth source; no `temporal_pole`
+  metadata. Sub-positions `880..887` vs `889..88F` carry the temporal split
+  intrinsically.
 - **From Codex:** model memory deliberately NOT generated by this probe.
   Authored memory is a separate load.
 
 ## Next moves (if probe resonates)
 
-1. **Coordinate decision for the live generator organ.** Three candidates
-   from Codex review: `x8800` (cache-of-cache), `x8600` (audit/brief
-   projection), `x8A00` (wake/bootstrap). Decide after a fresh model
-   reads one rendered file and reports which framing felt right.
-2. **Extend real organ headers** in trinity src/. Start with bucket 6
-   (10 organs, well-populated). Other buckets follow on touch.
-3. **Move generator** to `src/x<chosen-coord>_agents_gen.ts`. Add
-   glossary entry. Wire `t agents` as the entry-point command.
+1. **Coordinate decision for the live generator organ.** Three candidates from
+   Codex review: `x8800` (cache-of-cache), `x8600` (audit/brief projection),
+   `x8A00` (wake/bootstrap). Decide after a fresh model reads one rendered file
+   and reports which framing felt right.
+2. **Extend real organ headers** in trinity src/. Start with bucket 6 (10
+   organs, well-populated). Other buckets follow on touch.
+3. **Move generator** to `src/x<chosen-coord>_agents_gen.ts`. Add glossary
+   entry. Wire `t agents` as the entry-point command.
 4. **Gitignore template:** `**/x?888_*.myc.md` and `**/x8888_*.myc.md`.
    Generated files stop entering git history.
-5. **AGENTS.md role transition.** Body schrinks (state moves to
-   generated); palimpsest dialog space remains. Add appendix paragraph
-   from next model voicing the experience of using generated brief
-   instead of hand-curated state pointers.
+5. **AGENTS.md role transition.** Body schrinks (state moves to generated);
+   palimpsest dialog space remains. Add appendix paragraph from next model
+   voicing the experience of using generated brief instead of hand-curated state
+   pointers.

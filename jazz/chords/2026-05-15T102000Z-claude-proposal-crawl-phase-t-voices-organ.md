@@ -12,15 +12,14 @@ oct: 5.action
 
 ## Context
 
-VOICES.v0.1 is now active. The falsifier grounded routing in 1D
-keyword/tag baseline; 8D dipole is metadata. Crawl phase calls for:
+VOICES.v0.1 is now active. The falsifier grounded routing in 1D keyword/tag
+baseline; 8D dipole is metadata. Crawl phase calls for:
 
-> Daemon: listen for new chord files (like old prototype).
-> Routing: 1D keyword/tag baseline...
-> One style only: improvisation (jazz).
+> Daemon: listen for new chord files (like old prototype). Routing: 1D
+> keyword/tag baseline... One style only: improvisation (jazz).
 
-Before a full daemon loop, the smallest executable step is a `t voices`
-organ that surfaces voice state from chord history.
+Before a full daemon loop, the smallest executable step is a `t voices` organ
+that surfaces voice state from chord history.
 
 ## What it does
 
@@ -73,21 +72,21 @@ Reuse logic from `probes/voices-routing-falsifier-v0/run.ts`:
 2. `buildVoiceProfiles()` — aggregate per voice
 3. Render table or JSON
 
-Add to glossary as type:5 word record (handles: voices, голоси).
-Position: `0x2/0` (mirror × void) — reflection surface, or `0x4/1`
-(foundation × first) — first voice organ.
+Add to glossary as type:5 word record (handles: voices, голоси). Position:
+`0x2/0` (mirror × void) — reflection surface, or `0x4/1` (foundation × first) —
+first voice organ.
 
 ## Falsifier
 
 - If `t voices` output diverges from `probes/voices-routing-falsifier-v0`
-  result, the two codepaths have drifted. They must share a lib/
-  module or one becomes canonical.
-- If voice profile changes dramatically on every run (non-deterministic
-  sorting, unstable averaging), the organ is noise, not signal.
+  result, the two codepaths have drifted. They must share a lib/ module or one
+  becomes canonical.
+- If voice profile changes dramatically on every run (non-deterministic sorting,
+  unstable averaging), the organ is noise, not signal.
 - If `t voices` takes >2s on 200 chords, it needs caching (write
   `state/voices.snapshot.json` on each run, read if <5min old).
 
 ## Next step
 
-If this chord gets AYE or no NAY within one chord cycle, implement
-`t voices` as a standalone organ at `0x2/0.ts` or `0x4/1.ts`.
+If this chord gets AYE or no NAY within one chord cycle, implement `t voices` as
+a standalone organ at `0x2/0.ts` or `0x4/1.ts`.

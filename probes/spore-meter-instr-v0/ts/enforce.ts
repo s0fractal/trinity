@@ -16,7 +16,11 @@
 
 const INSTR_DIR = "/tmp/spore-meter-instr-v0";
 
-const CORPUS: { name: string; sizes: number[]; bodyFuel: (n: number) => number }[] = [
+const CORPUS: {
+  name: string;
+  sizes: number[];
+  bodyFuel: (n: number) => number;
+}[] = [
   { name: "nop", sizes: [32], bodyFuel: () => 1 },
   { name: "identity", sizes: [32, 256, 1024], bodyFuel: (n) => 8 + 2 * n },
   { name: "xor_5c", sizes: [32, 256, 1024], bodyFuel: (n) => 7 + 21 * n },
@@ -28,8 +32,14 @@ const IN_PTR = 0;
 const OUT_PTR = 4096;
 
 class BudgetExceeded extends Error {
-  constructor(public counter: number, public amount: number, public budget: number) {
-    super(`spore.deduct: would exceed budget (counter=${counter}+${amount}>${budget})`);
+  constructor(
+    public counter: number,
+    public amount: number,
+    public budget: number,
+  ) {
+    super(
+      `spore.deduct: would exceed budget (counter=${counter}+${amount}>${budget})`,
+    );
   }
 }
 
@@ -85,7 +95,9 @@ for (const { name, sizes, bodyFuel } of CORPUS) {
     // Budget = body_fuel - 1 → must trap.
     const trapRun = await runOnce(wasm, name, inLen, fuel - 1);
     console.log(
-      `mutator=${name} in_len=${inLen} budget=${fuel - 1} result=${trapRun.result} final_fuel=${trapRun.finalFuel}`,
+      `mutator=${name} in_len=${inLen} budget=${
+        fuel - 1
+      } result=${trapRun.result} final_fuel=${trapRun.finalFuel}`,
     );
   }
 }

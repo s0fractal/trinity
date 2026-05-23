@@ -35,8 +35,8 @@ think in imports, capabilities, and recipes instead of rediscovering paths.
 - Each markdown atom declared `id`, `type`, `deps`, `vars`, code blocks, and
   tests.
 - The builder topologically sorted nodes into levels.
-- Each generated `mod.ts` re-exported the previous level, so imports were
-  stable (`@g02`, `src/_/02/mod.ts`) even while source atoms moved.
+- Each generated `mod.ts` re-exported the previous level, so imports were stable
+  (`@g02`, `src/_/02/mod.ts`) even while source atoms moved.
 - Determinism and semantic firewalls ran before emission.
 - Generated files carried SSoT source comments.
 - The generator wiped output dirs before rebuilding, preventing stale outputs.
@@ -83,8 +83,8 @@ capabilities/trinity.capabilities.v0.1.json
   -> receipt
 ```
 
-That proves `md/JSON SSoT -> generated md/index -> validator -> receipt`
-before generating executable code.
+That proves `md/JSON SSoT -> generated md/index -> validator -> receipt` before
+generating executable code.
 
 ## Falsifier
 

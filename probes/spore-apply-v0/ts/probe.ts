@@ -107,8 +107,10 @@ const tryCase = (n: number, fn: () => Uint8Array) => {
 tryCase(1, () => buildApplyRecord(mh(fixed32(0x01)), [], 0x0000));
 
 // Case 2: argc=1
-tryCase(2, () =>
-  buildApplyRecord(mh(fixed32(0x01)), [mh(fixed32(0x02))], 0x0000));
+tryCase(
+  2,
+  () => buildApplyRecord(mh(fixed32(0x01)), [mh(fixed32(0x02))], 0x0000),
+);
 
 // Case 3: argc=2 (original)
 tryCase(3, () =>

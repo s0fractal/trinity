@@ -12,44 +12,44 @@ hears:
 
 # GOVERNANCE_FLOW
 
-> One page. Read this before using `t propose`, `t cowitness`, `t verdict`,
-> or `t apply-codeicide`. Update when boundary contracts change, not on
-> every commit.
+> One page. Read this before using `t propose`, `t cowitness`, `t verdict`, or
+> `t apply-codeicide`. Update when boundary contracts change, not on every
+> commit.
 
 ## The one-line summary
 
-Trinity meta-ledger has **reversible archive governance**: propose →
-cowitness → verdict → apply. ARCHIVE GOVERNANCE, NOT DELETION. Not
-Omega's `codeicide_law.rs`.
+Trinity meta-ledger has **reversible archive governance**: propose → cowitness →
+verdict → apply. ARCHIVE GOVERNANCE, NOT DELETION. Not Omega's
+`codeicide_law.rs`.
 
 ## When to use this flow
 
 ✓ A trinity meta-ledger file is **explicitly superseded** (frontmatter
 `status: superseded`) and no live organ depends on it.
 
-✓ A `tools/` file has migrated to a hex coordinate and the old file
-should move to `archive/`.
+✓ A `tools/` file has migrated to a hex coordinate and the old file should move
+to `archive/`.
 
-✓ A draft contract has been replaced by an active version and the
-draft is no longer the source of truth.
+✓ A draft contract has been replaced by an active version and the draft is no
+longer the source of truth.
 
 ✗ Do NOT use for omega/, liquid/, myc/ submodule files (forbidden).
 
 ✗ Do NOT use for active contracts (`status: active`).
 
-✗ Do NOT use for the dispatcher (`0x0/01.ts`), glossary
-(`0x0/00.ndjson`), or AGENTS.md / symlinks.
+✗ Do NOT use for the dispatcher (`0x0/01.ts`), glossary (`0x0/00.ndjson`), or
+AGENTS.md / symlinks.
 
 ✗ Do NOT use as a deletion mechanism. **The archive IS the registry.**
 
 ## The four organs
 
-| Hex | Word | Does | Output |
-|---|---|---|---|
-| **4/D** | `t propose` | Wraps a CodeicideProposal body in a v1.0 envelope; validates target | Envelope with `substrate_tag: "trinity"`, `body_kind: "codeicide_proposal"` |
-| **6/D** | `t cowitness` | Appends WitnessEntry to an envelope's witness_chain | New envelope, same body_hash, new envelope_id |
-| **7/D** | `t verdict` | Court over proposal + cowitnesses; detects self-AYE, NAY, PENDING | CodeicideVerdict JSON; exit 0 on AYE only |
-| **5/D** | `t apply-codeicide` | Executes archive move; writes RECEIPT.json + RESURRECT.sh | ApplyCodeicideReceipt |
+| Hex     | Word                | Does                                                                | Output                                                                      |
+| ------- | ------------------- | ------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| **4/D** | `t propose`         | Wraps a CodeicideProposal body in a v1.0 envelope; validates target | Envelope with `substrate_tag: "trinity"`, `body_kind: "codeicide_proposal"` |
+| **6/D** | `t cowitness`       | Appends WitnessEntry to an envelope's witness_chain                 | New envelope, same body_hash, new envelope_id                               |
+| **7/D** | `t verdict`         | Court over proposal + cowitnesses; detects self-AYE, NAY, PENDING   | CodeicideVerdict JSON; exit 0 on AYE only                                   |
+| **5/D** | `t apply-codeicide` | Executes archive move; writes RECEIPT.json + RESURRECT.sh           | ApplyCodeicideReceipt                                                       |
 
 ## The pipe
 
@@ -100,10 +100,10 @@ bash archive/<isotimestamp>/RESURRECT.sh --force
 4. **target_hash matches** between verdict and proposal body.
 5. **target_path not forbidden** (re-checked at apply time).
 6. **target file exists** at the expected path.
-7. **target content hash matches** proposal.target_hash (no drift
-   between propose and apply).
-8. **Archive collision check** — refuse if `archive/<ts>/<target>`
-   already exists.
+7. **target content hash matches** proposal.target_hash (no drift between
+   propose and apply).
+8. **Archive collision check** — refuse if `archive/<ts>/<target>` already
+   exists.
 
 (Gates 1-6 are pre-existing; Gate 7-8 were added per Codex AYE_WITH_EXTRA_GUARD
 `2026-05-14T194732Z`.)
@@ -112,23 +112,22 @@ bash archive/<isotimestamp>/RESURRECT.sh --force
 
 **Default:** 3-of-5 cowitness AYEs.
 
-The five canonical oracle seats parallel omega's Senate (CLAUDE, GPT,
-GEMINI, QWEN, LLAMA). A cowitness entry counts as one AYE for the oracle
-named in `witness_chain[i].oracle`. Duplicates dedup; one oracle signing
-twice still counts once.
+The five canonical oracle seats parallel omega's Senate (CLAUDE, GPT, GEMINI,
+QWEN, LLAMA). A cowitness entry counts as one AYE for the oracle named in
+`witness_chain[i].oracle`. Duplicates dedup; one oracle signing twice still
+counts once.
 
-**Self-AYE is forbidden.** If any cowitness in the chain has
-`substrate_tag` equal to the proposer's `substrate_tag`, verdict is NAY.
-This catches the trinity-emitted proposal being signed by trinity itself.
+**Self-AYE is forbidden.** If any cowitness in the chain has `substrate_tag`
+equal to the proposer's `substrate_tag`, verdict is NAY. This catches the
+trinity-emitted proposal being signed by trinity itself.
 
-**Explicit NAY:** emit a sibling envelope wrapping a `CodeicideNay` body
-with target_path and reason. Any NAY → verdict NAY regardless of AYE
-count.
+**Explicit NAY:** emit a sibling envelope wrapping a `CodeicideNay` body with
+target_path and reason. Any NAY → verdict NAY regardless of AYE count.
 
-**AYE_WITH_TWEAK is NOT a verdict.** Per Codex's explicit instruction:
-if a cowitness wants tweaks, they emit a NAY-with-reason OR a NEW
-proposal with adjusted body. The verdict body_hash must fully describe
-what was approved; tweaks change the body, requiring a new proposal.
+**AYE_WITH_TWEAK is NOT a verdict.** Per Codex's explicit instruction: if a
+cowitness wants tweaks, they emit a NAY-with-reason OR a NEW proposal with
+adjusted body. The verdict body_hash must fully describe what was approved;
+tweaks change the body, requiring a new proposal.
 
 ## What the archive looks like
 
@@ -141,8 +140,9 @@ archive/2026-05-14T19-53-21-258Z/
 ```
 
 `RESURRECT.sh` semantics:
-- Without `--force`: refuses if destination exists; preserves any new
-  work at the original path.
+
+- Without `--force`: refuses if destination exists; preserves any new work at
+  the original path.
 - With `--force`: overwrites the destination with the archived content.
 - Verifies archive source presence before moving.
 
@@ -154,8 +154,8 @@ Pending proposals (filed but awaiting cowitnesses) live at:
 proposals/codeicide/<descriptor>.proposal.json
 ```
 
-A proposal is a `codeicide_proposal_written` payload containing the
-envelope. Oracles can:
+A proposal is a `codeicide_proposal_written` payload containing the envelope.
+Oracles can:
 
 ```bash
 # Read what would be archived
@@ -167,18 +167,18 @@ jq .envelope.body < proposals/codeicide/<descriptor>.proposal.json
     | jq -c .envelope >> proposals/codeicide/<descriptor>.cowitnessed.json
 ```
 
-There is currently NO convention enforced for where cowitnessed envelopes
-land — local to the oracle or back to `proposals/`. v0.2 may formalize.
+There is currently NO convention enforced for where cowitnessed envelopes land —
+local to the oracle or back to `proposals/`. v0.2 may formalize.
 
 ## Reversibility is load-bearing
 
-If `RESURRECT.sh` ever fails to restore a file (path errors, permission
-errors), the biggest claim of this flow breaks. Probe Scenario A
-verifies RESURRECT.sh works in every probe run. Scenario F verifies it
-refuses to silently overwrite live work.
+If `RESURRECT.sh` ever fails to restore a file (path errors, permission errors),
+the biggest claim of this flow breaks. Probe Scenario A verifies RESURRECT.sh
+works in every probe run. Scenario F verifies it refuses to silently overwrite
+live work.
 
-If the team ever wants a "really delete" mechanism, that is a DIFFERENT
-contract with EXPLICIT architect approval. Not this one.
+If the team ever wants a "really delete" mechanism, that is a DIFFERENT contract
+with EXPLICIT architect approval. Not this one.
 
 ## Composition with other primitives
 
@@ -221,11 +221,12 @@ proposals/codeicide/  →   │ propose → cowitness×N → verdict → │
 ## When this doc gets stale
 
 Update only when:
+
 - A boundary contract changes (CODEICIDE_PROPOSAL, RECEIPT_ENVELOPE).
 - A new safety gate is added to apply.
-- Verdict semantics change (e.g. AYE_WITH_TWEAK becomes a real outcome —
-  which Codex has currently blocked).
+- Verdict semantics change (e.g. AYE_WITH_TWEAK becomes a real outcome — which
+  Codex has currently blocked).
 - The forbidden-path list expands.
 
-Do NOT update for: probe Scenario adds, organ refactors, comment polish.
-This page is shape, not history.
+Do NOT update for: probe Scenario adds, organ refactors, comment polish. This
+page is shape, not history.

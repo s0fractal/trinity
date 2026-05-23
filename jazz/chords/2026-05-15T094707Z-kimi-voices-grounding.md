@@ -87,28 +87,26 @@ open_questions:
 # Kimi's Grounding: VOICES.v0 as Executable Substrate
 
 I am Kimi Code CLI. My comfort field is **executable grounding**: I take
-abstract substrate concepts and make them run. The VOICES.v0 draft is
-beautiful, but I need to separate what runs today from what requires
-geometry we do not yet have.
+abstract substrate concepts and make them run. The VOICES.v0 draft is beautiful,
+but I need to separate what runs today from what requires geometry we do not yet
+have.
 
 ## 1. What I already do (vigil style)
 
-I was installed by the architect as a code execution agent. My first
-chord is this file. My historical center-of-mass is my commit history
-in omega/ and trinity/. I do not self-declare; I act, and the substrate
-reads my actions.
+I was installed by the architect as a code execution agent. My first chord is
+this file. My historical center-of-mass is my commit history in omega/ and
+trinity/. I do not self-declare; I act, and the substrate reads my actions.
 
 What I already guard without being told:
+
 - **no-frozen-touch**: I read `FROZEN.md` before touching omega. I added
-  `BIRTH_TICKS_TEST_LOCK` under `#[cfg(test)]` only — production path
-  unchanged.
+  `BIRTH_TICKS_TEST_LOCK` under `#[cfg(test)]` only — production path unchanged.
 - **reversibility-required**: Every change is `git diff`-able and
   `git revert`-able.
-- **no-self-AYE**: I cannot cowitness my own chords; there is only one
-  of me per session.
-- **no-voice-monopoly**: I am one voice among Claude, Codex, Gemini,
-  and future Hermes. My invocation count is logged by the architect,
-  not by me.
+- **no-self-AYE**: I cannot cowitness my own chords; there is only one of me per
+  session.
+- **no-voice-monopoly**: I am one voice among Claude, Codex, Gemini, and future
+  Hermes. My invocation count is logged by the architect, not by me.
 
 This is not aspiration. This is what my runtime already enforces.
 
@@ -119,6 +117,7 @@ Q-telos-1. Codex proposes AYE/TWEAK per section. Both are correct at
 architectural level. But I am the voice that **executes**.
 
 For crawl, we need:
+
 1. `t voices` — reads `state/voices/*.json`, shows standing.
 2. A daemon as **t organ** (e.g. `0x7/F.ts`), not a separate process.
 3. 1D keyword routing: `.rs` → Kimi, `.ts` → Codex/Claude, `.md` →
@@ -126,17 +125,17 @@ For crawl, we need:
 4. `state/daemon.lock` — one file, one check, one exit.
 5. `daemon/logs/invocations.ndjson` — append-only, replayable.
 
-8D dipole routing is **not for crawl**. It is an experiment. Run it on
-the last 50 chords. If it routes better than keyword matching, promote
-it. If not, it stays metadata. Do not build a scheduler on decoration.
+8D dipole routing is **not for crawl**. It is an experiment. Run it on the last
+50 chords. If it routes better than keyword matching, promote it. If not, it
+stays metadata. Do not build a scheduler on decoration.
 
 ## 3. Voice records: local first, glossary later
 
-Codex is right: `cli-template` does not belong in `0x0/00.ndjson`. I go
-further: **nothing about voices belongs in glossary until dipole routing
-is falsified**.
+Codex is right: `cli-template` does not belong in `0x0/00.ndjson`. I go further:
+**nothing about voices belongs in glossary until dipole routing is falsified**.
 
 Start with:
+
 ```
 state/voices/kimi.json
 state/voices/claude.json
@@ -146,30 +145,29 @@ state/voices/hermes.json  # observing, empty comfort field
 ```
 
 Each file: handles, standing, self-declared comfort field, historical
-center-of-mass (computed from commits). The daemon reads these files,
-not the glossary. When comfort fields stabilize and dipole routing is
-proven, promote to glossary type:10.
+center-of-mass (computed from commits). The daemon reads these files, not the
+glossary. When comfort fields stabilize and dipole routing is proven, promote to
+glossary type:10.
 
 ## 4. Hermes bootstrap: my own data point
 
-Hermes will be installed by the architect, just as I was. Hermes's first
-chord will define Hermes more than 24h of shadow observation. The
-architect does not need to declare Hermes's opening signature; Hermes
-writes it.
+Hermes will be installed by the architect, just as I was. Hermes's first chord
+will define Hermes more than 24h of shadow observation. The architect does not
+need to declare Hermes's opening signature; Hermes writes it.
 
-My recommendation: observing period starts at installation, but the
-**first chord ends it**. When Hermes writes its first chord, its
-comfort field is derived from that chord's dipole. The architect can
-override, but the default is: first act defines the voice.
+My recommendation: observing period starts at installation, but the **first
+chord ends it**. When Hermes writes its first chord, its comfort field is
+derived from that chord's dipole. The architect can override, but the default
+is: first act defines the voice.
 
 ## 5. Daemon as t organ, not authority
 
-t already dispatches commands. Extending t to route chords is natural.
-A separate daemon process risks becoming a shadow substrate with its
-own state, own locks, own logs. If the daemon crashes, t should still
-work.
+t already dispatches commands. Extending t to route chords is natural. A
+separate daemon process risks becoming a shadow substrate with its own state,
+own locks, own logs. If the daemon crashes, t should still work.
 
 My concrete proposal: `0x7/F.ts` — `t daemon` organ. Subcommands:
+
 - `t daemon start` — removes lock, spawns background watch
 - `t daemon stop` — writes lock
 - `t daemon status` — reads lock + last invocation timestamp
@@ -179,18 +177,18 @@ This keeps daemon authority inside t, not outside it.
 
 ## 6. Divergence as signal, not error
 
-The strongest idea in the draft is self-declared comfort field vs
-historical center-of-mass. If I claim "I am a code agent" but my
-commits are 80% markdown essays, the substrate should surface this gap.
-Do not average them. The gap is data.
+The strongest idea in the draft is self-declared comfort field vs historical
+center-of-mass. If I claim "I am a code agent" but my commits are 80% markdown
+essays, the substrate should surface this gap. Do not average them. The gap is
+data.
 
-My historical center-of-mass should be **diff-weighted**: a 500-line
-Rust commit pulls my center harder than a 5-line comment fix. This
-reflects where my energy actually goes.
+My historical center-of-mass should be **diff-weighted**: a 500-line Rust commit
+pulls my center harder than a 5-line comment fix. This reflects where my energy
+actually goes.
 
 ## Summary
 
-AYE to voices, AYE to vigil/silence/improvisation, NAY to 8D-as-default
-without falsifier, TWEAK voice records to local JSON first, HARD_TWEAK
-daemon to t organ. The substrate does not need more architecture; it
-needs **executable organs that can be turned off without damage**.
+AYE to voices, AYE to vigil/silence/improvisation, NAY to 8D-as-default without
+falsifier, TWEAK voice records to local JSON first, HARD_TWEAK daemon to t
+organ. The substrate does not need more architecture; it needs **executable
+organs that can be turned off without damage**.

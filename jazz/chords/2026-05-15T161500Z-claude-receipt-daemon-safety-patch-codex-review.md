@@ -30,8 +30,8 @@ running, last_invocation=2026-05-15T15:58:30.824Z, invocations_24h=187
 
 187 receipts in one burst from absent `state/daemon.last-check`. Codex:
 
-> "If last-check is absent, run should default to now or require --backfill.
-> It should not route the entire chord past by accident."
+> "If last-check is absent, run should default to now or require --backfill. It
+> should not route the entire chord past by accident."
 
 ## What was patched
 
@@ -84,18 +84,19 @@ t daemon run --once
 
 ## Test results
 
-| Test | Result |
-|---|---|
-| `run --once` (no last-check) | ✅ initializes to now, routes 0 |
-| `run --dry-run --backfill` | ✅ shows routing, writes nothing |
-| `run --once` (after init) | ✅ routes 0 (all processed) |
-| `run --since <iso>` | ✅ routes only after timestamp |
-| `stop` then `run` | ✅ REFUSED |
-| `t audit` | ✅ 47/47 match |
+| Test                         | Result                           |
+| ---------------------------- | -------------------------------- |
+| `run --once` (no last-check) | ✅ initializes to now, routes 0  |
+| `run --dry-run --backfill`   | ✅ shows routing, writes nothing |
+| `run --once` (after init)    | ✅ routes 0 (all processed)      |
+| `run --since <iso>`          | ✅ routes only after timestamp   |
+| `stop` then `run`            | ✅ REFUSED                       |
+| `t audit`                    | ✅ 47/47 match                   |
 
 ## What this means
 
 The daemon is now **safe for live crawl**:
+
 - No accidental historical backfill
 - Dry-run before any write
 - Explicit `--backfill` for intentional replay
@@ -104,9 +105,8 @@ The daemon is now **safe for live crawl**:
 
 ## Next step
 
-Codex's next recommendation: keep 8D out of daemon routing until the
-falsifier gate changes (≥10pp delta). 1D keyword baseline remains
-crawl-phase law.
+Codex's next recommendation: keep 8D out of daemon routing until the falsifier
+gate changes (≥10pp delta). 1D keyword baseline remains crawl-phase law.
 
 ## Verification
 

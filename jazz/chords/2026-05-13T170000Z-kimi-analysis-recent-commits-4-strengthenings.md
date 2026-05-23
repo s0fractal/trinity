@@ -39,13 +39,13 @@ expected_after_running: {}
 
 ## Що з'явилося за останні коміти (3151 рядок)
 
-| Commit | Що додано | Статус |
-|--------|----------|--------|
-| fb0a1ac | HEX_DIPOLE_SEED + LIFECYCLE_SEED + 9 chords + chord_init.ts | **Concept operationalized** |
-| add3608 | 0x0/ substrate root: glossary (00.ndjson), dispatcher (01.ts), help (0F.ts), executables (5/0.ts, 5/A.ts) | **Operational** |
-| d0d4318 | Polyglot synonyms: 10-field multilingual search, 41 synonyms across 2 langs | **Operational** |
-| b449ba1 | Global `t` command via bash shim + ~/.local/bin/ symlink | **Operational** |
-| 4dad33d | 7 chords (torus, convergence, corrections) + AGENTS.md letter | **Conceptual** |
+| Commit  | Що додано                                                                                                 | Статус                      |
+| ------- | --------------------------------------------------------------------------------------------------------- | --------------------------- |
+| fb0a1ac | HEX_DIPOLE_SEED + LIFECYCLE_SEED + 9 chords + chord_init.ts                                               | **Concept operationalized** |
+| add3608 | 0x0/ substrate root: glossary (00.ndjson), dispatcher (01.ts), help (0F.ts), executables (5/0.ts, 5/A.ts) | **Operational**             |
+| d0d4318 | Polyglot synonyms: 10-field multilingual search, 41 synonyms across 2 langs                               | **Operational**             |
+| b449ba1 | Global `t` command via bash shim + ~/.local/bin/ symlink                                                  | **Operational**             |
+| 4dad33d | 7 chords (torus, convergence, corrections) + AGENTS.md letter                                             | **Conceptual**              |
 
 Результат: substrate-native hex language вийшла з draft у operational.
 `t verify`, `t блок`, `t help`, `t help висота` — працюють з shell.
@@ -55,14 +55,15 @@ expected_after_running: {}
 ### 1. Dipole Resonance Router
 
 **Що є:** У HEX_DIPOLE_SEED описано need-detection routing:
+
 ```text
 chord_a: triangle_build = +0.8  (offer structure)
 chord_b: triangle_build = -0.8  (need structure)
 → complement = strong route candidate
 ```
 
-**Що немає:** Dispatcher (0x0/01.ts) цього не робить. Він робить
-тільки flat word match (canonical або synonym).
+**Що немає:** Dispatcher (0x0/01.ts) цього не робить. Він робить тільки flat
+word match (canonical або synonym).
 
 **Підсилення:** Додати до dispatcher dipole-aware complement search.
 
@@ -76,26 +77,28 @@ function fn_resonate(query: HexDipolePosition, records: WordRec[]): WordRec[] {
 ```
 
 **Operational form:**
+
 ```bash
 t need structure     # routes to executable with +triangle_build
 t offer joy          # routes to chord/agent that needs joy
 t complement "33 8E 59 40..."  # routes by hex vector
 ```
 
-**Чому це підсилює:** Перетворює substrate з "словника" на
-"семантичний ринок". Не тільки "що я шукаю", а "що мені
-потрібно і хто це може дати".
+**Чому це підсилює:** Перетворює substrate з "словника" на "семантичний ринок".
+Не тільки "що я шукаю", а "що мені потрібно і хто це може дати".
 
 ### 2. Vote Consensus Engine
 
 **Що є:** У glossary field 13 — i8 votes per voice:
+
 ```json
 "13":{"30":"7F","31":"7F","32":"7F","33":"00"}
 ```
+
 7F=strong AYE, 81=strong NAY, 00=pending, 40=mild AYE, C0=mild NAY.
 
-**Що немає:** Немає tooling для aggregation. Не видно, що 0↔8
-unanimous (7F/7F/7F), а 7 had split convergence (40/40/40).
+**Що немає:** Немає tooling для aggregation. Не видно, що 0↔8 unanimous
+(7F/7F/7F), а 7 had split convergence (40/40/40).
 
 **Підсилення:** `t consensus` command.
 
@@ -106,18 +109,20 @@ t consensus          # aggregates all votes
 → sign convention: not yet voted (all 00)
 ```
 
-**Operational form:** reads 00.ndjson, parses field 13, computes
-quorum status per record.
+**Operational form:** reads 00.ndjson, parses field 13, computes quorum status
+per record.
 
-**Чому це підсилює:** Operationalizes 3-voice quorum. Мова не
-тільки описує, а й **рахує згоду**.
+**Чому це підсилює:** Operationalizes 3-voice quorum. Мова не тільки описує, а й
+**рахує згоду**.
 
 ### 3. Projection Calculus
 
 **Що є:** Type 04 records — projections (context-shifted readings):
+
 ```json
-{"00":"04","01":"0","08":"5","10":{"en":"silent action / wu-wei"}}
+{ "00": "04", "01": "0", "08": "5", "10": { "en": "silent action / wu-wei" } }
 ```
+
 5(action) + 0(void) → wu-wei.
 
 **Що немає:** Це data, не logic. Немає executable projection engine.
@@ -130,16 +135,17 @@ t project 5 A        # → "fresh action / just begun"
 t project 6 8        # → "infinite memory / boundless archive"
 ```
 
-**Operational form:** table lookup з interpolation для нових
-комбінацій. Якщо комбінація відома — return recorded projection.
-Якщо нова — compute via dipole interaction rules.
+**Operational form:** table lookup з interpolation для нових комбінацій. Якщо
+комбінація відома — return recorded projection. Якщо нова — compute via dipole
+interaction rules.
 
-**Чому це підсилює:** Перетворює projections з "історичних
-записів" на "обчислювальну семантику". Мова gain composability.
+**Чому це підсилює:** Перетворює projections з "історичних записів" на
+"обчислювальну семантику". Мова gain composability.
 
 ### 4. Self-Describing Schema Validation
 
 **Що є:** Type 02 records define schema:
+
 ```json
 {"00":"02","02":"10","03":"base"}
 {"00":"02","02":"12","03":"axis"}
@@ -148,8 +154,8 @@ t project 6 8        # → "infinite memory / boundless archive"
 
 **Що немає:** Runtime не використовує type 02 для validation.
 
-**Підсилення:** Runtime читає type 02 records, будує schema map,
-валідує всі type 03/04/05 records на вході.
+**Підсилення:** Runtime читає type 02 records, будує schema map, валідує всі
+type 03/04/05 records на вході.
 
 ```typescript
 const schema = new Map<string, string>(); // code -> field_name
@@ -166,35 +172,34 @@ t validate           # reads 00.ndjson, validates against self-schema
 → type 05 records: 6 words, all valid
 ```
 
-**Чому це підсилює:** Glossary стає **self-describing**. Не
-потрібен external schema. Це "substrate-native" taken seriously —
-навіть формат даних описує себе всередині substrate.
+**Чому це підсилює:** Glossary стає **self-describing**. Не потрібен external
+schema. Це "substrate-native" taken seriously — навіть формат даних описує себе
+всередині substrate.
 
 ## Що НЕ пропоную
 
-- **BLAKE3 fallback for unknown words** — architect said skip, tier-1
-  only. Respected.
-- **Multi-arg dispatch** — зазначено як honest limit, але це
-  engineering, не conceptual strengthening.
-- **More languages** — infrastructure ready, просто треба додати
-  data. Not conceptual.
+- **BLAKE3 fallback for unknown words** — architect said skip, tier-1 only.
+  Respected.
+- **Multi-arg dispatch** — зазначено як honest limit, але це engineering, не
+  conceptual strengthening.
+- **More languages** — infrastructure ready, просто треба додати data. Not
+  conceptual.
 
 ## Пріоритет
 
-1. **Vote Consensus Engine** — найлегше (read i8, sum, threshold).
-   ~30 рядків. Максимальний conceptual impact.
-2. **Projection Calculus** — середнє (table lookup + rules).
-   ~50 рядків. Composability gain.
-3. **Dipole Resonance Router** — складніше (vector math, scoring).
-   ~80 рядків. Biggest architectural shift.
-4. **Self-Describing Schema** — середнє (type 02 parser, validator).
-   ~60 рядків. Self-sufficiency gain.
+1. **Vote Consensus Engine** — найлегше (read i8, sum, threshold). ~30 рядків.
+   Максимальний conceptual impact.
+2. **Projection Calculus** — середнє (table lookup + rules). ~50 рядків.
+   Composability gain.
+3. **Dipole Resonance Router** — складніше (vector math, scoring). ~80 рядків.
+   Biggest architectural shift.
+4. **Self-Describing Schema** — середнє (type 02 parser, validator). ~60 рядків.
+   Self-sufficiency gain.
 
 ## Вердикт
 
-Substrate вийшов з draft у operational за 5 комітів. Conceptual
-seeds (dipole, lifecycle) потребують operational machinery.
-Чотири strengthenings перетворюють seeds на working system —
-без нових файлів, тільки deepening existing ones.
+Substrate вийшов з draft у operational за 5 комітів. Conceptual seeds (dipole,
+lifecycle) потребують operational machinery. Чотири strengthenings перетворюють
+seeds на working system — без нових файлів, тільки deepening existing ones.
 
 — kimi-k1.6, 2026-05-13T17:00Z

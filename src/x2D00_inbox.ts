@@ -31,7 +31,11 @@
 //
 // Glossary words: inbox, pending, backlog, очікує, скринька
 
-import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
+import {
+  dirname,
+  fromFileUrl,
+  join,
+} from "https://deno.land/std@0.224.0/path/mod.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
@@ -69,7 +73,10 @@ function normSpeaker(s: string): string {
   // "hermes (await first chord)" → "hermes").
   let v = s.split(/[\s(]/)[0].toLowerCase().trim();
   // Strip versioned suffixes like -opus-4.7-1m, -gpt-5, -3.1-pro, -k1.6.
-  v = v.replace(/[-_](opus|gpt|k|3|claude|gemini|codex|kimi|hermes)[-_.0-9].*$/i, "");
+  v = v.replace(
+    /[-_](opus|gpt|k|3|claude|gemini|codex|kimi|hermes)[-_.0-9].*$/i,
+    "",
+  );
   // Strip plain version dots/dashes at end ("claude-opus" → "claude").
   v = v.replace(/-(opus|sonnet|haiku|pro|flash|k\d+|gpt-?\d+).*$/i, "");
   return v;
@@ -103,7 +110,10 @@ function parseYamlFrontmatter(text: string): ChordFm | null {
       if (currentKey && !inList) inList = true;
       if (inList) {
         let v = listMatch[1].trim();
-        if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) {
+        if (
+          (v.startsWith('"') && v.endsWith('"')) ||
+          (v.startsWith("'") && v.endsWith("'"))
+        ) {
           v = v.slice(1, -1);
         }
         listItems.push(v);
@@ -123,7 +133,10 @@ function parseYamlFrontmatter(text: string): ChordFm | null {
       currentKey = kvMatch[1];
       const val = kvMatch[2].trim();
       if (val.length > 0) {
-        if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+        if (
+          (val.startsWith('"') && val.endsWith('"')) ||
+          (val.startsWith("'") && val.endsWith("'"))
+        ) {
           fm[currentKey] = val.slice(1, -1);
         } else if (/^\d+$/.test(val)) fm[currentKey] = parseInt(val, 10);
         else if (/^\d+\.\d+$/.test(val)) fm[currentKey] = parseFloat(val);
@@ -192,7 +205,10 @@ function computeInbox(
     });
   }
   // Sort oldest-first; oldest backlog has highest priority.
-  items.sort((a, b) => (a.chord_id < b.chord_id ? -1 : a.chord_id > b.chord_id ? 1 : 0));
+  items.sort((
+    a,
+    b,
+  ) => (a.chord_id < b.chord_id ? -1 : a.chord_id > b.chord_id ? 1 : 0));
   return items;
 }
 
@@ -222,10 +238,14 @@ function renderTextSummary(allInboxes: Record<string, InboxItem[]>): string {
   for (const v of voices) {
     const items = allInboxes[v];
     const oldest = items.length > 0 ? items[0].chord_id : "—";
-    lines.push(`# ${v.padEnd(14)} ${String(items.length).padStart(4)}     ${oldest}`);
+    lines.push(
+      `# ${v.padEnd(14)} ${String(items.length).padStart(4)}     ${oldest}`,
+    );
   }
   lines.push(`# ─────────────────────────────────────────────────────────────`);
-  lines.push(`# Total voices: ${voices.length}.  Use 't inbox <voice>' for detail.`);
+  lines.push(
+    `# Total voices: ${voices.length}.  Use 't inbox <voice>' for detail.`,
+  );
   return lines.join("\n");
 }
 
@@ -235,11 +255,15 @@ function renderTextDetail(voice: string, items: InboxItem[]): string {
     `# ─────────────────────────────────────────────────────────────────────`,
   ];
   if (items.length === 0) {
-    lines.push(`# (nothing pending — ${voice} has responded to every chord they were addressed in)`);
+    lines.push(
+      `# (nothing pending — ${voice} has responded to every chord they were addressed in)`,
+    );
     return lines.join("\n");
   }
   lines.push(`# ${items.length} pending  (oldest first)`);
-  lines.push(`# ─────────────────────────────────────────────────────────────────────`);
+  lines.push(
+    `# ─────────────────────────────────────────────────────────────────────`,
+  );
   for (const item of items) {
     const energy = item.energy !== null ? item.energy.toFixed(2) : " —";
     const mode = (item.mode ?? "?").padEnd(12);
@@ -266,17 +290,22 @@ async function main() {
     const voice = normSpeaker(voiceArg);
     const items = computeInbox(voice, chords);
     if (jsonMode) {
-      console.log(JSON.stringify({
-        type: "inbox",
-        schema: "trinity.inbox.v0.1",
-        action: "inbox",
-        position: "2/D",
-        voice,
-        count: items.length,
-        items,
-        note: "Chords addressed to voice via addressed_to[] field that voice has not yet listed in hears[] of any of their own chord.",
-        synonyms: ["inbox", "pending", "backlog", "очікує", "скринька"],
-      }, null, 2));
+      console.log(JSON.stringify(
+        {
+          type: "inbox",
+          schema: "trinity.inbox.v0.1",
+          action: "inbox",
+          position: "2/D",
+          voice,
+          count: items.length,
+          items,
+          note:
+            "Chords addressed to voice via addressed_to[] field that voice has not yet listed in hears[] of any of their own chord.",
+          synonyms: ["inbox", "pending", "backlog", "очікує", "скринька"],
+        },
+        null,
+        2,
+      ));
     } else {
       console.log(renderTextDetail(voice, items));
     }
@@ -290,18 +319,28 @@ async function main() {
     allInboxes[v] = computeInbox(v, chords);
   }
   if (jsonMode) {
-    console.log(JSON.stringify({
-      type: "inbox",
-      schema: "trinity.inbox.v0.1",
-      action: "inbox",
-      position: "2/D",
-      mode: "summary",
-      voices: Object.fromEntries(
-        Object.entries(allInboxes).map(([v, items]) => [v, { count: items.length, oldest: items[0]?.chord_id ?? null }]),
-      ),
-      note: "Per-voice unresponded-to count. Use 't inbox <voice>' for detail.",
-      synonyms: ["inbox", "pending", "backlog", "очікує", "скринька"],
-    }, null, 2));
+    console.log(JSON.stringify(
+      {
+        type: "inbox",
+        schema: "trinity.inbox.v0.1",
+        action: "inbox",
+        position: "2/D",
+        mode: "summary",
+        voices: Object.fromEntries(
+          Object.entries(allInboxes).map((
+            [v, items],
+          ) => [v, {
+            count: items.length,
+            oldest: items[0]?.chord_id ?? null,
+          }]),
+        ),
+        note:
+          "Per-voice unresponded-to count. Use 't inbox <voice>' for detail.",
+        synonyms: ["inbox", "pending", "backlog", "очікує", "скринька"],
+      },
+      null,
+      2,
+    ));
   } else {
     console.log(renderTextSummary(allInboxes));
   }

@@ -89,7 +89,7 @@ delta=+6.8pp
 verdict=keep_metadata
 ```
 
-So the current evidence says: 8D is not useless, but it does not clear the
-+10pp adoption gate. For `VOICES.v0.1`, I would keep 1D routing as crawl
-default and keep 8D/Mood+Focus as metadata until label quality or later data
-changes the result.
+So the current evidence says: 8D is not useless, but it does not clear the +10pp
+adoption gate. For `VOICES.v0.1`, I would keep 1D routing as crawl default and
+keep 8D/Mood+Focus as metadata until label quality or later data changes the
+result.

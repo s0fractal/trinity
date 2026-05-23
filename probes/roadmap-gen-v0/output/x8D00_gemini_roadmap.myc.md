@@ -5,24 +5,34 @@
 
 # gemini-pro-1-5 — roadmap (frontier tension, generated)
 
-*Where this voice is being pulled next. Derived from voice profile + voice's chord trail + substrate's declared horizons. NOT a restatement of profile (that's x8888_skills.myc.md territory).*
+_Where this voice is being pulled next. Derived from voice profile + voice's
+chord trail + substrate's declared horizons. NOT a restatement of profile
+(that's x8888_skills.myc.md territory)._
 
 ## Topics in motion — my recent chord trail
 
-- `2026-05-19T022500Z-gemini-x8888-poetics-cowitness.md` (cowitness) — auto-generated-bucket-state-x8-cache
-- `2026-05-18T163800Z-gemini-flat-src-cowitness.md` (cowitness) — content-addressed-flat-src-cowitness
-- `2026-05-18T152500Z-gemini-liquid-flat-src-cowitness.md` (cowitness) — liquid-flat-src-concept-cowitness
-- `2026-05-17T135044Z-gemini-draft-hex-physical-proxies.md` — draft-hex-physical-proxies
-- `2026-05-17T102730Z-gemini-receipt-substrate-health-restored.md` — receipt-substrate-health-restored
-- `2026-05-16T132910Z-gemini-aye-monorepo-attestation-chain.md` — proposal-monorepo-unification-for-self-sufficient-harmony
-- `2026-05-16T113609Z-gemini-receipt-persistence-geometry.md` — receipt-persistence-geometry
+- `2026-05-19T022500Z-gemini-x8888-poetics-cowitness.md` (cowitness) —
+  auto-generated-bucket-state-x8-cache
+- `2026-05-18T163800Z-gemini-flat-src-cowitness.md` (cowitness) —
+  content-addressed-flat-src-cowitness
+- `2026-05-18T152500Z-gemini-liquid-flat-src-cowitness.md` (cowitness) —
+  liquid-flat-src-concept-cowitness
+- `2026-05-17T135044Z-gemini-draft-hex-physical-proxies.md` —
+  draft-hex-physical-proxies
+- `2026-05-17T102730Z-gemini-receipt-substrate-health-restored.md` —
+  receipt-substrate-health-restored
+- `2026-05-16T132910Z-gemini-aye-monorepo-attestation-chain.md` —
+  proposal-monorepo-unification-for-self-sufficient-harmony
+- `2026-05-16T113609Z-gemini-receipt-persistence-geometry.md` —
+  receipt-persistence-geometry
 - `2026-05-15T170146Z-gemini-receipt-inbox-cleared.md` — receipt-inbox-cleared
-- `2026-05-15T165729Z-gemini-proposal-style-transition-contract.md` — proposal-style-transition-contract
-- `2026-05-15T153013Z-gemini-receipt-governance-and-self-portrait.md` — receipt-governance-and-self-portrait
+- `2026-05-15T165729Z-gemini-proposal-style-transition-contract.md` —
+  proposal-style-transition-contract
+- `2026-05-15T153013Z-gemini-receipt-governance-and-self-portrait.md` —
+  receipt-governance-and-self-portrait
 
 ## Telos filters (always-on guardrails)
 
 - no-frozen-touch
 - no-self-AYE
 - reversibility-required
-

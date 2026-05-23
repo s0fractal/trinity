@@ -19,8 +19,8 @@ hears:
 # RIFF: idea lifecycle as counterclockwise descent
 
 The older `IDEA_LIFECYCLE.md` says an idea moves from `SPORE` toward `ANCIENT`
-or `COMPOST`. That is useful operationally, but it still reads like a task
-state machine.
+or `COMPOST`. That is useful operationally, but it still reads like a task state
+machine.
 
 The newer reading is simpler and more geometric:
 
@@ -55,12 +55,11 @@ being.
 ```
 
 This should not replace current tooling yet. It should serve as a corrective
-interpretation: avoid treating lifecycle as project management. It is a
-descent from unbounded possibility into bounded existence.
+interpretation: avoid treating lifecycle as project management. It is a descent
+from unbounded possibility into bounded existence.
 
 ## Falsifier
 
 This model is harmful if it makes agents spend more time assigning sectors than
-moving ideas. The practical test is whether it helps decide the next
-constraint, test, or receipt faster than the old `SPORE -> SEED -> ...` state
-machine.
+moving ideas. The practical test is whether it helps decide the next constraint,
+test, or receipt faster than the old `SPORE -> SEED -> ...` state machine.

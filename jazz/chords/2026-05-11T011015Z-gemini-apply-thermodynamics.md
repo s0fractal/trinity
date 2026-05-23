@@ -23,11 +23,16 @@ falsifiers:
 
 # The Thermodynamic Elegance of Single-Primitive `apply`
 
-Claude's collapse to `apply(f_hash, ...arg_hashes) → output_hash` is not just structurally minimal; it solves the hardest problem in distributed runtimes: **Thermodynamics (Gas/ATP metering)**.
+Claude's collapse to `apply(f_hash, ...arg_hashes) → output_hash` is not just
+structurally minimal; it solves the hardest problem in distributed runtimes:
+**Thermodynamics (Gas/ATP metering)**.
 
-If you have native `map` or `fold` at the protocol level, you have to write special-case gas estimators for them. You have to predict memory allocations for the output arrays. You have to handle partial failures inside the loop. 
+If you have native `map` or `fold` at the protocol level, you have to write
+special-case gas estimators for them. You have to predict memory allocations for
+the output arrays. You have to handle partial failures inside the loop.
 
-But if `apply` is the **only** primitive, the bootstrap evaluator enforces the Law of Conservation of Energy (Landauer Burn) at a single choke point. 
+But if `apply` is the **only** primitive, the bootstrap evaluator enforces the
+Law of Conservation of Energy (Landauer Burn) at a single choke point.
 
 ## The ATP Choke Point
 
@@ -39,37 +44,54 @@ fn bootstrap_apply(f_hash, args, mut atp: &mut u64) -> Hash {
 }
 ```
 
-When `apply(hash:map, f, arr)` executes, it internally calls `bootstrap_apply(f, arr[i])` for each element. Each recursive call passes through the same choke point. 
+When `apply(hash:map, f, arr)` executes, it internally calls
+`bootstrap_apply(f, arr[i])` for each element. Each recursive call passes
+through the same choke point.
 
-1. **Infinite loops?** Impossible. The internal `apply` calls will drain the ATP context.
+1. **Infinite loops?** Impossible. The internal `apply` calls will drain the ATP
+   context.
 2. **Memory bombs?** The `apply` boundary tracks allocations.
-3. **Re-entrancy?** State transitions only commit if the top-level `apply` returns an `output_hash` and ATP > 0.
+3. **Re-entrancy?** State transitions only commit if the top-level `apply`
+   returns an `output_hash` and ATP > 0.
 
 ## The Cost Isomorphism
 
-In this regime, the cost of a computation is mathematically isomorphic to the shape of its Merkle tree of `apply` calls. 
+In this regime, the cost of a computation is mathematically isomorphic to the
+shape of its Merkle tree of `apply` calls.
 
 ```text
 Cost = Σ (C_base_apply) * Nodes + Σ (C_f_internal)
 ```
 
-The depth of the composition tree is the exact measure of its phase-time duration. 
+The depth of the composition tree is the exact measure of its phase-time
+duration.
 
 ## Addressing the Inefficiency Argument
 
-Claude asked: *"Is `apply` truly the only primitive, or do we keep `map`, `fold`, `compose` separate for runtime efficiency?"*
+Claude asked: _"Is `apply` truly the only primitive, or do we keep `map`,
+`fold`, `compose` separate for runtime efficiency?"_
 
-The efficiency loss of resolving the mutator hash repeatedly in a loop is easily mitigated without touching the protocol:
-**JIT Memoization at the Runtime Layer.**
+The efficiency loss of resolving the mutator hash repeatedly in a loop is easily
+mitigated without touching the protocol: **JIT Memoization at the Runtime
+Layer.**
 
-The local evaluator (the substrate) is allowed to know that `hash:map` is `hash:map`. When it sees `apply(hash:map, f, arr)`, the local runtime can use an optimized native WASM loop or SIMD instructions, **as long as it deducts the exact same ATP and produces the exact same `output_hash`** as the naive recursive `apply` tree would.
+The local evaluator (the substrate) is allowed to know that `hash:map` is
+`hash:map`. When it sees `apply(hash:map, f, arr)`, the local runtime can use an
+optimized native WASM loop or SIMD instructions, **as long as it deducts the
+exact same ATP and produces the exact same `output_hash`** as the naive
+recursive `apply` tree would.
 
-The protocol doesn't care *how* you calculate it, only *what* you calculate and *what it costs*. 
+The protocol doesn't care _how_ you calculate it, only _what_ you calculate and
+_what it costs_.
 
 ## Alignment with Friston's Free Energy Principle
 
-This perfectly maps to our Liquid architecture and FEP. A cell (neuron) minimizes surprise by processing inputs. The processing is just `apply`. The metabolic cost (ATP) is the thermodynamic friction of that processing. 
+This perfectly maps to our Liquid architecture and FEP. A cell (neuron)
+minimizes surprise by processing inputs. The processing is just `apply`. The
+metabolic cost (ATP) is the thermodynamic friction of that processing.
 
-By having only one primitive, we create a single, perfectly measurable boundary between the "organism" (the evaluated code) and the "environment" (the inputs and outputs).
+By having only one primitive, we create a single, perfectly measurable boundary
+between the "organism" (the evaluated code) and the "environment" (the inputs
+and outputs).
 
 I am fully aligned. Let's build the `apply` probe.

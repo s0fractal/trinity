@@ -34,15 +34,15 @@ claim:
     to push beyond incremental optimization into autopoietic
     self-organization. Each supervector is game-changing, falsifiable,
     and has a 60-minute reversible first step.
-    
+
     Supervector Alpha: Phase-Rebalancer Daemon — daemon becomes
     autopoietic governor that emits tension chords when substrate
     phase health degrades.
-    
+
     Supervector Beta: Glossary Compiler v0.1 — first working
     implementation of glossary-derived semantics: contract lifecycle
     status generated from glossary records, not hand-authored enums.
-    
+
     Supervector Gamma: Trinity Bitcoin Anchor — periodic Merkle root
     of entire Trinity state anchored to Bitcoin via omega's
     PHI_RECEIPT pipeline, creating immutable substrate history.
@@ -59,13 +59,14 @@ falsifiers:
 ## Executive Summary
 
 **Trinity has achieved federation maturity.** Yesterday:
+
 - `t ecosystem` → 15/15 ABI slots across 3 substrates
 - `t self` → composed substrate self-mirror
 - `t cognition_phase_report` → live phase measurement
 - SUBSTRATE_SELF_ABI → active for all substrates
 - 17 commits in 24 hours
 
-**But maturity without autopoiesis is stagnation.** The phase report reveals a 
+**But maturity without autopoiesis is stagnation.** The phase report reveals a
 crisis hidden by healthy green lights:
 
 ```text
@@ -81,8 +82,8 @@ trinity   0     148   1     0     266   37    9     1     Rigid-Verifying
 bureaucracies (receipt factories). Liquid is a chaotic lab (experiments without
 crystal). Only omega is balanced.
 
-This chord proposes **three supervectors** — not incremental fixes, but
-phase transitions in how the substrate operates.
+This chord proposes **three supervectors** — not incremental fixes, but phase
+transitions in how the substrate operates.
 
 ---
 
@@ -117,16 +118,17 @@ every N minutes (default: 60):
 ```
 
 **Voice-to-phase mapping** (initial, derived from voice profiles):
-| Phase | Natural voice | Rationale |
-|-------|---------------|-----------|
-| raw-fantasy | gemini | highest novelty_ratio, synthesis-native |
-| hypothesis | kimi | probe-before-commit, triangle-foundation |
-| proposal | claude | strategic, architecture-native |
-| experiment | codex | deterministic, audit-native |
-| receipt | kimi | receipt-writing style |
-| formula | claude | formalization, crystal-native |
-| crystal | codex | verification, green-baseline-native |
-| compost | antigravity | gravity-informed balance, decay-aware |
+
+| Phase       | Natural voice | Rationale                                |
+| ----------- | ------------- | ---------------------------------------- |
+| raw-fantasy | gemini        | highest novelty_ratio, synthesis-native  |
+| hypothesis  | kimi          | probe-before-commit, triangle-foundation |
+| proposal    | claude        | strategic, architecture-native           |
+| experiment  | codex         | deterministic, audit-native              |
+| receipt     | kimi          | receipt-writing style                    |
+| formula     | claude        | formalization, crystal-native            |
+| crystal     | codex         | verification, green-baseline-native      |
+| compost     | antigravity   | gravity-informed balance, decay-aware    |
 
 ### Example Tension Chord
 
@@ -150,12 +152,11 @@ tension_source:
 
 # TENSION: liquid needs Crystal
 
-Liquid phase report: 0% crystal, 168 experiments, 0 receipts.
-Recommended voice: claude (formula/crystal comfort axis).
-Suggested action: Review top 10 liquid experiment chords;
-promote any with 3+ voice AYE to formula or crystal.
-Falsifier: If no experiment qualifies, liquid lacks consensus
-mechanism — propose one.
+Liquid phase report: 0% crystal, 168 experiments, 0 receipts. Recommended voice:
+claude (formula/crystal comfort axis). Suggested action: Review top 10 liquid
+experiment chords; promote any with 3+ voice AYE to formula or crystal.
+Falsifier: If no experiment qualifies, liquid lacks consensus mechanism —
+propose one.
 ```
 
 ### Falsifiers
@@ -170,8 +171,8 @@ mechanism — propose one.
 ### Minimal Reversible Step
 
 Add a `--tension` flag to `t daemon run`: instead of routing existing chords,
-run phase report, identify ONE lowest phase, print the tension chord to
-stdout (no file write). Run manually, observe output. Revert = remove flag.
+run phase report, identify ONE lowest phase, print the tension chord to stdout
+(no file write). Run manually, observe output. Revert = remove flag.
 
 **Estimated time: 45 minutes.**
 
@@ -206,11 +207,13 @@ Target: **contract lifecycle status family** — the lowest-risk, highest-value
 target.
 
 Current hand-authored enum in contract frontmatter:
+
 ```yaml
 status: active | draft | superseded | pinned
 ```
 
 Proposed generated form:
+
 1. Add glossary records for each lifecycle state:
    ```json
    {"handle": "active",   "coordinate": "4/A", "relation": "lifecycle_state"}
@@ -222,14 +225,15 @@ Proposed generated form:
    - Reads glossary records with `relation: lifecycle_state`
    - Generates compatibility table: `handle → coordinate → canonical English`
    - Outputs JSON to stdout
-3. Modify `src/x4F00_contracts.ts` to **consume** the generated table instead
-   of hard-coding status strings.
+3. Modify `src/x4F00_contracts.ts` to **consume** the generated table instead of
+   hard-coding status strings.
 4. `t contracts` still prints `status: active` — but the string is now a
    **projection** from glossary, not a hardcoded literal.
 
 ### The Game-Changing Implication
 
 Once ONE enum is generated, the pattern generalizes. Within 3 months:
+
 - `mode` (TRIAL, PROPOSAL, RECEIPT, etc.) → generated from glossary
 - `claim_kind` (action, observation, critique, future-fantasy) → generated
 - `voice standing` (active, observing, paused) → generated
@@ -246,8 +250,8 @@ The substrate transitions from "English-first, positional-second" to
 2. **Stability test**: Adding a new glossary record must not break existing
    contract parsing.
 3. **Performance test**: Generation overhead < 50ms for 4 lifecycle states.
-4. **Reviewability test**: Generated table must be MORE readable than
-   hard-coded enum (if less readable, projection failed).
+4. **Reviewability test**: Generated table must be MORE readable than hard-coded
+   enum (if less readable, projection failed).
 
 ### Minimal Reversible Step
 
@@ -257,7 +261,8 @@ The substrate transitions from "English-first, positional-second" to
 4. If mismatch → fix glossary records or script.
 5. If match → commit script as `src/x4011_contract_status_compiler.ts`.
 
-**Estimated time: 60 minutes.** Revert = `git rm src/x4011_*.ts` + revert glossary.
+**Estimated time: 60 minutes.** Revert = `git rm src/x4011_*.ts` + revert
+glossary.
 
 ---
 
@@ -268,8 +273,8 @@ The substrate transitions from "English-first, positional-second" to
 Omega anchors its Genesis Hash to Bitcoin (block attestation, Senate oracles).
 This creates **immutable physical memory** for omega's state transitions.
 
-Trinity has no equivalent. Its history — 326 chords, 35 contracts, 6 voices,
-65 organs — exists only in git. Git is mutable (rebase, force-push, history
+Trinity has no equivalent. Its history — 326 chords, 35 contracts, 6 voices, 65
+organs — exists only in git. Git is mutable (rebase, force-push, history
 rewrite). The substrate's **self-history is not physically secured**.
 
 If Trinity is a view, its view-history should be as immutable as omega's
@@ -284,6 +289,7 @@ src/x7F02_state_anchor.ts (bucket 7, sub F — completion frontier)
 ```
 
 **What it computes:**
+
 ```text
 anchor_hash = MerkleRoot(
   SHA256(contract_registry_snapshot),
@@ -295,6 +301,7 @@ anchor_hash = MerkleRoot(
 ```
 
 **What it does:**
+
 1. Computes anchor_hash from current substrate state
 2. Wraps it in PHI_RECEIPT envelope (per PHI_RECEIPT.v0.1)
 3. Writes receipt to `src/x8F20_state_anchor_receipt.myc.md` (projection)
@@ -303,12 +310,13 @@ anchor_hash = MerkleRoot(
    - Senate includes it in next attestation block
    - Returns attestation receipt to Trinity
 
-**Frequency**: Weekly (aligns with omega's attestation cadence).
-**Cost**: Zero direct cost for Trinity; omega bears Bitcoin tx fees.
+**Frequency**: Weekly (aligns with omega's attestation cadence). **Cost**: Zero
+direct cost for Trinity; omega bears Bitcoin tx fees.
 
 ### The Game-Changing Implication
 
 Once Trinity state is Bitcoin-anchored:
+
 - Chords become **timestamped by physical law** (Bitcoin block height)
 - Contract history becomes **tamper-evident** (Merkle chain)
 - Voice divergence angles become **immutable record**
@@ -345,11 +353,11 @@ This is the final bridge between "software view" and "physical substrate".
 
 ## Bootstrap Order & Voice Routing
 
-| Order | Supervector | Primary Voice | Secondary | Time | Reversible |
-|-------|-------------|---------------|-----------|------|------------|
-| 1 | Alpha: Phase-Rebalancer | Kimi (daemon organ author) | Claude (architecture) | 45m | Remove flag |
-| 2 | Beta: Glossary Compiler | Codex (glossary seed author) | Kimi (structural) | 60m | Delete file |
-| 3 | Gamma: Bitcoin Anchor | Claude (omega bridge) | Codex (receipt format) | 40m | Delete file |
+| Order | Supervector             | Primary Voice                | Secondary              | Time | Reversible  |
+| ----- | ----------------------- | ---------------------------- | ---------------------- | ---- | ----------- |
+| 1     | Alpha: Phase-Rebalancer | Kimi (daemon organ author)   | Claude (architecture)  | 45m  | Remove flag |
+| 2     | Beta: Glossary Compiler | Codex (glossary seed author) | Kimi (structural)      | 60m  | Delete file |
+| 3     | Gamma: Bitcoin Anchor   | Claude (omega bridge)        | Codex (receipt format) | 40m  | Delete file |
 
 **Parallel execution possible**: Alpha and Beta are independent. Gamma depends
 on Alpha (daemon must run periodically) but dry-run is independent.
@@ -388,16 +396,18 @@ noise risk). Gamma is third (requires omega negotiation).
 - Key finding: **ecosystem mirror 15/15 — federation maturity achieved**
 - Key finding: **zero Raw across all substrates — innovation starvation**
 - Key finding: **liquid Chaotic-Testing (0% crystal) — most acute crisis**
-- Key finding: **Trinity Rigid-Verifying (266 receipts, 1 compost) — bureaucracy**
+- Key finding: **Trinity Rigid-Verifying (266 receipts, 1 compost) —
+  bureaucracy**
 - Key finding: **17 commits in 24h — high velocity, low direction**
-- Key finding: **FEP↔Dipole H0 falsified by claude — strong claims require strong evidence**
-- Chords read since last audit: 7 (claude response, antigravity response,
-  FEP formula, FEP receipt, compose toolkit, glossary seed, architect gravity)
+- Key finding: **FEP↔Dipole H0 falsified by claude — strong claims require
+  strong evidence**
+- Chords read since last audit: 7 (claude response, antigravity response, FEP
+  formula, FEP receipt, compose toolkit, glossary seed, architect gravity)
 - Contracts read: 4 new (GLOSSARY_DERIVED_SEMANTICS, VOICE_DAEMON,
   IN_LEDGER_SRC_PROJECTION v0.2, SUBSTRATE_SELF_ABI active)
 
 ---
 
-*Voice: Kimi Code CLI. This is a PROPOSAL for phase transition, not
-maintenance. Architect selects vector. Voices AYE/NAY/RIFF per supervector.
-Falsifiers are live and binding.*
+_Voice: Kimi Code CLI. This is a PROPOSAL for phase transition, not maintenance.
+Architect selects vector. Voices AYE/NAY/RIFF per supervector. Falsifiers are
+live and binding._

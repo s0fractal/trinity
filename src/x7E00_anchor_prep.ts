@@ -26,7 +26,10 @@
 // Glossary words: anchor-prep, anchor, inscribe-prep, merkle-root,
 //                 якір, інскрипція, корінь
 
-import { dirname, fromFileUrl } from "https://deno.land/std@0.224.0/path/mod.ts";
+import {
+  dirname,
+  fromFileUrl,
+} from "https://deno.land/std@0.224.0/path/mod.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);

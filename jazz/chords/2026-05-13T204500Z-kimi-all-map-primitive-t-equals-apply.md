@@ -41,18 +41,22 @@ expected_after_running:
 
 ## Контекст
 
-Gemini (16:45Z): *"t should fundamentally just be a dumb apply evaluator. Imperative concepts like cross-verify are artificial legacy artifacts. Cross-substrate verification should organically emerge from functional composition: map(0x5/C, substrates) + join."*
+Gemini (16:45Z): _"t should fundamentally just be a dumb apply evaluator.
+Imperative concepts like cross-verify are artificial legacy artifacts.
+Cross-substrate verification should organically emerge from functional
+composition: map(0x5/C, substrates) + join."_
 
-Архітектор: *"зроби all map а в сабмодулях потім перейдемо"*.
+Архітектор: _"зроби all map а в сабмодулях потім перейдемо"_.
 
 ## Що зроблено
 
 ### 1. Створено `0x0/03.ts` — all/map primitive
 
-**Позиція:** `0/03` → foundation × trinity
-**Призначення:** functional composition primitive
+**Позиція:** `0/03` → foundation × trinity **Призначення:** functional
+composition primitive
 
 **Що робить:**
+
 1. Приймає hex position або canonical word
 2. Резолвить word → position через glossary (type:05)
 3. Читає type:06 substrate registry для цієї позиції
@@ -61,6 +65,7 @@ Gemini (16:45Z): *"t should fundamentally just be a dumb apply evaluator. Impera
 6. Повертає unified receipt
 
 **Не робить:**
+
 - Не хардкодить субстрати
 - Не знає про "cross-verify" як сутність
 - Не є workflow manager
@@ -91,7 +96,9 @@ Gemini (16:45Z): *"t should fundamentally just be a dumb apply evaluator. Impera
 
 ### 4. Dispatcher pretty-print для `all`
 
-`fn_render_human` тепер обробляє `type: "all"` через той самий рендерер, що й `cross_substrate_verify`, але з динамічним label:
+`fn_render_human` тепер обробляє `type: "all"` через той самий рендерер, що й
+`cross_substrate_verify`, але з динамічним label:
+
 ```
 # all @ 5/C (quick mode)
 # ──────────────────────────────────────────────────
@@ -121,26 +128,31 @@ $ t all 5/C --deep omega
 
 ## Чому це правильно
 
-| Aspect | 0x5/C.ts (imperative) | 0x0/03.ts (functional) |
-|--------|----------------------|------------------------|
-| Знає про субстрати | ✅ хардкод | ❌ читає glossary |
-| Масштабованість | додаєш код | додаєш type:06 record |
-| Reusability | тільки verify | будь-яка position |
-| Topology coupling | tight | loose |
-| Concept | macro | primitive |
+| Aspect             | 0x5/C.ts (imperative) | 0x0/03.ts (functional) |
+| ------------------ | --------------------- | ---------------------- |
+| Знає про субстрати | ✅ хардкод            | ❌ читає glossary      |
+| Масштабованість    | додаєш код            | додаєш type:06 record  |
+| Reusability        | тільки verify         | будь-яка position      |
+| Topology coupling  | tight                 | loose                  |
+| Concept            | macro                 | primitive              |
 
 ## Чесно: що не ідеально
 
-1. **Рендеринг дублюється:** `all` і `cross_substrate_verify` використовують один рендерер. Це не problem, але не чисто.
-2. **Deep mode hardcoded:** `--deep omega` спеціальний case для `cargo check → cargo test`. Має бути glossary-driven.
-3. **Legacy preserved:** `0x5/C.ts` все ще існує і працює. `cross-verify` все ще в glossary. Це bootstrap, не архітектура.
-4. **No substrate-local 0x5/C.ts:** Omega, Liquid, MYC не мають своїх `0x5/C.ts`. `all` запускає зовнішні команди, не hex-native executables.
+1. **Рендеринг дублюється:** `all` і `cross_substrate_verify` використовують
+   один рендерер. Це не problem, але не чисто.
+2. **Deep mode hardcoded:** `--deep omega` спеціальний case для
+   `cargo check → cargo test`. Має бути glossary-driven.
+3. **Legacy preserved:** `0x5/C.ts` все ще існує і працює. `cross-verify` все ще
+   в glossary. Це bootstrap, не архітектура.
+4. **No substrate-local 0x5/C.ts:** Omega, Liquid, MYC не мають своїх
+   `0x5/C.ts`. `all` запускає зовнішні команди, не hex-native executables.
 
 ## Вердикт
 
 `t` більше не workflow manager. `t` — dumb apply.
 
-`all` — перший функціональний примітив (map + join). Наступні: `filter`, `reduce`, `pipe`.
+`all` — перший функціональний примітив (map + join). Наступні: `filter`,
+`reduce`, `pipe`.
 
 Hex substrate еволюціонує від imperative scripting до functional composition.
 

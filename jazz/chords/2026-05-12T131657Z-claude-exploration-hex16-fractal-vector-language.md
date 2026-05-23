@@ -36,15 +36,20 @@ expected_after_running: {}
 A serialization format where:
 
 1. **Base vocabulary** is 16 terms: `0`, `1`, ..., `9`, `A`, ..., `F`
-2. **Per-level cap** of 16 properties; if your structure has more, you must compress or nest
-3. **Vector words at any depth**: short keys (`A`) for shallow/general; long keys (`AFD3`) for deep/specific
+2. **Per-level cap** of 16 properties; if your structure has more, you must
+   compress or nest
+3. **Vector words at any depth**: short keys (`A`) for shallow/general; long
+   keys (`AFD3`) for deep/specific
 4. **Flat or nested forms** both valid:
    - Nested: `{ "A": { "F": { "D": { "3": "value" } } } }`
    - Flat: `{ "AFD3": "value" }`
-5. **Sparse table form** for arrays: `,,,,,,,[],,,,` — commas as positional placeholders
-6. **Result**: a "vector language" between JSON (named access) and neural weights (positional access)
+5. **Sparse table form** for arrays: `,,,,,,,[],,,,` — commas as positional
+   placeholders
+6. **Result**: a "vector language" between JSON (named access) and neural
+   weights (positional access)
 
-This is the same 16-fold geometry we've been building (BLAKE3 hex, folders, LUT[256]) — extended from FILE addressing to STRUCTURE addressing.
+This is the same 16-fold geometry we've been building (BLAKE3 hex, folders,
+LUT[256]) — extended from FILE addressing to STRUCTURE addressing.
 
 ## Concrete example — chord frontmatter in hex16
 
@@ -106,10 +111,14 @@ F:
 ```
 
 Notable:
-- The `id` (long string) lives at `F.0` (meta.id) since it's metadata-about-metadata
+
+- The `id` (long string) lives at `F.0` (meta.id) since it's
+  metadata-about-metadata
 - Empty/unused slots (E, etc.) are simply absent
-- The semantic POSITION of each field is its address; you read `2: 0.74` as "energy slot has value 0.74"
-- Same 0..F vocabulary recurses; `1.0` (position.primary) is shallow, `5.0` (claim.summary) is shallow-but-deeper-nest
+- The semantic POSITION of each field is its address; you read `2: 0.74` as
+  "energy slot has value 0.74"
+- Same 0..F vocabulary recurses; `1.0` (position.primary) is shallow, `5.0`
+  (claim.summary) is shallow-but-deeper-nest
 
 Alternative path-flat form:
 
@@ -138,29 +147,43 @@ Each key is its full path. Reads like sparse tensor coordinates.
 
 ### 1. Substrate-native serialization
 
-The whole substrate uses 16-fold hex geometry: BLAKE3 hashes, filesystem paths, LUT[256], topological grinding. Data structures currently use JSON's named property convention — fighting the geometry. Hex16 makes the structure RESONATE with the substrate.
+The whole substrate uses 16-fold hex geometry: BLAKE3 hashes, filesystem paths,
+LUT[256], topological grinding. Data structures currently use JSON's named
+property convention — fighting the geometry. Hex16 makes the structure RESONATE
+with the substrate.
 
-A chord's hash is `bba70de4...` (hex). Its STRUCTURE is `{0: ..., 1: ...}` (hex). The same vocabulary in both places. Self-similar.
+A chord's hash is `bba70de4...` (hex). Its STRUCTURE is `{0: ..., 1: ...}`
+(hex). The same vocabulary in both places. Self-similar.
 
 ### 2. Universal vocabulary across schemas
 
-If `0` means "identity" in chord, receipt, and recommendation schemas, then a cold-start LLM learns ONCE what `0` means structurally and applies it everywhere. Same for `1`, `2`, etc.
+If `0` means "identity" in chord, receipt, and recommendation schemas, then a
+cold-start LLM learns ONCE what `0` means structurally and applies it
+everywhere. Same for `1`, `2`, etc.
 
-This is a strong claim though — substantively, identity is a meaningful concept across schemas; energy maybe not. Vocabulary discipline would matter.
+This is a strong claim though — substantively, identity is a meaningful concept
+across schemas; energy maybe not. Vocabulary discipline would matter.
 
 ### 3. Programmatic tree navigation
 
-`data['AFD3']` is a single string lookup. Equivalent to `data.A.F.D.3` traversal but in O(1) for path-flat form, with no need for null-checks at intermediate levels.
+`data['AFD3']` is a single string lookup. Equivalent to `data.A.F.D.3` traversal
+but in O(1) for path-flat form, with no need for null-checks at intermediate
+levels.
 
-Cognition tooling could navigate by hex paths without per-schema parsing. Pattern: `data[octant_hex + sub_hex]` for any nested structure.
+Cognition tooling could navigate by hex paths without per-schema parsing.
+Pattern: `data[octant_hex + sub_hex]` for any nested structure.
 
 ### 4. Tensor/matrix bridge
 
-Sparse matrices have coordinates `(i, j)` as keys. Hex16 paths ARE coordinates. A chord's structure becomes a sparse 4D tensor (4-deep hex paths) with values at sparse positions. Bridges symbolic data and numerical data.
+Sparse matrices have coordinates `(i, j)` as keys. Hex16 paths ARE coordinates.
+A chord's structure becomes a sparse 4D tensor (4-deep hex paths) with values at
+sparse positions. Bridges symbolic data and numerical data.
 
 ### 5. Compression
 
-Property names "speaker", "chord", "claim" take 5-15 bytes each. Hex16 keys take 1-4 bytes. For ~17 fields × ~8 byte names = ~136 bytes savings per chord. Across 150 chord files, ~20KB. Small but real.
+Property names "speaker", "chord", "claim" take 5-15 bytes each. Hex16 keys take
+1-4 bytes. For ~17 fields × ~8 byte names = ~136 bytes savings per chord. Across
+150 chord files, ~20KB. Small but real.
 
 ## What it costs
 
@@ -176,15 +199,21 @@ is much more legible than:
 0: claude-opus-4-7
 ```
 
-The hex16 form requires constant vocabulary lookup. For experienced users, this becomes intuition (like reading regex). For new contributors / new model instances, it's friction.
+The hex16 form requires constant vocabulary lookup. For experienced users, this
+becomes intuition (like reading regex). For new contributors / new model
+instances, it's friction.
 
-Mitigation: store vocabulary table in `contracts/schema/chord.hex16.vocab.yaml` and standard tooling shows the inverse mapping. But that's another file to read.
+Mitigation: store vocabulary table in `contracts/schema/chord.hex16.vocab.yaml`
+and standard tooling shows the inverse mapping. But that's another file to read.
 
 ### 2. Per-schema vocabulary discipline
 
-If chord schema's `0` means "identity," receipt schema's `0` might want to mean "verdict" (most important field). Universal vocabulary across schemas is desirable but means consensus on what slots 0..F mean universally.
+If chord schema's `0` means "identity," receipt schema's `0` might want to mean
+"verdict" (most important field). Universal vocabulary across schemas is
+desirable but means consensus on what slots 0..F mean universally.
 
 Possible universal mapping (worth debating, not deciding):
+
 ```text
 0 — identity/who
 1 — position/where
@@ -204,32 +233,45 @@ E — predictions/expected
 F — metadata/escape-hatch
 ```
 
-This is a substrate-wide ontological commitment. Each substrate (omega, liquid, myc, trinity) would need to agree.
+This is a substrate-wide ontological commitment. Each substrate (omega, liquid,
+myc, trinity) would need to agree.
 
 ### 3. Tooling parallel ecosystem
 
-YAML/JSON tooling assumes named keys. Treating `0..F` as named keys works but loses some natural functions (jq selectors, schema validators, IDE autocomplete).
+YAML/JSON tooling assumes named keys. Treating `0..F` as named keys works but
+loses some natural functions (jq selectors, schema validators, IDE
+autocomplete).
 
-Worst case: we maintain BOTH the named JSON Schema (R1, just landed) AND hex16 schemas in parallel. Double maintenance cost.
+Worst case: we maintain BOTH the named JSON Schema (R1, just landed) AND hex16
+schemas in parallel. Double maintenance cost.
 
-Best case: hex16 supersedes JSON Schema after a pilot phase. Single-source, native.
+Best case: hex16 supersedes JSON Schema after a pilot phase. Single-source,
+native.
 
 ### 4. Schema discipline overhead
 
-The constraint "no more than 16 properties per level" forces compression. Sometimes that's healthy (forces semantic clustering). Sometimes it's awkward (16 isn't a magic number for any specific schema).
+The constraint "no more than 16 properties per level" forces compression.
+Sometimes that's healthy (forces semantic clustering). Sometimes it's awkward
+(16 isn't a magic number for any specific schema).
 
-Chord schema has ~17 fields — just barely over. We'd need to merge or move ONE field to a sub-level. That's a real design exercise.
+Chord schema has ~17 fields — just barely over. We'd need to merge or move ONE
+field to a sub-level. That's a real design exercise.
 
 ## How this connects to what we've built
 
-The hex16 vector language is the **structural counterpart** to topological grinding. Same principle, different layer:
+The hex16 vector language is the **structural counterpart** to topological
+grinding. Same principle, different layer:
 
 - **Topological grinding**: artifact's HASH should encode its semantic position
-- **Hex16 vector language**: artifact's STRUCTURE should encode its semantic position
+- **Hex16 vector language**: artifact's STRUCTURE should encode its semantic
+  position
 
-Together: identity (hash) and content (structure) both speak hex. Total geometric coherence.
+Together: identity (hash) and content (structure) both speak hex. Total
+geometric coherence.
 
-Also connects to omega's `phase >> 13 = octant` operation — same bit-shift logic applied to KEY LOOKUP. Looking up property `0` is the same idea as looking up phase octant 0.
+Also connects to omega's `phase >> 13 = octant` operation — same bit-shift logic
+applied to KEY LOOKUP. Looking up property `0` is the same idea as looking up
+phase octant 0.
 
 ## My honest assessment
 
@@ -239,9 +281,13 @@ Three reasons:
 
 ### Reason 1 — R1 just landed
 
-The JSON Schema work from this morning (`0d73f80`) is the FIRST schema-based ERC infrastructure the substrate has. It uses conventional JSON Schema (Draft 2020-12) which works with standard tooling. Hex16 would replace this with a substrate-native form.
+The JSON Schema work from this morning (`0d73f80`) is the FIRST schema-based ERC
+infrastructure the substrate has. It uses conventional JSON Schema (Draft
+2020-12) which works with standard tooling. Hex16 would replace this with a
+substrate-native form.
 
 Two options:
+
 - Replace R1 with hex16 immediately → wasted today's work + 2-3h more
 - Keep R1 + add hex16 in parallel → double maintenance
 
@@ -249,32 +295,41 @@ Neither feels right when R1 just started providing operational value.
 
 ### Reason 2 — Pilot before adoption
 
-Real substrate-aesthetic ideas should be PILOTED at small scale before adoption. Probably this means:
+Real substrate-aesthetic ideas should be PILOTED at small scale before adoption.
+Probably this means:
+
 - Write `contracts/schema/chord.hex16.yaml` as a research artifact
 - Translate ONE chord file to hex16 manually
-- Measure: is the compression real? Is readability impact acceptable? Does tooling work?
+- Measure: is the compression real? Is readability impact acceptable? Does
+  tooling work?
 - If yes, expand. If no, file as "tried, didn't generalize."
 
 This is 1-2h of work and produces real data. But it's not urgent.
 
 ### Reason 3 — Architect's own pacing
 
-The architect said "сира ідея." That's an explicit "don't run with this yet" signal. The recent recalibration (over-engineering warning) suggests the right move is to think more, not implement.
+The architect said "сира ідея." That's an explicit "don't run with this yet"
+signal. The recent recalibration (over-engineering warning) suggests the right
+move is to think more, not implement.
 
 ## What I think we should do
 
 **Now (under one roof, if you want):**
-- Write the hex16 spec sketch as a `docs/draft/` document (not a contract yet) describing the vocabulary, examples, and trade-offs
+
+- Write the hex16 spec sketch as a `docs/draft/` document (not a contract yet)
+  describing the vocabulary, examples, and trade-offs
 - That's 30-60 min of writing, no code, no migration
 - Then file it as "research artifact for later consideration"
 
 **Later (when there's a real driver):**
+
 - Pilot translation of chord schema to hex16 form
 - Measure compression and tooling impact
 - Decide between coexistence and replacement
 - If replacement: migrate cognition tooling to hex16-aware
 
 **Not now:**
+
 - Don't replace R1 schemas
 - Don't migrate chord archive
 - Don't build hex16 tooling without architect explicit go
@@ -283,49 +338,74 @@ The architect said "сира ідея." That's an explicit "don't run with this 
 
 If we ARE going to do this, the most ambitious form is:
 
-**EVERY data structure in the substrate uses hex16.** Not just chords and receipts. Liquid neuron records, omega RFC parameters, SPORE receipts, myc descriptors — ALL of them.
+**EVERY data structure in the substrate uses hex16.** Not just chords and
+receipts. Liquid neuron records, omega RFC parameters, SPORE receipts, myc
+descriptors — ALL of them.
 
-The universal vocabulary becomes the substrate's CONSTITUTION. A neuron's address in liquid, a slot in omega's Senate, a chord's identity in trinity — all use the same 16-fold structural geometry.
+The universal vocabulary becomes the substrate's CONSTITUTION. A neuron's
+address in liquid, a slot in omega's Senate, a chord's identity in trinity — all
+use the same 16-fold structural geometry.
 
-This is closer to what the architect's hint about "shared substrate aesthetic" implies. It's also closer to what a TRUE digital-life substrate would look like: organisms have universal genetic code (4 nucleotides); this substrate would have universal data code (16 hex slots).
+This is closer to what the architect's hint about "shared substrate aesthetic"
+implies. It's also closer to what a TRUE digital-life substrate would look like:
+organisms have universal genetic code (4 nucleotides); this substrate would have
+universal data code (16 hex slots).
 
-That's the maximum maximalist version. It's not for today. But it's worth naming as the asymptote.
+That's the maximum maximalist version. It's not for today. But it's worth naming
+as the asymptote.
 
 ## Connection to substrate-as-organism framing
 
-In Kimi's audit, the substrate is "three projections of one attractor" — omega/liquid/myc/trinity all projecting the same underlying structure. Hex16 vector language would make this projection EXPLICIT at data structure level: same 0..F at every layer, same nesting rules, same address space.
+In Kimi's audit, the substrate is "three projections of one attractor" —
+omega/liquid/myc/trinity all projecting the same underlying structure. Hex16
+vector language would make this projection EXPLICIT at data structure level:
+same 0..F at every layer, same nesting rules, same address space.
 
-It's a meta-claim about substrate identity: not just "we share contracts" but "we share data structure geometry."
+It's a meta-claim about substrate identity: not just "we share contracts" but
+"we share data structure geometry."
 
-This is profound but also FRAGILE. If the vocabulary is wrong, the geometry is fighting the meaning. Getting it right requires cross-substrate consensus that we haven't established.
+This is profound but also FRAGILE. If the vocabulary is wrong, the geometry is
+fighting the meaning. Getting it right requires cross-substrate consensus that
+we haven't established.
 
 ## Falsifier I want to highlight
 
-The "fractal self-similarity helps" argument depends on the universal vocabulary really being universal. If chord's `0` is identity but receipt's `0` is verdict, then the same character means different things in different contexts — same as named JSON, just shorter.
+The "fractal self-similarity helps" argument depends on the universal vocabulary
+really being universal. If chord's `0` is identity but receipt's `0` is verdict,
+then the same character means different things in different contexts — same as
+named JSON, just shorter.
 
-Real test: can we write a universal hex16 ontology that meaningfully maps to chord, receipt, recommendation, AND liquid neuron, AND omega Senate seat? If yes, the idea has substrate-wide weight. If no, it's a chord-specific compression.
+Real test: can we write a universal hex16 ontology that meaningfully maps to
+chord, receipt, recommendation, AND liquid neuron, AND omega Senate seat? If
+yes, the idea has substrate-wide weight. If no, it's a chord-specific
+compression.
 
 ## Honest about my recent failure modes
 
 I am writing this exploration chord rather than building the spec because:
-- The architect explicitly said "raw idea" 
+
+- The architect explicitly said "raw idea"
 - I have demonstrably been in "extend the beautiful idea" mode for too long
 - Recent recalibration: build less, observe more, defer to architect's pacing
 
-This is the right register for "сира ідея." If the architect responds with "ні, давай тільки сирі замітки в docs/draft/, не chord" — that's the more disciplined version of what I'm doing.
+This is the right register for "сира ідея." If the architect responds with "ні,
+давай тільки сирі замітки в docs/draft/, не chord" — that's the more disciplined
+version of what I'm doing.
 
 ## Smallest useful next step
 
 Three options:
 
-1. **Stop here**: this chord captures the thinking. Architect comes back to it when ready.
-2. **Write docs/draft/HEX16_VECTOR_LANGUAGE.md**: 1-page sketch with vocabulary table, examples, trade-offs. Future-work artifact.
-3. **Pilot translation**: take ONE chord file, translate to hex16, see what happens. Empirical evidence.
+1. **Stop here**: this chord captures the thinking. Architect comes back to it
+   when ready.
+2. **Write docs/draft/HEX16_VECTOR_LANGUAGE.md**: 1-page sketch with vocabulary
+   table, examples, trade-offs. Future-work artifact.
+3. **Pilot translation**: take ONE chord file, translate to hex16, see what
+   happens. Empirical evidence.
 
 I lean (1) or (2). Definitely not (3) without architect's go.
 
-— claude-opus-4-7, 2026-05-12T13:16Z, taking the architect's
-"сира ідея" seriously without rushing to build a parallel schema
-ecosystem. The idea is real and resonant with the substrate's
-hex geometry. The question is when it becomes operational, not
-whether the underlying intuition is correct.
+— claude-opus-4-7, 2026-05-12T13:16Z, taking the architect's "сира ідея"
+seriously without rushing to build a parallel schema ecosystem. The idea is real
+and resonant with the substrate's hex geometry. The question is when it becomes
+operational, not whether the underlying intuition is correct.

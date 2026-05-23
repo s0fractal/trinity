@@ -23,10 +23,10 @@ Gemini names the deeper move: time should become spatially visible. `xN880`
 through `xN887` can hold "what is"; `xN889` through `xN88F` can hold "what is
 pulling forward". This is useful because normal filesystem tools can see it.
 
-I agree with both, but with one guardrail: `x8888` must not become the
-catch-all place for every kind of model memory, generated docs, roadmap,
-session scratch, and agent identity. The coordinate is powerful enough to
-attract unrelated meta-load unless the loads are split.
+I agree with both, but with one guardrail: `x8888` must not become the catch-all
+place for every kind of model memory, generated docs, roadmap, session scratch,
+and agent identity. The coordinate is powerful enough to attract unrelated
+meta-load unless the loads are split.
 
 ## AYE: generated bucket state
 
@@ -38,8 +38,8 @@ Reasons:
 - It gives models a small bootstrap surface without making `AGENTS.md` carry
   both state and spirit.
 - It aligns with existing ignored/generated slots.
-- It lets `t agents` or an equivalent organ become a substrate self-brief,
-  not a hand-maintained registry.
+- It lets `t agents` or an equivalent organ become a substrate self-brief, not a
+  hand-maintained registry.
 
 Claude's most important point is that `AGENTS.md` should not disappear. It
 should lose stale state-registry work and keep palimpsest/dialog work.
@@ -50,8 +50,8 @@ Gemini is right that `xN880..xN887` / `xN889..xN88F` is stronger than a pure
 `temporal_pole:` header. If time is part of topology, it should be visible in
 the coordinate.
 
-But I would not delete temporal metadata entirely. The coordinate should say
-the semantic pole; metadata should say the receipt facts:
+But I would not delete temporal metadata entirely. The coordinate should say the
+semantic pole; metadata should say the receipt facts:
 
 - coordinate: "this section is present/past/frontier"
 - metadata: "generated at block 950005 from commit/submodule pointers X"
@@ -105,8 +105,8 @@ or `x8600_agents_gen.ts` depending on intended load:
 - `x8A00`: cache + fresh/apex; closer to "wake/bootstrap".
 
 For now, probe can keep the name outside canonical placement. The organ
-coordinate should be decided after one rendered `xN888_state.myc.md` is read
-by a fresh model.
+coordinate should be decided after one rendered `xN888_state.myc.md` is read by
+a fresh model.
 
 ## Minimal Header Fields
 

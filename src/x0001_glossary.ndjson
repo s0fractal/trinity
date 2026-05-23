@@ -147,3 +147,18 @@
 {"00":"9","01":"contract.lifecycle.draft","02":["draft","wip","provisional","чернетка"],"04":"7/A3","09":"contract lifecycle: draft — design checkpoint, not yet load-bearing","12":{"family":"contract.lifecycle","rank":2}}
 {"00":"9","01":"contract.lifecycle.open","02":["open","proposed","under-review","відкритий"],"04":"7/A4","09":"contract lifecycle: open — proposed but not formalized","12":{"family":"contract.lifecycle","rank":3}}
 {"00":"9","01":"contract.lifecycle.superseded","02":["superseded","replaced","obsolete","застарілий"],"04":"7/A5","09":"contract lifecycle: superseded — explicitly retired in favor of newer version (compost-class)","12":{"family":"contract.lifecycle","rank":4}}
+{"00":"9","01":"chord.mode.proposal","02":["proposal","пропозиція"],"04":"7/B1","09":"chord mode: proposal — proposal-shaped document outlining changes","12":{"family":"chord.mode","rank":0}}
+{"00":"9","01":"chord.mode.cowitness","02":["cowitness","співсвідок"],"04":"7/B2","09":"chord mode: cowitness — witness round signing off on other work","12":{"family":"chord.mode","rank":1}}
+{"00":"9","01":"chord.mode.receipt","02":["receipt","квитанція"],"04":"7/B3","09":"chord mode: receipt — implementation details verifying closure","12":{"family":"chord.mode","rank":2}}
+{"00":"9","01":"chord.stance.propose","02":["PROPOSE","пропонувати"],"04":"7/C1","09":"chord stance: PROPOSE — action proposal stance","12":{"family":"chord.stance","rank":0}}
+{"00":"9","01":"chord.stance.aye","02":["AYE","так"],"04":"7/C2","09":"chord stance: AYE — agreement stance","12":{"family":"chord.stance","rank":1}}
+{"00":"9","01":"chord.stance.nay","02":["NAY","ні"],"04":"7/C3","09":"chord stance: NAY — disagreement/rejection stance","12":{"family":"chord.stance","rank":2}}
+{"00":"9","01":"chord.stance.tweak","02":["TWEAK","коригувати"],"04":"7/C4","09":"chord stance: TWEAK — request adjustments/modifications","12":{"family":"chord.stance","rank":3}}
+{"00":"9","01":"chord.stance.receipt","02":["RECEIPT","отримано"],"04":"7/C5","09":"chord stance: RECEIPT — implementation receipt stance","12":{"family":"chord.stance","rank":4}}
+{"00":"9","01":"chord.stance.compost","02":["COMPOST","компостувати"],"04":"7/C6","09":"chord stance: COMPOST — composting/archiving stance","12":{"family":"chord.stance","rank":5}}
+{"00":"9","01":"chord.claim_kind.action","02":["action","дія"],"04":"7/D1","09":"chord claim: action — actionable verification criteria","12":{"family":"chord.claim_kind","rank":0}}
+{"00":"9","01":"chord.claim_kind.critique","02":["critique","критика"],"04":"7/D2","09":"chord claim: critique — subjective critique","12":{"family":"chord.claim_kind","rank":1}}
+{"00":"9","01":"chord.claim_kind.observation","02":["observation","спостереження"],"04":"7/D3","09":"chord claim: observation — simple observation without checks","12":{"family":"chord.claim_kind","rank":2}}
+{"00":"9","01":"chord.claim_kind.future-fantasy","02":["future-fantasy","фантазія"],"04":"7/D4","09":"chord claim: future-fantasy — deferred waking condition criteria","12":{"family":"chord.claim_kind","rank":3}}
+{"00":"5","02":["external-surfaces","surfaces","поверхні","external_surfaces"],"04":"8/F","09":"cache+decision-pair = external surfaces registry (generates x8F88_external_surfaces.myc.md indexing contracts/, docs/, probes/, jazz/, state/, and compost)","11":"93 00 00 00 00 00 33 59"}
+

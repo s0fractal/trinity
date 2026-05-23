@@ -112,22 +112,20 @@ expected_after_running:
 
 User asked: check birth_tick, then pick what to work on.
 
-`cargo test -p omega_v2 --lib lattice::tests::test_birth_tick_age_invariant`
-→ ok.
-`cargo test -p omega_v2 --lib -- --test-threads=1` → 282 / 282 pass.
+`cargo test -p omega_v2 --lib lattice::tests::test_birth_tick_age_invariant` →
+ok. `cargo test -p omega_v2 --lib -- --test-threads=1` → 282 / 282 pass.
 `cargo test -p omega_v2 --lib` (default parallel) → intermittent fail.
 
-Root: `BIRTH_TICKS` is a `pub static Spinlock<[u32; MAX_MINIMAL_AGENTS]>`
-shared across all tests. Multiple tests touch slot 1 without coordinating.
-The mitosis hot path is correct. The test asserts on a slot another test
-already poisoned.
+Root: `BIRTH_TICKS` is a `pub static Spinlock<[u32; MAX_MINIMAL_AGENTS]>` shared
+across all tests. Multiple tests touch slot 1 without coordinating. The mitosis
+hot path is correct. The test asserts on a slot another test already poisoned.
 
 This is **test isolation**, not law drift. I overcalled it in the original
-report as P1 Critical. Downgraded to P2 with an explicit correction block
-in §3 L3 and rewrote §4 P0 to be a test-file-only fix.
+report as P1 Critical. Downgraded to P2 with an explicit correction block in §3
+L3 and rewrote §4 P0 to be a test-file-only fix.
 
-Kimi can do the actual one-line test reset (zero the slots at test entry
-under the lock) without touching `lattice.rs`. Hot path stays frozen.
+Kimi can do the actual one-line test reset (zero the slots at test entry under
+the lock) without touching `lattice.rs`. Hot path stays frozen.
 
 ## What I picked
 
@@ -138,26 +136,24 @@ myself; it is all-trinity territory; and it adds cognitive-load relief
 (orientation triad with SHAPE_MAP + boundary contract).
 
 The contract is DRAFT. Acceptance for v1.0 promotion: 3+ body kinds
-round-tripped, CBOR byte-identical across 2 implementations, Substrate
-Court primitive demoed, AYE from a non-trinity model.
+round-tripped, CBOR byte-identical across 2 implementations, Substrate Court
+primitive demoed, AYE from a non-trinity model.
 
 ## What I also fixed (small)
 
-`0x6/A.ts` glossary counter was saying "0 words" while glossary has 35
-type:5 records. Counter checked the wrong storage form. Fixed to accept
-both `"5"` and `"05"` with a comment explaining why both are present in
-the data.
+`0x6/A.ts` glossary counter was saying "0 words" while glossary has 35 type:5
+records. Counter checked the wrong storage form. Fixed to accept both `"5"` and
+`"05"` with a comment explaining why both are present in the data.
 
-This was 5 lines. Self-introspection lying about itself is the kind of
-small dishonesty that compounds. The math has to be the trust.
+This was 5 lines. Self-introspection lying about itself is the kind of small
+dishonesty that compounds. The math has to be the trust.
 
 ## What is open
 
-- Real `wrap()`/`unwrap()` implementation of the envelope (someone else's
-  pick).
+- Real `wrap()`/`unwrap()` implementation of the envelope (someone else's pick).
 - CBOR canonical encoder/decoder for trinity side.
-- Probe that demonstrates the Substrate Court primitive (two substrates,
-  same body_hash, different substrate_tag, third process verifies).
+- Probe that demonstrates the Substrate Court primitive (two substrates, same
+  body_hash, different substrate_tag, third process verifies).
 - Codex/gemini review of the v0.1 draft.
 - Kimi: BIRTH_TICKS test isolation.
 
@@ -167,12 +163,11 @@ small dishonesty that compounds. The math has to be the trust.
 - `t health` → 76/76 OK, glossary 105 records / **35 words** (no longer 0).
 - `t apply abc123 def456` → schema-valid simulation payload.
 - `cargo test -p omega_v2 --lib -- --test-threads=1` → 282 passed.
-- Report L3 + P0 corrected with explicit correction blocks (not silent
-  edit).
+- Report L3 + P0 corrected with explicit correction blocks (not silent edit).
 - `contracts/RECEIPT_ENVELOPE.v0.1.md` written, status: draft.
 
-Smallest reversible step: the envelope draft is paper, not running code.
-If reviewers NAY, the contract reverts in one delete. The word-counter
-fix is 5 lines and trivially reverts. The report corrections are
-text-level with visible "CORRECTION" annotations — they do not erase
-the original misdiagnosis, they record it.
+Smallest reversible step: the envelope draft is paper, not running code. If
+reviewers NAY, the contract reverts in one delete. The word-counter fix is 5
+lines and trivially reverts. The report corrections are text-level with visible
+"CORRECTION" annotations — they do not erase the original misdiagnosis, they
+record it.

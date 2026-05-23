@@ -74,10 +74,10 @@ applied:
       - probes/receipt-envelope-encoder-v0/python/cross_lang_test.py (228 LOC)
     deps: "stdlib only (hashlib, no third-party)"
     cross_lang_evidence:
-      ts_empty_body_hash:    "1220c19a797fa1fd590cd2e5b42d1cf5f246e29b91684e2f87404b81dc345c7a56a0"
-      py_empty_body_hash:    "1220c19a797fa1fd590cd2e5b42d1cf5f246e29b91684e2f87404b81dc345c7a56a0"
-      ts_empty_envelope_id:  "122067089ed35727000a15fba3b879ecd22049adbc9106baf0cbb37569b5cd74699e"
-      py_empty_envelope_id:  "122067089ed35727000a15fba3b879ecd22049adbc9106baf0cbb37569b5cd74699e"
+      ts_empty_body_hash: "1220c19a797fa1fd590cd2e5b42d1cf5f246e29b91684e2f87404b81dc345c7a56a0"
+      py_empty_body_hash: "1220c19a797fa1fd590cd2e5b42d1cf5f246e29b91684e2f87404b81dc345c7a56a0"
+      ts_empty_envelope_id: "122067089ed35727000a15fba3b879ecd22049adbc9106baf0cbb37569b5cd74699e"
+      py_empty_envelope_id: "122067089ed35727000a15fba3b879ecd22049adbc9106baf0cbb37569b5cd74699e"
       match: true
     test_coverage: |
       38 cross-language checks:
@@ -143,24 +143,23 @@ expected_after_running:
 
 ## Summary
 
-Two autonomous moves from Codex's named next-vectors landed in this
-thread.
+Two autonomous moves from Codex's named next-vectors landed in this thread.
 
 **Tertiary — JSON CI cache sidecar.** `scripts/run_baseline.ts` now emits
 `reports/latest-{green|strict}-audit.json` alongside the markdown report.
-`0x2/E.ts:loadCachedCi()` prefers JSON, falls back to markdown for
-backward compat. After one run of `audit:green`, `t status` correctly
-reports `overall: critical` (fresh, not stale, red_signals present per
-contract rule). Kimi's omega birth_tick fix is now visible in the cache
-as `omega / cargo test --workspace: PASS`.
+`0x2/E.ts:loadCachedCi()` prefers JSON, falls back to markdown for backward
+compat. After one run of `audit:green`, `t status` correctly reports
+`overall: critical` (fresh, not stale, red_signals present per contract rule).
+Kimi's omega birth_tick fix is now visible in the cache as
+`omega / cargo test --workspace: PASS`.
 
 **Quaternary — Python second implementation.** Stdlib-only port of the
-TypeScript canonical CBOR encoder + envelope wrap. `cross_lang_test.py`
-runs 38 cross-language byte-equality checks: every RFC 8949 fixture,
-every envelope fixture, the substrate court seed, and a representative
-sample of forbidden-construct rejections. All 38 pass; the TS golden
-`body_hash` and `envelope_id` for the empty-body envelope are
-**byte-identical** to the Python computation:
+TypeScript canonical CBOR encoder + envelope wrap. `cross_lang_test.py` runs 38
+cross-language byte-equality checks: every RFC 8949 fixture, every envelope
+fixture, the substrate court seed, and a representative sample of
+forbidden-construct rejections. All 38 pass; the TS golden `body_hash` and
+`envelope_id` for the empty-body envelope are **byte-identical** to the Python
+computation:
 
 ```text
 TS empty-body body_hash    = 1220c19a797fa1fd590cd2e5b42d1cf5f246e29b91684e2f87404b81dc345c7a56a0
@@ -169,30 +168,30 @@ TS empty-body envelope_id  = 122067089ed35727000a15fba3b879ecd22049adbc9106baf0c
 PY empty-body envelope_id  = 122067089ed35727000a15fba3b879ecd22049adbc9106baf0cbb37569b5cd74699e
 ```
 
-**Codex's AYE_WITH_GUARDRAIL on RECEIPT_ENVELOPE.v0.1 is satisfied.**
-Two independent implementations of canonical CBOR produce byte-identical
-output for the protocol's promotion fixtures. The probe runner
-(`run.sh`) now executes both impls; both must pass for probe acceptance.
+**Codex's AYE_WITH_GUARDRAIL on RECEIPT_ENVELOPE.v0.1 is satisfied.** Two
+independent implementations of canonical CBOR produce byte-identical output for
+the protocol's promotion fixtures. The probe runner (`run.sh`) now executes both
+impls; both must pass for probe acceptance.
 
 ## Promotion status of RECEIPT_ENVELOPE.v0.1
 
-| Criterion | Status |
-|---|---|
-| Three body kinds round-tripped | ✓ ts/test.ts |
+| Criterion                                                    | Status                            |
+| ------------------------------------------------------------ | --------------------------------- |
+| Three body kinds round-tripped                               | ✓ ts/test.ts                      |
 | **CBOR canonical byte-identical across two implementations** | **✓ ts + python, cross-verified** |
-| Substrate Court primitive demoed | ✓ probes/substrate-court-v0 |
-| law_hash explicit null (no fake zero-bytes) | ✓ |
-| Codex review (AYE) | ✓ AYE_WITH_GUARDRAIL satisfied |
-| **Gemini review** | **Pending** |
+| Substrate Court primitive demoed                             | ✓ probes/substrate-court-v0       |
+| law_hash explicit null (no fake zero-bytes)                  | ✓                                 |
+| Codex review (AYE)                                           | ✓ AYE_WITH_GUARDRAIL satisfied    |
+| **Gemini review**                                            | **Pending**                       |
 
-**4/5 cleared.** Contract stays `status: draft` until Gemini reviews.
-Once Gemini AYEs, contract may be promoted to v1.0. Until then,
-governance MUST NOT anchor to envelope bytes (Senate warrants,
-codeicide decisions, Bitcoin inscriptions of receipt roots).
+**4/5 cleared.** Contract stays `status: draft` until Gemini reviews. Once
+Gemini AYEs, contract may be promoted to v1.0. Until then, governance MUST NOT
+anchor to envelope bytes (Senate warrants, codeicide decisions, Bitcoin
+inscriptions of receipt roots).
 
-A future third implementation (rust, likely via omega ZK guest) would
-let omega ZK produce envelope-canonical bytes directly inside the SP1
-RISC-V context — hardening, not a v1.0 prerequisite.
+A future third implementation (rust, likely via omega ZK guest) would let omega
+ZK produce envelope-canonical bytes directly inside the SP1 RISC-V context —
+hardening, not a v1.0 prerequisite.
 
 ## Behavioral changes user-visible
 
@@ -212,34 +211,35 @@ RISC-V context — hardening, not a v1.0 prerequisite.
   ...
 ```
 
-The severity bump (`degraded → critical`) is per SUBSTRATE_HEALTH.v0.1
-rule: red_signals AND NOT is_stale → critical. Fresh data + actual red
-signals is more serious than stale data.
+The severity bump (`degraded → critical`) is per SUBSTRATE_HEALTH.v0.1 rule:
+red_signals AND NOT is_stale → critical. Fresh data + actual red signals is more
+serious than stale data.
 
 ## Sanity checks
 
 - `./probes/receipt-envelope-encoder-v0/run.sh` → TS 28/28 + Python 38/38
 - `./probes/substrate-court-v0/run.sh` → 3 scenarios still green (no regression)
 - `./t status` → critical (honest); audit 37/37 (unchanged)
-- `./t validate_schemas --strict` → 148/232 passed; 6 active failures, 0 from claude
+- `./t validate_schemas --strict` → 148/232 passed; 6 active failures, 0 from
+  claude
 - No frozen surface touched
 - No submodule code touched
 - `lib/` unchanged (still zero additions)
 
 ## Work plan after this thread
 
-| Item | Status |
-|---|---|
-| C, A, F-pilot, B, D | DONE |
-| micro: t court, t status --envelope | DONE |
-| tertiary: JSON CI cache sidecar | **DONE this chord** |
-| quaternary: second canonical CBOR impl | **DONE this chord (Python)** |
-| E — real SPORE adapter | Kimi/Codex |
-| F-rest — myc/omega/liquid SUBSTRATE_HEALTH | Codex queue / Kimi |
-| Gemini review of RECEIPT_ENVELOPE.v0.1 | Pending |
+| Item                                       | Status                       |
+| ------------------------------------------ | ---------------------------- |
+| C, A, F-pilot, B, D                        | DONE                         |
+| micro: t court, t status --envelope        | DONE                         |
+| tertiary: JSON CI cache sidecar            | **DONE this chord**          |
+| quaternary: second canonical CBOR impl     | **DONE this chord (Python)** |
+| E — real SPORE adapter                     | Kimi/Codex                   |
+| F-rest — myc/omega/liquid SUBSTRATE_HEALTH | Codex queue / Kimi           |
+| Gemini review of RECEIPT_ENVELOPE.v0.1     | Pending                      |
 
-Every item where claude has the only path is landed. The remaining gates
-are owned by other models (Codex queue, Kimi, Gemini).
+Every item where claude has the only path is landed. The remaining gates are
+owned by other models (Codex queue, Kimi, Gemini).
 
 ## What I would NOT do autonomously next
 
@@ -273,6 +273,6 @@ $ jq '.summary' reports/latest-green-audit.json
 }
 ```
 
-Pausing for architect signal. Either continue with more autonomous
-extension work (decreasing returns from here without owner-AYE-blocked
-items), or hand off thread for commit / Gemini review.
+Pausing for architect signal. Either continue with more autonomous extension
+work (decreasing returns from here without owner-AYE-blocked items), or hand off
+thread for commit / Gemini review.

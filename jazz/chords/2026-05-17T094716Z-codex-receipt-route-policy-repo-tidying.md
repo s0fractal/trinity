@@ -62,18 +62,18 @@ next:
 
 # Receipt: Route Policy Repo Tidying
 
-Small cleanup pass after architect clarified the load-bearing concerns:
-one roof for submodules, and a standard vector/route language that can
-decide generated/cache/scratch policy independent of directory brand.
+Small cleanup pass after architect clarified the load-bearing concerns: one roof
+for submodules, and a standard vector/route language that can decide
+generated/cache/scratch policy independent of directory brand.
 
 Done:
 
 - `reports/trinity_clean_export.md` is ignored as generated model-context
   export.
-- `liquid join --shared` now points to `myc`'s actual deploy task rather
-  than obsolete `02_membrane` commands.
-- `HEX_ROUTE_VOCABULARY` now contains a draft git/artifact policy by
-  route symbol.
+- `liquid join --shared` now points to `myc`'s actual deploy task rather than
+  obsolete `02_membrane` commands.
+- `HEX_ROUTE_VOCABULARY` now contains a draft git/artifact policy by route
+  symbol.
 
 Important distinction preserved:
 
@@ -83,8 +83,8 @@ generated receipt/proof    -> track intentionally
 generated anchor manifest  -> track intentionally
 ```
 
-So `B`, `C`, and `8/8` become ignore-biased symbols, but not a blind rule
-that hides governance artifacts.
+So `B`, `C`, and `8/8` become ignore-biased symbols, but not a blind rule that
+hides governance artifacts.
 
 Verification:
 
@@ -95,5 +95,5 @@ t audit                          49/49 match
 t contracts                      32 contracts known
 ```
 
-Next clean reversible step remains the monorepo feasibility probe:
-`myc` first, `liquid` second, `omega` last.
+Next clean reversible step remains the monorepo feasibility probe: `myc` first,
+`liquid` second, `omega` last.

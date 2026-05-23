@@ -53,8 +53,14 @@ if (import.meta.main) {
   const delayMs = delayIdx >= 0 ? parseInt(args[delayIdx + 1], 10) : 1000;
 
   const exclude = new Set<number>();
-  if (maxIdx >= 0) { exclude.add(maxIdx); exclude.add(maxIdx + 1); }
-  if (delayIdx >= 0) { exclude.add(delayIdx); exclude.add(delayIdx + 1); }
+  if (maxIdx >= 0) {
+    exclude.add(maxIdx);
+    exclude.add(maxIdx + 1);
+  }
+  if (delayIdx >= 0) {
+    exclude.add(delayIdx);
+    exclude.add(delayIdx + 1);
+  }
   const filtered = args.filter((_, i) => !exclude.has(i));
 
   const target = filtered[0];
@@ -71,7 +77,9 @@ if (import.meta.main) {
   if (!target.match(/^[0-9A-Fa-f](\/[0-9A-Fa-f])+$/)) {
     const resolved = await resolveWord(target);
     if (!resolved) {
-      console.log(JSON.stringify({ type: "error", message: `Unknown: ${target}` }));
+      console.log(
+        JSON.stringify({ type: "error", message: `Unknown: ${target}` }),
+      );
       Deno.exit(1);
     }
     pos = resolved;

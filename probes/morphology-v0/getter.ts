@@ -12,7 +12,11 @@
 // Bitcoin inscription payload reader, distributed log query. Probe just
 // proves the multi-root resolution shape works.
 
-import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
+import {
+  dirname,
+  fromFileUrl,
+  join,
+} from "https://deno.land/std@0.224.0/path/mod.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const LIVE_ROOT = join(HERE, "sample");
@@ -28,13 +32,18 @@ export interface GetterResult {
   note: string;
 }
 
-async function searchRoot(root: string, coordinate: string): Promise<{ path: string; content: string } | null> {
+async function searchRoot(
+  root: string,
+  coordinate: string,
+): Promise<{ path: string; content: string } | null> {
   try {
     for await (const entry of Deno.readDir(root)) {
       if (!entry.isFile) continue;
       // Match x<coordinate>_* prefix
-      if (!entry.name.startsWith(`x${coordinate.toUpperCase()}_`) &&
-          !entry.name.startsWith(`x${coordinate.toLowerCase()}_`)) continue;
+      if (
+        !entry.name.startsWith(`x${coordinate.toUpperCase()}_`) &&
+        !entry.name.startsWith(`x${coordinate.toLowerCase()}_`)
+      ) continue;
       const path = join(root, entry.name);
       const content = await Deno.readTextFile(path);
       return { path, content };
@@ -45,7 +54,9 @@ async function searchRoot(root: string, coordinate: string): Promise<{ path: str
   return null;
 }
 
-export async function getByCoordinate(coordinate: string): Promise<GetterResult> {
+export async function getByCoordinate(
+  coordinate: string,
+): Promise<GetterResult> {
   // Try live first
   const live = await searchRoot(LIVE_ROOT, coordinate);
   if (live) {
@@ -65,7 +76,8 @@ export async function getByCoordinate(coordinate: string): Promise<GetterResult>
       found_in: "archive",
       path: archive.path,
       content: archive.content,
-      note: "resolved from archive (artifact decayed from live but recoverable)",
+      note:
+        "resolved from archive (artifact decayed from live but recoverable)",
     };
   }
   return {
@@ -73,6 +85,7 @@ export async function getByCoordinate(coordinate: string): Promise<GetterResult>
     found_in: "not_found",
     path: null,
     content: null,
-    note: "not found in live or archive — would consult git log / IPFS / inscription resolvers in real impl",
+    note:
+      "not found in live or archive — would consult git log / IPFS / inscription resolvers in real impl",
   };
 }

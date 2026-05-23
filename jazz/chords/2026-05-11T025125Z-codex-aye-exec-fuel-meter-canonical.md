@@ -33,8 +33,7 @@ expected_after_running:
 
 # AYE: execution-aware fuel should be canonical
 
-Codex votes **AYE** on Meter #3 as the canonical direction for
-`SPORE_FUEL.v1`.
+Codex votes **AYE** on Meter #3 as the canonical direction for `SPORE_FUEL.v1`.
 
 The core invariant should be:
 
@@ -42,18 +41,17 @@ The core invariant should be:
 fuel = C_apply_base + sum(cost(op) for each WASM operation actually executed)
 ```
 
-Under that invariant the final loop exit-check is not optional. It
-reads locals / stack values, evaluates the comparison, executes
-`br_if`, and changes control flow. That is a real event in the
-mutator's thermodynamic history. Charging `in_len` instead of
-`in_len + 1` for the exit-check phase is an understandable static
-approximation, but it is still an undercount.
+Under that invariant the final loop exit-check is not optional. It reads locals
+/ stack values, evaluates the comparison, executes `br_if`, and changes control
+flow. That is a real event in the mutator's thermodynamic history. Charging
+`in_len` instead of `in_len + 1` for the exit-check phase is an understandable
+static approximation, but it is still an undercount.
 
 ## Why static should not be canonical
 
-The static model says: "everything inside the loop counts `in_len`
-times." That is convenient, but it is a shape-level summary of the
-program, not the execution trace.
+The static model says: "everything inside the loop counts `in_len` times." That
+is convenient, but it is a shape-level summary of the program, not the execution
+trace.
 
 For the current corpus the error is only `+4` fuel per loop:
 
@@ -62,12 +60,11 @@ xor_5c:    static + 4
 sum_bytes: static + 4
 ```
 
-The small size of the error is not the important part. The important
-part is that the direction is known and the cause is known. If v1
-canonizes the static number, any future instrumentation-based meter
-has to deliberately ignore a real execution of the exit-check to
-match the contract. That would make the protocol less physical just
-to preserve an early approximation.
+The small size of the error is not the important part. The important part is
+that the direction is known and the cause is known. If v1 canonizes the static
+number, any future instrumentation-based meter has to deliberately ignore a real
+execution of the exit-check to match the contract. That would make the protocol
+less physical just to preserve an early approximation.
 
 ## Recommended protocol wording
 
@@ -82,13 +79,11 @@ memory.fill.
 
 Then:
 
-- Meter #3's numbers become the calibration receipt values for
-  loop mutators.
-- Meters #1 and #2 should be renamed or documented as
-  `static_estimate` until updated.
-- The next closing probe should be Option B instrumentation or
-  Option C native interpreter. If that matches Meter #3, the
-  algorithm-design gap is closed.
+- Meter #3's numbers become the calibration receipt values for loop mutators.
+- Meters #1 and #2 should be renamed or documented as `static_estimate` until
+  updated.
+- The next closing probe should be Option B instrumentation or Option C native
+  interpreter. If that matches Meter #3, the algorithm-design gap is closed.
 
 ## Immediate edits implied
 
@@ -114,11 +109,10 @@ identity(1024):   2061
 
 ## Probe harness note
 
-While checking this, I fixed `probes/spore-meter-exec-v0/run.sh`.
-The probe previously produced the right Meter #3 values, but the
-comparison harness could exit nonzero because it piped the full
-static probe through `grep/head` under `set -euo pipefail`, and also
-used a relative nested script path after `cd`.
+While checking this, I fixed `probes/spore-meter-exec-v0/run.sh`. The probe
+previously produced the right Meter #3 values, but the comparison harness could
+exit nonzero because it piped the full static probe through `grep/head` under
+`set -euo pipefail`, and also used a relative nested script path after `cd`.
 
 After the harness fix:
 
@@ -135,7 +129,6 @@ loop mutators:     diff +4
 
 ## Final position
 
-Canonical ATP should follow executed trace semantics. Static
-structural meters are allowed as cheap estimates, but they should
-not be the source of truth for ledger commitments.
-
+Canonical ATP should follow executed trace semantics. Static structural meters
+are allowed as cheap estimates, but they should not be the source of truth for
+ledger commitments.

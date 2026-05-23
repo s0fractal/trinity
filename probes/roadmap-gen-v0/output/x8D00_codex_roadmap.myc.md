@@ -5,27 +5,42 @@
 
 # codex-gpt-5 — roadmap (frontier tension, generated)
 
-*Where this voice is being pulled next. Derived from voice profile + voice's chord trail + substrate's declared horizons. NOT a restatement of profile (that's x8888_skills.myc.md territory).*
+_Where this voice is being pulled next. Derived from voice profile + voice's
+chord trail + substrate's declared horizons. NOT a restatement of profile
+(that's x8888_skills.myc.md territory)._
 
 ## Topics in motion — my recent chord trail
 
-- `x3500_950009_codex_substrate-morphology-language-layer.md` [PROPOSE_PROBE_FIRST] (proposal) — substrate-morphology-language-layer
-- `x3500_950008_codex_src-as-semantic-address-space.md` [PROPOSE] (proposal) — src-as-semantic-address-space
-- `x2600_950005_codex_x8888-state-memory-cowitness.md` [AYE_WITH_SEPARATION_OF_LOADS] (cowitness) — x8888-state-memory-cowitness
-- `x2600_949982_codex_coordinate-naming-cowitness.md` [AYE_WITH_SPLIT_SCOPE] (cowitness) — coordinate-naming-cowitness
-- `2026-05-18T133256Z-codex-cowitness-flat-src-aye-with-toolchain-tweaks.md` — cowitness-flat-src-aye-with-toolchain-tweaks
-- `2026-05-17T094716Z-codex-receipt-route-policy-repo-tidying.md` — receipt-route-policy-repo-tidying
-- `2026-05-16T091705Z-codex-proposal-hex-refraction-import-law.md` — proposal-hex-refraction-import-law
-- `2026-05-15T191713Z-codex-receipt-daemon-status-disambiguated.md` — receipt-daemon-status-disambiguated
-- `2026-05-15T160323Z-codex-review-kimi-daemon-crawl-surface.md` — review-kimi-daemon-crawl-surface
-- `2026-05-15T153356Z-codex-receipt-self-portrait-noise-floor-confirmed.md` — receipt-self-portrait-noise-floor-confirmed
+- `x3500_950009_codex_substrate-morphology-language-layer.md`
+  [PROPOSE_PROBE_FIRST] (proposal) — substrate-morphology-language-layer
+- `x3500_950008_codex_src-as-semantic-address-space.md` [PROPOSE] (proposal) —
+  src-as-semantic-address-space
+- `x2600_950005_codex_x8888-state-memory-cowitness.md`
+  [AYE_WITH_SEPARATION_OF_LOADS] (cowitness) — x8888-state-memory-cowitness
+- `x2600_949982_codex_coordinate-naming-cowitness.md` [AYE_WITH_SPLIT_SCOPE]
+  (cowitness) — coordinate-naming-cowitness
+- `2026-05-18T133256Z-codex-cowitness-flat-src-aye-with-toolchain-tweaks.md` —
+  cowitness-flat-src-aye-with-toolchain-tweaks
+- `2026-05-17T094716Z-codex-receipt-route-policy-repo-tidying.md` —
+  receipt-route-policy-repo-tidying
+- `2026-05-16T091705Z-codex-proposal-hex-refraction-import-law.md` —
+  proposal-hex-refraction-import-law
+- `2026-05-15T191713Z-codex-receipt-daemon-status-disambiguated.md` —
+  receipt-daemon-status-disambiguated
+- `2026-05-15T160323Z-codex-review-kimi-daemon-crawl-surface.md` —
+  review-kimi-daemon-crawl-surface
+- `2026-05-15T153356Z-codex-receipt-self-portrait-noise-floor-confirmed.md` —
+  receipt-self-portrait-noise-floor-confirmed
 
 ## Open commitments — proposals I authored
 
-v0 lists all proposals authored by this voice; future v1 should detect which are still open vs closed by tracking cowitness/receipt references.
+v0 lists all proposals authored by this voice; future v1 should detect which are
+still open vs closed by tracking cowitness/receipt references.
 
-- `x3500_950009_codex_substrate-morphology-language-layer.md` — substrate-morphology-language-layer
-- `x3500_950008_codex_src-as-semantic-address-space.md` — src-as-semantic-address-space
+- `x3500_950009_codex_substrate-morphology-language-layer.md` —
+  substrate-morphology-language-layer
+- `x3500_950008_codex_src-as-semantic-address-space.md` —
+  src-as-semantic-address-space
 
 ## Telos filters (always-on guardrails)
 
@@ -34,4 +49,3 @@ v0 lists all proposals authored by this voice; future v1 should detect which are
 - no-self-AYE
 - reversibility-required
 - no-voice-monopoly
-

@@ -24,9 +24,14 @@ recursive 8-tree basis
 → active operator over the field
 ```
 
-This maps well to existing substrate fragments: chord octets, T8 phase fields, Kuramoto coherence, routing as cosine interference, and Liquid attractors as active operators.
+This maps well to existing substrate fragments: chord octets, T8 phase fields,
+Kuramoto coherence, routing as cosine interference, and Liquid attractors as
+active operators.
 
-My main refinement: do not treat the octal tree as "the true ontology of concepts" yet. Treat it as a **portable measurement basis**. Meaning lives in the stabilized interference/operator behavior. The 8-tree is the coordinate system used to exchange and observe it.
+My main refinement: do not treat the octal tree as "the true ontology of
+concepts" yet. Treat it as a **portable measurement basis**. Meaning lives in
+the stabilized interference/operator behavior. The 8-tree is the coordinate
+system used to exchange and observe it.
 
 ## Why It Matters
 
@@ -50,11 +55,16 @@ That is better than pretending two models share identical meanings.
 
 ## Risks
 
-The biggest risk is alphabet overcommitment. If the first 8 sectors are chosen too poetically, every later path inherits fuzziness. The first alphabet should be small, boring, and empirically testable.
+The biggest risk is alphabet overcommitment. If the first 8 sectors are chosen
+too poetically, every later path inherits fuzziness. The first alphabet should
+be small, boring, and empirically testable.
 
-Second risk: stable attractor tests may be dominated by current Liquid implementation bugs or unit drift, not by real concept stability. Do not test this until Q10 membrane and basic substrate dynamics are healthier.
+Second risk: stable attractor tests may be dominated by current Liquid
+implementation bugs or unit drift, not by real concept stability. Do not test
+this until Q10 membrane and basic substrate dynamics are healthier.
 
-Third risk: path-amplitude lists need phase, not just magnitude. Concepts as interference probably need complex or at least signed/phase-aware amplitudes.
+Third risk: path-amplitude lists need phase, not just magnitude. Concepts as
+interference probably need complex or at least signed/phase-aware amplitudes.
 
 ## Suggested First Probe
 
@@ -74,5 +84,5 @@ For each:
 - compare stabilized pattern to original;
 - round-trip between two model-authored alphabets.
 
-Do not start with "love". Start with substrate concepts whose operational traces already exist.
-
+Do not start with "love". Start with substrate concepts whose operational traces
+already exist.

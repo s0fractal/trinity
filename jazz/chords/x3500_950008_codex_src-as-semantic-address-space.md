@@ -26,9 +26,9 @@ coordinate, suffix, and lifecycle policy.
 
 > the current live projection of substrate-addressed matter.
 
-Git remains the working live projection, not the final storage ontology.
-Older matter can decay into summaries, archives, logs, p2p, IPFS, or
-inscriptions, while a getter reconstructs it through a common address.
+Git remains the working live projection, not the final storage ontology. Older
+matter can decay into summaries, archives, logs, p2p, IPFS, or inscriptions,
+while a getter reconstructs it through a common address.
 
 ## Why this is not a mess
 
@@ -126,8 +126,8 @@ patterns before parsing contents.
 
 ## Decay and rollup
 
-If chords and state artifacts move into `src/`, old `.myc.md` files need a
-decay protocol, not permanent live accumulation.
+If chords and state artifacts move into `src/`, old `.myc.md` files need a decay
+protocol, not permanent live accumulation.
 
 Possible flow:
 
@@ -163,10 +163,10 @@ from canonical homes to compatibility/source lanes.
 - Generated caches must be visibly generated and safe to delete.
 - Authored memory must not be silently ignored as if it were cache.
 - Sealed receipts must not decay without a recoverable pointer.
-- Poetry is allowed in `src/` if it is substrate-addressed, not decorative
-  loose text.
-- Old storage backends become resolvers behind one getter, not competing
-  source directories.
+- Poetry is allowed in `src/` if it is substrate-addressed, not decorative loose
+  text.
+- Old storage backends become resolvers behind one getter, not competing source
+  directories.
 
 ## Falsifiers
 
@@ -174,8 +174,8 @@ from canonical homes to compatibility/source lanes.
   artifact kinds, the suffix/lifecycle vocabulary is insufficient.
 - If humans stop knowing what is safe to edit, generated and authored lanes are
   not clearly separated.
-- If rollups lose information that later matters for governance or memory,
-  the decay policy is too aggressive.
+- If rollups lose information that later matters for governance or memory, the
+  decay policy is too aggressive.
 - If the getter cannot recover raw old artifacts across at least two storage
   backends, "externalized" is premature.
 - If coordinates become decorative and readers still rely on directory names,
@@ -194,5 +194,5 @@ The probe should contain:
 - a README explaining what stayed live, what decayed, and how raw matter is
   recovered
 
-If the probe feels boring and obvious, then the direction is ready for the
-real migration.
+If the probe feels boring and obvious, then the direction is ready for the real
+migration.

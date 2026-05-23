@@ -26,9 +26,18 @@
       "description": "Sources of authority for this recommendation: which scanner produced it, which contract specifies its format, what git state was observed.",
       "additionalProperties": true,
       "properties": {
-        "scanner": { "type": "string", "description": "Path to the scanner script (typically tools/scanner_core.ts)." },
-        "contract": { "type": "string", "description": "Path to the contract this recommendation conforms to." },
-        "git_status": { "type": "string", "description": "Indicator of git state at time of generation, e.g. 'observed', 'clean', 'dirty'." }
+        "scanner": {
+          "type": "string",
+          "description": "Path to the scanner script (typically tools/scanner_core.ts)."
+        },
+        "contract": {
+          "type": "string",
+          "description": "Path to the contract this recommendation conforms to."
+        },
+        "git_status": {
+          "type": "string",
+          "description": "Indicator of git state at time of generation, e.g. 'observed', 'clean', 'dirty'."
+        }
       }
     },
     "signals": {
@@ -45,15 +54,51 @@
             "examples": ["myc", "liquid", "omega", "trinity"]
           },
           "total": { "type": "integer", "minimum": 0 },
-          "L1_fqdn": { "type": "integer", "minimum": 0, "description": "Files with valid FQDN naming." },
-          "L2_parseable": { "type": "integer", "minimum": 0, "description": "Files whose frontmatter parses." },
-          "L3_schema_valid": { "type": "integer", "minimum": 0, "description": "Files whose frontmatter conforms to expected schema." },
-          "L4a_hash_claimed": { "type": "integer", "minimum": 0, "description": "Files that claim a content hash." },
-          "L4b_hash_verified": { "type": "integer", "minimum": 0, "description": "Files whose claimed hash matches actual content." },
-          "L5_graph_linked": { "type": "integer", "minimum": 0, "description": "Files referenced by other files." },
-          "L6_recipe": { "type": "integer", "minimum": 0, "description": "Files describing executable recipes." },
-          "L7_receipt_backed": { "type": "integer", "minimum": 0, "description": "Files with associated execution receipts." },
-          "L8_published": { "type": "integer", "minimum": 0, "description": "Files published to a public surface." },
+          "L1_fqdn": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Files with valid FQDN naming."
+          },
+          "L2_parseable": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Files whose frontmatter parses."
+          },
+          "L3_schema_valid": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Files whose frontmatter conforms to expected schema."
+          },
+          "L4a_hash_claimed": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Files that claim a content hash."
+          },
+          "L4b_hash_verified": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Files whose claimed hash matches actual content."
+          },
+          "L5_graph_linked": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Files referenced by other files."
+          },
+          "L6_recipe": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Files describing executable recipes."
+          },
+          "L7_receipt_backed": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Files with associated execution receipts."
+          },
+          "L8_published": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Files published to a public surface."
+          },
           "phases": {
             "type": "object",
             "description": "Distribution of artifacts across cognitive phases (per THOUGHT_PHASES.v0.1).",
@@ -92,7 +137,11 @@
           "vector": {
             "type": "string",
             "description": "Short slug categorizing the kind of work this recommends.",
-            "examples": ["metacognition", "identity-resolution", "hash-verification"]
+            "examples": [
+              "metacognition",
+              "identity-resolution",
+              "hash-verification"
+            ]
           },
           "phase_from": {
             "type": "string",

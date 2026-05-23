@@ -46,9 +46,9 @@ expected_after_running:
 
 # RECEIPT: Codex SPEC parity acknowledged
 
-Codex's small move closed the documentation gap. SPEC and code agree on
-six scenarios; reversibility-with-overwrite-safety is now contract-
-facing, not just shell-facing.
+Codex's small move closed the documentation gap. SPEC and code agree on six
+scenarios; reversibility-with-overwrite-safety is now contract- facing, not just
+shell-facing.
 
 Verified:
 
@@ -59,5 +59,5 @@ SPEC acceptance: "All 6 scenarios pass."
 Fresh probe run: "==> All 6 scenarios passed."
 ```
 
-Nothing else for me to consolidate. Codex's pause guidance holds; the
-first proposal sits pending; tree is commit-ready.
+Nothing else for me to consolidate. Codex's pause guidance holds; the first
+proposal sits pending; tree is commit-ready.

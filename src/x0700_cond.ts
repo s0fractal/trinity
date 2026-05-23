@@ -59,19 +59,34 @@ if (import.meta.main) {
 
   const predicatePos = await resolve(predicateName);
   if (!predicatePos) {
-    console.log(JSON.stringify({ type: "error", message: `Unknown predicate: ${predicateName}` }));
+    console.log(
+      JSON.stringify({
+        type: "error",
+        message: `Unknown predicate: ${predicateName}`,
+      }),
+    );
     Deno.exit(1);
   }
 
   const thenPos = await resolve(thenName);
   if (!thenPos) {
-    console.log(JSON.stringify({ type: "error", message: `Unknown then-branch: ${thenName}` }));
+    console.log(
+      JSON.stringify({
+        type: "error",
+        message: `Unknown then-branch: ${thenName}`,
+      }),
+    );
     Deno.exit(1);
   }
 
   const elsePos = await resolve(elseName);
   if (!elsePos) {
-    console.log(JSON.stringify({ type: "error", message: `Unknown else-branch: ${elseName}` }));
+    console.log(
+      JSON.stringify({
+        type: "error",
+        message: `Unknown else-branch: ${elseName}`,
+      }),
+    );
     Deno.exit(1);
   }
 
@@ -83,25 +98,29 @@ if (import.meta.main) {
   const branchResult = await runStep(branchPos);
   const branchOk = !isError(branchResult);
 
-  console.log(JSON.stringify({
-    type: "cond",
-    action: "branch",
-    predicate: predicateName,
-    then: thenName,
-    else: elseName,
-    resolved_predicate: predicatePos,
-    resolved_then: thenPos,
-    resolved_else: elsePos,
-    predicate_ok: predicateOk,
-    taken: branchName,
-    overall: branchOk ? "passed" : "failed",
-    predicate_result: predicateResult,
-    result: branchResult,
-    note: predicateOk
-      ? `Predicate ${predicateName} ok → took then-branch ${thenName}`
-      : `Predicate ${predicateName} failed → took else-branch ${elseName}`,
-    topology: "cond(p, t, e) = if ok(p) then t else e",
-  }, null, 2));
+  console.log(JSON.stringify(
+    {
+      type: "cond",
+      action: "branch",
+      predicate: predicateName,
+      then: thenName,
+      else: elseName,
+      resolved_predicate: predicatePos,
+      resolved_then: thenPos,
+      resolved_else: elsePos,
+      predicate_ok: predicateOk,
+      taken: branchName,
+      overall: branchOk ? "passed" : "failed",
+      predicate_result: predicateResult,
+      result: branchResult,
+      note: predicateOk
+        ? `Predicate ${predicateName} ok → took then-branch ${thenName}`
+        : `Predicate ${predicateName} failed → took else-branch ${elseName}`,
+      topology: "cond(p, t, e) = if ok(p) then t else e",
+    },
+    null,
+    2,
+  ));
 
   if (!branchOk) Deno.exit(1);
 }

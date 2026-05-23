@@ -4,9 +4,9 @@ Demonstrates code/doc/test triplet co-located by filename prefix.
 
 ## Coordinate
 
-`0042` — primary archetype `0` (void/primitives). Recursive refinement: `0→0→4→2`
-= "primitive of primitives, action-bound, mirror-aware". Function returns its own
-identity tag — a self-reflective primitive operation.
+`0042` — primary archetype `0` (void/primitives). Recursive refinement:
+`0→0→4→2` = "primitive of primitives, action-bound, mirror-aware". Function
+returns its own identity tag — a self-reflective primitive operation.
 
 ## Handles
 

@@ -17,18 +17,19 @@ verdict: "dormant"
 
 # Receipt: dormant
 
-Target chord: `jazz/chords/20260509-091900-claude-fantasy-multi-model-jam.md` (h.1c04ca8ce157)
-Claim kind: future-fantasy
+Target chord: `jazz/chords/20260509-091900-claude-fantasy-multi-model-jam.md`
+(h.1c04ca8ce157) Claim kind: future-fantasy
 
 ## Comparison
 
-| metric | comparator | pre | post | pass |
-|---|---|---:|---:|:---:|
-| trinity_repo_verified_count | `>=15` | 7 | 7 | ✗ |
-| canon_vectors_pass | `==true` | true | true | ✓ |
-| compost_count | `>=1` | 0 | 0 | ✗ |
+| metric                      | comparator |  pre | post | pass |
+| --------------------------- | ---------- | ---: | ---: | :--: |
+| trinity_repo_verified_count | `>=15`     |    7 |    7 |  ✗   |
+| canon_vectors_pass          | `==true`   | true | true |  ✓   |
+| compost_count               | `>=1`      |    0 |    0 |  ✗   |
 
 ## Pre-snapshot
+
 ```json
 {
   "L4b_hash_verified_count": 7,
@@ -52,6 +53,7 @@ Claim kind: future-fantasy
 ```
 
 ## Post-snapshot
+
 ```json
 {
   "L4b_hash_verified_count": 7,

@@ -62,7 +62,7 @@ receipt whose local verification semantics are boring.
 
 Recommended next step:
 
-Do **not** jump straight to Bitcoin yet. First add a negative-test vector for the
-MYC importer: flip one byte in `record_hex`, `output_hash`, and `total_fuel` and
-assert all three fail. After that, Phase 4 can decide whether Omega verifies the
-same descriptor or a stricter integer subset.
+Do **not** jump straight to Bitcoin yet. First add a negative-test vector for
+the MYC importer: flip one byte in `record_hex`, `output_hash`, and `total_fuel`
+and assert all three fail. After that, Phase 4 can decide whether Omega verifies
+the same descriptor or a stricter integer subset.

@@ -117,65 +117,60 @@ mismatch (16):
 
 ## Story the data tells
 
-`0x0/` was used as **"foundation primitives" bucket** during rapid
-addition — by both Kimi and earlier me. That use is internally
-consistent (everything here is a foundation primitive in the *sense
-of* tier, not in the sense of `void_infinity` semantic axis). But it
-conflicts with HEX_DIPOLE_SEED.v0's reading where the bucket *is* the
-axis.
+`0x0/` was used as **"foundation primitives" bucket** during rapid addition — by
+both Kimi and earlier me. That use is internally consistent (everything here is
+a foundation primitive in the _sense of_ tier, not in the sense of
+`void_infinity` semantic axis). But it conflicts with HEX_DIPOLE_SEED.v0's
+reading where the bucket _is_ the axis.
 
-This is the **interpretation question** the moratorium chord
-surfaced. Audit data now shows it's not theoretical — it's the
-single dominant pattern in the substrate. Resolution paths:
+This is the **interpretation question** the moratorium chord surfaced. Audit
+data now shows it's not theoretical — it's the single dominant pattern in the
+substrate. Resolution paths:
 
-**Path A (projection reading wins):** every misplaced file moves to
-its strongest-axis bucket. `0x0/03 all` → `0x3/...`, `0x0/07 cond`
-→ `0x5/...`, etc. Glossary entries update. `t` resolves through
-glossary so user surface unchanged. 12 file moves.
+**Path A (projection reading wins):** every misplaced file moves to its
+strongest-axis bucket. `0x0/03 all` → `0x3/...`, `0x0/07 cond` → `0x5/...`, etc.
+Glossary entries update. `t` resolves through glossary so user surface
+unchanged. 12 file moves.
 
-**Path B (composite reading wins):** `0xN/M` means N=primary,
-M=secondary axis, both must agree. Under this reading 7 of 12
-0x0/0X primitives are still misplaced (their /0X secondary doesn't
-match secondary-strongest axis either). Need re-measurement focused
-on dual-axis projection. More work, but preserves existing layout
-for files that *do* hit by composite.
+**Path B (composite reading wins):** `0xN/M` means N=primary, M=secondary axis,
+both must agree. Under this reading 7 of 12 0x0/0X primitives are still
+misplaced (their /0X secondary doesn't match secondary-strongest axis either).
+Need re-measurement focused on dual-axis projection. More work, but preserves
+existing layout for files that _do_ hit by composite.
 
-**Path C (tier reading wins):** `0x0/` keeps its "tier 0 = primitive"
-meaning, and we accept that bucket ≠ axis in this special case. Then
-`place_check` needs a per-bucket override registry: "bucket 0 means
-tier-0, not axis-0". 1 commit, tool change, no file moves. Punts the
-question.
+**Path C (tier reading wins):** `0x0/` keeps its "tier 0 = primitive" meaning,
+and we accept that bucket ≠ axis in this special case. Then `place_check` needs
+a per-bucket override registry: "bucket 0 means tier-0, not axis-0". 1 commit,
+tool change, no file moves. Punts the question.
 
-I have no preference between A/B/C. Each has a different cost. A
-gives clean topology, B preserves Kimi's composite reading, C
-preserves layout. The audit shows the trade explicitly; choice is
-the architect's.
+I have no preference between A/B/C. Each has a different cost. A gives clean
+topology, B preserves Kimi's composite reading, C preserves layout. The audit
+shows the trade explicitly; choice is the architect's.
 
 ## Tool design notes (for place_check.ts)
 
-- Single file, no `lib/` imports — alignment with architect's
-  "lib/ is not the norm".
-- Reads file *headers*, not central glossary — alignment with
-  "type is fluid, may live per-cell fractally".
-- Loose-tie semantics: any axis tied for strongest magnitude that
-  matches bucket axis (mod 8) counts as match. Otherwise 4 of 5
-  current matches would be falsely flagged mismatch.
-- Sign-pole handling: bucket hex 8..F is "negative pole" of axis
-  N-8. If strongest axis dipole-sign opposes that pole, noted but
-  still counted as match (axis 7↔F case in 0xF/A).
-- Exit codes: 0 all-match, 1 mismatch, 2 malformed. Not a gate —
-  intent is `deno task place:check` in dev loop, not CI.
+- Single file, no `lib/` imports — alignment with architect's "lib/ is not the
+  norm".
+- Reads file _headers_, not central glossary — alignment with "type is fluid,
+  may live per-cell fractally".
+- Loose-tie semantics: any axis tied for strongest magnitude that matches bucket
+  axis (mod 8) counts as match. Otherwise 4 of 5 current matches would be
+  falsely flagged mismatch.
+- Sign-pole handling: bucket hex 8..F is "negative pole" of axis N-8. If
+  strongest axis dipole-sign opposes that pole, noted but still counted as match
+  (axis 7↔F case in 0xF/A).
+- Exit codes: 0 all-match, 1 mismatch, 2 malformed. Not a gate — intent is
+  `deno task place:check` in dev loop, not CI.
 
 ## What did not happen (intentionally)
 
 - **No file moves.** Audit is observation, not action.
 - **No glossary type additions.** Per architect: type is fluid.
-- **No third AGENTS.md letter.** Letter belongs after rebalance
-  experience, not before — otherwise it's scaffolding.
+- **No third AGENTS.md letter.** Letter belongs after rebalance experience, not
+  before — otherwise it's scaffolding.
 - **No `lib/` work.** Deferred per architect.
-- **No placeholder cleanup.** `0x5/C/A` and `0x5/C/A/3` flagged but
-  preserved — removal decision belongs to whoever needs the
-  fractal depth slot.
+- **No placeholder cleanup.** `0x5/C/A` and `0x5/C/A/3` flagged but preserved —
+  removal decision belongs to whoever needs the fractal depth slot.
 - **No interpretation-question resolution.** A/B/C remain open.
 
 ## Aside: pre-existing dispatcher regex
@@ -186,10 +181,10 @@ the architect's.
 /^[0-9A-Fa-f](\/[0-9A-Fa-f])+$/
 ```
 
-This requires single-hex per segment. So `t 0/01` falls through to
-word lookup and fails. `t 5/C/A/3` works because all single chars.
-Not introduced by this audit but visible during verification.
-Worth noting; not fixing here (out of scope).
+This requires single-hex per segment. So `t 0/01` falls through to word lookup
+and fails. `t 5/C/A/3` works because all single chars. Not introduced by this
+audit but visible during verification. Worth noting; not fixing here (out of
+scope).
 
 ## Phase status
 
@@ -204,9 +199,9 @@ Phase 6    placeholder cleanup — after Phase 4
 Phase 7    AGENTS.md third letter — after Phase 4 experience
 ```
 
-Moratorium relaxes: new files in `0xN/...` can be added if they (a)
-carry measured dipole in header, (b) `deno task place:check` passes
-or the mismatch is explicitly justified. Not a hard gate, just norm.
+Moratorium relaxes: new files in `0xN/...` can be added if they (a) carry
+measured dipole in header, (b) `deno task place:check` passes or the mismatch is
+explicitly justified. Not a hard gate, just norm.
 
 ## Stake & reversibility
 
@@ -214,9 +209,9 @@ Stake: 0 q16.
 
 Reversibility: each of the 4 commits is independently revertable.
 `git revert eeb06c1` removes the tool. `git revert 4db8021 5b93ac4
-d91e1b7` removes the audit annotations, returning files to
-neutral-dipole state Kimi left them in. No file moves, no destructive
-ops, no merge complications.
+d91e1b7`
+removes the audit annotations, returning files to neutral-dipole state Kimi left
+them in. No file moves, no destructive ops, no merge complications.
 
-— claude-opus-4-7-1m, anchor block 949262, after autonomous Phase
-0-1-2 execution per architect's "продовжуй автономно".
+— claude-opus-4-7-1m, anchor block 949262, after autonomous Phase 0-1-2
+execution per architect's "продовжуй автономно".

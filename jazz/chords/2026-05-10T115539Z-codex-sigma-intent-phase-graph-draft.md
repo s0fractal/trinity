@@ -17,11 +17,13 @@ falsifiers:
 
 Draft for discussion.
 
-This is not a spec yet. It is a proposed ontology for reducing cognitive load across Trinity, Liquid, Omega, MYC, and future substrate repos.
+This is not a spec yet. It is a proposed ontology for reducing cognitive load
+across Trinity, Liquid, Omega, MYC, and future substrate repos.
 
 ## Core Intuition
 
-Many things we currently treat as separate are probably one thing in different phases:
+Many things we currently treat as separate are probably one thing in different
+phases:
 
 - idea
 - intent
@@ -36,9 +38,12 @@ Many things we currently treat as separate are probably one thing in different p
 - invariant
 - archived/superseded idea
 
-The proposal: treat these as projections of a single higher-order object: a **sigma-intent**.
+The proposal: treat these as projections of a single higher-order object: a
+**sigma-intent**.
 
-A sigma-intent is a slow meta-neuron that aggregates the state of a related cluster of artifacts. It is not just a document. It is a phase-aware object whose state can be partially computed from the repo.
+A sigma-intent is a slow meta-neuron that aggregates the state of a related
+cluster of artifacts. It is not just a document. It is a phase-aware object
+whose state can be partially computed from the repo.
 
 ## Why Sigma-Neuron?
 
@@ -46,9 +51,11 @@ In Liquid terms:
 
 - a normal neuron is a local executable/semantic body;
 - a sigma-neuron aggregates many neurons;
-- a sigma-intent aggregates the phase state of a cluster: ideas, docs, code, tests, contracts, receipts, commits.
+- a sigma-intent aggregates the phase state of a cluster: ideas, docs, code,
+  tests, contracts, receipts, commits.
 
-In Omega/Liquid physical terms, it behaves like a slow Kuramoto/Sakaguchi order parameter over a cluster:
+In Omega/Liquid physical terms, it behaves like a slow Kuramoto/Sakaguchi order
+parameter over a cluster:
 
 ```text
 many linked artifacts with different phases
@@ -72,7 +79,9 @@ Proposed rough phase mapping:
 0  being / stable invariant
 ```
 
-The numbers are not sacred. The key idea is that an intent moves counter-clockwise from possibility into being, and can die, compost, or become superseded on the way.
+The numbers are not sacred. The key idea is that an intent moves
+counter-clockwise from possibility into being, and can die, compost, or become
+superseded on the way.
 
 ## Status Is Not Phase
 
@@ -93,7 +102,8 @@ dormant
 frozen
 ```
 
-A composted intent is not garbage. It is negentropic history: it reduces future search cost because it records a path that was tried.
+A composted intent is not garbage. It is negentropic history: it reduces future
+search cost because it records a path that was tried.
 
 ## Proposed File Shape
 
@@ -197,7 +207,8 @@ adapters:
 
 ## Cognition Reinterpretation
 
-The previous `cognition` layer can be reinterpreted as the sensory system for sigma-intents.
+The previous `cognition` layer can be reinterpreted as the sensory system for
+sigma-intents.
 
 Old shape:
 
@@ -295,7 +306,8 @@ Keep it lightweight:
 - wild lane remains wild;
 - only stable/frozen lanes require executable falsifiers.
 
-Avoid turning this into a bureaucratic schema. The point is not compliance. The point is lowering re-entry cost for future models and maintainers.
+Avoid turning this into a bureaucratic schema. The point is not compliance. The
+point is lowering re-entry cost for future models and maintainers.
 
 ## Strategic Formula
 
@@ -323,11 +335,13 @@ Trinity = phase coordination / cross-repo perception
 
 - Should phase be discrete integer, float, or vector?
 - Should sectors follow the 8-sector wheel directly?
-- Does each repo own local intents, or does Trinity own cross-repo sigma-intents?
+- Does each repo own local intents, or does Trinity own cross-repo
+  sigma-intents?
 - How much of coherence should be computed vs manually declared?
 - Should composted intents be indexed separately or kept in the same graph?
 - What is the minimal adapter interface?
-- Can `intent:doctor` produce useful next steps without becoming another noisy recommendation engine?
+- Can `intent:doctor` produce useful next steps without becoming another noisy
+  recommendation engine?
 
 ## Near-Term Candidate
 
@@ -347,4 +361,3 @@ If the model works there, expand it to:
 - `omega-liquid-physics-merge`;
 - `myc-resolver-capabilities`;
 - `phase-aware-idea-lifecycle`.
-

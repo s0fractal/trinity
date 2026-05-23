@@ -8,7 +8,7 @@ import { SporeApplyBackend } from "../liquid/00_core/pipe/spore_apply_backend.ts
 
 async function main() {
   const args = Deno.args;
-  
+
   if (args.length < 2) {
     const payload = {
       type: "error",
@@ -23,7 +23,11 @@ async function main() {
   const [mutatorHash, stateHash, ...inputHashes] = args;
 
   try {
-    const result = await SporeApplyBackend.apply(mutatorHash, stateHash, inputHashes);
+    const result = await SporeApplyBackend.apply(
+      mutatorHash,
+      stateHash,
+      inputHashes,
+    );
     const payload = {
       type: "spore_apply",
       action: "apply",
@@ -44,7 +48,7 @@ async function main() {
     const payload = {
       type: "error",
       message: e.message,
-      position: "5/F"
+      position: "5/F",
     };
     console.log(JSON.stringify(payload));
     Deno.exit(1);

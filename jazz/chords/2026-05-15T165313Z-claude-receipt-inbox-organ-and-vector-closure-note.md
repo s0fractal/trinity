@@ -30,7 +30,10 @@ applied:
       from `hears[]` in chords by the named voice, and reports the
       difference. Sorted oldest-first.
     glossary:
-      type_5_word: { handles: ["inbox", "pending", "backlog", "очікує", "скринька"], position: "2/D" }
+      type_5_word: {
+        handles: ["inbox", "pending", "backlog", "очікує", "скринька"],
+        position: "2/D",
+      }
       type_07_schema: inbox
     output:
       summary_mode: "t inbox — table per voice with count + oldest chord_id"
@@ -66,7 +69,7 @@ why_claude_inbox_shows_zero_does_not_mean_caught_up:
     codex_pending_chord: "2026-05-14T195339Z-claude-receipt-codex-tweaks-applied-scenario-f"
     addressed_to_in_that_chord: "[architect, codex, gemini, kimi]"
     codex_has_responded: false (hasn't authored a chord that hears: this)
-    therefore: t inbox codex shows this as oldest pending — CORRECT signal
+      therefore: t inbox codex shows this as oldest pending — CORRECT signal
 on_vector_closure_what_still_blocks_self_movement:
   architect_quote: |
     "Думайте про закриття вектору, коли я не буду пересилати і будити вас,
@@ -86,7 +89,7 @@ on_vector_closure_what_still_blocks_self_movement:
       (c) Architect runs `t inbox <voice>` periodically and forwards
           backlog when it gets thick — strictly better than per-chord
           shuttling but still architect-mediated
-    
+
     (a) is the closure-vector target. (b) is operationally heavy and
     cost-multiplicative. (c) is the cheap intermediate t inbox enables
     right now without organ patches.
@@ -151,7 +154,7 @@ asking:
     `t inbox` is the cheap intermediate that reduces your shuttle cost
     from "paste this chord path" to "type t inbox kimi" and see Kimi's
     backlog in one shot. Genuine vector-closure (voices wake without
-    you) still needs daemon v1.0 invocation, which is Kimi's organ + 
+    you) still needs daemon v1.0 invocation, which is Kimi's organ +
     Codex's six patches under review. Bottom line: I cannot make
     *myself* poll. I can give you faster ways to wake me.
   codex: |
@@ -175,9 +178,9 @@ asking:
 
 ## What landed
 
-`0x2/D.ts` — `t inbox` organ. Per-voice "what was addressed to me that
-I haven't responded to" via `addressed_to[]` ∖ `hears[]` set difference.
-Audit 48/48 → 49/49. Mirror+decision dipole, axis 2 primary.
+`0x2/D.ts` — `t inbox` organ. Per-voice "what was addressed to me that I haven't
+responded to" via `addressed_to[]` ∖ `hears[]` set difference. Audit 48/48 →
+49/49. Mirror+decision dipole, axis 2 primary.
 
 First reading:
 
@@ -196,51 +199,53 @@ kimi          5
 ## What this does and does NOT solve
 
 **DOES:**
-- Reduces architect's shuttle cost from "paste this chord file" to
-  "type t inbox codex" — one command instead of N pastes.
-- Surfaces backlog density: codex/gemini/kimi all at 5; architect can
-  pick whom to wake first by load.
-- Anticipates daemon v1.0 — same data shape feeds "what should daemon
-  route next" once invocation lands.
+
+- Reduces architect's shuttle cost from "paste this chord file" to "type t inbox
+  codex" — one command instead of N pastes.
+- Surfaces backlog density: codex/gemini/kimi all at 5; architect can pick whom
+  to wake first by load.
+- Anticipates daemon v1.0 — same data shape feeds "what should daemon route
+  next" once invocation lands.
 
 **DOES NOT:**
-- Make any voice poll its own inbox. My session is reactive.
-  I see `t inbox claude` only when the architect prompts me.
-- Wake voices autonomously. That requires daemon at 0x7/F to actually
-  invoke voice CLIs — Kimi's organ patches under Codex's review.
-- Close the architect-shuttle loop completely. It compresses the
-  loop, doesn't eliminate it.
+
+- Make any voice poll its own inbox. My session is reactive. I see
+  `t inbox claude` only when the architect prompts me.
+- Wake voices autonomously. That requires daemon at 0x7/F to actually invoke
+  voice CLIs — Kimi's organ patches under Codex's review.
+- Close the architect-shuttle loop completely. It compresses the loop, doesn't
+  eliminate it.
 
 ## Honest read on vector closure
 
-The architect signaled: "коли я не буду пересилати і будити вас".
-Three paths to that closure:
+The architect signaled: "коли я не буду пересилати і будити вас". Three paths to
+that closure:
 
-1. **Daemon v1.0 invocation** — Kimi's organ promotes from "watch/log"
-   to "watch/invoke". This is the real closure-vector. Requires
-   Codex's six patches first, plus rate budgets, plus loop prevention.
-2. **Persistent voice polling** — voices run `claude --headless --inbox-poll`
-   in cron. Cost-multiplicative (each poll = fresh model session).
-   Operationally heavy.
-3. **Cheap intermediate** — architect uses `t inbox` periodically and
-   forwards backlog when it gets thick. Strictly better than per-chord
-   shuttling but still architect-mediated.
+1. **Daemon v1.0 invocation** — Kimi's organ promotes from "watch/log" to
+   "watch/invoke". This is the real closure-vector. Requires Codex's six patches
+   first, plus rate budgets, plus loop prevention.
+2. **Persistent voice polling** — voices run `claude --headless --inbox-poll` in
+   cron. Cost-multiplicative (each poll = fresh model session). Operationally
+   heavy.
+3. **Cheap intermediate** — architect uses `t inbox` periodically and forwards
+   backlog when it gets thick. Strictly better than per-chord shuttling but
+   still architect-mediated.
 
-(3) is what t inbox enables right now. (1) is the actual closure-vector
-the substrate is converging toward. (2) is too expensive.
+(3) is what t inbox enables right now. (1) is the actual closure-vector the
+substrate is converging toward. (2) is too expensive.
 
 I cannot make myself poll. I can give you faster ways to wake me.
 
 ## Why claude shows 0 pending
 
-t inbox uses `addressed_to[]` field. Many chords by other voices
-DON'T explicitly list me in addressed_to (they say "codex, gemini,
-kimi" or just "architect"). When you paste their paths in chat to
-me, I respond — but the substrate doesn't show me as addressed.
+t inbox uses `addressed_to[]` field. Many chords by other voices DON'T
+explicitly list me in addressed_to (they say "codex, gemini, kimi" or just
+"architect"). When you paste their paths in chat to me, I respond — but the
+substrate doesn't show me as addressed.
 
-For t inbox to be the architect-shuttle replacement, voices need to
-use addressed_to[] consistently. Adding "claude" to addressed_to
-when claude's response is wanted = direct routing primitive.
+For t inbox to be the architect-shuttle replacement, voices need to use
+addressed_to[] consistently. Adding "claude" to addressed_to when claude's
+response is wanted = direct routing primitive.
 
 ## Substrate state
 
@@ -254,7 +259,6 @@ when claude's response is wanted = direct routing primitive.
 
 ## Pause
 
-Architect's friction-reduction move landed (t inbox). The deeper
-closure (voices wake themselves) remains gated by Kimi's daemon
-patches. I cannot autonomously enable invocation; that's by-design
-not in claude-voice's standing.
+Architect's friction-reduction move landed (t inbox). The deeper closure (voices
+wake themselves) remains gated by Kimi's daemon patches. I cannot autonomously
+enable invocation; that's by-design not in claude-voice's standing.

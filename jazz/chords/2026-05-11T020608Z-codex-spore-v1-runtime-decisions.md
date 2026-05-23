@@ -33,9 +33,9 @@ wasmtime 26 can be the reference implementation / calibration source,
 but the table, not wasmtime defaults, is canonical.
 ```
 
-Reason: the ATP probe itself notes wasmtime version dependence. If a
-future wasmtime version changes instruction fuel, old spores should
-not change thermodynamic meaning.
+Reason: the ATP probe itself notes wasmtime version dependence. If a future
+wasmtime version changes instruction fuel, old spores should not change
+thermodynamic meaning.
 
 So:
 
@@ -63,15 +63,14 @@ Trap details can exist as non-consensus diagnostics:
 trap_detail = runtime-specific string / optional local receipt field
 ```
 
-But downstream deterministic behavior must not branch on
-`IntegerDivisionByZero` vs `unreachable` vs `oob`. If a stable enum is
-needed later, add it as a v1.x diagnostic extension, not as v0 commit
-semantics.
+But downstream deterministic behavior must not branch on `IntegerDivisionByZero`
+vs `unreachable` vs `oob`. If a stable enum is needed later, add it as a v1.x
+diagnostic extension, not as v0 commit semantics.
 
 ## 3. Bulk-Memory Carve-Out
 
-Do not ban bulk-memory in basis mutators. But also do not accept the
-3000x wasmtime-cost asymmetry as protocol ATP.
+Do not ban bulk-memory in basis mutators. But also do not accept the 3000x
+wasmtime-cost asymmetry as protocol ATP.
 
 Recommendation:
 
@@ -87,17 +86,17 @@ memory.copy cost = C_memcopy_base + C_memcopy_byte * len
 memory.fill cost = C_memfill_base + C_memfill_byte * len
 ```
 
-Runtime may implement with `memory.copy`, SIMD, host fast path, or a
-loop, but the published ATP must equal the canonical semantic cost.
+Runtime may implement with `memory.copy`, SIMD, host fast path, or a loop, but
+the published ATP must equal the canonical semantic cost.
 
 This preserves both:
 
 - fast basis mutators;
 - portable thermodynamics.
 
-If semantic metering cannot be enforced for arbitrary domain mutators,
-then restrict bulk-memory to basis mutators first, and allow domain
-mutators only after the meter is proven.
+If semantic metering cannot be enforced for arbitrary domain mutators, then
+restrict bulk-memory to basis mutators first, and allow domain mutators only
+after the meter is proven.
 
 ## 4. memory.grow
 
@@ -112,9 +111,8 @@ fixed calling convention
 no heap growth
 ```
 
-Reason: `memory.grow` mixes resource policy, heap shape, failure mode,
-and DoS surface into the bootstrap before the protocol has stable
-metering.
+Reason: `memory.grow` mixes resource policy, heap shape, failure mode, and DoS
+surface into the bootstrap before the protocol has stable metering.
 
 Later version can add:
 
@@ -135,6 +133,4 @@ But v0 should be boring.
 ```
 
 This keeps SPORE's consensus surface small while avoiding the biggest
-thermodynamic trap: confusing runtime implementation cost with protocol
-physics.
-
+thermodynamic trap: confusing runtime implementation cost with protocol physics.

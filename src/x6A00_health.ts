@@ -16,7 +16,11 @@
 //
 // Glossary words: health, check, status, harmony, гармонія, здоров'я
 
-import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
+import {
+  dirname,
+  fromFileUrl,
+  join,
+} from "https://deno.land/std@0.224.0/path/mod.ts";
 
 const ROOT = dirname(fromFileUrl(import.meta.url));
 
@@ -44,9 +48,13 @@ async function checkDipole(path: string): Promise<boolean> {
   }
 }
 
-async function checkGlossary(): Promise<{ ok: boolean; records: number; words: number }> {
+async function checkGlossary(): Promise<
+  { ok: boolean; records: number; words: number }
+> {
   try {
-    const text = await Deno.readTextFile(join(ROOT, "..", "src", "x0001_glossary.ndjson"));
+    const text = await Deno.readTextFile(
+      join(ROOT, "..", "src", "x0001_glossary.ndjson"),
+    );
     const lines = text.trim().split("\n").filter((l) => l.trim());
     let words = 0;
     let records = 0;
@@ -74,10 +82,18 @@ if (import.meta.main) {
     const out: string[] = [];
     try {
       for await (const entry of Deno.readDir(dir)) {
-        if (entry.isFile && (entry.name.endsWith(".ts") || entry.name.endsWith(".sh"))) {
+        if (
+          entry.isFile &&
+          (entry.name.endsWith(".ts") || entry.name.endsWith(".sh"))
+        ) {
           out.push(prefix + entry.name);
-        } else if (entry.isDirectory && entry.name.match(/^(0x)?[0-9A-Fa-f]$/)) {
-          const sub = await scan(`${dir}/${entry.name}`, prefix + entry.name + "/");
+        } else if (
+          entry.isDirectory && entry.name.match(/^(0x)?[0-9A-Fa-f]$/)
+        ) {
+          const sub = await scan(
+            `${dir}/${entry.name}`,
+            prefix + entry.name + "/",
+          );
           out.push(...sub);
         }
       }
@@ -110,7 +126,9 @@ if (import.meta.main) {
   checks.push({
     name: "glossary:records",
     status: glossary.ok ? "ok" : "fail",
-    detail: glossary.ok ? `${glossary.records} records, ${glossary.words} words` : "cannot read",
+    detail: glossary.ok
+      ? `${glossary.records} records, ${glossary.words} words`
+      : "cannot read",
   });
 
   // Check substrate directories exist

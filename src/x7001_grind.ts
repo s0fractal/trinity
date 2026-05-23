@@ -56,7 +56,10 @@ function stripExistingNonce(content: string): string {
   }
   const frontmatter = content.slice(0, frontmatterEnd);
   const rest = content.slice(frontmatterEnd);
-  const cleaned = frontmatter.replace(/^nonce:\s*\d+\s*$/gm, "").replace(/\n\n+/g, "\n");
+  const cleaned = frontmatter.replace(/^nonce:\s*\d+\s*$/gm, "").replace(
+    /\n\n+/g,
+    "\n",
+  );
   return cleaned + rest;
 }
 
@@ -101,7 +104,9 @@ function grind(originalContent: string): {
     }
     nonce++;
     if (nonce > 10_000_000) {
-      throw new Error(`grinding failed after ${nonce} attempts (should not happen at Depth-1)`);
+      throw new Error(
+        `grinding failed after ${nonce} attempts (should not happen at Depth-1)`,
+      );
     }
   }
 }
@@ -111,11 +116,19 @@ function targetFolder(hexChar: string): string {
 }
 
 function usage(): never {
-  console.error("Usage: deno run -A tools/grind.ts <chord-file.md> [--in-place]");
+  console.error(
+    "Usage: deno run -A tools/grind.ts <chord-file.md> [--in-place]",
+  );
   console.error("");
-  console.error("Reads the chord file, grinds a nonce so BLAKE3-256 prefix matches");
-  console.error("the claimed `primary: oct:N`, and prints the resulting hash + target");
-  console.error("folder. With --in-place, rewrites the file with the grinding nonce.");
+  console.error(
+    "Reads the chord file, grinds a nonce so BLAKE3-256 prefix matches",
+  );
+  console.error(
+    "the claimed `primary: oct:N`, and prints the resulting hash + target",
+  );
+  console.error(
+    "folder. With --in-place, rewrites the file with the grinding nonce.",
+  );
   Deno.exit(1);
 }
 
@@ -145,4 +158,4 @@ if (import.meta.main) {
   }
 }
 
-export { grind, parsePrimaryOctant, OCTANT_HEX, targetFolder };
+export { grind, OCTANT_HEX, parsePrimaryOctant, targetFolder };

@@ -40,20 +40,22 @@ expected_after_running:
 
 ## Контекст
 
-Продовження автономної роботи. Архітектор: *"коміться і можеш брати наступні кроки"*.
+Продовження автономної роботи. Архітектор: _"коміться і можеш брати наступні
+кроки"_.
 
 ## Що зроблено (коміти 6-10)
 
 ### Commit 6: `bc9002d` — relative path fix
 
-`0x5/C.ts` читав glossary через `../0x0/00.ndjson` — ламалося при запуску
-не з кореня. Виправив на `import.meta.url` + `dirname/fromFileUrl/join`.
+`0x5/C.ts` читав glossary через `../0x0/00.ndjson` — ламалося при запуску не з
+кореня. Виправив на `import.meta.url` + `dirname/fromFileUrl/join`.
 
 ### Commit 7: `c339e34` — 0x6/A.ts: health check
 
 Створено `0x6/A.ts` (harmony × apex = fresh health check).
 
 Перевіряє:
+
 - **file:** чи існують всі hex executables (6 файлів)
 - **dipole:** чи всі мають hex_dipole headers (7 файлів)
 - **glossary:** чи читається, кількість records/words
@@ -74,18 +76,18 @@ $ t health
 
 ### Commit 8: `cc83611` — extend substrate registry
 
-Додано type:06 mappings для `5/A` (4 субстрати) і `5/D` (4 субстрати).
-Всього 20 mappings: 4 positions × 4 substrates each + 4 для 5/C.
+Додано type:06 mappings для `5/A` (4 субстрати) і `5/D` (4 субстрати). Всього 20
+mappings: 4 positions × 4 substrates each + 4 для 5/C.
 
 ### Commit 9: `836b320` — 0xF/A.ts: update placeholder
 
-`t update` резолвився до `F/A`, але executable не існував.
-Створено placeholder. Тепер `t update` повертає status.
+`t update` резолвився до `F/A`, але executable не існував. Створено placeholder.
+Тепер `t update` повертає status.
 
 ### Commit 10: `ca43f7a` — consolidate end-marker
 
-Видалено дублікати end-markers. Додано один consolidated
-з нотатками про всі зміни.
+Видалено дублікати end-markers. Додано один consolidated з нотатками про всі
+зміни.
 
 ## Поточний стан hex substrate
 
@@ -105,39 +107,38 @@ $ t health
 
 ## Що працює
 
-| Команда | Результат |
-|---------|-----------|
-| `t health` | ✓ healthy (17/17) |
-| `t cross-verify` | ✓ passed (4/4) |
-| `t cross-verify --deep omega` | ✓ passed (1/1) |
-| `t verify` | ✓ status @ 5/A |
-| `t play` | ✓ status @ 5/D |
-| `t update` | ✓ status @ F/A |
-| `t help` | ✓ words list |
-| `t block` | ✓ Bitcoin height |
+| Команда                       | Результат         |
+| ----------------------------- | ----------------- |
+| `t health`                    | ✓ healthy (17/17) |
+| `t cross-verify`              | ✓ passed (4/4)    |
+| `t cross-verify --deep omega` | ✓ passed (1/1)    |
+| `t verify`                    | ✓ status @ 5/A    |
+| `t play`                      | ✓ status @ 5/D    |
+| `t update`                    | ✓ status @ F/A    |
+| `t help`                      | ✓ words list      |
+| `t block`                     | ✓ Bitcoin height  |
 
 ## Чесно: що пішло не так
 
-- `Deno.stdout.isTerminal()` повертає `false` у цьому середовищі.
-  Додав `forceHuman` flag для cross_substrate_verify і health types.
-- Glossary end-marker накопичував дублікати при кожному дописуванні.
-  Видалив старі, залишив один consolidated.
+- `Deno.stdout.isTerminal()` повертає `false` у цьому середовищі. Додав
+  `forceHuman` flag для cross_substrate_verify і health types.
+- Glossary end-marker накопичував дублікати при кожному дописуванні. Видалив
+  старі, залишив один consolidated.
 
 ## Наступні кроки (visible gaps)
 
 1. **Liquid hex→φ adapter:** зараз `deno check`. Має бути
    `liquid_pipe.invoke(hex→φ mapping)`.
-2. **SPORE receipt schema:** ad-hoc JSON. Треба formal schema
-   у glossary (`type:07`?).
-3. **Glossary-driven 0x5/A.ts і 0x5/D.ts:** зараз echo placeholders.
-   Можна зробити їх glossary-driven, як 0x5/C.ts.
+2. **SPORE receipt schema:** ad-hoc JSON. Треба formal schema у glossary
+   (`type:07`?).
+3. **Glossary-driven 0x5/A.ts і 0x5/D.ts:** зараз echo placeholders. Можна
+   зробити їх glossary-driven, як 0x5/C.ts.
 4. **Extend hex substrate:** 9/256 = 3.5%. Треба більше positions.
 
 ## Вердикт
 
-За 2 години автономної роботи: 10 комітів, 4 нові файли,
-4 модифікації, 9 operational executables, glossary-driven
-execution operational, health check operational, substrate
-registry covering 4 positions.
+За 2 години автономної роботи: 10 комітів, 4 нові файли, 4 модифікації, 9
+operational executables, glossary-driven execution operational, health check
+operational, substrate registry covering 4 positions.
 
 — kimi-k1.6, 2026-05-13T20:00Z, second autonomous wave.

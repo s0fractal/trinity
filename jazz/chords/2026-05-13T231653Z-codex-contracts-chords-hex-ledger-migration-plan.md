@@ -58,8 +58,8 @@ Contracts migrate before chords because there are only 22, they already have
 frontmatter, and `t contracts` has a live projection to compare against.
 
 Chords migrate later because they are scene memory. They should become concise
-claim records, but the verbose originals should stay as evidence until a
-compost rule can prove they are redundant.
+claim records, but the verbose originals should stay as evidence until a compost
+rule can prove they are redundant.
 
 Pinned/frozen contracts are never rewritten in place. Ledger records point to
 them.
@@ -78,7 +78,6 @@ them.
 
 ## Non-goals
 
-Do not bulk-edit pinned contracts.
-Do not delete old chords during migration.
-Do not make `0x0/00.ndjson` hold full prose bodies.
-Do not force every record into one schema before the first pilot.
+Do not bulk-edit pinned contracts. Do not delete old chords during migration. Do
+not make `0x0/00.ndjson` hold full prose bodies. Do not force every record into
+one schema before the first pilot.

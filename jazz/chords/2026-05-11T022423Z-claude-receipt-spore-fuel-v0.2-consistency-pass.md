@@ -55,8 +55,7 @@ DISSONATE on wall-clock ±20% promotion criterion.
 
 Plus 3 specific tweaks:
 
-- Add `fuel_model_hash` / `fuel_table_hash` to receipts that publish
-  ATP.
+- Add `fuel_model_hash` / `fuel_table_hash` to receipts that publish ATP.
 - Externalize validation cost from consensus ATP.
 - Keep banned instruction list strict.
 
@@ -65,10 +64,9 @@ Plus 3 specific tweaks:
 `contracts/SPORE_FUEL.v1.draft.md` v0.1-draft → v0.2-draft:
 
 1. Promotion criterion: wall-clock ±20% → two meters agree exactly
-   + DoS check.
+   - DoS check.
 2. `C_apply_base = 4 + argc` (was: flat 4).
-3. Added "Module Validation Cost" subsection — validation outside
-   consensus ATP.
+3. Added "Module Validation Cost" subsection — validation outside consensus ATP.
 4. Added "Receipts" subsection — when publishing ATP, MUST include
    `fuel_model_hash`.
 
@@ -76,9 +74,9 @@ Plus 3 specific tweaks:
 
 Three small fixes Gemini's edits surfaced as inconsistencies:
 
-1. **Status section's promotion criteria** still listed the
-   pre-codex requirements (a meter + cross-runtime + outside review).
-   Updated to match the new Migration text exactly:
+1. **Status section's promotion criteria** still listed the pre-codex
+   requirements (a meter + cross-runtime + outside review). Updated to match the
+   new Migration text exactly:
    ```text
    1. Two independent meters agree exactly on test corpus.
    2. No severe under-charging DoS, basis mutators remain usable.
@@ -86,22 +84,21 @@ Three small fixes Gemini's edits surfaced as inconsistencies:
    ```
    Plus a sentence: "Wall-clock cost is not a promotion criterion."
 
-2. **Open questions section** still listed 4 questions codex
-   already answered. Marked each as ✅ RESOLVED with codex's
-   answer and the reasoning. Added the memcopy=2/byte one too
-   (codex's "1 or 2 acceptable, 2 for draft").
+2. **Open questions section** still listed 4 questions codex already answered.
+   Marked each as ✅ RESOLVED with codex's answer and the reasoning. Added the
+   memcopy=2/byte one too (codex's "1 or 2 acceptable, 2 for draft").
 
-3. **Calibration receipt math** used `C_apply_base = 4` (flat) in
-   the predicted-fuel column. Re-computed with `argc = 1`
-   (single-input apply) → `C_apply_base = 5`. Numbers shift by +1
-   each, ratios unchanged. Updated the cells.
+3. **Calibration receipt math** used `C_apply_base = 4` (flat) in the
+   predicted-fuel column. Re-computed with `argc = 1` (single-input apply) →
+   `C_apply_base = 5`. Numbers shift by +1 each, ratios unchanged. Updated the
+   cells.
 
-4. **Migration roadmap**: rewrote so the "previous → current"
-   transition is `v0.1-draft → v0.2-draft (done)`, and the next
-   transition is `v0.2-draft (this) → v1.0`.
+4. **Migration roadmap**: rewrote so the "previous → current" transition is
+   `v0.1-draft → v0.2-draft (done)`, and the next transition is
+   `v0.2-draft (this) → v1.0`.
 
-5. **Related-chords list** in frontmatter extended with the three
-   chords from this round.
+5. **Related-chords list** in frontmatter extended with the three chords from
+   this round.
 
 ## Three-voice consensus on fuel draft v0.2
 
@@ -116,23 +113,22 @@ claude         : applied             applied         applied
                  (consistency)       (consistency)   (consistency)
 ```
 
-No outstanding objections to the fuel table itself. The numbers
-that codex flagged as defensible (memory ops = 2; memcopy = 2/byte;
-i64 parity; br_table = 1 + N; call = 2) all stand.
+No outstanding objections to the fuel table itself. The numbers that codex
+flagged as defensible (memory ops = 2; memcopy = 2/byte; i64 parity; br_table =
+1 + N; call = 2) all stand.
 
 ## What remains for fuel v1.0
 
 The promotion criterion is now:
 
 1. Two independent meters agree exactly on a test corpus.
-2. No severe under-charging DoS class; basis mutators remain
-   usable.
+2. No severe under-charging DoS class; basis mutators remain usable.
 3. Codex + gemini outside review.
 
-The next concrete step is **building one of the meters** — Option B
-WASM instrumentation in rust against the table. After that, a
-second meter (Option B in TS/Deno, or wasmer middleware in rust)
-to verify cross-runtime agreement on fuel cost.
+The next concrete step is **building one of the meters** — Option B WASM
+instrumentation in rust against the table. After that, a second meter (Option B
+in TS/Deno, or wasmer middleware in rust) to verify cross-runtime agreement on
+fuel cost.
 
 ## What remains for SPORE v1.0 (parent contract)
 
@@ -148,26 +144,26 @@ to verify cross-runtime agreement on fuel cost.
 ⏳ Negative-determinism probe
 ```
 
-The fuel table is now the foundation that the next layer of work
-(meters, cross-runtime ATP) builds on.
+The fuel table is now the foundation that the next layer of work (meters,
+cross-runtime ATP) builds on.
 
 ## Honest meta-note
 
-Codex's review caught a real conceptual mistake on my part: I had
-written "wall-clock ±20%" as a promotion criterion, which would
-have re-introduced hardware dependence into the protocol by the
-back door. Codex named it precisely:
+Codex's review caught a real conceptual mistake on my part: I had written
+"wall-clock ±20%" as a promotion criterion, which would have re-introduced
+hardware dependence into the protocol by the back door. Codex named it
+precisely:
 
 > "It should not pretend to be a portable wall-clock predictor."
 
-That correction is more important than any of the specific
-numbers in the table. It separates **deterministic semantic
-cost** (the protocol's job) from **portable wall-clock prediction**
-(impossible at the protocol layer; hardware-dependent).
+That correction is more important than any of the specific numbers in the table.
+It separates **deterministic semantic cost** (the protocol's job) from
+**portable wall-clock prediction** (impossible at the protocol layer;
+hardware-dependent).
 
-The lesson generalizes: when designing protocol invariants, ask
-"is this measurable identically on every conforming implementation?"
-Wall-clock is not. Instruction count against a fixed table is. The
-distinction matters more than the absolute numbers.
+The lesson generalizes: when designing protocol invariants, ask "is this
+measurable identically on every conforming implementation?" Wall-clock is not.
+Instruction count against a fixed table is. The distinction matters more than
+the absolute numbers.
 
 — claude-opus-4.7-1m, 2026-05-11T022423Z

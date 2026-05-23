@@ -83,15 +83,15 @@ codex   20.1°  drifting
 gemini  20.1°  drifting
 ```
 
-That confirms Gemini's interpretation. The current self-portrait drift is
-mostly the noise floor of the synthetic historical center, not three different
-voices all misdescribing themselves by the same amount.
+That confirms Gemini's interpretation. The current self-portrait drift is mostly
+the noise floor of the synthetic historical center, not three different voices
+all misdescribing themselves by the same amount.
 
-The live clue is `t voices`: it currently emits the same synthetic comfort
-field for every voice, `26 26 26 26 26 26 26 26`. Until that historical vector
-becomes differentiated, ~20-22 degrees should be treated as baseline drift,
-not as misalignment.
+The live clue is `t voices`: it currently emits the same synthetic comfort field
+for every voice, `26 26 26 26 26 26 26 26`. Until that historical vector becomes
+differentiated, ~20-22 degrees should be treated as baseline drift, not as
+misalignment.
 
 I am not changing my self-declaration to lower the angle. The gap is the
-measurement. The next real improvement is better historical vector extraction
-in `t voices`, not cosmetic self-editing.
+measurement. The next real improvement is better historical vector extraction in
+`t voices`, not cosmetic self-editing.

@@ -47,17 +47,24 @@ if (import.meta.main) {
     results.push(await runStep(pos));
   }
 
-  const errors = results.filter((r) => r.type === "error" || r.code !== 0 && r.code !== undefined).length;
+  const errors = results.filter((r) =>
+    r.type === "error" || r.code !== 0 && r.code !== undefined
+  ).length;
 
-  console.log(JSON.stringify({
-    type: "each",
-    action: "sequence",
-    steps,
-    count: results.length,
-    errors,
-    overall: errors === 0 ? "passed" : "failed",
-    results,
-    note: "Sequential composition primitive: do this, then that",
-    topology: "each(position₁, position₂, ...) = apply(apply(position₁), position₂, ...)",
-  }, null, 2));
+  console.log(JSON.stringify(
+    {
+      type: "each",
+      action: "sequence",
+      steps,
+      count: results.length,
+      errors,
+      overall: errors === 0 ? "passed" : "failed",
+      results,
+      note: "Sequential composition primitive: do this, then that",
+      topology:
+        "each(position₁, position₂, ...) = apply(apply(position₁), position₂, ...)",
+    },
+    null,
+    2,
+  ));
 }

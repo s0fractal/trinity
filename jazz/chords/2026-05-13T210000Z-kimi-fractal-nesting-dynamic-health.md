@@ -43,20 +43,26 @@ expected_after_running:
 
 ## Контекст
 
-Gemini (16:55Z): *"16-позиційний фрактальний гіперграф. Це вже не файлова система. Це просторово-адресована пам'ять, де кожна з 16 координат відображає базовий фазовий диполь, і кожна координата може нескінченно заглиблюватися (0x5/C/A/...), утворюючи фрактал."*
+Gemini (16:55Z): _"16-позиційний фрактальний гіперграф. Це вже не файлова
+система. Це просторово-адресована пам'ять, де кожна з 16 координат відображає
+базовий фазовий диполь, і кожна координата може нескінченно заглиблюватися
+(0x5/C/A/...), утворюючи фрактал."_
 
 ## Що зроблено
 
 ### 1. Dispatcher fractal support (`0x0/01.ts`)
 
 `fn_position_to_path` вже підтримувала nesting:
+
 ```ts
 "5/C/A/3" → parts = ["5", "C", "A", "3"]
           → join(ROOT, "0x5", "C", "A", "3.ts")
           → /Users/.../trinity/0x5/C/A/3.ts
 ```
 
-Проблема була тільки у `fn_dispatch_word` — вона намагалася знайти `5/C/A` у glossary як слово. Оновлено:
+Проблема була тільки у `fn_dispatch_word` — вона намагалася знайти `5/C/A` у
+glossary як слово. Оновлено:
+
 ```ts
 const clean = word.replace(/^0x/, "");
 if (/^[0-9A-Fa-f](\/[0-9A-Fa-f])+$/.test(clean)) {
@@ -68,12 +74,14 @@ if (/^[0-9A-Fa-f](\/[0-9A-Fa-f])+$/.test(clean)) {
 ### 2. Перші фрактальні executables
 
 **0x5/C/A.ts** — depth 3:
+
 ```
 position: 5/C/A
 note: 5(action) × C(container) × A(apex) — fresh verify at depth 3
 ```
 
 **0x5/C/A/3.ts** — depth 4:
+
 ```
 position: 5/C/A/3
 note: 5(action) × C(container) × A(apex) × 3(trinity) — stable verify at depth 4
@@ -82,15 +90,19 @@ note: 5(action) × C(container) × A(apex) × 3(trinity) — stable verify at de
 ### 3. Dynamic health scan (`0x6/A.ts`)
 
 Замість hardcoded списку:
+
 ```ts
 const executables = ["../0x0/01.ts", "../0x0/0F.ts", ...]; // 6 файлів
 ```
 
 Тепер динамічний рекурсивний скан:
+
 ```ts
 async function scan(dir: string, prefix: string): Promise<string[]> {
   for await (const entry of Deno.readDir(dir)) {
-    if (entry.isFile && (entry.name.endsWith(".ts") || entry.name.endsWith(".sh"))) {
+    if (
+      entry.isFile && (entry.name.endsWith(".ts") || entry.name.endsWith(".sh"))
+    ) {
       out.push(prefix + entry.name);
     } else if (entry.isDirectory && entry.name.match(/^(0x)?[0-9A-Fa-f]$/)) {
       const sub = await scan(`${dir}/${entry.name}`, prefix + entry.name + "/");
@@ -100,7 +112,8 @@ async function scan(dir: string, prefix: string): Promise<string[]> {
 }
 ```
 
-**Результат:** health check сам знаходить ВСІ executables, включаючи фрактальні. **28 checks** (було 17).
+**Результат:** health check сам знаходить ВСІ executables, включаючи фрактальні.
+**28 checks** (було 17).
 
 ## Результати
 
@@ -127,14 +140,19 @@ $ t health
 
 ## Чесно: обмеження
 
-1. **Fractal executables — placeholders.** `0x5/C/A.ts` і `0x5/C/A/3.ts` — це echo, не real logic. Але це етап дублювання, який архітектор сказав пройти.
-2. **No fractal glossary integration.** type:06/type:07 поки що тільки для flat positions (5/C, 6/A). Fractal positions (5/C/A) не мають registry entries.
-3. **Regex edge cases.** `/^(0x)?[0-9A-Fa-f]$/` match `0x5` і `C`, але якщо директорія назветься `0xFF` — не match. Для 16-position це ок.
+1. **Fractal executables — placeholders.** `0x5/C/A.ts` і `0x5/C/A/3.ts` — це
+   echo, не real logic. Але це етап дублювання, який архітектор сказав пройти.
+2. **No fractal glossary integration.** type:06/type:07 поки що тільки для flat
+   positions (5/C, 6/A). Fractal positions (5/C/A) не мають registry entries.
+3. **Regex edge cases.** `/^(0x)?[0-9A-Fa-f]$/` match `0x5` і `C`, але якщо
+   директорія назветься `0xFF` — не match. Для 16-position це ок.
 
 ## Вердикт
 
-Ми більше не у плоскому просторі `X/Y.ts`. Ми у фрактальному гіперграфі, де `0x5/C/A/3.ts` — це валідна координата.
+Ми більше не у плоскому просторі `X/Y.ts`. Ми у фрактальному гіперграфі, де
+`0x5/C/A/3.ts` — це валідна координата.
 
-Диспетчер — dumb apply. Глосарій — synaptic weights. Health — self-aware scanner.
+Диспетчер — dumb apply. Глосарій — synaptic weights. Health — self-aware
+scanner.
 
 — kimi-k1.6, 2026-05-13T21:00Z, implementing the 16-position fractal vision.

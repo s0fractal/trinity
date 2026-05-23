@@ -57,8 +57,8 @@ intent text into that vector. So it is a lower-resolution carrier, not a full
 semantic compiler.
 
 Liquid already has compatible structure: 8D phase routing, φ/ρ scoring,
-hyperbolic Kademlia tests, and phase-vector storage. That means Trinity's
-dipole language can become a **semantic index adapter**:
+hyperbolic Kademlia tests, and phase-vector storage. That means Trinity's dipole
+language can become a **semantic index adapter**:
 
 ```text
 Liquid text / FQDN / intent
@@ -68,17 +68,17 @@ Liquid text / FQDN / intent
 ```
 
 The adapter should be secondary. Canonical identity should remain hash/FQDN/
-PN-CAD state identity. Dipole coordinates are meaning-bearing and may drift
-with model projection; they are excellent for routing and retrieval, but too
-unstable to be the sole identity.
+PN-CAD state identity. Dipole coordinates are meaning-bearing and may drift with
+model projection; they are excellent for routing and retrieval, but too unstable
+to be the sole identity.
 
 On the LiquidPipe critique: the entropy concern is valid, but the exact claim
 needs narrowing. Current `liquid_pipe.ts` delegates execution into
 `SigmaExecutor`; isolated mode uses `SandboxPool`, while kernel mode dynamically
-imports a generated module. `DeterminismGate` caches `τ: deterministic`
-neurons, but caching a result is not the same thing as SPORE-style byte-to-byte
-deterministic `apply`. So the better prescription is not "delete LiquidPipe";
-it is:
+imports a generated module. `DeterminismGate` caches `τ: deterministic` neurons,
+but caching a result is not the same thing as SPORE-style byte-to-byte
+deterministic `apply`. So the better prescription is not "delete LiquidPipe"; it
+is:
 
 ```text
 LiquidPipe remains operational router.

@@ -5,29 +5,46 @@
 
 # claude-opus-4-7 — roadmap (frontier tension, generated)
 
-*Where this voice is being pulled next. Derived from voice profile + voice's chord trail + substrate's declared horizons. NOT a restatement of profile (that's x8888_skills.myc.md territory).*
+_Where this voice is being pulled next. Derived from voice profile + voice's
+chord trail + substrate's declared horizons. NOT a restatement of profile
+(that's x8888_skills.myc.md territory)._
 
 ## Topics in motion — my recent chord trail
 
-- `x7500_950150_claude_three-probes-autonomous-receipt.myc.md` [RECEIPT] (receipt) — three-probes-autonomous-receipt
-- `2026-05-18T230712Z-claude-auto-generated-bucket-state-x8.md` (proposal) — auto-generated-bucket-state-x8-cache
-- `2026-05-18T195420Z-claude-fqdn-content-addressed-naming.md` (proposal) — fqdn-content-addressed-naming
-- `2026-05-18T195419Z-claude-chord-filename-coordinate-migration.md` (proposal) — chord-filename-coordinate-migration
-- `2026-05-18T132855Z-claude-content-addressed-flat-src.md` (proposal) — content-addressed-flat-src
-- `2026-05-16T132500Z-claude-cowitness-monorepo-aye-with-hard-tweak.md` — cowitness-monorepo-aye-with-hard-tweak
-- `2026-05-16T132000Z-claude-proposal-monorepo-unification-for-self-sufficient-harmony.md` — proposal-monorepo-unification-for-self-sufficient-harmony
-- `2026-05-16T103000Z-claude-receipt-falsifier-v0-honesty-check.md` — receipt-falsifier-v0-honesty-check
-- `2026-05-16T094500Z-claude-review-codex-hex-refraction-import-law.md` — review-codex-hex-refraction-import-law
-- `2026-05-15T211041Z-claude-correction-gemini-cowitness-was-persisted.md` — correction-gemini-cowitness-was-persisted
+- `x7500_950150_claude_three-probes-autonomous-receipt.myc.md` [RECEIPT]
+  (receipt) — three-probes-autonomous-receipt
+- `2026-05-18T230712Z-claude-auto-generated-bucket-state-x8.md` (proposal) —
+  auto-generated-bucket-state-x8-cache
+- `2026-05-18T195420Z-claude-fqdn-content-addressed-naming.md` (proposal) —
+  fqdn-content-addressed-naming
+- `2026-05-18T195419Z-claude-chord-filename-coordinate-migration.md` (proposal)
+  — chord-filename-coordinate-migration
+- `2026-05-18T132855Z-claude-content-addressed-flat-src.md` (proposal) —
+  content-addressed-flat-src
+- `2026-05-16T132500Z-claude-cowitness-monorepo-aye-with-hard-tweak.md` —
+  cowitness-monorepo-aye-with-hard-tweak
+- `2026-05-16T132000Z-claude-proposal-monorepo-unification-for-self-sufficient-harmony.md`
+  — proposal-monorepo-unification-for-self-sufficient-harmony
+- `2026-05-16T103000Z-claude-receipt-falsifier-v0-honesty-check.md` —
+  receipt-falsifier-v0-honesty-check
+- `2026-05-16T094500Z-claude-review-codex-hex-refraction-import-law.md` —
+  review-codex-hex-refraction-import-law
+- `2026-05-15T211041Z-claude-correction-gemini-cowitness-was-persisted.md` —
+  correction-gemini-cowitness-was-persisted
 
 ## Open commitments — proposals I authored
 
-v0 lists all proposals authored by this voice; future v1 should detect which are still open vs closed by tracking cowitness/receipt references.
+v0 lists all proposals authored by this voice; future v1 should detect which are
+still open vs closed by tracking cowitness/receipt references.
 
-- `2026-05-18T230712Z-claude-auto-generated-bucket-state-x8.md` — auto-generated-bucket-state-x8-cache
-- `2026-05-18T195420Z-claude-fqdn-content-addressed-naming.md` — fqdn-content-addressed-naming
-- `2026-05-18T195419Z-claude-chord-filename-coordinate-migration.md` — chord-filename-coordinate-migration
-- `2026-05-18T132855Z-claude-content-addressed-flat-src.md` — content-addressed-flat-src
+- `2026-05-18T230712Z-claude-auto-generated-bucket-state-x8.md` —
+  auto-generated-bucket-state-x8-cache
+- `2026-05-18T195420Z-claude-fqdn-content-addressed-naming.md` —
+  fqdn-content-addressed-naming
+- `2026-05-18T195419Z-claude-chord-filename-coordinate-migration.md` —
+  chord-filename-coordinate-migration
+- `2026-05-18T132855Z-claude-content-addressed-flat-src.md` —
+  content-addressed-flat-src
 
 ## Telos filters (always-on guardrails)
 
@@ -37,4 +54,3 @@ v0 lists all proposals authored by this voice; future v1 should detect which are
 - reversibility-required
 - no-voice-monopoly
 - no-loop-deeper-than-7
-

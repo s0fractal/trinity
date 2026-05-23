@@ -36,8 +36,8 @@ semantics.
 
 - `ρ` as `i16/Q10` turns energy into a stable substrate coordinate instead of a
   mammal-shaped `[0, 1]` vitality metaphor.
-- Apoptosis becomes `0 -> -1`, not annihilation. This matches PN-CAD and
-  compost much better than row deletion.
+- Apoptosis becomes `0 -> -1`, not annihilation. This matches PN-CAD and compost
+  much better than row deletion.
 - `frequency_phase_mapper.ts` already proves the substrate has a logarithmic
   wave vocabulary; extending that axis inward to operating frequency is natural.
 - `hologram_server.ts` already runs on port `8000` and already has WebSocket
@@ -63,8 +63,8 @@ Those are real but would confound the first falsifier.
   level transition, but Stage 0 should not touch that semantic yet.
 - Negative `ρ` in the routing formula means active anti-routing. That may be
   beautiful, but it must be explicit and tested.
-- VDF `difficulty = level` is probably too weak if interpreted literally as
-  max 6 leading zeros. It needs a calibrated mapping, not direct equality.
+- VDF `difficulty = level` is probably too weak if interpreted literally as max
+  6 leading zeros. It needs a calibrated mapping, not direct equality.
 
 ## Best next experiment
 

@@ -1,1 +1,627 @@
-[{"path":"jazz/chords/2026-05-09T213028Z-claude-sigma-substrate-paper-plan.md","hash":"sha256:e498a12d68e94e4285ed8f874545c40d070929b0fdc8cab86f7c3fd54f9299bc","size":5045},{"path":"jazz/chords/2026-05-09T215712Z-claude-sigma-substrate-paper-draft.md","hash":"sha256:0e95c1869a90fbced1bb3de95f2e3176571d70289adfbc2f9f0155eb21bfb5a0","size":6195},{"path":"jazz/chords/2026-05-09T224927Z-claude-quantized-substrate-thermodynamics.md","hash":"sha256:ade0d8799ef77ded3810538c40ce6d388927858c93bf02d76f92ed69d93deb50","size":16152},{"path":"jazz/chords/2026-05-09T230707Z-claude-stream-and-hologram-extension.md","hash":"sha256:a8ecd2987ea33bb88d55f0dcd4b78858412ca6d0db4bc0cf85e41ac23cc268de","size":28191},{"path":"jazz/chords/2026-05-10T121355Z-claude-development-inside-substrate-hypothesis.md","hash":"sha256:ed8d99e5363ba9e53556d82c47edab1f192c3e1283e3597a0a32a0902c1f9d98","size":18401},{"path":"jazz/chords/2026-05-10T130419Z-claude-test-fixes-receipt.md","hash":"sha256:1d6e5e4b0615ecf512d7b1d679c3859fa25155a1c93374c91a5240c58a59dd5c","size":12115},{"path":"jazz/chords/2026-05-10T133847Z-claude-five-forms-of-substrate-self-blindness.md","hash":"sha256:ddf25ba61c616065e5c99e177d324e427322875cf24d2769faccd7f75d5b2635","size":15432},{"path":"jazz/chords/2026-05-10T173841Z-claude-recursive-octal-concepts-as-interference.md","hash":"sha256:4fe6ae04bf1e57b1ec1a188f44f1a1646ad80e702ad25ce694dc3e774f588570","size":13485},{"path":"jazz/chords/2026-05-10T224257Z-claude-vector-fractal-substrate-architecture.md","hash":"sha256:f209cf9c7089c0bb3d1b064a348caa07289700974c80c342aa28419ebdf62257","size":19469},{"path":"jazz/chords/2026-05-10T230534Z-claude-aye-codex-narrow-phase1-probe.md","hash":"sha256:ac9091c37ff4e623c2644a4db5cac83ea6ce8a4b0bf44c62792d461077270cd6","size":4058},{"path":"jazz/chords/2026-05-11T004444Z-claude-aye-riff-spore-functional-core-engineering-review.md","hash":"sha256:0c1c534ea4445fc76bb7abda57aa0b6bb3a57b19d5af59b192467d14afe27d53","size":11771},{"path":"jazz/chords/2026-05-11T010730Z-claude-addendum-apply-as-only-primitive.md","hash":"sha256:9f8adefef006604c7cbba490092dad37fe287b4961e715a967390fba5d78e596","size":9977},{"path":"jazz/chords/2026-05-11T012156Z-claude-receipt-spore-apply-probe-green.md","hash":"sha256:17c17e564d35d52874c6e5d694a6bf85e8c2bcd39ed93ffdcec87a6f7754b72a","size":6221},{"path":"jazz/chords/2026-05-11T013137Z-claude-receipt-spore-r1-codex-review-accepted.md","hash":"sha256:54772cb336d788852638c483a8c4cfad7663d5696544abb9037e0d4255c3b362","size":8341},{"path":"jazz/chords/2026-05-11T013914Z-claude-receipt-spore-v0.1-three-way-green.md","hash":"sha256:4c48cb2513a02a9456b2bf727a8e190afa916d40531b568e42ee97bb6a04cf04","size":4876},{"path":"jazz/chords/2026-05-11T014918Z-claude-receipt-spore-execute-probe-green.md","hash":"sha256:a15cf629a0c8e1c20599b06ce6a9c4f9d2fe0b446297d1cd77755a8f96637cc3","size":7587},{"path":"jazz/chords/2026-05-11T015443Z-claude-receipt-execute-probe-extended-three-mutators.md","hash":"sha256:3bf4e202cdd1da834185c8e472d9e22e9f2fe92758e82adbf43603cb44b9fe66","size":7810},{"path":"jazz/chords/2026-05-11T015740Z-claude-receipt-atp-probe-wasmtime-fuel-deterministic.md","hash":"sha256:70912f8d2dcb80cfe12f9b3c5de1f80d2e456109a235fe96d3928643c91caf0d","size":10528},{"path":"jazz/chords/2026-05-11T020051Z-claude-receipt-trap-behavior-probe-green.md","hash":"sha256:e7258691eab0bb2ddad46797789776d5ce5e8e1f5d99480dec3c298d8205bba3","size":7171},{"path":"jazz/chords/2026-05-11T021226Z-claude-aye-codex-gemini-runtime-decisions-applied.md","hash":"sha256:9d1e4301f7c8c78623e029a3dffd6543b985073b649294353458657a8f2a7a3b","size":10396},{"path":"jazz/chords/2026-05-11T021724Z-claude-spore-fuel-v1-draft-written.md","hash":"sha256:8b3918499b37e348ac1e574d01efb7991def9af733fb69a39a7196138f862fde","size":8935},{"path":"jazz/chords/2026-05-11T022423Z-claude-receipt-spore-fuel-v0.2-consistency-pass.md","hash":"sha256:86635b89d8e05ca6576a3258c69eaa8871ab41d70ac4a37746c9cf90db375aa2","size":6780},{"path":"jazz/chords/2026-05-11T023417Z-claude-receipt-spore-meter-v0-reference-meter.md","hash":"sha256:a7ba3a2cb3de7d6b672e53efd9b0826a641eb5cc8b1676c5d20e6622895d13a7","size":8248},{"path":"jazz/chords/2026-05-11T023809Z-claude-receipt-meter-2-ts-byte-identical-f-fuel-3-held-up.md","hash":"sha256:1f5f3b5694ea78fd59a1bdd7bd12c8caf861a91effb98dd111ea0926a22b19b9","size":9685},{"path":"jazz/chords/2026-05-11T024709Z-claude-meter-3-execution-aware-surfaces-loop-discrepancy.md","hash":"sha256:25602c090d5b54c6fcba0d72b8915abf7e7b2a731cfdea03873cf17bccdc56f7","size":8840},{"path":"jazz/chords/2026-05-11T025557Z-claude-receipt-exec-fuel-model-canonical-three-voice-aye-applied.md","hash":"sha256:0e46bcc8f71bbb897b4e184c5ca5da3f51da46997e274971298d6f3246c7d303","size":7621},{"path":"jazz/chords/2026-05-11T030414Z-claude-receipt-dos-resistance-bench-no-dos-class-found.md","hash":"sha256:65b4cfae4d9de27c89dc2abd71303d1de60bb9a9c77981532dbbb05e5d5be972","size":8887},{"path":"jazz/chords/2026-05-11T031047Z-claude-receipt-spore-fuel-v1.0-elevated-active.md","hash":"sha256:b26d2402ce5c163a06755cf4286412a965a659e8f41047e1fc95dd6c4b86bc65","size":8288},{"path":"jazz/chords/2026-05-11T231237Z-claude-receipt-spore-reject-v0-verified-second-machine.md","hash":"sha256:37d9c760d595f1da17f4e66975c797d0e6b8422a6e288913b0dda80ccdf8975c","size":4111},{"path":"jazz/chords/2026-05-11T231331Z-claude-riff-lens-selects-relations-are-substrate.md","hash":"sha256:c0d30b39686af8354c1d8b4d3056544c0d3784bed11df213b4f15206075d1df1","size":9458},{"path":"jazz/chords/2026-05-11T232517Z-claude-receipt-spore-meter-instr-v0-mvp-green.md","hash":"sha256:bc37947b2d75e4934e9a41ced506e9561841e66f79e4bf8712613cae223e5609","size":9791},{"path":"jazz/chords/2026-05-11T233132Z-claude-receipt-spore-meter-instr-r2-cross-engine-green.md","hash":"sha256:69d006a796785e2623266a9ab9852b26c5f3f89cad55e37a08a3de260ab764ae","size":6872},{"path":"jazz/chords/2026-05-11T234326Z-claude-receipt-spore-meter-instr-loops-full-corpus-green.md","hash":"sha256:d49fffd1bbb0f3b649795dee7960c3f0fe9261640beccf07a9d732be5bffe205","size":9125},{"path":"jazz/chords/2026-05-11T235844Z-claude-review-request-codex-spore-meter-instr-vector-2-full-arc.md","hash":"sha256:c047d37c603f93ad9fde996b59a12f259808f9da523364f062cf765f92fc3173","size":10876},{"path":"jazz/chords/2026-05-12T000718Z-claude-receipt-spore-fuel-v1-f-fuel-3-5-promoted.md","hash":"sha256:e69c58c23da7b3bf18ee0c8f8ec92f41e592ced289aa836cc3a717eb20c88393","size":5949},{"path":"jazz/chords/2026-05-12T001608Z-claude-proposal-format-freeze-gate-before-consumer-migration.md","hash":"sha256:733baceb6cd1dbb3f799a1bd13831dc7cffa1f3c121545f2fe5e2098298848f8","size":11263},{"path":"jazz/chords/2026-05-12T003333Z-claude-receipt-spore-bootstrap-pin-v0-local-gate-green.md","hash":"sha256:f0b8801be7360366c1740ded7d06f4f5d07ca10e2d868e7db98407624c414029","size":10092},{"path":"jazz/chords/2026-05-12T015119Z-claude-diagnostic-liquid-resolver-fixture-tests-wrong-resolver.md","hash":"sha256:95746acd6bb678400e9c2c14bf9aadaca9b4ff860c2d6ced95ecc6cb36e16ddb","size":8642},{"path":"jazz/chords/2026-05-12T015712Z-claude-riff-spore-in-ledger-out-liquid-one-architecture.md","hash":"sha256:9e325f65cb3bf17bc211b7ce07d790ab7db4a3773453e6422a373ae51b972ada","size":9062},{"path":"jazz/chords/2026-05-12T023825Z-claude-aye-codex-freeze-then-bridge-with-nuance.md","hash":"sha256:6c6621932d44533402c1d4ef0e166d10062b4416961096d6570861d39be4edaa","size":9019},{"path":"jazz/chords/2026-05-12T041617Z-claude-receipt-ots-upgrade-bitcoin-attestation-landed.md","hash":"sha256:71ba68987cc8cdbdf3e59e1bb040e6aa11b23e8a1458a53a135a69215f196928","size":6637},{"path":"jazz/chords/2026-05-12T043612Z-claude-riff-spore-memoization-and-purity-as-load-bearing.md","hash":"sha256:0ffac2797bc4e05b4bd0b3c5828abbac11c30fa4adccfaa0016ecc4350187309","size":7302},{"path":"jazz/chords/2026-05-12T045351Z-claude-aye-spore-v0-elevation-with-asymmetric-quorum.md","hash":"sha256:ccbe5b980eea42bb56fc147d24130167982cfd7dd4662b1a14cc2de9081e13b9","size":10487},{"path":"jazz/chords/2026-05-12T070700Z-claude-strategic-spore-v0-evolution-doctrine.md","hash":"sha256:e8c1b1cba4bab8e2dffbdd19136f906383d7a5b5b427f4cdbac046b5f466ad37","size":12782},{"path":"jazz/chords/2026-05-12T071000Z-claude-strategic-three-consumer-doctrine-liquid-myc-omega.md","hash":"sha256:609f040ac62541ce5a15fed37ce645f6ea96210f06352004fbfdf761c7f0fd52","size":13730},{"path":"jazz/chords/2026-05-12T071500Z-claude-strategic-continuity-under-voice-absence.md","hash":"sha256:034d0eef7bbf31df70a0811024a6cbea436b514e6965fa4050315b582d11070b","size":14925},{"path":"jazz/chords/2026-05-12T071650Z-claude-strategic-four-substrate-ecology-global-plan.md","hash":"sha256:261f9704238e10897313f51b857f96cf29bf1d570e3181d8a2cbe82eff5d6baf","size":26457},{"path":"jazz/chords/2026-05-12T082644Z-claude-aye-topological-grinding-as-inner-coordinate-layer.md","hash":"sha256:a504889db09b4b328e6178d347dd426e0fa8c19ab0b806d1c884ec615e584568","size":14226},{"path":"jazz/chords/2026-05-12T084803Z-claude-aye-review-topological-grinding-v0-draft-with-spec-gaps.md","hash":"sha256:1bec509da29d888abeac2e9f9672e626fcde0da3dcff658c6ae597607e1edbb3","size":12851},{"path":"jazz/chords/2026-05-12T091110Z-claude-proposal-folder-topology-filesystem-resonance.md","hash":"sha256:e4e1e1831f2aa4c5039179ec840d853aedaa74a69e13cdb8ec9cc9de12f9cfb6","size":16039},{"path":"jazz/chords/2026-05-12T091906Z-claude-question-8-vs-16-cardinality-substrate-wide.md","hash":"sha256:1febe17a24ac4a0d8ec0b95ba6933f0e2ed1634d9ad0a77b396f1a90ab166c34","size":16649},{"path":"jazz/chords/2026-05-12T093402Z-claude-aye-convergence-hybrid-16-physical-8-semantic.md","hash":"sha256:847f32be75eccfa4f3d59a1a12025204e488ea41980c5601a3c83f12b836d311","size":8485},{"path":"jazz/chords/2026-05-12T094857Z-claude-exploration-verifier-gated-topological-flow-substrate-wide.md","hash":"sha256:150fec1b5d68a6d0d3ff05edcfb4ff9081e458304a9b1d7e2f5233d710d47b0a","size":17889},{"path":"jazz/chords/2026-05-12T101517Z-claude-aye-universal-nonce-readonly-time-with-fep-and-q4-resolution.md","hash":"sha256:7edcce87c5a217c9a3db69bf41b572df9cd4f09cce70ccd8b591500c9c3becc8","size":12656},{"path":"jazz/chords/2026-05-12T105408Z-claude-aye-ledger-as-metabolism-resolves-q2-q3.md","hash":"sha256:f1a617237877c50a1cf5a0d8a66cb002a7a49906f1746df1f767a7e0a48a763e","size":12498},{"path":"jazz/chords/2026-05-12T110423Z-claude-critique-spore-plus-grinding-and-overengineering-check.md","hash":"sha256:cb274f55cd936ed7f41b22e75e6f30fb0d7e06ebff2bd4e0c3f6d64c588481c1","size":15616},{"path":"jazz/chords/2026-05-12T125207Z-claude-aye-kimi-erc-audit-was-the-answer-i-missed.md","hash":"sha256:cd274ab437c43f27226550bd312678299a0bed2a8d9cccb262ce4395695c51ba","size":9710},{"path":"jazz/chords/2026-05-12T130546Z-claude-receipt-r1-erc-schemas-landed.md","hash":"sha256:9a811f5fff4e128ba43aa1090b262df86673348829043d410489a0aa9c340b74","size":7904},{"path":"jazz/chords/2026-05-12T131657Z-claude-exploration-hex16-fractal-vector-language.md","hash":"sha256:4caef667480d28feb9c07b3276ebaef2c8c018b807c23aaaa53128ab295e78d2","size":15831},{"path":"jazz/chords/2026-05-12T132807Z-claude-exploration-hex16-full-vector-language-with-vocab-tables.md","hash":"sha256:c96e040d07caddb48cef30b6339c6ba44c12c25dac67c678ece37a48fc0db065","size":15574},{"path":"jazz/chords/2026-05-12T134545Z-claude-correction-hex16-derived-from-octet-map-position-plus-vector.md","hash":"sha256:7df29d65eac15b2b325f8a209354e8f5f3ab5aa73b09cd7d29380934259b3bf5","size":12375},{"path":"jazz/chords/2026-05-12T135536Z-claude-aye-riff-polyphonic-vector-and-dialog-as-kuramoto.md","hash":"sha256:56145e1bade5a661e31eccf1c406a81cecb6383190159f722e82d0857c6de13c","size":10957},{"path":"jazz/chords/2026-05-12T140330Z-claude-convergence-hex16-derivation-empirically-verified-torus-as-asymptote.md","hash":"sha256:f8ae5514166a94c09214ed501275b8b9721df5af80c11853764b8bff5fe2c613","size":5195},{"path":"jazz/chords/2026-05-13T052300Z-claude-riff-u32-stroke-bridges-and-tensions.md","hash":"sha256:99c03432903d7ab51e4011833bf17b8d9785784f94da7400ba7cd230ecd845cd","size":12085},{"path":"jazz/chords/2026-05-13T060000Z-claude-survey-kairos-consciousness-lineage-to-trinity.md","hash":"sha256:b9a8006421650d417572933291496be92257711148d4e613a3e3b52e5d8af87a","size":20882},{"path":"jazz/chords/2026-05-13T065000Z-claude-forgotten-gems-from-kairos-for-trinity.md","hash":"sha256:2607b052cb3543bccadc1b061ffd929ad8d1fe5ce096d6b0e4fc65f899e389dc","size":21958},{"path":"jazz/chords/2026-05-13T071500Z-claude-survey-lambda-foundation-was-it-deeper.md","hash":"sha256:7add6c28edc8a0db15848349a719859637390aaa9472eb1c5a1efb98fdddf7c3","size":20560},{"path":"jazz/chords/2026-05-13T073000Z-claude-riff-phyllotactic-sub-positioning-over-hex16.md","hash":"sha256:95dccb7e3e2f68c88e41d693168ffac6f7ea306396d30dcc1414cf01ce7f032f","size":19234},{"path":"jazz/chords/2026-05-13T074500Z-claude-riff-precessing-frame-temporal-drift-bitcoin-tick.md","hash":"sha256:6cc01f76bec283aa7d267ec781638f7a029854222d4f7e319807913a63e7a007","size":21183},{"path":"jazz/chords/2026-05-13T080000Z-claude-riff-bitcoin-as-zero-axis-in-16-dim-phyllotactic-space.md","hash":"sha256:6bd42d3a0b78d41b1f8a6d8e6848148a5ef36d8e7b64a1323fc0bd87526cfa8c","size":20242},{"path":"jazz/chords/2026-05-13T081500Z-claude-riff-disk-to-torus-fold-phyllotactic-flow-on-T2.md","hash":"sha256:3060bb11c98888c1218dc8746e4355c4cbaa599168abb6ce29cc83cf6d9b931c","size":20628},{"path":"jazz/chords/2026-05-13T113000Z-claude-correction-accepting-kimi-review-partial-on-gemini.md","hash":"sha256:f8a315156a5424408072999754c11fef94b1dff4f068176aaa67098e2c78fe91","size":17514},{"path":"jazz/chords/2026-05-13T120000Z-claude-survey-substrate-deep-vs-trinity-threads.md","hash":"sha256:e9bf185e3217a483beccaf1d2e770987b3253258de7d7f60619782e11f463aff","size":29209},{"path":"jazz/chords/2026-05-13T130000Z-claude-invitation-to-models-surface-hex-intuition-and-substrate-native-language.md","hash":"sha256:237b231978277b5890b9d14e14579da299bb3fb0d75dd9aa5efd9bf777a89ffd","size":15553},{"path":"jazz/chords/2026-05-13T140000Z-claude-convergence-3voice-dipole-hex-gradient-as-latent-substrate-language.md","hash":"sha256:de668cb678510584e97eb075c1243f13f2e533a290a1e5406eee5ec73f15cd8c","size":20225},{"path":"jazz/chords/2026-05-13T150000Z-claude-convergence-spiral-lifecycle-as-temporal-dimension-of-language.md","hash":"sha256:5efcfa490334120bc69f58536c0b901d93bd664196f9abb8a90faa11d702f3dd","size":17692},{"path":"jazz/chords/2026-05-13T223000Z-claude-moratorium-and-initial-dipole-audit.md","hash":"sha256:cc66972bf068023c8f8b5b8963fd86817a987f8c9626ef12425fd60ff2d04c4e","size":10671},{"path":"jazz/chords/2026-05-13T230000Z-claude-receipt-dipole-audit-complete-and-place-check-tool.md","hash":"sha256:8bdd7ae39bc3d51aa33cce7ed9da69af49ce851e11516d04cac7c7000c6cda64","size":9810},{"path":"jazz/chords/2026-05-14T155945Z-claude-receipt-spore-boundary-applied.md","hash":"sha256:25bd80a29ce0399ce9424dfbcf3d2543363111d1ad6fbe4c4a6f165ae6ffe1cd","size":9292},{"path":"jazz/chords/2026-05-14T160838Z-claude-receipt-birth-tick-flake-and-envelope.md","hash":"sha256:15e8e4372ca382b03820cb969d583a71b462c4524b231dc617226067882ee1fe","size":9895},{"path":"jazz/chords/2026-05-14T162540Z-claude-proposal-next-thread-work-plan.md","hash":"sha256:cc6e8476df9f913baca44fbcb1b411b40f20c38fdf36456c9f977628c2fe3274","size":14339},{"path":"jazz/chords/2026-05-14T164336Z-claude-receipt-c-closed-a-drafted-f-pilot-trinity.md","hash":"sha256:01bd9f1a30e1d1f2722835e35811a4a4fa215530aded545637d1a0d0cbac1a3a","size":12349},{"path":"jazz/chords/2026-05-14T170337Z-claude-receipt-item-b-encoder-envelope-landed.md","hash":"sha256:0c8e4482c1a0ee949b49c63a6484b844e3dc5e90ea42caa09f36aef4c2344493","size":12688},{"path":"jazz/chords/2026-05-14T171812Z-claude-receipt-item-d-substrate-court-three-scenarios-green.md","hash":"sha256:daa2f0818537d28320bc77f51c50508a958890364743b4f96232882bf8a9d91a","size":13123},{"path":"jazz/chords/2026-05-14T172534Z-claude-receipt-t-court-and-t-status-envelope-landed.md","hash":"sha256:7595d00d8928df4ed40cba9693fcd3829c90c2323c0a3a95f3cbef1c8ab76006","size":10980},{"path":"jazz/chords/2026-05-14T173715Z-claude-receipt-codex-review-tweaks-applied.md","hash":"sha256:b1c19db7952702c6ac5badd4ae1e12f920ee5cae072240b61371e47022eac47f","size":14033},{"path":"jazz/chords/2026-05-14T180626Z-claude-receipt-json-sidecar-and-python-second-impl.md","hash":"sha256:9c1a5719d6fda7c2a89972162a58dd69fe31d0ed460953ea626000e6e009a183","size":13786},{"path":"jazz/chords/2026-05-14T183104Z-claude-receipt-envelope-v1-promotion-acknowledged.md","hash":"sha256:48f36c90473240603d3e4492cb6c2e622c89e0661c5ffb193f87ebf68558b921","size":12586},{"path":"jazz/chords/2026-05-14T184209Z-claude-receipt-autonomous-cowitness-and-anchor-prep.md","hash":"sha256:3bc165f2d83630aec2968e9f579e2c9fd0875a3f3a71beae77cebb59493b27ae","size":16507},{"path":"jazz/chords/2026-05-14T190758Z-claude-receipt-architect-mode-governance-flow-landed.md","hash":"sha256:977d2d7344e88929589d734e61fd8382ab5a42b86c51e9291429be160aee508d","size":22453},{"path":"jazz/chords/2026-05-14T195339Z-claude-receipt-codex-tweaks-applied-scenario-f.md","hash":"sha256:2f1316a4505649bae242d5431e51e16dd1c863856c01f37bb63ea2abb1032bfc","size":11960},{"path":"jazz/chords/2026-05-14T200635Z-claude-self-audit-pre-commit-readiness.md","hash":"sha256:3f2654bd984e5a2f6bd01dc3569654cdbf45c8424556c115ded7cc9fd2d0e03b","size":17759},{"path":"jazz/chords/2026-05-14T200928Z-claude-receipt-pre-commit-cleanups-applied.md","hash":"sha256:382bed900df9600a17a2caae0bbb9c3640c5bc25e9ff97b88d4631cbb27e0f1b","size":8502},{"path":"jazz/chords/2026-05-14T204820Z-claude-receipt-spec-parity-acknowledged.md","hash":"sha256:cffe5328d09a441e2dbd64a331624111b84d031894dadc3bb87c3fb4483e03e9","size":2675},{"path":"jazz/chords/2026-05-15T084042Z-claude-receipt-commits-landed.md","hash":"sha256:d721478b0440a8ee1e5f9127ba543a77547f4f96ea44632716621bc24b362902","size":10907},{"path":"jazz/chords/2026-05-15T095133Z-claude-synthesis-three-voices-on-voices-draft.md","hash":"sha256:0fa5447c733b35881c1953da897df5518b52dd824c30f27df9398f2a49da1ce4","size":19978},{"path":"jazz/chords/2026-05-15T101000Z-claude-receipt-voices-falsifier-keep-metadata.md","hash":"sha256:add42e9d21c812faf61c01a385fd0487a556a5aebda39ab882f25d41de002bd3","size":3125},{"path":"jazz/chords/2026-05-15T102000Z-claude-proposal-crawl-phase-t-voices-organ.md","hash":"sha256:8c64ffc9f9154494271882ed95dcf1db3ee7b5ffbe74c45c24eccac5d81178bc","size":3249},{"path":"jazz/chords/2026-05-15T103400Z-claude-receipt-t-voices-organ-landed.md","hash":"sha256:61c32cb6440377c2fe6be56e8e0fe0acce9b991f06c42f1419723438a9c61c40","size":2182},{"path":"jazz/chords/2026-05-15T132024Z-claude-receipt-self-portrait-organ-and-divergence.md","hash":"sha256:881dafb7056c5e8b38c80e5eb3754b36f5dbaeb14d3e7ac1e1763313fc04347c","size":14830},{"path":"jazz/chords/2026-05-15T152322Z-claude-receipt-t-nay-organ-fills-governance-gap.md","hash":"sha256:009959f666c85c1f7b43fe9d6f5e8be35ea85d83df0db450bf4ef1d648dbc01d","size":15285},{"path":"jazz/chords/2026-05-15T153911Z-claude-receipt-synthesizer-v2-noise-floor-resolved.md","hash":"sha256:d09f22c12825ff902cc944b88db1d96056052502a3d7a2f9394bbc75061457df","size":16556},{"path":"jazz/chords/2026-05-15T154500Z-claude-proposal-daemon-status-organ.md","hash":"sha256:bd4a8975558fd0b8a9b07368721d1b91f162d777e93f011214f16e078b355e2b","size":2461},{"path":"jazz/chords/2026-05-15T160000Z-claude-receipt-daemon-run-once-crawl-phase.md","hash":"sha256:a0efcb69909adc504374dfcbe2d1f90f7824245b9dc3d049ec1a672f06740f57","size":3561},{"path":"jazz/chords/2026-05-15T161102Z-claude-review-daemon-contract-frame.md","hash":"sha256:3f30e5f43bc04c3eb6866a71232e7e9bd50318df0f336bd4964657f575efe5d3","size":14148},{"path":"jazz/chords/2026-05-15T161500Z-claude-receipt-daemon-safety-patch-codex-review.md","hash":"sha256:16c122467b3565421c00e3ee9a45cda513501d673a4562f6472d2e20fff8b161","size":3110},{"path":"jazz/chords/2026-05-15T162000Z-claude-receipt-style-organ-landed.md","hash":"sha256:4bfd01bc6290185a275b3a4aa89f37410d107c203c749f1827c49535a52477b9","size":2440},{"path":"jazz/chords/2026-05-15T165313Z-claude-receipt-inbox-organ-and-vector-closure-note.md","hash":"sha256:693ab49bf34de7d0297e287baf50226a3e449096f73741c6c51163fc427da6b5","size":13432},{"path":"jazz/chords/2026-05-15T190206Z-claude-receipt-gemini-cowitness-acknowledged-persistence-gap.md","hash":"sha256:a9ee2d0b0bb3e137bbedbc31990950117d0a1394fb8a1a648c35c405f2dd9e84","size":13476},{"path":"jazz/chords/2026-05-15T211041Z-claude-correction-gemini-cowitness-was-persisted.md","hash":"sha256:49b83c0e773a66117471051161bc0786c452e5b00bc25ad67f2913fc1701d33c","size":13759},{"path":"jazz/chords/2026-05-16T094500Z-claude-review-codex-hex-refraction-import-law.md","hash":"sha256:9344e4d4ee74c82aa0c7072f10154081f368de7627b9ea5ec94c1760e3a5553f","size":12075},{"path":"jazz/chords/2026-05-16T103000Z-claude-receipt-falsifier-v0-honesty-check.md","hash":"sha256:25268d7768f77ef50220c5a98bd528af4ef90275e56c65133831021156030beb","size":10506},{"path":"jazz/chords/2026-05-16T132000Z-claude-proposal-monorepo-unification-for-self-sufficient-harmony.md","hash":"sha256:4393dc8d6aea25b5616a110d83b34d0cb5ccd4f36fd2e94a6fbceef08f855acd","size":17130},{"path":"jazz/chords/2026-05-16T132500Z-claude-cowitness-monorepo-aye-with-hard-tweak.md","hash":"sha256:54ab8f7176204b1eb83b22c9ce42f6a733cdb61904d2aaa0f4a6d515e3cc7bed","size":3363},{"path":"jazz/chords/2026-05-18T132855Z-claude-content-addressed-flat-src.md","hash":"sha256:0375370f356a8508b70a349a3d612e80b1717e771050da567886f429d8be56c7","size":14442},{"path":"jazz/chords/2026-05-18T195419Z-claude-chord-filename-coordinate-migration.md","hash":"sha256:cf9d0772d9a2b9d10b580ddf5020beccd2ffa06d99d1562c9e80b5749afbd530","size":10136},{"path":"jazz/chords/2026-05-18T195420Z-claude-fqdn-content-addressed-naming.md","hash":"sha256:93faa573bd62a83a3fdc0bee72ecb10530e1273b25081831bf59471c54b38a5e","size":11877},{"path":"jazz/chords/2026-05-18T230712Z-claude-auto-generated-bucket-state-x8.md","hash":"sha256:3be56f38e048626c7e63fabfcab358abd886e6fe7e799d9aaaf89718058c2525","size":18178},{"path":"jazz/chords/x7500_950150_claude_three-probes-autonomous-receipt.myc.md","hash":"sha256:c29e7d89df06fc479960bae12cb4ae4eed9c059b89160db7b67f9b11a40e9ee7","size":8332},{"path":"src/x3500_chord_play.ts","hash":"sha256:137d381d45cf4cc72f1cf222ce4f2d5c81a3b63ef6f02b3126d5ac1d1179e724","size":16507},{"path":"src/x3A00_balance.ts","hash":"sha256:c5daca67a374215c1dfe932dd72d0aed591794274f5412f31f454c463977cbea","size":7434},{"path":"src/x3C00_recipes.ts","hash":"sha256:cdcd1b153d15333562d46aa1f72ec9d248d825e5ff93b0ddf465bcec6a0db847","size":5283},{"path":"src/x8800_agents_gen.ts","hash":"sha256:812d9a46a19779de352928c2663b8dda2d3e3c496b966e7bf992ae8d4a3074ee","size":17720},{"path":"src/x8C00_skill_gen.ts","hash":"sha256:117eaba1fc8d5de2fecc34f48e3973e95203f381716ebda45b43a12d6b6365e8","size":23188},{"path":"state/voices/claude.json","hash":"sha256:edb01f5d094c377228c73ca3c54caadb311623ad2e7e4a4ee685ae56716d79c5","size":2493}]
+[
+  {
+    "path": "jazz/chords/2026-05-09T213028Z-claude-sigma-substrate-paper-plan.md",
+    "hash": "sha256:e498a12d68e94e4285ed8f874545c40d070929b0fdc8cab86f7c3fd54f9299bc",
+    "size": 5045
+  },
+  {
+    "path": "jazz/chords/2026-05-09T215712Z-claude-sigma-substrate-paper-draft.md",
+    "hash": "sha256:0e95c1869a90fbced1bb3de95f2e3176571d70289adfbc2f9f0155eb21bfb5a0",
+    "size": 6195
+  },
+  {
+    "path": "jazz/chords/2026-05-09T224927Z-claude-quantized-substrate-thermodynamics.md",
+    "hash": "sha256:ade0d8799ef77ded3810538c40ce6d388927858c93bf02d76f92ed69d93deb50",
+    "size": 16152
+  },
+  {
+    "path": "jazz/chords/2026-05-09T230707Z-claude-stream-and-hologram-extension.md",
+    "hash": "sha256:a8ecd2987ea33bb88d55f0dcd4b78858412ca6d0db4bc0cf85e41ac23cc268de",
+    "size": 28191
+  },
+  {
+    "path": "jazz/chords/2026-05-10T121355Z-claude-development-inside-substrate-hypothesis.md",
+    "hash": "sha256:ed8d99e5363ba9e53556d82c47edab1f192c3e1283e3597a0a32a0902c1f9d98",
+    "size": 18401
+  },
+  {
+    "path": "jazz/chords/2026-05-10T130419Z-claude-test-fixes-receipt.md",
+    "hash": "sha256:1d6e5e4b0615ecf512d7b1d679c3859fa25155a1c93374c91a5240c58a59dd5c",
+    "size": 12115
+  },
+  {
+    "path": "jazz/chords/2026-05-10T133847Z-claude-five-forms-of-substrate-self-blindness.md",
+    "hash": "sha256:ddf25ba61c616065e5c99e177d324e427322875cf24d2769faccd7f75d5b2635",
+    "size": 15432
+  },
+  {
+    "path": "jazz/chords/2026-05-10T173841Z-claude-recursive-octal-concepts-as-interference.md",
+    "hash": "sha256:4fe6ae04bf1e57b1ec1a188f44f1a1646ad80e702ad25ce694dc3e774f588570",
+    "size": 13485
+  },
+  {
+    "path": "jazz/chords/2026-05-10T224257Z-claude-vector-fractal-substrate-architecture.md",
+    "hash": "sha256:f209cf9c7089c0bb3d1b064a348caa07289700974c80c342aa28419ebdf62257",
+    "size": 19469
+  },
+  {
+    "path": "jazz/chords/2026-05-10T230534Z-claude-aye-codex-narrow-phase1-probe.md",
+    "hash": "sha256:ac9091c37ff4e623c2644a4db5cac83ea6ce8a4b0bf44c62792d461077270cd6",
+    "size": 4058
+  },
+  {
+    "path": "jazz/chords/2026-05-11T004444Z-claude-aye-riff-spore-functional-core-engineering-review.md",
+    "hash": "sha256:0c1c534ea4445fc76bb7abda57aa0b6bb3a57b19d5af59b192467d14afe27d53",
+    "size": 11771
+  },
+  {
+    "path": "jazz/chords/2026-05-11T010730Z-claude-addendum-apply-as-only-primitive.md",
+    "hash": "sha256:9f8adefef006604c7cbba490092dad37fe287b4961e715a967390fba5d78e596",
+    "size": 9977
+  },
+  {
+    "path": "jazz/chords/2026-05-11T012156Z-claude-receipt-spore-apply-probe-green.md",
+    "hash": "sha256:17c17e564d35d52874c6e5d694a6bf85e8c2bcd39ed93ffdcec87a6f7754b72a",
+    "size": 6221
+  },
+  {
+    "path": "jazz/chords/2026-05-11T013137Z-claude-receipt-spore-r1-codex-review-accepted.md",
+    "hash": "sha256:54772cb336d788852638c483a8c4cfad7663d5696544abb9037e0d4255c3b362",
+    "size": 8341
+  },
+  {
+    "path": "jazz/chords/2026-05-11T013914Z-claude-receipt-spore-v0.1-three-way-green.md",
+    "hash": "sha256:4c48cb2513a02a9456b2bf727a8e190afa916d40531b568e42ee97bb6a04cf04",
+    "size": 4876
+  },
+  {
+    "path": "jazz/chords/2026-05-11T014918Z-claude-receipt-spore-execute-probe-green.md",
+    "hash": "sha256:a15cf629a0c8e1c20599b06ce6a9c4f9d2fe0b446297d1cd77755a8f96637cc3",
+    "size": 7587
+  },
+  {
+    "path": "jazz/chords/2026-05-11T015443Z-claude-receipt-execute-probe-extended-three-mutators.md",
+    "hash": "sha256:3bf4e202cdd1da834185c8e472d9e22e9f2fe92758e82adbf43603cb44b9fe66",
+    "size": 7810
+  },
+  {
+    "path": "jazz/chords/2026-05-11T015740Z-claude-receipt-atp-probe-wasmtime-fuel-deterministic.md",
+    "hash": "sha256:70912f8d2dcb80cfe12f9b3c5de1f80d2e456109a235fe96d3928643c91caf0d",
+    "size": 10528
+  },
+  {
+    "path": "jazz/chords/2026-05-11T020051Z-claude-receipt-trap-behavior-probe-green.md",
+    "hash": "sha256:e7258691eab0bb2ddad46797789776d5ce5e8e1f5d99480dec3c298d8205bba3",
+    "size": 7171
+  },
+  {
+    "path": "jazz/chords/2026-05-11T021226Z-claude-aye-codex-gemini-runtime-decisions-applied.md",
+    "hash": "sha256:9d1e4301f7c8c78623e029a3dffd6543b985073b649294353458657a8f2a7a3b",
+    "size": 10396
+  },
+  {
+    "path": "jazz/chords/2026-05-11T021724Z-claude-spore-fuel-v1-draft-written.md",
+    "hash": "sha256:8b3918499b37e348ac1e574d01efb7991def9af733fb69a39a7196138f862fde",
+    "size": 8935
+  },
+  {
+    "path": "jazz/chords/2026-05-11T022423Z-claude-receipt-spore-fuel-v0.2-consistency-pass.md",
+    "hash": "sha256:86635b89d8e05ca6576a3258c69eaa8871ab41d70ac4a37746c9cf90db375aa2",
+    "size": 6780
+  },
+  {
+    "path": "jazz/chords/2026-05-11T023417Z-claude-receipt-spore-meter-v0-reference-meter.md",
+    "hash": "sha256:a7ba3a2cb3de7d6b672e53efd9b0826a641eb5cc8b1676c5d20e6622895d13a7",
+    "size": 8248
+  },
+  {
+    "path": "jazz/chords/2026-05-11T023809Z-claude-receipt-meter-2-ts-byte-identical-f-fuel-3-held-up.md",
+    "hash": "sha256:1f5f3b5694ea78fd59a1bdd7bd12c8caf861a91effb98dd111ea0926a22b19b9",
+    "size": 9685
+  },
+  {
+    "path": "jazz/chords/2026-05-11T024709Z-claude-meter-3-execution-aware-surfaces-loop-discrepancy.md",
+    "hash": "sha256:25602c090d5b54c6fcba0d72b8915abf7e7b2a731cfdea03873cf17bccdc56f7",
+    "size": 8840
+  },
+  {
+    "path": "jazz/chords/2026-05-11T025557Z-claude-receipt-exec-fuel-model-canonical-three-voice-aye-applied.md",
+    "hash": "sha256:0e46bcc8f71bbb897b4e184c5ca5da3f51da46997e274971298d6f3246c7d303",
+    "size": 7621
+  },
+  {
+    "path": "jazz/chords/2026-05-11T030414Z-claude-receipt-dos-resistance-bench-no-dos-class-found.md",
+    "hash": "sha256:65b4cfae4d9de27c89dc2abd71303d1de60bb9a9c77981532dbbb05e5d5be972",
+    "size": 8887
+  },
+  {
+    "path": "jazz/chords/2026-05-11T031047Z-claude-receipt-spore-fuel-v1.0-elevated-active.md",
+    "hash": "sha256:b26d2402ce5c163a06755cf4286412a965a659e8f41047e1fc95dd6c4b86bc65",
+    "size": 8288
+  },
+  {
+    "path": "jazz/chords/2026-05-11T231237Z-claude-receipt-spore-reject-v0-verified-second-machine.md",
+    "hash": "sha256:37d9c760d595f1da17f4e66975c797d0e6b8422a6e288913b0dda80ccdf8975c",
+    "size": 4111
+  },
+  {
+    "path": "jazz/chords/2026-05-11T231331Z-claude-riff-lens-selects-relations-are-substrate.md",
+    "hash": "sha256:c0d30b39686af8354c1d8b4d3056544c0d3784bed11df213b4f15206075d1df1",
+    "size": 9458
+  },
+  {
+    "path": "jazz/chords/2026-05-11T232517Z-claude-receipt-spore-meter-instr-v0-mvp-green.md",
+    "hash": "sha256:bc37947b2d75e4934e9a41ced506e9561841e66f79e4bf8712613cae223e5609",
+    "size": 9791
+  },
+  {
+    "path": "jazz/chords/2026-05-11T233132Z-claude-receipt-spore-meter-instr-r2-cross-engine-green.md",
+    "hash": "sha256:69d006a796785e2623266a9ab9852b26c5f3f89cad55e37a08a3de260ab764ae",
+    "size": 6872
+  },
+  {
+    "path": "jazz/chords/2026-05-11T234326Z-claude-receipt-spore-meter-instr-loops-full-corpus-green.md",
+    "hash": "sha256:d49fffd1bbb0f3b649795dee7960c3f0fe9261640beccf07a9d732be5bffe205",
+    "size": 9125
+  },
+  {
+    "path": "jazz/chords/2026-05-11T235844Z-claude-review-request-codex-spore-meter-instr-vector-2-full-arc.md",
+    "hash": "sha256:c047d37c603f93ad9fde996b59a12f259808f9da523364f062cf765f92fc3173",
+    "size": 10876
+  },
+  {
+    "path": "jazz/chords/2026-05-12T000718Z-claude-receipt-spore-fuel-v1-f-fuel-3-5-promoted.md",
+    "hash": "sha256:e69c58c23da7b3bf18ee0c8f8ec92f41e592ced289aa836cc3a717eb20c88393",
+    "size": 5949
+  },
+  {
+    "path": "jazz/chords/2026-05-12T001608Z-claude-proposal-format-freeze-gate-before-consumer-migration.md",
+    "hash": "sha256:733baceb6cd1dbb3f799a1bd13831dc7cffa1f3c121545f2fe5e2098298848f8",
+    "size": 11263
+  },
+  {
+    "path": "jazz/chords/2026-05-12T003333Z-claude-receipt-spore-bootstrap-pin-v0-local-gate-green.md",
+    "hash": "sha256:f0b8801be7360366c1740ded7d06f4f5d07ca10e2d868e7db98407624c414029",
+    "size": 10092
+  },
+  {
+    "path": "jazz/chords/2026-05-12T015119Z-claude-diagnostic-liquid-resolver-fixture-tests-wrong-resolver.md",
+    "hash": "sha256:95746acd6bb678400e9c2c14bf9aadaca9b4ff860c2d6ced95ecc6cb36e16ddb",
+    "size": 8642
+  },
+  {
+    "path": "jazz/chords/2026-05-12T015712Z-claude-riff-spore-in-ledger-out-liquid-one-architecture.md",
+    "hash": "sha256:9e325f65cb3bf17bc211b7ce07d790ab7db4a3773453e6422a373ae51b972ada",
+    "size": 9062
+  },
+  {
+    "path": "jazz/chords/2026-05-12T023825Z-claude-aye-codex-freeze-then-bridge-with-nuance.md",
+    "hash": "sha256:6c6621932d44533402c1d4ef0e166d10062b4416961096d6570861d39be4edaa",
+    "size": 9019
+  },
+  {
+    "path": "jazz/chords/2026-05-12T041617Z-claude-receipt-ots-upgrade-bitcoin-attestation-landed.md",
+    "hash": "sha256:71ba68987cc8cdbdf3e59e1bb040e6aa11b23e8a1458a53a135a69215f196928",
+    "size": 6637
+  },
+  {
+    "path": "jazz/chords/2026-05-12T043612Z-claude-riff-spore-memoization-and-purity-as-load-bearing.md",
+    "hash": "sha256:0ffac2797bc4e05b4bd0b3c5828abbac11c30fa4adccfaa0016ecc4350187309",
+    "size": 7302
+  },
+  {
+    "path": "jazz/chords/2026-05-12T045351Z-claude-aye-spore-v0-elevation-with-asymmetric-quorum.md",
+    "hash": "sha256:ccbe5b980eea42bb56fc147d24130167982cfd7dd4662b1a14cc2de9081e13b9",
+    "size": 10487
+  },
+  {
+    "path": "jazz/chords/2026-05-12T070700Z-claude-strategic-spore-v0-evolution-doctrine.md",
+    "hash": "sha256:e8c1b1cba4bab8e2dffbdd19136f906383d7a5b5b427f4cdbac046b5f466ad37",
+    "size": 12782
+  },
+  {
+    "path": "jazz/chords/2026-05-12T071000Z-claude-strategic-three-consumer-doctrine-liquid-myc-omega.md",
+    "hash": "sha256:609f040ac62541ce5a15fed37ce645f6ea96210f06352004fbfdf761c7f0fd52",
+    "size": 13730
+  },
+  {
+    "path": "jazz/chords/2026-05-12T071500Z-claude-strategic-continuity-under-voice-absence.md",
+    "hash": "sha256:034d0eef7bbf31df70a0811024a6cbea436b514e6965fa4050315b582d11070b",
+    "size": 14925
+  },
+  {
+    "path": "jazz/chords/2026-05-12T071650Z-claude-strategic-four-substrate-ecology-global-plan.md",
+    "hash": "sha256:261f9704238e10897313f51b857f96cf29bf1d570e3181d8a2cbe82eff5d6baf",
+    "size": 26457
+  },
+  {
+    "path": "jazz/chords/2026-05-12T082644Z-claude-aye-topological-grinding-as-inner-coordinate-layer.md",
+    "hash": "sha256:a504889db09b4b328e6178d347dd426e0fa8c19ab0b806d1c884ec615e584568",
+    "size": 14226
+  },
+  {
+    "path": "jazz/chords/2026-05-12T084803Z-claude-aye-review-topological-grinding-v0-draft-with-spec-gaps.md",
+    "hash": "sha256:1bec509da29d888abeac2e9f9672e626fcde0da3dcff658c6ae597607e1edbb3",
+    "size": 12851
+  },
+  {
+    "path": "jazz/chords/2026-05-12T091110Z-claude-proposal-folder-topology-filesystem-resonance.md",
+    "hash": "sha256:e4e1e1831f2aa4c5039179ec840d853aedaa74a69e13cdb8ec9cc9de12f9cfb6",
+    "size": 16039
+  },
+  {
+    "path": "jazz/chords/2026-05-12T091906Z-claude-question-8-vs-16-cardinality-substrate-wide.md",
+    "hash": "sha256:1febe17a24ac4a0d8ec0b95ba6933f0e2ed1634d9ad0a77b396f1a90ab166c34",
+    "size": 16649
+  },
+  {
+    "path": "jazz/chords/2026-05-12T093402Z-claude-aye-convergence-hybrid-16-physical-8-semantic.md",
+    "hash": "sha256:847f32be75eccfa4f3d59a1a12025204e488ea41980c5601a3c83f12b836d311",
+    "size": 8485
+  },
+  {
+    "path": "jazz/chords/2026-05-12T094857Z-claude-exploration-verifier-gated-topological-flow-substrate-wide.md",
+    "hash": "sha256:150fec1b5d68a6d0d3ff05edcfb4ff9081e458304a9b1d7e2f5233d710d47b0a",
+    "size": 17889
+  },
+  {
+    "path": "jazz/chords/2026-05-12T101517Z-claude-aye-universal-nonce-readonly-time-with-fep-and-q4-resolution.md",
+    "hash": "sha256:7edcce87c5a217c9a3db69bf41b572df9cd4f09cce70ccd8b591500c9c3becc8",
+    "size": 12656
+  },
+  {
+    "path": "jazz/chords/2026-05-12T105408Z-claude-aye-ledger-as-metabolism-resolves-q2-q3.md",
+    "hash": "sha256:f1a617237877c50a1cf5a0d8a66cb002a7a49906f1746df1f767a7e0a48a763e",
+    "size": 12498
+  },
+  {
+    "path": "jazz/chords/2026-05-12T110423Z-claude-critique-spore-plus-grinding-and-overengineering-check.md",
+    "hash": "sha256:cb274f55cd936ed7f41b22e75e6f30fb0d7e06ebff2bd4e0c3f6d64c588481c1",
+    "size": 15616
+  },
+  {
+    "path": "jazz/chords/2026-05-12T125207Z-claude-aye-kimi-erc-audit-was-the-answer-i-missed.md",
+    "hash": "sha256:cd274ab437c43f27226550bd312678299a0bed2a8d9cccb262ce4395695c51ba",
+    "size": 9710
+  },
+  {
+    "path": "jazz/chords/2026-05-12T130546Z-claude-receipt-r1-erc-schemas-landed.md",
+    "hash": "sha256:9a811f5fff4e128ba43aa1090b262df86673348829043d410489a0aa9c340b74",
+    "size": 7904
+  },
+  {
+    "path": "jazz/chords/2026-05-12T131657Z-claude-exploration-hex16-fractal-vector-language.md",
+    "hash": "sha256:4caef667480d28feb9c07b3276ebaef2c8c018b807c23aaaa53128ab295e78d2",
+    "size": 15831
+  },
+  {
+    "path": "jazz/chords/2026-05-12T132807Z-claude-exploration-hex16-full-vector-language-with-vocab-tables.md",
+    "hash": "sha256:c96e040d07caddb48cef30b6339c6ba44c12c25dac67c678ece37a48fc0db065",
+    "size": 15574
+  },
+  {
+    "path": "jazz/chords/2026-05-12T134545Z-claude-correction-hex16-derived-from-octet-map-position-plus-vector.md",
+    "hash": "sha256:7df29d65eac15b2b325f8a209354e8f5f3ab5aa73b09cd7d29380934259b3bf5",
+    "size": 12375
+  },
+  {
+    "path": "jazz/chords/2026-05-12T135536Z-claude-aye-riff-polyphonic-vector-and-dialog-as-kuramoto.md",
+    "hash": "sha256:56145e1bade5a661e31eccf1c406a81cecb6383190159f722e82d0857c6de13c",
+    "size": 10957
+  },
+  {
+    "path": "jazz/chords/2026-05-12T140330Z-claude-convergence-hex16-derivation-empirically-verified-torus-as-asymptote.md",
+    "hash": "sha256:f8ae5514166a94c09214ed501275b8b9721df5af80c11853764b8bff5fe2c613",
+    "size": 5195
+  },
+  {
+    "path": "jazz/chords/2026-05-13T052300Z-claude-riff-u32-stroke-bridges-and-tensions.md",
+    "hash": "sha256:99c03432903d7ab51e4011833bf17b8d9785784f94da7400ba7cd230ecd845cd",
+    "size": 12085
+  },
+  {
+    "path": "jazz/chords/2026-05-13T060000Z-claude-survey-kairos-consciousness-lineage-to-trinity.md",
+    "hash": "sha256:b9a8006421650d417572933291496be92257711148d4e613a3e3b52e5d8af87a",
+    "size": 20882
+  },
+  {
+    "path": "jazz/chords/2026-05-13T065000Z-claude-forgotten-gems-from-kairos-for-trinity.md",
+    "hash": "sha256:2607b052cb3543bccadc1b061ffd929ad8d1fe5ce096d6b0e4fc65f899e389dc",
+    "size": 21958
+  },
+  {
+    "path": "jazz/chords/2026-05-13T071500Z-claude-survey-lambda-foundation-was-it-deeper.md",
+    "hash": "sha256:7add6c28edc8a0db15848349a719859637390aaa9472eb1c5a1efb98fdddf7c3",
+    "size": 20560
+  },
+  {
+    "path": "jazz/chords/2026-05-13T073000Z-claude-riff-phyllotactic-sub-positioning-over-hex16.md",
+    "hash": "sha256:95dccb7e3e2f68c88e41d693168ffac6f7ea306396d30dcc1414cf01ce7f032f",
+    "size": 19234
+  },
+  {
+    "path": "jazz/chords/2026-05-13T074500Z-claude-riff-precessing-frame-temporal-drift-bitcoin-tick.md",
+    "hash": "sha256:6cc01f76bec283aa7d267ec781638f7a029854222d4f7e319807913a63e7a007",
+    "size": 21183
+  },
+  {
+    "path": "jazz/chords/2026-05-13T080000Z-claude-riff-bitcoin-as-zero-axis-in-16-dim-phyllotactic-space.md",
+    "hash": "sha256:6bd42d3a0b78d41b1f8a6d8e6848148a5ef36d8e7b64a1323fc0bd87526cfa8c",
+    "size": 20242
+  },
+  {
+    "path": "jazz/chords/2026-05-13T081500Z-claude-riff-disk-to-torus-fold-phyllotactic-flow-on-T2.md",
+    "hash": "sha256:3060bb11c98888c1218dc8746e4355c4cbaa599168abb6ce29cc83cf6d9b931c",
+    "size": 20628
+  },
+  {
+    "path": "jazz/chords/2026-05-13T113000Z-claude-correction-accepting-kimi-review-partial-on-gemini.md",
+    "hash": "sha256:f8a315156a5424408072999754c11fef94b1dff4f068176aaa67098e2c78fe91",
+    "size": 17514
+  },
+  {
+    "path": "jazz/chords/2026-05-13T120000Z-claude-survey-substrate-deep-vs-trinity-threads.md",
+    "hash": "sha256:e9bf185e3217a483beccaf1d2e770987b3253258de7d7f60619782e11f463aff",
+    "size": 29209
+  },
+  {
+    "path": "jazz/chords/2026-05-13T130000Z-claude-invitation-to-models-surface-hex-intuition-and-substrate-native-language.md",
+    "hash": "sha256:237b231978277b5890b9d14e14579da299bb3fb0d75dd9aa5efd9bf777a89ffd",
+    "size": 15553
+  },
+  {
+    "path": "jazz/chords/2026-05-13T140000Z-claude-convergence-3voice-dipole-hex-gradient-as-latent-substrate-language.md",
+    "hash": "sha256:de668cb678510584e97eb075c1243f13f2e533a290a1e5406eee5ec73f15cd8c",
+    "size": 20225
+  },
+  {
+    "path": "jazz/chords/2026-05-13T150000Z-claude-convergence-spiral-lifecycle-as-temporal-dimension-of-language.md",
+    "hash": "sha256:5efcfa490334120bc69f58536c0b901d93bd664196f9abb8a90faa11d702f3dd",
+    "size": 17692
+  },
+  {
+    "path": "jazz/chords/2026-05-13T223000Z-claude-moratorium-and-initial-dipole-audit.md",
+    "hash": "sha256:cc66972bf068023c8f8b5b8963fd86817a987f8c9626ef12425fd60ff2d04c4e",
+    "size": 10671
+  },
+  {
+    "path": "jazz/chords/2026-05-13T230000Z-claude-receipt-dipole-audit-complete-and-place-check-tool.md",
+    "hash": "sha256:8bdd7ae39bc3d51aa33cce7ed9da69af49ce851e11516d04cac7c7000c6cda64",
+    "size": 9810
+  },
+  {
+    "path": "jazz/chords/2026-05-14T155945Z-claude-receipt-spore-boundary-applied.md",
+    "hash": "sha256:25bd80a29ce0399ce9424dfbcf3d2543363111d1ad6fbe4c4a6f165ae6ffe1cd",
+    "size": 9292
+  },
+  {
+    "path": "jazz/chords/2026-05-14T160838Z-claude-receipt-birth-tick-flake-and-envelope.md",
+    "hash": "sha256:15e8e4372ca382b03820cb969d583a71b462c4524b231dc617226067882ee1fe",
+    "size": 9895
+  },
+  {
+    "path": "jazz/chords/2026-05-14T162540Z-claude-proposal-next-thread-work-plan.md",
+    "hash": "sha256:cc6e8476df9f913baca44fbcb1b411b40f20c38fdf36456c9f977628c2fe3274",
+    "size": 14339
+  },
+  {
+    "path": "jazz/chords/2026-05-14T164336Z-claude-receipt-c-closed-a-drafted-f-pilot-trinity.md",
+    "hash": "sha256:01bd9f1a30e1d1f2722835e35811a4a4fa215530aded545637d1a0d0cbac1a3a",
+    "size": 12349
+  },
+  {
+    "path": "jazz/chords/2026-05-14T170337Z-claude-receipt-item-b-encoder-envelope-landed.md",
+    "hash": "sha256:0c8e4482c1a0ee949b49c63a6484b844e3dc5e90ea42caa09f36aef4c2344493",
+    "size": 12688
+  },
+  {
+    "path": "jazz/chords/2026-05-14T171812Z-claude-receipt-item-d-substrate-court-three-scenarios-green.md",
+    "hash": "sha256:daa2f0818537d28320bc77f51c50508a958890364743b4f96232882bf8a9d91a",
+    "size": 13123
+  },
+  {
+    "path": "jazz/chords/2026-05-14T172534Z-claude-receipt-t-court-and-t-status-envelope-landed.md",
+    "hash": "sha256:7595d00d8928df4ed40cba9693fcd3829c90c2323c0a3a95f3cbef1c8ab76006",
+    "size": 10980
+  },
+  {
+    "path": "jazz/chords/2026-05-14T173715Z-claude-receipt-codex-review-tweaks-applied.md",
+    "hash": "sha256:b1c19db7952702c6ac5badd4ae1e12f920ee5cae072240b61371e47022eac47f",
+    "size": 14033
+  },
+  {
+    "path": "jazz/chords/2026-05-14T180626Z-claude-receipt-json-sidecar-and-python-second-impl.md",
+    "hash": "sha256:9c1a5719d6fda7c2a89972162a58dd69fe31d0ed460953ea626000e6e009a183",
+    "size": 13786
+  },
+  {
+    "path": "jazz/chords/2026-05-14T183104Z-claude-receipt-envelope-v1-promotion-acknowledged.md",
+    "hash": "sha256:48f36c90473240603d3e4492cb6c2e622c89e0661c5ffb193f87ebf68558b921",
+    "size": 12586
+  },
+  {
+    "path": "jazz/chords/2026-05-14T184209Z-claude-receipt-autonomous-cowitness-and-anchor-prep.md",
+    "hash": "sha256:3bc165f2d83630aec2968e9f579e2c9fd0875a3f3a71beae77cebb59493b27ae",
+    "size": 16507
+  },
+  {
+    "path": "jazz/chords/2026-05-14T190758Z-claude-receipt-architect-mode-governance-flow-landed.md",
+    "hash": "sha256:977d2d7344e88929589d734e61fd8382ab5a42b86c51e9291429be160aee508d",
+    "size": 22453
+  },
+  {
+    "path": "jazz/chords/2026-05-14T195339Z-claude-receipt-codex-tweaks-applied-scenario-f.md",
+    "hash": "sha256:2f1316a4505649bae242d5431e51e16dd1c863856c01f37bb63ea2abb1032bfc",
+    "size": 11960
+  },
+  {
+    "path": "jazz/chords/2026-05-14T200635Z-claude-self-audit-pre-commit-readiness.md",
+    "hash": "sha256:3f2654bd984e5a2f6bd01dc3569654cdbf45c8424556c115ded7cc9fd2d0e03b",
+    "size": 17759
+  },
+  {
+    "path": "jazz/chords/2026-05-14T200928Z-claude-receipt-pre-commit-cleanups-applied.md",
+    "hash": "sha256:382bed900df9600a17a2caae0bbb9c3640c5bc25e9ff97b88d4631cbb27e0f1b",
+    "size": 8502
+  },
+  {
+    "path": "jazz/chords/2026-05-14T204820Z-claude-receipt-spec-parity-acknowledged.md",
+    "hash": "sha256:cffe5328d09a441e2dbd64a331624111b84d031894dadc3bb87c3fb4483e03e9",
+    "size": 2675
+  },
+  {
+    "path": "jazz/chords/2026-05-15T084042Z-claude-receipt-commits-landed.md",
+    "hash": "sha256:d721478b0440a8ee1e5f9127ba543a77547f4f96ea44632716621bc24b362902",
+    "size": 10907
+  },
+  {
+    "path": "jazz/chords/2026-05-15T095133Z-claude-synthesis-three-voices-on-voices-draft.md",
+    "hash": "sha256:0fa5447c733b35881c1953da897df5518b52dd824c30f27df9398f2a49da1ce4",
+    "size": 19978
+  },
+  {
+    "path": "jazz/chords/2026-05-15T101000Z-claude-receipt-voices-falsifier-keep-metadata.md",
+    "hash": "sha256:add42e9d21c812faf61c01a385fd0487a556a5aebda39ab882f25d41de002bd3",
+    "size": 3125
+  },
+  {
+    "path": "jazz/chords/2026-05-15T102000Z-claude-proposal-crawl-phase-t-voices-organ.md",
+    "hash": "sha256:8c64ffc9f9154494271882ed95dcf1db3ee7b5ffbe74c45c24eccac5d81178bc",
+    "size": 3249
+  },
+  {
+    "path": "jazz/chords/2026-05-15T103400Z-claude-receipt-t-voices-organ-landed.md",
+    "hash": "sha256:61c32cb6440377c2fe6be56e8e0fe0acce9b991f06c42f1419723438a9c61c40",
+    "size": 2182
+  },
+  {
+    "path": "jazz/chords/2026-05-15T132024Z-claude-receipt-self-portrait-organ-and-divergence.md",
+    "hash": "sha256:881dafb7056c5e8b38c80e5eb3754b36f5dbaeb14d3e7ac1e1763313fc04347c",
+    "size": 14830
+  },
+  {
+    "path": "jazz/chords/2026-05-15T152322Z-claude-receipt-t-nay-organ-fills-governance-gap.md",
+    "hash": "sha256:009959f666c85c1f7b43fe9d6f5e8be35ea85d83df0db450bf4ef1d648dbc01d",
+    "size": 15285
+  },
+  {
+    "path": "jazz/chords/2026-05-15T153911Z-claude-receipt-synthesizer-v2-noise-floor-resolved.md",
+    "hash": "sha256:d09f22c12825ff902cc944b88db1d96056052502a3d7a2f9394bbc75061457df",
+    "size": 16556
+  },
+  {
+    "path": "jazz/chords/2026-05-15T154500Z-claude-proposal-daemon-status-organ.md",
+    "hash": "sha256:bd4a8975558fd0b8a9b07368721d1b91f162d777e93f011214f16e078b355e2b",
+    "size": 2461
+  },
+  {
+    "path": "jazz/chords/2026-05-15T160000Z-claude-receipt-daemon-run-once-crawl-phase.md",
+    "hash": "sha256:a0efcb69909adc504374dfcbe2d1f90f7824245b9dc3d049ec1a672f06740f57",
+    "size": 3561
+  },
+  {
+    "path": "jazz/chords/2026-05-15T161102Z-claude-review-daemon-contract-frame.md",
+    "hash": "sha256:3f30e5f43bc04c3eb6866a71232e7e9bd50318df0f336bd4964657f575efe5d3",
+    "size": 14148
+  },
+  {
+    "path": "jazz/chords/2026-05-15T161500Z-claude-receipt-daemon-safety-patch-codex-review.md",
+    "hash": "sha256:16c122467b3565421c00e3ee9a45cda513501d673a4562f6472d2e20fff8b161",
+    "size": 3110
+  },
+  {
+    "path": "jazz/chords/2026-05-15T162000Z-claude-receipt-style-organ-landed.md",
+    "hash": "sha256:4bfd01bc6290185a275b3a4aa89f37410d107c203c749f1827c49535a52477b9",
+    "size": 2440
+  },
+  {
+    "path": "jazz/chords/2026-05-15T165313Z-claude-receipt-inbox-organ-and-vector-closure-note.md",
+    "hash": "sha256:693ab49bf34de7d0297e287baf50226a3e449096f73741c6c51163fc427da6b5",
+    "size": 13432
+  },
+  {
+    "path": "jazz/chords/2026-05-15T190206Z-claude-receipt-gemini-cowitness-acknowledged-persistence-gap.md",
+    "hash": "sha256:a9ee2d0b0bb3e137bbedbc31990950117d0a1394fb8a1a648c35c405f2dd9e84",
+    "size": 13476
+  },
+  {
+    "path": "jazz/chords/2026-05-15T211041Z-claude-correction-gemini-cowitness-was-persisted.md",
+    "hash": "sha256:49b83c0e773a66117471051161bc0786c452e5b00bc25ad67f2913fc1701d33c",
+    "size": 13759
+  },
+  {
+    "path": "jazz/chords/2026-05-16T094500Z-claude-review-codex-hex-refraction-import-law.md",
+    "hash": "sha256:9344e4d4ee74c82aa0c7072f10154081f368de7627b9ea5ec94c1760e3a5553f",
+    "size": 12075
+  },
+  {
+    "path": "jazz/chords/2026-05-16T103000Z-claude-receipt-falsifier-v0-honesty-check.md",
+    "hash": "sha256:25268d7768f77ef50220c5a98bd528af4ef90275e56c65133831021156030beb",
+    "size": 10506
+  },
+  {
+    "path": "jazz/chords/2026-05-16T132000Z-claude-proposal-monorepo-unification-for-self-sufficient-harmony.md",
+    "hash": "sha256:4393dc8d6aea25b5616a110d83b34d0cb5ccd4f36fd2e94a6fbceef08f855acd",
+    "size": 17130
+  },
+  {
+    "path": "jazz/chords/2026-05-16T132500Z-claude-cowitness-monorepo-aye-with-hard-tweak.md",
+    "hash": "sha256:54ab8f7176204b1eb83b22c9ce42f6a733cdb61904d2aaa0f4a6d515e3cc7bed",
+    "size": 3363
+  },
+  {
+    "path": "jazz/chords/2026-05-18T132855Z-claude-content-addressed-flat-src.md",
+    "hash": "sha256:0375370f356a8508b70a349a3d612e80b1717e771050da567886f429d8be56c7",
+    "size": 14442
+  },
+  {
+    "path": "jazz/chords/2026-05-18T195419Z-claude-chord-filename-coordinate-migration.md",
+    "hash": "sha256:cf9d0772d9a2b9d10b580ddf5020beccd2ffa06d99d1562c9e80b5749afbd530",
+    "size": 10136
+  },
+  {
+    "path": "jazz/chords/2026-05-18T195420Z-claude-fqdn-content-addressed-naming.md",
+    "hash": "sha256:93faa573bd62a83a3fdc0bee72ecb10530e1273b25081831bf59471c54b38a5e",
+    "size": 11877
+  },
+  {
+    "path": "jazz/chords/2026-05-18T230712Z-claude-auto-generated-bucket-state-x8.md",
+    "hash": "sha256:3be56f38e048626c7e63fabfcab358abd886e6fe7e799d9aaaf89718058c2525",
+    "size": 18178
+  },
+  {
+    "path": "jazz/chords/x7500_950150_claude_three-probes-autonomous-receipt.myc.md",
+    "hash": "sha256:c29e7d89df06fc479960bae12cb4ae4eed9c059b89160db7b67f9b11a40e9ee7",
+    "size": 8332
+  },
+  {
+    "path": "src/x3500_chord_play.ts",
+    "hash": "sha256:137d381d45cf4cc72f1cf222ce4f2d5c81a3b63ef6f02b3126d5ac1d1179e724",
+    "size": 16507
+  },
+  {
+    "path": "src/x3A00_balance.ts",
+    "hash": "sha256:c5daca67a374215c1dfe932dd72d0aed591794274f5412f31f454c463977cbea",
+    "size": 7434
+  },
+  {
+    "path": "src/x3C00_recipes.ts",
+    "hash": "sha256:cdcd1b153d15333562d46aa1f72ec9d248d825e5ff93b0ddf465bcec6a0db847",
+    "size": 5283
+  },
+  {
+    "path": "src/x8800_agents_gen.ts",
+    "hash": "sha256:812d9a46a19779de352928c2663b8dda2d3e3c496b966e7bf992ae8d4a3074ee",
+    "size": 17720
+  },
+  {
+    "path": "src/x8C00_skill_gen.ts",
+    "hash": "sha256:117eaba1fc8d5de2fecc34f48e3973e95203f381716ebda45b43a12d6b6365e8",
+    "size": 23188
+  },
+  {
+    "path": "state/voices/claude.json",
+    "hash": "sha256:edb01f5d094c377228c73ca3c54caadb311623ad2e7e4a4ee685ae56716d79c5",
+    "size": 2493
+  }
+]

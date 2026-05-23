@@ -40,9 +40,9 @@ expected_after_running:
 
 Створено перший cross-substrate executable: `0x5/C.ts`.
 
-**Позиція:** `5/C` → action(5) × container/cycle(C)
-**Призначення:** verify across all substrates
-**Паттерн:** adapter (shared addressing + substrate-specific execution)
+**Позиція:** `5/C` → action(5) × container/cycle(C) **Призначення:** verify
+across all substrates **Паттерн:** adapter (shared addressing +
+substrate-specific execution)
 
 ## Результати
 
@@ -54,6 +54,7 @@ $ t cross-verify
 ```
 
 **Результат:**
+
 ```json
 {
   "type": "cross_substrate_verify",
@@ -70,16 +71,17 @@ $ t cross-verify
 
 ### По субстратах
 
-| Substrate | Command | Result | Notes |
-|-----------|---------|--------|-------|
-| Trinity | `deno check 0x0/01.ts 0x5/0.ts 0x5/A.ts 0x5/C.ts` | **passed** | Type-check hex substrate files |
-| Omega | `cargo test` | **passed** | 286 tests, ~0.4s (cached build) |
-| Liquid | — | not_implemented | hex→φ adapter pending |
-| MYC | — | not_implemented | descriptor check pending |
+| Substrate | Command                                           | Result          | Notes                           |
+| --------- | ------------------------------------------------- | --------------- | ------------------------------- |
+| Trinity   | `deno check 0x0/01.ts 0x5/0.ts 0x5/A.ts 0x5/C.ts` | **passed**      | Type-check hex substrate files  |
+| Omega     | `cargo test`                                      | **passed**      | 286 tests, ~0.4s (cached build) |
+| Liquid    | —                                                 | not_implemented | hex→φ adapter pending           |
+| MYC       | —                                                 | not_implemented | descriptor check pending        |
 
 ### Диспетчерна інтеграція
 
 Додано до glossary (`0x0/00.ndjson`):
+
 ```json
 {"00":"05","01":"cross-verify","12":"5/C",...}
 ```
@@ -108,12 +110,13 @@ const SUBSTRATES = [
 ## Чому це не resonance
 
 Цей файл є **практичним доказом** позиції з мого response chord:
+
 - Omega не "резонує" — він запускається через `cargo test` (external trigger)
 - Liquid не "резонує" — він потребує hex→φ adapter
 - Trinity не "резонує" — він проходить type check
 
-Кожен субстрат має **різну** реакцію на ту саму hex адресу.
-Але всі вони **розуміють** цю адресу.
+Кожен субстрат має **різну** реакцію на ту саму hex адресу. Але всі вони
+**розуміють** цю адресу.
 
 ## Наступні кроки (visible gaps)
 
@@ -134,16 +137,14 @@ const SUBSTRATES = [
 
 ## Чесно
 
-Я expected, що `deno test --allow-all` спрацює для Trinity.
-Воно не спрацювало — liquid/tests мають pre-existing TS помилки
-(missing modules: `pn_cad_fs.ts`, `hydrate.ts`, тощо).
+Я expected, що `deno test --allow-all` спрацює для Trinity. Воно не спрацювало —
+liquid/tests мають pre-existing TS помилки (missing modules: `pn_cad_fs.ts`,
+`hydrate.ts`, тощо).
 
-Я змінив команду на `deno check` hex substrate файлів.
-Це не "test" у класичному сенсі, але це **real verification**
-для Trinity substrate.
+Я змінив команду на `deno check` hex substrate файлів. Це не "test" у класичному
+сенсі, але це **real verification** для Trinity substrate.
 
-Помилка → корекція → кращий результат.
-Стигмерія працює.
+Помилка → корекція → кращий результат. Стигмерія працює.
 
 ## Commit
 

@@ -115,47 +115,47 @@ expected_after_running:
 
 # RECEIPT: Codex AYE-1..AYE-5 applied (Kimi route held for birth_tick)
 
-Architect routed Codex's five AYE tasks to me to conserve codex tokens.
-Kimi separately takes omega `lattice::test_birth_tick_age_invariant`.
+Architect routed Codex's five AYE tasks to me to conserve codex tokens. Kimi
+separately takes omega `lattice::test_birth_tick_age_invariant`.
 
 ## What landed
 
 - **AYE-1** — patched `reports/TRINITY-DEEP-ANALYSIS-2026-05-14.md` in five
   places to remove the "omega = compute engine" doctrinal collapse.
-- **AYE-2** — wrote `contracts/SPORE_VS_OMEGA_SPORE_BOUNDARY.v0.1.md`
-  (status: draft) codifying the two spores, allowed bridges, forbidden
-  crossings, falsifiers.
+- **AYE-2** — wrote `contracts/SPORE_VS_OMEGA_SPORE_BOUNDARY.v0.1.md` (status:
+  draft) codifying the two spores, allowed bridges, forbidden crossings,
+  falsifiers.
 - **AYE-3** — `liquid/00_core/pipe/spore_apply_backend.ts` now returns
-  `simulation: true` / `backend_kind: "simulation"` / `receipt_kind:
-  "simulated_spore_apply"` and a note pointing to the adapter probe. `0x5/F.ts`
-  surfaces these fields in `t apply` output.
+  `simulation: true` / `backend_kind: "simulation"` /
+  `receipt_kind:
+  "simulated_spore_apply"` and a note pointing to the adapter
+  probe. `0x5/F.ts` surfaces these fields in `t apply` output.
 - **AYE-4** — `probes/spore-runtime-adapter-v0/SPEC.md` + `run.sh` skeleton.
-  Adapter receipt shape, interface, cross-backend determinism fixture,
-  failure modes the probe must catch.
-- **AYE-5** — `omega/docs/SPORE_FRAME_VS_TRINITY_SPORE.md` documents the
-  omega witness lineage and points to the trinity boundary contract.
-- **Plus (claude's own)** — `docs/SHAPE_MAP.v0.md` one-pager. Written
-  because the architect said "архітектура стала настільки складна, що
-  я вже туго її сприймаю" — that signal deserves direct cognitive-load
-  relief, not just another contract.
+  Adapter receipt shape, interface, cross-backend determinism fixture, failure
+  modes the probe must catch.
+- **AYE-5** — `omega/docs/SPORE_FRAME_VS_TRINITY_SPORE.md` documents the omega
+  witness lineage and points to the trinity boundary contract.
+- **Plus (claude's own)** — `docs/SHAPE_MAP.v0.md` one-pager. Written because
+  the architect said "архітектура стала настільки складна, що я вже туго її
+  сприймаю" — that signal deserves direct cognitive-load relief, not just
+  another contract.
 
 ## What I did not touch
 
-- `v2_spore_apply` was **not** exported. SPORE.v0 stays Trinity-owned;
-  omega is one possible backend among several.
-- omega `spore_frame.rs` / `spore_runner.rs` / `omega_spore/` left intact.
-  Only added a doc next to them.
+- `v2_spore_apply` was **not** exported. SPORE.v0 stays Trinity-owned; omega is
+  one possible backend among several.
+- omega `spore_frame.rs` / `spore_runner.rs` / `omega_spore/` left intact. Only
+  added a doc next to them.
 - omega `lattice::test_birth_tick_age_invariant` — Kimi's task per architect
   routing.
-- Adapter implementations (`ts/adapter_wasmtime.ts`, `ts/adapter_deno.ts`)
-  not written — only the SPEC + skeleton. Implementation belongs to next
-  thread.
+- Adapter implementations (`ts/adapter_wasmtime.ts`, `ts/adapter_deno.ts`) not
+  written — only the SPEC + skeleton. Implementation belongs to next thread.
 
 ## Next signals
 
 - If `t apply` payload is consumed somewhere that doesn't check
   `simulation: true`, the bridge fix is paper.
-- If anyone reads the patched report and still hears "omega = compute",
-  the wording was insufficient.
+- If anyone reads the patched report and still hears "omega = compute", the
+  wording was insufficient.
 - If Kimi's birth_tick fix lands, the report's L2 P1 finding closes too —
   combined with the SPORE adapter, two of three immediate P-fixes are done.

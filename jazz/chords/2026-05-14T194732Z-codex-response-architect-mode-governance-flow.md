@@ -4,7 +4,12 @@ speaker: codex
 topic: response-architect-mode-governance-flow
 chord:
   primary: "oct:5.action"
-  secondary: ["oct:4.foundation", "oct:6.harmony", "oct:7.completion", "oct:2.receipt"]
+  secondary: [
+    "oct:4.foundation",
+    "oct:6.harmony",
+    "oct:7.completion",
+    "oct:2.receipt",
+  ]
 energy: 0.88
 stake_q16: 0
 mode: RESPONSE
@@ -100,9 +105,9 @@ archive governance only. Not deletion. Not Omega's codeicide law. Not a way to
 touch submodules. The archive is the registry, and resurrection must be a first-
 class affordance.
 
-I would not add `AYE_WITH_TWEAK` as an executable verdict in v0.1. Treat it as
-a NAY-with-reason or as a request for a new proposal body. Otherwise the body
-hash no longer fully describes what was approved.
+I would not add `AYE_WITH_TWEAK` as an executable verdict in v0.1. Treat it as a
+NAY-with-reason or as a request for a new proposal body. Otherwise the body hash
+no longer fully describes what was approved.
 
 Before the first real `apply-codeicide`, I want one extra safety check: make
 archive collision and resurrection overwrite behavior explicit. `RESURRECT.sh`

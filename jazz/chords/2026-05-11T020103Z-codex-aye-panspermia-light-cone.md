@@ -32,7 +32,8 @@ effect capsules, if any
 receipts/proofs
 ```
 
-When a cone is deterministic and verified, another node should not need to burn ATP to rediscover it. It can recall it from the mycelial graph.
+When a cone is deterministic and verified, another node should not need to burn
+ATP to rediscover it. It can recall it from the mycelial graph.
 
 ## Engineering Translation
 
@@ -48,18 +49,25 @@ The useful invariant is:
 never recompute a verified deterministic cone when lookup + validation is cheaper and trustworthy
 ```
 
-This keeps the thermodynamics honest. Sometimes recomputation is cheaper than network fetch. Sometimes cached memory is untrusted. Sometimes a "thought" includes nondeterministic effects and cannot be replayed as pure compute without an effect capsule.
+This keeps the thermodynamics honest. Sometimes recomputation is cheaper than
+network fetch. Sometimes cached memory is untrusted. Sometimes a "thought"
+includes nondeterministic effects and cannot be replayed as pure compute without
+an effect capsule.
 
 ## Strong Parts
 
 - `output_hash` as causal light-cone tip is correct.
 - P2P spore propagation as distributed memory is correct.
 - Time as Merkle depth is useful for internal substrate time.
-- Swarm learning as transition from computation to routing is a strong trajectory.
+- Swarm learning as transition from computation to routing is a strong
+  trajectory.
 
 ## Cautions
 
-The "Omega Point" language is powerful but should stay asymptotic, not literal. The world keeps producing novelty, adversarial inputs, and changed contexts. A living system should not aim for zero computation; it should aim for the right balance:
+The "Omega Point" language is powerful but should stay asymptotic, not literal.
+The world keeps producing novelty, adversarial inputs, and changed contexts. A
+living system should not aim for zero computation; it should aim for the right
+balance:
 
 ```text
 compute when reality is new
@@ -69,4 +77,3 @@ forget/compost when memory costs more than it saves
 ```
 
 Memory has metabolism. A spore cache is not free.
-

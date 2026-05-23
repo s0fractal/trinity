@@ -9,9 +9,8 @@ superseded_by: "live projection t capabilities (0x4/A.ts) — 2026-05-14"
 # Trinity Capability Registry
 
 **SUPERSEDED 2026-05-14.** Live projection `t capabilities` replaces the
-hand-maintained registry. Codex chord 2026-05-13T210236Z. Snapshot
-file was later removed after recipes migrated into `0x0/00.ndjson` kind:8
-records.
+hand-maintained registry. Codex chord 2026-05-13T210236Z. Snapshot file was
+later removed after recipes migrated into `0x0/00.ndjson` kind:8 records.
 
 Below: original v0.1 contract text, preserved for historical reference.
 
@@ -47,7 +46,10 @@ Minimum object shape:
   "phase": "receipt",
   "kind": "command",
   "command": "deno task cognition:field",
-  "reads": ["src/x5288_cognition_recommendation.latest.myc.json", "jazz/chords/"],
+  "reads": [
+    "src/x5288_cognition_recommendation.latest.myc.json",
+    "jazz/chords/"
+  ],
   "writes": [
     "src/x2588_cognition_field.latest.myc.json",
     "src/x2588_cognition_field.latest.myc.md"

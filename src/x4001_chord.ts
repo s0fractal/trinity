@@ -65,12 +65,13 @@ const DIPOLE_AXES = [
 // (growth/maturity/reproduction merged into "active").
 // Full 5-phase model returns in v0.2+ when granularity needed.
 const LIFECYCLE_PHASES = [
-  "seed",    // 0 = oct:0 EXISTENCE    — nascent, unproven
-  "active",  // 1 = oct:3..7 UNION..TRANSCENDENCE — living, growing, reproducing
+  "seed", // 0 = oct:0 EXISTENCE    — nascent, unproven
+  "active", // 1 = oct:3..7 UNION..TRANSCENDENCE — living, growing, reproducing
   "compost", // 2 = oct:6 ORDER        — archived, absorbed, recycled
 ] as const;
 
-const GLOSSARY_PATH = new URL("../src/x0001_glossary.ndjson", import.meta.url).pathname;
+const GLOSSARY_PATH =
+  new URL("../src/x0001_glossary.ndjson", import.meta.url).pathname;
 
 /** Load dipole pair mapping from glossary type-03 records.
  *  Returns Map<hex_char, dipole_pair_char> — e.g. "0"→"8", "8"→"0".
@@ -263,7 +264,7 @@ function cmdTranslate(positional: string[]): void {
 
 function cmdParse(positional: string[]): void {
   if (positional.length < 1) {
-    console.error("usage: parse \"<hex bytes>\"");
+    console.error('usage: parse "<hex bytes>"');
     Deno.exit(1);
   }
   const hex = positional[0];

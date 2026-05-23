@@ -27,7 +27,11 @@ Omega  = deterministic verifier/prover
 Trinity = phase/intention coordination layer
 ```
 
-This differs from treating Liquid, Omega, and MYC as equal sibling products. Instead, Liquid becomes the primary living substrate where code is born, tested, mutated, dehydrated, and rehydrated. MYC becomes the protocol by which Liquid publishes stable projections. Omega proves and verifies the parts that have become integerized and deterministic.
+This differs from treating Liquid, Omega, and MYC as equal sibling products.
+Instead, Liquid becomes the primary living substrate where code is born, tested,
+mutated, dehydrated, and rehydrated. MYC becomes the protocol by which Liquid
+publishes stable projections. Omega proves and verifies the parts that have
+become integerized and deterministic.
 
 ## Public Boundary
 
@@ -53,7 +57,8 @@ proof inputs/outputs
 hash-addressed artifacts
 ```
 
-The public world does not need access to all living tissue. It needs verifiable published organs.
+The public world does not need access to all living tissue. It needs verifiable
+published organs.
 
 ## Deterministic vs Interpretive Split
 
@@ -78,11 +83,14 @@ interpretive living subset
   - model-generated mutations
 ```
 
-The deterministic subset can become "залізобетон": proofable, replayable, anchored, and public. The interpretive subset stays Liquid: adaptive, model-readable, not always fully formal.
+The deterministic subset can become "залізобетон": proofable, replayable,
+anchored, and public. The interpretive subset stays Liquid: adaptive,
+model-readable, not always fully formal.
 
 ## MYC As Protocol
 
-MYC should maybe not be a competing runtime. It can be Liquid's publication protocol:
+MYC should maybe not be a competing runtime. It can be Liquid's publication
+protocol:
 
 ```text
 MYC = how Liquid names, seals, routes, publishes, resolves, and receipts artifacts
@@ -127,7 +135,8 @@ That stays Liquid/Trinity territory.
 
 ## WASM Segment Publication
 
-Publishing public WASM segments is plausible if phase space is partitioned correctly.
+Publishing public WASM segments is plausible if phase space is partitioned
+correctly.
 
 Each segment needs:
 
@@ -141,7 +150,8 @@ Each segment needs:
 - MYC receipt;
 - versioned deprecation/compost policy.
 
-Without that, public WASM becomes an opaque blob and loses the biological/protocol context.
+Without that, public WASM becomes an opaque blob and loses the
+biological/protocol context.
 
 ## Strategic Risk
 
@@ -173,4 +183,3 @@ Liquid energy_q10 state
 ```
 
 If this works, the architecture is likely right.
-

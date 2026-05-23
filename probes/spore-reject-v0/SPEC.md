@@ -1,24 +1,22 @@
 # spore-reject-v0 probe
 
-> **Status: graduated (contract) → SPORE.v0 contract active 2026-05-12.** Probe is the negative-determinism test record.
+> **Status: graduated (contract) → SPORE.v0 contract active 2026-05-12.** Probe
+> is the negative-determinism test record.
 
-Negative-determinism probe for the `SPORE.v0` consensus mutator
-subset.
+Negative-determinism probe for the `SPORE.v0` consensus mutator subset.
 
-This probe verifies that two independent validators reject modules
-that contain instructions banned by `contracts/SPORE.v0.draft.md`
-before consensus execution:
+This probe verifies that two independent validators reject modules that contain
+instructions banned by `contracts/SPORE.v0.draft.md` before consensus execution:
 
 - `f32` / `f64`
 - SIMD (`v128`, encoded under the `0xfd` prefix)
 - `memory.grow`
 - `call_indirect`
 
-Important: this is a **protocol validator** probe, not an engine
-default behavior probe. Plain WASM engines may accept some of these
-modules because they are valid WebAssembly. SPORE rejects them
-because the v0 consensus subset is intentionally narrower than
-general WASM.
+Important: this is a **protocol validator** probe, not an engine default
+behavior probe. Plain WASM engines may accept some of these modules because they
+are valid WebAssembly. SPORE rejects them because the v0 consensus subset is
+intentionally narrower than general WASM.
 
 ## Expected output
 
@@ -51,6 +49,5 @@ More precise wording after this probe:
 verify both protocol validators reject before instantiation
 ```
 
-The engine may still accept valid-but-banned WASM. Consensus must
-not depend on engine defaults here.
-
+The engine may still accept valid-but-banned WASM. Consensus must not depend on
+engine defaults here.

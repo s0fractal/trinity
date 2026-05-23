@@ -13,7 +13,7 @@ import { parse as parseYaml } from "https://deno.land/std@0.224.0/yaml/mod.ts";
 import { ensureDir } from "https://deno.land/std@0.224.0/fs/ensure_dir.ts";
 import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { sha256Hex } from "./x4010_hash.ts";
-import { scanEcosystem, type FileProfile } from "./x0020_scanner_core.ts";
+import { type FileProfile, scanEcosystem } from "./x0020_scanner_core.ts";
 
 /**
  * chord_play
@@ -105,7 +105,9 @@ async function buildSnapshot(): Promise<Snapshot> {
     compost: 0,
   };
   for (const p of profiles) {
-    if (!p.isEntrypoint) phase[p.thoughtPhase] = (phase[p.thoughtPhase] ?? 0) + 1;
+    if (!p.isEntrypoint) {
+      phase[p.thoughtPhase] = (phase[p.thoughtPhase] ?? 0) + 1;
+    }
   }
 
   const canonOk = await checkCanonVectors();
@@ -309,7 +311,7 @@ async function emitReceiptChord(opts: {
 
   const lines: string[] = [];
   lines.push("---");
-  lines.push('chord:');
+  lines.push("chord:");
   lines.push('  primary: "oct:5.5"');
   lines.push('  secondary: ["oct:7.2"]');
   lines.push(`energy: 0.500`);
@@ -412,7 +414,9 @@ async function main() {
     const snap = await buildSnapshot();
     console.log("snapshot taken; checking wakeup conditions");
     const results: CompareResult[] = [];
-    for (const [metric, comparator] of Object.entries(fm.becomes_actionable_when)) {
+    for (
+      const [metric, comparator] of Object.entries(fm.becomes_actionable_when)
+    ) {
       const v = metricValue(snap, metric);
       results.push(compare(metric, comparator, v, v)); // no pre/post; absolute check
     }
@@ -421,7 +425,11 @@ async function main() {
     console.log("| metric | comparator | value | wake? |");
     console.log("|---|---|---:|:---:|");
     for (const r of results) {
-      console.log(`| ${r.metric} | \`${r.comparator}\` | ${String(r.post)} | ${r.pass ? "✓" : "✗"} |`);
+      console.log(
+        `| ${r.metric} | \`${r.comparator}\` | ${String(r.post)} | ${
+          r.pass ? "✓" : "✗"
+        } |`,
+      );
     }
     console.log("");
     console.log(allMet ? "→ DREAM AWAKES" : "→ stay dormant");
@@ -470,7 +478,9 @@ async function main() {
     console.log("snapshot post");
     const post = await buildSnapshot();
     const results: CompareResult[] = [];
-    for (const [metric, comparator] of Object.entries(fm.expected_after_running)) {
+    for (
+      const [metric, comparator] of Object.entries(fm.expected_after_running)
+    ) {
       const preV = metricValue(pre, metric);
       const postV = metricValue(post, metric);
       results.push(compare(metric, comparator, preV, postV));
@@ -507,7 +517,9 @@ async function main() {
       execute
         ? (allMet
           ? "→ CLAIM MET"
-          : (isTrial ? "→ TRIAL REVERTED" : "→ CLAIM MISSED → compost candidate"))
+          : (isTrial
+            ? "→ TRIAL REVERTED"
+            : "→ CLAIM MISSED → compost candidate"))
         : (allMet ? "→ would-be-met (dry-run)" : "→ would-be-missed (dry-run)"),
     );
     const receiptPath = await emitReceiptChord({

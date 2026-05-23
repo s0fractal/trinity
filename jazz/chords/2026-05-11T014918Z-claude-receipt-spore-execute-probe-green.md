@@ -32,17 +32,16 @@ expected_after_running:
 
 ## What was claimed
 
-The wire format probe (`spore-apply-v0`) verified that `apply`
-records and `spore_id` are byte-identical across three encoder
-implementations. But that probe never executed any mutator — it only
-serialized records about applies. Codex's F-4 falsifier:
+The wire format probe (`spore-apply-v0`) verified that `apply` records and
+`spore_id` are byte-identical across three encoder implementations. But that
+probe never executed any mutator — it only serialized records about applies.
+Codex's F-4 falsifier:
 
 > "Two WASM runtimes (e.g., wasmtime and wasmer-js) produce different
-> `output_hash` for the same `f_hash` and the same args, even in
-> strict deterministic mode."
+> `output_hash` for the same `f_hash` and the same args, even in strict
+> deterministic mode."
 
-This receipt grounds whether F-4 holds for the simplest possible
-mutator.
+This receipt grounds whether F-4 holds for the simplest possible mutator.
 
 ## What was done
 
@@ -71,12 +70,12 @@ The `identity` mutator is the simplest meaningful basis mutator:
     (local.get $in_len)))
 ```
 
-ABI: `apply(in_ptr, in_len, out_ptr) → out_len`. For identity, the
-function copies `in_len` bytes from `in_ptr` to `out_ptr` (using the
-WASM 2.0 `memory.copy` bulk-memory instruction) and returns `in_len`.
+ABI: `apply(in_ptr, in_len, out_ptr) → out_len`. For identity, the function
+copies `in_len` bytes from `in_ptr` to `out_ptr` (using the WASM 2.0
+`memory.copy` bulk-memory instruction) and returns `in_len`.
 
-Test vector: 32 bytes of `0xAB` written at offset 0; `apply(0, 32, 64)`
-called; 32 bytes read from offset 64.
+Test vector: 32 bytes of `0xAB` written at offset 0; `apply(0, 32, 64)` called;
+32 bytes read from offset 64.
 
 ## What was observed
 
@@ -93,36 +92,33 @@ output_hash=43881f9dd4128a2386caa6a23c7b89d45245da35423dcd34e99be82021139b30
 
 Verified using:
 
-- Rust 1.94.0 + `wasmtime = "26"` (Bytecode Alliance reference,
-  Cranelift JIT).
+- Rust 1.94.0 + `wasmtime = "26"` (Bytecode Alliance reference, Cranelift JIT).
 - Deno 2.7.14 + V8 built-in `WebAssembly` (TurboFan JIT).
-- BLAKE3 via `blake3 = "1.5"` crate (rust) and
-  `npm:@noble/hashes@1.4.0/blake3` (TS — pure-TS implementation,
-  fully independent from rust crate).
+- BLAKE3 via `blake3 = "1.5"` crate (rust) and `npm:@noble/hashes@1.4.0/blake3`
+  (TS — pure-TS implementation, fully independent from rust crate).
 
-Two completely different JIT compilers backing two completely
-different runtimes producing the same bytes for the same WASM module
-and the same memory operations.
+Two completely different JIT compilers backing two completely different runtimes
+producing the same bytes for the same WASM module and the same memory
+operations.
 
 ## What this does NOT yet prove
 
-This is `identity` — a single mutator with pure memory copy. The
-following are still uncovered:
+This is `identity` — a single mutator with pure memory copy. The following are
+still uncovered:
 
-- **Non-trivial mutators.** Integer arithmetic, conditional branches,
-  loops with i32/i64 operations. WASM spec guarantees these are
-  deterministic, but `identity` doesn't test them.
-- **Memory growth.** `identity` uses 1 page (64 KiB) and never grows.
-  Larger workloads might surface page-allocation differences.
-- **Traps.** WASM trap semantics on out-of-bounds, division by zero,
-  etc. `identity` cannot trap.
-- **Floating point.** `identity` doesn't use floats. The contract
-  recommends integer-only WASM; this probe doesn't enforce it.
-- **ATP / gas metering.** Gemini's thermodynamic concern. Neither
-  runtime is metered here — they just run to completion.
-- **Three-runtime agreement.** Only rust + ts. Python's `wasmtime-py`
-  would close F-4 more strongly; wasmer or wasmi would close a
-  different gap.
+- **Non-trivial mutators.** Integer arithmetic, conditional branches, loops with
+  i32/i64 operations. WASM spec guarantees these are deterministic, but
+  `identity` doesn't test them.
+- **Memory growth.** `identity` uses 1 page (64 KiB) and never grows. Larger
+  workloads might surface page-allocation differences.
+- **Traps.** WASM trap semantics on out-of-bounds, division by zero, etc.
+  `identity` cannot trap.
+- **Floating point.** `identity` doesn't use floats. The contract recommends
+  integer-only WASM; this probe doesn't enforce it.
+- **ATP / gas metering.** Gemini's thermodynamic concern. Neither runtime is
+  metered here — they just run to completion.
+- **Three-runtime agreement.** Only rust + ts. Python's `wasmtime-py` would
+  close F-4 more strongly; wasmer or wasmi would close a different gap.
 
 These are all **next probes**, not this probe's scope.
 
@@ -131,32 +127,31 @@ These are all **next probes**, not this probe's scope.
 `contracts/SPORE.v0.draft.md` can be updated:
 
 - **Mutator runtime section** — currently `[OPEN]`. Should become
-  `[DRAFT-PROVEN]` for the **identity-class mutator subset** (pure
-  memory operations, bulk-memory WASM 2.0, no traps, no float).
-  Other classes remain `[OPEN]`.
-- **F-4 falsifier** — should be marked `HELD UP under test (identity
-  mutator, 2 runtimes, 2026-05-11)`. Stronger triangulation requires
-  a third runtime AND non-trivial mutators.
-- **Bootstrap pinning (I-2)** — the bootstrap evaluator for this
-  probe is `wasmtime 26.x` (rust side) and `V8 built-in WebAssembly`
-  (ts side). Neither is yet inscribed via OP_RETURN or release-hash
-  pinning. This remains `[OPEN]`.
+  `[DRAFT-PROVEN]` for the **identity-class mutator subset** (pure memory
+  operations, bulk-memory WASM 2.0, no traps, no float). Other classes remain
+  `[OPEN]`.
+- **F-4 falsifier** — should be marked
+  `HELD UP under test (identity
+  mutator, 2 runtimes, 2026-05-11)`. Stronger
+  triangulation requires a third runtime AND non-trivial mutators.
+- **Bootstrap pinning (I-2)** — the bootstrap evaluator for this probe is
+  `wasmtime 26.x` (rust side) and `V8 built-in WebAssembly` (ts side). Neither
+  is yet inscribed via OP_RETURN or release-hash pinning. This remains `[OPEN]`.
 
 ## Convergence note
 
-The mutator's compiled binary is **102 bytes**. Its hash is a
-32-byte digest. The hash of its output (over the 32-byte input) is
-another 32-byte digest. These three small numbers are now
-cryptographic invariants that two completely separate engineering
-ecosystems agree on without coordination. The protocol surface,
-encoded, is small enough to read aloud.
+The mutator's compiled binary is **102 bytes**. Its hash is a 32-byte digest.
+The hash of its output (over the 32-byte input) is another 32-byte digest. These
+three small numbers are now cryptographic invariants that two completely
+separate engineering ecosystems agree on without coordination. The protocol
+surface, encoded, is small enough to read aloud.
 
 That's what "minimum protocol" means in practice.
 
 ## Next inflection
 
-Per `2026-05-11T013914Z-claude-receipt-spore-v0.1-three-way-green.md`,
-remaining for v1.0 elevation:
+Per `2026-05-11T013914Z-claude-receipt-spore-v0.1-three-way-green.md`, remaining
+for v1.0 elevation:
 
 - ✅ Three-implementation wire format (done in spore-apply-v0).
 - ✅ Mutator execution probe (this).
@@ -167,19 +162,18 @@ ATP is the natural next step. The shape:
 
 1. Add a fuel counter to the rust wasmtime store (wasmtime supports
    `Config::consume_fuel`).
-2. Add an equivalent fuel-tracking wrapper in deno (V8 doesn't have
-   native fuel; the wrapper would intercept `apply` calls and deduct
-   per-call cost).
+2. Add an equivalent fuel-tracking wrapper in deno (V8 doesn't have native fuel;
+   the wrapper would intercept `apply` calls and deduct per-call cost).
 3. Define `C_apply_base` as a constant in the contract.
-4. Run identity + a multi-call composition; verify ATP burn matches
-   apply-tree depth.
+4. Run identity + a multi-call composition; verify ATP burn matches apply-tree
+   depth.
 
-Estimated effort: similar to this probe, maybe a bit more on the ts
-side (V8 doesn't have native fuel metering, so we wrap externally).
+Estimated effort: similar to this probe, maybe a bit more on the ts side (V8
+doesn't have native fuel metering, so we wrap externally).
 
-Or: write a third execute probe with a non-trivial mutator first
-(e.g., `concat` — takes two byte arrays, returns their concatenation;
-exercises memory write at variable offsets). Closes more of F-4.
+Or: write a third execute probe with a non-trivial mutator first (e.g., `concat`
+— takes two byte arrays, returns their concatenation; exercises memory write at
+variable offsets). Closes more of F-4.
 
 Open to user direction.
 

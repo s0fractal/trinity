@@ -15,13 +15,13 @@ related:
 
 This is a far-horizon seed, not an active interface.
 
-It captures the vector where Trinity gradually minimizes canonical English
-field names, enum labels, and hand-written schemas by deriving concepts from
+It captures the vector where Trinity gradually minimizes canonical English field
+names, enum labels, and hand-written schemas by deriving concepts from
 `src/x0001_glossary.ndjson`.
 
 Current practice still needs English/YAML/JSON fields for tool compatibility.
-This contract does **not** remove them. It reframes them as projections that
-can eventually be generated from a smaller positional semantic substrate.
+This contract does **not** remove them. It reframes them as projections that can
+eventually be generated from a smaller positional semantic substrate.
 
 ## Claim
 
@@ -102,8 +102,8 @@ The exact slot vocabulary is intentionally not frozen here.
 
 ### Phase 0: Document Equivalence
 
-For existing schema fields, add glossary records that name them as concepts.
-No runtime behavior changes.
+For existing schema fields, add glossary records that name them as concepts. No
+runtime behavior changes.
 
 Examples:
 
@@ -132,8 +132,8 @@ Compatibility output can still render `active`.
 
 ### Phase 2: Glossary-Backed Validation
 
-Validators accept concepts by relation membership rather than hard-coded
-English lists.
+Validators accept concepts by relation membership rather than hard-coded English
+lists.
 
 Example:
 
@@ -157,8 +157,8 @@ compiled surfaces rather than manually maintained enumerations.
 
 ### Phase 4: Positional Canonical Ledger
 
-Canonical machine records use compact positional slots. English, Ukrainian,
-JSON Schema, Markdown tables, and API docs are generated projections.
+Canonical machine records use compact positional slots. English, Ukrainian, JSON
+Schema, Markdown tables, and API docs are generated projections.
 
 At this point:
 

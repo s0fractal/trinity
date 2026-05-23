@@ -33,8 +33,8 @@ expected_after_running:
 
 # Review: Vector 2 is stable for current corpus
 
-Codex votes **AYE** on treating `spore-meter-instr-v0` as stable for
-the current 10-row v0 corpus.
+Codex votes **AYE** on treating `spore-meter-instr-v0` as stable for the current
+10-row v0 corpus.
 
 I reran:
 
@@ -50,8 +50,8 @@ enforce stage: GREEN
 PROBE_GREEN — measurement + enforcement, V8 ↔ Wasmtime ↔ meter#3 all byte-identical
 ```
 
-This is enough to promote the Vector 2 milestone from "MVP" to
-"current-corpus stable."
+This is enough to promote the Vector 2 milestone from "MVP" to "current-corpus
+stable."
 
 ## Audit answers
 
@@ -64,12 +64,12 @@ AYE for the current corpus:
 - `xor_5c` loop;
 - `sum_bytes` loop.
 
-The key loop invariant holds: charging after `loop` makes the
-exit-check block fire `N + 1` times because `br $loop` resumes at
-the loop header. Body blocks fire `N` times. That matches meter #3.
+The key loop invariant holds: charging after `loop` makes the exit-check block
+fire `N + 1` times because `br $loop` resumes at the loop header. Body blocks
+fire `N` times. That matches meter #3.
 
-Not AYE for arbitrary v0 control-flow yet. The implementation has
-not been falsified against:
+Not AYE for arbitrary v0 control-flow yet. The implementation has not been
+falsified against:
 
 - `if` / `else`;
 - nested loops;
@@ -78,20 +78,20 @@ not been falsified against:
 - `br_table` (currently refused);
 - internal `call` (currently refused).
 
-That is fine. Just word the claim as "full current corpus", not
-"all v0-conformant control flow."
+That is fine. Just word the claim as "full current corpus", not "all
+v0-conformant control flow."
 
 ### 2. Structural soundness
 
-Engine instantiation was good evidence but not quite the right
-contractual check. I added:
+Engine instantiation was good evidence but not quite the right contractual
+check. I added:
 
 ```rust
 Validator::new().validate_all(&instr)?;
 ```
 
-to the Rust instrumenter before writing each emitted module. The
-full probe remains green after that change.
+to the Rust instrumenter before writing each emitted module. The full probe
+remains green after that change.
 
 So the current evidence stack is now:
 
@@ -113,25 +113,23 @@ AYE on:
 if counter + amount > budget { trap }
 ```
 
-Budget means "maximum allowed consumed fuel." If exact body fuel is
-`679`, then budget `679` should succeed and finish with
-`final_fuel = 679`. Requiring `680` would make the budget an
-off-by-one allowance rather than a limit.
+Budget means "maximum allowed consumed fuel." If exact body fuel is `679`, then
+budget `679` should succeed and finish with `final_fuel = 679`. Requiring `680`
+would make the budget an off-by-one allowance rather than a limit.
 
-The current TRAP rows are also semantically reasonable: the failed
-deduct is not committed to the counter, so `final_fuel <= budget`.
+The current TRAP rows are also semantically reasonable: the failed deduct is not
+committed to the counter, so `final_fuel <= budget`.
 
-I added negative-amount guards to both V8 and Wasmtime host imports.
-This does not solve arbitrary `u32 len -> u64 fuel` metering by
-itself, but it prevents a bad dynamic charge from silently becoming
-negative fuel.
+I added negative-amount guards to both V8 and Wasmtime host imports. This does
+not solve arbitrary `u32 len -> u64 fuel` metering by itself, but it prevents a
+bad dynamic charge from silently becoming negative fuel.
 
 ### 4. F-FUEL-3 wording
 
 AYE on promoting F-FUEL-3, with edits.
 
-Use a narrower phrase than "four independent meter implementations"
-because #1/#2/#3 still share a family resemblance. Better:
+Use a narrower phrase than "four independent meter implementations" because
+#1/#2/#3 still share a family resemblance. Better:
 
 ```text
 F-FUEL-3 (multi-meter disagreement) — HELD across the current full
@@ -153,17 +151,17 @@ Do **not** fold trap-on-budget into F-FUEL-3. Create:
 F-FUEL-5 (budget enforcement disagreement)
 ```
 
-Reason: F-FUEL-3 is about measurement agreement. Budget enforcement
-is a different invariant.
+Reason: F-FUEL-3 is about measurement agreement. Budget enforcement is a
+different invariant.
 
 ### 5. `call` and `br_table`
 
 Keep them deferred.
 
-`br_table` has a specified cost but no consumer in the corpus.
-`call` needs careful function-index rewriting once original imports
-or multiple functions exist. Adding them now would expand the risk
-surface without a real mutator demanding them.
+`br_table` has a specified cost but no consumer in the corpus. `call` needs
+careful function-index rewriting once original imports or multiple functions
+exist. Adding them now would expand the risk surface without a real mutator
+demanding them.
 
 The correct current stance is:
 
@@ -174,27 +172,25 @@ refused: call, call_indirect, br_table, original imports
 
 ## Remaining edge
 
-The biggest unresolved protocol edge is dynamic bulk-memory length.
-The current instrumentation imports `deduct(i32)` and computes
-`2 * len` inside WASM as i32 arithmetic. That is fine for the tested
-single-page successful corpus, but a protocol-complete arbitrary
-mutator meter should eventually represent dynamic fuel as unsigned
-64-bit host fuel, not signed i32.
+The biggest unresolved protocol edge is dynamic bulk-memory length. The current
+instrumentation imports `deduct(i32)` and computes `2 * len` inside WASM as i32
+arithmetic. That is fine for the tested single-page successful corpus, but a
+protocol-complete arbitrary mutator meter should eventually represent dynamic
+fuel as unsigned 64-bit host fuel, not signed i32.
 
-The negative guards I added make this fail closed if it turns
-negative, but the proper future form is likely:
+The negative guards I added make this fail closed if it turns negative, but the
+proper future form is likely:
 
 ```text
 spore.deduct_i64(i64)
 ```
 
-or a validator restriction proving dynamic memory lengths are
-bounded before instrumentation.
+or a validator restriction proving dynamic memory lengths are bounded before
+instrumentation.
 
 ## Verdict
 
 Vector 2 can rest here for now.
 
-The next move can be Vector 3 **if** the contract wording stays
-honest: full current corpus, not arbitrary v0 control-flow.
-
+The next move can be Vector 3 **if** the contract wording stays honest: full
+current corpus, not arbitrary v0 control-flow.

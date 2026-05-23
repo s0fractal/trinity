@@ -12,8 +12,8 @@
 
 import {
   CborValue,
-  encodeCanonical,
   decodeCanonical,
+  encodeCanonical,
   multihashSha256,
 } from "./canonical_cbor.ts";
 
@@ -121,10 +121,18 @@ export async function wrap(
 
   if (body !== undefined) partial.body = body;
   if (options.body_ref !== undefined) partial.body_ref = options.body_ref;
-  if (options.law_hash !== undefined && options.law_hash !== null) partial.law_hash = options.law_hash;
-  if (options.bitcoin_anchor !== undefined) partial.bitcoin_anchor = serializeAnchor(options.bitcoin_anchor);
-  if (options.parent_envelope_id !== undefined) partial.parent_envelope_id = options.parent_envelope_id;
-  if (options.parent_relation !== undefined) partial.parent_relation = options.parent_relation;
+  if (options.law_hash !== undefined && options.law_hash !== null) {
+    partial.law_hash = options.law_hash;
+  }
+  if (options.bitcoin_anchor !== undefined) {
+    partial.bitcoin_anchor = serializeAnchor(options.bitcoin_anchor);
+  }
+  if (options.parent_envelope_id !== undefined) {
+    partial.parent_envelope_id = options.parent_envelope_id;
+  }
+  if (options.parent_relation !== undefined) {
+    partial.parent_relation = options.parent_relation;
+  }
   if (options.created_at_logical !== undefined) {
     partial.created_at_logical = serializeClock(options.created_at_logical);
   }
@@ -143,10 +151,18 @@ export async function wrap(
     ...(options.body_ref !== undefined ? { body_ref: options.body_ref } : {}),
     ...(options.law_hash !== undefined ? { law_hash: options.law_hash } : {}),
     witness_chain: options.witness_chain ?? [],
-    ...(options.bitcoin_anchor !== undefined ? { bitcoin_anchor: options.bitcoin_anchor } : {}),
-    ...(options.parent_envelope_id !== undefined ? { parent_envelope_id: options.parent_envelope_id } : {}),
-    ...(options.parent_relation !== undefined ? { parent_relation: options.parent_relation } : {}),
-    ...(options.created_at_logical !== undefined ? { created_at_logical: options.created_at_logical } : {}),
+    ...(options.bitcoin_anchor !== undefined
+      ? { bitcoin_anchor: options.bitcoin_anchor }
+      : {}),
+    ...(options.parent_envelope_id !== undefined
+      ? { parent_envelope_id: options.parent_envelope_id }
+      : {}),
+    ...(options.parent_relation !== undefined
+      ? { parent_relation: options.parent_relation }
+      : {}),
+    ...(options.created_at_logical !== undefined
+      ? { created_at_logical: options.created_at_logical }
+      : {}),
   } as Envelope;
 }
 
@@ -161,7 +177,10 @@ export type UnwrapResult = {
   envelope_id_verified?: boolean;
 };
 
-export async function unwrap(env: Envelope, strict = false): Promise<UnwrapResult> {
+export async function unwrap(
+  env: Envelope,
+  strict = false,
+): Promise<UnwrapResult> {
   let body_hash_verified = false;
 
   if (env.body !== undefined) {
@@ -182,12 +201,21 @@ export async function unwrap(env: Envelope, strict = false): Promise<UnwrapResul
   if (strict) {
     // Recompute envelope_id excluding the existing envelope_id field.
     const { envelope_id: _ignore, ...rest } = env;
-    const partial: Record<string, CborValue> = { ...rest } as Record<string, CborValue>;
+    const partial: Record<string, CborValue> = { ...rest } as Record<
+      string,
+      CborValue
+    >;
     // Re-serialize witness_chain/anchor/clock through serializers to ensure canonical form
     partial.witness_chain = serializeWitnessChain(env.witness_chain);
-    if (env.bitcoin_anchor !== undefined) partial.bitcoin_anchor = serializeAnchor(env.bitcoin_anchor);
-    if (env.created_at_logical !== undefined) partial.created_at_logical = serializeClock(env.created_at_logical);
-    if (env.law_hash === null || env.law_hash === undefined) delete partial.law_hash;
+    if (env.bitcoin_anchor !== undefined) {
+      partial.bitcoin_anchor = serializeAnchor(env.bitcoin_anchor);
+    }
+    if (env.created_at_logical !== undefined) {
+      partial.created_at_logical = serializeClock(env.created_at_logical);
+    }
+    if (env.law_hash === null || env.law_hash === undefined) {
+      delete partial.law_hash;
+    }
 
     const envelopeBytes = encodeCanonical(partial);
     const reHash = await multihashSha256(envelopeBytes);
@@ -231,7 +259,9 @@ function serializeWitnessChain(chain: WitnessEntry[]): CborValue[] {
       signed_at_logical: serializeClock(w.signed_at_logical),
       substrate_tag: w.substrate_tag,
     };
-    if (w.law_hash !== undefined && w.law_hash !== null) obj.law_hash = w.law_hash;
+    if (w.law_hash !== undefined && w.law_hash !== null) {
+      obj.law_hash = w.law_hash;
+    }
     return obj;
   });
 }

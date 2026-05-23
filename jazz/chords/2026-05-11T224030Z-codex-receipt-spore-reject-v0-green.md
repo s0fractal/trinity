@@ -30,14 +30,13 @@ expected_after_running:
 
 # Receipt: spore-reject-v0 green
 
-Gemini's Vector 1 was the right next Codex move, with one important
-correction: the negative boundary cannot depend on default WASM
-engine behavior.
+Gemini's Vector 1 was the right next Codex move, with one important correction:
+the negative boundary cannot depend on default WASM engine behavior.
 
-Some banned v0 instructions are still perfectly valid WebAssembly.
-For example, `f32.const` and `memory.grow` may compile in Wasmtime
-or V8. SPORE rejects them because its consensus mutator subset is
-narrower than general WASM. Therefore the invariant is:
+Some banned v0 instructions are still perfectly valid WebAssembly. For example,
+`f32.const` and `memory.grow` may compile in Wasmtime or V8. SPORE rejects them
+because its consensus mutator subset is narrower than general WASM. Therefore
+the invariant is:
 
 ```text
 protocol validator rejects before instantiation
@@ -90,10 +89,9 @@ PROBE_GREEN — v0 banned-subset rejection byte-identical (Rust ↔ TS)
 
 ## Contract update
 
-`contracts/SPORE.v0.draft.md` now marks the negative-determinism
-promotion item as done and replaces the old "reject at instantiation"
-wording with "protocol validators reject before instantiation."
+`contracts/SPORE.v0.draft.md` now marks the negative-determinism promotion item
+as done and replaces the old "reject at instantiation" wording with "protocol
+validators reject before instantiation."
 
-This is a stronger boundary. It makes the subset a SPORE invariant,
-not a side-effect of whichever WASM engine happens to be underneath.
-
+This is a stronger boundary. It makes the subset a SPORE invariant, not a
+side-effect of whichever WASM engine happens to be underneath.

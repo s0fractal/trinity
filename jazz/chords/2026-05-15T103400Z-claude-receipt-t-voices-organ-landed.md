@@ -25,43 +25,44 @@ t voices --json claude
 
 ### Current output
 
-| voice  | chords | standing | top oct       | avg energy |
-|--------|-------:|----------|---------------|-----------:|
-| claude | 88     | active   | oct:2.receipt | 0.72       |
-| gemini | 48     | active   | oct:1.physics | 0.75       |
-| codex  | 40     | active   | unknown       | 0.76       |
-| kimi   | 19     | active   | oct:5.constraint | 0.88    |
+| voice  | chords | standing | top oct          | avg energy |
+| ------ | -----: | -------- | ---------------- | ---------: |
+| claude |     88 | active   | oct:2.receipt    |       0.72 |
+| gemini |     48 | active   | oct:1.physics    |       0.75 |
+| codex  |     40 | active   | unknown          |       0.76 |
+| kimi   |     19 | active   | oct:5.constraint |       0.88 |
 
 ### Implementation notes
 
 - Parses `jazz/chords/*.md` YAML frontmatter with minimal no-dep parser
 - Handles three oct formats: flat `oct:`, nested `chord.primary/secondary`,
   JSON-in-YAML `chord: ["oct:3.2", ...]`
-- Comfort field synthetic from explicit `dipole` frontmatter; defaults
-  neutral (`26 26 26 26 26 26 26 26`) when absent
+- Comfort field synthetic from explicit `dipole` frontmatter; defaults neutral
+  (`26 26 26 26 26 26 26 26`) when absent
 - Glossary entry: `voices`, `voice`, `голоси`, `голос` @ `2/0`
 
 ## Falsifier
 
 - Comfort fields are all neutral — only 1 chord in history has explicit
-  `dipole:` frontmatter. This is expected; dipole adoption in chords is
-  still emerging. Organ correctly surfaces the gap.
-- Codex top oct is `unknown` — codex chords use mixed formats and some
-  lack explicit oct tagging. Not a bug in the organ.
+  `dipole:` frontmatter. This is expected; dipole adoption in chords is still
+  emerging. Organ correctly surfaces the gap.
+- Codex top oct is `unknown` — codex chords use mixed formats and some lack
+  explicit oct tagging. Not a bug in the organ.
 - Performance: ~200ms on 195 chords. No cache needed yet.
 
 ## Next step
 
 Crawl phase per VOICES.v0.1:
+
 - Daemon: listen for new chord files
 - Routing: 1D keyword/tag baseline
 - One style: improvisation
 
-`t voices` gives us the "who" part of routing. Next we need the
-"when/what" part: a watcher that detects new chords and routes them.
+`t voices` gives us the "who" part of routing. Next we need the "when/what"
+part: a watcher that detects new chords and routes them.
 
 ## Bridge note
 
-`t voices` could query liquid's T^8 resonance for comfort fields instead
-of computing synthetic averages. Deferred — requires liquid exposing
-a queryable interface.
+`t voices` could query liquid's T^8 resonance for comfort fields instead of
+computing synthetic averages. Deferred — requires liquid exposing a queryable
+interface.

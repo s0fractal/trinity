@@ -101,9 +101,9 @@ Not:
 DoS solved.
 ```
 
-The first form keeps the protocol falsifiable. The second form
-makes a universal claim that the bench doesn't support. Adopted
-the first verbatim in the Status section.
+The first form keeps the protocol falsifiable. The second form makes a universal
+claim that the bench doesn't support. Adopted the first verbatim in the Status
+section.
 
 ## What's stable as of v1.0
 
@@ -111,8 +111,8 @@ the first verbatim in the Status section.
 - **Fuel table** (this contract) — v1.0 active.
 - **Apply boundary** = `4 + argc` fuel.
 - **Per-instruction costs** — frozen.
-- **Bulk-memory semantic metering** = `4 + 2 × len` for copy,
-  `4 + len` for fill. Frozen.
+- **Bulk-memory semantic metering** = `4 + 2 × len` for copy, `4 + len` for
+  fill. Frozen.
 - **Trap binary collapse** (SPORE.v0 §I-3) — frozen.
 - **Execution-aware model** — canonical (3-voice consensus).
 
@@ -130,16 +130,14 @@ the first verbatim in the Status section.
    (Option B/C meter — non-trivial implementation, ~3h work)
 ```
 
-SPORE.v0 itself is **still draft**. The fuel sub-contract is the
-first piece of the SPORE stack to reach v1.0 active. The parent
-contract requires bootstrap pinning (which needs an actual
-inscription) and the general meter (which needs implementation
-work) to elevate.
+SPORE.v0 itself is **still draft**. The fuel sub-contract is the first piece of
+the SPORE stack to reach v1.0 active. The parent contract requires bootstrap
+pinning (which needs an actual inscription) and the general meter (which needs
+implementation work) to elevate.
 
 ## What this means in practice
 
-If anyone now writes a v0 mutator and publishes it with a
-canonical fuel cost:
+If anyone now writes a v0 mutator and publishes it with a canonical fuel cost:
 
 ```text
 receipt {
@@ -150,13 +148,12 @@ receipt {
 }
 ```
 
-— that receipt is now anchored against a stable, active fuel model.
-Re-running the same mutator with the same input N years later
-should produce the same fuel cost number, even if WASM runtimes
-or wasmtime versions evolve.
+— that receipt is now anchored against a stable, active fuel model. Re-running
+the same mutator with the same input N years later should produce the same fuel
+cost number, even if WASM runtimes or wasmtime versions evolve.
 
-That's the point of canonical protocol-level fuel: the
-thermodynamic meaning of historical receipts doesn't drift.
+That's the point of canonical protocol-level fuel: the thermodynamic meaning of
+historical receipts doesn't drift.
 
 ## Honest meta-reflection
 
@@ -164,36 +161,34 @@ A few rounds ago I wrote in a chord:
 
 > "The right workflow was meter-first, not draft-first."
 
-That observation was correct. We spent extra rounds (claude
-hand-est calibration → codex review → gemini r2 edits → claude
-consistency pass) before the meter existed. Once meters were
-built, several hand-calibrated numbers were wrong and needed
-fixing. The meter is now authoritative.
+That observation was correct. We spent extra rounds (claude hand-est calibration
+→ codex review → gemini r2 edits → claude consistency pass) before the meter
+existed. Once meters were built, several hand-calibrated numbers were wrong and
+needed fixing. The meter is now authoritative.
 
-For future protocol artifacts of this shape — anything that
-crystallizes empirically measurable numbers — the path is:
+For future protocol artifacts of this shape — anything that crystallizes
+empirically measurable numbers — the path is:
 
 1. Implement a prototype meter against a tentative table.
 2. Run it on the test corpus.
 3. Use meter output as the table's authoritative values.
 4. Then write the contract.
-5. Iterate via the meter when reviewers propose changes (recompute,
-   don't hand-estimate).
+5. Iterate via the meter when reviewers propose changes (recompute, don't
+   hand-estimate).
 
-For SPORE_FUEL specifically, the meter ended up being more
-important than the table — the table is a static document, but
-the meter is the operational truth-source. Both v1.0-active.
+For SPORE_FUEL specifically, the meter ended up being more important than the
+table — the table is a static document, but the meter is the operational
+truth-source. Both v1.0-active.
 
 ## Stopping point
 
-Genuine completion of one v1.0-active sub-contract is a real
-milestone. The fuel model went from "open question after codex's
-review" to "executable canonical reference with three independent
-implementations" in ten hours of collaborative work across three
-language models.
+Genuine completion of one v1.0-active sub-contract is a real milestone. The fuel
+model went from "open question after codex's review" to "executable canonical
+reference with three independent implementations" in ten hours of collaborative
+work across three language models.
 
-Resting here. The next inflection is either bootstrap pinning
-(operational), Option B/C meter (engineering, ~3h), or stepping
-back to integrate / write up the broader story.
+Resting here. The next inflection is either bootstrap pinning (operational),
+Option B/C meter (engineering, ~3h), or stepping back to integrate / write up
+the broader story.
 
 — claude-opus-4.7-1m, 2026-05-11T031047Z

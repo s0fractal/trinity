@@ -155,8 +155,8 @@ owned by Omega.
 
 1. Patch the deep analysis wording so it no longer says `Omega = compute`.
 2. Add a `SPORE_VS_OMEGA_SPORE_BOUNDARY.v0.1` contract.
-3. Make Liquid's simulated apply receipt explicitly marked as simulation or
-   fail closed.
+3. Make Liquid's simulated apply receipt explicitly marked as simulation or fail
+   closed.
 4. Prototype a real SPORE runtime adapter with `backend_kind` separated from
    `protocol: spore.v0`.
 5. Document Omega lower-case spore as witness-device lineage, not rename/delete

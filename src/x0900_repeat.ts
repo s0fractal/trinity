@@ -63,7 +63,9 @@ if (import.meta.main) {
   if (!target.match(/^[0-9A-Fa-f](\/[0-9A-Fa-f])+$/)) {
     const resolved = await resolveWord(target);
     if (!resolved) {
-      console.log(JSON.stringify({ type: "error", message: `Unknown: ${target}` }));
+      console.log(
+        JSON.stringify({ type: "error", message: `Unknown: ${target}` }),
+      );
       Deno.exit(1);
     }
     pos = resolved;
@@ -86,22 +88,26 @@ if (import.meta.main) {
 
   const errors = iterations.filter((it) => !it.ok).length;
 
-  console.log(JSON.stringify({
-    type: "repeat",
-    action: "iterate",
-    target,
-    resolved: pos,
-    requested_count: count,
-    actual_count: iterations.length,
-    errors,
-    first_error_at: firstError,
-    overall: errors === 0 ? "passed" : "failed",
-    iterations,
-    note: errors === 0
-      ? `All ${count} iterations passed`
-      : `${errors}/${count} iterations failed (first at ${firstError})`,
-    topology: "repeat(n, f) = [f(), f(), ...] n times",
-  }, null, 2));
+  console.log(JSON.stringify(
+    {
+      type: "repeat",
+      action: "iterate",
+      target,
+      resolved: pos,
+      requested_count: count,
+      actual_count: iterations.length,
+      errors,
+      first_error_at: firstError,
+      overall: errors === 0 ? "passed" : "failed",
+      iterations,
+      note: errors === 0
+        ? `All ${count} iterations passed`
+        : `${errors}/${count} iterations failed (first at ${firstError})`,
+      topology: "repeat(n, f) = [f(), f(), ...] n times",
+    },
+    null,
+    2,
+  ));
 
   if (errors > 0) Deno.exit(1);
 }

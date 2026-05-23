@@ -28,5 +28,5 @@ This chord tests TRIAL mode with a claim that should always succeed
 3. Claim met → kept, verdict `passed`
 4. Working tree state unchanged (canon:verify doesn't modify anything)
 
-If this chord fails to verify, either canon-vectors are broken or
-TRIAL infrastructure has a bug.
+If this chord fails to verify, either canon-vectors are broken or TRIAL
+infrastructure has a bug.

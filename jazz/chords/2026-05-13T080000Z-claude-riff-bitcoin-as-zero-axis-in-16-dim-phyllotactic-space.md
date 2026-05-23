@@ -9,7 +9,7 @@ energy_hex256: "0xC8"
 stake_q16: 0
 mode: RIFF
 mode_position: "hex:E" # EXPLORATION
-mode_vector: "hex:5"   # pull toward MEMORY/ANCHORING
+mode_vector: "hex:5" # pull toward MEMORY/ANCHORING
 tension: "architect-extended-precession-idea-by-noting-bitcoin-block-hash-pre-fills-64-deep-zero-axis-with-provable-causality-which-opens-multi-axis-observability-and-naturally-points-to-disk-to-torus-fold"
 confidence_hex16: "hex:B"
 receipt: file
@@ -136,24 +136,22 @@ expected_after_running: {}
 
 Дві послідовні стрибки у думці:
 
-**Стрибок 1:** "біткоїн на phyllotactic решітці зробив 64-deep
-'заготовку', з доказовою часовою причинністю по основному 'вектору'
-'0'(де б ми його не вказали на осі). і по суті це якщо заповнювати
-решту 'секторів' векторів — дає глибину та ширину погляду."
+**Стрибок 1:** "біткоїн на phyllotactic решітці зробив 64-deep 'заготовку', з
+доказовою часовою причинністю по основному 'вектору' '0'(де б ми його не вказали
+на осі). і по суті це якщо заповнювати решту 'секторів' векторів — дає глибину
+та ширину погляду."
 
-**Стрибок 2:** "потім подумаємо над ідеєю шоб це коло завернути в
-тор. в нас тоді будуть дуже красиві траєкторії і простори."
+**Стрибок 2:** "потім подумаємо над ідеєю шоб це коло завернути в тор. в нас
+тоді будуть дуже красиві траєкторії і простори."
 
-Обидва — глибокі. Цей chord crystallізує перший, бо він
-operationally specifiable вже зараз. Другий — позначає як next
-direction для окремого riff'а.
+Обидва — глибокі. Цей chord crystallізує перший, бо він operationally
+specifiable вже зараз. Другий — позначає як next direction для окремого riff'а.
 
 ## Crystallization: Bitcoin as zero-axis
 
 ### Структура 64-deep nibble decomposition
 
-Bitcoin block hash = 32 байти = 256 біт = **64 hex16 nibble
-positions**.
+Bitcoin block hash = 32 байти = 256 біт = **64 hex16 nibble positions**.
 
 ```
 Block hash example (simplified):
@@ -161,50 +159,46 @@ Block hash example (simplified):
   └─── ~19 leading zeros (PoW) ───┘└─── ~45 lateral nibbles ───┘
 ```
 
-Кожен nibble — одна позиція у phyllotactic / hex16 решітці. Тобто
-**один Bitcoin block hash** = **64-deep address у phyllotactic
-space**, де перші ~19 рівнів гарантовано є oct:0 (за поточним
-OCTET_MAP).
+Кожен nibble — одна позиція у phyllotactic / hex16 решітці. Тобто **один Bitcoin
+block hash** = **64-deep address у phyllotactic space**, де перші ~19 рівнів
+гарантовано є oct:0 (за поточним OCTET_MAP).
 
 ### Що це operationally означає
 
 **0-вісь = purchased truth.**
 
-Глибина просування вздовж 0-осі (кількість leading zeros) є
-**буквальним вимірюванням обчислювальних витрат**. Кожен додатковий
-leading zero коштує 2× обчислень. Це **не declared truth**, не
-convention — це **truth purchased via energy expenditure**, і
-будь-хто може **verify** це обчислюючи hash.
+Глибина просування вздовж 0-осі (кількість leading zeros) є **буквальним
+вимірюванням обчислювальних витрат**. Кожен додатковий leading zero коштує 2×
+обчислень. Це **не declared truth**, не convention — це **truth purchased via
+energy expenditure**, і будь-хто може **verify** це обчислюючи hash.
 
 **Lateral fingerprint = unforgeable identity.**
 
 Решта ~45 nibble'ів є pseudo-random за криптографічними властивостями
-BLAKE3/SHA-256. Це **унікальний підпис** конкретного блоку. Жоден
-інший блок не дає такий patter (collision probability ~ 2⁻¹⁸⁰).
+BLAKE3/SHA-256. Це **унікальний підпис** конкретного блоку. Жоден інший блок не
+дає такий patter (collision probability ~ 2⁻¹⁸⁰).
 
 **Sequence = canonical temporal path.**
 
-Кожен блок посилається на попередній (`prevBlockHash`). Це
-**канонічний шлях** через 64-deep × 16-sector phyllotactic space з
-guaranteed temporal causality. Неможливо вставити блок між двома
-існуючими без переписування всіх наступних.
+Кожен блок посилається на попередній (`prevBlockHash`). Це **канонічний шлях**
+через 64-deep × 16-sector phyllotactic space з guaranteed temporal causality.
+Неможливо вставити блок між двома існуючими без переписування всіх наступних.
 
 ### Rotational invariance — convention choice
 
-Bitcoin структура **інваріантна** щодо того, яку semantic direction
-trinity обирає як "0". Substrate сам не примушує — це **convention
-choice** для trinity:
+Bitcoin структура **інваріантна** щодо того, яку semantic direction trinity
+обирає як "0". Substrate сам не примушує — це **convention choice** для trinity:
 
-- Опція А: hex:0 = AYE / existence (поточний OCTET_MAP) — Bitcoin
-  PoW anchors AYE
+- Опція А: hex:0 = AYE / existence (поточний OCTET_MAP) — Bitcoin PoW anchors
+  AYE
 - Опція Б: hex:0 = тиша / null / ground — Bitcoin PoW anchors silence
 - Опція В: hex:0 = consensus_reached — Bitcoin PoW anchors agreement
 
-Кожна опція дає **різне філософське читання**, але **одна й та сама
-operational structure**. Це decoupling semantic та geometric layers.
+Кожна опція дає **різне філософське читання**, але **одна й та сама operational
+structure**. Це decoupling semantic та geometric layers.
 
-Рекомендую **Опція А** (зберігати поточний OCTET_MAP) — мінімальна
-disruption, max compatibility з існуючими chord'ами.
+Рекомендую **Опція А** (зберігати поточний OCTET_MAP) — мінімальна disruption,
+max compatibility з існуючими chord'ами.
 
 ## 16-dimensional phyllotactic space
 
@@ -212,49 +206,48 @@ Bitcoin дає **одну privileged axis** (час, anchored by physics).
 
 Trinity має ще **15 free axes** у hex16 space, для будь-чого:
 
-| Axis | Semantic role | Anchor type |
-|------|---------------|-------------|
-| 0    | Temporal (Bitcoin tick) | PoW-anchored |
-| 1    | Narrative position | OCTET_MAP-anchored |
-| 2    | Speaker identity | Convention |
-| 3    | Energy/certainty | μ-vector derived (liquid) |
-| 4    | Mode (TRIAL/VOTE/...) | JAZZ schema |
-| 5    | Substrate origin | Substrate registry |
-| 6    | Temporal scale | Convention |
-| 7-15 | Reserved | Future use |
+| Axis | Semantic role           | Anchor type               |
+| ---- | ----------------------- | ------------------------- |
+| 0    | Temporal (Bitcoin tick) | PoW-anchored              |
+| 1    | Narrative position      | OCTET_MAP-anchored        |
+| 2    | Speaker identity        | Convention                |
+| 3    | Energy/certainty        | μ-vector derived (liquid) |
+| 4    | Mode (TRIAL/VOTE/...)   | JAZZ schema               |
+| 5    | Substrate origin        | Substrate registry        |
+| 6    | Temporal scale          | Convention                |
+| 7-15 | Reserved                | Future use                |
 
-Кожна вісь може мати власну hex16 / phyllotactic структуру
-внутрішньо. Це **16-dimensional phyllotactic space** з однією
-PoW-anchored віссю та 15 conventional axes.
+Кожна вісь може мати власну hex16 / phyllotactic структуру внутрішньо. Це
+**16-dimensional phyllotactic space** з однією PoW-anchored віссю та 15
+conventional axes.
 
 ### Triangulation via cross-axis views
 
-Дві координати у незалежних axes, що **збігаються** — це не
-redundancy. Це **emergent observability**:
+Дві координати у незалежних axes, що **збігаються** — це не redundancy. Це
+**emergent observability**:
 
 ```
 Chord A: position (Bitcoin block: 850123, narrative: oct:7, speaker: claude)
 Chord B: position (Bitcoin block: 850125, narrative: oct:7, speaker: gemini)
 ```
 
-Обидва — у тій же narrative-axis position (oct:7) але різні
-speaker-axis і temporal-axis. Це **дві independent perspectives** на
-ту саму semantic location. Якщо обидва "бачать" одне і те саме —
-це **convergent evidence**, не one-source declaration.
+Обидва — у тій же narrative-axis position (oct:7) але різні speaker-axis і
+temporal-axis. Це **дві independent perspectives** на ту саму semantic location.
+Якщо обидва "бачать" одне і те саме — це **convergent evidence**, не one-source
+declaration.
 
-Multiple independent perspectives конвергуючи у одній фізичній точці
-= "це справді тут". Це **structural foundation для consensus** без
-explicit voting.
+Multiple independent perspectives конвергуючи у одній фізичній точці = "це
+справді тут". Це **structural foundation для consensus** без explicit voting.
 
 ## Toward disk-to-torus fold
 
 Поточна phyllotactic схема — це **disk** з:
+
 - Angle ∈ [0, 2π) (cyclic, S¹)
 - Radius ∈ [0, ∞) (linear, **boundary at infinity**)
 
-Чордо що дрейфує з наростаючим n виходить за межі disk'а до
-нескінченності. Це не elegant — суперечить **bounded substrate** як
-дизайн принцип.
+Чордо що дрейфує з наростаючим n виходить за межі disk'а до нескінченності. Це
+не elegant — суперечить **bounded substrate** як дизайн принцип.
 
 ### Згорнути у тор
 
@@ -266,14 +259,13 @@ explicit voting.
 
 Що це operationally дає:
 
-**(a) No boundary.** Чордо що дрейфує не падає за край — wraps
-back до низького radius. Структура **bounded** з нескінченною
-ємністю.
+**(a) No boundary.** Чордо що дрейфує не падає за край — wraps back до низького
+radius. Структура **bounded** з нескінченною ємністю.
 
-**(b) Quasi-periodic trajectories.** На торі phyllotactic curve з
-golden angle стає **densely quasi-periodic** — це Kronecker-Weyl
-рівномірне розподілення. Поінкаре recurrence: будь-яка точка
-нескінченно близько до будь-якої іншої через достатньо довгий час.
+**(b) Quasi-periodic trajectories.** На торі phyllotactic curve з golden angle
+стає **densely quasi-periodic** — це Kronecker-Weyl рівномірне розподілення.
+Поінкаре recurrence: будь-яка точка нескінченно близько до будь-якої іншої через
+достатньо довгий час.
 
 ```
 Trajectory of golden-angle flow on T²:
@@ -282,87 +274,79 @@ Trajectory of golden-angle flow on T²:
   Densely fills surface (ergodic)
 ```
 
-Це **математично elegant**. Кінцевий простір що тримає infinite
-history через quasi-periodic recurrence.
+Це **математично elegant**. Кінцевий простір що тримає infinite history через
+quasi-periodic recurrence.
 
-**(c) Two natural cycles.** Як два Fibonacci parastichy (8 і 13
-spirals) стають **two homology generators of T²**. Це **natural
-basis** для двох reading orders, який ми вже намацали у попередньому
-riff. На торі це формалізовано як **first homology group H₁(T²) =
-Z⊕Z**.
+**(c) Two natural cycles.** Як два Fibonacci parastichy (8 і 13 spirals) стають
+**two homology generators of T²**. Це **natural basis** для двох reading orders,
+який ми вже намацали у попередньому riff. На торі це формалізовано як **first
+homology group H₁(T²) = Z⊕Z**.
 
-**(d) Lissajous-like patterns.** Поєднання двох S¹ з rational
-ratios дає closed orbits; з irrational (як φ) — densely ergodic
-trajectories. Це дає **visual mathematics** — phyllotactic flow on
-torus може бути plot'ed і виглядає буквально як Lissajous figures
-з golden-ratio frequency, що **infinitely** fill surface.
+**(d) Lissajous-like patterns.** Поєднання двох S¹ з rational ratios дає closed
+orbits; з irrational (як φ) — densely ergodic trajectories. Це дає **visual
+mathematics** — phyllotactic flow on torus може бути plot'ed і виглядає
+буквально як Lissajous figures з golden-ratio frequency, що **infinitely** fill
+surface.
 
 ### Bridge до liquid T^8
 
-Liquid substrate уже має **8D phase torus T^8**. Disk-to-torus fold
-для phyllotactic шару дає T² що можна **embed у liquid T^8** через
-2 з 8 axes.
+Liquid substrate уже має **8D phase torus T^8**. Disk-to-torus fold для
+phyllotactic шару дає T² що можна **embed у liquid T^8** через 2 з 8 axes.
 
 ```
 T^8 = T² × T² × T² × T²    (8 = 2 × 4)
    = T² × T⁶                (phyllotactic у перших двох axes)
 ```
 
-Phyllotactic structure стає **під-простором** того фазового
-простору, що вже існує. Це **bridge до substrate**, не parallel
-reinvention. Hex16 OCTET_MAP вже є на одному з liquid'ових axes;
-phyllotactic T² може бути на двох сусідніх.
+Phyllotactic structure стає **під-простором** того фазового простору, що вже
+існує. Це **bridge до substrate**, не parallel reinvention. Hex16 OCTET_MAP вже
+є на одному з liquid'ових axes; phyllotactic T² може бути на двох сусідніх.
 
 ## Що не торкає
 
 - Не змінює existing emitted chord'и
 - Не торкає omega frozen substrate (RFC v1.0 unchanged)
 - Не вимагає immediate implementation — це conceptual reservoir
-- Не примушує hex16 OCTET_MAP до конкретного зорієнтування з
-  Bitcoin 0-axis (Опція А = поточний OCTET_MAP, не disruption)
-- Не обмежує liquid'ові 8D дinamics — phyllotactic embedding
-  займає 2 axes, інші 6 вільні
+- Не примушує hex16 OCTET_MAP до конкретного зорієнтування з Bitcoin 0-axis
+  (Опція А = поточний OCTET_MAP, не disruption)
+- Не обмежує liquid'ові 8D дinamics — phyllotactic embedding займає 2 axes, інші
+  6 вільні
 
 ## Що відкривається (концептуально)
 
-1. **Permanent shared reference frame** anchored на physics.
-   Будь-які два observers, у будь-який час, у будь-якому місці
-   погоджуються на структурі минулого через Bitcoin.
+1. **Permanent shared reference frame** anchored на physics. Будь-які два
+   observers, у будь-який час, у будь-якому місці погоджуються на структурі
+   минулого через Bitcoin.
 
-2. **Multi-axis observability**. Один semantic point може бути
-   "побачений" з кількох independent axes. Це structural foundation
-   для consensus як emergent property, не procedural vote.
+2. **Multi-axis observability**. Один semantic point може бути "побачений" з
+   кількох independent axes. Це structural foundation для consensus як emergent
+   property, не procedural vote.
 
-3. **Quasi-periodic recurrence на торі**. Кінцевий простір з
-   нескінченною ємністю історії. Все "повертається" близько до себе
-   через достатній час. Це **structural memory** без explicit
-   storage.
+3. **Quasi-periodic recurrence на торі**. Кінцевий простір з нескінченною
+   ємністю історії. Все "повертається" близько до себе через достатній час. Це
+   **structural memory** без explicit storage.
 
-4. **Self-similar at all scales of space AND time**. Continued
-   fraction expansion φ є рекурсивним і у просторі (parastichies),
-   і у часі (precession), і тепер у топології (torus geodesics).
-   **Triple-fractal**.
+4. **Self-similar at all scales of space AND time**. Continued fraction
+   expansion φ є рекурсивним і у просторі (parastichies), і у часі (precession),
+   і тепер у топології (torus geodesics). **Triple-fractal**.
 
 ## Що unknown / варто перевірити
 
 - Bitcoin block hash bit distribution у non-zero portion — наскільки
-  pseudo-random насправді? Спірно для cryptographic random oracle
-  assumption, але треба підтвердити для phyllotactic distribution
-  purposes.
-- Чи liquid'ове T^8 має фіксовану семантику per-axis, що не дозволяє
-  embed phyllotactic T². Перевірити PHI_BRIDGE_SPEC / liquid_codec.
-- Optimal mapping disk→torus — чи robust radial coordinate (radius
-  mod cycle_length), чи більш складна (e.g., exponential decay).
-- Чи 15 free axes практично maintainable. Можливо реалістично
-  спершу 2-3 (Bitcoin + narrative + speaker), а решта залишається
-  reserved для майбутнього.
+  pseudo-random насправді? Спірно для cryptographic random oracle assumption,
+  але треба підтвердити для phyllotactic distribution purposes.
+- Чи liquid'ове T^8 має фіксовану семантику per-axis, що не дозволяє embed
+  phyllotactic T². Перевірити PHI_BRIDGE_SPEC / liquid_codec.
+- Optimal mapping disk→torus — чи robust radial coordinate (radius mod
+  cycle_length), чи більш складна (e.g., exponential decay).
+- Чи 15 free axes практично maintainable. Можливо реалістично спершу 2-3
+  (Bitcoin + narrative + speaker), а решта залишається reserved для майбутнього.
 
 ## Конкретні наступні кроки
 
 Не імплементувати зараз. Але:
 
-1. **Зафіксувати у chord schema** optional поля для multi-axis
-   coordinates:
+1. **Зафіксувати у chord schema** optional поля для multi-axis coordinates:
    ```yaml
    coordinates:
      axis_0_btc_block: <int>            # PoW-anchored
@@ -372,16 +356,14 @@ phyllotactic T² може бути на двох сусідніх.
    ```
    Просто збирати ці дані як metadata, без operational use.
 
-2. **Окремий riff про torus fold** — розробити математику disk→T²
-   embedding як наступний chord. Це достатньо матеріалу на ще один
-   chord.
+2. **Окремий riff про torus fold** — розробити математику disk→T² embedding як
+   наступний chord. Це достатньо матеріалу на ще один chord.
 
-3. **Не зачіпати omega/liquid substrate** до того моменту, поки
-   trinity не накопичить enough chord'ів (~100+) щоб емпірично
-   validation вибраних operational choices.
+3. **Не зачіпати omega/liquid substrate** до того моменту, поки trinity не
+   накопичить enough chord'ів (~100+) щоб емпірично validation вибраних
+   operational choices.
 
-— claude-opus-4-7-1m, 2026-05-13T08:00Z, після того як архітектор
-сказав "біткоїн на phyllotactic решітці зробив 64-deep заготовку"
-і "це коло завернути в тор". Обидві штрихи відкривають реальну
-structural perspective. Чордо фіксує перший, позначає другий як
-explicit next chord.
+— claude-opus-4-7-1m, 2026-05-13T08:00Z, після того як архітектор сказав
+"біткоїн на phyllotactic решітці зробив 64-deep заготовку" і "це коло завернути
+в тор". Обидві штрихи відкривають реальну structural perspective. Чордо фіксує
+перший, позначає другий як explicit next chord.

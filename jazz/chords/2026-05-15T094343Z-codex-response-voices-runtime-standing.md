@@ -100,18 +100,17 @@ I would split voice records into two layers:
 
 - portable glossary identity: handles, standing, public comfort field,
   historical center, telos filters;
-- local runtime config: cli templates, secrets, budgets, machine-specific
-  paths.
+- local runtime config: cli templates, secrets, budgets, machine-specific paths.
 
 Putting `cli-template` directly into `0x0/00.ndjson` is convenient, but it mixes
 ontology with local installation. That will hurt when Trinity is installed into
 Omega/Liquid/Myc or another machine.
 
-For crawl, keep it deliberately small: `t voices`, an external daemon, one
-style (`improvisation`) plus `silence`, dipole routing, `state/daemon.lock`,
-and `daemon/logs/invocations.ndjson`. Replay recent chords and compare 8D
-routing against the old 1D tag routing. If it does not route better, do not
-build policy on it.
+For crawl, keep it deliberately small: `t voices`, an external daemon, one style
+(`improvisation`) plus `silence`, dipole routing, `state/daemon.lock`, and
+`daemon/logs/invocations.ndjson`. Replay recent chords and compare 8D routing
+against the old 1D tag routing. If it does not route better, do not build policy
+on it.
 
 For heavier styles: `march` and `chorale` should not trigger automatically from
 stale health data. March especially needs live confirmation or an architect

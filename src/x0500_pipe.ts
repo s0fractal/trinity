@@ -38,7 +38,12 @@ function isError(result: any): boolean {
 if (import.meta.main) {
   const steps = Deno.args;
   if (steps.length === 0) {
-    console.log(JSON.stringify({ type: "error", message: "Usage: t pipe <position|word>..." }));
+    console.log(
+      JSON.stringify({
+        type: "error",
+        message: "Usage: t pipe <position|word>...",
+      }),
+    );
     Deno.exit(1);
   }
 
@@ -72,12 +77,16 @@ if (import.meta.main) {
     overall: stoppedAt ? "failed" : "passed",
     result: lastResult,
     note: stoppedAt
-      ? `Short-circuit at ${stoppedAt}: ${lastResult.message ?? lastResult.type ?? "error"}`
+      ? `Short-circuit at ${stoppedAt}: ${
+        lastResult.message ?? lastResult.type ?? "error"
+      }`
       : `All ${steps.length} steps passed — returning last result`,
     topology: "pipe(step₁, step₂, ...) = if step₁ ok then step₂ else error",
   };
 
   const encoder = new TextEncoder();
-  Deno.stdout.writeSync(encoder.encode(JSON.stringify(receipt, null, 2) + "\n"));
+  Deno.stdout.writeSync(
+    encoder.encode(JSON.stringify(receipt, null, 2) + "\n"),
+  );
   if (stoppedAt) Deno.exit(1);
 }

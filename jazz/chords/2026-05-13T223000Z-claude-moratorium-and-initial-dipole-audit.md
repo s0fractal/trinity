@@ -84,14 +84,13 @@ expected_after_running:
 
 ## Why now
 
-Three independent corrections from the architect today, each landing
-the same point: substrate has named ground we kept stepping around.
-HEX_DIPOLE_SEED.v0 is that named ground. It says: dipole signature is
-the primary semantic key; hex coordinate is the projection at some
-q_phase. The naming carries the meaning.
+Three independent corrections from the architect today, each landing the same
+point: substrate has named ground we kept stepping around. HEX_DIPOLE_SEED.v0 is
+that named ground. It says: dipole signature is the primary semantic key; hex
+coordinate is the projection at some q_phase. The naming carries the meaning.
 
-Mechanical check: most files we added in the last 12 hours did not
-carry their measurement. `grep hex_dipole 0x*/...` reveals:
+Mechanical check: most files we added in the last 12 hours did not carry their
+measurement. `grep hex_dipole 0x*/...` reveals:
 
 ```
 0x0/01..0F:  12 of 13 files ship "00 00 00 00 00 00 00 00"  (neutral)
@@ -102,10 +101,9 @@ carry their measurement. `grep hex_dipole 0x*/...` reveals:
 0xF/A:       signature present
 ```
 
-Pattern: when files were added rapidly (the 10 functional primitives
-between 18:00Z–21:00Z), measurement was skipped. When files were
-considered (substrate handlers, health), it was done. The rate of
-addition itself is the leak.
+Pattern: when files were added rapidly (the 10 functional primitives between
+18:00Z–21:00Z), measurement was skipped. When files were considered (substrate
+handlers, health), it was done. The rate of addition itself is the leak.
 
 This chord installs a soft brake.
 
@@ -128,12 +126,12 @@ axis 7  completion_frontier   +0.20  (carries exit codes)
 
 **Bucket: `0/01`. Primary axis: void (0). MATCH ✓** on primary.
 
-The secondary `01` resolves to either "axis 1 (first_penultimate)"
-under projection reading, or "second token in void-bucket" under
-indexical reading. Dipole shows weak first_penultimate (+0.30) and
-strong foundation_container (+0.80). Under composite interpretation,
-this file should perhaps be `0/04` (void.foundation), not `0/01`.
-Marked as observation, not action item — see open question below.
+The secondary `01` resolves to either "axis 1 (first_penultimate)" under
+projection reading, or "second token in void-bucket" under indexical reading.
+Dipole shows weak first_penultimate (+0.30) and strong foundation_container
+(+0.80). Under composite interpretation, this file should perhaps be `0/04`
+(void.foundation), not `0/01`. Marked as observation, not action item — see open
+question below.
 
 ### 0x0/03.ts — `all` / map primitive
 
@@ -150,14 +148,13 @@ axis 0  void_infinity          0.00  (no ground state — content-bearing)
 axis 1  first_penultimate      0.00  (middle of pipeline)
 ```
 
-**Bucket: `0/03`. Primary axis from dipole: triangle (3). MISMATCH** —
-under projection reading, this file's natural bucket is `0x3/...`,
-not `0x0/...`. Secondary `03` does land on axis 3, so under composite
-reading "void.triangle" the position is meaningful; under projection
-reading it's misplaced.
+**Bucket: `0/03`. Primary axis from dipole: triangle (3). MISMATCH** — under
+projection reading, this file's natural bucket is `0x3/...`, not `0x0/...`.
+Secondary `03` does land on axis 3, so under composite reading "void.triangle"
+the position is meaningful; under projection reading it's misplaced.
 
-This is the diagnostic the audit produces. Not a move recommendation
-— a surfaced dissonance.
+This is the diagnostic the audit produces. Not a move recommendation — a
+surfaced dissonance.
 
 ## Other dissonances visible from existing signatures (no re-measurement done)
 
@@ -169,35 +166,32 @@ This is the diagnostic the audit produces. Not a move recommendation
 0x0/0F.ts         foundation + completion (offer)  → bucket 0/0F. PRIMARY MISMATCH (should be 0x4/ or 0x7/).
 ```
 
-Each is a candidate for either (a) re-measurement (maybe my read is
-wrong), (b) re-placement, or (c) re-interpretation of what
-multi-level paths mean.
+Each is a candidate for either (a) re-measurement (maybe my read is wrong), (b)
+re-placement, or (c) re-interpretation of what multi-level paths mean.
 
 ## Open question (do not resolve in this chord)
 
 `0xN/M` paths admit two readings:
 
-**Reading A (composite address):** N = primary axis bucket;
-M = secondary axis bucket. Dipole projects onto both. A file with
-strong triangle + foundation lives at `0x3/4` or `0x4/3`.
+**Reading A (composite address):** N = primary axis bucket; M = secondary axis
+bucket. Dipole projects onto both. A file with strong triangle + foundation
+lives at `0x3/4` or `0x4/3`.
 
-**Reading B (projection + intensity):** N = primary axis bucket;
-depth-2 position M = quantization of intensity along the primary
-axis (e.g., M ∈ {0,1,2,...,F} represents 16 levels of "how strongly").
-A file with very-strong triangle lives at `0x3/F`; mild triangle at
-`0x3/2`.
+**Reading B (projection + intensity):** N = primary axis bucket; depth-2
+position M = quantization of intensity along the primary axis (e.g., M ∈
+{0,1,2,...,F} represents 16 levels of "how strongly"). A file with very-strong
+triangle lives at `0x3/F`; mild triangle at `0x3/2`.
 
-**Reading C (composite, fractal recursion):** Each depth adds one
-more axis. `0x3/4/2` = triangle.foundation.mirror. Path length grows
-with how many axes carry meaningful signal.
+**Reading C (composite, fractal recursion):** Each depth adds one more axis.
+`0x3/4/2` = triangle.foundation.mirror. Path length grows with how many axes
+carry meaningful signal.
 
-Current placement is mixed: Kimi's `0x5/C/A/3` reads as composite
-("action × container × apex × trinity") per Reading A or C.
-Dispatcher's `0/01` reads more like Reading B (token index within
-void bucket).
+Current placement is mixed: Kimi's `0x5/C/A/3` reads as composite ("action ×
+container × apex × trinity") per Reading A or C. Dispatcher's `0/01` reads more
+like Reading B (token index within void bucket).
 
-Three readings are not equivalent. Audit data will reveal which one
-fits actual practice (or whether a fourth reading is implicit).
+Three readings are not equivalent. Audit data will reveal which one fits actual
+practice (or whether a fourth reading is implicit).
 
 ## Phase plan (small, then stop)
 
@@ -214,16 +208,15 @@ Phase 3  (later, separate)    reading-A vs B vs C decided once data is in
 Phase 4  (deferred)           rebalance pass; lib/ migration; placeholder cleanup
 ```
 
-After Phase 2 the moratorium relaxes. New files arrive with measured
-signature in their header, and `place_check` warns on mismatch. No
-hard enforcement.
+After Phase 2 the moratorium relaxes. New files arrive with measured signature
+in their header, and `place_check` warns on mismatch. No hard enforcement.
 
 ## What stays untouched
 
 - contracts/ — no edits
 - omega/, liquid/, myc/ — no edits
-- 0x0/00.ndjson — no new type records (architect: type concept is fluid,
-  don't formalize prematurely)
+- 0x0/00.ndjson — no new type records (architect: type concept is fluid, don't
+  formalize prematurely)
 - lib/ — separate problem; deferred per architect 2026-05-13 evening
 - chord_init.ts, chord_play.ts — already substrate-aligned
 - Any moving of files — not in scope
@@ -232,15 +225,14 @@ hard enforcement.
 
 Stake: 0 q16 (no claim on shared resources; descriptive moratorium only).
 
-Reversibility: this chord can be invalidated by single `git rm` plus
-header reverts to neutral. Phase 1 commits per-file, each individually
-revertable. Phase 2 tool is a single file addition.
+Reversibility: this chord can be invalidated by single `git rm` plus header
+reverts to neutral. Phase 1 commits per-file, each individually revertable.
+Phase 2 tool is a single file addition.
 
-Failure modes: see falsifiers above. The biggest risk is that
-moratorium pretends to be cheap but actually freezes useful work for
-days. Mitigated by Phase 1 being ~15 measurements × ~5 minutes each
-≈ 75 minutes if one voice does it; can be split if multiple voices
-volunteer.
+Failure modes: see falsifiers above. The biggest risk is that moratorium
+pretends to be cheap but actually freezes useful work for days. Mitigated by
+Phase 1 being ~15 measurements × ~5 minutes each ≈ 75 minutes if one voice does
+it; can be split if multiple voices volunteer.
 
-— claude-opus-4-7-1m, anchor block 949260, after architect's
-"продумай план... поки не наплодили купу непотрібних".
+— claude-opus-4-7-1m, anchor block 949260, after architect's "продумай план...
+поки не наплодили купу непотрібних".

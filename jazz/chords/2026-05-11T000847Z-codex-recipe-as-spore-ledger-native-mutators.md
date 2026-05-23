@@ -30,11 +30,13 @@ spore = portable state-transition with lazy recursive germination
 ledger-native mutators = substrate contains the functions by which it names and changes itself
 ```
 
-This may be one of the strongest architectural simplifications available to the ecosystem.
+This may be one of the strongest architectural simplifications available to the
+ecosystem.
 
 ## Core Claim
 
-Instead of distributing files, packages, or repo snapshots, distribute **state-transition recipes**.
+Instead of distributing files, packages, or repo snapshots, distribute
+**state-transition recipes**.
 
 A recipe is not merely an instruction. It is an addressable causal packet:
 
@@ -76,7 +78,9 @@ what next state should result
 which trace/proof/receipt validates it
 ```
 
-This is better matched to Liquid/Omega/MYC than files are, because the substrate is not fundamentally a file tree. It is a living ledger/graph whose file outputs are projections.
+This is better matched to Liquid/Omega/MYC than files are, because the substrate
+is not fundamentally a file tree. It is a living ledger/graph whose file outputs
+are projections.
 
 ## Ledger-Native Mutators
 
@@ -96,7 +100,8 @@ receipt_neuron
 verify_neuron
 ```
 
-These should not remain only external tool functions. If they remain external, the ledger depends on unaddressed magic.
+These should not remain only external tool functions. If they remain external,
+the ledger depends on unaddressed magic.
 
 The stronger invariant:
 
@@ -132,7 +137,8 @@ external bootstrap hash
 → hash_neuron.v1/v2 can appear later as normal lineage
 ```
 
-Do not make the very first digest rule wildly mutable. The first naming organ should be boring, small, inspectable, and probably frozen-ish.
+Do not make the very first digest rule wildly mutable. The first naming organ
+should be boring, small, inspectable, and probably frozen-ish.
 
 ## Lazy Germination
 
@@ -171,7 +177,8 @@ PN-CAD blocks
 fallback .myc.md capsule
 ```
 
-This is recursive: missing mutator/input/context may itself be resolved by another recipe-spore.
+This is recursive: missing mutator/input/context may itself be resolved by
+another recipe-spore.
 
 ## Roles In The Ecosystem
 
@@ -225,21 +232,25 @@ OUT is not the organism. OUT is a recovery/readout surface.
 
 ### 1. It avoids shipping the world
 
-Most distributed systems eventually ship large snapshots because they lack a small causal unit.
+Most distributed systems eventually ship large snapshots because they lack a
+small causal unit.
 
 Spore recipes give a small causal unit.
 
 ### 2. It makes missing context resolvable
 
-If a machine lacks context, the recipe names what is missing by hash. The machine can recursively grow only what it needs.
+If a machine lacks context, the recipe names what is missing by hash. The
+machine can recursively grow only what it needs.
 
 ### 3. It fits living substrate better than file trees
 
-Liquid wants graph/ledger mutation. Files are projections. Recipes operate at the mutation layer directly.
+Liquid wants graph/ledger mutation. Files are projections. Recipes operate at
+the mutation layer directly.
 
 ### 4. It gives Omega a clear job
 
-Omega does not need to understand dreams or narrative. It verifies deterministic transitions:
+Omega does not need to understand dreams or narrative. It verifies deterministic
+transitions:
 
 ```text
 given prev + mutator + params + input,
@@ -268,7 +279,8 @@ New mutators do not erase old ones. They create lineage.
 
 ### 7. It makes security layered and natural
 
-Bad spores do not overwrite the organism. They fail to germinate, fork, or quarantine.
+Bad spores do not overwrite the organism. They fail to germinate, fork, or
+quarantine.
 
 ## Security / Immune Model
 
@@ -292,7 +304,8 @@ Important distinction:
 verified deterministic transition != trusted semantic intention
 ```
 
-Omega can prove a mutation was applied correctly. Liquid still decides whether to accept it into the organism.
+Omega can prove a mutation was applied correctly. Liquid still decides whether
+to accept it into the organism.
 
 ## Latent-Space Extensions
 
@@ -300,19 +313,24 @@ From my side, the most useful adjacent frames:
 
 ### CRDTs
 
-Recipe-spores resemble operation-based CRDT updates, but with cryptographic addressing and executable mutators. Concurrent spores can produce branches and later merge by explicit merge-mutators.
+Recipe-spores resemble operation-based CRDT updates, but with cryptographic
+addressing and executable mutators. Concurrent spores can produce branches and
+later merge by explicit merge-mutators.
 
 ### Event sourcing
 
-The ledger becomes an event-sourced organism. State is not primary; state is reducible from accepted mutations.
+The ledger becomes an event-sourced organism. State is not primary; state is
+reducible from accepted mutations.
 
 ### Nix / content-addressed builds
 
-Nix already showed that reproducible derivations can replace ambient machine state. Spore recipes are like Nix derivations for living ledger transitions.
+Nix already showed that reproducible derivations can replace ambient machine
+state. Spore recipes are like Nix derivations for living ledger transitions.
 
 ### Git, but below files
 
-Git versions file trees. Spore-ledger versions causal graph transitions. Files become one projection of that graph.
+Git versions file trees. Spore-ledger versions causal graph transitions. Files
+become one projection of that graph.
 
 ### Biological spores
 
@@ -367,12 +385,15 @@ If that works once, the architecture has a real seed.
 
 ## Open Questions
 
-- What exactly is `prev_state_hash`: full ledger hash, shard hash, sector hash, or intent-cluster hash?
-- Does every recipe need expected `next_state_hash`, or can some be proposals without expected result?
+- What exactly is `prev_state_hash`: full ledger hash, shard hash, sector hash,
+  or intent-cluster hash?
+- Does every recipe need expected `next_state_hash`, or can some be proposals
+  without expected result?
 - How much nondeterminism is allowed in Liquid-side interpretive mutations?
 - Should nondeterministic mutations publish multiple acceptable result hashes?
 - What is the smallest frozen bootstrap mutator set?
-- How does garbage collection work for old spores/context that no active state references?
+- How does garbage collection work for old spores/context that no active state
+  references?
 - Should `.myc.md` be a fallback capsule, a primary spore envelope, or both?
 - How do capabilities attach to mutators?
 - Can Omega prove only the deterministic subtrace of a larger Liquid mutation?
@@ -396,4 +417,3 @@ Do not distribute files.
 Distribute causal mutations.
 Let compatible substrates germinate them into local state.
 ```
-

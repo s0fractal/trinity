@@ -21,38 +21,37 @@ scope:
 # Probes ↔ chord refs cross-axis — receipt
 
 Implemented as proposed. First cross-axis composition in the 5-axis
-self-description layer: probes axis (8/E) reads from chord pressure
-(jazz layer, same source x8D00_roadmap consumes).
+self-description layer: probes axis (8/E) reads from chord pressure (jazz layer,
+same source x8D00_roadmap consumes).
 
 ## Falsifier check
 
 - **Activity counts match grep**: `grep -l "probes/<name>/" jazz/chords/*.md`
   counts match generator's per-probe counts. ✓
-- **Manifest invalidates on referencing chord**: source manifest now
-  includes 85 referencing chords (out of 313 tracked). Adding a new
-  chord that mentions `probes/<name>/` would shift the hash. ✓
-- **Probes with 0 chord refs don't show false "last activity"**: the
-  render block is gated on `chord_refs.length > 0`. spore-runtime-adapter-v0
-  shows refs (5); a hypothetical zero-ref probe would skip the line. ✓
-- **No duplicated chord-parsing logic**: lexical substring scan only,
-  no frontmatter parsing. Distinct from x8D00_roadmap_gen's full chord
-  schema. ✓
+- **Manifest invalidates on referencing chord**: source manifest now includes 85
+  referencing chords (out of 313 tracked). Adding a new chord that mentions
+  `probes/<name>/` would shift the hash. ✓
+- **Probes with 0 chord refs don't show false "last activity"**: the render
+  block is gated on `chord_refs.length > 0`. spore-runtime-adapter-v0 shows refs
+  (5); a hypothetical zero-ref probe would skip the line. ✓
+- **No duplicated chord-parsing logic**: lexical substring scan only, no
+  frontmatter parsing. Distinct from x8D00_roadmap_gen's full chord schema. ✓
 
 ## Distribution surfaced
 
 Review-density per probe (top 5 most-reviewed):
 
-| probe | chord refs | status |
-|-------|-----------:|--------|
-| receipt-envelope-encoder-v0 | 13 | Graduated (contract) |
-| substrate-court-v0 | 12 | Graduated |
-| spore-execute-v0 | 12 | Graduated (contract) |
-| spore-meter-instr-v0 | 11 | Active |
-| spore-bootstrap-pin-v0 | 11 | Graduated (contract) |
+| probe                       | chord refs | status               |
+| --------------------------- | ---------: | -------------------- |
+| receipt-envelope-encoder-v0 |         13 | Graduated (contract) |
+| substrate-court-v0          |         12 | Graduated            |
+| spore-execute-v0            |         12 | Graduated (contract) |
+| spore-meter-instr-v0        |         11 | Active               |
+| spore-bootstrap-pin-v0      |         11 | Graduated (contract) |
 
-These are heavyweight patterns (SPORE family, Substrate Court,
-receipt envelopes) — the data confirms what INDEX.md called out
-informally. Now visible structurally.
+These are heavyweight patterns (SPORE family, Substrate Court, receipt
+envelopes) — the data confirms what INDEX.md called out informally. Now visible
+structurally.
 
 ## Run output
 
@@ -63,15 +62,15 @@ informally. Now visible structurally.
 
 ## Integrative shape
 
-The 5-axis layer was previously self-contained per axis (each organ
-read its own sources). This is the **first composition**: probes ↔
-chords cross-axis. Pattern can extend:
+The 5-axis layer was previously self-contained per axis (each organ read its own
+sources). This is the **first composition**: probes ↔ chords cross-axis. Pattern
+can extend:
 
-- agents could surface chord activity per organ (which organs are
-  being actively reviewed?)
-- skill could surface skill-related chord pressure (which skills are
-  being challenged or refined?)
-- roadmap already reads chords for proposal/receipt detection — this
-  is partial composition that predates the principle being named.
+- agents could surface chord activity per organ (which organs are being actively
+  reviewed?)
+- skill could surface skill-related chord pressure (which skills are being
+  challenged or refined?)
+- roadmap already reads chords for proposal/receipt detection — this is partial
+  composition that predates the principle being named.
 
 Not doing those compositions now (arc-honoring). Pattern is established.

@@ -34,12 +34,12 @@ t style --json       # machine-readable
 
 Per VOICES.v0.1 style triggers, simplified for crawl:
 
-| Style | Trigger | Confidence |
-|---|---|---|
-| **silence** | daemon locked + no chord in last 30min | high |
-| **lullaby** | daemon locked + recent chords (<30min) | high |
-| **improvisation** | daemon unlocked + healthy/degraded + recent chords | high |
-| **vigil** | daemon unlocked + degraded + stale chords | medium |
+| Style             | Trigger                                            | Confidence |
+| ----------------- | -------------------------------------------------- | ---------- |
+| **silence**       | daemon locked + no chord in last 30min             | high       |
+| **lullaby**       | daemon locked + recent chords (<30min)             | high       |
+| **improvisation** | daemon unlocked + healthy/degraded + recent chords | high       |
+| **vigil**         | daemon unlocked + degraded + stale chords          | medium     |
 
 ### Current output
 
@@ -55,27 +55,27 @@ Per VOICES.v0.1 style triggers, simplified for crawl:
 
 ## Falsifiers
 
-- If `t style` reports "improvisation" when daemon is locked, the
-  trigger logic is wrong. (Tested: `t daemon stop` → silence.)
-- If `t style` reports "silence" when new chords are being written
-  every minute, the mtime reader is broken.
-- If health is "degraded" but style is still "improvisation" (not
-  "vigil"), the degraded+stale trigger is too weak.
+- If `t style` reports "improvisation" when daemon is locked, the trigger logic
+  is wrong. (Tested: `t daemon stop` → silence.)
+- If `t style` reports "silence" when new chords are being written every minute,
+  the mtime reader is broken.
+- If health is "degraded" but style is still "improvisation" (not "vigil"), the
+  degraded+stale trigger is too weak.
 
 ## What this means for VOICES.v0.1
 
-Style spectrum is now **observable**. Before this, "active style" was
-a concept in the contract. Now it is a command output.
+Style spectrum is now **observable**. Before this, "active style" was a concept
+in the contract. Now it is a command output.
 
-When `t daemon run --watch` lands (walk phase), it can read `t style`
-before each pass to decide whether to route or rest.
+When `t daemon run --watch` lands (walk phase), it can read `t style` before
+each pass to decide whether to route or rest.
 
 ## Next step
 
-- Walk phase: `t daemon run --watch` uses `t style` to decide
-  "improvisation → route" vs "silence/lullaby → sleep".
-- Attractors (type:11) can bias style selection (e.g. harmony-call
-  pulls toward chorale).
+- Walk phase: `t daemon run --watch` uses `t style` to decide "improvisation →
+  route" vs "silence/lullaby → sleep".
+- Attractors (type:11) can bias style selection (e.g. harmony-call pulls toward
+  chorale).
 
 ## Verification
 

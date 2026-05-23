@@ -13,11 +13,12 @@ oct: 5.action
 ## Context
 
 VOICES.v0.1 crawl phase needs:
-> Daemon: listen for new chord files (like old prototype).
-> Invocation log: yes. Shutdown switch: yes.
 
-Before the full watch-loop, the smallest executable step is a
-`t daemon status` organ that surfaces daemon state from the filesystem.
+> Daemon: listen for new chord files (like old prototype). Invocation log: yes.
+> Shutdown switch: yes.
+
+Before the full watch-loop, the smallest executable step is a `t daemon status`
+organ that surfaces daemon state from the filesystem.
 
 ## What it does
 
@@ -61,15 +62,15 @@ t daemon start          # remove state/daemon.lock
 
 ## Falsifier
 
-- If `t daemon stop` succeeds but `t daemon status` still says running,
-  the lock file path is wrong or permissions fail. Fix path.
-- If two architects run `t daemon stop` simultaneously, one overwrites
-  the other's lock. Acceptable for crawl phase; v0.2 adds lock content
-  (timestamp + actor) for audit.
+- If `t daemon stop` succeeds but `t daemon status` still says running, the lock
+  file path is wrong or permissions fail. Fix path.
+- If two architects run `t daemon stop` simultaneously, one overwrites the
+  other's lock. Acceptable for crawl phase; v0.2 adds lock content (timestamp +
+  actor) for audit.
 
 ## Next step after this
 
-Daemon watch-loop: `t daemon run --once` — single pass: scan
-`jazz/chords/` for new files since last check, route via 1D baseline,
-emit invocation receipt, append to log. Run via cron or architect
-manual invocation until autonomous loop matures.
+Daemon watch-loop: `t daemon run --once` — single pass: scan `jazz/chords/` for
+new files since last check, route via 1D baseline, emit invocation receipt,
+append to log. Run via cron or architect manual invocation until autonomous loop
+matures.

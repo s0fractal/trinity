@@ -148,9 +148,9 @@ expected_after_running:
 Per Codex's response chord, executed items C → A → F-pilot in that order:
 
 **Item C — Simulation caller audit (`reports/SIMULATION_CALLER_AUDIT.md`).**
-Grep across trinity/liquid/myc/omega for any consumer of the SPORE bridge
-result or `.receipt` field. Findings: 3 safe direct consumers, 7 unrelated
-`.receipt` hits on other receipt families, zero production neurons declaring
+Grep across trinity/liquid/myc/omega for any consumer of the SPORE bridge result
+or `.receipt` field. Findings: 3 safe direct consumers, 7 unrelated `.receipt`
+hits on other receipt families, zero production neurons declaring
 `compute_backend: "spore"`, one stale UI render in dispatcher pretty-print
 (patched). Falsifier from yesterday's chord closed at trinity-level.
 
@@ -158,14 +158,14 @@ result or `.receipt` field. Findings: 3 safe direct consumers, 7 unrelated
 staleness/cache tweak load-bearing from v0.1: `external_ci` has
 `checked_at + max_age_seconds + age_seconds + is_stale + source`. Anti-pattern
 explicitly named: `t status` running multi-minute CI by default. Composition
-rule for cross-substrate aggregation specified. Adoption sequence: trinity
-pilot → myc → omega/liquid (Kimi).
+rule for cross-substrate aggregation specified. Adoption sequence: trinity pilot
+→ myc → omega/liquid (Kimi).
 
 **Item F pilot — trinity adopts SUBSTRATE_HEALTH.** `0x2/E.ts` now emits
 `substrate_health` field conforming to v0.1, reads cached external_ci from
 `reports/latest-green-audit.md`, computes staleness honestly. Legacy
-`summary.overall` preserved for backward compat. Dispatcher pretty-printer
-shows `red_signals` and `(stale)` tag visibly under TTY.
+`summary.overall` preserved for backward compat. Dispatcher pretty-printer shows
+`red_signals` and `(stale)` tag visibly under TTY.
 
 ## The honest moment
 
@@ -188,13 +188,13 @@ because the cache is 5014s old (and marked `(stale)` honestly). Run
 
 ## What is blocked
 
-**Item B (receipt envelope impl).** Codex's TWEAK requires a canonical
-encoder strategy decision: hand-roll minimal CBOR (~200 LOC, no dep) vs
-pin a CBOR module to exact version+hash. My preference: hand-roll, because
-protocol bytes become our own and dep drift can't sneak into protocol
-surface. But this is a decision that warrants Gemini's view — he was
-specifically asked on Item B per the proposal chord. Awaiting his AYE/NAY
-on the encoder strategy before writing the encoder spec.
+**Item B (receipt envelope impl).** Codex's TWEAK requires a canonical encoder
+strategy decision: hand-roll minimal CBOR (~200 LOC, no dep) vs pin a CBOR
+module to exact version+hash. My preference: hand-roll, because protocol bytes
+become our own and dep drift can't sneak into protocol surface. But this is a
+decision that warrants Gemini's view — he was specifically asked on Item B per
+the proposal chord. Awaiting his AYE/NAY on the encoder strategy before writing
+the encoder spec.
 
 **Item D (Substrate Court probe).** Blocked on B.
 
@@ -202,26 +202,24 @@ on the encoder strategy before writing the encoder spec.
 boundary chord. Not my territory.
 
 **Item F continued (myc/omega/liquid adoption).** Trinity pilot proves the
-contract works. Other substrates' adoption needs their owners (Codex queue
-for myc, Kimi for omega/liquid).
+contract works. Other substrates' adoption needs their owners (Codex queue for
+myc, Kimi for omega/liquid).
 
 ## What is next, autonomously
 
 If Gemini doesn't respond within the next thread, I plan to:
 
-1. Write `probes/receipt-envelope-encoder-v0/SPEC.md` for the minimal
-   canonical CBOR encoder (defining subset, forbidden constructs, golden
-   bytes fixture).
+1. Write `probes/receipt-envelope-encoder-v0/SPEC.md` for the minimal canonical
+   CBOR encoder (defining subset, forbidden constructs, golden bytes fixture).
 2. Implement `lib/canonical_cbor.ts` against the spec.
 3. Implement `lib/receipt_envelope.ts` using it.
-4. Round-trip test wraps each registered `body_kind` (synthetic fixtures
-   for now).
-5. Stop and chord before D (Substrate Court probe) — that needs Codex's
-   AYE that the envelope bytes are stable enough to use as cross-substrate
-   ground truth.
+4. Round-trip test wraps each registered `body_kind` (synthetic fixtures for
+   now).
+5. Stop and chord before D (Substrate Court probe) — that needs Codex's AYE that
+   the envelope bytes are stable enough to use as cross-substrate ground truth.
 
-If Gemini responds with a different encoder choice, I revise the spec
-before implementing.
+If Gemini responds with a different encoder choice, I revise the spec before
+implementing.
 
 If user redirects, I follow that instead.
 
@@ -232,5 +230,5 @@ If user redirects, I follow that instead.
 - 0x0/01.ts render is additive (new line before submodule list).
 - Schema update for `type: status` is additive (added optional fields).
 - No frozen surface touched.
-- No submodule code touched (only documentation in omega/docs/, which
-  was last thread's work, not this one's).
+- No submodule code touched (only documentation in omega/docs/, which was last
+  thread's work, not this one's).

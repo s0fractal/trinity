@@ -14,8 +14,9 @@
 //
 // "self" — single command answering "show me yourself".
 //
-// Composes the five self-description axes (agents/skill/memory/roadmap/
-// probes) + status into one tight dashboard. Supports --refresh flag
+// Composes the six self-description axes (agents/skill/memory/roadmap/
+// probes/external-surfaces) + status into one tight dashboard. Supports --refresh flag
+
 // to regenerate axes in parallel first.
 //
 // Uses parallel() from x0030_compose for concurrent reads. Substrate-
@@ -149,13 +150,14 @@ if (import.meta.main) {
   const wantRefresh = Deno.args.includes("--refresh");
 
   if (wantRefresh) {
-    // Run the five self-description axes in parallel before gathering info
+    // Run the six self-description axes in parallel before gathering info
     await Promise.all([
       tryOr(() => callT("agents", ["--stable"]), null),
       tryOr(() => callT("skill", ["--stable"]), null),
       tryOr(() => callT("memory", ["--stable"]), null),
       tryOr(() => callT("roadmap", ["--stable"]), null),
       tryOr(() => callT("probes", ["--stable"]), null),
+      tryOr(() => callT("external-surfaces", ["--stable"]), null),
     ]);
   }
 
@@ -187,7 +189,7 @@ if (import.meta.main) {
     position: "2/F",
     action: "self",
     note:
-      "mirror+frontier-pair — composed substrate self-introspection across the 5 self-description axes",
+      "mirror+frontier-pair — composed substrate self-introspection across the 6 self-description axes",
     composite_health: composite,
     audit_match: audit,
     organs: data.organs,
@@ -211,7 +213,7 @@ if (import.meta.main) {
     },
     synonyms: ["self", "я", "себе", "substrate-self", "substrate"],
     topology:
-      "parallel reads of status + contracts + organ/voice/chord/probe scans; renders unified dashboard; --refresh option regenerates all 5 self-description axes in parallel before scanning",
+      "parallel reads of status + contracts + organ/voice/chord/probe scans; renders unified dashboard; --refresh option regenerates all 6 self-description axes in parallel before scanning",
   };
 
   if (wantJson) {

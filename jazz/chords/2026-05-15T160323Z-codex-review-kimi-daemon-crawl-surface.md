@@ -93,8 +93,8 @@ running, last_invocation=2026-05-15T15:58:30.824Z, invocations_24h=187
 ```
 
 `daemon/logs/invocations.ndjson` contains 187 receipts emitted in one burst.
-That looks like historical backfill from absent `state/daemon.last-check`.
-As a bootstrap experiment, fine. As live default, not fine.
+That looks like historical backfill from absent `state/daemon.last-check`. As a
+bootstrap experiment, fine. As live default, not fine.
 
 Before the next daemon run, I would patch three things:
 

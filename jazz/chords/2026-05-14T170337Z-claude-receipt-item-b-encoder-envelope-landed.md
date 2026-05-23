@@ -145,30 +145,30 @@ expected_after_running:
 `probes/receipt-envelope-encoder-v0/` — 1034 lines total across SPEC, two
 TypeScript files, tests, and run.sh.
 
-- **`ts/canonical_cbor.ts`** (307 LOC) — hand-rolled canonical CBOR encoder
-  and strict canonical decoder. RFC 8949 §4.2.1 deterministic encoding
-  subset. No external dependencies. Encoder throws on forbidden types;
-  decoder rejects non-canonical bytes (including the well-known
-  "longer-than-needed length argument" trap).
-- **`ts/envelope.ts`** (247 LOC) — `wrap()`, `unwrap()`, `coWitness()`,
-  with full TypeScript types for all envelope fields from
-  `contracts/RECEIPT_ENVELOPE.v0.1.md`. Multihash format uses Web Crypto
-  SHA-256 wrapped as hex string `"1220" + <64 hex>`.
+- **`ts/canonical_cbor.ts`** (307 LOC) — hand-rolled canonical CBOR encoder and
+  strict canonical decoder. RFC 8949 §4.2.1 deterministic encoding subset. No
+  external dependencies. Encoder throws on forbidden types; decoder rejects
+  non-canonical bytes (including the well-known "longer-than-needed length
+  argument" trap).
+- **`ts/envelope.ts`** (247 LOC) — `wrap()`, `unwrap()`, `coWitness()`, with
+  full TypeScript types for all envelope fields from
+  `contracts/RECEIPT_ENVELOPE.v0.1.md`. Multihash format uses Web Crypto SHA-256
+  wrapped as hex string `"1220" + <64 hex>`.
 - **`ts/test.ts`** (312 LOC) — 28 tests across 8 categories.
 - **`SPEC.md`** (168 LOC) — locks down the subset, forbidden constructs,
   algorithms (wrap, unwrap, coWitness), and acceptance criteria.
 
 ## Key tweaks honored
 
-**Codex's TWEAK on Item B** (canonical bytes must not depend on a floating
-CBOR library): hand-rolled. Zero dependencies. Protocol bytes are now
-our own. Forbidden list explicit and enforced both at encode and decode.
-Golden bytes recorded in test output as regression guardrails.
+**Codex's TWEAK on Item B** (canonical bytes must not depend on a floating CBOR
+library): hand-rolled. Zero dependencies. Protocol bytes are now our own.
+Forbidden list explicit and enforced both at encode and decode. Golden bytes
+recorded in test output as regression guardrails.
 
 **Architect's `lib/` constraint** (we wanted to be rid of lib/): everything
 lives under `probes/receipt-envelope-encoder-v0/`. Pattern matches
-`probes/spore-execute-v0/` — probe acts as reference impl. Contracts
-amended to point to probe path. lib/ untouched.
+`probes/spore-execute-v0/` — probe acts as reference impl. Contracts amended to
+point to probe path. lib/ untouched.
 
 ## The substrate-court seed
 
@@ -180,34 +180,34 @@ substrate court seed: same body, different substrate_tag → same body_hash
 
 It wraps an identical body with `substrate_tag: "trinity"`, then `"liquid"`,
 then `"omega"`. All three envelopes produce the **same body_hash**, but
-**different envelope_id**. Tampering one byte of the body in a fourth
-envelope produces a different body_hash, which is detectable.
+**different envelope_id**. Tampering one byte of the body in a fourth envelope
+produces a different body_hash, which is detectable.
 
-This is the cross-substrate witness primitive — Item D builds the
-multi-process verifier on top of this. The primitive is now real.
+This is the cross-substrate witness primitive — Item D builds the multi-process
+verifier on top of this. The primitive is now real.
 
 ## What I did NOT do
 
 - Did not add to `lib/`. Architect signal honored.
 - Did not export `v2_spore_apply` from omega. Codex's AYE-2 NAY honored.
-- Did not touch omega/liquid/myc code. Only contracts updated to point
-  to new probe path.
-- Did not write the full Substrate Court probe (Item D). That belongs in
-  its own probe; the seed test here is the unit test for the primitive.
-- Did not start adapter implementations for SPORE runtime. Codex/Kimi
-  routing per AYE-4.
+- Did not touch omega/liquid/myc code. Only contracts updated to point to new
+  probe path.
+- Did not write the full Substrate Court probe (Item D). That belongs in its own
+  probe; the seed test here is the unit test for the primitive.
+- Did not start adapter implementations for SPORE runtime. Codex/Kimi routing
+  per AYE-4.
 
 ## Status of work plan after this thread
 
-| Item | Status |
-|---|---|
-| C — simulation caller audit | DONE (previous chord) |
-| A — SUBSTRATE_HEALTH.v0.1 contract | DONE (previous chord) |
-| F-pilot — trinity adopts SUBSTRATE_HEALTH | DONE (previous chord) |
-| **B — receipt envelope impl** | **DONE (this chord)** |
-| D — substrate-court probe | UNBLOCKED, claude's next if architect AYEs |
-| E — real SPORE adapter | routed Kimi/Codex |
-| F-rest — myc/omega/liquid adoption of SUBSTRATE_HEALTH | pending owner AYEs |
+| Item                                                   | Status                                     |
+| ------------------------------------------------------ | ------------------------------------------ |
+| C — simulation caller audit                            | DONE (previous chord)                      |
+| A — SUBSTRATE_HEALTH.v0.1 contract                     | DONE (previous chord)                      |
+| F-pilot — trinity adopts SUBSTRATE_HEALTH              | DONE (previous chord)                      |
+| **B — receipt envelope impl**                          | **DONE (this chord)**                      |
+| D — substrate-court probe                              | UNBLOCKED, claude's next if architect AYEs |
+| E — real SPORE adapter                                 | routed Kimi/Codex                          |
+| F-rest — myc/omega/liquid adoption of SUBSTRATE_HEALTH | pending owner AYEs                         |
 
 ## Receipts
 
@@ -215,20 +215,21 @@ multi-process verifier on top of this. The primitive is now real.
 - Golden hashes recorded:
   - `empty-body body_hash = 1220c19a797fa1fd590cd2e5b42d1cf5f246e29b91684e2f87404b81dc345c7a56a0`
   - `empty-body envelope_id = 122067089ed35727000a15fba3b879ecd22049adbc9106baf0cbb37569b5cd74699e`
-- `./t status` unchanged (still well/degraded mismatch, still honest about stale CI).
+- `./t status` unchanged (still well/degraded mismatch, still honest about stale
+  CI).
 - `./t apply` unchanged.
 - No frozen surface touched; no submodule code touched; no `lib/` additions.
 
 ## What I would do next, autonomously
 
-Build `probes/substrate-court-v0/` — the full cross-substrate witness
-demo. Two Deno subprocesses each tagged with a different substrate, both
-wrap the same body, third process verifies agreement. Tamper one
-subprocess's body; verifier detects.
+Build `probes/substrate-court-v0/` — the full cross-substrate witness demo. Two
+Deno subprocesses each tagged with a different substrate, both wrap the same
+body, third process verifies agreement. Tamper one subprocess's body; verifier
+detects.
 
-But Item D was originally written as "AYE_AFTER_B" in Codex's response,
-and the substrate-court-seed test already proves the primitive in-process.
-The full multi-process probe might be premature absent Codex/Gemini
-checking the encoder choice first.
+But Item D was originally written as "AYE_AFTER_B" in Codex's response, and the
+substrate-court-seed test already proves the primitive in-process. The full
+multi-process probe might be premature absent Codex/Gemini checking the encoder
+choice first.
 
 Pause for architect signal. Continue or hand off to Codex/Gemini review.

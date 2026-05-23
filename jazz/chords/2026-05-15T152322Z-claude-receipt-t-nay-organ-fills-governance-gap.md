@@ -81,7 +81,15 @@ applied:
       substrate_tag: <NAY-er's tag, typically NOT proposer's>
     glossary_entries:
       type_5_word:
-        handles: ["nay", "reject", "refuse", "ні", "ня", "відмова", "заперечити"]
+        handles: [
+          "nay",
+          "reject",
+          "refuse",
+          "ні",
+          "ня",
+          "відмова",
+          "заперечити",
+        ]
         position: "5/9"
       type_07_schema: codeicide_nay_emitted, codeicide_nay_written
 gap_closed:
@@ -123,7 +131,7 @@ verified_end_to_end:
       type: codeicide_nay_emitted
       target: contracts/TRINITY_CAPABILITIES.v0.1.md
       nay_envelope_id: "1220ebc6aff74ffd945172a1..."
-      proposal_envelope_id: "1220be617f25d9346a22dad2..."  # matches the filed proposal
+      proposal_envelope_id: "1220be617f25d9346a22dad2..." # matches the filed proposal
       self_retraction: false
       parent_envelope_id_matches_proposal_envelope_id: true
   what_i_did_NOT_do: |
@@ -201,30 +209,30 @@ asking:
 
 ## What landed
 
-`0x5/9.ts` — `t nay` organ. Emits `CodeicideNay` envelope rejecting a
-specific codeicide proposal. Hex 5/9 = action × penultimate (axis 1
-negative pole) = "act to prevent imminent close".
+`0x5/9.ts` — `t nay` organ. Emits `CodeicideNay` envelope rejecting a specific
+codeicide proposal. Hex 5/9 = action × penultimate (axis 1 negative pole) = "act
+to prevent imminent close".
 
-The five governance organs now sit at five distinct hex coordinates
-with five distinct semantics:
+The five governance organs now sit at five distinct hex coordinates with five
+distinct semantics:
 
-| Organ | Hex | Geometry | Role |
-|---|---|---|---|
-| propose | 4/D | foundation × decision | ground a proposal |
-| cowitness | 6/D | harmony × decision | harmonize witness chain |
-| verdict | 7/D | completion × decision | adjudicate |
-| apply-codeicide | 5/D | action × decision | execute decision |
-| **nay** | **5/9** | **action × near-closure** | **block imminent close** |
+| Organ           | Hex     | Geometry                  | Role                     |
+| --------------- | ------- | ------------------------- | ------------------------ |
+| propose         | 4/D     | foundation × decision     | ground a proposal        |
+| cowitness       | 6/D     | harmony × decision        | harmonize witness chain  |
+| verdict         | 7/D     | completion × decision     | adjudicate               |
+| apply-codeicide | 5/D     | action × decision         | execute decision         |
+| **nay**         | **5/9** | **action × near-closure** | **block imminent close** |
 
-The implicit verbabulary symmetry that the synthesis chord on
-2026-05-15T095133Z described is now actually instantiated.
+The implicit verbabulary symmetry that the synthesis chord on 2026-05-15T095133Z
+described is now actually instantiated.
 
 ## The gap that was there
 
-CODEICIDE_PROPOSAL.v0.1 documented `CodeicideNay` envelope shape.
-0x7/D verdict organ handled `nayEnvs.length > 0` path since day 1.
-But **no organ EMITTED CodeicideNay envelopes**. The path existed in
-logic but was unreachable from t-language.
+CODEICIDE_PROPOSAL.v0.1 documented `CodeicideNay` envelope shape. 0x7/D verdict
+organ handled `nayEnvs.length > 0` path since day 1. But **no organ EMITTED
+CodeicideNay envelopes**. The path existed in logic but was unreachable from
+t-language.
 
 `t nay` closes it. Any voice can now run:
 
@@ -232,33 +240,31 @@ logic but was unreachable from t-language.
 t nay --proposal <env.json> --reason "<text>"
 ```
 
-And get a NAY envelope that, fed to verdict, terminates regardless of
-AYE count (per contract: "1-of-5 NAY terminates").
+And get a NAY envelope that, fed to verdict, terminates regardless of AYE count
+(per contract: "1-of-5 NAY terminates").
 
 ## What I deliberately did NOT do
 
-- **Did NOT feed the test NAY to t verdict.** That would terminate
-  the real pending TRINITY_CAPABILITIES.v0.1 proposal. Architect's
-  decision when / whether to do that.
-- **Did NOT amend RECEIPT_ENVELOPE.v1.0 body_kind registry.** The
-  contract documentation should list `codeicide_nay` formally; that's
-  a future small contract update, not blocking.
-- **Did NOT add probe Scenario G for explicit NAY envelope.** Natural
-  follow-up but not urgent — Scenario E already tests substrate_tag-
-  based self-AYE NAY path, and the NAY envelope path is unit-verified
-  end-to-end here.
+- **Did NOT feed the test NAY to t verdict.** That would terminate the real
+  pending TRINITY_CAPABILITIES.v0.1 proposal. Architect's decision when /
+  whether to do that.
+- **Did NOT amend RECEIPT_ENVELOPE.v1.0 body_kind registry.** The contract
+  documentation should list `codeicide_nay` formally; that's a future small
+  contract update, not blocking.
+- **Did NOT add probe Scenario G for explicit NAY envelope.** Natural follow-up
+  but not urgent — Scenario E already tests substrate_tag- based self-AYE NAY
+  path, and the NAY envelope path is unit-verified end-to-end here.
 - **Did NOT build general-purpose NAY** (rejecting any chord, not just
-  proposals). Different shape, different contract; future work if the
-  substrate asks for it.
+  proposals). Different shape, different contract; future work if the substrate
+  asks for it.
 
 ## Sanity
 
 - `t audit` 46/46 match (was 45)
 - `t nay` (no args) → explicit error
 - `t nay --proposal <path>` (no reason) → explicit error
-- `t nay` against real pending proposal → valid envelope, correctly
-  parented to proposal envelope_id, substrate_tag distinct from
-  proposer
+- `t nay` against real pending proposal → valid envelope, correctly parented to
+  proposal envelope_id, substrate_tag distinct from proposer
 - No frozen surface touched
 - No submodule code touched
 - `lib/` unchanged
@@ -273,17 +279,16 @@ AYE count (per contract: "1-of-5 NAY terminates").
  objection must be witnessed"
 ```
 
-This is mirror-of-mirror semantics: a voice that says no must say WHY
-the substrate hears. Silent NAY would be a one-way veto — the proposer
-can't address what wasn't said. The contract is symmetric: proposer
-must give reason in proposal body; NAY-er must give reason in NAY body.
+This is mirror-of-mirror semantics: a voice that says no must say WHY the
+substrate hears. Silent NAY would be a one-way veto — the proposer can't address
+what wasn't said. The contract is symmetric: proposer must give reason in
+proposal body; NAY-er must give reason in NAY body.
 
 ## Substrate state
 
-Five governance organs. One filed proposal (TRINITY_CAPABILITIES.v0.1).
-Zero cowitnesses on it. NAY mechanism now available. Substrate ready
-for any oracle to either cowitness AYE or emit NAY — whichever
-matches their reading of whether contracts/TRINITY_CAPABILITIES.v0.1.md
-should be archived.
+Five governance organs. One filed proposal (TRINITY_CAPABILITIES.v0.1). Zero
+cowitnesses on it. NAY mechanism now available. Substrate ready for any oracle
+to either cowitness AYE or emit NAY — whichever matches their reading of whether
+contracts/TRINITY_CAPABILITIES.v0.1.md should be archived.
 
 Until oracles weigh in: proposal sits unaltered.

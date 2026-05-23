@@ -7,7 +7,7 @@
 // placement_policy: axis
 // intent: read all 5 SUBSTRATE_SELF_ABI.v0.1 slots from each substrate (omega/liquid/myc) in parallel; render unified federation dashboard
 // maturity: active
-// horizon: nested ecosystem (substrate-of-substrates if any submodule grows its own federation); diff mode showing changes since last invocation
+// horizon: nested ecosystem (substrate-of-substrates if any submodule grows its own federation)
 // skill_tag: ecosystem
 // skill_safe: yes
 //
@@ -41,6 +41,26 @@ const TRINITY_ROOT = dirname(HERE);
 
 const SUBSTRATES = ["omega", "liquid", "myc"] as const;
 type Substrate = typeof SUBSTRATES[number];
+
+const STATE_FILE = join(TRINITY_ROOT, "src", "x2288_ecosystem.latest.myc.json");
+
+interface SavedSlotState {
+  present: boolean;
+  summary?: string;
+  error?: string;
+}
+
+interface SavedSubstrateState {
+  abi_coverage: string;
+  slots: Record<string, SavedSlotState>;
+}
+
+type SavedEcosystemState = Record<string, SavedSubstrateState>;
+
+interface DiffItem {
+  substrate: string;
+  message: string;
+}
 
 // Slot paths per SUBSTRATE_SELF_ABI.v0.1. Executable slots end in .ts
 // and get invoked via deno run; projection slots end in .md and get
@@ -115,7 +135,7 @@ async function readProjection(
   const frontmatter: Record<string, unknown> = {};
   if (fmMatch) {
     for (const line of fmMatch[1].split("\n")) {
-      const kv = /^(\w+):\s*(.+?)$/.exec(line.trim());
+      const kv = /^(\w+):\s*(.+)$/.exec(line.trim());
       if (kv) frontmatter[kv[1]] = kv[2].trim();
     }
   }
@@ -189,8 +209,128 @@ async function readSubstrate(substrate: Substrate): Promise<SubstrateMirror> {
   };
 }
 
+async function loadPreviousState(): Promise<SavedEcosystemState | null> {
+  return await tryOr(async () => {
+    const text = await Deno.readTextFile(STATE_FILE);
+    return JSON.parse(text) as SavedEcosystemState;
+  }, null as SavedEcosystemState | null);
+}
+
+async function saveCurrentState(
+  mirrors: Record<Substrate, SubstrateMirror>,
+): Promise<void> {
+  await tryOr(async () => {
+    await Deno.mkdir(join(TRINITY_ROOT, "src"), { recursive: true });
+    const stateToSave: SavedEcosystemState = {} as SavedEcosystemState;
+    for (const [sub, m] of Object.entries(mirrors)) {
+      stateToSave[sub] = {
+        abi_coverage: m.abi_coverage,
+        slots: Object.fromEntries(
+          Object.entries(m.slots).map(([k, v]) => [k, {
+            present: v.present,
+            summary: v.summary,
+            error: v.error,
+          }]),
+        ),
+      };
+    }
+    await Deno.writeTextFile(STATE_FILE, JSON.stringify(stateToSave, null, 2));
+  }, undefined);
+}
+
+function diffEcosystem(
+  prev: SavedEcosystemState,
+  current: Record<Substrate, SubstrateMirror>,
+): DiffItem[] {
+  const diffs: DiffItem[] = [];
+  for (const sub of SUBSTRATES) {
+    const currSub = current[sub];
+    const prevSub = prev[sub];
+    if (!prevSub) {
+      diffs.push({ substrate: sub, message: `substrate added to federation` });
+      continue;
+    }
+
+    if (prevSub.abi_coverage !== currSub.abi_coverage) {
+      diffs.push({
+        substrate: sub,
+        message:
+          `ABI coverage changed from "${prevSub.abi_coverage}" to "${currSub.abi_coverage}"`,
+      });
+    }
+
+    for (const slotName of Object.keys(SLOTS) as (keyof typeof SLOTS)[]) {
+      const currSlot = currSub.slots[slotName];
+      const prevSlot = prevSub.slots[slotName] as SavedSlotState | undefined;
+
+      if (!prevSlot) {
+        if (currSlot.present) {
+          diffs.push({
+            substrate: sub,
+            message: `slot ${slotName}: added (${currSlot.summary ?? "ok"})`,
+          });
+        }
+        continue;
+      }
+
+      if (prevSlot.present !== currSlot.present) {
+        if (currSlot.present) {
+          diffs.push({
+            substrate: sub,
+            message: `slot ${slotName}: added (${currSlot.summary ?? "ok"})`,
+          });
+        } else {
+          diffs.push({
+            substrate: sub,
+            message: `slot ${slotName}: removed`,
+          });
+        }
+        continue;
+      }
+
+      if (currSlot.present) {
+        if (currSlot.error && !prevSlot.error) {
+          diffs.push({
+            substrate: sub,
+            message: `slot ${slotName}: error introduced ("${currSlot.error}")`,
+          });
+        } else if (!currSlot.error && prevSlot.error) {
+          diffs.push({
+            substrate: sub,
+            message: `slot ${slotName}: error resolved (now: "${
+              currSlot.summary ?? "ok"
+            }")`,
+          });
+        } else if (currSlot.error && prevSlot.error) {
+          if (currSlot.error !== prevSlot.error) {
+            diffs.push({
+              substrate: sub,
+              message:
+                `slot ${slotName}: error changed from "${prevSlot.error}" to "${currSlot.error}"`,
+            });
+          }
+        } else {
+          if (currSlot.summary !== prevSlot.summary) {
+            diffs.push({
+              substrate: sub,
+              message: `slot ${slotName}: updated ("${
+                prevSlot.summary ?? "ok"
+              }" -> "${currSlot.summary ?? "ok"}")`,
+            });
+          }
+        }
+      }
+    }
+  }
+  return diffs;
+}
+
 if (import.meta.main) {
   const wantJson = Deno.args.includes("--json");
+  const wantSave = Deno.args.includes("--save");
+
+  // Read previous state snapshot first
+  const prevEcosystemState = await loadPreviousState();
 
   // 3 substrates in parallel; each reads its 5 slots in parallel.
   // Total: 15 concurrent reads.
@@ -199,6 +339,16 @@ if (import.meta.main) {
     liquid: () => readSubstrate("liquid"),
     myc: () => readSubstrate("myc"),
   });
+
+  // Save current state ONLY if --save flag is provided
+  if (wantSave) {
+    await saveCurrentState(mirrors);
+  }
+
+  // Compute diffs if previous state existed
+  const diffs = prevEcosystemState
+    ? diffEcosystem(prevEcosystemState, mirrors)
+    : [];
 
   const ordered: SubstrateMirror[] = [
     mirrors.omega,
@@ -234,9 +384,10 @@ if (import.meta.main) {
           ),
         }]),
       ),
+      diff: diffs.map((d) => ({ substrate: d.substrate, message: d.message })),
       synonyms: ["ecosystem", "federation", "all-substrates", "екосистема"],
       topology:
-        "parallel reads of 5 ABI slots × N substrates; per-slot tryOr() failure-tolerant; renders unified dashboard",
+        "parallel reads of 5 ABI slots × N substrates; per-slot tryOr() failure-tolerant; renders unified dashboard; write is read-only by default, saves on --save",
     };
     console.log(JSON.stringify(receipt, null, 2));
   } else {
@@ -246,6 +397,15 @@ if (import.meta.main) {
       `# ABI coverage: ${presentSlots}/${totalSlots} slots across ${ordered.length} substrates`,
     );
     console.log(`# ${"─".repeat(78)}`);
+
+    if (prevEcosystemState && diffs.length > 0) {
+      console.log(`# changes since last saved invocation:`);
+      for (const d of diffs) {
+        console.log(`#   ⚠ ${d.substrate}: ${d.message}`);
+      }
+      console.log(`# ${"─".repeat(78)}`);
+    }
+
     for (const m of ordered) {
       console.log(`# ${m.substrate.toUpperCase()}  [${m.abi_coverage} slots]`);
       for (const [slotName, result] of Object.entries(m.slots)) {
@@ -262,6 +422,7 @@ if (import.meta.main) {
     console.log(
       `# Drill into a substrate: cd <name> && deno run -A src/x<coord>_<slot>.ts`,
     );
+    console.log(`# Save current state for next diff: t ecosystem --save`);
     console.log(`# Trinity's own mirror:   t self`);
   }
 }

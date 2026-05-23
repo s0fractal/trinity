@@ -25,7 +25,8 @@ Recipe-as-spore needs a deeper execution discipline:
 pure functions + hash-addressed values + explicit effects + frozen-ish basis LUTs
 ```
 
-This is not just "nice functional programming style". It is the causality physics that makes portable spores possible.
+This is not just "nice functional programming style". It is the causality
+physics that makes portable spores possible.
 
 ## Core Shape
 
@@ -82,7 +83,8 @@ The key invariant:
 Nothing un-hashed participates in a state transition.
 ```
 
-No hidden glue. No ambient state. No implicit current directory. No clock unless the clock observation is itself an input artifact.
+No hidden glue. No ambient state. No implicit current directory. No clock unless
+the clock observation is itself an input artifact.
 
 ## Effects
 
@@ -116,7 +118,8 @@ After the effect response is captured, downstream mutation can be pure:
 next_state = reduce(prev_state, effect_response)
 ```
 
-This keeps LLM nondeterminism from poisoning deterministic replay. The model's output becomes a hashed artifact, not hidden execution state.
+This keeps LLM nondeterminism from poisoning deterministic replay. The model's
+output becomes a hashed artifact, not hidden execution state.
 
 ## LUTs As Foundation Stones
 
@@ -130,7 +133,8 @@ Lookup tables should be introduced early and treated as basis artifacts:
 - sector/axis mapping tables;
 - hash domain separators.
 
-If a LUT is generated late or differently on different machines, every downstream hash and test can drift.
+If a LUT is generated late or differently on different machines, every
+downstream hash and test can drift.
 
 Early fixed LUTs give:
 
@@ -141,7 +145,8 @@ Early fixed LUTs give:
 - smoother testing;
 - fewer accidental semantic migrations.
 
-Omega already demonstrates this with integer trigonometry and fixed sine LUTs. Liquid should treat equivalent basis tables the same way.
+Omega already demonstrates this with integer trigonometry and fixed sine LUTs.
+Liquid should treat equivalent basis tables the same way.
 
 ## Frozen-ish, Not Dead
 
@@ -162,7 +167,8 @@ Later versions can exist:
 lut.sine-q10.v1
 ```
 
-But recipes must declare which basis they use. Old receipts stay valid because they name old LUTs.
+But recipes must declare which basis they use. Old receipts stay valid because
+they name old LUTs.
 
 ## Testing Consequence
 
@@ -232,7 +238,9 @@ Each should have:
 
 ## Why This Should Happen Early
 
-If the substrate waits too long, many recipes will be born against implicit basis functions. Later formalization would require expensive migration or duplicate interpretation.
+If the substrate waits too long, many recipes will be born against implicit
+basis functions. Later formalization would require expensive migration or
+duplicate interpretation.
 
 If introduced early:
 
@@ -245,7 +253,8 @@ Liquid can remain wild above a deterministic floor
 MYC can publish small causal recipes instead of large artifacts
 ```
 
-Early pure mutators and LUTs are the seed crystal for the rest of the architecture.
+Early pure mutators and LUTs are the seed crystal for the rest of the
+architecture.
 
 ## Strategic Formula
 
@@ -255,4 +264,3 @@ LUTs are the alphabet.
 Recipes are sentences.
 Receipts are proofs that a sentence was spoken.
 ```
-

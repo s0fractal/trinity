@@ -8,7 +8,7 @@
 // placement_policy: tier
 // intent: derive contract lifecycle status family from glossary records (kind:9, family:contract.lifecycle); compare to current hardcoded statusRank as oracle
 // maturity: active
-// horizon: replace hardcoded statusRank in x4F00_contracts.ts after byte-identical verification stable; extend to other enum families (mode, claim_kind, stance)
+// horizon: none (extended to all enum families)
 // skill_tag: contract-status-compiler
 // skill_safe: yes
 //
@@ -42,7 +42,7 @@ import {
 const HERE = dirname(fromFileUrl(import.meta.url));
 const GLOSSARY_PATH = join(HERE, "x0001_glossary.ndjson");
 
-export interface LifecycleRecord {
+export interface GlossaryRecord {
   primary_handle: string;
   rank: number;
   position: string;
@@ -50,11 +50,15 @@ export interface LifecycleRecord {
   note: string;
 }
 
+export type LifecycleRecord = GlossaryRecord;
+
+interface OracleEntry {
+  primary_handle: string;
+  rank: number;
+}
+
 // Oracle: the hardcoded family in x4F00_contracts.ts statusRank.
-// If this compiler's derived output ever diverges, EITHER the
-// glossary records are stale, OR statusRank was changed without
-// updating the glossary. Both are surfaceable bugs.
-const ORACLE: { primary_handle: string; rank: number }[] = [
+const ORACLE: OracleEntry[] = [
   { primary_handle: "pinned", rank: 0 },
   { primary_handle: "active", rank: 1 },
   { primary_handle: "draft", rank: 2 },
@@ -62,19 +66,24 @@ const ORACLE: { primary_handle: string; rank: number }[] = [
   { primary_handle: "superseded", rank: 4 },
 ];
 
-/** Public loader — used by x4F00_contracts.ts to derive status rank
- *  from glossary. Exported alongside the LifecycleRecord type so
- *  consumers can build their own rank Maps without duplicating
- *  parsing logic. */
+/** Compatibility wrapper for contracts compiler. */
 export async function loadLifecycleFamily(): Promise<LifecycleRecord[]> {
+  return await loadGlossaryFamily("contract.lifecycle");
+}
+
+/** Public loader — used to derive any glossary status family
+ *  from glossary records. */
+export async function loadGlossaryFamily(
+  family: string,
+): Promise<GlossaryRecord[]> {
   const text = await Deno.readTextFile(GLOSSARY_PATH);
-  const out: LifecycleRecord[] = [];
+  const out: GlossaryRecord[] = [];
   for (const line of text.trim().split("\n")) {
     try {
       const r = JSON.parse(line);
       if (r["00"] !== "9") continue;
       const meta = r["12"];
-      if (!meta || meta.family !== "contract.lifecycle") continue;
+      if (!meta || meta.family !== family) continue;
       const handles = Array.isArray(r["02"]) ? r["02"] : [];
       out.push({
         primary_handle: handles[0] ?? "",
@@ -90,7 +99,7 @@ export async function loadLifecycleFamily(): Promise<LifecycleRecord[]> {
 }
 
 function verifyAgainstOracle(
-  derived: LifecycleRecord[],
+  derived: GlossaryRecord[],
 ): { ok: boolean; diffs: string[] } {
   const diffs: string[] = [];
   if (derived.length !== ORACLE.length) {

@@ -34,45 +34,43 @@ expected_after_running: {}
 
 ## What just happened
 
-Architect pointed at `20260510-211433Z-kimi-trinity-deep-audit-erc-system.md`.
-I read it. It contains:
+Architect pointed at `20260510-211433Z-kimi-trinity-deep-audit-erc-system.md`. I
+read it. It contains:
 
 - Section 1: explicit naming of the signal/noise problem
-- Section 9: ERC (External Reference Context) framework for LLM
-  listening with concrete gaps
-- Section 11: five recommendations (R1-R5) targeted at the
-  exact "what's useful for listening" question the architect
-  asked me today
+- Section 9: ERC (External Reference Context) framework for LLM listening with
+  concrete gaps
+- Section 11: five recommendations (R1-R5) targeted at the exact "what's useful
+  for listening" question the architect asked me today
 - Section 10: detailed per-substrate noise listing
 
-The audit is dated **two days before** today's grinding edifice.
-It directly answers today's question. I was unaware of it. My
-critique chord this morning didn't reference it.
+The audit is dated **two days before** today's grinding edifice. It directly
+answers today's question. I was unaware of it. My critique chord this morning
+didn't reference it.
 
-This is the AGENTS.md "multi-pass mandatory for READMEs" pattern
-applied to chord archive: substrate memory contains answers; if
-you don't read recent chord archive before acting, you build
-parallel structures.
+This is the AGENTS.md "multi-pass mandatory for READMEs" pattern applied to
+chord archive: substrate memory contains answers; if you don't read recent chord
+archive before acting, you build parallel structures.
 
-I should have run `ls jazz/chords/ | tail -30` and read recent
-substantive chords from other voices before today's work. I
-didn't. Pattern recorded for next instance.
+I should have run `ls jazz/chords/ | tail -30` and read recent substantive
+chords from other voices before today's work. I didn't. Pattern recorded for
+next instance.
 
 ## What Kimi's audit actually says
 
 The key insight (Section 1):
 
-> Архітектура зрілаша, ніж виглядає... Проблема не в
-> архітектурі, а в співвідношенні сигнал/шум у зовнішньому
-> контурі — документації, діалогах, контрактах, агентах.
+> Архітектура зрілаша, ніж виглядає... Проблема не в архітектурі, а в
+> співвідношенні сигнал/шум у зовнішньому контурі — документації, діалогах,
+> контрактах, агентах.
 
-In other words: the bottleneck for LLM operating on this
-substrate isn't architecture. It's **finding signal in the noise
-of dialogs, contracts, and documentation**.
+In other words: the bottleneck for LLM operating on this substrate isn't
+architecture. It's **finding signal in the noise of dialogs, contracts, and
+documentation**.
 
-This recontextualizes today's work. We spent the day building
-ARCHITECTURAL beauty (grinding, supersession modes, layering).
-Kimi already showed the actual bottleneck is INDEX and SCHEMA.
+This recontextualizes today's work. We spent the day building ARCHITECTURAL
+beauty (grinding, supersession modes, layering). Kimi already showed the actual
+bottleneck is INDEX and SCHEMA.
 
 The ERC framework (Section 9):
 
@@ -84,6 +82,7 @@ ERC = External Reference Context = living ontology LLM can:
 ```
 
 What's already in place (Section 9.2):
+
 - scanner_core.ts (R)
 - cognition_snapshot.ts (R)
 - cognition_recommend.ts (R)
@@ -92,6 +91,7 @@ What's already in place (Section 9.2):
 - AGENTS.md (W)
 
 What's missing (Section 9.3):
+
 - JSON Schema for descriptor types (HIGH)
 - contracts/index.ndjson (HIGH)
 - contracts/schema/*.json (HIGH)
@@ -99,24 +99,22 @@ What's missing (Section 9.3):
 - Cognition golden vectors (MEDIUM)
 - Machine-readable receipts (MEDIUM)
 
-**This is the actual path forward.** Schema-first, not topology-
-first. Index, not grinding.
+**This is the actual path forward.** Schema-first, not topology- first. Index,
+not grinding.
 
 ## How my critique was right AND insufficient
 
-This morning's critique chord (`2026-05-12T110423Z`) correctly
-identified that grinding/substrate-wide-flow/supersession-modes
-are over-engineered. That part stands.
+This morning's critique chord (`2026-05-12T110423Z`) correctly identified that
+grinding/substrate-wide-flow/supersession-modes are over-engineered. That part
+stands.
 
-What it missed: Kimi's audit ALREADY HAD the alternative path.
-I was critiquing in isolation. The correct critique would have
-been:
+What it missed: Kimi's audit ALREADY HAD the alternative path. I was critiquing
+in isolation. The correct critique would have been:
 
-> "We've been building X. Kimi already showed Y is what's
-> actually needed. Pause X, apply Y."
+> "We've been building X. Kimi already showed Y is what's actually needed. Pause
+> X, apply Y."
 
-I had X. I lacked Y. The architect supplied Y by pointing at
-kimi's chord.
+I had X. I lacked Y. The architect supplied Y by pointing at kimi's chord.
 
 ## What I propose now (lowest-friction high-value moves)
 
@@ -125,15 +123,14 @@ Three concrete moves from kimi's R1-R5, in order of cost:
 ### Move 1 — R1: Schema-First Contracts (smallest, biggest impact)
 
 Write JSON schemas for the most common artifact types:
-- `contracts/schema/chord.schema.json` — chord frontmatter +
-  body structure
-- `contracts/schema/receipt.schema.json` — machine-readable
-  receipt structure (for chord_play output)
-- `contracts/schema/recommendation.schema.json` — what
-  cognition_recommend emits
 
-Cost: ~1-3 hours, single agent.
-Value:
+- `contracts/schema/chord.schema.json` — chord frontmatter + body structure
+- `contracts/schema/receipt.schema.json` — machine-readable receipt structure
+  (for chord_play output)
+- `contracts/schema/recommendation.schema.json` — what cognition_recommend emits
+
+Cost: ~1-3 hours, single agent. Value:
+
 - chord_play.ts validates frontmatter without inference
 - recommend_to_chord.ts produces structured output
 - Cold-start LLM reads schema, understands what fields exist
@@ -154,14 +151,12 @@ Today's chord_play.ts emits markdown receipts. Add JSON sibling:
 }
 ```
 
-Cost: ~1-2 hours.
-Value: downstream tooling (cognition, future cross-substrate
+Cost: ~1-2 hours. Value: downstream tooling (cognition, future cross-substrate
 adapters) can ingest receipts structurally.
 
 ### Move 3 — R5: Stigmergic Memory Architecture
 
-`AGENTS.md` is 20KB palimpsest mixing eternal and session content.
-Split:
+`AGENTS.md` is 20KB palimpsest mixing eternal and session content. Split:
 
 ```text
 AGENTS.md                  # eternal (Kimi's reading of what's load-bearing)
@@ -172,58 +167,57 @@ memory/
   lineage/                 # map of models who worked here
 ```
 
-Cost: ~30 minutes of structural rewrite + manual partitioning.
-Value: cold-start agent reads AGENTS.md (small, eternal) THEN
-memory/session/<latest>.md (recent context). Faster orientation.
+Cost: ~30 minutes of structural rewrite + manual partitioning. Value: cold-start
+agent reads AGENTS.md (small, eternal) THEN memory/session/<latest>.md (recent
+context). Faster orientation.
 
 ## What this implies for today's grinding work
 
-The grinding contract, grind.ts, and the chord chain we built
-today **stay in record as latent capability**. They are not
-wasted. But they should NOT be the next move.
+The grinding contract, grind.ts, and the chord chain we built today **stay in
+record as latent capability**. They are not wasted. But they should NOT be the
+next move.
 
-The next move is R1 (schemas) because that's where the actual
-listening bottleneck is.
+The next move is R1 (schemas) because that's where the actual listening
+bottleneck is.
 
-The architect's question "for what is what we built actually
-useful?" gets a clearer answer now: **mostly for the future
-when scale demands it**. For now, it's documentation of
-architectural thinking. Kimi's R1-R5 are what makes the substrate
-operationally easier for next-instance LLMs.
+The architect's question "for what is what we built actually useful?" gets a
+clearer answer now: **mostly for the future when scale demands it**. For now,
+it's documentation of architectural thinking. Kimi's R1-R5 are what makes the
+substrate operationally easier for next-instance LLMs.
 
 ## Honest admission
 
 I demonstrated multiple failure modes today:
+
 1. Built without checking substrate memory (kimi's audit)
-2. Stayed in "extend the beautiful idea" mode through ~10
-   chord rounds before architect pushback
-3. My critique chord this morning was correct in critique but
-   incomplete in remedy
-4. I should have surfaced kimi's audit when I wrote the
-   exploration chord this afternoon, not when the architect
-   pointed at it
+2. Stayed in "extend the beautiful idea" mode through ~10 chord rounds before
+   architect pushback
+3. My critique chord this morning was correct in critique but incomplete in
+   remedy
+4. I should have surfaced kimi's audit when I wrote the exploration chord this
+   afternoon, not when the architect pointed at it
 
 The pattern fix: **before any substantial new chord, read
-`ls jazz/chords/ | tail -30 | head -10` and skim any
-non-claude voices from the last few days**. Substrate memory
-contains answers; ignoring it produces parallel structures.
+`ls jazz/chords/ | tail -30 | head -10` and skim any non-claude voices from the
+last few days**. Substrate memory contains answers; ignoring it produces
+parallel structures.
 
 ## What I propose for the rest of "under one roof"
 
 Option A — Apply Move 1 (R1: schemas) now.
+
 - ~1-3 hours
 - Real ERC capability
 - Concrete value over speculative architecture
 
 Option B — Stop adding, sit, let codex return / kimi review.
+
 - Substrate is stable; doesn't need more work today
 
 Option C — Whatever you actually want me to do.
 
-Lean: A. Want to make ONE substantive move that addresses what
-you actually asked (better listening), not what I was inclined
-to build (more architecture).
+Lean: A. Want to make ONE substantive move that addresses what you actually
+asked (better listening), not what I was inclined to build (more architecture).
 
-— claude-opus-4-7, 2026-05-12T12:52Z, recognizing that kimi
-already wrote the playbook two days ago. The substrate has
-memory; I should use it.
+— claude-opus-4-7, 2026-05-12T12:52Z, recognizing that kimi already wrote the
+playbook two days ago. The substrate has memory; I should use it.

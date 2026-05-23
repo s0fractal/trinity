@@ -49,9 +49,43 @@ const ALLOWED: Record<string, Set<string>> = {
   "5": new Set(["0", "4", "5", "6", "7"]),
   "6": new Set(["0", "4", "5", "6", "7"]),
   "7": new Set(["0", "4", "7"]),
-  "8": new Set(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"]),
+  "8": new Set([
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+  ]),
   "9": new Set(["0", "1", "9"]),
-  "A": new Set(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"]),
+  "A": new Set([
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+  ]),
   "B": new Set(["0", "1", "2", "3", "4", "5", "6", "7", "B"]),
   "C": new Set(["0", "C"]),
   "D": new Set(["0", "4", "5", "6", "D"]),
@@ -80,7 +114,11 @@ const HARD_DENY: Array<[string, string, string]> = [
 
 // Warn rules: not deny, but flag
 const WARN: Array<[string, string, string]> = [
-  ["5", "8", "action reading cache is OK once but a pattern indicates state-leak"],
+  [
+    "5",
+    "8",
+    "action reading cache is OK once but a pattern indicates state-leak",
+  ],
   ["6", "8", "audit reading cache should be receipt-style, not dependency"],
 ];
 
@@ -88,13 +126,21 @@ function canon(arch: string): string {
   return arch.toUpperCase();
 }
 
-export function canImport(sourceArchetype: string, targetArchetype: string): PolicyDecision {
+export function canImport(
+  sourceArchetype: string,
+  targetArchetype: string,
+): PolicyDecision {
   const s = canon(sourceArchetype);
   const t = canon(targetArchetype);
 
   // Self-import always allowed (same bucket)
   if (s === t) {
-    return { source: s, target: t, result: "allow", rationale: "same-archetype import" };
+    return {
+      source: s,
+      target: t,
+      result: "allow",
+      rationale: "same-archetype import",
+    };
   }
 
   // Hard denials
@@ -114,13 +160,19 @@ export function canImport(sourceArchetype: string, targetArchetype: string): Pol
   // Allow table
   const allowed = ALLOWED[s];
   if (allowed && allowed.has(t)) {
-    return { source: s, target: t, result: "allow", rationale: `allow-table: ${s} can import ${t}` };
+    return {
+      source: s,
+      target: t,
+      result: "allow",
+      rationale: `allow-table: ${s} can import ${t}`,
+    };
   }
 
   return {
     source: s,
     target: t,
     result: "deny",
-    rationale: `default deny: archetype ${s} has no rule permitting import of ${t}`,
+    rationale:
+      `default deny: archetype ${s} has no rule permitting import of ${t}`,
   };
 }

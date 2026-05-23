@@ -23,7 +23,11 @@
 //
 // Glossary words: voices, voice, голоси, голос
 
-import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
+import {
+  dirname,
+  fromFileUrl,
+  join,
+} from "https://deno.land/std@0.224.0/path/mod.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
@@ -58,7 +62,9 @@ interface VoiceProfile {
 
 // ── yaml frontmatter parser (minimal, no deps) ─────────────────────────────
 
-function parseYamlFrontmatter(text: string): { fm: Record<string, unknown>; body: string } | null {
+function parseYamlFrontmatter(
+  text: string,
+): { fm: Record<string, unknown>; body: string } | null {
   if (!text.startsWith("---\n")) return null;
   const end = text.indexOf("\n---", 4);
   if (end === -1) return null;
@@ -114,7 +120,10 @@ function coerce(v: string): unknown {
   if (v === "null" || v === "~") return null;
   if (/^\d+$/.test(v)) return parseInt(v, 10);
   if (/^\d+\.\d+$/.test(v)) return parseFloat(v);
-  if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) {
+  if (
+    (v.startsWith('"') && v.endsWith('"')) ||
+    (v.startsWith("'") && v.endsWith("'"))
+  ) {
     return v.slice(1, -1);
   }
   // JSON-in-YAML: chord: ["oct:3.2", "oct:6.4"]
@@ -181,7 +190,9 @@ function parseDipole(d: unknown): number[] {
     return d.split(/\s+/).map((h) => parseInt(h, 16)).filter((n) => !isNaN(n));
   }
   if (Array.isArray(d)) {
-    return d.map((v) => (typeof v === "number" ? v : 0)).filter((n) => !isNaN(n));
+    return d.map((v) => (typeof v === "number" ? v : 0)).filter((n) =>
+      !isNaN(n)
+    );
   }
   return [];
 }
@@ -212,7 +223,9 @@ async function loadChords(): Promise<{ fm: ChordFm; body: string }[]> {
   return entries;
 }
 
-function buildVoiceProfiles(chords: { fm: ChordFm; body: string }[]): VoiceProfile[] {
+function buildVoiceProfiles(
+  chords: { fm: ChordFm; body: string }[],
+): VoiceProfile[] {
   const byVoice = new Map<string, { fm: ChordFm; body: string }[]>();
   for (const c of chords) {
     const v = c.fm.speaker!;
@@ -222,7 +235,9 @@ function buildVoiceProfiles(chords: { fm: ChordFm; body: string }[]): VoiceProfi
 
   const profiles: VoiceProfile[] = [];
   for (const [identity, list] of byVoice) {
-    const energies = list.map((c) => c.fm.energy ?? 0.5).filter((e) => typeof e === "number");
+    const energies = list.map((c) => c.fm.energy ?? 0.5).filter((e) =>
+      typeof e === "number"
+    );
     const avgEnergy = energies.length > 0
       ? energies.reduce((a, b) => a + b, 0) / energies.length
       : 0.5;
@@ -294,9 +309,14 @@ function buildVoiceProfiles(chords: { fm: ChordFm; body: string }[]): VoiceProfi
       const secondaries: string[] = [];
       if (c.fm.oct) primaries.push(String(c.fm.oct));
       else if (c.fm.primary) primaries.push(String(c.fm.primary));
-      if (c.fm.chord && typeof c.fm.chord === "object" && !Array.isArray(c.fm.chord)) {
+      if (
+        c.fm.chord && typeof c.fm.chord === "object" &&
+        !Array.isArray(c.fm.chord)
+      ) {
         const ch = c.fm.chord as { primary?: string; secondary?: string[] };
-        if (ch.primary && !primaries.includes(ch.primary)) primaries.push(ch.primary);
+        if (ch.primary && !primaries.includes(ch.primary)) {
+          primaries.push(ch.primary);
+        }
         if (Array.isArray(ch.secondary)) secondaries.push(...ch.secondary);
       } else if (Array.isArray(c.fm.chord)) {
         if (c.fm.chord.length > 0) {
@@ -359,16 +379,23 @@ function buildVoiceProfiles(chords: { fm: ChordFm; body: string }[]): VoiceProfi
 // ── output formatters ──────────────────────────────────────────────────────
 
 function fmtHex(bytes: number[]): string {
-  return bytes.map((b) => b.toString(16).padStart(2, "0").toUpperCase()).join(" ");
+  return bytes.map((b) => b.toString(16).padStart(2, "0").toUpperCase()).join(
+    " ",
+  );
 }
 
-function renderTable(profiles: VoiceProfile[], detailIdentity?: string): string {
+function renderTable(
+  profiles: VoiceProfile[],
+  detailIdentity?: string,
+): string {
   const filtered = detailIdentity
     ? profiles.filter((p) => p.identity === detailIdentity)
     : profiles;
 
   if (filtered.length === 0) {
-    return `# voices @ 2/0 — no voices found${detailIdentity ? ` matching "${detailIdentity}"` : ""}`;
+    return `# voices @ 2/0 — no voices found${
+      detailIdentity ? ` matching "${detailIdentity}"` : ""
+    }`;
   }
 
   const lines: string[] = [
@@ -382,13 +409,23 @@ function renderTable(profiles: VoiceProfile[], detailIdentity?: string): string 
     const idPad = p.identity.padEnd(10);
     const octPad = p.top_primary_oct.padEnd(21);
     lines.push(
-      `# ${idPad}  ${String(p.chords).padStart(4)}  ${p.standing.padEnd(8)}  ${octPad}  ${p.avg_energy.toFixed(2).padStart(6)}      ${fmtHex(p.comfort_field_synthetic)}`,
+      `# ${idPad}  ${String(p.chords).padStart(4)}  ${
+        p.standing.padEnd(8)
+      }  ${octPad}  ${p.avg_energy.toFixed(2).padStart(6)}      ${
+        fmtHex(p.comfort_field_synthetic)
+      }`,
     );
   }
 
   if (!detailIdentity) {
-    lines.push(`# ─────────────────────────────────────────────────────────────────────────`);
-    lines.push(`# Total: ${profiles.reduce((s, p) => s + p.chords, 0)} chords across ${profiles.length} voices`);
+    lines.push(
+      `# ─────────────────────────────────────────────────────────────────────────`,
+    );
+    lines.push(
+      `# Total: ${
+        profiles.reduce((s, p) => s + p.chords, 0)
+      } chords across ${profiles.length} voices`,
+    );
   }
 
   return lines.join("\n");

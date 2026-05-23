@@ -1,17 +1,17 @@
 # spore-execute-v0 probe
 
-> **Status: graduated (contract) → SPORE.v0 contract active 2026-05-12.** Probe is the cross-runtime execution reference.
+> **Status: graduated (contract) → SPORE.v0 contract active 2026-05-12.** Probe
+> is the cross-runtime execution reference.
 
 Cross-runtime execution probe for the `apply` primitive.
 
-This probe extends `spore-apply-v0` (which verified the wire format
-and `spore_id` hashing) into actual mutator execution. Goal: prove
-that the **same WASM mutator bytes**, run through **two different
-WASM runtimes**, produce **byte-identical output bytes** and
-therefore **byte-identical `output_hash`**.
+This probe extends `spore-apply-v0` (which verified the wire format and
+`spore_id` hashing) into actual mutator execution. Goal: prove that the **same
+WASM mutator bytes**, run through **two different WASM runtimes**, produce
+**byte-identical output bytes** and therefore **byte-identical `output_hash`**.
 
-If this is true, the apply primitive can be implemented in multiple
-substrates with matching semantics, not just matching wire format.
+If this is true, the apply primitive can be implemented in multiple substrates
+with matching semantics, not just matching wire format.
 
 ---
 
@@ -19,30 +19,27 @@ substrates with matching semantics, not just matching wire format.
 
 Tests:
 
-1. A fixed WASM mutator (`identity`) has a stable, byte-addressable
-   binary form whose hash is reproducible.
-2. Two independent WASM runtimes (wasmtime in rust, V8's WebAssembly
-   in deno) load the same WASM bytes and execute the same `apply`
-   call.
-3. The output bytes from execution are byte-identical across
-   runtimes.
-4. The output hash (BLAKE3 derive_key over output bytes) is
-   byte-identical.
+1. A fixed WASM mutator (`identity`) has a stable, byte-addressable binary form
+   whose hash is reproducible.
+2. Two independent WASM runtimes (wasmtime in rust, V8's WebAssembly in deno)
+   load the same WASM bytes and execute the same `apply` call.
+3. The output bytes from execution are byte-identical across runtimes.
+4. The output hash (BLAKE3 derive_key over output bytes) is byte-identical.
 
 **Out of scope:**
 
 - ATP/gas metering (separate probe).
 - Multi-mutator composition (chained applies).
 - Non-deterministic effects (next probe family).
-- Recipe records containing mutator hashes (the wire format probe
-  already covered this).
+- Recipe records containing mutator hashes (the wire format probe already
+  covered this).
 
 ---
 
 ## Mutator: `identity`
 
-`identity` is the simplest possible basis mutator: it takes input
-bytes and returns them unchanged.
+`identity` is the simplest possible basis mutator: it takes input bytes and
+returns them unchanged.
 
 Source: `identity.wat`
 
@@ -58,11 +55,10 @@ Source: `identity.wat`
 
 Compiled: `identity.wasm` (committed alongside the source).
 
-The compiled `.wasm` file is committed to make the probe fully
-reproducible without requiring a WAT-to-WASM toolchain at run time.
-`compile.sh` regenerates `identity.wasm` from `identity.wat` using
-the bundled rust `wat` crate; this is needed only if `identity.wat`
-is edited.
+The compiled `.wasm` file is committed to make the probe fully reproducible
+without requiring a WAT-to-WASM toolchain at run time. `compile.sh` regenerates
+`identity.wasm` from `identity.wat` using the bundled rust `wat` crate; this is
+needed only if `identity.wat` is edited.
 
 ---
 
@@ -76,8 +72,8 @@ Module exports:
   - Writes some bytes to `memory[out_ptr..out_ptr+out_len]`.
   - Returns the number of output bytes written.
 
-For `identity`, this is just `memory.copy(out_ptr, in_ptr, in_len)`
-followed by returning `in_len`.
+For `identity`, this is just `memory.copy(out_ptr, in_ptr, in_len)` followed by
+returning `in_len`.
 
 ---
 
@@ -123,8 +119,8 @@ For `identity`, `output_bytes` MUST equal `input_bytes` exactly.
 bash run.sh
 ```
 
-Exit 0 with `PROBE_GREEN` iff all three lines from rust match all
-three lines from ts, byte for byte.
+Exit 0 with `PROBE_GREEN` iff all three lines from rust match all three lines
+from ts, byte for byte.
 
 Specifically:
 

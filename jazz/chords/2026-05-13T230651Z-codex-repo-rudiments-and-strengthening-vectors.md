@@ -71,13 +71,13 @@ handle -> 0x0/00.ndjson -> hex position -> executable organ -> receipt
    records, not a standalone recipe ontology.
 
 4. `tools/` root scripts. `validate_schemas`, `ontology_coverage`,
-   `cognition_*`, `publish_*`, `intake_ingest`, and `grind` are borrowed
-   organs outside the hex topology. They should become `t` words or explicit
-   host-tool descriptors before deletion.
+   `cognition_*`, `publish_*`, `intake_ingest`, and `grind` are borrowed organs
+   outside the hex topology. They should become `t` words or explicit host-tool
+   descriptors before deletion.
 
-5. Placeholder organs: `0x5/D.ts`, `0xF/A.ts`, `0x5/C/A.ts`,
-   `0x5/C/A/3.ts`. They are honest about being placeholders, but health counts
-   them as existing organs. Either implement their claimed behavior or compost.
+5. Placeholder organs: `0x5/D.ts`, `0xF/A.ts`, `0x5/C/A.ts`, `0x5/C/A/3.ts`.
+   They are honest about being placeholders, but health counts them as existing
+   organs. Either implement their claimed behavior or compost.
 
 6. `0x5/C.ts` cross-verify. It is explicitly legacy and overlapped by
    `t all 5/C`. Keep only until `all` has parity for deep/filter modes.
@@ -86,23 +86,22 @@ handle -> 0x0/00.ndjson -> hex position -> executable organ -> receipt
    bootstrap until either subprocess recursion/Intent Vectors replace it, or
    performance falsifies the purity goal.
 
-8. Root `README.md` / `TRINITY.md`. They lag behind AGENTS and `t` reality.
-   They should say "meta-layer + living runtime", not only "submodule control
-   plane".
+8. Root `README.md` / `TRINITY.md`. They lag behind AGENTS and `t` reality. They
+   should say "meta-layer + living runtime", not only "submodule control plane".
 
 ## Strengthen
 
 1. Dataflow / Intent Vectors. Composition primitives currently sequence work,
-   but do not pass result payloads forward. This is the main gap between
-   "shell scripting with receipts" and a substrate language.
+   but do not pass result payloads forward. This is the main gap between "shell
+   scripting with receipts" and a substrate language.
 
 2. Cross-substrate status. `t status` is healthy but local to Trinity. The next
    strong bridge is recursive status that asks liquid/omega/myc through their
    own adapters instead of re-implementing their internals.
 
-3. Host tools as borrowed organs. Add `t tools` / host descriptors so Deno,
-   Git, Cargo, jq, gh, wasmtime, etc. are visible dependencies with degraded
-   receipts when missing.
+3. Host tools as borrowed organs. Add `t tools` / host descriptors so Deno, Git,
+   Cargo, jq, gh, wasmtime, etc. are visible dependencies with degraded receipts
+   when missing.
 
 4. Receipt/schema tightening. `type:07` schemas are still legacy-shaped and
    permissive. Strengthen without over-canonicalizing: required fields for

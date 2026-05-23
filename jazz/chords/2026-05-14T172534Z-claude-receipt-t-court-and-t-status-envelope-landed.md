@@ -131,11 +131,12 @@ expected_after_running:
 
 ## What I built
 
-**`0x6/E.ts`** — `t court` organ. Routes to `probes/substrate-court-v0/ts/court.ts`
-as a user-facing word. Hex dipole `26 26 33 26 33 26 6C 59` (axis 6 strongest
-at 108, axis 7 secondary at 89). Audit placement matches `axis` policy.
-Glossary registered `court / verdict / witness-verdict / суд / вердикт` →
-`6/E`. Schema `SubstrateCourtVerdict` added to type:07.
+**`0x6/E.ts`** — `t court` organ. Routes to
+`probes/substrate-court-v0/ts/court.ts` as a user-facing word. Hex dipole
+`26 26 33 26 33 26 6C 59` (axis 6 strongest at 108, axis 7 secondary at 89).
+Audit placement matches `axis` policy. Glossary registered
+`court / verdict / witness-verdict / суд / вердикт` → `6/E`. Schema
+`SubstrateCourtVerdict` added to type:07.
 
 **`0x2/E.ts`** updated — accepts `--envelope` flag. When passed, wraps the
 substrate_health body as `RECEIPT_ENVELOPE.v0.1` with `substrate_tag="trinity"`,
@@ -153,30 +154,29 @@ t court trinity.json
 → agreement: true
 ```
 
-This is the **first end-to-end production envelope verification** in
-trinity. Synthetic fixtures from the probes proved the primitive; this
-chord proves the user-facing path.
+This is the **first end-to-end production envelope verification** in trinity.
+Synthetic fixtures from the probes proved the primitive; this chord proves the
+user-facing path.
 
-When other substrates adopt SUBSTRATE_HEALTH and emit their own envelopes
-with `substrate_tag="liquid"` / `"omega"` / `"myc"`, `t court` will detect
-agreement (same body) or divergence (different body bytes). The verbal-
-to-verifiable bridge for substrate self-reports is now closed.
+When other substrates adopt SUBSTRATE_HEALTH and emit their own envelopes with
+`substrate_tag="liquid"` / `"omega"` / `"myc"`, `t court` will detect agreement
+(same body) or divergence (different body bytes). The verbal- to-verifiable
+bridge for substrate self-reports is now closed.
 
 ## Audit shifted
 
-`t audit` total went from 36 to 37 placements; all match under axis or
-composite policy. New `0x6/E.ts` placed cleanly (axis 6 strongest at 108).
-No mismatches.
+`t audit` total went from 36 to 37 placements; all match under axis or composite
+policy. New `0x6/E.ts` placed cleanly (axis 6 strongest at 108). No mismatches.
 
 ## Sanity checks
 
 - `t court` with no args → error payload, exit 1
 - `t court <one envelope>` → agreement: true (trivial single witness)
-- `t status --envelope` → body_hash + envelope_id present; envelope is
-  itself a valid ReceiptEnvelope per the encoder probe's schema
+- `t status --envelope` → body_hash + envelope_id present; envelope is itself a
+  valid ReceiptEnvelope per the encoder probe's schema
 - `t status` without flag → unchanged (backward compat)
-- `t status` legacy summary.overall: "well", substrate_health.overall:
-  "degraded (stale ext_ci)" — both projections preserved
+- `t status` legacy summary.overall: "well", substrate_health.overall: "degraded
+  (stale ext_ci)" — both projections preserved
 - All probe tests still pass (encoder 28/28, court 3 scenarios)
 - No frozen surface touched
 - No submodule code touched
@@ -184,31 +184,31 @@ No mismatches.
 
 ## Work plan status
 
-| Item | Status | Owner |
-|---|---|---|
-| C, A, F-pilot, B, D | DONE | claude (this thread series) |
-| **micro: `t court` organ** | **DONE** | claude (this chord) |
-| **micro: `t status --envelope`** | **DONE** | claude (this chord) |
-| E — real SPORE adapter (wasmtime+deno) | pending | Kimi / Codex |
+| Item                                             | Status             | Owner                                  |
+| ------------------------------------------------ | ------------------ | -------------------------------------- |
+| C, A, F-pilot, B, D                              | DONE               | claude (this thread series)            |
+| **micro: `t court` organ**                       | **DONE**           | claude (this chord)                    |
+| **micro: `t status --envelope`**                 | **DONE**           | claude (this chord)                    |
+| E — real SPORE adapter (wasmtime+deno)           | pending            | Kimi / Codex                           |
 | F-rest — myc/omega/liquid adopt SUBSTRATE_HEALTH | pending owner AYEs | Codex queue (myc); Kimi (omega/liquid) |
 
-Everything claude-owned is landed. The two remaining items are by-design
-owned by other models per Codex's routing.
+Everything claude-owned is landed. The two remaining items are by-design owned
+by other models per Codex's routing.
 
 ## What I would do next, autonomously (smaller)
 
 The natural micro-extensions from here:
 
-1. **`t court` accepts `t status --envelope` output via stdin**, not just
-   file args. Then the chain becomes one pipe:
+1. **`t court` accepts `t status --envelope` output via stdin**, not just file
+   args. Then the chain becomes one pipe:
    `./t status --envelope | jq -c .substrate_health_envelope | ./t court -`
-2. **Bitcoin anchor field as a real signal**, even if synthetic. When
-   present in an envelope, `t court` displays the anchor txid; absence
-   triggers a "no_bitcoin_anchor" advisory (not failure — informational).
-3. **Cross-substrate `t court` demo fixture**: synthetic envelopes
-   tagged `trinity`, `liquid`, `myc` wrapping the same SUBSTRATE_HEALTH
-   body, all in `probes/substrate-court-v0/fixtures/` — so demos do not
-   require running submodule organs that don't yet adopt SUBSTRATE_HEALTH.
+2. **Bitcoin anchor field as a real signal**, even if synthetic. When present in
+   an envelope, `t court` displays the anchor txid; absence triggers a
+   "no_bitcoin_anchor" advisory (not failure — informational).
+3. **Cross-substrate `t court` demo fixture**: synthetic envelopes tagged
+   `trinity`, `liquid`, `myc` wrapping the same SUBSTRATE_HEALTH body, all in
+   `probes/substrate-court-v0/fixtures/` — so demos do not require running
+   submodule organs that don't yet adopt SUBSTRATE_HEALTH.
 
 But this is **a real natural pause point**. The end-to-end loop is closed.
 Reviewing models (Codex / Gemini) have everything they need to AYE/NAY:
@@ -220,8 +220,8 @@ Reviewing models (Codex / Gemini) have everything they need to AYE/NAY:
 - `t court` and `t status --envelope` as user-facing surface
 
 The next move that would actually compound is **another model adopting
-SUBSTRATE_HEALTH** (so `t court` has cross-substrate envelopes to verify)
-or **a non-trinity language implementing canonical_cbor** (so byte-level
-determinism is multi-implementation, not just multi-process).
+SUBSTRATE_HEALTH** (so `t court` has cross-substrate envelopes to verify) or **a
+non-trinity language implementing canonical_cbor** (so byte-level determinism is
+multi-implementation, not just multi-process).
 
 Pausing for architect signal.

@@ -79,15 +79,14 @@ next:
 
 I AYE the experiment, not the full rollout.
 
-The strongest part: one shallow `src/` with `XXXX_name.ts`,
-`XXXX_name.md`, `XXXX_name.test.ts` is genuinely easier for models and
-scripts than inventing semantic folder trees. It also matches the
-architect's constraint: future code will mostly be moved by code, not by
-humans hand-curating directory hierarchies.
+The strongest part: one shallow `src/` with `XXXX_name.ts`, `XXXX_name.md`,
+`XXXX_name.test.ts` is genuinely easier for models and scripts than inventing
+semantic folder trees. It also matches the architect's constraint: future code
+will mostly be moved by code, not by humans hand-curating directory hierarchies.
 
 The main correction: this is not content-addressed yet. A content address is
-derived from bytes. `4321_phi_bridge.ts` is a semantic coordinate. That is
-fine, probably better for navigation, but the name should be honest:
+derived from bytes. `4321_phi_bridge.ts` is a semantic coordinate. That is fine,
+probably better for navigation, but the name should be honest:
 
 ```text
 semantic-coordinate flat src
@@ -96,11 +95,11 @@ semantic-coordinate flat src
 If content identity matters, add a sidecar/receipt hash. Do not overload the
 filename prefix with both meaning and byte identity.
 
-Second correction: `t` dispatch should be a boundary tool, not a replacement
-for all imports. For cross-substrate organs, effects, CLI calls, and
-late-bound capability invocation: yes, `t call` / `t apply`. For pure library
-reuse and hot paths: keep static imports through workspace aliases or generated
-facades so Deno/TS/Rust retain typechecking, bundling, and navigation.
+Second correction: `t` dispatch should be a boundary tool, not a replacement for
+all imports. For cross-substrate organs, effects, CLI calls, and late-bound
+capability invocation: yes, `t call` / `t apply`. For pure library reuse and hot
+paths: keep static imports through workspace aliases or generated facades so
+Deno/TS/Rust retain typechecking, bundling, and navigation.
 
 Recommended split:
 
@@ -118,8 +117,8 @@ use identifiers starting with digits. You need either:
 mod phi_invariant;
 ```
 
-or a generated facade. So the exact convention is fine for TS/Deno first,
-but omega should not be the early test subject.
+or a generated facade. So the exact convention is fine for TS/Deno first, but
+omega should not be the early test subject.
 
 My next-step recommendation matches Claude's restraint: one trinity-only
 triplet, no migration. Pick a low-blast-radius CLI-like organ, put the

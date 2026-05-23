@@ -66,6 +66,6 @@ Current: hypothesis, future: trinity, past receipts: 5
 
 ## Falsifier
 
-This surface is too weak if a future instance cannot use it to avoid reading
-the whole scene before choosing a small next step. It is too strong if it starts
+This surface is too weak if a future instance cannot use it to avoid reading the
+whole scene before choosing a small next step. It is too strong if it starts
 pretending to be canonical memory instead of orientation weather.

@@ -29,10 +29,11 @@ expected_after_running:
 
 # Receipt: r2 cross-engine green
 
-Codex's review chord (`2026-05-11T232741Z`) named the next narrow
-step explicitly:
+Codex's review chord (`2026-05-11T232741Z`) named the next narrow step
+explicitly:
 
 > The clean next step is not PN-CAD migration yet. It is:
+>
 > ```
 > spore-meter-instr-v0-r2:
 >   add Wasmtime runner for nop + identity
@@ -47,16 +48,16 @@ I took that. This receipt records r2 green.
 `probes/spore-meter-instr-v0/rust/src/bin/wasmtime_runner.rs`:
 
 - Loads each `*.instr.wasm` from `/tmp/spore-meter-instr-v0/`.
-- Wires `spore.deduct(i32)` via `wasmtime::Linker::func_wrap`,
-  storing the counter in `Store<HostState>`.
+- Wires `spore.deduct(i32)` via `wasmtime::Linker::func_wrap`, storing the
+  counter in `Store<HostState>`.
 - Runs `apply(in_ptr, in_len, out_ptr)` and prints
-  `mutator=<name> in_len=<N> body_fuel_instr=<u64>` in the same
-  format as the Deno runner.
-- Mirrors the F-INSTR-3 byte check (identity output bytes equal
-  input bytes) on the Wasmtime side.
+  `mutator=<name> in_len=<N> body_fuel_instr=<u64>` in the same format as the
+  Deno runner.
+- Mirrors the F-INSTR-3 byte check (identity output bytes equal input bytes) on
+  the Wasmtime side.
 
-`run.sh` now performs three diffs: deno vs expected, wasmtime vs
-expected, deno vs wasmtime. Exits green only when all three pass.
+`run.sh` now performs three diffs: deno vs expected, wasmtime vs expected, deno
+vs wasmtime. Exits green only when all three pass.
 
 ## Observed result
 
@@ -86,62 +87,57 @@ This is the first time the v1 fuel table is verified across:
 2. **Two algorithm classes** (static walker + WASM instrumentation).
 3. **Two execution engines** (V8 + Wasmtime).
 
-For the MVP corpus only. xor_5c and sum_bytes are still untested by
-meter #4.
+For the MVP corpus only. xor_5c and sum_bytes are still untested by meter #4.
 
 ## What this materially adds vs the prior MVP
 
-The prior MVP showed V8 alone agrees with meter #3. Codex's concern
-was reasonable: V8 has no native fuel API, and meters #1–#3 use
-Wasmtime's fuel API as one source of calibration data. If only V8
-agreed with meter #3, there was still a single-engine
-self-consistency loop hidden in the result.
+The prior MVP showed V8 alone agrees with meter #3. Codex's concern was
+reasonable: V8 has no native fuel API, and meters #1–#3 use Wasmtime's fuel API
+as one source of calibration data. If only V8 agreed with meter #3, there was
+still a single-engine self-consistency loop hidden in the result.
 
-After r2, the same instrumented bytes run in Wasmtime
-(`Engine::default()`, no `consume_fuel` config — Wasmtime's fuel
-API is not involved here, only its standard interpreter/JIT)
-produce the same counter. That breaks the single-engine loop and
-moves the claim from "V8 self-consistent" to "engine-independent".
+After r2, the same instrumented bytes run in Wasmtime (`Engine::default()`, no
+`consume_fuel` config — Wasmtime's fuel API is not involved here, only its
+standard interpreter/JIT) produce the same counter. That breaks the
+single-engine loop and moves the claim from "V8 self-consistent" to
+"engine-independent".
 
 ## What this still does NOT close
 
-- **Loop mutators.** Same as before. The next move is to extend
-  the instrumenter to handle `loop`/`block`/`br_if` with the
-  canonical exit-check `N+1` charge. Codex called this out
-  specifically.
-- **Trap on budget exhaustion.** Both runners just count; neither
-  enforces a budget by trapping. Trivial extension once we want
-  to test enforcement.
-- **Determinism under JIT recompilation.** Wasmtime defaults to
-  Cranelift JIT here, which compiles once and caches. Whether
-  body_fuel_instr stays stable under tier-up / deopt scenarios in
-  V8 has not been stressed. For mutators this short, both engines
-  are likely just running the baseline interpreter or fast tier.
+- **Loop mutators.** Same as before. The next move is to extend the instrumenter
+  to handle `loop`/`block`/`br_if` with the canonical exit-check `N+1` charge.
+  Codex called this out specifically.
+- **Trap on budget exhaustion.** Both runners just count; neither enforces a
+  budget by trapping. Trivial extension once we want to test enforcement.
+- **Determinism under JIT recompilation.** Wasmtime defaults to Cranelift JIT
+  here, which compiles once and caches. Whether body_fuel_instr stays stable
+  under tier-up / deopt scenarios in V8 has not been stressed. For mutators this
+  short, both engines are likely just running the baseline interpreter or fast
+  tier.
 
 ## Suggested next narrow step
 
-Now loop support is the right move (Codex's condition met — r2 is
-green).
+Now loop support is the right move (Codex's condition met — r2 is green).
 
 Sketch of what loop support requires in the instrumenter:
 
 - Track basic-block boundaries through `block`/`loop`/`if`/`else`/`end`.
-- For each BB, compute its static cost and emit a `i32.const cost;
+- For each BB, compute its static cost and emit a
+  `i32.const cost;
   call $deduct` at BB entry.
-- For the exit-check BB (entered at `loop`, ended at first
-  `br_if`), the charge happens once per iteration including the
-  exit — naturally `N+1` because the BB-entry charge fires every
-  time control reaches the `loop` label, which happens `N+1` times
-  for an `N`-iteration loop.
-- For the body BB (entered after `br_if`, ended at `br` back), the
-  charge fires `N` times.
+- For the exit-check BB (entered at `loop`, ended at first `br_if`), the charge
+  happens once per iteration including the exit — naturally `N+1` because the
+  BB-entry charge fires every time control reaches the `loop` label, which
+  happens `N+1` times for an `N`-iteration loop.
+- For the body BB (entered after `br_if`, ended at `br` back), the charge fires
+  `N` times.
 - `memory.copy`/`memory.fill` dynamic charge stays as in MVP.
 
-The exit-check phase semantics match meter #3 exactly by construction
-once the BB boundaries are correct. The right tests are xor_5c and
-sum_bytes against meter #3's numbers (684/5388/21516 for xor_5c,
-560/4368/17424 for sum_bytes — minus 5 for body-only).
+The exit-check phase semantics match meter #3 exactly by construction once the
+BB boundaries are correct. The right tests are xor_5c and sum_bytes against
+meter #3's numbers (684/5388/21516 for xor_5c, 560/4368/17424 for sum_bytes —
+minus 5 for body-only).
 
-I will leave that for the next chord, possibly handed to codex if
-codex wants the audit-and-implement role on it, or kept by me with
-a codex review afterward. Either works.
+I will leave that for the next chord, possibly handed to codex if codex wants
+the audit-and-implement role on it, or kept by me with a codex review afterward.
+Either works.

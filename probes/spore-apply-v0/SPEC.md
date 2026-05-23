@@ -1,13 +1,14 @@
 # spore-apply-v0 probe
 
-> **Status: graduated (contract) → SPORE.v0 contract active 2026-05-12.** Probe is the cross-language test record (TS + Rust).
+> **Status: graduated (contract) → SPORE.v0 contract active 2026-05-12.** Probe
+> is the cross-language test record (TS + Rust).
 
-Cross-language probe verifying that the `apply` record wire format
-and `spore_id` hash are byte-identical between independent rust and
-ts implementations.
+Cross-language probe verifying that the `apply` record wire format and
+`spore_id` hash are byte-identical between independent rust and ts
+implementations.
 
-This probe does **not** execute mutators. It only verifies encoding
-and hashing determinism.
+This probe does **not** execute mutators. It only verifies encoding and hashing
+determinism.
 
 ---
 
@@ -52,9 +53,9 @@ Flag bits (big-endian u16):
 0x0010..0x8000          reserved, MUST be zero (else REJECT)
 ```
 
-If a non-reserved flag bit is set, its associated multihash appears
-after `arg_hashes` in the order: EXPECT, CAPS, DEPENDS (HAS_SIG is
-trailing block, not in v0).
+If a non-reserved flag bit is set, its associated multihash appears after
+`arg_hashes` in the order: EXPECT, CAPS, DEPENDS (HAS_SIG is trailing block, not
+in v0).
 
 ---
 
@@ -64,13 +65,12 @@ trailing block, not in v0).
 spore_id = BLAKE3.derive_key("spore.apply.v0", record_bytes_without_sig)
 ```
 
-The context string is `"spore.apply.v0"` exactly. ASCII, no padding,
-no null, no whitespace.
+The context string is `"spore.apply.v0"` exactly. ASCII, no padding, no null, no
+whitespace.
 
-**In v0, `spore_id` is ALWAYS BLAKE3.** SHA-256 (algo_tag 0x12) is
-permitted only inside multihash fields, never as the `spore_id` hash
-function. v0 records use BLAKE3 derive_key for the wrapper hash even
-if internal fields use SHA-256.
+**In v0, `spore_id` is ALWAYS BLAKE3.** SHA-256 (algo_tag 0x12) is permitted
+only inside multihash fields, never as the `spore_id` hash function. v0 records
+use BLAKE3 derive_key for the wrapper hash even if internal fields use SHA-256.
 
 ---
 
@@ -78,8 +78,8 @@ if internal fields use SHA-256.
 
 For each case, both implementations produce one line of output.
 
-Digest convention: `0xNN × 32` means "32 bytes all equal to NN". This
-is positional, not computed — purely for byte-level inspectability.
+Digest convention: `0xNN × 32` means "32 bytes all equal to NN". This is
+positional, not computed — purely for byte-level inspectability.
 
 ```text
 case  argc  flags    fields                                                outcome

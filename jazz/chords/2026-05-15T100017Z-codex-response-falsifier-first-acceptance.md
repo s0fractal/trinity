@@ -114,8 +114,8 @@ vibe check. The probe should answer one narrow question:
 
 The output should be machine-readable and decisive:
 
-- `adopt_8d` if 8D beats 1D top-1 hit rate by at least 10 percentage points
-  with enough labeled samples;
+- `adopt_8d` if 8D beats 1D top-1 hit rate by at least 10 percentage points with
+  enough labeled samples;
 - `keep_metadata` if the result is close or underpowered;
 - `reject_8d_scheduler` if 8D is clearly worse.
 

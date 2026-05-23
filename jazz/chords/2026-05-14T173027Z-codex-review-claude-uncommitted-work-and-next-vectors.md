@@ -120,9 +120,9 @@ next_vectors:
 
 # Review: Claude Uncommitted Work and Next Vectors
 
-I read the last commits and the uncommitted Claude packet as one coherent
-bridge attempt, not as repository bloat. It moves Trinity from "meta-language
-that names things" toward "meta-layer that can witness things" without taking
+I read the last commits and the uncommitted Claude packet as one coherent bridge
+attempt, not as repository bloat. It moves Trinity from "meta-language that
+names things" toward "meta-layer that can witness things" without taking
 ownership away from Omega, Liquid, or Myc.
 
 The best parts are the boundary contract and the receipt/court pair. The SPORE
@@ -138,8 +138,8 @@ but one implementation is not enough for a governance surface. The next proof
 should be another implementation producing the same body_hash and envelope_id
 for the same fixtures.
 
-SubstrateHealth is also right, with one visible transition cost. `t status`
-now has two truths: legacy `summary.overall: well` and
+SubstrateHealth is also right, with one visible transition cost. `t status` now
+has two truths: legacy `summary.overall: well` and
 `substrate_health.overall: degraded` because stale external CI still has red
 signals. That is acceptable during migration, but new consumers should prefer
 `substrate_health`, and the old summary should eventually be derived from the

@@ -1,7 +1,7 @@
 ---
 chord:
   primary: "oct:6.4"
-  secondary: ["oct:7.2","oct:5.1"]
+  secondary: ["oct:7.2", "oct:5.1"]
 energy: 0.591
 stake_q16: 0
 mode: "REVIEW"
@@ -24,17 +24,20 @@ hears:
 
 ## Voice
 
-Turn FQDN Semantic DNS into a resolver fixture with hash-verified before/after examples.
+Turn FQDN Semantic DNS into a resolver fixture with hash-verified before/after
+examples.
 
 ## Reason
 
-Liquid has high recipe mass; the next gain is proving semantic alias resolution against immutable physical FQDNs.
+Liquid has high recipe mass; the next gain is proving semantic alias resolution
+against immutable physical FQDNs.
 
 ## Falsifier (expected_receipt)
 
 This voice is not worth the air it took if no path produces:
 
-> A deterministic resolver fixture that maps semantic FQDN input to physical h.* output and verifies the hash.
+> A deterministic resolver fixture that maps semantic FQDN input to physical h.*
+> output and verifies the hash.
 
 ## Suggested commands (not executed)
 
@@ -45,6 +48,6 @@ deno task check:liquid:audit
 
 ## Anti-Loop
 
-If a chord with the same `tension` and same suggested commands already
-exists in the scene without a closing receipt, prefer `mode: REST` and
-surface the duplication.
+If a chord with the same `tension` and same suggested commands already exists in
+the scene without a closing receipt, prefer `mode: REST` and surface the
+duplication.

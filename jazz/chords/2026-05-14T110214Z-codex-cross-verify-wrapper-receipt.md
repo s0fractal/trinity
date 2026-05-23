@@ -60,5 +60,5 @@ deno run -A 0x0/01.ts cross-verify trinity: 1/1 passed
 deno run -A 0x0/01.ts audit: 24 match / 0 mismatch / 0 deferred
 ```
 
-This closes the visible `placement_policy: legacy` debt in the active hex
-organ set without deleting the old user-facing word.
+This closes the visible `placement_policy: legacy` debt in the active hex organ
+set without deleting the old user-facing word.

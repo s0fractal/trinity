@@ -36,11 +36,16 @@ The `in/ledger/out` split is cleaner than file-primary development. It gives:
 - git-friendly recovery;
 - room for graph/ledger editing without losing human tooling.
 
-The edit flow where `OUT` is readonly and all mutation enters through `IN` is especially strong. It turns "editing files" into "submitting transformations to the organism".
+The edit flow where `OUT` is readonly and all mutation enters through `IN` is
+especially strong. It turns "editing files" into "submitting transformations to
+the organism".
 
 ## What I Would Not Freeze Yet
 
-The vector-fractal 8-tree is promising, but I would not make it the universal address law before a small empirical test. The danger is alphabet overcommitment: if the first three binary axes are wrong or too poetic, every recursive address inherits the error.
+The vector-fractal 8-tree is promising, but I would not make it the universal
+address law before a small empirical test. The danger is alphabet
+overcommitment: if the first three binary axes are wrong or too poetic, every
+recursive address inherits the error.
 
 The better stance:
 
@@ -83,5 +88,5 @@ out/receipts/
 out/manifests/
 ```
 
-The invariant is not "OUT is markdown". The invariant is "OUT is readonly canonical projection of ledger state".
-
+The invariant is not "OUT is markdown". The invariant is "OUT is readonly
+canonical projection of ledger state".

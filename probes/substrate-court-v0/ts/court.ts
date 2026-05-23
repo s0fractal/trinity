@@ -5,7 +5,11 @@
 //
 // See ../SPEC.md.
 
-import { encodeCanonical, multihashSha256, CborValue } from "../../receipt-envelope-encoder-v0/ts/canonical_cbor.ts";
+import {
+  CborValue,
+  encodeCanonical,
+  multihashSha256,
+} from "../../receipt-envelope-encoder-v0/ts/canonical_cbor.ts";
 import { ENVELOPE_SCHEMA } from "../../receipt-envelope-encoder-v0/ts/envelope.ts";
 
 type Envelope = {
@@ -20,10 +24,19 @@ type Envelope = {
 };
 
 type Conflict =
-  | { kind: "body_hash_divergence"; between: [string, string]; values: [string, string] }
+  | {
+    kind: "body_hash_divergence";
+    between: [string, string];
+    values: [string, string];
+  }
   | { kind: "schema_mismatch"; substrate: string; got: string }
   | { kind: "envelope_id_collision"; substrates: [string, string] }
-  | { kind: "self_inconsistent_body_hash"; substrate: string; claimed: string; recomputed: string }
+  | {
+    kind: "self_inconsistent_body_hash";
+    substrate: string;
+    claimed: string;
+    recomputed: string;
+  }
   | { kind: "duplicate_substrate_tag"; tag: string };
 
 type Verdict = {
@@ -55,7 +68,9 @@ async function readEnvelopes(args: string[]): Promise<Envelope[]> {
   }
   // Fallback: read stdin, one envelope per line.
   const stdinText = await new Response(Deno.stdin.readable).text();
-  return stdinText.trim().split("\n").filter((l) => l.trim()).map((l) => JSON.parse(l) as Envelope);
+  return stdinText.trim().split("\n").filter((l) => l.trim()).map((l) =>
+    JSON.parse(l) as Envelope
+  );
 }
 
 if (import.meta.main) {
@@ -69,10 +84,17 @@ if (import.meta.main) {
   // (1) Schema check; (4) duplicate substrate_tag; (5) self-consistent body_hash
   for (const env of envelopes) {
     if (env.schema !== ENVELOPE_SCHEMA) {
-      conflicts.push({ kind: "schema_mismatch", substrate: env.substrate_tag, got: env.schema });
+      conflicts.push({
+        kind: "schema_mismatch",
+        substrate: env.substrate_tag,
+        got: env.schema,
+      });
     }
     if (env.substrate_tag in body_hashes) {
-      conflicts.push({ kind: "duplicate_substrate_tag", tag: env.substrate_tag });
+      conflicts.push({
+        kind: "duplicate_substrate_tag",
+        tag: env.substrate_tag,
+      });
     }
     body_hashes[env.substrate_tag] = env.body_hash;
     envelope_ids[env.substrate_tag] = env.envelope_id;
@@ -112,7 +134,10 @@ if (import.meta.main) {
   const idToTag: Record<string, string> = {};
   for (const [tag, id] of Object.entries(envelope_ids)) {
     if (id in idToTag) {
-      conflicts.push({ kind: "envelope_id_collision", substrates: [idToTag[id], tag] });
+      conflicts.push({
+        kind: "envelope_id_collision",
+        substrates: [idToTag[id], tag],
+      });
     } else {
       idToTag[id] = tag;
     }

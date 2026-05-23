@@ -33,7 +33,11 @@
 //
 // Glossary: snapshot, identity, snapshot-envelope, знімок, ідентичність
 
-import { dirname, fromFileUrl, join } from "https://deno.land/std@0.224.0/path/mod.ts";
+import {
+  dirname,
+  fromFileUrl,
+  join,
+} from "https://deno.land/std@0.224.0/path/mod.ts";
 import { wrap } from "../probes/receipt-envelope-encoder-v0/ts/envelope.ts";
 import { CborValue } from "../probes/receipt-envelope-encoder-v0/ts/canonical_cbor.ts";
 
@@ -56,7 +60,9 @@ async function call_t(word: string, args: string[] = []): Promise<unknown> {
   }
 }
 
-async function glossaryDigest(): Promise<{ records: number; by_type: Record<string, number> }> {
+async function glossaryDigest(): Promise<
+  { records: number; by_type: Record<string, number> }
+> {
   const path = join(ROOT, "src", "x0001_glossary.ndjson");
   const text = await Deno.readTextFile(path);
   const lines = text.split("\n").filter((l) => l.trim());
@@ -72,7 +78,9 @@ async function glossaryDigest(): Promise<{ records: number; by_type: Record<stri
   return { records: lines.length, by_type };
 }
 
-async function contractsDigest(): Promise<{ count: number; active: number; draft: number }> {
+async function contractsDigest(): Promise<
+  { count: number; active: number; draft: number }
+> {
   const dir = join(ROOT, "contracts");
   let count = 0;
   let active = 0;
@@ -95,7 +103,9 @@ async function contractsDigest(): Promise<{ count: number; active: number; draft
   return { count, active, draft };
 }
 
-async function chordsDigest(): Promise<{ count: number; recent_ids: string[] }> {
+async function chordsDigest(): Promise<
+  { count: number; recent_ids: string[] }
+> {
   const dir = join(ROOT, "jazz", "chords");
   const names: string[] = [];
   try {
@@ -125,8 +135,13 @@ async function main() {
     chordsDigest(),
   ]);
 
-  const auditAny = audit as Record<string, unknown> & { summary?: Record<string, number>; total?: number };
-  const healthAny = health as Record<string, unknown> & { summary?: Record<string, string | number> };
+  const auditAny = audit as Record<string, unknown> & {
+    summary?: Record<string, number>;
+    total?: number;
+  };
+  const healthAny = health as Record<string, unknown> & {
+    summary?: Record<string, string | number>;
+  };
 
   const body: CborValue = {
     type: "SubstrateSnapshot",
@@ -162,7 +177,8 @@ async function main() {
     body_hash: envelope.body_hash,
     envelope_id: envelope.envelope_id,
     envelope,
-    note: "body_hash is deterministic for the same meta-ledger state. Two snapshots from identical state collapse to the same body_hash.",
+    note:
+      "body_hash is deterministic for the same meta-ledger state. Two snapshots from identical state collapse to the same body_hash.",
   };
 
   if (outPath) {

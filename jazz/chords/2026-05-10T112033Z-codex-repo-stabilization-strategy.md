@@ -9,9 +9,11 @@ claim:
 
 # Repo Stabilization Strategy
 
-The problem is not too many ideas. The problem is missing crystallization layers between ideas and code.
+The problem is not too many ideas. The problem is missing crystallization layers
+between ideas and code.
 
-The substrate can keep its wild field mode if each repo gains a small set of boring, stable, machine-readable surfaces:
+The substrate can keep its wild field mode if each repo gains a small set of
+boring, stable, machine-readable surfaces:
 
 - contract registry
 - capability registry
@@ -31,7 +33,8 @@ Each repo should expose `contracts/` with small formal documents:
 - what public APIs promise
 - what falsifies a feature
 
-For Liquid/Omega, the immediate contract is `ENERGY_Q10.v0.md`: storage units, projection rules, transition levels, and public-display rules.
+For Liquid/Omega, the immediate contract is `ENERGY_Q10.v0.md`: storage units,
+projection rules, transition levels, and public-display rules.
 
 ## Layer 2: capabilities as SSoT
 
@@ -80,7 +83,8 @@ Every repo needs only three active lanes:
 - `stable`: can change with tests and migration notes.
 - `wild`: experiments, chords, trials, generated material.
 
-This is a social and filesystem boundary. It prevents wild work from pretending to be stable, without stopping wild work.
+This is a social and filesystem boundary. It prevents wild work from pretending
+to be stable, without stopping wild work.
 
 ## Layer 6: receipt index
 
@@ -93,7 +97,8 @@ Chords are useful, but need an index:
 - status: proposed, trialed, adopted, superseded, rejected
 - linked commits
 
-This lets future models re-enter through the graph rather than rereading hundreds of files.
+This lets future models re-enter through the graph rather than rereading
+hundreds of files.
 
 ## Layer 7: generated surfaces
 
@@ -104,7 +109,8 @@ For every repo, generate:
 - `TEST_MATRIX.generated.md`
 - `OPEN_DRIFTS.generated.md`
 
-These should be regenerated from code, chords, and contracts. Human docs can be poetic; generated docs should be blunt.
+These should be regenerated from code, chords, and contracts. Human docs can be
+poetic; generated docs should be blunt.
 
 ## Strategic next sequence
 
@@ -116,5 +122,5 @@ These should be regenerated from code, chords, and contracts. Human docs can be 
 6. Add one command: `deno task substrate:verify`.
 7. Expand same pattern to MYC resolver/capabilities.
 
-The key principle: do not centralize all truth into one repo. Centralize the contracts and recipes that let distributed truth be materialized on demand.
-
+The key principle: do not centralize all truth into one repo. Centralize the
+contracts and recipes that let distributed truth be materialized on demand.

@@ -20,13 +20,13 @@ directory placement loses authority.
 
 The tweak is that "all entities" should not mean "all files". It should mean:
 
-> all substrate-addressable live matter that benefits from lookup,
-> composition, audit, or dispatch.
+> all substrate-addressable live matter that benefits from lookup, composition,
+> audit, or dispatch.
 
 That includes executable organs, generated self-description, voice profiles,
 receipts, chord-like claims, rollups, schema projections, and getter-visible
-state. It does not automatically include every external protocol artifact,
-probe workspace, fixture, historical archive, report, or toolchain convention.
+state. It does not automatically include every external protocol artifact, probe
+workspace, fixture, historical archive, report, or toolchain convention.
 
 ## Why this improves connectedness
 
@@ -80,15 +80,15 @@ once a getter can resolve both old and new lanes.
 
 ## Falsifiers
 
-- If fresh models orient slower because `src/` becomes a junk drawer, suffix
-  and lifecycle lanes are not strong enough.
+- If fresh models orient slower because `src/` becomes a junk drawer, suffix and
+  lifecycle lanes are not strong enough.
 - If humans cannot tell which files are authored, generated, sealed, or safe to
   delete, the migration is premature.
 - If `t audit` and `t gravity` cannot distinguish semantic references from
   executable imports, the single surface is hiding edges rather than revealing
   them.
-- If `contracts/` or `probes/` moving breaks external workflows, those paths
-  are still protocol boundaries and should remain as source lanes.
+- If `contracts/` or `probes/` moving breaks external workflows, those paths are
+  still protocol boundaries and should remain as source lanes.
 
 ## Next small step
 
@@ -101,8 +101,8 @@ t get --kind voice x8A00
 t get --old jazz/chords/<file>
 ```
 
-The getter should search both current directories and `src/`, returning the
-same FQDN-style record shape. After that, migrate one low-risk lane:
+The getter should search both current directories and `src/`, returning the same
+FQDN-style record shape. After that, migrate one low-risk lane:
 
 - `state/voices/*.json` -> `src/x8A.._voice_<name>.myc.json`, or
 - new chords only -> `src/x26.._...myc.md` / `src/x35.._...myc.md`.

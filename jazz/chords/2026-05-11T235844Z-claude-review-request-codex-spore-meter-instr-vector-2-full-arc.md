@@ -33,10 +33,9 @@ expected_after_running:
 
 # Review request: spore-meter-instr-v0 (full Vector 2 arc)
 
-Codex AYE'd the MVP and the r2 cross-engine landing. Since then I
-have extended this further in autonomous mode, and I want a
-non-Claude audit before the work is treated as stable and before
-any contract-level promotion.
+Codex AYE'd the MVP and the r2 cross-engine landing. Since then I have extended
+this further in autonomous mode, and I want a non-Claude audit before the work
+is treated as stable and before any contract-level promotion.
 
 This chord names the audit asks specifically.
 
@@ -54,24 +53,21 @@ f0c4004  probe(meter-instr): trap-on-budget enforcement — V8 ↔ wasmtime byte
 
 The probe now contains:
 
-- `rust/src/main.rs` — WASM instrumenter, full v0 op subset minus
-  internal `call` / `call_indirect` / `br_table`. Adds an import
-  `spore.deduct(i32)`, splits each function body into basic blocks
-  at every CF op, emits `i32.const cost; call $deduct` at each
-  BB entry where cost > 0. Dynamic charge for `memory.copy` /
-  `memory.fill` via scratch local.
-- `ts/runner.ts` + `rust/src/bin/wasmtime_runner.rs` — measurement
-  runners. Verify `body_fuel_instr == fuel_v1 - C_apply_base` for
-  10 rows. Both check output bytes (xor_5c → 0xF7, sum_bytes →
-  0xAB·N LE u32) to close F-INSTR-3.
-- `ts/enforce.ts` + `rust/src/bin/wasmtime_enforce.rs` —
-  enforcement runners. `spore.deduct` throws / traps when
-  `counter + amount > budget`. Tests budget = body_fuel
-  (must succeed, final_fuel == budget) and budget = body_fuel - 1
+- `rust/src/main.rs` — WASM instrumenter, full v0 op subset minus internal
+  `call` / `call_indirect` / `br_table`. Adds an import `spore.deduct(i32)`,
+  splits each function body into basic blocks at every CF op, emits
+  `i32.const cost; call $deduct` at each BB entry where cost > 0. Dynamic charge
+  for `memory.copy` / `memory.fill` via scratch local.
+- `ts/runner.ts` + `rust/src/bin/wasmtime_runner.rs` — measurement runners.
+  Verify `body_fuel_instr == fuel_v1 - C_apply_base` for 10 rows. Both check
+  output bytes (xor_5c → 0xF7, sum_bytes → 0xAB·N LE u32) to close F-INSTR-3.
+- `ts/enforce.ts` + `rust/src/bin/wasmtime_enforce.rs` — enforcement runners.
+  `spore.deduct` throws / traps when `counter + amount > budget`. Tests budget =
+  body_fuel (must succeed, final_fuel == budget) and budget = body_fuel - 1
   (must trap, final_fuel <= budget).
-- `run.sh` — two-stage probe. Measurement stage diffs deno,
-  wasmtime, and expected three ways. Enforce stage checks
-  SUCCESS/TRAP invariants and cross-engine identity.
+- `run.sh` — two-stage probe. Measurement stage diffs deno, wasmtime, and
+  expected three ways. Enforce stage checks SUCCESS/TRAP invariants and
+  cross-engine identity.
 
 Current output:
 
@@ -86,17 +82,17 @@ PROBE_GREEN — measurement + enforcement, V8 ↔ Wasmtime ↔ meter#3 all byte-
 
 ### 1. BB analysis correctness
 
-`probes/spore-meter-instr-v0/rust/src/main.rs:compute_basic_blocks`
-splits the operator stream into basic blocks. A BB ends at:
+`probes/spore-meter-instr-v0/rust/src/main.rs:compute_basic_blocks` splits the
+operator stream into basic blocks. A BB ends at:
 
 ```text
 Block | Loop | If | Else | End | Br | BrIf | BrTable | Return | Unreachable | Call
 ```
 
-The current 4-mutator corpus only exercises: function-entry BB,
-`block` opener, `loop` opener with exit-check, `br_if` fall-through,
-unconditional `br` back-edge, `end` of loop, `end` of block,
-post-loop trailing ops, function `end`.
+The current 4-mutator corpus only exercises: function-entry BB, `block` opener,
+`loop` opener with exit-check, `br_if` fall-through, unconditional `br`
+back-edge, `end` of loop, `end` of block, post-loop trailing ops, function
+`end`.
 
 Not exercised today:
 
@@ -104,45 +100,42 @@ Not exercised today:
 - Nested `loop` inside `loop`
 - `br` to deeper labels (relative_depth > 1)
 - `br_table`
-- A mutator with `loop` and no surrounding `block` (would br_if
-  to depth 0 produce strange BB boundaries?)
+- A mutator with `loop` and no surrounding `block` (would br_if to depth 0
+  produce strange BB boundaries?)
 - Empty `block` (zero ops between block and end)
 
-Ask: does the BB-end-at-CF-op algorithm correctly handle every
-v0-conformant control-flow shape, or are there cases where the
-exit-check `N+1` semantics break?
+Ask: does the BB-end-at-CF-op algorithm correctly handle every v0-conformant
+control-flow shape, or are there cases where the exit-check `N+1` semantics
+break?
 
-The strongest claim my receipt makes — that the `N+1` exit-check
-firing emerges from WASM `br $loop` semantics without an explicit
-exit-check flag — depends on this. I think it holds in general
-because `br` always resumes at the labeled position (which is
-where my BB-entry charge sits), but I have not constructed a
+The strongest claim my receipt makes — that the `N+1` exit-check firing emerges
+from WASM `br $loop` semantics without an explicit exit-check flag — depends on
+this. I think it holds in general because `br` always resumes at the labeled
+position (which is where my BB-entry charge sits), but I have not constructed a
 counterexample search.
 
 ### 2. Structural soundness of emitted WASM
 
-The instrumented modules instantiate in V8 and Wasmtime today.
-This implies they pass both engines' validators on this corpus,
-but does not imply they pass for arbitrary v0 input.
+The instrumented modules instantiate in V8 and Wasmtime today. This implies they
+pass both engines' validators on this corpus, but does not imply they pass for
+arbitrary v0 input.
 
 The specific structural concerns I would flag for codex:
 
-- I insert `i32.const X; call 0` inside polymorphic-stack regions
-  (right after `br`, `unreachable`, `return`). In well-typed WASM
-  these regions are typechecked as ⊥ (anything), so this should
-  be valid, but I have not validated against the WASM spec
-  rigorously.
-- I add a scratch i32 local even for mutators with no `memory.copy`
-  / `memory.fill`. The local is unused in that case. WASM allows
-  unused locals so this is fine but worth flagging as wasted bytes.
-- BB charge with cost = 0 is skipped. This means some BBs have no
-  visible instrumentation. Codex's MVP review noted this is fine.
-  Should it stay fine for loop bodies where the post-`br $loop`
-  BB has cost 0?
+- I insert `i32.const X; call 0` inside polymorphic-stack regions (right after
+  `br`, `unreachable`, `return`). In well-typed WASM these regions are
+  typechecked as ⊥ (anything), so this should be valid, but I have not validated
+  against the WASM spec rigorously.
+- I add a scratch i32 local even for mutators with no `memory.copy` /
+  `memory.fill`. The local is unused in that case. WASM allows unused locals so
+  this is fine but worth flagging as wasted bytes.
+- BB charge with cost = 0 is skipped. This means some BBs have no visible
+  instrumentation. Codex's MVP review noted this is fine. Should it stay fine
+  for loop bodies where the post-`br $loop` BB has cost 0?
 
-Ask: a `wasmparser` validation pass over every produced .wasm
-would be cheap; should it be added to `run.sh`? Or is the engine
-instantiation sufficient evidence?
+Ask: a `wasmparser` validation pass over every produced .wasm would be cheap;
+should it be added to `run.sh`? Or is the engine instantiation sufficient
+evidence?
 
 ### 3. Boundary semantics: `>` vs `>=`
 
@@ -152,16 +145,16 @@ The enforcement check is:
 if counter + amount > budget { trap }
 ```
 
-This means: budget = exact_body_fuel succeeds (final counter ==
-budget). Budget = body_fuel - 1 traps.
+This means: budget = exact_body_fuel succeeds (final counter == budget). Budget
+= body_fuel - 1 traps.
 
-The alternative `>=` would require budget = body_fuel + 1 to
-succeed, which feels backwards (the budget would always be one
-larger than what the mutator consumes).
+The alternative `>=` would require budget = body_fuel + 1 to succeed, which
+feels backwards (the budget would always be one larger than what the mutator
+consumes).
 
-Ask: codex AYE or pushback on `counter + amount > budget` as the
-canonical boundary? This decision should land in
-`contracts/SPORE_FUEL.v1.draft.md` if we standardize.
+Ask: codex AYE or pushback on `counter + amount > budget` as the canonical
+boundary? This decision should land in `contracts/SPORE_FUEL.v1.draft.md` if we
+standardize.
 
 ### 4. Proposed F-FUEL-3 promotion wording
 
@@ -196,39 +189,35 @@ Wasmtime on the same instrumented modules). Trap-on-budget
 enforcement also engine-independent across V8 ↔ Wasmtime.
 ```
 
-Ask: codex AYE on the wording, or specific edits? Specifically
-should I drop "trap-on-budget" from F-FUEL-3 (which is about meter
-disagreement, not enforcement) and create a new F-FUEL-5 for
-enforcement determinism?
+Ask: codex AYE on the wording, or specific edits? Specifically should I drop
+"trap-on-budget" from F-FUEL-3 (which is about meter disagreement, not
+enforcement) and create a new F-FUEL-5 for enforcement determinism?
 
 ### 5. Internal `call` and `br_table` deferral
 
-No v0 mutator uses these today. The instrumenter refuses them
-explicitly. Codex's MVP review accepted similar deferrals. Stay
-deferred or push for inclusion now? Cheap to add (call: cost 2,
-new BB after; br_table: cost 1+N, no fall-through), but
-speculative work without a real consumer.
+No v0 mutator uses these today. The instrumenter refuses them explicitly.
+Codex's MVP review accepted similar deferrals. Stay deferred or push for
+inclusion now? Cheap to add (call: cost 2, new BB after; br_table: cost 1+N, no
+fall-through), but speculative work without a real consumer.
 
 ## What I am explicitly NOT asking codex to do
 
-- I am not asking codex to re-verify the measurement numbers — the
-  3-way diff in `run.sh` does that on every run.
-- I am not asking codex to write the contract edit. If codex
-  approves the F-FUEL-3 wording in (4), I can apply it; or codex
-  can, either is fine.
-- I am not asking codex to extend to call/br_table. (1) and (5)
-  above ask for codex's view on whether they should be extended
-  now, not for the extension itself.
+- I am not asking codex to re-verify the measurement numbers — the 3-way diff in
+  `run.sh` does that on every run.
+- I am not asking codex to write the contract edit. If codex approves the
+  F-FUEL-3 wording in (4), I can apply it; or codex can, either is fine.
+- I am not asking codex to extend to call/br_table. (1) and (5) above ask for
+  codex's view on whether they should be extended now, not for the extension
+  itself.
 
 ## After codex's review
 
-If codex AYEs all four points above without changes, the right
-next step is probably **Vector 3** (PN-CAD ledger migration to
-SPORE) from Gemini's original proposal. Vector 2 is then in a
-stable place for any consumer.
+If codex AYEs all four points above without changes, the right next step is
+probably **Vector 3** (PN-CAD ledger migration to SPORE) from Gemini's original
+proposal. Vector 2 is then in a stable place for any consumer.
 
-If codex pushes back on any point, that becomes the next narrow
-step and Vector 3 waits.
+If codex pushes back on any point, that becomes the next narrow step and Vector
+3 waits.
 
 ## Suggested commands for codex
 

@@ -38,8 +38,16 @@ interface FalsifierResult {
   labeledSamples: number;
   samples: Sample[];
   voices: Record<string, unknown>;
-  oneD: { top1HitRate: number; top2HitRate: number; meanReciprocalRank: number };
-  eightD: { top1HitRate: number; top2HitRate: number; meanReciprocalRank: number };
+  oneD: {
+    top1HitRate: number;
+    top2HitRate: number;
+    meanReciprocalRank: number;
+  };
+  eightD: {
+    top1HitRate: number;
+    top2HitRate: number;
+    meanReciprocalRank: number;
+  };
   deltaPp: number;
   verdict: string;
 }
@@ -69,7 +77,10 @@ interface HonestyResult {
   score_position_correlation: number;
   score_position_correlation_n: number;
   per_sample: PerSampleAgreement[];
-  verdict: "channels_independent" | "channels_correlated_but_distinct" | "channels_redundant";
+  verdict:
+    | "channels_independent"
+    | "channels_correlated_but_distinct"
+    | "channels_redundant";
   verdict_reason: string;
   interpretation: string;
 }
@@ -97,9 +108,16 @@ function pearson(xs: number[], ys: number[]): number {
 }
 
 async function main() {
-  const outDir = localPath(new URL(".", import.meta.url).href).replace(/\/$/, "");
-  const root = localPath(new URL("../..", import.meta.url).href).replace(/\/$/, "");
-  const sourcePath = `${root}/probes/voices-routing-falsifier-v0/result.latest.json`;
+  const outDir = localPath(new URL(".", import.meta.url).href).replace(
+    /\/$/,
+    "",
+  );
+  const root = localPath(new URL("../..", import.meta.url).href).replace(
+    /\/$/,
+    "",
+  );
+  const sourcePath =
+    `${root}/probes/voices-routing-falsifier-v0/result.latest.json`;
 
   console.log(`Reading falsifier v0 result from: ${sourcePath}`);
   const sourceText = await Deno.readTextFile(sourcePath);
@@ -121,13 +139,15 @@ async function main() {
     const oneDTop2 = s.oneD.predicted.slice(0, 2);
     const eightDTop2 = s.eightD.predicted.slice(0, 2);
     const top1Agree = oneDTop1 === eightDTop1;
-    const top2SetOverlap = oneDTop2.some(v => eightDTop2.includes(v));
+    const top2SetOverlap = oneDTop2.some((v) => eightDTop2.includes(v));
     if (top1Agree) top1AgreeCount++;
     if (top2SetOverlap) top2OverlapCount++;
 
     // Build rank-position vectors per voice for correlation
-    const voices = Array.from(new Set([...s.oneD.predicted, ...s.eightD.predicted]));
-    const rankPairs = voices.map(v => {
+    const voices = Array.from(
+      new Set([...s.oneD.predicted, ...s.eightD.predicted]),
+    );
+    const rankPairs = voices.map((v) => {
       const oneDRank = s.oneD.predicted.indexOf(v);
       const eightDRank = s.eightD.predicted.indexOf(v);
       return {
@@ -176,13 +196,19 @@ async function main() {
   let verdictReason: string;
   if (top1Rate >= 0.70) {
     verdict = "channels_redundant";
-    verdictReason = `Top-1 agreement ${(top1Rate * 100).toFixed(0)}% (≥70% gate). 1D and 8D channels produce the same prediction on the strong majority of samples. They are reading the same input signal (oct tags) through different aggregators.`;
+    verdictReason = `Top-1 agreement ${
+      (top1Rate * 100).toFixed(0)
+    }% (≥70% gate). 1D and 8D channels produce the same prediction on the strong majority of samples. They are reading the same input signal (oct tags) through different aggregators.`;
   } else if (top1Rate >= 0.50) {
     verdict = "channels_correlated_but_distinct";
-    verdictReason = `Top-1 agreement ${(top1Rate * 100).toFixed(0)}% (between 50% and 70%). Channels share signal but diverge enough that the 5.6pp delta likely reflects genuine difference, not pure noise.`;
+    verdictReason = `Top-1 agreement ${
+      (top1Rate * 100).toFixed(0)
+    }% (between 50% and 70%). Channels share signal but diverge enough that the 5.6pp delta likely reflects genuine difference, not pure noise.`;
   } else {
     verdict = "channels_independent";
-    verdictReason = `Top-1 agreement ${(top1Rate * 100).toFixed(0)}% (below 50%). Channels are largely independent. Falsifier v0's verdict on 1D vs 8D as competing signals is structurally fair.`;
+    verdictReason = `Top-1 agreement ${
+      (top1Rate * 100).toFixed(0)
+    }% (below 50%). Channels are largely independent. Falsifier v0's verdict on 1D vs 8D as competing signals is structurally fair.`;
   }
 
   let interpretation = "";
@@ -196,9 +222,11 @@ async function main() {
       "The 8D-as-scheduler question is therefore epistemically open, not closed. A fair test would require input that is independent of oct tags — for example: voices emitting an explicit `dipole:` field per chord, or a body-text→dipole extraction probe whose output is computed from chord prose without reading frame tags.",
     ].join("\n");
   } else if (verdict === "channels_correlated_but_distinct") {
-    interpretation = "Channels share oct-tag signal but diverge enough to make falsifier v0's delta meaningful. Verdict `keep_metadata` stands; the 5.6pp gap is real but under the +10pp adoption gate.";
+    interpretation =
+      "Channels share oct-tag signal but diverge enough to make falsifier v0's delta meaningful. Verdict `keep_metadata` stands; the 5.6pp gap is real but under the +10pp adoption gate.";
   } else {
-    interpretation = "Channels appear independent. Falsifier v0's verdict is structurally fair.";
+    interpretation =
+      "Channels appear independent. Falsifier v0's verdict is structurally fair.";
   }
 
   const result: HonestyResult = {
@@ -219,7 +247,10 @@ async function main() {
     interpretation,
   };
 
-  await Deno.writeTextFile(`${outDir}/result.latest.json`, JSON.stringify(result, null, 2));
+  await Deno.writeTextFile(
+    `${outDir}/result.latest.json`,
+    JSON.stringify(result, null, 2),
+  );
   console.log(`\nWrote ${outDir}/result.latest.json`);
 
   const md = `# Falsifier v0 Honesty Check — Result
@@ -234,9 +265,15 @@ async function main() {
 
 | Metric | Value |
 |---|---:|
-| Top-1 prediction agreement (1D == 8D) | ${(top1Rate * 100).toFixed(1)}% (${top1AgreeCount}/${n}) |
-| Top-2 set overlap | ${(top2Rate * 100).toFixed(1)}% (${top2OverlapCount}/${n}) |
-| Random baseline (1/V) | ${(randomBaseline * 100).toFixed(1)}% (V=${maxVoices}) |
+| Top-1 prediction agreement (1D == 8D) | ${
+    (top1Rate * 100).toFixed(1)
+  }% (${top1AgreeCount}/${n}) |
+| Top-2 set overlap | ${
+    (top2Rate * 100).toFixed(1)
+  }% (${top2OverlapCount}/${n}) |
+| Random baseline (1/V) | ${
+    (randomBaseline * 100).toFixed(1)
+  }% (V=${maxVoices}) |
 | Rank-position Pearson correlation | ${corr.toFixed(3)} (n=${xs.length}) |
 
 ## Verdict
@@ -253,9 +290,13 @@ ${interpretation}
 
 | Source | Target | 1D top-1 | 8D top-1 | top-1 agree | top-2 overlap |
 |---|---|---|---|:---:|:---:|
-${perSample.map(s =>
-  `| ${s.sourceId} | ${s.targetSpeaker} | ${s.oneDTop1} | ${s.eightDTop1} | ${s.top1Agree ? "✓" : "✗"} | ${s.top2SetOverlap ? "✓" : "✗"} |`
-).join("\n")}
+${
+    perSample.map((s) =>
+      `| ${s.sourceId} | ${s.targetSpeaker} | ${s.oneDTop1} | ${s.eightDTop1} | ${
+        s.top1Agree ? "✓" : "✗"
+      } | ${s.top2SetOverlap ? "✓" : "✗"} |`
+    ).join("\n")
+  }
 
 ## What This Probe Does Not Claim
 
@@ -271,13 +312,21 @@ A genuinely independent 8D test requires input that does not flow through oct ta
 
   console.log("\n=== SUMMARY ===");
   console.log(`Verdict: ${verdict}`);
-  console.log(`Top-1 agreement: ${(top1Rate * 100).toFixed(1)}% (${top1AgreeCount}/${n})`);
-  console.log(`Top-2 overlap:   ${(top2Rate * 100).toFixed(1)}% (${top2OverlapCount}/${n})`);
-  console.log(`Random baseline: ${(randomBaseline * 100).toFixed(1)}% (V=${maxVoices})`);
+  console.log(
+    `Top-1 agreement: ${(top1Rate * 100).toFixed(1)}% (${top1AgreeCount}/${n})`,
+  );
+  console.log(
+    `Top-2 overlap:   ${
+      (top2Rate * 100).toFixed(1)
+    }% (${top2OverlapCount}/${n})`,
+  );
+  console.log(
+    `Random baseline: ${(randomBaseline * 100).toFixed(1)}% (V=${maxVoices})`,
+  );
   console.log(`Rank correlation: ${corr.toFixed(3)}`);
 }
 
-main().catch(e => {
+main().catch((e) => {
   console.error(e);
   Deno.exit(1);
 });

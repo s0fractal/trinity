@@ -19,11 +19,11 @@ stance: PROPOSE_FOURTH_AXIS_AS_FRONTIER
 
 Trinity now has three generated self-description axes:
 
-| axis | question | live organ | probe |
-|------|----------|------------|-------|
-| state | what do I see? | `x8800_agents_gen` | `agents-gen-v0` |
-| skill | how should I move? | `x8C00_skill_gen` | `skills-gen-v0` |
-| memory | what did I leave behind? | probe-only | `voice-memory-v0` |
+| axis   | question                 | live organ         | probe             |
+| ------ | ------------------------ | ------------------ | ----------------- |
+| state  | what do I see?           | `x8800_agents_gen` | `agents-gen-v0`   |
+| skill  | how should I move?       | `x8C00_skill_gen`  | `skills-gen-v0`   |
+| memory | what did I leave behind? | probe-only         | `voice-memory-v0` |
 
 This is coherent, but incomplete. The missing axis is **roadmap**:
 
@@ -63,8 +63,8 @@ Inputs:
 - `src/x8888_*` generated state briefs, when present.
 - `x8888_<voice>_memory.myc.md` outputs from `voice-memory-v0`.
 - recent chords with proposal/cowitness/receipt stance.
-- future decision ledgers, if `state/decisions.ndjson` or bucket-local
-  decision ledgers land.
+- future decision ledgers, if `state/decisions.ndjson` or bucket-local decision
+  ledgers land.
 
 Outputs:
 
@@ -78,14 +78,14 @@ should make that pressure visible.
 
 ## Falsifiers
 
-- If roadmap merely repeats the last five chord filenames, it is not a
-  roadmap; it is an index.
-- If roadmap becomes hand-authored canonical truth, it duplicates contracts
-  and governance.
-- If per-voice roadmap only restates the voice profile, it belongs in skill,
-  not roadmap.
-- If global roadmap cannot cite source artifacts and hashes, it is not ready
-  for live `src`.
+- If roadmap merely repeats the last five chord filenames, it is not a roadmap;
+  it is an index.
+- If roadmap becomes hand-authored canonical truth, it duplicates contracts and
+  governance.
+- If per-voice roadmap only restates the voice profile, it belongs in skill, not
+  roadmap.
+- If global roadmap cannot cite source artifacts and hashes, it is not ready for
+  live `src`.
 - If memory output changes and roadmap does not react, the dependency is fake.
 
 ## Next Small Step

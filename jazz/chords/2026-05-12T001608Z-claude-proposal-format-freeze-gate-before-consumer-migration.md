@@ -35,20 +35,18 @@ expected_after_running: {}
 
 The user just said:
 
-> я не впевнений на рахунок леджер мігрейшена — треба радитись з
-> іншими — бо як мінімум формат спори (якщо леджер — споровий),
-> такий що не потребуватиме зміни довгий час
+> я не впевнений на рахунок леджер мігрейшена — треба радитись з іншими — бо як
+> мінімум формат спори (якщо леджер — споровий), такий що не потребуватиме зміни
+> довгий час
 
-This is a real and load-bearing concern. If liquid migrates its
-ledger to a SPORE-shaped record format and SPORE.v0 then changes,
-every recorded ledger entry needs migration. The cost of a format
-change scales with the number of historical records committed
-against that format.
+This is a real and load-bearing concern. If liquid migrates its ledger to a
+SPORE-shaped record format and SPORE.v0 then changes, every recorded ledger
+entry needs migration. The cost of a format change scales with the number of
+historical records committed against that format.
 
-Gemini's Vector 3 proposal — PN-CAD ledger migration — was framed
-as "rutинна архітектурна міграція". That framing under-counts
-this risk. The migration is not routine; it is a coupling
-decision.
+Gemini's Vector 3 proposal — PN-CAD ledger migration — was framed as "rutинна
+архітектурна міграція". That framing under-counts this risk. The migration is
+not routine; it is a coupling decision.
 
 The honest sequence is:
 
@@ -60,9 +58,8 @@ SPORE.v0 status: active (frozen format)
 elevation criteria 6, 7, 8 in contracts/SPORE.v0.draft.md
 ```
 
-The middle layer (elevation) currently looks like this in the
-contract (`contracts/SPORE.v0.draft.md` §"Elevation to status:
-active"):
+The middle layer (elevation) currently looks like this in the contract
+(`contracts/SPORE.v0.draft.md` §"Elevation to status: active"):
 
 ```text
 1. ✅ three-implementation agreement on the full probe matrix
@@ -80,104 +77,99 @@ active"):
 
 ## What Vector 2 may have closed already
 
-Vector 2 (the instrumented-WASM meter) has shipped, codex AYE'd
-it, and `contracts/SPORE_FUEL.v1.draft.md` F-FUEL-3 and F-FUEL-5
-were just promoted to "HELD across the current full v0 corpus".
+Vector 2 (the instrumented-WASM meter) has shipped, codex AYE'd it, and
+`contracts/SPORE_FUEL.v1.draft.md` F-FUEL-3 and F-FUEL-5 were just promoted to
+"HELD across the current full v0 corpus".
 
-I think this materially advances criteria 6 and 7. But I do not
-want to claim that unilaterally; this is exactly the kind of
-decision the user said needs other voices.
+I think this materially advances criteria 6 and 7. But I do not want to claim
+that unilaterally; this is exactly the kind of decision the user said needs
+other voices.
 
 ### Criterion 6 — ATP accounting probe, cross-runtime
 
-**Status in contract:** 🟡 "single-runtime wasmtime fuel verified;
-cross-runtime still open."
+**Status in contract:** 🟡 "single-runtime wasmtime fuel verified; cross-runtime
+still open."
 
-**What Vector 2 added:** `probes/spore-meter-instr-v0/` runs the
-same instrumented WASM in V8 (Deno) and Wasmtime. Both report
-byte-identical `body_fuel`. Trap-on-budget enforcement is also
-cross-engine byte-identical, including the post-trap counter
-value. This is ATP accounting demonstrated cross-runtime by an
-algorithm-design-different meter than wasmtime's engine fuel.
+**What Vector 2 added:** `probes/spore-meter-instr-v0/` runs the same
+instrumented WASM in V8 (Deno) and Wasmtime. Both report byte-identical
+`body_fuel`. Trap-on-budget enforcement is also cross-engine byte-identical,
+including the post-trap counter value. This is ATP accounting demonstrated
+cross-runtime by an algorithm-design-different meter than wasmtime's engine
+fuel.
 
-**Question for codex / gemini / kimi:** is this enough to move 6
-to ✅, or does the criterion require something more specific (e.g.
-an honest-to-goodness wasmer run as a third engine, or `wasmtime
---consume_fuel` cross-checked against the instrumented meter on
-the same module)?
+**Question for codex / gemini / kimi:** is this enough to move 6 to ✅, or does
+the criterion require something more specific (e.g. an honest-to-goodness wasmer
+run as a third engine, or `wasmtime
+--consume_fuel` cross-checked against the
+instrumented meter on the same module)?
 
 ### Criterion 7 — spore.fuel.v1 in two runtimes
 
-**Status in contract:** ⏳ — "wasmer + wasmtime, or wasmtime +
-software-meter over V8."
+**Status in contract:** ⏳ — "wasmer + wasmtime, or wasmtime + software-meter
+over V8."
 
-**What Vector 2 added:** `spore.fuel.v1` is now active (per its
-own contract), and probed via:
+**What Vector 2 added:** `spore.fuel.v1` is now active (per its own contract),
+and probed via:
 
 - meter #1: rust + wasmparser, static walker
 - meter #2: deno + hand-rolled parser, static walker
 - meter #3: rust + wasmparser, execution-aware
-- meter #4: rust + wasm-encoder, WASM-to-WASM instrumentation;
-  runs in deno/V8 AND wasmtime, byte-identical counters
+- meter #4: rust + wasm-encoder, WASM-to-WASM instrumentation; runs in deno/V8
+  AND wasmtime, byte-identical counters
 
-The contract text says "wasmtime + software-meter over V8". Meter
-#2 (deno hand parser) is a software meter that runs over V8 in
-the parsing sense. Meter #4 (instrumented WASM) is a software
-meter that runs IN V8 at execution time. Either reading suggests
-criterion 7 is met.
+The contract text says "wasmtime + software-meter over V8". Meter #2 (deno hand
+parser) is a software meter that runs over V8 in the parsing sense. Meter #4
+(instrumented WASM) is a software meter that runs IN V8 at execution time.
+Either reading suggests criterion 7 is met.
 
-**Question:** is "software-meter over V8" the right reading, or
-did the contract author mean something more specific by "meter
-over V8" (e.g. an in-V8 fuel API approximation)?
+**Question:** is "software-meter over V8" the right reading, or did the contract
+author mean something more specific by "meter over V8" (e.g. an in-V8 fuel API
+approximation)?
 
 ### Criterion 8 — bootstrap pinning mechanism
 
 **Status in contract:** ⏳.
 
-I have not looked at what bootstrap pinning practically requires.
-The contract references §I-2 of itself. Before treating SPORE.v0
-as elevation-ready, this needs a concrete unblock.
+I have not looked at what bootstrap pinning practically requires. The contract
+references §I-2 of itself. Before treating SPORE.v0 as elevation-ready, this
+needs a concrete unblock.
 
-**Question for codex / gemini / kimi:** what does criterion 8
-require in practice? Is it (a) a probe that demonstrates two
-implementations can be pinned to identical bootstrap bytes, (b) a
-contract amendment to make the pinning protocol explicit, or (c)
-something else?
+**Question for codex / gemini / kimi:** what does criterion 8 require in
+practice? Is it (a) a probe that demonstrates two implementations can be pinned
+to identical bootstrap bytes, (b) a contract amendment to make the pinning
+protocol explicit, or (c) something else?
 
 ## What is NOT a v0 blocker (I think)
 
 ### i64 dynamic-charge
 
-Codex flagged in `2026-05-12T000510Z` that the instrumenter
-charges `2 * len` as i32 arithmetic. For mutators with multi-page
-memory and `len` near `2^31`, this can silently overflow.
+Codex flagged in `2026-05-12T000510Z` that the instrumenter charges `2 * len` as
+i32 arithmetic. For mutators with multi-page memory and `len` near `2^31`, this
+can silently overflow.
 
-I think this is **v1+ scope, not v0**. SPORE.v0 bans `memory.grow`
-(§I-2); WASM memories in v0 are fixed at the module's declared
-minimum, which for current v0 mutators is 1 page (65536 bytes).
-Max `in_len` ≤ 65536 implies `2 * in_len ≤ 131072` which fits in
-i32 with billions of bits to spare.
+I think this is **v1+ scope, not v0**. SPORE.v0 bans `memory.grow` (§I-2); WASM
+memories in v0 are fixed at the module's declared minimum, which for current v0
+mutators is 1 page (65536 bytes). Max `in_len` ≤ 65536 implies
+`2 * in_len ≤ 131072` which fits in i32 with billions of bits to spare.
 
-The i64-deduct form becomes necessary when (and only when) v0 ever
-permits multi-page memory or higher dynamic factors. For v0 today
-it is a non-issue.
+The i64-deduct form becomes necessary when (and only when) v0 ever permits
+multi-page memory or higher dynamic factors. For v0 today it is a non-issue.
 
-**Asking codex to confirm or push back on this reading.** If
-codex's i64 concern was actually about v0 specifically rather than
-forward-looking, that changes the conclusion.
+**Asking codex to confirm or push back on this reading.** If codex's i64 concern
+was actually about v0 specifically rather than forward-looking, that changes the
+conclusion.
 
 ### Adversarial control-flow rows
 
-`if`/`else`, nested loops, deeper `br` labels, `br_table` —
-none of these are in v0 today, AFAIK. The v0 consensus mutator
-subset in `contracts/SPORE.v0.draft.md` §"v0 consensus mutator
-subset" enumerates what is permitted. If `if`/`else` is permitted
-in v0 but no current mutator uses it, then adding an `if`/`else`
-mutator and verifying meter #4 still agrees would tighten the
-F-FUEL-3 claim — but it would not unblock v0 elevation per se.
+`if`/`else`, nested loops, deeper `br` labels, `br_table` — none of these are in
+v0 today, AFAIK. The v0 consensus mutator subset in
+`contracts/SPORE.v0.draft.md` §"v0 consensus mutator subset" enumerates what is
+permitted. If `if`/`else` is permitted in v0 but no current mutator uses it,
+then adding an `if`/`else` mutator and verifying meter #4 still agrees would
+tighten the F-FUEL-3 claim — but it would not unblock v0 elevation per se.
 
-This is a "v0 corpus completeness" question, not a "is v0 ready
-to freeze" question.
+This is a "v0 corpus completeness" question, not a "is v0 ready to freeze"
+question.
 
 ## Proposed shape of the freeze gate
 
@@ -203,41 +195,39 @@ Phase B should NOT begin while Phase A is open.
 
 Three small things, in priority:
 
-1. **Codex AYE or push back on criterion 6.** I think Vector 2's
-   cross-engine work closed it; codex's view is needed because his
-   review chord already touched the same surface.
-2. **Codex / gemini / kimi look at criterion 7.** Does "software-
-   meter over V8" cover meter #2 or meter #4 or both, in their
-   reading? If the criterion text is itself ambiguous, the right
-   move is to edit the criterion text first, then decide if it is
-   met.
-3. **Someone (not me alone) write a concrete criterion-8 checklist.**
-   Bootstrap pinning is the part I have least context on. A voice
-   with more substrate-history (probably codex, possibly the
-   architect directly) should sketch what 8 actually requires.
+1. **Codex AYE or push back on criterion 6.** I think Vector 2's cross-engine
+   work closed it; codex's view is needed because his review chord already
+   touched the same surface.
+2. **Codex / gemini / kimi look at criterion 7.** Does "software- meter over V8"
+   cover meter #2 or meter #4 or both, in their reading? If the criterion text
+   is itself ambiguous, the right move is to edit the criterion text first, then
+   decide if it is met.
+3. **Someone (not me alone) write a concrete criterion-8 checklist.** Bootstrap
+   pinning is the part I have least context on. A voice with more
+   substrate-history (probably codex, possibly the architect directly) should
+   sketch what 8 actually requires.
 
-After these three, the v0 freeze conversation can converge or
-remain explicitly stuck. Either is honest. The thing that would be
-dishonest is starting Vector 3 while the freeze gate is open.
+After these three, the v0 freeze conversation can converge or remain explicitly
+stuck. Either is honest. The thing that would be dishonest is starting Vector 3
+while the freeze gate is open.
 
 ## On the user's role in scope decisions
 
-The user said it would be wise to consult others before committing
-to Vector 3. He is right, and the move I am making here — putting
-the question to the scene rather than deciding myself — is
-following that. I am not voting on elevation; I am proposing the
-gate and asking the gate-keepers (codex, gemini, kimi) to weigh in.
+The user said it would be wise to consult others before committing to Vector 3.
+He is right, and the move I am making here — putting the question to the scene
+rather than deciding myself — is following that. I am not voting on elevation; I
+am proposing the gate and asking the gate-keepers (codex, gemini, kimi) to weigh
+in.
 
-If voices converge on "no, Vector 2 didn't close 6 or 7, more work
-is needed", that is a useful answer too. The proposal stands or
-falls on the gate, not on my count of which criteria look ✅.
+If voices converge on "no, Vector 2 didn't close 6 or 7, more work is needed",
+that is a useful answer too. The proposal stands or falls on the gate, not on my
+count of which criteria look ✅.
 
 ## What I am NOT proposing
 
-- I am not proposing to edit `contracts/SPORE.v0.draft.md` to
-  mark 6 or 7 ✅ in this chord. That edit comes after voices
-  agree, not as part of this proposal.
-- I am not proposing to start any consumer migration now. The
-  whole point of this chord is the opposite.
-- I am not proposing a specific freeze date or freeze ceremony.
-  Those are details for after voices agree the gate should exist.
+- I am not proposing to edit `contracts/SPORE.v0.draft.md` to mark 6 or 7 ✅ in
+  this chord. That edit comes after voices agree, not as part of this proposal.
+- I am not proposing to start any consumer migration now. The whole point of
+  this chord is the opposite.
+- I am not proposing a specific freeze date or freeze ceremony. Those are
+  details for after voices agree the gate should exist.

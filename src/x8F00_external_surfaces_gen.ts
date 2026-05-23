@@ -1,0 +1,230 @@
+#!/usr/bin/env -S deno run --allow-read --allow-write
+// src/x8F00_external_surfaces_gen.ts — external surfaces registry generator
+// position: 8/F → void-infinity(8) × completion-edge(F) = final descriptions of all surfaces
+// hex_dipole: "93 00 00 00 00 00 33 59"
+//   void_infinity-1.09 (PRIMARY: indexes external directories and compost)
+//   completion_frontier+0.89 (boundary tracking across folders)
+//   harmony_emergence+0.33 (systemic coherence)
+// placement_policy: axis
+// intent: scan external surfaces (contracts, docs, probes, chords, state, compost) and generate src/x8F88_external_surfaces.myc.md registry
+// maturity: active
+// horizon: none (external surfaces registry implemented)
+// skill_tag: external-surfaces
+// skill_safe: yes
+
+import {
+  dirname,
+  fromFileUrl,
+  join,
+} from "https://deno.land/std@0.224.0/path/mod.ts";
+
+const HERE = dirname(fromFileUrl(import.meta.url));
+const ROOT = dirname(HERE);
+const OUTPUT_PATH = join(HERE, "x8F88_external_surfaces.myc.md");
+
+interface SurfaceEntry {
+  path: string;
+  category:
+    | "compatibility ABI"
+    | "compatibility"
+    | "experimental"
+    | "live chord"
+    | "local cache"
+    | "compost";
+  size: number;
+  mtime: string;
+}
+
+async function getFileInfo(
+  fullPath: string,
+): Promise<{ size: number; mtime: string }> {
+  try {
+    const stat = await Deno.stat(fullPath);
+    return {
+      size: stat.size,
+      mtime: stat.mtime
+        ? stat.mtime.toISOString().slice(0, 19) + "Z"
+        : "unknown",
+    };
+  } catch {
+    return { size: 0, mtime: "unknown" };
+  }
+}
+
+async function scanCategory(
+  dir: string,
+  category: SurfaceEntry["category"],
+  filter: (name: string) => boolean = () => true,
+): Promise<SurfaceEntry[]> {
+  const out: SurfaceEntry[] = [];
+  try {
+    for await (const entry of Deno.readDir(dir)) {
+      if (filter(entry.name)) {
+        const relPath = join(dir.replace(ROOT + "/", ""), entry.name);
+        const { size, mtime } = await getFileInfo(join(dir, entry.name));
+        out.push({ path: relPath, category, size, mtime });
+      }
+    }
+  } catch { /* ignore missing dir */ }
+  return out;
+}
+
+async function scanCompost(): Promise<SurfaceEntry[]> {
+  const out: SurfaceEntry[] = [];
+  try {
+    for await (const entry of Deno.readDir(join(ROOT, "src"))) {
+      if (
+        entry.isFile &&
+        /^x48F[0-9A-Fa-f]_contract_.*_palimpsest\.myc\.md$/.test(entry.name)
+      ) {
+        const { size, mtime } = await getFileInfo(
+          join(ROOT, "src", entry.name),
+        );
+        out.push({
+          path: join("src", entry.name),
+          category: "compost",
+          size,
+          mtime,
+        });
+      }
+    }
+  } catch { /* ignore */ }
+  return out;
+}
+
+async function main() {
+  const stable = Deno.args.includes("--stable");
+
+  const entries: SurfaceEntry[] = [];
+
+  // contracts/
+  entries.push(
+    ...(await scanCategory(
+      join(ROOT, "contracts"),
+      "compatibility ABI",
+      (name) =>
+        name.endsWith(".md") && name !== "README.md" && name !== "compost",
+    )),
+  );
+
+  // docs/
+  entries.push(
+    ...(await scanCategory(
+      join(ROOT, "docs"),
+      "compatibility",
+      (name) => name.endsWith(".md") && name !== "README.md",
+    )),
+  );
+
+  // probes/
+  try {
+    for await (const entry of Deno.readDir(join(ROOT, "probes"))) {
+      if (entry.isDirectory) {
+        const probeDir = join(ROOT, "probes", entry.name);
+        // Find main doc files in the probe
+        for await (const pEntry of Deno.readDir(probeDir)) {
+          if (pEntry.isFile && pEntry.name.endsWith(".md")) {
+            const relPath = join("probes", entry.name, pEntry.name);
+            const { size, mtime } = await getFileInfo(
+              join(probeDir, pEntry.name),
+            );
+            entries.push({
+              path: relPath,
+              category: "experimental",
+              size,
+              mtime,
+            });
+          }
+        }
+      }
+    }
+  } catch { /* ignore */ }
+
+  // jazz/chords/
+  entries.push(
+    ...(await scanCategory(
+      join(ROOT, "jazz", "chords"),
+      "live chord",
+      (name) => name.endsWith(".md"),
+    )),
+  );
+
+  // state/
+  entries.push(
+    ...(await scanCategory(
+      join(ROOT, "state"),
+      "local cache",
+      (name) => name !== "audit" && name !== "cognition" && name !== "voices",
+    )),
+  );
+
+  // compost in src/
+  entries.push(...(await scanCompost()));
+
+  // Sort by category, then by path
+  entries.sort((a, b) => {
+    const catComp = a.category.localeCompare(b.category);
+    if (catComp !== 0) return catComp;
+    return a.path.localeCompare(b.path);
+  });
+
+  const categoryCounts: Record<string, number> = {};
+  for (const e of entries) {
+    categoryCounts[e.category] = (categoryCounts[e.category] ?? 0) + 1;
+  }
+
+  const lines: string[] = [];
+  lines.push(
+    `<!-- AUTO-GENERATED by src/x8F00_external_surfaces_gen.ts — do not edit by hand. -->`,
+  );
+  if (!stable) {
+    lines.push(`<!-- generated_at: ${new Date().toISOString()} -->`);
+  }
+  lines.push(``);
+  lines.push(`# Substrate external surfaces registry`);
+  lines.push(``);
+  lines.push(
+    `*Generated registry of all file-based interfaces, documents, and local caches outside the core Deno flat-src code base.*`,
+  );
+  lines.push(``);
+  lines.push(`## Summary`);
+  lines.push(``);
+  lines.push(`| Category | File Count |`);
+  lines.push(`| :--- | :---: |`);
+  for (const [cat, count] of Object.entries(categoryCounts).sort()) {
+    lines.push(`| ${cat} | ${count} |`);
+  }
+  lines.push(`| **Total** | **${entries.length}** |`);
+  lines.push(``);
+  lines.push(`## Registered Surfaces`);
+  lines.push(``);
+  lines.push(`| Category | Path | Size (bytes) | Last Modified |`);
+  lines.push(`| :--- | :--- | :---: | :--- |`);
+  for (const e of entries) {
+    // Avoid double slash issues in links
+    const linkPath = e.path.replace(/\\/g, "/");
+    lines.push(
+      `| ${e.category} | [${e.path}](file:///${
+        join(ROOT, linkPath)
+      }) | ${e.size} | ${e.mtime} |`,
+    );
+  }
+  lines.push(``);
+
+  await Deno.writeTextFile(OUTPUT_PATH, lines.join("\n"));
+
+  const receipt = {
+    type: "external_surfaces_gen",
+    position: "8/F",
+    action: "generate",
+    note: "external surfaces registry generated successfully",
+    summary: categoryCounts,
+    total_surfaces: entries.length,
+  };
+
+  console.log(JSON.stringify(receipt, null, 2));
+}
+
+if (import.meta.main) {
+  await main();
+}

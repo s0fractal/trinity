@@ -354,8 +354,12 @@ async function findOrphans(files: string[]): Promise<string[]> {
 
   const registered = new Set<string>();
   try {
-    const dispatchRunnerText = await Deno.readTextFile(join(ROOT, "src", "x0010_dispatch_runner.ts"));
-    const matches = dispatchRunnerText.matchAll(/"(x[0-9A-Fa-f]{4}_[^"]+\.ts)"/g);
+    const dispatchRunnerText = await Deno.readTextFile(
+      join(ROOT, "src", "x0010_dispatch_runner.ts"),
+    );
+    const matches = dispatchRunnerText.matchAll(
+      /"(x[0-9A-Fa-f]{4}_[^"]+\.ts)"/g,
+    );
     for (const m of matches) {
       registered.add(`src/${m[1]}`);
     }
@@ -441,7 +445,9 @@ function renderReport(
 
   if (!opts.quiet && orphans.length > 0) {
     console.log("-".repeat(86));
-    console.log(`# ⚠ ${orphans.length} orphan organs found (unreferenced and unregistered):`);
+    console.log(
+      `# ⚠ ${orphans.length} orphan organs found (unreferenced and unregistered):`,
+    );
     for (const o of orphans) {
       console.log(`#     ${o}`);
     }

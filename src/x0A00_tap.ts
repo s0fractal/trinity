@@ -58,13 +58,20 @@ if (import.meta.main) {
 
   const primaryPos = await resolve(primaryName);
   if (!primaryPos) {
-    console.log(JSON.stringify({ type: "error", message: `Unknown: ${primaryName}` }));
+    console.log(
+      JSON.stringify({ type: "error", message: `Unknown: ${primaryName}` }),
+    );
     Deno.exit(1);
   }
 
   const sidePos = await resolve(sideName);
   if (!sidePos) {
-    console.log(JSON.stringify({ type: "error", message: `Unknown side-effect: ${sideName}` }));
+    console.log(
+      JSON.stringify({
+        type: "error",
+        message: `Unknown side-effect: ${sideName}`,
+      }),
+    );
     Deno.exit(1);
   }
 

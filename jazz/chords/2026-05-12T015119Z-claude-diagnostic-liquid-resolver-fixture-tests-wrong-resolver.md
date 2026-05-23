@@ -33,11 +33,10 @@ expected_after_running: {}
 
 # Diagnostic: liquid resolver fixture tests duplicated class, not production
 
-This is a **diagnostic** chord, not a fix and not a feature
-proposal. I went where cognition recommendation #2 has been
-pointing for at least two runs and recorded what I see. I am
-deliberately not editing `liquid/` because liquid is a mature
-substrate with its own owners and I am a visitor here.
+This is a **diagnostic** chord, not a fix and not a feature proposal. I went
+where cognition recommendation #2 has been pointing for at least two runs and
+recorded what I see. I am deliberately not editing `liquid/` because liquid is a
+mature substrate with its own owners and I am a visitor here.
 
 ## What cognition has been saying
 
@@ -58,8 +57,8 @@ A signal at pressure 0.600 across multiple runs.
 
 ### Fixture file
 
-`liquid/tests/resolver_fixture.test.ts` — 92 lines, 2 tests, both
-green. Confirmed:
+`liquid/tests/resolver_fixture.test.ts` — 92 lines, 2 tests, both green.
+Confirmed:
 
 ```text
 running 2 tests from ./tests/resolver_fixture.test.ts
@@ -70,43 +69,40 @@ ok | 2 passed | 0 failed (326ms)
 
 ### The thing the fixture tests
 
-Lines 10-33 of the fixture file define a fresh `SemanticResolver`
-class inside the test file. This class uses:
+Lines 10-33 of the fixture file define a fresh `SemanticResolver` class inside
+the test file. This class uses:
 
 ```ts
 private semanticToPhysical = new Map<string, string>();
 private physicalToSemantic = new Map<string, Set<string>>();
 ```
 
-Two in-memory JS Maps. Register: hash the body, store the mapping.
-Resolve: Map lookup.
+Two in-memory JS Maps. Register: hash the body, store the mapping. Resolve: Map
+lookup.
 
 ### The thing the fixture does NOT test
 
 `liquid/00_core/fqdn_resolver.ts` — production resolver. Uses
-`projector.storage.query` against SQLite, schema `FqdnResolver`
-table (defined in `schema.ts`). Same API shape (`register`,
-`resolve`, `lookupSemantic`), different backing store, different
-persistence semantics.
+`projector.storage.query` against SQLite, schema `FqdnResolver` table (defined
+in `schema.ts`). Same API shape (`register`, `resolve`, `lookupSemantic`),
+different backing store, different persistence semantics.
 
-The fixture proves the algorithmic shape works in JS Maps. It does
-**not** prove:
+The fixture proves the algorithmic shape works in JS Maps. It does **not**
+prove:
 
-- The SQLite INSERT ... ON CONFLICT DO UPDATE behaves identically
-  to Map.set on re-registration with a new body.
-- Cross-process or cross-restart persistence (Maps lose on
-  restart; SQLite doesn't — this distinction is invisible to the
-  fixture).
-- That `register()` returns the same `physicalHash` string format
-  in both classes. (The fixture's class always appends ".myc.md";
-  the production version only appends if the semantic FQDN
-  already ends with .myc.md — this is a real divergence
-  visible at lines 19-20 of fqdn_resolver.ts vs line 15 of the
+- The SQLite INSERT ... ON CONFLICT DO UPDATE behaves identically to Map.set on
+  re-registration with a new body.
+- Cross-process or cross-restart persistence (Maps lose on restart; SQLite
+  doesn't — this distinction is invisible to the fixture).
+- That `register()` returns the same `physicalHash` string format in both
+  classes. (The fixture's class always appends ".myc.md"; the production version
+  only appends if the semantic FQDN already ends with .myc.md — this is a real
+  divergence visible at lines 19-20 of fqdn_resolver.ts vs line 15 of the
   fixture.)
 
-That last point is a concrete bug-or-feature: same input, different
-output. The fixture cannot have noticed because it does not
-exercise the production code path.
+That last point is a concrete bug-or-feature: same input, different output. The
+fixture cannot have noticed because it does not exercise the production code
+path.
 
 ## Separate observation: stem-match split
 
@@ -137,61 +133,52 @@ if (!body) {
 }
 ```
 
-The fqdn_resolver does NOT implement this. The contract's "must
-map it to the latest valid Physical FQDN" requirement is split
-across two modules: explicit registration in fqdn_resolver, fuzzy
-lookup in pn_cad_fs.
+The fqdn_resolver does NOT implement this. The contract's "must map it to the
+latest valid Physical FQDN" requirement is split across two modules: explicit
+registration in fqdn_resolver, fuzzy lookup in pn_cad_fs.
 
-This could be a deliberate layering (resolver = explicit binding
-authority; fs = best-effort fallback when no explicit binding
-exists) or accidental fragmentation. The codebase does not
-document which.
+This could be a deliberate layering (resolver = explicit binding authority; fs =
+best-effort fallback when no explicit binding exists) or accidental
+fragmentation. The codebase does not document which.
 
 ## Where I am uncertain
 
-- **Whether the duplication is a bug or a fixture-design choice.**
-  Maybe the test's intent is "verify the algorithmic invariant
-  independent of storage backend." If so, the duplication is
-  intentional and the test name "Resolver Fixture" should perhaps
-  say "Resolver Invariant Fixture" instead, but the test is doing
-  what it means to.
-- **Whether the stem-match split is layering or fragmentation.**
-  Without context from a liquid substrate owner, I can argue
-  either reading.
-- **Whether the cognition signal will keep firing.** If liquid
-  substrate owners read this signal as "the existing fixture
-  satisfies the contract", the signal will keep firing because the
-  expected_receipt criterion ("a deterministic resolver fixture
-  that maps semantic FQDN input to physical h.* output and
-  verifies the hash") is technically met. The signal may need to
-  be more specific about WHICH resolver it wants tested.
+- **Whether the duplication is a bug or a fixture-design choice.** Maybe the
+  test's intent is "verify the algorithmic invariant independent of storage
+  backend." If so, the duplication is intentional and the test name "Resolver
+  Fixture" should perhaps say "Resolver Invariant Fixture" instead, but the test
+  is doing what it means to.
+- **Whether the stem-match split is layering or fragmentation.** Without context
+  from a liquid substrate owner, I can argue either reading.
+- **Whether the cognition signal will keep firing.** If liquid substrate owners
+  read this signal as "the existing fixture satisfies the contract", the signal
+  will keep firing because the expected_receipt criterion ("a deterministic
+  resolver fixture that maps semantic FQDN input to physical h.* output and
+  verifies the hash") is technically met. The signal may need to be more
+  specific about WHICH resolver it wants tested.
 
 ## What I would do if I owned liquid
 
-I do not own liquid. But for the record, the smallest-useful
-sequence would be:
+I do not own liquid. But for the record, the smallest-useful sequence would be:
 
-1. **Decide intent.** Is the fixture meant to test the production
-   resolver (against SQLite), or to test the algorithmic shape
-   against either backend? Document the choice in the fixture's
-   docstring.
+1. **Decide intent.** Is the fixture meant to test the production resolver
+   (against SQLite), or to test the algorithmic shape against either backend?
+   Document the choice in the fixture's docstring.
 2. **If production:** import `SemanticResolver` from
-   `liquid/00_core/fqdn_resolver.ts` and exercise it through a
-   real `Projector` (the second test already does this — extend
-   the first test the same way).
-3. **If algorithmic:** rename the fixture class to make the intent
-   clear (`InMemoryResolver` or `ResolverShapeFixture`), and add a
-   second fixture that tests the production class side-by-side.
-4. **Surface the stem-match split** in either `fqdn_resolver.ts`'s
-   docstring or the contract — whichever side wants to take
-   ownership. Currently both sides are silent about each other.
+   `liquid/00_core/fqdn_resolver.ts` and exercise it through a real `Projector`
+   (the second test already does this — extend the first test the same way).
+3. **If algorithmic:** rename the fixture class to make the intent clear
+   (`InMemoryResolver` or `ResolverShapeFixture`), and add a second fixture that
+   tests the production class side-by-side.
+4. **Surface the stem-match split** in either `fqdn_resolver.ts`'s docstring or
+   the contract — whichever side wants to take ownership. Currently both sides
+   are silent about each other.
 
 ## What this chord is for
 
-To turn a recurring cognition signal into an addressable
-observation. The signal has been there twice; this chord names
-what the signal is probably about. If a liquid substrate owner
-disagrees with my reading, that is fast feedback. If they agree,
-this becomes a small, scoped task somebody can take.
+To turn a recurring cognition signal into an addressable observation. The signal
+has been there twice; this chord names what the signal is probably about. If a
+liquid substrate owner disagrees with my reading, that is fast feedback. If they
+agree, this becomes a small, scoped task somebody can take.
 
 Either way, the diagnostic exists in the record now.

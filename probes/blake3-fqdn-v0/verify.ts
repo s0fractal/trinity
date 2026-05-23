@@ -70,10 +70,16 @@ if (import.meta.main) {
   let drift = 0;
   for (const r of results) {
     const tag = r.match ? "✓" : "✗";
-    console.log(`${tag} ${basename(r.path)}  filename:${r.filename_prefix ?? "?"}  content:${r.actual_prefix ?? "?"}  — ${r.note}`);
+    console.log(
+      `${tag} ${basename(r.path)}  filename:${
+        r.filename_prefix ?? "?"
+      }  content:${r.actual_prefix ?? "?"}  — ${r.note}`,
+    );
     if (!r.match) drift++;
   }
   console.log(`---`);
-  console.log(`${results.length - drift}/${results.length} match, ${drift} drift`);
+  console.log(
+    `${results.length - drift}/${results.length} match, ${drift} drift`,
+  );
   Deno.exit(drift > 0 ? 1 : 0);
 }

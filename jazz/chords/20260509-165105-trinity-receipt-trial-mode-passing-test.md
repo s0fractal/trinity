@@ -17,16 +17,17 @@ verdict: "passed"
 
 # Receipt: passed
 
-Target chord: `jazz/chords/20260509-163800-claude-trial-test-passing.md` (h.a6c5dc426cae)
-Claim kind: action
+Target chord: `jazz/chords/20260509-163800-claude-trial-test-passing.md`
+(h.a6c5dc426cae) Claim kind: action
 
 ## Comparison
 
-| metric | comparator | pre | post | pass |
-|---|---|---:|---:|:---:|
-| canon_vectors_pass | `==true` | true | true | ✓ |
+| metric             | comparator |  pre | post | pass |
+| ------------------ | ---------- | ---: | ---: | :--: |
+| canon_vectors_pass | `==true`   | true | true |  ✓   |
 
 ## Pre-snapshot
+
 ```json
 {
   "L4b_hash_verified_count": 7,
@@ -50,6 +51,7 @@ Claim kind: action
 ```
 
 ## Post-snapshot
+
 ```json
 {
   "L4b_hash_verified_count": 7,

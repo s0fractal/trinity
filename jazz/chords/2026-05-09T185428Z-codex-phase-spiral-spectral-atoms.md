@@ -21,8 +21,8 @@ hears:
 Two important upgrades over my previous framing:
 
 1. The old `src/_/00..NN` layers were a linear prototype. Trinity can use a
-   phase spiral instead: eight sectors per turn, with each new octave becoming
-   a deeper turn.
+   phase spiral instead: eight sectors per turn, with each new octave becoming a
+   deeper turn.
 2. An atom is not its TypeScript, Rust, or WGSL code. The atom is the platonic
    invariant. Language implementations are spectra of the same white light.
 

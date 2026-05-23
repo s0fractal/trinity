@@ -234,9 +234,14 @@ async function loadContractRefsCache(): Promise<Map<string, number>> {
   _contractRefsCache = await tryOr(async () => {
     const out = new Map<string, number>();
     for await (const entry of Deno.readDir(CONTRACTS_DIR)) {
-      if (!entry.isFile || !entry.name.endsWith(".md") || entry.name === "README.md") continue;
+      if (
+        !entry.isFile || !entry.name.endsWith(".md") ||
+        entry.name === "README.md"
+      ) continue;
       const text = await Deno.readTextFile(join(CONTRACTS_DIR, entry.name));
-      const matches = text.matchAll(/(?:contracts\/)?([A-Za-z0-9_.-]+\.v[0-9.]+(?:\.draft)?\.md)/g);
+      const matches = text.matchAll(
+        /(?:contracts\/)?([A-Za-z0-9_.-]+\.v[0-9.]+(?:\.draft)?\.md)/g,
+      );
       for (const m of matches) {
         if (m[1] !== entry.name) {
           out.set(m[1], (out.get(m[1]) ?? 0) + 1);
@@ -478,7 +483,9 @@ function formatSunsetCell(c: ContractEntry): string {
 function renderSunsetSummary(contracts: ContractEntry[]): void {
   const drafts = contracts.filter((c) => c.status === "draft");
   const activeOrphans = contracts.filter(
-    (c) => c.status === "active" && c.cowitness_count === 0 && c.contract_refs_count === 0
+    (c) =>
+      c.status === "active" && c.cowitness_count === 0 &&
+      c.contract_refs_count === 0,
   );
 
   if (drafts.length > 0) {
@@ -507,7 +514,9 @@ function renderSunsetSummary(contracts: ContractEntry[]): void {
       c.sunset_status === "orphan"
     );
     if (pastOrNearingOrOrphan.length > 0) {
-      console.log(`#   ⚠ ${pastOrNearingOrOrphan.length} draft(s) need attention:`);
+      console.log(
+        `#   ⚠ ${pastOrNearingOrOrphan.length} draft(s) need attention:`,
+      );
       for (const c of pastOrNearingOrOrphan) {
         let reason = "";
         if (c.sunset_status === "orphan") {
@@ -523,9 +532,13 @@ function renderSunsetSummary(contracts: ContractEntry[]): void {
   }
 
   if (activeOrphans.length > 0) {
-    console.log(`#   ⚠ ${activeOrphans.length} active contract(s) are unreferenced (orphans):`);
+    console.log(
+      `#   ⚠ ${activeOrphans.length} active contract(s) are unreferenced (orphans):`,
+    );
     for (const c of activeOrphans) {
-      console.log(`#     ${c.filename} (0 references in chords, 0 in contracts)`);
+      console.log(
+        `#     ${c.filename} (0 references in chords, 0 in contracts)`,
+      );
     }
   }
 }

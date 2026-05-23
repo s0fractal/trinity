@@ -75,41 +75,49 @@ if (import.meta.main) {
   }
 
   if (!isError(primaryResult)) {
-    console.log(JSON.stringify({
-      type: "try",
-      action: "attempt",
-      primary: primaryName,
-      fallback: fallbackName,
-      resolved_primary: primaryPos ?? "(unknown)",
-      resolved_fallback: fallbackPos,
-      used: "primary",
-      overall: "passed",
-      result: primaryResult,
-      note: `Primary ${primaryName} succeeded — fallback not needed`,
-      topology: "try(p, f) = if ok(p) then p else f",
-    }, null, 2));
+    console.log(JSON.stringify(
+      {
+        type: "try",
+        action: "attempt",
+        primary: primaryName,
+        fallback: fallbackName,
+        resolved_primary: primaryPos ?? "(unknown)",
+        resolved_fallback: fallbackPos,
+        used: "primary",
+        overall: "passed",
+        result: primaryResult,
+        note: `Primary ${primaryName} succeeded — fallback not needed`,
+        topology: "try(p, f) = if ok(p) then p else f",
+      },
+      null,
+      2,
+    ));
     Deno.exit(0);
   }
 
   const fallbackResult = await runStep(fallbackPos);
   const fallbackOk = !isError(fallbackResult);
 
-  console.log(JSON.stringify({
-    type: "try",
-    action: "attempt",
-    primary: primaryName,
-    fallback: fallbackName,
-    resolved_primary: primaryPos ?? "(unknown)",
-    resolved_fallback: fallbackPos,
-    used: fallbackOk ? "fallback" : "none",
-    overall: fallbackOk ? "passed" : "failed",
-    primary_error: primaryResult,
-    result: fallbackOk ? fallbackResult : fallbackResult,
-    note: fallbackOk
-      ? `Primary ${primaryName} failed — fallback ${fallbackName} succeeded`
-      : `Both ${primaryName} and ${fallbackName} failed`,
-    topology: "try(p, f) = if ok(p) then p else if ok(f) then f else error",
-  }, null, 2));
+  console.log(JSON.stringify(
+    {
+      type: "try",
+      action: "attempt",
+      primary: primaryName,
+      fallback: fallbackName,
+      resolved_primary: primaryPos ?? "(unknown)",
+      resolved_fallback: fallbackPos,
+      used: fallbackOk ? "fallback" : "none",
+      overall: fallbackOk ? "passed" : "failed",
+      primary_error: primaryResult,
+      result: fallbackOk ? fallbackResult : fallbackResult,
+      note: fallbackOk
+        ? `Primary ${primaryName} failed — fallback ${fallbackName} succeeded`
+        : `Both ${primaryName} and ${fallbackName} failed`,
+      topology: "try(p, f) = if ok(p) then p else if ok(f) then f else error",
+    },
+    null,
+    2,
+  ));
 
   if (!fallbackOk) Deno.exit(1);
 }

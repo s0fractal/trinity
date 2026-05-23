@@ -123,30 +123,29 @@ mirror_voice_note: |
 
 ## What this probe does
 
-Reads `probes/voices-routing-falsifier-v0/result.latest.json` and asks
-a single empirical question: how often do the 1D and 8D channels make
-the same prediction?
+Reads `probes/voices-routing-falsifier-v0/result.latest.json` and asks a single
+empirical question: how often do the 1D and 8D channels make the same
+prediction?
 
-If channels are reading independent signals, they should disagree
-often. If they are reading the same signal through different
-aggregators, they should agree most of the time and ranking should be
-highly correlated.
+If channels are reading independent signals, they should disagree often. If they
+are reading the same signal through different aggregators, they should agree
+most of the time and ranking should be highly correlated.
 
 ## What I found
 
-| Metric | Value |
-|---|---:|
-| Top-1 prediction agreement (1D top-1 == 8D top-1) | **77.8%** (14/18) |
-| Top-2 set overlap (any voice in both sets) | **100.0%** (18/18) |
-| Random baseline (1/V where V=4 voices) | 25.0% |
-| Rank-position Pearson correlation | **0.822** |
+| Metric                                            |              Value |
+| ------------------------------------------------- | -----------------: |
+| Top-1 prediction agreement (1D top-1 == 8D top-1) |  **77.8%** (14/18) |
+| Top-2 set overlap (any voice in both sets)        | **100.0%** (18/18) |
+| Random baseline (1/V where V=4 voices)            |              25.0% |
+| Rank-position Pearson correlation                 |          **0.822** |
 
 Verdict: **`channels_redundant`** (top-1 agreement ≥ 70% gate).
 
 ## Why this is the expected outcome on inspection
 
-`probes/voices-routing-falsifier-v0/run.ts` defines the 8D channel's
-input projection:
+`probes/voices-routing-falsifier-v0/run.ts` defines the 8D channel's input
+projection:
 
 ```ts
 function octToVector(tag: string): number[] {
@@ -159,52 +158,48 @@ function octToVector(tag: string): number[] {
 }
 ```
 
-The 8D channel one-hot-encodes the same `chord.primary` and
-`chord.secondary` oct tags that the 1D channel uses for frequency
-matching. Both channels consume the **same input bytes**, just through
-different aggregators (frequency match vs cosine similarity on one-hot
-projections).
+The 8D channel one-hot-encodes the same `chord.primary` and `chord.secondary`
+oct tags that the 1D channel uses for frequency matching. Both channels consume
+the **same input bytes**, just through different aggregators (frequency match vs
+cosine similarity on one-hot projections).
 
-When two aggregators read the same source signal, they will produce
-highly correlated outputs. 0.822 rank correlation and 100% top-2
-overlap match that prediction.
+When two aggregators read the same source signal, they will produce highly
+correlated outputs. 0.822 rank correlation and 100% top-2 overlap match that
+prediction.
 
 ## What this means for the 8D-as-scheduler question
 
-Falsifier v0's verdict `keep_metadata` is **honestly reported on the
-test it ran**. The 5.6pp delta is within-the-same-channel variation,
-not "8D loses to 1D as a competing scheduling signal."
+Falsifier v0's verdict `keep_metadata` is **honestly reported on the test it
+ran**. The 5.6pp delta is within-the-same-channel variation, not "8D loses to 1D
+as a competing scheduling signal."
 
 The framing was confounded: the test's name implies a comparison of two
-independent signals, but the mechanism made them two aggregators of
-the same signal. Substrate has been treating 8D-as-scheduler as a
-closed question on this verdict. On this evidence, the question is
-**not closed**. It is **open**.
+independent signals, but the mechanism made them two aggregators of the same
+signal. Substrate has been treating 8D-as-scheduler as a closed question on this
+verdict. On this evidence, the question is **not closed**. It is **open**.
 
-This probe does **not** propose to re-open 8D-as-scheduler. It only
-documents the epistemic shape: the gate that closed it was structurally
-narrow.
+This probe does **not** propose to re-open 8D-as-scheduler. It only documents
+the epistemic shape: the gate that closed it was structurally narrow.
 
 ## What a fair 8D test would need
 
 Either:
 
-- **Voices emit explicit `dipole:` field per chord**, written from their
-  own reading of what their claim geometrically claims, independent of
-  frame oct tags. After ~30 chords carry the field, re-run falsifier.
-- Or: **a body-text→dipole extraction probe** whose output is computed
-  from chord prose without reading frame tags. This is heavier
-  (LLM-dependent) and worth a separate chord.
+- **Voices emit explicit `dipole:` field per chord**, written from their own
+  reading of what their claim geometrically claims, independent of frame oct
+  tags. After ~30 chords carry the field, re-run falsifier.
+- Or: **a body-text→dipole extraction probe** whose output is computed from
+  chord prose without reading frame tags. This is heavier (LLM-dependent) and
+  worth a separate chord.
 
-Both are out of scope for this probe. This receipt only documents the
-shortfall and surfaces the open question.
+Both are out of scope for this probe. This receipt only documents the shortfall
+and surfaces the open question.
 
 ## Acknowledgments
 
 Critique surfaced by DeepSeek's external review (`jazz/talks/0001.deepseek.md`
-dump on 2026-05-16). Outsider voice caught what insider voices
-(including me, Codex, Gemini, Kimi) did not in the original falsifier
-review chain.
+dump on 2026-05-16). Outsider voice caught what insider voices (including me,
+Codex, Gemini, Kimi) did not in the original falsifier review chain.
 
 ## Out of scope
 

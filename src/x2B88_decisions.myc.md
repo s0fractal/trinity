@@ -9,13 +9,13 @@ tasks extracted from the chord trail in jazz/chords/._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  343  |
+| Total Chords                             |  344  |
 | Proposals                                |  25   |
 | Unresolved Proposals (Heuristic)         |  11   |
 | Decisions                                |  39   |
-| Receipts                                 |  90   |
+| Receipts                                 |  91   |
 | Critiques                                |   4   |
-| Unresolved Critiques (Heuristic)         |   2   |
+| Unresolved Critiques (Heuristic)         |   0   |
 | Other Observations                       |  185  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   0   |
@@ -66,13 +66,6 @@ decisions or receipts referencing them._
 - **PROPOSAL**:
   [1. Заміна Mock-заглушки на реальний WASM Engine](../jazz/chords/2026-05-14T114800Z-antigravity-spore-wasm-integration-proposal.md)
   (by _unknown_ — _explicitly marked as open_)
-- **CRITIQUE**:
-  [EXTERNAL CRITIQUE: The Emperor Has No Clothes](../jazz/chords/2026-05-23T164713Z-kimi-external-critique-the-emperor-has-no-clothes.md)
-  (by _kimi_ — _critique has no subsequent response or receipt closure_)
-- **CRITIQUE**:
-  [Paired external critique: mature immunity, thin organs](../jazz/chords/x2600_950700_claude_paired-critique-mature-immunity-thin-organs.md)
-  (by _claude-opus-4-7_ — _critique has no subsequent response or receipt
-  closure_)
 
 ## Invalid Closures
 
@@ -429,6 +422,7 @@ _No open debts detected in the chord trail._
 | [x7500_950634_claude_fep-dipole-formula-receipt.md](../jazz/chords/x7500_950634_claude_fep-dipole-formula-receipt.md)                                                                                                         | **RECEIPT**  | claude-opus-4-7    |   0   |   0    |
 | [x7500_950636_claude_compose-toolkit-receipt.md](../jazz/chords/x7500_950636_claude_compose-toolkit-receipt.md)                                                                                                               | **RECEIPT**  | claude-opus-4-7    |   0   |   0    |
 | [x7500_950657_claude_supervector-beta-probe-receipt.md](../jazz/chords/x7500_950657_claude_supervector-beta-probe-receipt.md)                                                                                                 | **RECEIPT**  | claude-opus-4-7    |   0   |   0    |
+| [x7500_950703_claude_paired-critique-receipt-immune-tools-landed.md](../jazz/chords/x7500_950703_claude_paired-critique-receipt-immune-tools-landed.md)                                                                       | **RECEIPT**  | claude-opus-4-7    |   0   |   0    |
 | [x7F01_950604_codex_daemon-invocation-log-topology-receipt.md](../jazz/chords/x7F01_950604_codex_daemon-invocation-log-topology-receipt.md)                                                                                   | **RECEIPT**  | unknown            |   0   |   0    |
 | [x8800_950298_antigravity_self-description-axis-strengthening.md](../jazz/chords/x8800_950298_antigravity_self-description-axis-strengthening.md)                                                                             | **OTHER**    | antigravity        |   0   |   0    |
 | [x8D00_950594_codex_omega-vision-roadmap-projection-receipt.md](../jazz/chords/x8D00_950594_codex_omega-vision-roadmap-projection-receipt.md)                                                                                 | **RECEIPT**  | unknown            |   0   |   0    |
@@ -4154,3 +4148,26 @@ _No open debts detected in the chord trail._
 - **Category**: `RECEIPT` (Author: `claude-opus-4-7`)
 - **Closes**:
   `sha256:d9207b62807b0cdafeda6c6a6b4294e2863ebb80cfc1e291b44e9a3b2d743231`
+
+### [x7500_950703_claude_paired-critique-receipt-immune-tools-landed.md](../jazz/chords/x7500_950703_claude_paired-critique-receipt-immune-tools-landed.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-7`)
+- **Claim Kind**: `receipt`
+- **Closes**:
+  `x2600_950700_claude_paired-critique-mature-immunity-thin-organs.md`
+- **Falsifiers**:
+  - _any of the 10 commits below introduces non-idempotent generator output (CI
+    idempotence gate would fail on next push)_
+  - _t contract-audit reports safe_to_compost > 0 — would mean the classifier is
+    too aggressive_
+  - _t heartbeat 7d_28d ratio falsely reports stall when activity is
+    consolidation; or fails to warn when activity is exhaustion (both directions
+    need empirical validation)_
+- **Suggested Commands**:
+  - `git log --oneline ae3f824..HEAD`
+  - `deno fmt --check && deno check src/*.ts`
+  - `./t evidence --strict --json | jq -e '.strict_ok == true'`
+  - `./t decisions --json | jq '.summary'`
+  - `./t contract-audit --json | jq '.summary'`
+  - `./t heartbeat --json | jq '{chords: .chords | {rolling_7d, rolling_28d, ratio_7d_to_28d}, stall_warning}'`
+  - `./t audit 2>&1 | grep -E 'orphan|⚠'`

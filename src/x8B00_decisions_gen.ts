@@ -79,22 +79,19 @@ function classifyCategory(
   const claimKind = String(fm.claim_kind ?? "").toLowerCase();
   const mode = String(fm.mode ?? "").toLowerCase();
 
+  // Frontmatter is authoritative when an explicit claim_kind or mode is set.
+  // Filename heuristics are fallback only — otherwise a receipt chord whose
+  // slug mentions the proposal it closes (e.g. "paired-critique-receipt")
+  // gets misclassified as the closed item.
+  if (claimKind === "critique" || mode === "critique") return "critique";
+  if (claimKind === "proposal") return "proposal";
+  if (claimKind === "receipt") return "receipt";
+  if (claimKind === "decision") return "decision";
+
+  if (name.includes("critique") || name.includes("nay")) return "critique";
+  if (name.includes("proposal")) return "proposal";
+  if (name.includes("receipt")) return "receipt";
   if (
-    claimKind === "critique" ||
-    mode === "critique" ||
-    name.includes("critique") ||
-    name.includes("nay")
-  ) {
-    return "critique";
-  }
-  if (claimKind === "proposal" || name.includes("proposal")) {
-    return "proposal";
-  }
-  if (claimKind === "receipt" || name.includes("receipt")) {
-    return "receipt";
-  }
-  if (
-    claimKind === "decision" ||
     name.includes("decision") ||
     name.includes("verdict") ||
     name.includes("aye")

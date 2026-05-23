@@ -191,7 +191,7 @@ if (import.meta.main) {
   const wantRefresh = Deno.args.includes("--refresh");
 
   if (wantRefresh) {
-    // Run the six self-description axes in parallel before gathering info
+    // Run the self-description axes in parallel before gathering info
     await Promise.all([
       tryOr(() => callT("agents", ["--stable"]), null),
       tryOr(() => callT("skill", ["--stable"]), null),
@@ -199,6 +199,7 @@ if (import.meta.main) {
       tryOr(() => callT("roadmap", ["--stable"]), null),
       tryOr(() => callT("probes", ["--stable"]), null),
       tryOr(() => callT("external-surfaces", ["--stable"]), null),
+      tryOr(() => callT("decisions", ["--stable"]), null),
     ]);
   }
 

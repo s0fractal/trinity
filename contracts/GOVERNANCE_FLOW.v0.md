@@ -1,3 +1,15 @@
+---
+type: "ContractDescriptor"
+version: "0"
+title: "Governance Flow: reversible archive governance flow"
+status: "active"
+maturity: "mature"
+hears:
+  - "./CODEICIDE_PROPOSAL.v0.1.md"
+  - "./RECEIPT_ENVELOPE.v1.0.md"
+  - "./SUBSTRATE_HEALTH.v0.1.md"
+---
+
 # GOVERNANCE_FLOW
 
 > One page. Read this before using `t propose`, `t cowitness`, `t verdict`,
@@ -202,7 +214,7 @@ proposals/codeicide/  →   │ propose → cowitness×N → verdict → │
 - `contracts/CODEICIDE_PROPOSAL.v0.1.md` — proposal body schema.
 - `contracts/RECEIPT_ENVELOPE.v1.0.md` — envelope wire spec.
 - `probes/codeicide-flow-v0/` — 6-scenario E2E demo.
-- `docs/SHAPE_MAP.v0.md` — overall architecture; where governance fits.
+- `contracts/SHAPE_MAP.v0.md` — overall architecture; where governance fits.
 - `jazz/chords/2026-05-14T194732Z-codex-response-architect-mode-governance-flow.md`
   — Codex AYE_WITH_TWEAKS that shaped this flow.
 

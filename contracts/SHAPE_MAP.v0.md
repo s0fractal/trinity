@@ -1,3 +1,13 @@
+---
+type: "ContractDescriptor"
+version: "0"
+title: "Shape Map: structural layer role boundaries and invariants"
+status: "active"
+maturity: "mature"
+hears:
+  - "./SPORE_VS_OMEGA_SPORE_BOUNDARY.v0.1.md"
+---
+
 # SHAPE_MAP
 
 > One page. Read this before the architecture feels overwhelming. Updated

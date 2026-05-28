@@ -129,6 +129,13 @@ export interface ProbeRecord {
   // require explicit marking (not yet implemented; no probe currently
   // has explicit compost/archive declaration).
   lifecycle: LifecycleStage;
+  // Graduation drift — orthogonal signal per x8E00 horizon.
+  // Why: probe doc still says active/partial/deferred but a tracked organ
+  // matches its handle. That means docs lag behind substrate — the probe
+  // pattern already landed but its README/SPEC banner was not updated.
+  // How to apply: render in a separate "Graduation drift" section so
+  // closure work can update the probe banner instead of repeating it.
+  drift_target: string | null;
 }
 
 export interface ChordRef {
@@ -204,6 +211,29 @@ async function findOrganForProbe(
     if (organHandle.includes(base) || base.includes(organHandle)) {
       return path;
     }
+  }
+  return null;
+}
+
+// Strict-handle match — drift detection only.
+// Why: substring match yields false positives like
+// "voices-routing-falsifier" matching "voices" organ. The probe's claim
+// "I'm still active" is explicit, so the override needs an exact signal,
+// not a loose substring. This is the lexical fallback while the horizon's
+// declarative `graduation_target` frontmatter field is still pending.
+function normalizeHandle(s: string): string {
+  return s.replace(/[-_]/g, "").toLowerCase();
+}
+async function findExactOrganForProbe(
+  probeName: string,
+  trackedOrgans: Set<string>,
+): Promise<string | null> {
+  const base = normalizeHandle(probeName.replace(/-v\d+$/, ""));
+  for (const path of trackedOrgans) {
+    if (!path.startsWith("src/")) continue;
+    const m = ORGAN_FILE_RE.exec(path.slice(4));
+    if (!m) continue;
+    if (normalizeHandle(m[3]) === base) return path;
   }
   return null;
 }
@@ -358,6 +388,17 @@ async function readProbe(
     }
   }
 
+  // Graduation drift: probe declares active/partial/deferred but a tracked
+  // organ exactly matches its handle. Surfaces "doc lag" so closure work
+  // can update the probe banner. Uses strict equality (not the loose
+  // substring used for unknown→graduated promotion) to avoid false
+  // positives like "voices-routing-falsifier" hitting "voices" organ.
+  let drift_target: string | null = null;
+  if (lifecycleOf(status) === "active") {
+    const drift = await findExactOrganForProbe(probeName, trackedOrgans);
+    if (drift && drift !== target) drift_target = drift;
+  }
+
   // Hash basis: README + SPEC concatenated (or empty bytes if neither)
   const basis = new TextEncoder().encode(readme + "\n---\n" + spec);
   const hash = await sha256Hex(basis);
@@ -376,6 +417,7 @@ async function readProbe(
     source_size: basis.length,
     chord_refs,
     lifecycle: lifecycleOf(status),
+    drift_target,
   };
 }
 
@@ -497,6 +539,26 @@ function renderProbesIndex(
     `Lifecycle derived from status via lifecycleOf(): graduated*/meta-graduated → promoted; meta/active/partial/deferred/unknown → active. Compost and archived states require explicit marking (none yet declared). Per codex R2: \`t probes\` MUST display promoted/compost state before any probe file moves or disappears.`,
   );
   lines.push(``);
+
+  // Graduation drift — probes whose docs say active but a tracked organ
+  // matches the handle. Signals doc-lag closure work.
+  const drifting = probes.filter((p) => p.drift_target !== null);
+  if (drifting.length > 0) {
+    lines.push(`## Graduation drift (${drifting.length})`);
+    lines.push(``);
+    lines.push(
+      `Probes whose declared status is still active/partial/deferred but a tracked organ matches the probe handle. The probe pattern has likely landed; the README/SPEC banner just lags behind. Close by updating the probe banner with \`> **Status: graduated YYYY-MM-DD → src/x...**\`.`,
+    );
+    lines.push(``);
+    lines.push(`| probe | declared | drift target |`);
+    lines.push(`|-------|----------|--------------|`);
+    for (const p of drifting) {
+      lines.push(
+        `| \`${p.name}\` | ${STATUS_LABEL[p.status]} | \`${p.drift_target}\` |`,
+      );
+    }
+    lines.push(``);
+  }
 
   // By status
   for (const k of STATUS_ORDER) {

@@ -268,6 +268,45 @@ function aggregate(chords: Chord[]): LexiconEntry[] {
   return entries;
 }
 
+// Substrate grammar — bigram transitions between consecutive chord-forms.
+// Reveals "after pattern A often comes pattern B" — the state-machine
+// hidden in chord history. Ordered by sort_key; only counts pairs where
+// both ends have known patterns.
+interface BigramEntry {
+  from_pattern: string;
+  to_pattern: string;
+  occurrences: number;
+  example_pair: [string, string]; // filenames
+}
+
+function bigrams(chords: Chord[]): BigramEntry[] {
+  const sorted = chords
+    .filter((c) => c.primary)
+    .slice()
+    .sort((a, b) => a.sort_key - b.sort_key);
+  const counts = new Map<string, BigramEntry>();
+  for (let i = 0; i < sorted.length - 1; i++) {
+    const a = sorted[i], b = sorted[i + 1];
+    const from = `${a.primary}+${a.mode_norm}`;
+    const to = `${b.primary}+${b.mode_norm}`;
+    const key = `${from} → ${to}`;
+    const existing = counts.get(key);
+    if (existing) {
+      existing.occurrences++;
+    } else {
+      counts.set(key, {
+        from_pattern: from,
+        to_pattern: to,
+        occurrences: 1,
+        example_pair: [a.filename, b.filename],
+      });
+    }
+  }
+  return [...counts.values()]
+    .filter((e) => e.occurrences >= 2)
+    .sort((a, b) => b.occurrences - a.occurrences);
+}
+
 interface Receipt {
   type: "lexicon";
   position: "2/A";
@@ -279,8 +318,10 @@ interface Receipt {
     chords_with_primary: number;
     unique_patterns: number;
     surfaced_patterns: number; // those with occurrences >= 2
+    surfaced_bigrams: number;
   };
   entries: LexiconEntry[];
+  bigrams: BigramEntry[];
   topology: string;
   synonyms: string[];
 }
@@ -288,6 +329,7 @@ interface Receipt {
 function buildReceipt(
   chords: Chord[],
   entries: LexiconEntry[],
+  bigramEntries: BigramEntry[],
   stable: boolean,
 ): Receipt {
   return {
@@ -305,10 +347,12 @@ function buildReceipt(
         ),
       ).size,
       surfaced_patterns: entries.length,
+      surfaced_bigrams: bigramEntries.length,
     },
     entries,
+    bigrams: bigramEntries,
     topology:
-      "reads jazz/chords/ → groups by (chord.primary, mode-normalized) → emits surfaced patterns (occurrences ≥ 2)",
+      "reads jazz/chords/ → groups by (chord.primary, mode-normalized) → emits surfaced patterns + bigram transitions (occurrences ≥ 2)",
     synonyms: ["lexicon", "dictionary", "словник", "accumulated-effects"],
   };
 }
@@ -356,6 +400,26 @@ function renderHuman(receipt: Receipt): string {
     "#         clos%=closure rate (- if mode is not closure-pendable)",
   );
   lines.push("#         dref=avg downstream references (proxy for influence)");
+
+  // Substrate grammar — bigram transitions.
+  if (receipt.bigrams.length > 0) {
+    lines.push("");
+    lines.push("# substrate grammar — most-common chord-form transitions");
+    lines.push("# " + "─".repeat(78));
+    lines.push("# " + "from → to".padEnd(70) + "  n");
+    lines.push("# " + "─".repeat(78));
+    for (const b of receipt.bigrams.slice(0, 15)) {
+      const arrow = `${b.from_pattern}  →  ${b.to_pattern}`;
+      lines.push(`# ${arrow.padEnd(68)}  ${b.occurrences.toString().padStart(3)}`);
+    }
+    if (receipt.bigrams.length > 15) {
+      lines.push(
+        `# ... and ${receipt.bigrams.length - 15} more transitions (full via --json)`,
+      );
+    }
+    lines.push("# " + "─".repeat(78));
+  }
+
   return lines.join("\n");
 }
 
@@ -374,7 +438,8 @@ if (import.meta.main) {
   const args = parseArgs(Deno.args);
   const chords = await loadAllChords();
   const entries = aggregate(chords);
-  const receipt = buildReceipt(chords, entries, args.stable);
+  const bigramEntries = bigrams(chords);
+  const receipt = buildReceipt(chords, entries, bigramEntries, args.stable);
 
   if (args.json) {
     console.log(JSON.stringify(receipt, null, 2));

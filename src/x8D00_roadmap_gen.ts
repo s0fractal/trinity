@@ -8,7 +8,7 @@
 // placement_policy: axis
 // intent: scan organ horizons + tracked chords + voices; render frontier tension per substrate and per voice
 // maturity: active
-// horizon: per-voice rendering of substrate far-horizon signals (currently substrate-only); consume generated state/skill/memory outputs; cross-bucket tension synthesis
+// horizon: consume generated state/skill/memory outputs; cross-bucket tension synthesis (per-voice far-horizon landed 2026-05-28 — projections threaded into renderVoiceRoadmap, condensed top-3 era-signals per substrate)
 // skill_tag: roadmap
 // skill_safe: yes-with-care
 //

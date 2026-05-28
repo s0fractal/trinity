@@ -9,7 +9,7 @@
 // placement_policy: axis
 // intent: scan probes/ subdirs, classify each probe's status (graduated / partial / deferred / active / unknown), render x8E00_probes.myc.md
 // maturity: active
-// horizon: detect graduation drift (probe marked active but target organ exists); declarative graduation_target field in SPEC frontmatter for semantic links beyond lexical matching
+// horizon: declarative graduation_target field in SPEC frontmatter for semantic links beyond lexical matching (graduation drift landed 2026-05-28 via strict-handle exact-match — drift_target field + render section)
 // skill_tag: probes
 // skill_safe: yes-with-care
 //

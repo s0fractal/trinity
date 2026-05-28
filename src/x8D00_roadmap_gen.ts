@@ -339,12 +339,15 @@ interface Closure {
   type: "explicit" | "heuristic" | null;
 }
 
-// Closure detection v1.5 — hybrid content-addressed and heuristic.
+// Closure detection v1.6 — explicit (hash OR path_hint) then heuristic.
 // A proposal P is closed if there exists a receipt-like chord C such that:
 //   • C is receipt-like (mode=receipt OR stance in {RECEIPT, AYE})
-//   • C.sort_key > P.sort_key
+//   • C.sort_key > P.sort_key (relaxed for explicit closures: same-block OK)
 // Matches first explicitly on C's `closes_hash` or `closes.body_hash`
-// matching `sha256:${P.source_hash}`.
+// matching `sha256:${P.source_hash}`, OR `closes.path_hint` matching P's
+// filename. path_hint tolerates post-receipt body drift (chord normalization
+// edits the proposal after the receipt is written) — the intent to close
+// is still explicit, only the cryptographic proof has rotted.
 // Falls back to string-matching heuristic (matching filenames or topics) and marks as heuristic.
 function detectClosures(
   proposals: ChordRef[],
@@ -371,7 +374,15 @@ function detectClosures(
       const target = `sha256:${p.source_hash}`;
       const closesBodyHash = normalizedSha256Ref(c.closes?.body_hash);
       const directClosesHash = normalizedSha256Ref(c.closes_hash);
-      if (closesBodyHash === target || directClosesHash === target) {
+      const pathHint = (c.closes?.path_hint ?? "").trim().replace(
+        /^jazz\/chords\//,
+        "",
+      );
+      const pathHintMatches = pathHint.length > 0 && pathHint === p.filename;
+      if (
+        closesBodyHash === target || directClosesHash === target ||
+        pathHintMatches
+      ) {
         closedBy.push(c);
         closureType = "explicit";
       }

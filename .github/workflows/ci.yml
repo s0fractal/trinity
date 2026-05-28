@@ -39,7 +39,10 @@ jobs:
         run: ./t myc-status-shadow --json | jq -e '.type == "status" and .position == "9/2E" and .shadow == true and .summary.overall == "healthy"'
 
       - name: Audit coordinates
-        run: ./t audit
+        run: ./t audit --json | jq -e '.summary.mismatch == 0 and .summary.malformed == 0 and .summary.no_dipole_organ_gap == 0 and .summary.orphans_count == 0 and .coordinate_uniqueness.ok == true'
+
+      - name: Verify clean export dry-run
+        run: ./t export-clean --dry-run | jq -e '.type == "export_clean" and .position == "7/4" and .dry_run == true and .summary.files > 0'
 
       - name: Verify contracts
         run: ./t contracts

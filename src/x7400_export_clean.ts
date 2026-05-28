@@ -1,4 +1,5 @@
-// src/x7400_export_clean.ts — export / clean codebase dump
+#!/usr/bin/env -S deno run --allow-read --allow-write
+// src/x7400_export_clean.ts — export-clean / clean codebase dump
 // position: 7/4 → completion(7) × foundation(4) = stable extraction artifact
 // hex_dipole: "26 00 26 00 4C 00 26 6C"
 //   completion_frontier+0.85 (PRIMARY: produces final extraction terminus; bucket 7 MATCH)
@@ -13,6 +14,10 @@
 // skill_tag: export
 // skill_safe: yes-with-care
 //
+// Usage:
+//   ./t export-clean --dry-run
+//   ./t export-clean
+//
 // Closes Vector 3 organ-gap finding (claude+kimi+antigravity 2026-05-22):
 // this was the 1 dispatchable organ flagged "no_dipole organ-gap" by the
 // audit-split refinement; now has dipole, becomes audit-visible.
@@ -24,28 +29,12 @@ import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
 const OUTPUT_DIR = "reports";
 const OUTPUT_FILE = join(Deno.cwd(), OUTPUT_DIR, "trinity_clean_export.md");
 
-async function exportCleanCodebase() {
-  await ensureDir(join(Deno.cwd(), OUTPUT_DIR));
+interface ExportEntry {
+  path: string;
+  block_type: string;
+}
 
-  const fileObj = await Deno.open(OUTPUT_FILE, {
-    write: true,
-    create: true,
-    truncate: true,
-  });
-  const encoder = new TextEncoder();
-
-  await fileObj.write(
-    encoder.encode(`# Trinity Meta-Layer Clean Codebase Export\n\n`),
-  );
-  await fileObj.write(
-    encoder.encode(`Generated at: ${new Date().toISOString()}\n\n`),
-  );
-  await fileObj.write(
-    encoder.encode(
-      `This is a full source code export of the Trinity substrate, excluding submodules, heavy logs, and tests.\n\n`,
-    ),
-  );
-
+async function collectExportEntries(): Promise<ExportEntry[]> {
   const exts = ["**/*.md", "**/*.ts", "**/*.json", "**/*.ndjson"];
   const globOptions = {
     root: Deno.cwd(),
@@ -64,6 +53,7 @@ async function exportCleanCodebase() {
     ],
   };
 
+  const entries: ExportEntry[] = [];
   for (const ext of exts) {
     for await (const entry of expandGlob(ext, globOptions)) {
       if (!entry.isFile) continue;
@@ -88,24 +78,83 @@ async function exportCleanCodebase() {
       if (entry.name.endsWith(".json")) blockType = "json";
       if (entry.name.endsWith(".ndjson")) blockType = "json";
 
-      await fileObj.write(encoder.encode(`\n### ${relativePath}\n\n`));
-      await fileObj.write(encoder.encode(`\`\`\`${blockType}\n`));
-      try {
-        const content = await Deno.readTextFile(entry.path);
-        await fileObj.write(encoder.encode(content));
-      } catch (e: any) {
-        await fileObj.write(
-          encoder.encode(`// Could not read file: ${e.message}`),
-        );
-      }
-      await fileObj.write(encoder.encode(`\n\`\`\`\n\n`));
+      entries.push({ path: relativePath, block_type: blockType });
     }
   }
 
-  fileObj.close();
-  console.log(`✅ Clean export created -> ${OUTPUT_FILE}`);
+  return entries.sort((a, b) => a.path.localeCompare(b.path));
+}
+
+async function exportCleanCodebase(dryRun: boolean) {
+  const entries = await collectExportEntries();
+  let bytesWritten = 0;
+
+  if (!dryRun) {
+    await ensureDir(join(Deno.cwd(), OUTPUT_DIR));
+
+    const fileObj = await Deno.open(OUTPUT_FILE, {
+      write: true,
+      create: true,
+      truncate: true,
+    });
+    const encoder = new TextEncoder();
+    const write = async (text: string) => {
+      const bytes = encoder.encode(text);
+      bytesWritten += bytes.length;
+      await fileObj.write(bytes);
+    };
+
+    await write(`# Trinity Meta-Layer Clean Codebase Export\n\n`);
+    await write(`Generated at: ${new Date().toISOString()}\n\n`);
+    await write(
+      `This is a full source code export of the Trinity substrate, excluding submodules, heavy logs, and tests.\n\n`,
+    );
+
+    for (const entry of entries) {
+      await write(`\n### ${entry.path}\n\n`);
+      await write(`\`\`\`${entry.block_type}\n`);
+      try {
+        const content = await Deno.readTextFile(entry.path);
+        await write(content);
+      } catch (e: any) {
+        await write(`// Could not read file: ${e.message}`);
+      }
+      await write(`\n\`\`\`\n\n`);
+    }
+
+    fileObj.close();
+  }
+
+  console.log(JSON.stringify(
+    {
+      type: "export_clean",
+      position: "7/4",
+      action: "export",
+      dry_run: dryRun,
+      out: dryRun ? null : OUTPUT_FILE,
+      summary: {
+        files: entries.length,
+        bytes_written: bytesWritten,
+        excluded: [
+          ".git",
+          ".gemini",
+          "node_modules",
+          "reports",
+          "archive",
+          "tests",
+          "jazz/chords",
+          "probes",
+          "liquid",
+          "omega",
+          "myc",
+        ],
+      },
+    },
+    null,
+    2,
+  ));
 }
 
 if (import.meta.main) {
-  await exportCleanCodebase();
+  await exportCleanCodebase(Deno.args.includes("--dry-run"));
 }

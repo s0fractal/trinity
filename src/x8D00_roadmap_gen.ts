@@ -75,8 +75,10 @@ const HEADER_RE = /^\/\/\s*(\w+):\s*(.+?)\s*$/;
 const OLD_FORM = /^(\d{4}-\d{2}-\d{2}T\d{6}Z)-([a-z]+)-(.+)\.md$/;
 const NEW_FORM = /^x([0-9A-Fa-f]{4})_(\d+)_([a-z0-9-]+)_(.+)\.md$/;
 // Proto-form: earliest chord naming (May 9-10 2026) before T-Z separator
-// was adopted. Captures 28 bootstrap chords that OLD_FORM misses.
-const PROTO_FORM = /^(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})-([a-z]+)-(.+)\.md$/;
+// was adopted. Two sub-variants: no-suffix (May 9) and Z-suffix (May 10).
+// Captures bootstrap chords that OLD_FORM misses.
+const PROTO_FORM =
+  /^(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})Z?-([a-z]+)-(.+)\.md$/;
 const VOICE_RE = /^voice:\s*([a-z0-9-]+)/m;
 const MODE_RE = /^mode:\s*([a-z0-9_-]+)/m;
 const STANCE_RE = /^stance:\s*([A-Z_]+)/m;

@@ -250,8 +250,8 @@ interface ChordSource {
 
 const CHORD_NEW_FORM = /^x[0-9A-Fa-f]{4}_(\d+)_/;
 const CHORD_OLD_FORM = /^(\d{4})-(\d{2})-(\d{2})T(\d{2})(\d{2})(\d{2})Z/;
-// Proto-form: pre-T-Z bootstrap timestamps from May 9-10 2026.
-const CHORD_PROTO_FORM = /^(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})/;
+// Proto-form: pre-T-Z bootstrap timestamps from May 9-10 2026, Z optional.
+const CHORD_PROTO_FORM = /^(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})Z?/;
 const CHORD_BLOCK_REF = 950000;
 const CHORD_EPOCH_REF = 1779148800; // 2026-05-19T00:00:00Z
 

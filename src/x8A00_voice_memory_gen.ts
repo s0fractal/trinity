@@ -58,8 +58,9 @@ const OUT = HERE;
 const VOICE_FILE_RE = /^x8A[0-9A-Fa-f]{2}_voice_([^.]+)\.myc\.json$/;
 const OLD_FORM = /^(\d{4}-\d{2}-\d{2}T\d{6}Z)-([a-z]+)-(.+)\.md$/;
 const NEW_FORM = /^x([0-9A-Fa-f]{4})_(\d+)_([a-z0-9-]+)_(.+)\.md$/;
-// Proto-form: pre-T-Z bootstrap timestamps (May 9-10 2026).
-const PROTO_FORM = /^(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})-([a-z]+)-(.+)\.md$/;
+// Proto-form: pre-T-Z bootstrap timestamps (May 9-10 2026), Z optional.
+const PROTO_FORM =
+  /^(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})Z?-([a-z]+)-(.+)\.md$/;
 const VOICE_RE = /^voice:\s*([a-z0-9-]+)/m;
 const MODE_RE = /^mode:\s*([a-z0-9-_]+)/m;
 const TOPIC_RE = /^topic:\s*(.+?)\s*$/m;

@@ -155,7 +155,7 @@ if (import.meta.main) {
       ok,
       warn,
       fail,
-      overall: fail === 0 ? "healthy" : warn === 0 ? "degraded" : "critical",
+      overall: fail > 0 ? "critical" : warn > 0 ? "degraded" : "healthy",
     },
     checks,
     synonyms: ["health", "check", "status", "harmony", "гармонія", "здоров'я"],

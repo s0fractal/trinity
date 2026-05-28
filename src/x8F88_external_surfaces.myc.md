@@ -10,17 +10,19 @@ documents, and local caches outside the core Deno flat-src code base._
 | Category          | File Count |
 | :---------------- | :--------: |
 | compatibility     |     4      |
-| compatibility abi |     48     |
+| compatibility abi |     50     |
 | compost           |     0      |
-| experimental      |     26     |
+| experimental      |     28     |
 | live chord        |    346     |
 | local cache       |     0      |
-| **Total**         |  **424**   |
+| **Total**         |  **428**   |
 
 ## Registered Surfaces
 
 | Category          | Surface                                                                                                                                                                                                                                   | Canonical Status | Canonical Target                          | Next Action | Blocked By                   |
 | :---------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------- | :---------------------------------------- | :---------- | :--------------------------- |
+| compatibility abi | [.claude/settings.json](../.claude/settings.json)                                                                                                                                                                                         | compatibility    |                                           | keep        | agent tooling config         |
+| compatibility abi | [.github/workflows/ci.yml](../.github/workflows/ci.yml)                                                                                                                                                                                   | compatibility    |                                           | keep        | ci workflow                  |
 | compatibility abi | [.gitignore](../.gitignore)                                                                                                                                                                                                               | compatibility    |                                           | keep        | git hygiene config           |
 | compatibility abi | [.gitmodules](../.gitmodules)                                                                                                                                                                                                             | compatibility    |                                           | keep        | submodule boundary           |
 | compatibility abi | [AGENTS.md](../AGENTS.md)                                                                                                                                                                                                                 | compatibility    | src/x88F0_agents_bootstrap.myc.md         | keep        | symlink shim                 |
@@ -444,4 +446,6 @@ documents, and local caches outside the core Deno flat-src code base._
 | experimental      | [probes/voice-memory-v0/README.md](../probes/voice-memory-v0/README.md)                                                                                                                                                                   | experimental     |                                           | keep        | active experiment            |
 | experimental      | [probes/voices-routing-falsifier-v0/SPEC.md](../probes/voices-routing-falsifier-v0/SPEC.md)                                                                                                                                               | experimental     |                                           | keep        | active experiment            |
 | experimental      | [probes/voices-routing-falsifier-v0/result.latest.md](../probes/voices-routing-falsifier-v0/result.latest.md)                                                                                                                             | experimental     |                                           | keep        | active experiment            |
+| experimental      | [proposals/codeicide/TRINITY_CAPABILITIES.v0.1.cowitnesses/gemini-2026-05-16T08-37-00-875Z.json](../proposals/codeicide/TRINITY_CAPABILITIES.v0.1.cowitnesses/gemini-2026-05-16T08-37-00-875Z.json)                                       | experimental     |                                           | keep        | active governance proposal   |
+| experimental      | [proposals/codeicide/TRINITY_CAPABILITIES.v0.1.proposal.json](../proposals/codeicide/TRINITY_CAPABILITIES.v0.1.proposal.json)                                                                                                             | experimental     |                                           | keep        | active governance proposal   |
 | compatibility abi | [t](../t)                                                                                                                                                                                                                                 | compatibility    |                                           | keep        | command launcher             |

@@ -445,6 +445,80 @@ async function scanRoot(includeVolatile: boolean): Promise<SurfaceEntry[]> {
   return out;
 }
 
+async function scanToolingAbi(
+  includeVolatile: boolean,
+): Promise<SurfaceEntry[]> {
+  const out: SurfaceEntry[] = [];
+  const toolingAbi: Record<string, string> = {
+    ".claude/settings.json": "agent tooling config",
+    ".github/workflows/ci.yml": "ci workflow",
+  };
+
+  for (const [relPath, blockedBy] of Object.entries(toolingAbi)) {
+    const fullPath = join(ROOT, relPath);
+    try {
+      const stat = await Deno.stat(fullPath);
+      if (!stat.isFile) continue;
+
+      const item: SurfaceEntry = {
+        surface: relPath,
+        category: "compatibility_abi",
+        canonical_status: "compatibility",
+        canonical_target: "",
+        next_action: "keep",
+        blocked_by: blockedBy,
+      };
+
+      if (includeVolatile) {
+        const { size, mtime } = await getFileInfo(fullPath);
+        item.size = size;
+        item.mtime = mtime;
+      }
+      out.push(item);
+    } catch { /* ignore missing optional tooling surface */ }
+  }
+
+  return out;
+}
+
+async function scanProposals(
+  includeVolatile: boolean,
+): Promise<SurfaceEntry[]> {
+  const out: SurfaceEntry[] = [];
+  const dir = join(ROOT, "proposals");
+
+  async function walk(current: string, prefix: string): Promise<void> {
+    try {
+      for await (const entry of Deno.readDir(current)) {
+        const relPath = prefix ? `${prefix}/${entry.name}` : entry.name;
+        const fullPath = join(current, entry.name);
+        if (entry.isDirectory) {
+          await walk(fullPath, relPath);
+        } else if (entry.isFile && entry.name.endsWith(".json")) {
+          const item: SurfaceEntry = {
+            surface: `proposals/${relPath}`,
+            category: "experimental",
+            canonical_status: "experimental",
+            canonical_target: "",
+            next_action: "keep",
+            blocked_by: "active governance proposal",
+          };
+
+          if (includeVolatile) {
+            const { size, mtime } = await getFileInfo(fullPath);
+            item.size = size;
+            item.mtime = mtime;
+          }
+          out.push(item);
+        }
+      }
+    } catch { /* ignore missing proposals dir */ }
+  }
+
+  await walk(dir, "");
+  return out;
+}
+
 export async function collectExternalSurfaces(options: {
   stable: boolean;
   includeVolatile: boolean;
@@ -454,7 +528,9 @@ export async function collectExternalSurfaces(options: {
   entries.push(...(await scanContracts(options.includeVolatile)));
   entries.push(...(await scanDocs(options.includeVolatile)));
   entries.push(...(await scanRoot(options.includeVolatile)));
+  entries.push(...(await scanToolingAbi(options.includeVolatile)));
   entries.push(...(await scanProbes(options.includeVolatile)));
+  entries.push(...(await scanProposals(options.includeVolatile)));
   entries.push(...(await scanChords(options.includeVolatile)));
   entries.push(...(await scanState(options.includeVolatile)));
   entries.push(...(await scanCompost(options.includeVolatile)));

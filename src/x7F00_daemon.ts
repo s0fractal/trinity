@@ -40,7 +40,6 @@ const ROOT = dirname(HERE);
 const LOCK_FILE = join(ROOT, "src", "x7F88_daemon.lock");
 const LAST_CHECK_FILE = join(ROOT, "src", "x7F88_daemon.last-check");
 const LOG_FILE = join(ROOT, "src", "x7F01_daemon_invocations.ndjson");
-const LEGACY_LOG_FILE = join(ROOT, "daemon", "logs", "invocations.ndjson");
 const CHORDS_DIR = join(ROOT, "jazz", "chords");
 
 // ── types ──────────────────────────────────────────────────────────────────
@@ -99,7 +98,7 @@ async function readInvocationLog(): Promise<string> {
   try {
     return await Deno.readTextFile(LOG_FILE);
   } catch {
-    return await Deno.readTextFile(LEGACY_LOG_FILE);
+    return "";
   }
 }
 

@@ -59,6 +59,11 @@ jobs:
       - name: Verify external surfaces format
         run: ./t external-surfaces --json | jq -e '.type == "external_surfaces"'
 
+      - name: Verify external surfaces stable generation diff
+        run: |
+          ./t external-surfaces --stable
+          git diff --exit-code src/x8F88_external_surfaces.myc.md
+
       - name: Verify evidence JSON format
         run: ./t evidence --strict --json | jq -e '.strict_mode == true and .strict_ok == true'
 
@@ -85,14 +90,16 @@ jobs:
           ./t evidence --stable
           git diff --exit-code src/x7B88_evidence_report.myc.md
 
-      - name: Verify generator idempotence (agents + skill + decisions + evidence)
+      - name: Verify generator idempotence (agents + skill + decisions + evidence + external surfaces)
         run: |
           ./t agents --stable
           ./t skill --stable
           ./t decisions --stable
           ./t evidence --stable
+          ./t external-surfaces --stable
           git diff --exit-code \
             src/x88F0_agents_bootstrap.myc.md \
             src/x8CF0_skills_bootstrap.myc.md \
             src/x2B88_decisions.myc.md \
-            src/x7B88_evidence_report.myc.md
+            src/x7B88_evidence_report.myc.md \
+            src/x8F88_external_surfaces.myc.md

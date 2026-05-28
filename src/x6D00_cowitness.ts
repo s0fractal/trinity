@@ -30,6 +30,9 @@
 // flow. This signature_hash is a deterministic stamp of "claude said this
 // at this time"; a future strong-signing organ would replace it.
 //
+// Governance flow reference:
+//   contracts/GOVERNANCE_FLOW.v0.md
+//
 // Glossary words: cowitness, co-witness, sign, attest, cпів-свідок, підписати
 
 import {

@@ -29,6 +29,9 @@
 //   - reversible_via is auto-populated
 //   - self-AYE is prevented at verdict stage (this organ does not cowitness)
 //
+// Governance flow reference:
+//   contracts/GOVERNANCE_FLOW.v0.md
+//
 // Glossary: propose, codeicide, archive-proposal, пропозиція, кодесайд
 
 import {

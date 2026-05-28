@@ -34,6 +34,9 @@
 //   write archive_root/RESURRECT.sh     (one-line restore script)
 //
 // Emits ApplyCodeicideReceipt payload.
+//
+// Governance flow reference:
+//   contracts/GOVERNANCE_FLOW.v0.md
 
 import {
   dirname,

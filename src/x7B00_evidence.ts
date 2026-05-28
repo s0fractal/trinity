@@ -130,6 +130,26 @@ async function callTDecisions(): Promise<any> {
   }
 }
 
+async function callTContractAudit(): Promise<any> {
+  const proc = new Deno.Command("deno", {
+    args: [
+      "run",
+      "--allow-all",
+      join(ROOT, "src", "x4F01_contract_audit.ts"),
+      "--json",
+    ],
+    stdout: "piped",
+    stderr: "piped",
+  });
+  try {
+    const out = await proc.output();
+    if (out.code !== 0) return null;
+    return JSON.parse(new TextDecoder().decode(out.stdout).trim());
+  } catch {
+    return null;
+  }
+}
+
 async function callTSelfPortrait(): Promise<any> {
   const proc = new Deno.Command("deno", {
     args: [
@@ -260,6 +280,7 @@ async function main() {
     statusData,
     surfacesData,
     decisionsData,
+    contractAuditData,
     portraitData,
     applyData,
     mycShadowData,
@@ -283,6 +304,7 @@ async function main() {
     callTStatus(),
     callTExternalSurfaces(),
     callTDecisions(),
+    callTContractAudit(),
     callTSelfPortrait(),
     callTApplyDryRun(),
     callTMycStatusShadow(),
@@ -370,6 +392,22 @@ async function main() {
         decisionsData?.summary?.receipts ?? 0
       } receipts, ${decisionsData?.summary?.critiques ?? 0} critiques`,
       evidence_source: decisionsData ? "live" : "missing",
+    },
+    {
+      claim: "Contract Ref-Graph Audit",
+      claim_status: "prototype",
+      contract_status: null,
+      contract: "contracts/PROCESS_OBJECTS.v0.1.md",
+      command: "./t contract-audit",
+      test: "./t contract-audit --json",
+      evidence: `${
+        contractAuditData?.summary?.total ?? 0
+      } contracts classified; ${
+        contractAuditData?.summary?.needs_review ?? "?"
+      } need review; ${
+        contractAuditData?.summary?.safe_to_compost ?? "?"
+      } safe-to-compost`,
+      evidence_source: contractAuditData ? "live" : "missing",
     },
     {
       claim: "Ecosystem Submodule Federation",

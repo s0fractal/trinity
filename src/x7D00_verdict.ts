@@ -29,6 +29,9 @@
 //              PENDING otherwise
 //
 // Emits CodeicideVerdict payload.
+//
+// Governance flow reference:
+//   contracts/GOVERNANCE_FLOW.v0.md
 
 import {
   coWitness,

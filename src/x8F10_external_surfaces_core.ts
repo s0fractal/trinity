@@ -215,21 +215,21 @@ async function scanDocs(includeVolatile: boolean): Promise<SurfaceEntry[]> {
     for await (const entry of Deno.readDir(dir)) {
       if (
         (entry.isFile || entry.isSymlink) &&
-        entry.name.endsWith(".md") &&
-        entry.name !== "README.md"
+        entry.name.endsWith(".md")
       ) {
         const relPath = `docs/${entry.name}`;
         const fullPath = join(dir, entry.name);
 
         if (entry.isFile) {
-          const target = docTargets[entry.name] ?? "";
+          const isIndex = entry.name === "README.md";
+          const target = isIndex ? "" : docTargets[entry.name] ?? "";
           const item: SurfaceEntry = {
             surface: relPath,
             category: "compatibility",
-            canonical_status: "migration_input",
+            canonical_status: isIndex ? "compatibility" : "migration_input",
             canonical_target: target,
             next_action: target ? "migrate_to_src" : "keep",
-            blocked_by: "",
+            blocked_by: isIndex ? "directory index" : "",
           };
 
           if (includeVolatile) {
@@ -305,6 +305,28 @@ async function scanProbes(includeVolatile: boolean): Promise<SurfaceEntry[]> {
   const out: SurfaceEntry[] = [];
   const dir = join(ROOT, "probes");
   try {
+    const indexPath = join(dir, "INDEX.md");
+    try {
+      const stat = await Deno.stat(indexPath);
+      if (stat.isFile) {
+        const item: SurfaceEntry = {
+          surface: "probes/INDEX.md",
+          category: "experimental",
+          canonical_status: "experimental",
+          canonical_target: "src/x8E00_probes.myc.md",
+          next_action: "keep",
+          blocked_by: "probe directory index",
+        };
+
+        if (includeVolatile) {
+          const { size, mtime } = await getFileInfo(indexPath);
+          item.size = size;
+          item.mtime = mtime;
+        }
+        out.push(item);
+      }
+    } catch { /* ignore missing probes index */ }
+
     for await (const entry of Deno.readDir(dir)) {
       if (entry.isDirectory) {
         const probeDir = join(dir, entry.name);

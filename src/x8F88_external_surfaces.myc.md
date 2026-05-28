@@ -9,13 +9,13 @@ documents, and local caches outside the core Deno flat-src code base._
 
 | Category          | File Count |
 | :---------------- | :--------: |
-| compatibility     |     4      |
+| compatibility     |     5      |
 | compatibility abi |     53     |
 | compost           |     0      |
-| experimental      |     33     |
+| experimental      |     34     |
 | live chord        |    346     |
 | local cache       |     0      |
-| **Total**         |  **436**   |
+| **Total**         |  **438**   |
 
 ## Registered Surfaces
 
@@ -77,6 +77,7 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     | [docs/COGNITIVE_THERMODYNAMICS.md](../docs/COGNITIVE_THERMODYNAMICS.md)                                                                                                                                                                   | compatibility    | src/x2C10_cognitive_thermodynamics.myc.md | keep        | symlink shim                 |
 | compatibility     | [docs/PROOF_CARRYING_RAW.md](../docs/PROOF_CARRYING_RAW.md)                                                                                                                                                                               | compatibility    | src/x5A10_proof_carrying_raw.myc.md       | keep        | symlink shim                 |
 | compatibility     | [docs/PUBLIC_PROCESS_TRACE.md](../docs/PUBLIC_PROCESS_TRACE.md)                                                                                                                                                                           | compatibility    | src/x8F11_public_process_trace.myc.md     | keep        | symlink shim                 |
+| compatibility     | [docs/README.md](../docs/README.md)                                                                                                                                                                                                       | compatibility    |                                           | keep        | directory index              |
 | experimental      | [fixtures/canon-vectors.json](../fixtures/canon-vectors.json)                                                                                                                                                                             | experimental     |                                           | keep        | test fixture                 |
 | experimental      | [fixtures/phi/README.md](../fixtures/phi/README.md)                                                                                                                                                                                       | experimental     |                                           | keep        | test fixture                 |
 | experimental      | [fixtures/phi/ROUNDTRIP.md](../fixtures/phi/ROUNDTRIP.md)                                                                                                                                                                                 | experimental     |                                           | keep        | test fixture                 |
@@ -428,6 +429,7 @@ documents, and local caches outside the core Deno flat-src code base._
 | live chord        | [jazz/chords/x7F01_950604_codex_daemon-invocation-log-topology-receipt.md](../jazz/chords/x7F01_950604_codex_daemon-invocation-log-topology-receipt.md)                                                                                   | canonical        |                                           | keep        |                              |
 | live chord        | [jazz/chords/x8800_950298_antigravity_self-description-axis-strengthening.md](../jazz/chords/x8800_950298_antigravity_self-description-axis-strengthening.md)                                                                             | canonical        |                                           | keep        |                              |
 | live chord        | [jazz/chords/x8D00_950594_codex_omega-vision-roadmap-projection-receipt.md](../jazz/chords/x8D00_950594_codex_omega-vision-roadmap-projection-receipt.md)                                                                                 | canonical        |                                           | keep        |                              |
+| experimental      | [probes/INDEX.md](../probes/INDEX.md)                                                                                                                                                                                                     | experimental     | src/x8E00_probes.myc.md                   | keep        | probe directory index        |
 | experimental      | [probes/agents-gen-v0/README.md](../probes/agents-gen-v0/README.md)                                                                                                                                                                       | experimental     |                                           | keep        | active experiment            |
 | experimental      | [probes/blake3-fqdn-v0/README.md](../probes/blake3-fqdn-v0/README.md)                                                                                                                                                                     | experimental     |                                           | keep        | active experiment            |
 | experimental      | [probes/codeicide-flow-v0/SPEC.md](../probes/codeicide-flow-v0/SPEC.md)                                                                                                                                                                   | experimental     |                                           | keep        | active experiment            |

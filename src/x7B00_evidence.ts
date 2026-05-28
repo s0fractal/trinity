@@ -510,6 +510,32 @@ async function main() {
       evidence: `divergence angle: ${divAngleStr} (antigravity: ${divClass})`,
       evidence_source: portraitData ? "live" : "missing",
     },
+    {
+      claim: "Substrate Self-Description ABI (x2E/x8D/x8E)",
+      claim_status: "partially_implemented",
+      contract_status: null,
+      contract: "contracts/SUBSTRATE_SELF_ABI.v0.1.md",
+      command: "./t status && ./t roadmap && ./t probes",
+      test: "./t status --json && ./t roadmap && ./t probes",
+      evidence: `status:${
+        statusData?.substrate_health?.overall ?? "?"
+      }, decisions:${decisionsData?.summary?.total_chords ?? 0} chords, 3 self-description axes generating`,
+      evidence_source: statusData && decisionsData ? "live" : "missing",
+    },
+    {
+      claim: "Governance Flow (propose/cowitness/verdict/codeicide)",
+      claim_status: "partially_implemented",
+      contract_status: null,
+      contract: "contracts/GOVERNANCE_FLOW.v0.md",
+      command: "./t propose / ./t cowitness / ./t verdict / ./t apply-codeicide",
+      test: "./t decisions --json",
+      evidence: `${decisionsData?.summary?.proposals ?? 0} proposals, ${
+        decisionsData?.summary?.decisions ?? 0
+      } decisions, ${decisionsData?.summary?.receipts ?? 0} receipts, ${
+        decisionsData?.summary?.critiques ?? 0
+      } critiques (governance chord activity)`,
+      evidence_source: decisionsData ? "live" : "missing",
+    },
   ];
 
   // Dynamically resolve contract status

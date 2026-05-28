@@ -169,6 +169,38 @@ async function scanContracts(
   return out;
 }
 
+async function scanContractSchemas(
+  includeVolatile: boolean,
+): Promise<SurfaceEntry[]> {
+  const out: SurfaceEntry[] = [];
+  const dir = join(ROOT, "contracts", "schema");
+  try {
+    for await (const entry of Deno.readDir(dir)) {
+      if (entry.isFile && entry.name.endsWith(".json")) {
+        const relPath = `contracts/schema/${entry.name}`;
+        const fullPath = join(dir, entry.name);
+
+        const item: SurfaceEntry = {
+          surface: relPath,
+          category: "compatibility_abi",
+          canonical_status: "compatibility",
+          canonical_target: "",
+          next_action: "keep",
+          blocked_by: "validation schema",
+        };
+
+        if (includeVolatile) {
+          const { size, mtime } = await getFileInfo(fullPath);
+          item.size = size;
+          item.mtime = mtime;
+        }
+        out.push(item);
+      }
+    }
+  } catch { /* ignore missing schema dir */ }
+  return out;
+}
+
 async function scanDocs(includeVolatile: boolean): Promise<SurfaceEntry[]> {
   const out: SurfaceEntry[] = [];
   const dir = join(ROOT, "docs");
@@ -227,6 +259,45 @@ async function scanDocs(includeVolatile: boolean): Promise<SurfaceEntry[]> {
       }
     }
   } catch { /* ignore missing dir */ }
+  return out;
+}
+
+async function scanFixtures(includeVolatile: boolean): Promise<SurfaceEntry[]> {
+  const out: SurfaceEntry[] = [];
+  const dir = join(ROOT, "fixtures");
+
+  async function walk(current: string, prefix: string): Promise<void> {
+    try {
+      for await (const entry of Deno.readDir(current)) {
+        const relPath = prefix ? `${prefix}/${entry.name}` : entry.name;
+        const fullPath = join(current, entry.name);
+        if (entry.isDirectory) {
+          await walk(fullPath, relPath);
+        } else if (
+          entry.isFile &&
+          (entry.name.endsWith(".json") || entry.name.endsWith(".md"))
+        ) {
+          const item: SurfaceEntry = {
+            surface: `fixtures/${relPath}`,
+            category: "experimental",
+            canonical_status: "experimental",
+            canonical_target: "",
+            next_action: "keep",
+            blocked_by: "test fixture",
+          };
+
+          if (includeVolatile) {
+            const { size, mtime } = await getFileInfo(fullPath);
+            item.size = size;
+            item.mtime = mtime;
+          }
+          out.push(item);
+        }
+      }
+    } catch { /* ignore missing fixtures dir */ }
+  }
+
+  await walk(dir, "");
   return out;
 }
 
@@ -526,9 +597,11 @@ export async function collectExternalSurfaces(options: {
   let entries: SurfaceEntry[] = [];
 
   entries.push(...(await scanContracts(options.includeVolatile)));
+  entries.push(...(await scanContractSchemas(options.includeVolatile)));
   entries.push(...(await scanDocs(options.includeVolatile)));
   entries.push(...(await scanRoot(options.includeVolatile)));
   entries.push(...(await scanToolingAbi(options.includeVolatile)));
+  entries.push(...(await scanFixtures(options.includeVolatile)));
   entries.push(...(await scanProbes(options.includeVolatile)));
   entries.push(...(await scanProposals(options.includeVolatile)));
   entries.push(...(await scanChords(options.includeVolatile)));

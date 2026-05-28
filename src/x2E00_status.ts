@@ -267,14 +267,17 @@ if (import.meta.main) {
   const healthFail = healthSummary.fail ?? null;
   const healthTotal = healthSummary.total ?? null;
 
-  // Synthesize overall state: harmony if health is healthy AND audit majority match;
-  // otherwise reflect the worst signal honestly.
+  // Synthesize overall state: reflects internal substrate health only.
+  // External CI freshness is reported separately via summary.ci_freshness
+  // so a stale-but-healthy substrate is not labelled "well_stale" — that
+  // gating made every `t status` look degraded whenever CI hadn't pinged
+  // recently, masking the actually-healthy internal state.
   let overall: string;
   if (
     healthOverall === "healthy" && typeof auditMatch === "number" &&
     typeof auditTotal === "number" && auditMatch >= auditTotal * 0.5
   ) {
-    overall = externalCi.is_stale ? "well_stale" : "well";
+    overall = "well";
   } else if (healthOverall === "healthy") {
     overall = "drifting"; // body ok but placement dissonant
   } else if (healthOverall === "degraded") {
@@ -288,11 +291,21 @@ if (import.meta.main) {
   for (const sub of subs) {
     if (
       sub && sub.summary?.overall !== "healthy" &&
-      (overall === "well" || overall === "well_stale")
+      overall === "well"
     ) {
       overall = "degraded";
     }
   }
+
+  // External signal freshness — orthogonal to internal health. A consumer
+  // who needs to know whether status is recent should read this field, not
+  // re-derive it from overall.
+  const ci_freshness: "fresh" | "stale" | "unknown" =
+    externalCi.age_seconds === null
+      ? "unknown"
+      : externalCi.is_stale
+      ? "stale"
+      : "fresh";
 
   // SUBSTRATE_HEALTH.v0.1-shaped projection of trinity's own self-report.
   // This is the F-pilot adoption: contract is paper until at least one
@@ -359,6 +372,7 @@ if (import.meta.main) {
       "mirror(2) × harmony-pair(E) — composite self-reflection across organs and submodules",
     summary: {
       overall,
+      ci_freshness,
       health: {
         overall: healthOverall,
         ok: healthOk,

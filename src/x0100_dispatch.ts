@@ -394,21 +394,21 @@ function fn_render_status(p: any): void {
     const sh = p.substrate_health;
 
     // Use the more honest overall when SUBSTRATE_HEALTH is present.
-    let overall = sh?.overall ?? s.overall;
-    if (overall === "healthy" && sh?.external_ci?.is_stale) {
-      overall = "well_stale";
-    }
+    // CI freshness is orthogonal — reported as a side-badge, not gating
+    // the overall health label.
+    const overall = sh?.overall ?? s.overall;
     const icon = overall === "healthy" || overall === "well"
       ? "✓"
-      : overall === "degraded" || overall === "drifting" ||
-          overall === "well_stale"
+      : overall === "degraded" || overall === "drifting"
       ? "⚠"
       : "✗";
-    const legacyNote = sh && sh.overall !== s.overall && overall !== s.overall
+    const ciStale = sh?.external_ci?.is_stale;
+    const ciBadge = ciStale ? "  ⏰ ci stale" : "";
+    const legacyNote = sh && sh.overall !== s.overall
       ? ` (legacy: ${s.overall})`
       : "";
     console.log(
-      `# status @ ${p.position ?? "?"} — ${icon} ${overall}${legacyNote}`,
+      `# status @ ${p.position ?? "?"} — ${icon} ${overall}${legacyNote}${ciBadge}`,
     );
     if (p.note) console.log(`# ${p.note}`);
     console.log("# " + "─".repeat(40));

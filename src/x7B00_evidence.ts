@@ -171,6 +171,26 @@ async function callTApplyDryRun(): Promise<any> {
   }
 }
 
+async function callTMycStatusShadow(): Promise<any> {
+  const proc = new Deno.Command("deno", {
+    args: [
+      "run",
+      "--allow-all",
+      join(ROOT, "src", "x92E0_myc_status.ts"),
+      "--json",
+    ],
+    stdout: "piped",
+    stderr: "piped",
+  });
+  try {
+    const out = await proc.output();
+    if (out.code !== 0) return null;
+    return JSON.parse(new TextDecoder().decode(out.stdout).trim());
+  } catch {
+    return null;
+  }
+}
+
 function parseAspirationalAgeArg(args: string[]): number | null {
   // --warn-aspirational-age           → default 30 days
   // --warn-aspirational-age=N         → N days
@@ -202,6 +222,7 @@ async function main() {
     decisionsData,
     portraitData,
     applyData,
+    mycShadowData,
   ] = await Promise.all([
     listContracts().catch(() => []),
     collectExternalSurfaces({ stable: true, includeVolatile: false }).catch(
@@ -222,6 +243,7 @@ async function main() {
     callTDecisions(),
     callTSelfPortrait(),
     callTApplyDryRun(),
+    callTMycStatusShadow(),
   ]);
 
   const executable_contracts = contractsList.filter(
@@ -330,6 +352,19 @@ async function main() {
         applyData?.backend_kind ?? "unknown"
       }, simulation: ${applyData?.simulation ?? false})`,
       evidence_source: applyData ? "live" : "missing",
+    },
+    {
+      claim: "MYC x9 Shadow Status",
+      claim_status: "prototype",
+      contract_status: null,
+      contract: "contracts/X9_SUBSTRATE_NAMESPACE.v0.draft.md",
+      command: "./t myc-status-shadow",
+      test:
+        "deno check src/x92E0_myc_status.ts && ./t myc-status-shadow --json",
+      evidence: `native myc status: ${
+        mycShadowData?.summary?.native_overall ?? "unknown"
+      } (${mycShadowData?.summary?.parity ?? "no-parity"})`,
+      evidence_source: mycShadowData ? "live" : "missing",
     },
     {
       claim: "AI Voice Citizenship & Daemon",

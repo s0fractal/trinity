@@ -72,7 +72,12 @@ const DIPOLE_AXES = [
   "completion_frontier",
 ] as const;
 
-type PlacementPolicy = "axis" | "composite" | "tier" | "legacy";
+type PlacementPolicy =
+  | "axis"
+  | "composite"
+  | "tier"
+  | "legacy"
+  | "substrate_namespace";
 
 interface FileReport {
   path: string;
@@ -90,7 +95,9 @@ interface FileReport {
 }
 
 function parsePlacementPolicy(text: string): PlacementPolicy {
-  const m = text.match(/placement_policy:\s*(axis|composite|tier|legacy)/);
+  const m = text.match(
+    /placement_policy:\s*(axis|composite|tier|legacy|substrate_namespace)/,
+  );
   return (m?.[1] as PlacementPolicy) ?? "axis";
 }
 
@@ -284,6 +291,25 @@ async function inspectFile(
   } else if (policy === "tier") {
     m = "match";
     note = `tier policy — bucket ${bucket} read as tier indicator, dipole free`;
+  } else if (policy === "substrate_namespace") {
+    const parts = pathComponents(relPath);
+    const namespace = parts[0];
+    const nativeAxis = parts[1] ?? bucketInt;
+    const nativeAxisMod = nativeAxis % 8;
+    if (namespace !== 9) {
+      m = "mismatch";
+      note =
+        `substrate_namespace policy expects x9 namespace, found bucket ${bucket}`;
+    } else if (axes.includes(nativeAxisMod)) {
+      m = "match";
+      note =
+        `substrate namespace policy — x9 shadow preserves native axis ${nativeAxisMod}`;
+    } else {
+      m = "mismatch";
+      note = `substrate namespace policy — strongest axes [${
+        axes.join(",")
+      }] do not include native axis ${nativeAxisMod}`;
+    }
   } else if (policy === "composite") {
     const pathMod8 = pathComponents(relPath).map((p) => p % 8);
     const composite = axes.some((a) => pathMod8.includes(a));

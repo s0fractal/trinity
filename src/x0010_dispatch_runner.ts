@@ -80,6 +80,7 @@ const POSITION_TO_FILE: Record<string, string> = {
   "8/D": "x8D00_roadmap_gen.ts",
   "8/E": "x8E00_probes_gen.ts",
   "8/F": "x8F00_external_surfaces_gen.ts",
+  "9/2E": "x92E0_myc_status.ts",
 };
 
 export interface SubstrateDef {

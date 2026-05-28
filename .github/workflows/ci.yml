@@ -35,6 +35,9 @@ jobs:
       - name: Substrate status check
         run: ./t status
 
+      - name: Verify MYC x9 shadow status
+        run: ./t myc-status-shadow --json | jq -e '.type == "status" and .position == "9/2E" and .shadow == true and .summary.overall == "healthy"'
+
       - name: Audit coordinates
         run: ./t audit
 

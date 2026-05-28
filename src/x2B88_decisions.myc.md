@@ -9,19 +9,19 @@ tasks extracted from the chord trail in jazz/chords/._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  344  |
+| Total Chords                             |  346  |
 | Proposals                                |  25   |
 | Unresolved Proposals (Heuristic)         |  11   |
 | Decisions                                |  39   |
 | Receipts                                 |  91   |
 | Critiques                                |   4   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  185  |
+| Other Observations                       |  187  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   0   |
 | Invalid Closures                         |   0   |
 | Ritual Receipts (no verifiable artifact) |  23   |
-| ↳ recent (last 7d)                       |   6   |
+| ↳ recent (last 7d)                       |   4   |
 
 ## Unresolved Items (Heuristic Accountability)
 
@@ -412,6 +412,8 @@ _No open debts detected in the chord trail._
 | [x4D00_950624_claude_probes-chord-refs-cross-axis.md](../jazz/chords/x4D00_950624_claude_probes-chord-refs-cross-axis.md)                                                                                                     | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x4D00_950634_claude_fep-dipole-formula-vector-0.md](../jazz/chords/x4D00_950634_claude_fep-dipole-formula-vector-0.md)                                                                                                       | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x4D00_950636_claude_compose-toolkit-fp-experiment.md](../jazz/chords/x4D00_950636_claude_compose-toolkit-fp-experiment.md)                                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
+| [x4D00_950812_antigravity_propose-myc-to-x9000-flat-migration.md](../jazz/chords/x4D00_950812_antigravity_propose-myc-to-x9000-flat-migration.md)                                                                             | **OTHER**    | antigravity        |   0   |   0    |
+| [x4D00_950812_codex_response-myc-x9000-hard-tweak.md](../jazz/chords/x4D00_950812_codex_response-myc-x9000-hard-tweak.md)                                                                                                     | **OTHER**    | codex-gpt-5        |   0   |   0    |
 | [x4D00_950897_codex_glossary-derived-semantics-seed.md](../jazz/chords/x4D00_950897_codex_glossary-derived-semantics-seed.md)                                                                                                 | **OTHER**    | codex              |   0   |   0    |
 | [x7500_950150_claude_three-probes-autonomous-receipt.myc.md](../jazz/chords/x7500_950150_claude_three-probes-autonomous-receipt.myc.md)                                                                                       | **RECEIPT**  | claude-opus-4-7    |   0   |   0    |
 | [x7500_950290_claude_session-axis-closure-and-closure-detection.myc.md](../jazz/chords/x7500_950290_claude_session-axis-closure-and-closure-detection.myc.md)                                                                 | **OTHER**    | claude-opus-4-7    |   0   |   0    |
@@ -4113,6 +4115,15 @@ _No open debts detected in the chord trail._
   - _If P0 compost-pass (drafts + chord-cluster) does not reduce surface by ≥15%
     within one architect session, this critique's action-arm is wrong
     (analysis-arm may still hold)._
+
+### [x4D00_950812_codex_response-myc-x9000-hard-tweak.md](../jazz/chords/x4D00_950812_codex_response-myc-x9000-hard-tweak.md)
+
+- **Category**: `OTHER` (Author: `codex-gpt-5`)
+- **Claim Kind**: `architecture-review`
+- **Falsifiers**:
+  - _If a shadow x9 integration can run myc tests, trinity deno check, t audit,
+    and preserve myc release/public surfaces without submodule deletion, then
+    direct dissolution was premature._
 
 ### [x7500_950573_codex_root-entrypoint-noise-reduction-receipt.md](../jazz/chords/x7500_950573_codex_root-entrypoint-noise-reduction-receipt.md)
 

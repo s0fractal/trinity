@@ -166,3 +166,4 @@
 
 {"00":"5","02":["contract-audit","контракт-аудит","contracts-audit","ref-graph","refs-audit"],"04":"4/F1","09":"foundation+frontier-sub1 = ref-graph classification of contracts (non-destructive read)","11":"26 26 40 33 6C 26 4C 33"}
 {"00":"5","02":["heartbeat","pulse","cadence","tempo","серцебиття","пульс","темп","активність"],"04":"2/7","09":"mirror+completion-pair = rolling chord+commit cadence over 28-day window","11":"00 00 6C 33 00 00 00 59"}
+{"00":"5","02":["myc-status-shadow","myc-shadow-status","myc-x9-status","статус-myc-тінь"],"04":"9/2E","09":"x9 imported-substrate namespace = MYC native status shadow adapter","11":"00 00 6C 33 00 00 00 00"}

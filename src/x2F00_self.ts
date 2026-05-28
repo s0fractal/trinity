@@ -323,6 +323,7 @@ if (import.meta.main) {
     console.log(`#   t status / t audit / t agents / t skill / t memory`);
     console.log(`#   t roadmap / t probes / t contracts / t voices / t help`);
     console.log(`#   t evidence / t decisions / t external-surfaces / t inbox`);
+    console.log(`#   t lexicon / t heartbeat / t balance / t gravity`);
     console.log(
       `#   t self --refresh  (to regenerate self-description axes first)`,
     );

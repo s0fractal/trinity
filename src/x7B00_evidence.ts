@@ -413,7 +413,10 @@ async function main() {
       claim: "Ecosystem Submodule Federation",
       claim_status: "partially_implemented",
       contract_status: null,
-      contract: "contracts/TRINITY_CAPABILITIES.v0.1.md",
+      // TRINITY_CAPABILITIES.v0.1 (superseded 2026-05-14) was the old anchor.
+      // SUBSTRATE_SELF_ABI lists all three substrate projection files in its
+      // `hears:` block and is the current federation contract.
+      contract: "contracts/SUBSTRATE_SELF_ABI.v0.1.md",
       command: "git submodule status",
       test: "deno task submodules:status",
       evidence: `liquid: ${

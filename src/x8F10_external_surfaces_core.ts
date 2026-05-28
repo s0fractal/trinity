@@ -388,6 +388,16 @@ async function scanCompost(includeVolatile: boolean): Promise<SurfaceEntry[]> {
 
 async function scanRoot(includeVolatile: boolean): Promise<SurfaceEntry[]> {
   const out: SurfaceEntry[] = [];
+  const rootAbi: Record<string, string> = {
+    ".gitignore": "git hygiene config",
+    ".gitmodules": "submodule boundary",
+    "README.md": "human root brief",
+    "HUMAN.md": "human root brief",
+    "deno.jsonc": "toolchain config",
+    "deno.lock": "toolchain lockfile",
+    "t": "command launcher",
+  };
+
   try {
     for await (const entry of Deno.readDir(ROOT)) {
       if (entry.isSymlink && entry.name.endsWith(".md")) {
@@ -402,6 +412,25 @@ async function scanRoot(includeVolatile: boolean): Promise<SurfaceEntry[]> {
           canonical_target: target,
           next_action: "keep",
           blocked_by: "symlink shim",
+        };
+
+        if (includeVolatile) {
+          const { size, mtime } = await getFileInfo(fullPath);
+          item.size = size;
+          item.mtime = mtime;
+        }
+        out.push(item);
+      } else if (entry.isFile && rootAbi[entry.name]) {
+        const relPath = entry.name;
+        const fullPath = join(ROOT, entry.name);
+
+        const item: SurfaceEntry = {
+          surface: relPath,
+          category: "compatibility_abi",
+          canonical_status: "compatibility",
+          canonical_target: "",
+          next_action: "keep",
+          blocked_by: rootAbi[entry.name],
         };
 
         if (includeVolatile) {

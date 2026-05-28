@@ -191,6 +191,46 @@ async function callTMycStatusShadow(): Promise<any> {
   }
 }
 
+async function callTMycCapabilitiesShadow(): Promise<any> {
+  const proc = new Deno.Command("deno", {
+    args: [
+      "run",
+      "--allow-all",
+      join(ROOT, "src", "x94A0_myc_capabilities.ts"),
+      "--json",
+    ],
+    stdout: "piped",
+    stderr: "piped",
+  });
+  try {
+    const out = await proc.output();
+    if (out.code !== 0) return null;
+    return JSON.parse(new TextDecoder().decode(out.stdout).trim());
+  } catch {
+    return null;
+  }
+}
+
+async function callTMycProtocolAuditShadow(): Promise<any> {
+  const proc = new Deno.Command("deno", {
+    args: [
+      "run",
+      "--allow-all",
+      join(ROOT, "src", "x96C0_myc_protocol_audit.ts"),
+      "--json",
+    ],
+    stdout: "piped",
+    stderr: "piped",
+  });
+  try {
+    const out = await proc.output();
+    if (out.code !== 0) return null;
+    return JSON.parse(new TextDecoder().decode(out.stdout).trim());
+  } catch {
+    return null;
+  }
+}
+
 function parseAspirationalAgeArg(args: string[]): number | null {
   // --warn-aspirational-age           → default 30 days
   // --warn-aspirational-age=N         → N days
@@ -223,6 +263,8 @@ async function main() {
     portraitData,
     applyData,
     mycShadowData,
+    mycCapabilitiesShadowData,
+    mycProtocolAuditShadowData,
   ] = await Promise.all([
     listContracts().catch(() => []),
     collectExternalSurfaces({ stable: true, includeVolatile: false }).catch(
@@ -244,6 +286,8 @@ async function main() {
     callTSelfPortrait(),
     callTApplyDryRun(),
     callTMycStatusShadow(),
+    callTMycCapabilitiesShadow(),
+    callTMycProtocolAuditShadow(),
   ]);
 
   const executable_contracts = contractsList.filter(
@@ -354,17 +398,25 @@ async function main() {
       evidence_source: applyData ? "live" : "missing",
     },
     {
-      claim: "MYC x9 Shadow Status",
+      claim: "MYC x9 Shadow Parity",
       claim_status: "prototype",
       contract_status: null,
       contract: "contracts/X9_SUBSTRATE_NAMESPACE.v0.draft.md",
-      command: "./t myc-status-shadow",
+      command:
+        "./t myc-status-shadow && ./t myc-capabilities-shadow && ./t myc-protocol-audit-shadow",
       test:
-        "deno check src/x92E0_myc_status.ts && ./t myc-status-shadow --json",
-      evidence: `native myc status: ${
+        "deno check src/x9*.ts && ./t myc-status-shadow --json && ./t myc-capabilities-shadow --json && ./t myc-protocol-audit-shadow --json",
+      evidence: `status: ${
         mycShadowData?.summary?.native_overall ?? "unknown"
+      }; capabilities: ${
+        mycCapabilitiesShadowData?.summary?.native_overall ?? "unknown"
+      }/${mycCapabilitiesShadowData?.summary?.total ?? "?"}; protocol_audit: ${
+        mycProtocolAuditShadowData?.summary?.overall ?? "unknown"
       } (${mycShadowData?.summary?.parity ?? "no-parity"})`,
-      evidence_source: mycShadowData ? "live" : "missing",
+      evidence_source:
+        mycShadowData && mycCapabilitiesShadowData && mycProtocolAuditShadowData
+          ? "live"
+          : "missing",
     },
     {
       claim: "AI Voice Citizenship & Daemon",

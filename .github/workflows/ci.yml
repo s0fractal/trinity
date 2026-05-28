@@ -38,6 +38,12 @@ jobs:
       - name: Verify MYC x9 shadow status
         run: ./t myc-status-shadow --json | jq -e '.type == "status" and .position == "9/2E" and .shadow == true and .summary.overall == "healthy"'
 
+      - name: Verify MYC x9 shadow capabilities
+        run: ./t myc-capabilities-shadow --json | jq -e '.type == "capabilities" and .position == "9/4A" and .shadow == true and .summary.total >= 0'
+
+      - name: Verify MYC x9 shadow protocol audit
+        run: ./t myc-protocol-audit-shadow --json | jq -e '.type == "protocol_audit" and .position == "9/6C" and .shadow == true and .summary.overall == "healthy"'
+
       - name: Audit coordinates
         run: ./t audit --json | jq -e '.summary.mismatch == 0 and .summary.malformed == 0 and .summary.no_dipole_organ_gap == 0 and .summary.orphans_count == 0 and .coordinate_uniqueness.ok == true'
 

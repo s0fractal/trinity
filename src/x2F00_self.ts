@@ -77,7 +77,10 @@ async function scanOrgans(): Promise<
   let total = 0;
   for await (const entry of Deno.readDir(HERE)) {
     if (!entry.isFile) continue;
-    if (!entry.name.endsWith(".ts")) continue;
+    // Organs are .ts or .sh (audit treats both as dispatchable units).
+    // Generated artifacts (.myc.md / .manifest.json / .ndjson) are NOT
+    // organs and stay excluded — they're outputs of organs, not organs.
+    if (!entry.name.endsWith(".ts") && !entry.name.endsWith(".sh")) continue;
     const m = ORGAN_FILE_RE.exec(entry.name);
     if (!m) continue;
     total++;

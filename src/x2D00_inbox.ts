@@ -227,22 +227,74 @@ function listAllVoices(chords: { fm: ChordFm; path: string }[]): string[] {
 
 // ── output ─────────────────────────────────────────────────────────────────
 
+// Compute approximate days-ago from a chord_id string. Handles new-form
+// (x<NNNN>_<block>_...), old-form (YYYY-MM-DDTHHMMSSZ-...), and proto-form
+// (YYYYMMDD-HHMMSSZ?-...). Returns null if no time signal extractable.
+const BTC_BLOCK_SEC = 600;
+const BTC_REF_BLOCK = 950000;
+const BTC_REF_EPOCH = 1779148800; // 2026-05-19T00:00:00Z
+function chordDaysAgo(chord_id: string, nowMs = Date.now()): number | null {
+  const newM = /^x[0-9A-Fa-f]{4}_(\d+)_/.exec(chord_id);
+  if (newM) {
+    const block = parseInt(newM[1], 10);
+    const epoch = BTC_REF_EPOCH + (block - BTC_REF_BLOCK) * BTC_BLOCK_SEC;
+    return Math.floor((nowMs / 1000 - epoch) / 86400);
+  }
+  const oldM = /^(\d{4})-(\d{2})-(\d{2})T(\d{2})(\d{2})(\d{2})Z/.exec(chord_id);
+  if (oldM) {
+    const [, y, mo, d, h, mi, s] = oldM;
+    const epoch = Math.floor(Date.UTC(+y, +mo - 1, +d, +h, +mi, +s) / 1000);
+    return Math.floor((nowMs / 1000 - epoch) / 86400);
+  }
+  const protoM = /^(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})Z?/.exec(
+    chord_id,
+  );
+  if (protoM) {
+    const [, y, mo, d, h, mi, s] = protoM;
+    const epoch = Math.floor(Date.UTC(+y, +mo - 1, +d, +h, +mi, +s) / 1000);
+    return Math.floor((nowMs / 1000 - epoch) / 86400);
+  }
+  return null;
+}
+
+// Most-common-sender for a voice's pending inbox. Returns null when empty.
+function topSenderOf(items: InboxItem[]): string | null {
+  if (items.length === 0) return null;
+  const counts = new Map<string, number>();
+  for (const it of items) {
+    const s = (it.speaker ?? "?").split("-")[0].toLowerCase();
+    counts.set(s, (counts.get(s) ?? 0) + 1);
+  }
+  let best = "", bestN = 0;
+  for (const [s, n] of counts) {
+    if (n > bestN) {
+      best = s;
+      bestN = n;
+    }
+  }
+  return bestN > 0 ? `${best}×${bestN}` : null;
+}
+
 function renderTextSummary(allInboxes: Record<string, InboxItem[]>): string {
   const lines: string[] = [
     `# inbox @ 2/D — chords addressed to each voice, unresponded`,
-    `# ─────────────────────────────────────────────────────────────`,
-    `# voice          pending  oldest_addressed_chord`,
-    `# ─────────────────────────────────────────────────────────────`,
+    `# ──────────────────────────────────────────────────────────────────────`,
+    `# voice          pending  age_days  top_sender   oldest_addressed_chord`,
+    `# ──────────────────────────────────────────────────────────────────────`,
   ];
   const voices = Object.keys(allInboxes).sort();
   for (const v of voices) {
     const items = allInboxes[v];
     const oldest = items.length > 0 ? items[0].chord_id : "—";
+    const ageDays = items.length > 0 ? chordDaysAgo(items[0].chord_id) : null;
+    const ageStr = ageDays === null ? "  — " : String(ageDays).padStart(4);
+    const topSender = (topSenderOf(items) ?? "—").padEnd(10);
+    const oldestShort = oldest.length > 36 ? oldest.slice(0, 33) + "..." : oldest;
     lines.push(
-      `# ${v.padEnd(14)} ${String(items.length).padStart(4)}     ${oldest}`,
+      `# ${v.padEnd(14)} ${String(items.length).padStart(4)}     ${ageStr}    ${topSender}   ${oldestShort}`,
     );
   }
-  lines.push(`# ─────────────────────────────────────────────────────────────`);
+  lines.push(`# ──────────────────────────────────────────────────────────────────────`);
   lines.push(
     `# Total voices: ${voices.length}.  Use 't inbox <voice>' for detail.`,
   );
@@ -332,6 +384,10 @@ async function main() {
           ) => [v, {
             count: items.length,
             oldest: items[0]?.chord_id ?? null,
+            oldest_days_ago: items[0]
+              ? chordDaysAgo(items[0].chord_id)
+              : null,
+            top_sender: topSenderOf(items),
           }]),
         ),
         note:

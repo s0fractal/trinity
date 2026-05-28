@@ -263,6 +263,7 @@ if (import.meta.main) {
   const auditTotal = auditAny?.total ?? null;
   const healthOverall = healthSummary.overall ?? null;
   const healthOk = healthSummary.ok ?? null;
+  const healthWarn = healthSummary.warn ?? null;
   const healthFail = healthSummary.fail ?? null;
   const healthTotal = healthSummary.total ?? null;
 
@@ -298,7 +299,7 @@ if (import.meta.main) {
   // substrate adheres. Trinity adheres here without forcing submodule changes.
   const ownOrgans = {
     ok: typeof healthOk === "number" ? healthOk : 0,
-    warn: 0, // 0x6/A.ts does not currently emit "warn" status; reserved for future
+    warn: typeof healthWarn === "number" ? healthWarn : 0,
     fail: typeof healthFail === "number" ? healthFail : 0,
     total: typeof healthTotal === "number" ? healthTotal : 0,
   };
@@ -361,6 +362,7 @@ if (import.meta.main) {
       health: {
         overall: healthOverall,
         ok: healthOk,
+        warn: healthWarn,
         fail: healthFail,
         total: healthTotal,
       },

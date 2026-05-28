@@ -581,10 +581,17 @@ export async function collectDecisions(stable: boolean): Promise<{
 
   rawEntries.sort((a, b) => a.filename.localeCompare(b.filename));
 
-  const entries: DecisionEntry[] = rawEntries.map((raw, idx) => {
-    // Find later decisions or receipts that close or mention this entry
-    const laterClosures = rawEntries.slice(idx + 1).filter(
-      (other) => other.category === "decision" || other.category === "receipt",
+  const entries: DecisionEntry[] = rawEntries.map((raw) => {
+    // Find later decisions or receipts that close or mention this entry.
+    // Use chronology (timestamp), not alphabetical filename order: new-form
+    // chord coords decouple coord-prefix from chronology, e.g. a receipt at
+    // coord x2600 closing a proposal at x8800 sorts BEFORE the proposal
+    // alphabetically but AFTER it in real time. slice(idx+1) would miss it.
+    const laterClosures = rawEntries.filter(
+      (other) =>
+        other.filename !== raw.filename &&
+        other.timestamp >= raw.timestamp &&
+        (other.category === "decision" || other.category === "receipt"),
     );
 
     let has_receipt = laterClosures.some(
@@ -640,12 +647,15 @@ export async function collectDecisions(stable: boolean): Promise<{
             "proposal has no subsequent receipt or decision closure";
         }
       } else if (raw.category === "critique") {
-        // For critiques, closure could be a later proposal, decision, or receipt
-        const laterCritiqueClosures = rawEntries.slice(idx + 1).filter(
+        // For critiques, closure could be a later proposal, decision, or receipt.
+        // Same chronology-not-alphabetical fix as above.
+        const laterCritiqueClosures = rawEntries.filter(
           (other) =>
-            other.category === "decision" ||
-            other.category === "receipt" ||
-            other.category === "proposal",
+            other.filename !== raw.filename &&
+            other.timestamp >= raw.timestamp &&
+            (other.category === "decision" ||
+              other.category === "receipt" ||
+              other.category === "proposal"),
         );
         const critique_resolved = laterCritiqueClosures.some(
           (other) =>

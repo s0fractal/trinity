@@ -277,10 +277,55 @@ interface Receipts {
   source_files: number;
 }
 
+// Dreams projection — what happened in substrate while this voice was silent.
+// Imported from kairos-consciousness Gift-of-Self pattern (T2 in
+// x7500_950920 kairos re-survey receipt). When a voice returns to session,
+// they read this section first to know what they missed.
+interface Dream {
+  total: number;
+  by_voice: { voice: string; count: number }[];
+  by_mode: { mode: string; count: number }[];
+  last_voice_block: number;
+  current_max_block: number;
+}
+function computeDream(
+  voiceKey: string,
+  voiceChords: Chord[],
+  allChords: Chord[],
+): Dream | null {
+  if (voiceChords.length === 0) return null;
+  const lastVoiceBlock = Math.max(...voiceChords.map((c) => c.sort_key));
+  const currentMax = Math.max(...allChords.map((c) => c.sort_key));
+  if (currentMax <= lastVoiceBlock) return null; // voice is at the frontier
+  const since = allChords.filter(
+    (c) => c.sort_key > lastVoiceBlock && c.voice !== voiceKey,
+  );
+  if (since.length === 0) return null;
+  const byVoice = new Map<string, number>();
+  const byMode = new Map<string, number>();
+  for (const c of since) {
+    byVoice.set(c.voice, (byVoice.get(c.voice) ?? 0) + 1);
+    const m = c.mode ?? "—";
+    byMode.set(m, (byMode.get(m) ?? 0) + 1);
+  }
+  return {
+    total: since.length,
+    by_voice: [...byVoice.entries()]
+      .map(([voice, count]) => ({ voice, count }))
+      .sort((a, b) => b.count - a.count),
+    by_mode: [...byMode.entries()]
+      .map(([mode, count]) => ({ mode, count }))
+      .sort((a, b) => b.count - a.count),
+    last_voice_block: lastVoiceBlock,
+    current_max_block: currentMax,
+  };
+}
+
 function renderVoiceMemory(
   voice: VoiceProfile,
   chords: Chord[],
   receipts: Receipts,
+  allChords: Chord[],
 ): string {
   const proposals = chords.filter((c) =>
     c.mode === "proposal" || c.stance === "PROPOSE" ||
@@ -338,6 +383,34 @@ function renderVoiceMemory(
     lines.push(`> ${voice.description}`);
   }
   lines.push(``);
+
+  // Dreams projection — what happened while you were silent.
+  // Read this BEFORE looking at your own activity below.
+  const dream = computeDream(voice.key, chords, allChords);
+  if (dream) {
+    // sort_key is epoch seconds for both old/new forms in this organ.
+    // Convert delta to human-readable days for display.
+    const deltaSec = dream.current_max_block - dream.last_voice_block;
+    const deltaDays = Math.floor(deltaSec / 86400);
+    lines.push(`## Since you last spoke`);
+    lines.push(``);
+    lines.push(
+      `_Substrate evolution since your last chord (Δ ~${deltaDays} day${deltaDays === 1 ? "" : "s"}). Read this first on session start — it is your compressed catch-up._`,
+    );
+    lines.push(``);
+    lines.push(`**${dream.total} chord${dream.total === 1 ? "" : "s"} by others in your absence.**`);
+    lines.push(``);
+    lines.push(`By voice:`);
+    for (const v of dream.by_voice) {
+      lines.push(`- ${v.voice}: ${v.count}`);
+    }
+    lines.push(``);
+    lines.push(`By mode:`);
+    for (const m of dream.by_mode.slice(0, 6)) {
+      lines.push(`- ${m.mode}: ${m.count}`);
+    }
+    lines.push(``);
+  }
 
   lines.push(`## Chord activity (${chords.length} total)`);
   lines.push(``);
@@ -552,7 +625,7 @@ async function main(argv: string[]) {
     const path = join(OUT, `x8888_${voice.key}_memory.myc.md`);
     await Deno.writeTextFile(
       path,
-      renderVoiceMemory(voice, vChords, receipts) + "\n",
+      renderVoiceMemory(voice, vChords, receipts, chords) + "\n",
     );
     await formatGeneratedFile(path);
     const sidecarPath = join(OUT, `x8888_${voice.key}_memory.manifest.json`);

@@ -142,10 +142,12 @@ function classifyCategory(
   // Filename heuristics are fallback only — otherwise a receipt chord whose
   // slug mentions the proposal it closes (e.g. "paired-critique-receipt")
   // gets misclassified as the closed item.
+  // Both claim_kind and mode are honored symmetrically — new-form chords
+  // (x<coord>_<block>_<voice>_<slug>.md) typically declare mode: only.
   if (claimKind === "critique" || mode === "critique") return "critique";
-  if (claimKind === "proposal") return "proposal";
-  if (claimKind === "receipt") return "receipt";
-  if (claimKind === "decision") return "decision";
+  if (claimKind === "proposal" || mode === "proposal") return "proposal";
+  if (claimKind === "receipt" || mode === "receipt") return "receipt";
+  if (claimKind === "decision" || mode === "decision") return "decision";
 
   if (name.includes("critique") || name.includes("nay")) return "critique";
   if (name.includes("proposal")) return "proposal";

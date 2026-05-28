@@ -250,13 +250,15 @@ interface ChordSource {
 
 const CHORD_NEW_FORM = /^x[0-9A-Fa-f]{4}_(\d+)_/;
 const CHORD_OLD_FORM = /^(\d{4})-(\d{2})-(\d{2})T(\d{2})(\d{2})(\d{2})Z/;
+// Proto-form: pre-T-Z bootstrap timestamps from May 9-10 2026.
+const CHORD_PROTO_FORM = /^(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})/;
 const CHORD_BLOCK_REF = 950000;
 const CHORD_EPOCH_REF = 1779148800; // 2026-05-19T00:00:00Z
 
 function chordBlockHeight(filename: string): number {
   const n = CHORD_NEW_FORM.exec(filename);
   if (n) return parseInt(n[1], 10);
-  const o = CHORD_OLD_FORM.exec(filename);
+  const o = CHORD_OLD_FORM.exec(filename) ?? CHORD_PROTO_FORM.exec(filename);
   if (!o) return 0;
   const [, y, mo, d, h, mi, s] = o;
   const epoch = Math.floor(Date.UTC(+y, +mo - 1, +d, +h, +mi, +s) / 1000);

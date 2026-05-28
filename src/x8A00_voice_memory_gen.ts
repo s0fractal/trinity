@@ -58,6 +58,8 @@ const OUT = HERE;
 const VOICE_FILE_RE = /^x8A[0-9A-Fa-f]{2}_voice_([^.]+)\.myc\.json$/;
 const OLD_FORM = /^(\d{4}-\d{2}-\d{2}T\d{6}Z)-([a-z]+)-(.+)\.md$/;
 const NEW_FORM = /^x([0-9A-Fa-f]{4})_(\d+)_([a-z0-9-]+)_(.+)\.md$/;
+// Proto-form: pre-T-Z bootstrap timestamps (May 9-10 2026).
+const PROTO_FORM = /^(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})-([a-z]+)-(.+)\.md$/;
 const VOICE_RE = /^voice:\s*([a-z0-9-]+)/m;
 const MODE_RE = /^mode:\s*([a-z0-9-_]+)/m;
 const TOPIC_RE = /^topic:\s*(.+?)\s*$/m;
@@ -249,7 +251,15 @@ async function loadChords(): Promise<Chord[]> {
         voice = oldM[2].toLowerCase();
         sort_key = wallclockToEpoch(oldM[1]);
         topic = oldM[3];
-      } else continue;
+      } else {
+        const protoM = PROTO_FORM.exec(entry.name);
+        if (protoM) {
+          const [, y, mo, d, h, mi, s] = protoM;
+          voice = protoM[7].toLowerCase();
+          sort_key = Math.floor(Date.UTC(+y, +mo - 1, +d, +h, +mi, +s) / 1000);
+          topic = protoM[8];
+        } else continue;
+      }
     }
 
     const fm = FRONTMATTER_RE.exec(text);

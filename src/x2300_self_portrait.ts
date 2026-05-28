@@ -40,7 +40,6 @@ import {
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
 const STATE_VOICES = join(ROOT, "src");
-const LEGACY_STATE_VOICES = join(ROOT, "state", "voices");
 const VOICES_ORGAN = join(ROOT, "src", "x2001_voices.ts");
 const VOICE_FILE_RE = /^x8A[0-9A-Fa-f]{2}_voice_([^.]+)\.myc\.json$/;
 
@@ -102,14 +101,7 @@ async function loadVoiceRecord(voice: string): Promise<VoiceRecord | null> {
   } catch {
     /* src voice record absent */
   }
-  try {
-    const text = await Deno.readTextFile(
-      join(LEGACY_STATE_VOICES, `${voice}.json`),
-    );
-    return JSON.parse(text) as VoiceRecord;
-  } catch {
-    return null;
-  }
+  return null;
 }
 
 async function listVoiceFiles(): Promise<string[]> {
@@ -124,15 +116,6 @@ async function listVoiceFiles(): Promise<string[]> {
     }
   } catch {
     /* src voice records do not exist yet */
-  }
-  try {
-    for await (const entry of Deno.readDir(LEGACY_STATE_VOICES)) {
-      if (entry.isFile && entry.name.endsWith(".json")) {
-        out.push(entry.name.replace(/\.json$/, ""));
-      }
-    }
-  } catch {
-    /* legacy state/voices/ does not exist */
   }
   return [...new Set(out)].sort();
 }

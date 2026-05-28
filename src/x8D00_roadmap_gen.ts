@@ -28,7 +28,6 @@
 //   src/x*.ts                            organ horizons
 //   jazz/chords/*.md                     chord pressure
 //   src/x8A*_voice_*.myc.json            voice profiles
-//   state/voices/*.json                  legacy voice profiles
 //   <substrate>/src/x8D00_*projection*.myc.md
 //                                        substrate-owned roadmap projections
 //                                        (omega/liquid/myc; skipped silently if
@@ -64,7 +63,6 @@ const TRINITY_ROOT = dirname(HERE);
 const SRC = HERE;
 const CHORDS_DIR = join(TRINITY_ROOT, "jazz", "chords");
 const VOICES_DIR = HERE;
-const LEGACY_VOICES_DIR = join(TRINITY_ROOT, "state", "voices");
 const OUT = HERE;
 
 const VOICE_FILE_RE = /^x8A[0-9A-Fa-f]{2}_voice_([^.]+)\.myc\.json$/;
@@ -432,7 +430,6 @@ function detectClosures(
 
 async function loadVoices(): Promise<VoiceProfile[]> {
   const trackedSrc = await gitTrackedSet("src");
-  const trackedLegacy = await gitTrackedSet("state/voices");
   const out: VoiceProfile[] = [];
 
   for await (const entry of Deno.readDir(VOICES_DIR)) {
@@ -459,36 +456,6 @@ async function loadVoices(): Promise<VoiceProfile[]> {
       });
     } catch { /* skip */ }
   }
-
-  const seen = new Set(out.map((v) => v.key));
-  try {
-    for await (const entry of Deno.readDir(LEGACY_VOICES_DIR)) {
-      if (!entry.isFile || !entry.name.endsWith(".json")) continue;
-      const relPath = `state/voices/${entry.name}`;
-      if (!trackedLegacy.has(relPath)) continue;
-      const key = entry.name.replace(/\.json$/, "").toLowerCase();
-      if (seen.has(key)) continue;
-      const bytes = await Deno.readFile(join(LEGACY_VOICES_DIR, entry.name));
-      const text = new TextDecoder().decode(bytes);
-      try {
-        const raw = JSON.parse(text);
-        const self = raw.self_declared ?? {};
-        const identity = raw.identity ?? entry.name.replace(/\.json$/, "");
-        out.push({
-          filename: entry.name,
-          rel_path: relPath,
-          identity,
-          key: identity.split("-")[0].toLowerCase(),
-          handles: Array.isArray(raw.handles) ? raw.handles : [],
-          comfort_field_axes: self.comfort_field_axes,
-          natural_styles: self.natural_styles,
-          telos_filters: raw.telos_filters,
-          source_hash: await sha256Hex(bytes),
-          source_size: bytes.length,
-        });
-      } catch { /* skip */ }
-    }
-  } catch { /* no legacy state/voices */ }
 
   return out.sort((a, b) => a.identity.localeCompare(b.identity));
 }

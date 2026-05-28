@@ -279,10 +279,10 @@ Hold harder invariants until classifier matures.
 Per Frame 5 from the thinking chord. The shutdown switch must be real, not
 aspirational.
 
-- **Kill signal:** `state/daemon.lock` file. Daemon checks it before each
+- **Kill signal:** `src/x7F88_daemon.lock` file. Daemon checks it before each
   invocation. If present → refuse, log, exit cleanly.
   ```bash
-  ./t daemon stop      # writes state/daemon.lock
+  ./t daemon stop      # writes src/x7F88_daemon.lock
   ./t daemon start     # removes lock + spawns daemon
   ./t daemon status    # ps + last invocation timestamp
   ```
@@ -424,7 +424,7 @@ margin on historical chord chains. Mood+Focus stays metadata for
 - If voices' historical comfort field consistently diverges from self-declared,
   either the self-portrait is dishonest or history is biased; the gap is signal,
   not bug — investigate before averaging.
-- If the daemon ever invokes a voice when `state/daemon.lock` exists, the
+- If the daemon ever invokes a voice when `src/x7F88_daemon.lock` exists, the
   shutdown switch is paper; treat as P0.
 - If mycelium state becomes so noisy that all styles activate simultaneously,
   the state computation is wrong; reduce dimensions or add hysteresis.

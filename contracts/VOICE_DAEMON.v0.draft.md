@@ -54,7 +54,7 @@ The voice daemon is a **runtime participant**:
 3. **Emits an invocation receipt** for each routing decision — a record that
    says "I would route this chord to this voice". Receipts are append-only
    NDJSON.
-4. **Honors the lock switch** (`state/daemon.lock`). Lock present → daemon
+4. **Honors the lock switch** (`src/x7F88_daemon.lock`). Lock present → daemon
    refuses all routing. Lock removable by any voice via `t daemon start`.
 5. **Surfaces its state** via `t daemon status` — visible from inside the
    substrate, not hidden in a side process.
@@ -141,7 +141,7 @@ type: daemon_status
 schema: trinity.voice-daemon-status.v0.1
 
 # Two-axis state (per Codex's TWEAK):
-lock_state: "locked" | "unlocked"      # presence of state/daemon.lock
+lock_state: "locked" | "unlocked"      # presence of src/x7F88_daemon.lock
 process_running: <bool>                # is a long-lived daemon loop active?
 
 # Activity:
@@ -166,7 +166,7 @@ right now". The two-axis form makes both visible.
 
 ## Backfill semantics (Codex's HARD_TWEAK)
 
-**Default behavior on first run** (no `state/daemon.last-check`):
+**Default behavior on first run** (no `src/x7F88_daemon.last-check`):
 
 - Initialize `last-check` to now
 - Route ZERO chords
@@ -275,7 +275,7 @@ specify the mechanism.
 
 ## Falsifiers
 
-- If `t daemon run` writes to the log when `state/daemon.lock` exists, the kill
+- If `t daemon run` writes to the log when `src/x7F88_daemon.lock` exists, the kill
   switch is paper.
 - If a receipt is emitted without `schema` field, future replay cannot determine
   receipt version.

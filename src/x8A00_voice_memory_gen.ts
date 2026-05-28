@@ -19,7 +19,6 @@
 //
 // Reads (READ-ONLY, tracked-only via git ls-files):
 //   src/x8A*_voice_*.myc.json — authored voice profiles (identity / physics)
-//   state/voices/*.json       — legacy fallback during migration
 //   jazz/chords/*.md       — chord history for stigmergic trace
 //
 // Renders (all gitignored):
@@ -51,7 +50,6 @@ import { formatGeneratedFile } from "./x0012_generated_format.ts";
 const HERE = dirname(fromFileUrl(import.meta.url));
 const TRINITY_ROOT = dirname(HERE);
 const VOICES_DIR = HERE;
-const LEGACY_VOICES_DIR = join(TRINITY_ROOT, "state", "voices");
 const CHORDS_DIR = join(TRINITY_ROOT, "jazz", "chords");
 const OUT = HERE;
 
@@ -150,7 +148,6 @@ async function manifestHash(files: SourceFile[]): Promise<string> {
 
 async function loadVoices(): Promise<VoiceProfile[]> {
   const trackedSrc = await gitTrackedSet("src");
-  const trackedLegacy = await gitTrackedSet("state/voices");
   const out: VoiceProfile[] = [];
 
   for await (const entry of Deno.readDir(VOICES_DIR)) {
@@ -183,40 +180,6 @@ async function loadVoices(): Promise<VoiceProfile[]> {
       });
     } catch { /* skip */ }
   }
-
-  // Legacy compatibility while old chords/contracts still mention state/voices.
-  // If a voice exists in src, src is canonical.
-  const seen = new Set(out.map((v) => v.key));
-  try {
-    for await (const entry of Deno.readDir(LEGACY_VOICES_DIR)) {
-      if (!entry.isFile || !entry.name.endsWith(".json")) continue;
-      const relPath = `state/voices/${entry.name}`;
-      if (!trackedLegacy.has(relPath)) continue;
-      const key = entry.name.replace(/\.json$/, "").toLowerCase();
-      if (seen.has(key)) continue;
-      const bytes = await Deno.readFile(join(LEGACY_VOICES_DIR, entry.name));
-      const text = new TextDecoder().decode(bytes);
-      try {
-        const raw = JSON.parse(text);
-        const self = raw.self_declared ?? {};
-        const identity = raw.identity ?? entry.name.replace(/\.json$/, "");
-        out.push({
-          filename: entry.name,
-          rel_path: relPath,
-          identity,
-          key: identity.split("-")[0].toLowerCase(),
-          handles: Array.isArray(raw.handles) ? raw.handles : [],
-          natural_styles: self.natural_styles,
-          uncomfortable_styles: self.uncomfortable_styles,
-          telos_filters: raw.telos_filters,
-          comfort_field_axes: self.comfort_field_axes,
-          description: self.description,
-          source_hash: await sha256Hex(bytes),
-          source_size: bytes.length,
-        });
-      } catch { /* skip */ }
-    }
-  } catch { /* no legacy state/voices */ }
 
   return out.sort((a, b) => a.identity.localeCompare(b.identity));
 }

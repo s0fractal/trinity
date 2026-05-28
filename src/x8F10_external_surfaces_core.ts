@@ -390,36 +390,10 @@ async function scanChords(includeVolatile: boolean): Promise<SurfaceEntry[]> {
 
 async function scanState(includeVolatile: boolean): Promise<SurfaceEntry[]> {
   const out: SurfaceEntry[] = [];
-  const dir = join(ROOT, "state");
-  try {
-    for await (const entry of Deno.readDir(dir)) {
-      if (
-        entry.isFile &&
-        entry.name !== "audit" &&
-        entry.name !== "cognition" &&
-        entry.name !== "voices"
-      ) {
-        const relPath = `state/${entry.name}`;
-        const fullPath = join(dir, entry.name);
-
-        const item: SurfaceEntry = {
-          surface: relPath,
-          category: "local_cache",
-          canonical_status: "runtime_cache",
-          canonical_target: "",
-          next_action: "ignore_runtime",
-          blocked_by: "",
-        };
-
-        if (includeVolatile) {
-          const { size, mtime } = await getFileInfo(fullPath);
-          item.size = size;
-          item.mtime = mtime;
-        }
-        out.push(item);
-      }
-    }
-  } catch { /* ignore */ }
+  // state/ legacy dir removed in flat-src migration (2026-05-28). Daemon
+  // runtime now at src/x7F88_daemon.*. The function is preserved as a
+  // hook for future runtime-cache surfaces that need explicit registration.
+  // Inline-scan removed; specific known surfaces enumerated below.
 
   const ecoCachePath = join(ROOT, "src", "x2288_ecosystem.latest.myc.json");
   try {

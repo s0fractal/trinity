@@ -16,8 +16,8 @@
 // Usage:
 //   t daemon status           # text table
 //   t daemon status --json    # machine-readable
-//   t daemon stop             # write state/daemon.lock
-//   t daemon start            # remove state/daemon.lock
+//   t daemon stop             # write src/x7F88_daemon.lock
+//   t daemon start            # remove src/x7F88_daemon.lock
 //   t daemon run --once       # single pass: scan new chords, route, log
 //   t daemon run --dry-run    # inspect routing without writing receipts
 //   t daemon run --backfill   # route all historical chords (first run)
@@ -33,8 +33,12 @@ import {
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
-const LOCK_FILE = join(ROOT, "state", "daemon.lock");
-const LAST_CHECK_FILE = join(ROOT, "state", "daemon.last-check");
+// Daemon runtime state co-located in src/ per the flat-src migration:
+// no more state/ legacy dir. The 88 suffix marks "state cache for organ
+// at x7F00". x7F01_daemon_invocations.ndjson stays at sibling coord
+// because it's tracked-history, not runtime mutex.
+const LOCK_FILE = join(ROOT, "src", "x7F88_daemon.lock");
+const LAST_CHECK_FILE = join(ROOT, "src", "x7F88_daemon.last-check");
 const LOG_FILE = join(ROOT, "src", "x7F01_daemon_invocations.ndjson");
 const LEGACY_LOG_FILE = join(ROOT, "daemon", "logs", "invocations.ndjson");
 const CHORDS_DIR = join(ROOT, "jazz", "chords");

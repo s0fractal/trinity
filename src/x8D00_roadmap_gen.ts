@@ -818,6 +818,7 @@ function renderVoiceRoadmap(
   substrateHorizons: OrganHorizon[],
   closures: Map<string, Closure>,
   receipts: Receipts,
+  projections: SubstrateProjection[],
 ): string {
   const recent = voiceChords.slice(-10).reverse();
   const myProposals = voiceChords.filter((c) =>
@@ -937,6 +938,30 @@ function renderVoiceRoadmap(
     lines.push(``);
     for (const t of voice.telos_filters) lines.push(`- ${t}`);
     lines.push(``);
+  }
+
+  // Substrate far-horizon pressure — background context per x8D00 horizon
+  // ("per-voice rendering of substrate far-horizon signals"). Same source as
+  // substrate-level file but condensed to top 3 era-signals per substrate so
+  // the voice file stays scannable. Voices are equal citizens — all see all
+  // substrate pressures regardless of which they have touched.
+  if (projections.length > 0) {
+    lines.push(`## Far-horizon pressure from substrates`);
+    lines.push(``);
+    lines.push(
+      `Substrate-declared trajectories — background context for any voice's next move. Full projection in [\`x8D00_roadmap.myc.md\`](./x8D00_roadmap.myc.md).`,
+    );
+    lines.push(``);
+    for (const p of projections) {
+      if (p.era_signals.length === 0) continue;
+      lines.push(`### ${p.substrate}`);
+      lines.push(``);
+      for (const e of p.era_signals.slice(0, 3)) {
+        lines.push(`- **${e.heading}**`);
+        if (e.pressure) lines.push(`  - ${e.pressure}`);
+      }
+      lines.push(``);
+    }
   }
 
   return lines.join("\n");
@@ -1070,7 +1095,8 @@ async function main(argv: string[]) {
     const path = join(OUT, `x8D00_${voice.key}_roadmap.myc.md`);
     await Deno.writeTextFile(
       path,
-      renderVoiceRoadmap(voice, vChords, horizons, closures, receipts) + "\n",
+      renderVoiceRoadmap(voice, vChords, horizons, closures, receipts, projections) +
+        "\n",
     );
     await formatGeneratedFile(path);
     const voiceSidecarPath = join(

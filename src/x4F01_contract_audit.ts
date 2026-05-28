@@ -205,6 +205,13 @@ function classify(
         `${c.contract_refs_count} contract→contract ref(s); part of vocabulary`,
     };
   }
+  if (c.cowitness_count > 0 && c.status === "active") {
+    return {
+      classification: "active_reference",
+      rationale:
+        `${c.cowitness_count} chord cowitness(es); active contract has process-trail support`,
+    };
+  }
 
   const noRefs = c.cowitness_count === 0 && c.contract_refs_count === 0 &&
     organ_refs === 0 && submodule_refs === 0;

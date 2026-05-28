@@ -54,7 +54,7 @@ jobs:
         run: ./t contracts
 
       - name: Verify contract ref-graph audit format
-        run: ./t contract-audit --json | jq -e '.type == "contract_audit" and .summary.total > 0 and (.summary.safe_to_compost // 0) == 0'
+        run: ./t contract-audit --json | jq -e '.type == "contract_audit" and .summary.total > 0 and (.summary.safe_to_compost // 0) == 0 and (.summary.needs_review // 0) == 0'
 
       - name: Verify external surfaces format
         run: ./t external-surfaces --json | jq -e '.type == "external_surfaces"'

@@ -176,7 +176,7 @@ function chordDateFromFilename(filename: string): Date | null {
 function contractRefsInChord(body: string): Set<string> {
   const out = new Set<string>();
   const matches = body.matchAll(
-    /contracts\/([A-Za-z0-9_]+\.v[0-9.]+(?:\.draft)?\.md)/g,
+    /(?:contracts\/)?([A-Za-z0-9_]+\.v[0-9.]+(?:\.draft)?\.md)/g,
   );
   for (const m of matches) out.add(m[1]);
   return out;

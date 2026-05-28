@@ -61,6 +61,10 @@ src/x8D00_*_roadmap.manifest.json
 src/x8E00_probes.myc.md
 src/x8E00_probes.manifest.json
 
+# Auto-generated chord-form effects dictionary — `t lexicon`.
+# Empirical statistics over jazz/chords/. Regenerable on demand.
+src/x2A88_lexicon.myc.json
+
 # Daemon runtime cursor — last-checked timestamp. Mutable per invocation;
 # tracking it dirties git on every legitimate `t daemon run`. Fresh clones
 # start with no cursor (daemon treats all chords as new on first run,

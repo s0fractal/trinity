@@ -171,3 +171,4 @@
 {"00":"5","02":["myc-protocol-audit-shadow","myc-shadow-protocol-audit","myc-x9-protocol-audit"],"04":"9/6C","09":"x9 imported-substrate namespace = MYC native protocol audit shadow adapter","11":"00 00 33 00 00 00 6C 33"}
 {"00":"5","02":["export-clean","clean-export","codebase-export","експорт"],"04":"7/4","09":"completion+foundation = clean markdown export of Trinity source surface","11":"26 00 26 00 4C 00 26 6C"}
 {"00":"07","01":"export_clean","02":"type,position,action,dry_run,summary","03":"out","04":"clean export receipt from x7400_export_clean.ts; writes reports/trinity_clean_export.md unless --dry-run is passed"}
+{"00":"5","02":["lexicon","словник","dictionary","chord-effects","lexicon-effects"],"04":"2/A","09":"mirror+apex = empirical chord-form effects dictionary (per-pattern occurrences, voices, falsifier-rate, closure-rate, downstream-refs)","11":"26 26 6C 26 26 26 26 26"}

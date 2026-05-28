@@ -179,11 +179,17 @@ if (import.meta.main) {
     path: string;
     current_bucket: string;
     suggested_bucket: string | null;
-    pressures: ("semantic" | "coupling")[];
+    pressures: ("semantic" | "coupling" | "library_coupling")[];
     primary_axis: string | null;
     primary_value: number | null;
     composite_rescue: boolean;
     gravity_edges: Array<{
+      target: string;
+      target_file: string;
+      delta_primary: number;
+      delta_hamming: number;
+    }>;
+    library_edges: Array<{
       target: string;
       target_file: string;
       delta_primary: number;
@@ -196,25 +202,29 @@ if (import.meta.main) {
 
   for (const r of audit.reports) {
     const filename = r.path.split("/").pop()!;
-    // Exclude library-target edges from coupling pressure: cross-bucket
-    // import of foundation utility (x0030_compose, x4010_hash, etc.) is
-    // by-design, not drift signal. Pre-2026-05-23 gravity didn't
-    // annotate this; balance flagged all long edges as coupling.
-    const fileEdges = edges.filter(
-      (e) =>
-        e.source_file === filename &&
-        e.delta_primary >= 2 &&
-        !e.target_is_library,
+    // Split high-tension edges into two pressure classes:
+    //   nonLibEdges → "coupling" drift signal (real placement pressure)
+    //   libEdges    → "library_coupling" policy-OK (foundation utility
+    //                 imports are by-design; surfaced for visibility per
+    //                 architect's gravity-informed-balance proposal, then
+    //                 distinguished from drift per the 2026-05-23 library
+    //                 policy refinement).
+    const allFileEdges = edges.filter(
+      (e) => e.source_file === filename && e.delta_primary >= 2,
     );
+    const fileEdges = allFileEdges.filter((e) => !e.target_is_library);
+    const libEdges = allFileEdges.filter((e) => e.target_is_library);
 
     const hasSemantic = r.match === "mismatch";
     const hasCoupling = fileEdges.length > 0;
+    const hasLibraryCoupling = libEdges.length > 0;
 
-    if (!hasSemantic && !hasCoupling) continue;
+    if (!hasSemantic && !hasCoupling && !hasLibraryCoupling) continue;
 
-    const pressures: ("semantic" | "coupling")[] = [];
+    const pressures: ("semantic" | "coupling" | "library_coupling")[] = [];
     if (hasSemantic) pressures.push("semantic");
     if (hasCoupling) pressures.push("coupling");
+    if (hasLibraryCoupling) pressures.push("library_coupling");
 
     let suggested_bucket: string | null = null;
     let primary_axis: string | null = null;
@@ -251,9 +261,13 @@ if (import.meta.main) {
       note = rescue
         ? "current placement defensible under composite reading (secondary matches second-axis)"
         : "no composite rescue — clear projection-reading dissonance";
-    } else {
+    } else if (hasCoupling) {
       note =
         `coupling pressure only — review dependency shape; no bucket move suggested (${fileEdges.length} high-tension edge(s))`;
+    } else {
+      // library_coupling only — surface for visibility, mark policy-OK
+      note =
+        `library-coupling only (policy-OK: foundation utility imports by-design); ${libEdges.length} high-tension library edge(s)`;
     }
 
     suggestions.push({
@@ -265,6 +279,12 @@ if (import.meta.main) {
       primary_value,
       composite_rescue: rescue,
       gravity_edges: fileEdges.map((e) => ({
+        target: e.target,
+        target_file: e.target_file,
+        delta_primary: e.delta_primary,
+        delta_hamming: e.delta_hamming,
+      })),
+      library_edges: libEdges.map((e) => ({
         target: e.target,
         target_file: e.target_file,
         delta_primary: e.delta_primary,
@@ -307,6 +327,9 @@ if (import.meta.main) {
       coupling_only: suggestions.filter((s) =>
         !s.pressures.includes("semantic") && s.pressures.includes("coupling")
       ).length,
+      library_coupling_only: suggestions.filter((s) =>
+        s.pressures.length === 1 && s.pressures.includes("library_coupling")
+      ).length,
     },
     gravity_warning: gravityWarning,
     suggestions,
@@ -333,7 +356,8 @@ if (import.meta.main) {
     console.log(
       `# ${receipt.summary.total_recommendations} recommendations: ` +
         `${receipt.summary.strong_candidates} strong (${receipt.summary.aligned_strong_candidates} aligned), ` +
-        `${receipt.summary.semantic_only} semantic-only, ${receipt.summary.coupling_only} coupling-only`,
+        `${receipt.summary.semantic_only} semantic-only, ${receipt.summary.coupling_only} coupling-only, ` +
+        `${receipt.summary.library_coupling_only} library-coupling (policy-OK)`,
     );
     if (receipt.gravity_warning) {
       console.log(`# warning: ${receipt.gravity_warning}`);
@@ -362,7 +386,7 @@ if (import.meta.main) {
         detail = s.composite_rescue
           ? "(composite-rescued)"
           : "(clear dissonance)";
-      } else {
+      } else if (s.pressures.includes("coupling")) {
         const sortedEdges = [...s.gravity_edges].sort(
           (a, b) =>
             b.delta_primary - a.delta_primary ||
@@ -371,6 +395,16 @@ if (import.meta.main) {
         const topEdge = sortedEdges[0];
         detail =
           `review coupling to x${topEdge.target}_* (Δp=${topEdge.delta_primary}); no move suggested`;
+      } else {
+        // library_coupling only
+        const sortedLib = [...s.library_edges].sort(
+          (a, b) =>
+            b.delta_primary - a.delta_primary ||
+            b.delta_hamming - a.delta_hamming,
+        );
+        const topLib = sortedLib[0];
+        detail =
+          `library-imp x${topLib.target}_* (Δp=${topLib.delta_primary}) [policy-OK]`;
       }
       console.log(`${col1} ${col2} ${detail}`);
     }

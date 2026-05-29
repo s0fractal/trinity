@@ -408,7 +408,9 @@ function fn_render_status(p: any): void {
       ? ` (legacy: ${s.overall})`
       : "";
     console.log(
-      `# status @ ${p.position ?? "?"} — ${icon} ${overall}${legacyNote}${ciBadge}`,
+      `# status @ ${
+        p.position ?? "?"
+      } — ${icon} ${overall}${legacyNote}${ciBadge}`,
     );
     if (p.note) console.log(`# ${p.note}`);
     console.log("# " + "─".repeat(40));
@@ -428,6 +430,20 @@ function fn_render_status(p: any): void {
     if (s.audit) {
       const ai = s.audit.match > 0 && s.audit.mismatch === 0 ? "✓" : "⚠";
       console.log(`# audit:    ${ai} ${s.audit.match}/${s.audit.total} match`);
+    }
+    if (s.worktree) {
+      const wt = s.worktree;
+      const wi = wt.dirty ? "⚠" : "✓";
+      console.log(
+        `# worktree: ${wi} ${wt.dirty ? "dirty" : "clean"}  (${
+          wt.changed_files ?? 0
+        } files; staged:${wt.staged ?? 0} unstaged:${
+          wt.unstaged ?? 0
+        } untracked:${wt.untracked ?? 0})`,
+      );
+      for (const file of (wt.sample ?? []).slice(0, 5)) {
+        console.log(`#   • ${file}`);
+      }
     }
 
     // External CI (SUBSTRATE_HEALTH.v0.1). Surface red_signals visibly.

@@ -53,6 +53,65 @@ type ExternalCi = {
   source: "cache" | "live" | "unknown";
 };
 
+type WorktreeSummary = {
+  dirty: boolean;
+  staged: number;
+  unstaged: number;
+  untracked: number;
+  changed_files: number;
+  sample: string[];
+};
+
+async function loadWorktreeSummary(): Promise<WorktreeSummary> {
+  const proc = new Deno.Command("git", {
+    args: ["status", "--porcelain=v1"],
+    cwd: ROOT,
+    stdout: "piped",
+    stderr: "piped",
+  });
+  const out = await proc.output();
+  if (out.code !== 0) {
+    return {
+      dirty: true,
+      staged: 0,
+      unstaged: 0,
+      untracked: 0,
+      changed_files: 0,
+      sample: ["git status unavailable"],
+    };
+  }
+
+  const lines = new TextDecoder().decode(out.stdout).split("\n")
+    .map((line) => line.trimEnd())
+    .filter(Boolean);
+  let staged = 0;
+  let unstaged = 0;
+  let untracked = 0;
+  const files: string[] = [];
+
+  for (const line of lines) {
+    const x = line[0] ?? " ";
+    const y = line[1] ?? " ";
+    const path = line.slice(3).trim();
+    if (x === "?" && y === "?") {
+      untracked++;
+    } else {
+      if (x !== " ") staged++;
+      if (y !== " ") unstaged++;
+    }
+    if (path) files.push(path);
+  }
+
+  return {
+    dirty: lines.length > 0,
+    staged,
+    unstaged,
+    untracked,
+    changed_files: files.length,
+    sample: files.slice(0, 12),
+  };
+}
+
 // Load cached CI state. Tries the JSON sidecar first (machine-readable form,
 // schema: trinity.audit-baseline.v0.1) and falls back to parsing the legacy
 // markdown report. JSON is preferred per Codex tertiary tweak — markdown table
@@ -268,17 +327,25 @@ if (import.meta.main) {
   const wantLive = Deno.args.includes("--live");
 
   // Gather from organs in parallel
-  const [audit, health, liquidStatus, omegaStatus, mycStatus, externalCi] =
-    await Promise.all([
-      call_t("audit", ["--json"]),
-      call_t("health"),
-      // All 3 substrates adopted SUBSTRATE_SELF_ABI.v0.1 slot 2/E
-      // by 2026-05-23: myc 2026-05-22, liquid + omega 2026-05-23.
-      call_submodule_organ("liquid", "src/x2E00_status.ts"),
-      call_submodule_organ("omega", "src/x2E00_status.ts"),
-      call_submodule_organ("myc", "src/x2E00_status.ts"),
-      wantLive ? loadLiveCi() : loadCachedCi(),
-    ]);
+  const [
+    audit,
+    health,
+    liquidStatus,
+    omegaStatus,
+    mycStatus,
+    externalCi,
+    worktree,
+  ] = await Promise.all([
+    call_t("audit", ["--json"]),
+    call_t("health"),
+    // All 3 substrates adopted SUBSTRATE_SELF_ABI.v0.1 slot 2/E
+    // by 2026-05-23: myc 2026-05-22, liquid + omega 2026-05-23.
+    call_submodule_organ("liquid", "src/x2E00_status.ts"),
+    call_submodule_organ("omega", "src/x2E00_status.ts"),
+    call_submodule_organ("myc", "src/x2E00_status.ts"),
+    wantLive ? loadLiveCi() : loadCachedCi(),
+    loadWorktreeSummary(),
+  ]);
 
   const auditAny = audit as Record<string, unknown> & {
     summary?: Record<string, number>;
@@ -385,6 +452,10 @@ if (import.meta.main) {
           total: auditTotal,
         },
       },
+      "trinity.worktree": {
+        schema: "trinity.worktree.v0.1",
+        body: worktree,
+      },
     },
   };
 
@@ -427,6 +498,7 @@ if (import.meta.main) {
         mismatch: auditMismatch,
         total: auditTotal,
       },
+      worktree,
     },
     // SUBSTRATE_HEALTH.v0.1 (Item F pilot adoption — trinity integration surface).
     // Legacy `summary` field above remains for backward-compat with existing
@@ -454,7 +526,7 @@ if (import.meta.main) {
       "how-are-you",
     ],
     topology:
-      "composes audit + health → unified self-reflection; recursive into submodules; emits SUBSTRATE_HEALTH.v0.1 projection; --live refreshes green audit evidence before reading CI cache; --envelope wraps body as ReceiptEnvelope.v0.1",
+      "composes audit + health + git worktree state → unified self-reflection; recursive into submodules; emits SUBSTRATE_HEALTH.v0.1 projection; --live refreshes green audit evidence before reading CI cache; --envelope wraps body as ReceiptEnvelope.v0.1",
   };
 
   console.log(JSON.stringify(receipt, null, 2));

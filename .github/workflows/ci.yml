@@ -69,7 +69,10 @@ jobs:
         run: ./t lexicon --stable --json | jq -e '.type == "lexicon" and .position == "2/A" and .summary.surfaced_patterns > 0 and ([.entries[] | select(.first_seen_block > 0 and .last_seen_block >= .first_seen_block)] | length) > 0'
 
       - name: Verify inbox JSON summary
-        run: ./t inbox --json | jq -e '.type == "inbox" and .position == "2/D" and (.summary.total_pending | type) == "number" and (.summary.voices_with_pending | type) == "number" and (.pending_voices | type) == "array" and all(.pending_voices[]; (.voice | type) == "string" and (.count | type) == "number")'
+        run: ./t inbox --json | jq -e '.type == "inbox" and .position == "2/D" and (.summary.total_pending | type) == "number" and (.summary.voices_with_pending | type) == "number" and (.pending_voices | type) == "array" and all(.pending_voices[]; (.voice | type) == "string" and (.count | type) == "number") and ((.next_action == null) or (.next_action.voice | type) == "string")'
+
+      - name: Verify inbox next action
+        run: ./t inbox --next --json | jq -e '.type == "inbox_next" and .position == "2/D" and ((.next_action == null) or ((.next_action.voice | type) == "string" and (.next_action.chord_path | type) == "string"))'
 
       - name: Verify heartbeat JSON summary
         run: ./t heartbeat --json | jq -e '.type == "heartbeat" and .position == "2/7" and (.summary.chords_28d | type) == "number" and (.summary.stalled | type) == "boolean"'

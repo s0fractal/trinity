@@ -66,6 +66,18 @@ interface InboxItem {
   addressed_to: string[];
 }
 
+interface InboxNextAction {
+  voice: string;
+  chord_id: string;
+  chord_path: string;
+  speaker: string;
+  topic: string | null;
+  mode: string | null;
+  oldest_days_ago: number | null;
+  suggested_command: string;
+  response_hint: string;
+}
+
 // ── helpers ────────────────────────────────────────────────────────────────
 
 function normSpeaker(s: string): string {
@@ -342,7 +354,30 @@ function pendingVoiceSummaries(
     });
 }
 
+function chooseNextAction(
+  allInboxes: Record<string, InboxItem[]>,
+): InboxNextAction | null {
+  const pending = pendingVoiceSummaries(allInboxes);
+  const top = pending[0];
+  if (!top?.oldest_path) return null;
+  const item = allInboxes[top.voice]?.[0];
+  if (!item) return null;
+  return {
+    voice: top.voice,
+    chord_id: item.chord_id,
+    chord_path: item.chord_path,
+    speaker: item.speaker,
+    topic: item.topic,
+    mode: item.mode,
+    oldest_days_ago: top.oldest_days_ago,
+    suggested_command: `./t inbox ${top.voice} --json`,
+    response_hint:
+      `Write a ${top.voice} chord whose frontmatter includes hears: [${item.chord_path}].`,
+  };
+}
+
 function renderTextSummary(allInboxes: Record<string, InboxItem[]>): string {
+  const nextAction = chooseNextAction(allInboxes);
   const lines: string[] = [
     `# inbox @ 2/D — chords addressed to each voice, unresponded`,
     `# ──────────────────────────────────────────────────────────────────────`,
@@ -371,6 +406,12 @@ function renderTextSummary(allInboxes: Record<string, InboxItem[]>): string {
   lines.push(
     `# Total voices: ${voices.length}.  Use 't inbox <voice>' for detail.`,
   );
+  if (nextAction) {
+    lines.push(
+      `# Next: ${nextAction.voice} should hear ${nextAction.chord_path}`,
+    );
+    lines.push(`#       ${nextAction.suggested_command}`);
+  }
   return lines.join("\n");
 }
 
@@ -402,11 +443,27 @@ function renderTextDetail(voice: string, items: InboxItem[]): string {
   return lines.join("\n");
 }
 
+function renderTextNext(action: InboxNextAction | null): string {
+  if (!action) return "# inbox @ 2/D — no pending next action";
+  return [
+    `# inbox @ 2/D — next action`,
+    `# voice: ${action.voice}`,
+    `# chord: ${action.chord_path}`,
+    `# from: ${action.speaker}`,
+    action.topic ? `# topic: ${action.topic}` : null,
+    action.mode ? `# mode: ${action.mode}` : null,
+    `# age_days: ${action.oldest_days_ago ?? "unknown"}`,
+    `# command: ${action.suggested_command}`,
+    `# hint: ${action.response_hint}`,
+  ].filter((line): line is string => line !== null).join("\n");
+}
+
 // ── main ───────────────────────────────────────────────────────────────────
 
 async function main() {
   const args = Deno.args;
   const jsonMode = args.includes("--json");
+  const nextMode = args.includes("--next");
   const voiceArg = args.find((a) => !a.startsWith("--"));
 
   const chords = await loadAllChords();
@@ -445,6 +502,25 @@ async function main() {
   for (const v of voices) {
     allInboxes[v] = computeInbox(v, chords);
   }
+  const next_action = chooseNextAction(allInboxes);
+  if (nextMode) {
+    if (jsonMode) {
+      console.log(JSON.stringify(
+        {
+          type: "inbox_next",
+          schema: "trinity.inbox.v0.1",
+          action: "next",
+          position: "2/D",
+          next_action,
+        },
+        null,
+        2,
+      ));
+    } else {
+      console.log(renderTextNext(next_action));
+    }
+    return;
+  }
   if (jsonMode) {
     const summary = inboxSummary(allInboxes);
     const pending_voices = pendingVoiceSummaries(allInboxes);
@@ -457,6 +533,7 @@ async function main() {
         mode: "summary",
         summary,
         pending_voices,
+        next_action,
         voices: Object.fromEntries(
           Object.entries(allInboxes).map((
             [v, items],

@@ -270,7 +270,9 @@ function buildAttention(args: {
     score += pending >= 10 ? 3 : 2;
     const top = args.inbox?.summary?.top_backlog_voice ?? "unknown";
     reasons.push(`inbox backlog: ${pending} pending (${top})`);
-    nextActions.push("Run `./t inbox --json` or clear the top voice backlog.");
+    nextActions.push(
+      "Run `./t inbox --next --json` to inspect the oldest routed response.",
+    );
   }
 
   if (args.heartbeat?.summary?.stalled) {

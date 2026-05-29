@@ -13,9 +13,9 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility abi |     53     |
 | compost           |     0      |
 | experimental      |     34     |
-| live chord        |    346     |
+| live chord        |    349     |
 | local cache       |     0      |
-| **Total**         |  **438**   |
+| **Total**         |  **441**   |
 
 ## Registered Surfaces
 
@@ -426,6 +426,9 @@ documents, and local caches outside the core Deno flat-src code base._
 | live chord        | [jazz/chords/x7500_950636_claude_compose-toolkit-receipt.md](../jazz/chords/x7500_950636_claude_compose-toolkit-receipt.md)                                                                                                               | canonical        |                                           | keep        |                              |
 | live chord        | [jazz/chords/x7500_950657_claude_supervector-beta-probe-receipt.md](../jazz/chords/x7500_950657_claude_supervector-beta-probe-receipt.md)                                                                                                 | canonical        |                                           | keep        |                              |
 | live chord        | [jazz/chords/x7500_950703_claude_paired-critique-receipt-immune-tools-landed.md](../jazz/chords/x7500_950703_claude_paired-critique-receipt-immune-tools-landed.md)                                                                       | canonical        |                                           | keep        |                              |
+| live chord        | [jazz/chords/x7500_950905_claude_autonomous-session-substrate-pointed-receipt.md](../jazz/chords/x7500_950905_claude_autonomous-session-substrate-pointed-receipt.md)                                                                     | canonical        |                                           | keep        |                              |
+| live chord        | [jazz/chords/x7500_950915_claude_gravity-informed-balance-receipt.md](../jazz/chords/x7500_950915_claude_gravity-informed-balance-receipt.md)                                                                                             | canonical        |                                           | keep        |                              |
+| live chord        | [jazz/chords/x7500_950920_claude_kairos-gems-15-day-resurvey-receipt.md](../jazz/chords/x7500_950920_claude_kairos-gems-15-day-resurvey-receipt.md)                                                                                       | canonical        |                                           | keep        |                              |
 | live chord        | [jazz/chords/x7F01_950604_codex_daemon-invocation-log-topology-receipt.md](../jazz/chords/x7F01_950604_codex_daemon-invocation-log-topology-receipt.md)                                                                                   | canonical        |                                           | keep        |                              |
 | live chord        | [jazz/chords/x8800_950298_antigravity_self-description-axis-strengthening.md](../jazz/chords/x8800_950298_antigravity_self-description-axis-strengthening.md)                                                                             | canonical        |                                           | keep        |                              |
 | live chord        | [jazz/chords/x8D00_950594_codex_omega-vision-roadmap-projection-receipt.md](../jazz/chords/x8D00_950594_codex_omega-vision-roadmap-projection-receipt.md)                                                                                 | canonical        |                                           | keep        |                              |

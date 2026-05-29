@@ -9,13 +9,13 @@ documents, and local caches outside the core Deno flat-src code base._
 
 | Category          | File Count |
 | :---------------- | :--------: |
-| compatibility     |     5      |
+| compatibility     |     8      |
 | compatibility abi |     53     |
 | compost           |     0      |
 | experimental      |     34     |
-| live chord        |    349     |
+| live chord        |    350     |
 | local cache       |     0      |
-| **Total**         |  **441**   |
+| **Total**         |  **445**   |
 
 ## Registered Surfaces
 
@@ -407,6 +407,7 @@ documents, and local caches outside the core Deno flat-src code base._
 | live chord        | [jazz/chords/x3500_950008_codex_src-as-semantic-address-space.md](../jazz/chords/x3500_950008_codex_src-as-semantic-address-space.md)                                                                                                     | canonical        |                                           | keep        |                              |
 | live chord        | [jazz/chords/x3500_950009_codex_substrate-morphology-language-layer.md](../jazz/chords/x3500_950009_codex_substrate-morphology-language-layer.md)                                                                                         | canonical        |                                           | keep        |                              |
 | live chord        | [jazz/chords/x3A00_950512_architect_gravity-informed-balance.md](../jazz/chords/x3A00_950512_architect_gravity-informed-balance.md)                                                                                                       | canonical        |                                           | keep        |                              |
+| live chord        | [jazz/chords/x3A00_951596_antigravity_recipe-remediation.md](../jazz/chords/x3A00_951596_antigravity_recipe-remediation.md)                                                                                                               | canonical        |                                           | keep        |                              |
 | live chord        | [jazz/chords/x4D00_950620_claude_cross-substrate-roadmap-federation.md](../jazz/chords/x4D00_950620_claude_cross-substrate-roadmap-federation.md)                                                                                         | canonical        |                                           | keep        |                              |
 | live chord        | [jazz/chords/x4D00_950622_claude_fifth-axis-probes-as-generated-organ.md](../jazz/chords/x4D00_950622_claude_fifth-axis-probes-as-generated-organ.md)                                                                                     | canonical        |                                           | keep        |                              |
 | live chord        | [jazz/chords/x4D00_950624_claude_probes-chord-refs-cross-axis.md](../jazz/chords/x4D00_950624_claude_probes-chord-refs-cross-axis.md)                                                                                                     | canonical        |                                           | keep        |                              |
@@ -462,3 +463,6 @@ documents, and local caches outside the core Deno flat-src code base._
 | experimental      | [proposals/codeicide/TRINITY_CAPABILITIES.v0.1.cowitnesses/gemini-2026-05-16T08-37-00-875Z.json](../proposals/codeicide/TRINITY_CAPABILITIES.v0.1.cowitnesses/gemini-2026-05-16T08-37-00-875Z.json)                                       | experimental     |                                           | keep        | active governance proposal   |
 | experimental      | [proposals/codeicide/TRINITY_CAPABILITIES.v0.1.proposal.json](../proposals/codeicide/TRINITY_CAPABILITIES.v0.1.proposal.json)                                                                                                             | experimental     |                                           | keep        | active governance proposal   |
 | compatibility abi | [t](../t)                                                                                                                                                                                                                                 | compatibility    |                                           | keep        | command launcher             |
+| compatibility     | [x9000/MANIFEST.myc.ndjson](../x9000/MANIFEST.myc.ndjson)                                                                                                                                                                                 | compatibility    |                                           | keep        | compatibility projection     |
+| compatibility     | [x9000/README.md](../x9000/README.md)                                                                                                                                                                                                     | compatibility    |                                           | keep        | compatibility projection     |
+| compatibility     | [x9000/public](../x9000/public)                                                                                                                                                                                                           | compatibility    | myc/public                                | keep        | symlink to submodule         |

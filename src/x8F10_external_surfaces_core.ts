@@ -611,6 +611,49 @@ async function scanProposals(
   return out;
 }
 
+async function scanX9000(
+  includeVolatile: boolean,
+): Promise<SurfaceEntry[]> {
+  const out: SurfaceEntry[] = [];
+  const dir = join(ROOT, "x9000");
+  try {
+    for await (const entry of Deno.readDir(dir)) {
+      if (entry.isFile || entry.isSymlink) {
+        const relPath = `x9000/${entry.name}`;
+        const fullPath = join(dir, entry.name);
+
+        let canonical_status: SurfaceEntry["canonical_status"] =
+          "compatibility";
+        let next_action: SurfaceEntry["next_action"] = "keep";
+        let blocked_by = "compatibility projection";
+        let canonical_target = "";
+
+        if (entry.isSymlink) {
+          canonical_target = await getSymlinkTarget(fullPath);
+          blocked_by = "symlink to submodule";
+        }
+
+        const item: SurfaceEntry = {
+          surface: relPath,
+          category: "compatibility",
+          canonical_status,
+          canonical_target,
+          next_action,
+          blocked_by,
+        };
+
+        if (includeVolatile) {
+          const { size, mtime } = await getFileInfo(fullPath);
+          item.size = size;
+          item.mtime = mtime;
+        }
+        out.push(item);
+      }
+    }
+  } catch { /* ignore if x9000 doesn't exist yet */ }
+  return out;
+}
+
 export async function collectExternalSurfaces(options: {
   stable: boolean;
   includeVolatile: boolean;
@@ -628,6 +671,7 @@ export async function collectExternalSurfaces(options: {
   entries.push(...(await scanChords(options.includeVolatile)));
   entries.push(...(await scanState(options.includeVolatile)));
   entries.push(...(await scanCompost(options.includeVolatile)));
+  entries.push(...(await scanX9000(options.includeVolatile)));
 
   // If stable, filter to keep only Git-tracked files
   if (options.stable) {

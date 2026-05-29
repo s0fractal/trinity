@@ -141,6 +141,65 @@ async function pruneStaleRuntimeCaches(args: string[]) {
   console.log(JSON.stringify(payload, null, 2));
 }
 
+async function walkDir(
+  dir: string,
+  relPrefix: string,
+  entries: Array<{ path: string; size: number; hash: string }>,
+): Promise<void> {
+  try {
+    for await (const entry of Deno.readDir(dir)) {
+      const entryPath = join(dir, entry.name);
+      const relPath = `${relPrefix}/${entry.name}`;
+      if (entry.isDirectory) {
+        if (entry.name !== ".git" && entry.name !== "node_modules") {
+          await walkDir(entryPath, relPath, entries);
+        }
+      } else if (entry.isFile) {
+        if (entry.name.startsWith(".")) continue;
+        const data = await Deno.readFile(entryPath);
+        const digest = new Uint8Array(
+          await crypto.subtle.digest("SHA-256", data),
+        );
+        const hex = Array.from(digest, (b) =>
+          b.toString(16).padStart(2, "0")).join("");
+        entries.push({
+          path: relPath,
+          size: data.length,
+          hash: `sha256:${hex}`,
+        });
+      }
+    }
+  } catch { /* ignore */ }
+}
+
+async function generateMycManifest(): Promise<void> {
+  const manifestPath = join(ROOT, "x9000", "MANIFEST.myc.ndjson");
+  const scanDirs = [
+    "public",
+    "protocols",
+    "releases",
+    "sealed",
+    "docs",
+    "sites",
+    "substrates",
+  ];
+  const entries: Array<{ path: string; size: number; hash: string }> = [];
+
+  for (const subDir of scanDirs) {
+    const fullPath = join(ROOT, "myc", subDir);
+    try {
+      const stat = await Deno.stat(fullPath);
+      if (!stat.isDirectory) continue;
+      await walkDir(fullPath, subDir, entries);
+    } catch { /* skip */ }
+  }
+
+  entries.sort((a, b) => a.path.localeCompare(b.path));
+
+  const ndjson = entries.map((e) => JSON.stringify(e)).join("\n") + "\n";
+  await Deno.writeTextFile(manifestPath, ndjson);
+}
+
 async function main() {
   const args = Deno.args;
   const wantJson = args.includes("--json");
@@ -150,6 +209,7 @@ async function main() {
     await pruneStaleRuntimeCaches(args);
     return;
   }
+  await generateMycManifest();
   const wantVolatile = args.includes("--volatile");
   const stable = args.includes("--stable") || !wantVolatile;
 

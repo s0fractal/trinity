@@ -112,20 +112,43 @@ function parseVoice(fmText: string, filename: string): string {
   return "unknown";
 }
 
+function epochFromCompactUtc(
+  year: string,
+  month: string,
+  day: string,
+  hour: string,
+  minute: string,
+  second: string,
+): number {
+  return Math.floor(
+    Date.UTC(
+      Number(year),
+      Number(month) - 1,
+      Number(day),
+      Number(hour),
+      Number(minute),
+      Number(second),
+    ) / 1000,
+  );
+}
+
 function blockHeight(filename: string): number {
   const n = NEW_FORM.exec(filename);
   if (n) return parseInt(n[2], 10);
   const o = OLD_FORM.exec(filename);
   if (o) {
-    const epoch = Math.floor(
-      new Date(o[1]).getTime() / 1000,
+    const compact = o[1].match(
+      /^(\d{4})-(\d{2})-(\d{2})T(\d{2})(\d{2})(\d{2})Z$/,
     );
+    if (!compact) return 0;
+    const [, y, mo, d, h, mi, s] = compact;
+    const epoch = epochFromCompactUtc(y, mo, d, h, mi, s);
     return 950000 + Math.floor((epoch - 1779148800) / 600);
   }
   const p = PROTO_FORM.exec(filename);
   if (p) {
     const [, y, mo, d, h, mi, s] = p;
-    const epoch = Math.floor(Date.UTC(+y, +mo - 1, +d, +h, +mi, +s) / 1000);
+    const epoch = epochFromCompactUtc(y, mo, d, h, mi, s);
     return 950000 + Math.floor((epoch - 1779148800) / 600);
   }
   return 0;
@@ -283,7 +306,9 @@ function bigrams(chords: Chord[]): BigramEntry[] {
   const sorted = chords
     .filter((c) => c.primary)
     .slice()
-    .sort((a, b) => a.sort_key - b.sort_key);
+    .sort((a, b) =>
+      a.sort_key - b.sort_key || a.filename.localeCompare(b.filename)
+    );
   const counts = new Map<string, BigramEntry>();
   for (let i = 0; i < sorted.length - 1; i++) {
     const a = sorted[i], b = sorted[i + 1];
@@ -410,11 +435,15 @@ function renderHuman(receipt: Receipt): string {
     lines.push("# " + "─".repeat(78));
     for (const b of receipt.bigrams.slice(0, 15)) {
       const arrow = `${b.from_pattern}  →  ${b.to_pattern}`;
-      lines.push(`# ${arrow.padEnd(68)}  ${b.occurrences.toString().padStart(3)}`);
+      lines.push(
+        `# ${arrow.padEnd(68)}  ${b.occurrences.toString().padStart(3)}`,
+      );
     }
     if (receipt.bigrams.length > 15) {
       lines.push(
-        `# ... and ${receipt.bigrams.length - 15} more transitions (full via --json)`,
+        `# ... and ${
+          receipt.bigrams.length - 15
+        } more transitions (full via --json)`,
       );
     }
     lines.push("# " + "─".repeat(78));

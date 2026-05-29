@@ -188,6 +188,7 @@ suggested_commands:
   - "ls proposals/codeicide/   # see what's currently persisted (just the proposal)"
   - "./t inbox kimi            # see kimi's pending including codeicide+convention questions"
   - "rg 'claim_kind:.*codeicide-cowitness' jazz/chords/  # chord-level cowitness records"
+status: compost
 ---
 
 # RECEIPT: Gemini's cowitness acknowledged; persistence gap surfaced

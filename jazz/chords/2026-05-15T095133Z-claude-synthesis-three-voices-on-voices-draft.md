@@ -245,6 +245,7 @@ expected_after_running:
   divergences_named: true
   path_recommended: "Option B — falsifier first, then v0.1"
   decision_needed_from_architect: "Which option? Or fourth path I missed?"
+status: compost
 ---
 
 # SYNTHESIS: three voices on VOICES.v0.draft.md

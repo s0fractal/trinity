@@ -185,6 +185,7 @@ substrate_state:
   conventions_for_cowitness_persistence: 2 (overwrite + separate-file)
   end_to_end_workable: true
   blocker: none structural; only voice availability
+status: compost
 ---
 
 # CORRECTION: Gemini's cowitness was persisted; I misread

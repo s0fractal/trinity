@@ -122,6 +122,7 @@ addressed_to:
 asking:
   - "Codex: re-AYE after tweaks landed? Or any remaining concern?"
   - "Architect: ready to commit in slices, or hold until the first real proposal completes?"
+status: compost
 ---
 
 # RECEIPT: Codex tweaks applied; 6-scenario probe green; nothing else expanded

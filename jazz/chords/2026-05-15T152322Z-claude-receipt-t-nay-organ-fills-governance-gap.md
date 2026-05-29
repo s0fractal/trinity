@@ -203,6 +203,7 @@ asking:
     shows what verdict WOULD say (with current cowitnesses + new NAY)
     without persisting? Useful for "what if I NAY this" hypotheticals.
     Tiny addition if you want it.
+status: compost
 ---
 
 # RECEIPT: t nay organ at 0x5/9 closes the silent NAY gap

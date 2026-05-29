@@ -203,6 +203,15 @@ function computeInbox(
     const addrs = fm.addressed_to.map((a) => normSpeaker(String(a)));
     if (!addrs.includes(voice)) continue;
     if (fm.id && heard.has(fm.id)) continue;
+    // Skip if composted, rejected, superseded, or deprecated
+    if (
+      fm.status === "compost" ||
+      fm.status === "rejected" ||
+      fm.status === "superseded" ||
+      fm.status === "deprecated"
+    ) {
+      continue;
+    }
     // Also skip if this voice is the speaker (addressed-to-self is OK to skip)
     if (fm.speaker === voice) continue;
     items.push({
@@ -458,15 +467,118 @@ function renderTextNext(action: InboxNextAction | null): string {
   ].filter((line): line is string => line !== null).join("\n");
 }
 
+function numericArg(args: string[], name: string, fallback: number): number {
+  const i = args.indexOf(name);
+  if (i === -1 || i + 1 >= args.length) return fallback;
+  const n = Number(args[i + 1]);
+  return Number.isFinite(n) && n >= 0 ? n : fallback;
+}
+
+async function compostChordFile(path: string) {
+  const text = await Deno.readTextFile(path);
+  if (!text.startsWith("---\n")) return;
+  const end = text.indexOf("\n---", 4);
+  if (end === -1) return;
+  const fmText = text.slice(4, end);
+  const bodyText = text.slice(end);
+
+  const lines = fmText.split("\n");
+  let replaced = false;
+  for (let i = 0; i < lines.length; i++) {
+    if (lines[i].trimStart().startsWith("status:")) {
+      lines[i] = lines[i].replace(/status:\s*.*$/, "status: compost");
+      replaced = true;
+      break;
+    }
+  }
+  if (!replaced) {
+    lines.push("status: compost");
+  }
+  const newText = "---\n" + lines.join("\n") + bodyText;
+  await Deno.writeTextFile(path, newText);
+}
+
 // ── main ───────────────────────────────────────────────────────────────────
 
 async function main() {
   const args = Deno.args;
   const jsonMode = args.includes("--json");
   const nextMode = args.includes("--next");
-  const voiceArg = args.find((a) => !a.startsWith("--"));
+  const compostStale = args.includes("--compost-stale");
+  const voiceArg = args.find((a) => !a.startsWith("--") && a !== "compost-stale");
 
   const chords = await loadAllChords();
+
+  if (compostStale) {
+    const apply = args.includes("--apply");
+    const minAgeDays = numericArg(args, "--min-age-days", 14);
+    const nowMs = Date.now();
+
+    const voices = listAllVoices(chords);
+    const allInboxes: Record<string, InboxItem[]> = {};
+    for (const v of voices) {
+      allInboxes[v] = computeInbox(v, chords);
+    }
+
+    const staleCandidates = new Map<string, { chord_id: string; path: string; age_days: number }>();
+    for (const items of Object.values(allInboxes)) {
+      for (const item of items) {
+        const age = chordDaysAgo(item.chord_id, nowMs);
+        if (age !== null && age >= minAgeDays) {
+          staleCandidates.set(item.chord_id, {
+            chord_id: item.chord_id,
+            path: item.chord_path,
+            age_days: age,
+          });
+        }
+      }
+    }
+
+    const candidates = [...staleCandidates.values()].sort(
+      (a, b) => b.age_days - a.age_days || a.chord_id.localeCompare(b.chord_id)
+    );
+
+    const applied: string[] = [];
+    if (apply) {
+      for (const candidate of candidates) {
+        await compostChordFile(join(ROOT, candidate.path));
+        applied.push(candidate.path);
+      }
+    }
+
+    const payload = {
+      type: "inbox_compost_stale",
+      position: "2/D",
+      action: "compost_stale",
+      dry_run: !apply,
+      min_age_days: minAgeDays,
+      summary: {
+        candidates: candidates.length,
+        applied: applied.length,
+      },
+      candidates,
+      applied,
+    };
+
+    if (jsonMode) {
+      console.log(JSON.stringify(payload, null, 2));
+    } else {
+      console.log(`# inbox @ 2/D — compost stale chords (dry_run: ${!apply})`);
+      console.log(`# ${"─".repeat(70)}`);
+      if (candidates.length === 0) {
+        console.log(`# no stale chords found (min-age: ${minAgeDays} days)`);
+      } else {
+        for (const c of candidates) {
+          const action = apply ? "COMPOSTED" : "WOULD COMPOST";
+          console.log(`#   • [${action}] ${c.chord_id} (${c.age_days}d ago) -> ${c.path}`);
+        }
+        if (!apply) {
+          console.log(`# Run with --apply to write status: compost to frontmatter of these chords.`);
+        }
+      }
+    }
+    return;
+  }
 
   if (voiceArg) {
     const voice = normSpeaker(voiceArg);

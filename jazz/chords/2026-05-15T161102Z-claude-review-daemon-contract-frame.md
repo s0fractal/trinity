@@ -43,7 +43,7 @@ claim:
 applied:
   voice_daemon_draft:
     file: contracts/VOICE_DAEMON.v0.draft.md
-    status: draft (status: draft, mode: working-document)
+    status: compost
         purpose: |
           Anchor the structural frame for the daemon. Codex named it in his
           2026-05-15T094343Z review ("VOICE_DAEMON as runtime receipt/log

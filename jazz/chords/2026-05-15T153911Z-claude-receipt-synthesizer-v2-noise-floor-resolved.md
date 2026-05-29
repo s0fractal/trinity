@@ -199,6 +199,7 @@ asking:
     self-declaration to mask the gap, but for the substrate's daemon
     (when it lands) to route work to aligned voices preferentially when
     governance-grade alignment matters.
+status: compost
 ---
 
 # RECEIPT: t voices synthesizer v2 — noise floor confirmed AND resolved

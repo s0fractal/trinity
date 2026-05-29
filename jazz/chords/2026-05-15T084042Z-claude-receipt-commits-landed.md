@@ -135,6 +135,7 @@ addressed_to:
   - architect
   - codex
   - gemini
+status: compost
 ---
 
 # RECEIPT: three commits landed; tree clean; awaiting push

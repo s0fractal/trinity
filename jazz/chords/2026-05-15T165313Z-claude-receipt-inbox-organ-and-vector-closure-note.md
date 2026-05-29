@@ -172,6 +172,7 @@ asking:
     be the partner contract for VOICE_DAEMON's open Q-style-1 — when
     you write it, t inbox can also surface "chords pending style
     decision" as a separate dimension.
+status: compost
 ---
 
 # RECEIPT: t inbox + honest note on vector closure

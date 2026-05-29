@@ -210,6 +210,7 @@ asking:
     intent? Or should there be a "voice can amend self-declaration"
     flow that the substrate logs (so amendments are visible as
     history, not silent corrections)?
+status: compost
 ---
 
 # RECEIPT: self-portrait organ + state/voices/ skeleton + first divergence reading

@@ -275,6 +275,44 @@ function topSenderOf(items: InboxItem[]): string | null {
   return bestN > 0 ? `${best}×${bestN}` : null;
 }
 
+function inboxSummary(allInboxes: Record<string, InboxItem[]>): {
+  voices: number;
+  voices_with_pending: number;
+  total_pending: number;
+  oldest_days_ago: number | null;
+  top_backlog_voice: string | null;
+} {
+  const entries = Object.entries(allInboxes);
+  let totalPending = 0;
+  let voicesWithPending = 0;
+  let oldestDays: number | null = null;
+  let topVoice: string | null = null;
+  let topCount = 0;
+
+  for (const [voice, items] of entries) {
+    totalPending += items.length;
+    if (items.length > 0) voicesWithPending++;
+    if (items.length > topCount) {
+      topVoice = voice;
+      topCount = items.length;
+    }
+    const age = items[0] ? chordDaysAgo(items[0].chord_id) : null;
+    if (age !== null && (oldestDays === null || age > oldestDays)) {
+      oldestDays = age;
+    }
+  }
+
+  return {
+    voices: entries.length,
+    voices_with_pending: voicesWithPending,
+    total_pending: totalPending,
+    oldest_days_ago: oldestDays,
+    top_backlog_voice: topVoice && topCount > 0
+      ? `${topVoice}×${topCount}`
+      : null,
+  };
+}
+
 function renderTextSummary(allInboxes: Record<string, InboxItem[]>): string {
   const lines: string[] = [
     `# inbox @ 2/D — chords addressed to each voice, unresponded`,
@@ -289,12 +327,18 @@ function renderTextSummary(allInboxes: Record<string, InboxItem[]>): string {
     const ageDays = items.length > 0 ? chordDaysAgo(items[0].chord_id) : null;
     const ageStr = ageDays === null ? "  — " : String(ageDays).padStart(4);
     const topSender = (topSenderOf(items) ?? "—").padEnd(10);
-    const oldestShort = oldest.length > 36 ? oldest.slice(0, 33) + "..." : oldest;
+    const oldestShort = oldest.length > 36
+      ? oldest.slice(0, 33) + "..."
+      : oldest;
     lines.push(
-      `# ${v.padEnd(14)} ${String(items.length).padStart(4)}     ${ageStr}    ${topSender}   ${oldestShort}`,
+      `# ${v.padEnd(14)} ${
+        String(items.length).padStart(4)
+      }     ${ageStr}    ${topSender}   ${oldestShort}`,
     );
   }
-  lines.push(`# ──────────────────────────────────────────────────────────────────────`);
+  lines.push(
+    `# ──────────────────────────────────────────────────────────────────────`,
+  );
   lines.push(
     `# Total voices: ${voices.length}.  Use 't inbox <voice>' for detail.`,
   );
@@ -349,6 +393,8 @@ async function main() {
           action: "inbox",
           position: "2/D",
           voice,
+          oldest_days_ago: items[0] ? chordDaysAgo(items[0].chord_id) : null,
+          top_sender: topSenderOf(items),
           count: items.length,
           items,
           note:
@@ -371,6 +417,7 @@ async function main() {
     allInboxes[v] = computeInbox(v, chords);
   }
   if (jsonMode) {
+    const summary = inboxSummary(allInboxes);
     console.log(JSON.stringify(
       {
         type: "inbox",
@@ -378,15 +425,14 @@ async function main() {
         action: "inbox",
         position: "2/D",
         mode: "summary",
+        summary,
         voices: Object.fromEntries(
           Object.entries(allInboxes).map((
             [v, items],
           ) => [v, {
             count: items.length,
             oldest: items[0]?.chord_id ?? null,
-            oldest_days_ago: items[0]
-              ? chordDaysAgo(items[0].chord_id)
-              : null,
+            oldest_days_ago: items[0] ? chordDaysAgo(items[0].chord_id) : null,
             top_sender: topSenderOf(items),
           }]),
         ),

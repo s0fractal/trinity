@@ -53,6 +53,9 @@ jobs:
       - name: Verify lexicon block ordering
         run: ./t lexicon --stable --json | jq -e '.type == "lexicon" and .position == "2/A" and .summary.surfaced_patterns > 0 and ([.entries[] | select(.first_seen_block > 0 and .last_seen_block >= .first_seen_block)] | length) > 0'
 
+      - name: Verify inbox JSON summary
+        run: ./t inbox --json | jq -e '.type == "inbox" and .position == "2/D" and (.summary.total_pending | type) == "number" and (.summary.voices_with_pending | type) == "number"'
+
       - name: Verify clean export dry-run
         run: ./t export-clean --dry-run | jq -e '.type == "export_clean" and .position == "7/4" and .dry_run == true and .summary.files > 0'
 

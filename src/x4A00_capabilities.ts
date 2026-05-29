@@ -360,10 +360,47 @@ function legacyJsonFor(caps: Capability[]): unknown {
   };
 }
 
+function capabilitiesReceipt(
+  caps: Capability[],
+  action: "list" | "show",
+  target?: string,
+) {
+  return {
+    type: "capabilities",
+    position: "4/A",
+    action,
+    target,
+    note: "foundation+mirror-pair = live affordance projection from glossary",
+    source_of_truth:
+      "src/x0001_glossary.ndjson (type:05/06/07) + per-file headers + deno.jsonc",
+    legacy_artifact:
+      "deleted; use t capabilities --legacy to regenerate compatibility shape when needed",
+    summary: {
+      total_words: caps.length,
+      with_schema: caps.filter((c) => c.receipt_schema).length,
+      with_substrate_impl:
+        caps.filter((c) => c.substrate_implementations.length > 0).length,
+      missing_executable: caps.filter((c) => !c.exists).length,
+    },
+    capabilities: caps,
+    synonyms: [
+      "capabilities",
+      "affordances",
+      "can-do",
+      "спроможності",
+      "що-можу",
+    ],
+    topology: "live read of glossary + headers; not a stored registry",
+  };
+}
+
 if (import.meta.main) {
   const args = Deno.args;
   const wantJson = args.includes("--json");
   const wantLegacy = args.includes("--legacy");
+  const detailArg = args.find((a) =>
+    !a.startsWith("--") && a !== "show" && a !== "validate"
+  );
 
   const { words, mappings, schemas } = await loadGlossary();
   const caps: Capability[] = [];
@@ -382,7 +419,31 @@ if (import.meta.main) {
       Deno.exit(1);
     }
     if (wantJson) {
-      console.log(JSON.stringify(cap, null, 2));
+      console.log(
+        JSON.stringify(capabilitiesReceipt([cap], "show", target), null, 2),
+      );
+    } else {
+      renderDetail(cap);
+    }
+    Deno.exit(0);
+  }
+
+  if (detailArg && args[0] !== "validate") {
+    const cap = caps.find((c) => c.handles.includes(detailArg));
+    if (!cap) {
+      console.log(
+        JSON.stringify({
+          type: "error",
+          message: `unknown word: ${detailArg}`,
+          position: "4/A",
+        }),
+      );
+      Deno.exit(1);
+    }
+    if (wantJson) {
+      console.log(
+        JSON.stringify(capabilitiesReceipt([cap], "show", detailArg), null, 2),
+      );
     } else {
       renderDetail(cap);
     }
@@ -422,33 +483,7 @@ if (import.meta.main) {
     Deno.exit(0);
   }
 
-  const receipt = {
-    type: "capabilities",
-    position: "4/A",
-    action: "list",
-    note: "foundation+mirror-pair = live affordance projection from glossary",
-    source_of_truth:
-      "src/x0001_glossary.ndjson (type:05/06/07) + per-file headers + deno.jsonc",
-    legacy_artifact:
-      "deleted; use t capabilities --legacy to regenerate compatibility shape when needed",
-    summary: {
-      total_words: caps.length,
-      with_schema: caps.filter((c) => c.receipt_schema).length,
-      with_substrate_impl: caps.filter((c) =>
-        c.substrate_implementations.length > 0
-      ).length,
-      missing_executable: caps.filter((c) => !c.exists).length,
-    },
-    capabilities: caps,
-    synonyms: [
-      "capabilities",
-      "affordances",
-      "can-do",
-      "спроможності",
-      "що-можу",
-    ],
-    topology: "live read of glossary + headers; not a stored registry",
-  };
+  const receipt = capabilitiesReceipt(caps, "list");
 
   if (wantJson) {
     console.log(JSON.stringify(receipt, null, 2));

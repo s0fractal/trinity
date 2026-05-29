@@ -65,7 +65,7 @@
 
 {"00":"01","09":"end-marker. 16 symbols, 7 projections, 8 words, 16 substrate mappings (5/A×4, 5/C×4). 7 hex executables: 0x0/01, 0x0/02, 0x0/0F, 0x5/0, 0x5/A, 0x5/C, 0x6/A. type:06 substrate registry operational. Glossary drives cross-substrate execution. Open: liquid hex→φ adapter, SPORE receipt schema, extend registry to all positions."}
 {"00":"02","02":"07","03":"receipt_schema"}
-{"00":"07","01":"status","02":"type,position,action","03":"args,note,synonyms,subsets,todo,summary,organs,submodules,substrate_health,substrate_health_envelope,topology","04":"status echo from any executable; substrate_health follows SUBSTRATE_HEALTH.v0.1; --envelope adds substrate_health_envelope per RECEIPT_ENVELOPE.v1.0 (see contracts/)"}
+{"00":"07","01":"status","02":"type,position,action","03":"args,note,synonyms,subsets,todo,summary,organs,submodules,substrate_health,substrate_health_envelope,topology","04":"status echo from any executable; substrate_health follows SUBSTRATE_HEALTH.v0.1; --live refreshes green-audit evidence and sets external_ci.source=live; --envelope adds substrate_health_envelope per RECEIPT_ENVELOPE.v1.0 (see contracts/)"}
 {"00":"07","01":"health","02":"type,position,action,summary,checks","03":"note,synonyms","04":"health check receipt from 0x6/A.ts"}
 {"00":"07","01":"cross_substrate_verify","02":"type,position,action,mode,summary,substrates","03":"note,adapter_pattern,falsifier","04":"legacy cross-substrate verification receipt; cross-verify now emits all receipt via 0x0/03.ts"}
 {"00":"07","01":"error","02":"type,message","03":"position,available","04":"error receipt from dispatcher or executable"}

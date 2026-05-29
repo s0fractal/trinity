@@ -58,9 +58,9 @@ type ExternalCi = {
 // markdown report. JSON is preferred per Codex tertiary tweak — markdown table
 // regex is brittle to format changes.
 //
-// This is the CHEAP path. `t status --live` (future) would shell out to
-// `deno task audit:green` and rewrite the cache. Per SUBSTRATE_HEALTH.v0.1:
-// `t status` MUST NOT block on multi-minute CI by default.
+// This is the CHEAP path. `t status --live` shells out to the green audit
+// baseline and rewrites the cache. Per SUBSTRATE_HEALTH.v0.1: `t status`
+// MUST NOT block on multi-minute CI by default.
 async function loadCachedCi(): Promise<ExternalCi> {
   // (1) JSON sidecar preferred
   try {

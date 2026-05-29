@@ -756,7 +756,9 @@ function renderSkillsBootstrap(
   lines.push(``);
   lines.push(`## First Commands`);
   lines.push(``);
-  lines.push(`- \`./t status\` — check substrate health`);
+  lines.push(
+    `- \`./t status\` — check substrate health; use \`./t status --live\` to refresh green-audit evidence`,
+  );
   lines.push(`- \`./t help\` — list command handles`);
   lines.push(`- \`./t agents\` — regenerate root self-brief projections`);
   lines.push(`- \`./t skill\` — regenerate this command projection`);

@@ -525,7 +525,9 @@ function renderAgentsBootstrap(
   lines.push(``);
   lines.push(`## First Moves`);
   lines.push(``);
-  lines.push(`1. Run \`./t status\` and check overall health.`);
+  lines.push(
+    `1. Run \`./t status\` and check overall health. Use \`./t status --live\` only when you need to refresh green-audit evidence.`,
+  );
   lines.push(
     `2. Run \`./t audit\` if you will move files or edit organ coordinates.`,
   );
@@ -561,7 +563,9 @@ function renderAgentsBootstrap(
   lines.push(`Most-used entrypoints:`);
   lines.push(``);
   lines.push(`- \`./t help\` — command handles`);
-  lines.push(`- \`./t status\` — composite substrate health`);
+  lines.push(
+    `- \`./t status\` — composite substrate health; \`--live\` refreshes green-audit evidence`,
+  );
   lines.push(`- \`./t capabilities\` — live affordance projection`);
   lines.push(`- \`./t contracts\` — contract projection`);
   lines.push(`- \`./t agents\` — regenerate this self-brief family`);

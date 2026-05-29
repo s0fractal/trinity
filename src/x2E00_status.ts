@@ -161,6 +161,47 @@ async function loadCachedCi(): Promise<ExternalCi> {
   }
 }
 
+async function loadLiveCi(): Promise<ExternalCi> {
+  const proc = new Deno.Command("deno", {
+    args: ["run", "-A", join(ROOT, "src", "x6500_run_baseline.ts"), "--green"],
+    stdout: "piped",
+    stderr: "piped",
+  });
+  const out = await proc.output();
+  const cached = await loadCachedCi();
+
+  // x6500 writes the sidecar even when one gate fails. If that fresh sidecar is
+  // available, use it as the live result; otherwise surface the launcher failure
+  // explicitly so callers do not trust an old cache after requesting --live.
+  if (
+    cached.age_seconds !== null && cached.age_seconds <= TRINITY_MAX_AGE_SECONDS
+  ) {
+    return { ...cached, source: "live" };
+  }
+
+  if (out.code !== 0) {
+    const stderr = new TextDecoder().decode(out.stderr).trim();
+    const stdout = new TextDecoder().decode(out.stdout).trim();
+    const detail = stderr || stdout || "no output";
+    return {
+      green: false,
+      strict: null,
+      red_signals: [
+        `audit:green refresh failed (exit ${out.code}): ${
+          detail.split("\n")[0]
+        }`,
+      ],
+      checked_at: new Date().toISOString(),
+      max_age_seconds: TRINITY_MAX_AGE_SECONDS,
+      age_seconds: 0,
+      is_stale: false,
+      source: "live",
+    };
+  }
+
+  return { ...cached, source: "live" };
+}
+
 // SUBSTRATE_HEALTH.v0.1 overall derivation:
 //   red (critical) = own fail > 0 OR (red_signals non-empty AND NOT is_stale)
 //   warn (degraded) = own warn > 0 OR (red_signals non-empty AND is_stale)
@@ -224,6 +265,7 @@ if (import.meta.main) {
   // This is the first production envelope consumer (beyond synthetic probe
   // fixtures). When set, payload gains a `substrate_health_envelope` field.
   const wantEnvelope = Deno.args.includes("--envelope");
+  const wantLive = Deno.args.includes("--live");
 
   // Gather from organs in parallel
   const [audit, health, liquidStatus, omegaStatus, mycStatus, externalCi] =
@@ -235,7 +277,7 @@ if (import.meta.main) {
       call_submodule_organ("liquid", "src/x2E00_status.ts"),
       call_submodule_organ("omega", "src/x2E00_status.ts"),
       call_submodule_organ("myc", "src/x2E00_status.ts"),
-      loadCachedCi(),
+      wantLive ? loadLiveCi() : loadCachedCi(),
     ]);
 
   const auditAny = audit as Record<string, unknown> & {
@@ -412,7 +454,7 @@ if (import.meta.main) {
       "how-are-you",
     ],
     topology:
-      "composes audit + health → unified self-reflection; recursive into submodules; emits SUBSTRATE_HEALTH.v0.1 projection; --envelope wraps body as ReceiptEnvelope.v0.1",
+      "composes audit + health → unified self-reflection; recursive into submodules; emits SUBSTRATE_HEALTH.v0.1 projection; --live refreshes green audit evidence before reading CI cache; --envelope wraps body as ReceiptEnvelope.v0.1",
   };
 
   console.log(JSON.stringify(receipt, null, 2));

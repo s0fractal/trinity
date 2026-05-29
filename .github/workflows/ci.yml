@@ -50,6 +50,9 @@ jobs:
       - name: Verify self and capabilities receipt schemas
         run: ./t capabilities --json | jq -e '[.capabilities[] | select(.primary == "self" or .primary == "capabilities") | select(.receipt_schema != null)] | length == 2'
 
+      - name: Verify self attention summary
+        run: ./t self --json | jq -e '(.attention.level | IN("clear", "watch", "act")) and (.attention.score | type) == "number" and (.attention.reasons | type) == "array" and (.attention.next_actions | type) == "array"'
+
       - name: Verify MYC x9 shadow status
         run: ./t myc-status-shadow --json | jq -e '.type == "status" and .position == "9/2E" and .shadow == true and .summary.overall == "healthy"'
 

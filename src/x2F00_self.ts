@@ -185,7 +185,18 @@ async function countSubmoduleOrgans(sub: string): Promise<number> {
 }
 
 interface StatusShape {
-  summary?: { overall?: string; audit?: { match: number; total: number } };
+  summary?: {
+    overall?: string;
+    audit?: { match: number; total: number };
+    worktree?: {
+      dirty: boolean;
+      staged: number;
+      unstaged: number;
+      untracked: number;
+      changed_files: number;
+      sample: string[];
+    };
+  };
   substrate_health?: { overall?: string };
   submodules?: Record<string, { summary?: { overall?: string } } | null>;
 }
@@ -197,6 +208,75 @@ interface ContractsShape {
     draft: number;
     pinned: number;
   };
+}
+
+interface InboxShape {
+  summary?: {
+    total_pending: number;
+    voices_with_pending: number;
+    oldest_days_ago: number | null;
+    top_backlog_voice: string | null;
+  };
+}
+
+interface HeartbeatShape {
+  summary?: {
+    chords_7d: number;
+    chords_28d: number;
+    commits_7d: number;
+    commits_28d: number;
+    stalled: boolean;
+  };
+}
+
+function buildAttention(args: {
+  status: StatusShape | null;
+  inbox: InboxShape | null;
+  heartbeat: HeartbeatShape | null;
+  volatileRuntimeCaches: number;
+}): {
+  level: "clear" | "watch" | "act";
+  score: number;
+  reasons: string[];
+  next_actions: string[];
+} {
+  const reasons: string[] = [];
+  const nextActions: string[] = [];
+  let score = 0;
+
+  const worktree = args.status?.summary?.worktree;
+  if (worktree?.dirty) {
+    score += 4;
+    reasons.push(`worktree dirty: ${worktree.changed_files} changed files`);
+    nextActions.push("Inspect `git status --short` before editing.");
+  }
+
+  const pending = args.inbox?.summary?.total_pending ?? 0;
+  if (pending > 0) {
+    score += pending >= 10 ? 3 : 2;
+    const top = args.inbox?.summary?.top_backlog_voice ?? "unknown";
+    reasons.push(`inbox backlog: ${pending} pending (${top})`);
+    nextActions.push("Run `./t inbox --json` or clear the top voice backlog.");
+  }
+
+  if (args.heartbeat?.summary?.stalled) {
+    score += 3;
+    reasons.push("heartbeat stalled");
+    nextActions.push(
+      "Run `./t heartbeat --json` and choose a small closure step.",
+    );
+  }
+
+  if (args.volatileRuntimeCaches > 0) {
+    score += 1;
+    reasons.push(`${args.volatileRuntimeCaches} volatile runtime cache files`);
+    nextActions.push(
+      "Use `./t external-surfaces --volatile --json` if cache drift matters.",
+    );
+  }
+
+  const level = score >= 4 ? "act" : score > 0 ? "watch" : "clear";
+  return { level, score, reasons, next_actions: nextActions };
 }
 
 if (import.meta.main) {
@@ -221,6 +301,8 @@ if (import.meta.main) {
   const data = await parallel({
     status: () => tryOr(() => callT("status", ["--json"]), null),
     contracts: () => tryOr(() => callT("contracts", ["--json"]), null),
+    inbox: () => tryOr(() => callT("inbox", ["--json"]), null),
+    heartbeat: () => tryOr(() => callT("heartbeat", ["--json"]), null),
     organs: scanOrgans,
     voices: scanVoices,
     chords: scanChords,
@@ -233,12 +315,20 @@ if (import.meta.main) {
 
   const status = data.status as StatusShape | null;
   const contracts = data.contracts as ContractsShape | null;
+  const inbox = data.inbox as InboxShape | null;
+  const heartbeat = data.heartbeat as HeartbeatShape | null;
 
   const composite = status?.substrate_health?.overall ?? "unknown";
   const audit = status?.summary?.audit
     ? `${status.summary.audit.match}/${status.summary.audit.total}`
     : "?/?";
   const submodules = status?.submodules ?? {};
+  const attention = buildAttention({
+    status,
+    inbox,
+    heartbeat,
+    volatileRuntimeCaches: data.registry.volatileRuntimeCaches,
+  });
 
   const receipt = {
     type: "self",
@@ -254,6 +344,9 @@ if (import.meta.main) {
     probes: data.probes,
     contracts: contracts?.summary ?? null,
     external_surfaces: data.registry,
+    inbox: inbox?.summary ?? null,
+    heartbeat: heartbeat?.summary ?? null,
+    attention,
     submodules: {
       liquid: {
         health: submodules.liquid?.summary?.overall ?? "missing",
@@ -296,6 +389,12 @@ if (import.meta.main) {
       `# chords:      ${data.chords.tracked} tracked, ${data.chords.local} local, ${data.chords.newForm} flat-src form`,
     );
     console.log(`# probes:      ${data.probes.total} experimental dirs`);
+    console.log(
+      `# attention:   ${attention.level} (score:${attention.score})`,
+    );
+    for (const reason of attention.reasons.slice(0, 3)) {
+      console.log(`#   - ${reason}`);
+    }
     if (contracts?.summary) {
       console.log(
         `# contracts:   ${contracts.summary.total} total (active:${contracts.summary.active} draft:${contracts.summary.draft} pinned:${contracts.summary.pinned})`,

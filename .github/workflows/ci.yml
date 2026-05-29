@@ -44,6 +44,9 @@ jobs:
       - name: Verify status worktree shape
         run: ./t status | jq -e '(.summary.worktree.dirty | type) == "boolean" and (.summary.worktree.changed_files | type) == "number" and (.substrate_health.extras["trinity.worktree"].schema == "trinity.worktree.v0.1")'
 
+      - name: Verify help JSON ignores flags
+        run: ./t help --json | jq -e '.type == "help" and .mode == "list" and (.records | type) == "array"'
+
       - name: Verify status live evidence refresh
         run: ./t status --live | jq -e '.summary.ci_freshness == "fresh" and .substrate_health.external_ci.source == "live" and .substrate_health.external_ci.is_stale == false'
 

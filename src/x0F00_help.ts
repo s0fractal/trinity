@@ -85,7 +85,7 @@ function fn_resolve(input: string, words: WordRec[]): WordRec | null {
 
 if (import.meta.main) {
   const { words, symbols } = await fn_load_all();
-  const [target] = Deno.args;
+  const target = Deno.args.find((arg) => !arg.startsWith("--"));
 
   if (!target) {
     // list mode

@@ -21,6 +21,7 @@ import { formatGeneratedFile } from "./x0012_generated_format.ts";
 import {
   collectExternalSurfaces,
   summarizeExternalSurfaces,
+  summarizeRuntimeCaches,
 } from "./x8F10_external_surfaces_core.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
@@ -38,12 +39,14 @@ async function main() {
   });
 
   const summary = summarizeExternalSurfaces(entries);
+  const runtime_cache_summary = summarizeRuntimeCaches(entries);
 
   if (wantJson) {
     const payload = {
       type: "external_surfaces",
       position: "8/F",
       summary,
+      runtime_cache_summary,
       entries,
     };
     console.log(JSON.stringify(payload, null, 2));

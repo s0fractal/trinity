@@ -42,6 +42,17 @@ export interface SurfaceEntry {
   mtime?: string;
 }
 
+export interface RuntimeCacheSummary {
+  total: number;
+  stale_7d: number;
+  oldest_days_ago: number | null;
+  oldest: Array<{
+    surface: string;
+    days_ago: number | null;
+    mtime: string;
+  }>;
+}
+
 async function getFileInfo(
   fullPath: string,
 ): Promise<{ size: number; mtime: string }> {
@@ -655,6 +666,44 @@ export function summarizeExternalSurfaces(
     counts[e.category] = (counts[e.category] ?? 0) + 1;
   }
   return counts;
+}
+
+export function summarizeRuntimeCaches(
+  entries: SurfaceEntry[],
+  nowMs = Date.now(),
+): RuntimeCacheSummary {
+  const caches = entries.filter((e) => e.category === "local_cache");
+  const aged = caches.map((e) => {
+    const parsed = e.mtime && e.mtime !== "unknown"
+      ? new Date(e.mtime).getTime()
+      : NaN;
+    const days = Number.isNaN(parsed)
+      ? null
+      : Math.max(0, Math.floor((nowMs - parsed) / 86_400_000));
+    return {
+      surface: e.surface,
+      days_ago: days,
+      mtime: e.mtime ?? "unknown",
+    };
+  });
+
+  aged.sort((a, b) => {
+    const ad = a.days_ago ?? -1;
+    const bd = b.days_ago ?? -1;
+    if (bd !== ad) return bd - ad;
+    return a.surface.localeCompare(b.surface);
+  });
+
+  const knownAges = aged
+    .map((e) => e.days_ago)
+    .filter((age): age is number => age !== null);
+
+  return {
+    total: caches.length,
+    stale_7d: aged.filter((e) => (e.days_ago ?? 0) >= 7).length,
+    oldest_days_ago: knownAges.length > 0 ? Math.max(...knownAges) : null,
+    oldest: aged.slice(0, 5),
+  };
 }
 
 export function chooseNextMigration(entries: SurfaceEntry[]): string {

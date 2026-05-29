@@ -87,7 +87,7 @@ jobs:
         run: ./t contract-audit --json | jq -e '.type == "contract_audit" and .summary.total > 0 and (.summary.safe_to_compost // 0) == 0 and (.summary.needs_review // 0) == 0'
 
       - name: Verify external surfaces format
-        run: ./t external-surfaces --json | jq -e '.type == "external_surfaces"'
+        run: ./t external-surfaces --json | jq -e '.type == "external_surfaces" and (.runtime_cache_summary.total | type) == "number" and (.runtime_cache_summary.stale_7d | type) == "number"'
 
       - name: Verify external surfaces stable generation diff
         run: |

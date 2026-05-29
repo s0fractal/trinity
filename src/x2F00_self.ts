@@ -44,6 +44,7 @@ import {
   collectExternalSurfaces,
   getGitTrackedFiles,
   summarizeExternalSurfaces,
+  summarizeRuntimeCaches,
 } from "./x8F10_external_surfaces_core.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
@@ -142,6 +143,7 @@ async function scanRegistry(): Promise<{
   counts: Record<string, number>;
   nextMigration: string;
   volatileRuntimeCaches: number;
+  runtimeCacheSummary: ReturnType<typeof summarizeRuntimeCaches>;
 }> {
   try {
     const entries = await collectExternalSurfaces({
@@ -154,6 +156,7 @@ async function scanRegistry(): Promise<{
     });
     const counts = summarizeExternalSurfaces(entries);
     const volatileCounts = summarizeExternalSurfaces(volatileEntries);
+    const runtimeCacheSummary = summarizeRuntimeCaches(volatileEntries);
     const printCounts: Record<string, number> = {};
     for (const [k, v] of Object.entries(counts)) {
       printCounts[k.replace(/_/g, " ")] = v;
@@ -163,9 +166,20 @@ async function scanRegistry(): Promise<{
       counts: printCounts,
       nextMigration,
       volatileRuntimeCaches: volatileCounts.local_cache ?? 0,
+      runtimeCacheSummary,
     };
   } catch {
-    return { counts: {}, nextMigration: "none", volatileRuntimeCaches: 0 };
+    return {
+      counts: {},
+      nextMigration: "none",
+      volatileRuntimeCaches: 0,
+      runtimeCacheSummary: {
+        total: 0,
+        stale_7d: 0,
+        oldest_days_ago: null,
+        oldest: [],
+      },
+    };
   }
 }
 
@@ -233,7 +247,7 @@ function buildAttention(args: {
   status: StatusShape | null;
   inbox: InboxShape | null;
   heartbeat: HeartbeatShape | null;
-  volatileRuntimeCaches: number;
+  runtimeCacheSummary: ReturnType<typeof summarizeRuntimeCaches>;
 }): {
   level: "clear" | "watch" | "act";
   score: number;
@@ -267,9 +281,14 @@ function buildAttention(args: {
     );
   }
 
-  if (args.volatileRuntimeCaches > 0) {
+  if (args.runtimeCacheSummary.total > 0) {
     score += 1;
-    reasons.push(`${args.volatileRuntimeCaches} volatile runtime cache files`);
+    const stale = args.runtimeCacheSummary.stale_7d;
+    const oldest = args.runtimeCacheSummary.oldest_days_ago;
+    const age = oldest === null ? "unknown age" : `oldest ${oldest}d`;
+    reasons.push(
+      `${args.runtimeCacheSummary.total} volatile runtime cache files (${stale} stale >=7d, ${age})`,
+    );
     nextActions.push(
       "Use `./t external-surfaces --volatile --json` if cache drift matters.",
     );
@@ -327,7 +346,7 @@ if (import.meta.main) {
     status,
     inbox,
     heartbeat,
-    volatileRuntimeCaches: data.registry.volatileRuntimeCaches,
+    runtimeCacheSummary: data.registry.runtimeCacheSummary,
   });
 
   const receipt = {
@@ -404,6 +423,7 @@ if (import.meta.main) {
       counts: Record<string, number>;
       nextMigration: string;
       volatileRuntimeCaches: number;
+      runtimeCacheSummary: ReturnType<typeof summarizeRuntimeCaches>;
     };
     console.log(`# external surfaces:`);
     console.log(
@@ -419,6 +439,11 @@ if (import.meta.main) {
     console.log(
       `#   runtime cache:       ${reg.volatileRuntimeCaches} volatile (ignored in stable)`,
     );
+    if (reg.runtimeCacheSummary.stale_7d > 0) {
+      console.log(
+        `#                        ${reg.runtimeCacheSummary.stale_7d} stale >=7d, oldest ${reg.runtimeCacheSummary.oldest_days_ago}d`,
+      );
+    }
     console.log(`#   next migration:      ${reg.nextMigration}`);
     console.log(`# submodules:`);
     console.log(

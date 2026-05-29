@@ -290,7 +290,9 @@ function buildAttention(args: {
       `${args.runtimeCacheSummary.total} volatile runtime cache files (${stale} stale >=7d, ${age})`,
     );
     nextActions.push(
-      "Use `./t external-surfaces --volatile --json` if cache drift matters.",
+      stale > 0
+        ? "Run `./t external-surfaces --prune-stale-runtime --dry-run --json` to inspect safe cache cleanup."
+        : "Use `./t external-surfaces --volatile --json` if cache drift matters.",
     );
   }
 

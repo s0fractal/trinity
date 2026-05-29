@@ -20,16 +20,122 @@ import {
 import { formatGeneratedFile } from "./x0012_generated_format.ts";
 import {
   collectExternalSurfaces,
+  getGitTrackedFiles,
   summarizeExternalSurfaces,
   summarizeRuntimeCaches,
+  type SurfaceEntry,
 } from "./x8F10_external_surfaces_core.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
+const ROOT = dirname(HERE);
 const OUTPUT_PATH = join(HERE, "x8F88_external_surfaces.myc.md");
+
+interface PruneCandidate {
+  surface: string;
+  days_ago: number;
+  mtime: string;
+  size: number;
+}
+
+function numericArg(args: string[], name: string, fallback: number): number {
+  const i = args.indexOf(name);
+  if (i === -1 || i + 1 >= args.length) return fallback;
+  const n = Number(args[i + 1]);
+  return Number.isFinite(n) && n >= 0 ? n : fallback;
+}
+
+function ageDays(mtime: string | undefined, nowMs: number): number | null {
+  if (!mtime || mtime === "unknown") return null;
+  const parsed = new Date(mtime).getTime();
+  if (Number.isNaN(parsed)) return null;
+  return Math.max(0, Math.floor((nowMs - parsed) / 86_400_000));
+}
+
+function isRuntimeCachePruneCandidate(
+  entry: SurfaceEntry,
+  tracked: Set<string>,
+  minAgeDays: number,
+  nowMs: number,
+): PruneCandidate | null {
+  const days = ageDays(entry.mtime, nowMs);
+  if (days === null || days < minAgeDays) return null;
+  if (tracked.has(entry.surface)) return null;
+  if (!entry.surface.startsWith("src/") || entry.surface.includes("..")) {
+    return null;
+  }
+  if (
+    entry.category !== "local_cache" ||
+    entry.canonical_status !== "runtime_cache" ||
+    entry.next_action !== "ignore_runtime"
+  ) {
+    return null;
+  }
+  return {
+    surface: entry.surface,
+    days_ago: days,
+    mtime: entry.mtime ?? "unknown",
+    size: entry.size ?? 0,
+  };
+}
+
+async function pruneStaleRuntimeCaches(args: string[]) {
+  const wantJson = args.includes("--json");
+  const apply = args.includes("--apply") && !args.includes("--dry-run");
+  const minAgeDays = numericArg(args, "--min-age-days", 7);
+  const nowMs = Date.now();
+  const entries = await collectExternalSurfaces({
+    stable: false,
+    includeVolatile: true,
+  });
+  const tracked = await getGitTrackedFiles();
+  const candidates = entries
+    .map((e) => isRuntimeCachePruneCandidate(e, tracked, minAgeDays, nowMs))
+    .filter((e): e is PruneCandidate => e !== null)
+    .sort((a, b) => {
+      if (b.days_ago !== a.days_ago) return b.days_ago - a.days_ago;
+      return a.surface.localeCompare(b.surface);
+    });
+
+  const deleted: string[] = [];
+  if (apply) {
+    for (const candidate of candidates) {
+      await Deno.remove(join(ROOT, candidate.surface));
+      deleted.push(candidate.surface);
+    }
+  }
+
+  const payload = {
+    type: "external_surfaces_prune",
+    position: "8/F",
+    action: "prune_stale_runtime",
+    dry_run: !apply,
+    min_age_days: minAgeDays,
+    summary: {
+      candidates: candidates.length,
+      deleted: deleted.length,
+      bytes: candidates.reduce((sum, e) => sum + e.size, 0),
+    },
+    candidates,
+    deleted,
+  };
+
+  if (wantJson) {
+    console.log(JSON.stringify(payload, null, 2));
+    return;
+  }
+
+  console.log(JSON.stringify(payload, null, 2));
+}
 
 async function main() {
   const args = Deno.args;
   const wantJson = args.includes("--json");
+  const wantPrune = args.includes("--prune-stale-runtime") ||
+    args.includes("--prune-stale");
+  if (wantPrune) {
+    await pruneStaleRuntimeCaches(args);
+    return;
+  }
   const wantVolatile = args.includes("--volatile");
   const stable = args.includes("--stable") || !wantVolatile;
 

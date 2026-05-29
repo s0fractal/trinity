@@ -89,6 +89,9 @@ jobs:
       - name: Verify external surfaces format
         run: ./t external-surfaces --json | jq -e '.type == "external_surfaces" and (.runtime_cache_summary.total | type) == "number" and (.runtime_cache_summary.stale_7d | type) == "number"'
 
+      - name: Verify external surfaces stale runtime prune dry-run
+        run: ./t external-surfaces --prune-stale-runtime --dry-run --json | jq -e '.type == "external_surfaces_prune" and .dry_run == true and (.summary.candidates | type) == "number" and (.candidates | type) == "array"'
+
       - name: Verify external surfaces stable generation diff
         run: |
           ./t external-surfaces --stable

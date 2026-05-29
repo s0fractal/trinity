@@ -47,14 +47,14 @@ const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
 const GLOSSARY_PATH = join(ROOT, "src", "x0001_glossary.ndjson");
 
-interface Recipe {
+export interface Recipe {
   id: string;
   purpose: string;
   steps: string[];
   receipt: string;
 }
 
-async function loadRecipes(): Promise<Recipe[]> {
+export async function loadRecipes(): Promise<Recipe[]> {
   const recipes: Recipe[] = [];
   const text = await Deno.readTextFile(GLOSSARY_PATH);
   for (const line of text.trim().split("\n")) {

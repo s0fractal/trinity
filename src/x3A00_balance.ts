@@ -47,6 +47,7 @@ import {
   dirname,
   fromFileUrl,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { type Recipe, loadRecipes } from "./x3C00_recipes.ts";
 
 const DIPOLE_AXES = [
   "void_infinity",
@@ -166,8 +167,39 @@ function compositeRescue(report: AuditReport): boolean {
   return secAxis === second.axis;
 }
 
+function matchRecipeToFile(filename: string, recipe: Recipe): boolean {
+  const normalizedFile = filename
+    .replace(/^x[0-9A-Fa-f]{4}_/, "")
+    .replace(/\.(ts|sh)$/, "")
+    .toLowerCase()
+    .replace(/-/g, "_");
+
+  // Determine singular form of filename if it ends in 's' but not 'us'/'ss'/'is'
+  let fileSingular = normalizedFile;
+  if (normalizedFile.endsWith("s") && !normalizedFile.endsWith("us") && !normalizedFile.endsWith("ss") && !normalizedFile.endsWith("is")) {
+    fileSingular = normalizedFile.slice(0, -1);
+  }
+
+  // 1. Check if normalized filename (or singular) is a substring of any step (normalized to underscores)
+  for (const step of recipe.steps) {
+    const normalizedStep = step.toLowerCase().replace(/[\.-]/g, "_");
+    if (normalizedStep.includes(normalizedFile) || normalizedStep.includes(fileSingular)) {
+      return true;
+    }
+  }
+
+  // 2. Check if normalized filename (or singular) matches the recipe ID
+  const normalizedRecipeId = recipe.id.toLowerCase().replace(/[\.-]/g, "_");
+  if (normalizedRecipeId.includes(normalizedFile) || normalizedRecipeId.includes(fileSingular)) {
+    return true;
+  }
+
+  return false;
+}
+
 if (import.meta.main) {
   const wantJson = Deno.args.includes("--json");
+  const recipes = await loadRecipes();
   const audit = await call_audit();
   const gravity = await call_gravity();
   const edges = gravity?.edges_by_tension ?? [];
@@ -198,6 +230,7 @@ if (import.meta.main) {
     strong_candidate: boolean;
     aligned: boolean;
     note: string;
+    remediation_recipes: string[];
   }> = [];
 
   for (const r of audit.reports) {
@@ -270,6 +303,10 @@ if (import.meta.main) {
         `library-coupling only (policy-OK: foundation utility imports by-design); ${libEdges.length} high-tension library edge(s)`;
     }
 
+    const matchingRecipes = recipes
+      .filter((rec) => matchRecipeToFile(filename, rec))
+      .map((rec) => rec.id);
+
     suggestions.push({
       path: r.path,
       current_bucket: r.bucket,
@@ -293,6 +330,7 @@ if (import.meta.main) {
       strong_candidate,
       aligned,
       note,
+      remediation_recipes: matchingRecipes,
     });
   }
 
@@ -405,6 +443,12 @@ if (import.meta.main) {
         const topLib = sortedLib[0];
         detail =
           `library-imp x${topLib.target}_* (Δp=${topLib.delta_primary}) [policy-OK]`;
+      }
+      if (s.remediation_recipes.length > 0) {
+        const remedies = s.remediation_recipes.map((r) =>
+          r.replace(/^recipe\./, "")
+        ).join(", ");
+        detail += ` [remedy: ${remedies}]`;
       }
       console.log(`${col1} ${col2} ${detail}`);
     }

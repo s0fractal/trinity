@@ -393,14 +393,29 @@ async function scanState(includeVolatile: boolean): Promise<SurfaceEntry[]> {
   // state/ legacy dir removed in flat-src migration (2026-05-28). Daemon
   // runtime now at src/x7F88_daemon.*. The function is preserved as a
   // hook for future runtime-cache surfaces that need explicit registration.
-  // Inline-scan removed; specific known surfaces enumerated below.
+  // Runtime caches are ignored by git but useful in `--volatile` diagnostics.
+  const runtimeCachePatterns = [
+    /^x2288_ecosystem\.latest\.myc\.json$/,
+    /^x2488_cognition_snapshot\..+\.myc\.json$/,
+    /^x2588_cognition_field\.latest\.myc\.(json|md)$/,
+    /^x2A88_lexicon\.myc\.json$/,
+    /^x5288_cognition_recommendation\.latest\.myc\.(json|md)$/,
+    /^x5E88_cognition_recommendation\.receipt\.myc\.json$/,
+    /^x6500_latest-.+\.myc\.(json|md)$/,
+    /^x7F88_daemon\.(last-check|lock)$/,
+  ];
 
-  const ecoCachePath = join(ROOT, "src", "x2288_ecosystem.latest.myc.json");
+  const dir = join(ROOT, "src");
   try {
-    const stat = await Deno.stat(ecoCachePath);
-    if (stat.isFile) {
+    for await (const entry of Deno.readDir(dir)) {
+      if (!entry.isFile) continue;
+      if (!runtimeCachePatterns.some((pattern) => pattern.test(entry.name))) {
+        continue;
+      }
+      const relPath = `src/${entry.name}`;
+      const fullPath = join(dir, entry.name);
       const item: SurfaceEntry = {
-        surface: "src/x2288_ecosystem.latest.myc.json",
+        surface: relPath,
         category: "local_cache",
         canonical_status: "runtime_cache",
         canonical_target: "",
@@ -408,10 +423,9 @@ async function scanState(includeVolatile: boolean): Promise<SurfaceEntry[]> {
         blocked_by: "",
       };
       if (includeVolatile) {
-        item.size = stat.size;
-        item.mtime = stat.mtime
-          ? stat.mtime.toISOString().slice(0, 19) + "Z"
-          : "unknown";
+        const { size, mtime } = await getFileInfo(fullPath);
+        item.size = size;
+        item.mtime = mtime;
       }
       out.push(item);
     }

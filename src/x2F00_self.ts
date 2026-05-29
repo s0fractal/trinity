@@ -141,21 +141,31 @@ async function scanProbes(): Promise<{ total: number }> {
 async function scanRegistry(): Promise<{
   counts: Record<string, number>;
   nextMigration: string;
+  volatileRuntimeCaches: number;
 }> {
   try {
     const entries = await collectExternalSurfaces({
       stable: true,
       includeVolatile: false,
     });
+    const volatileEntries = await collectExternalSurfaces({
+      stable: false,
+      includeVolatile: true,
+    });
     const counts = summarizeExternalSurfaces(entries);
+    const volatileCounts = summarizeExternalSurfaces(volatileEntries);
     const printCounts: Record<string, number> = {};
     for (const [k, v] of Object.entries(counts)) {
       printCounts[k.replace(/_/g, " ")] = v;
     }
     const nextMigration = chooseNextMigration(entries);
-    return { counts: printCounts, nextMigration };
+    return {
+      counts: printCounts,
+      nextMigration,
+      volatileRuntimeCaches: volatileCounts.local_cache ?? 0,
+    };
   } catch {
-    return { counts: {}, nextMigration: "none" };
+    return { counts: {}, nextMigration: "none", volatileRuntimeCaches: 0 };
   }
 }
 
@@ -294,6 +304,7 @@ if (import.meta.main) {
     const reg = data.registry as {
       counts: Record<string, number>;
       nextMigration: string;
+      volatileRuntimeCaches: number;
     };
     console.log(`# external surfaces:`);
     console.log(
@@ -306,7 +317,9 @@ if (import.meta.main) {
       `#   experimental probes: ${reg.counts["experimental"] ?? 0}`,
     );
     console.log(`#   live chords:         ${reg.counts["live chord"] ?? 0}`);
-    console.log(`#   runtime cache:       ignored`);
+    console.log(
+      `#   runtime cache:       ${reg.volatileRuntimeCaches} volatile (ignored in stable)`,
+    );
     console.log(`#   next migration:      ${reg.nextMigration}`);
     console.log(`# submodules:`);
     console.log(

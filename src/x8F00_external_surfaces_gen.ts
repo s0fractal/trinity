@@ -2,11 +2,11 @@
 // src/x8F00_external_surfaces_gen.ts — external surfaces registry generator
 // position: 8/F → void-infinity(8) × completion-edge(F) = final descriptions of all surfaces
 // hex_dipole: "93 00 00 00 00 00 33 59"
-//   void_infinity-1.09 (PRIMARY: indexes external directories and compost)
+//   void_infinity-1.09 (PRIMARY: indexes external ABI, src runtime caches, and compost)
 //   completion_frontier+0.89 (boundary tracking across folders)
 //   harmony_emergence+0.33 (systemic coherence)
 // placement_policy: axis
-// intent: scan external surfaces (contracts, docs, probes, chords, state, compost) and generate src/x8F88_external_surfaces.myc.md registry
+// intent: scan external surfaces (root ABI, tooling ABI, contracts, schemas, docs, fixtures, probes, proposals, chords, src runtime caches, compost) and generate src/x8F88_external_surfaces.myc.md registry
 // maturity: active
 // horizon: none (external surfaces registry implemented)
 // skill_tag: external-surfaces

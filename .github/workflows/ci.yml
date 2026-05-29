@@ -38,6 +38,9 @@ jobs:
       - name: Verify status health warning propagation
         run: ./t status | jq -e '.summary.health.warn == .substrate_health.own_organs.warn and (.summary.health.warn | type) == "number"'
 
+      - name: Verify status CI freshness shape
+        run: ./t status | jq -e '(.summary.ci_freshness | IN("fresh", "stale", "unknown")) and (.substrate_health.external_ci.is_stale | type) == "boolean"'
+
       - name: Verify MYC x9 shadow status
         run: ./t myc-status-shadow --json | jq -e '.type == "status" and .position == "9/2E" and .shadow == true and .summary.overall == "healthy"'
 

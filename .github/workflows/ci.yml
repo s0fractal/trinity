@@ -44,6 +44,9 @@ jobs:
       - name: Verify status live evidence refresh
         run: ./t status --live | jq -e '.summary.ci_freshness == "fresh" and .substrate_health.external_ci.source == "live" and .substrate_health.external_ci.is_stale == false'
 
+      - name: Verify self and capabilities receipt schemas
+        run: ./t capabilities --json | jq -e '[.capabilities[] | select(.primary == "self" or .primary == "capabilities") | select(.receipt_schema != null)] | length == 2'
+
       - name: Verify MYC x9 shadow status
         run: ./t myc-status-shadow --json | jq -e '.type == "status" and .position == "9/2E" and .shadow == true and .summary.overall == "healthy"'
 

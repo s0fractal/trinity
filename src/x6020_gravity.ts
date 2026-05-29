@@ -67,6 +67,13 @@ export interface Report {
   position: "6/02";
   action: "gravity";
   note: string;
+  summary: {
+    total_edges: number;
+    mean_delta_primary: number;
+    max_delta_primary: number;
+    library_edges: number;
+    non_library_edges: number;
+  };
   total_edges: number;
   mean_delta_primary: number;
   max_delta_primary: number;
@@ -299,6 +306,13 @@ export function buildReport(edges: Edge[]): Report {
     action: "gravity",
     note:
       "edge tension report by filename coordinates (Deno AST). Observation only, not enforcement.",
+    summary: {
+      total_edges: edges.length,
+      mean_delta_primary: Number(meanDp.toFixed(3)),
+      max_delta_primary: maxDp,
+      library_edges: edges.filter((e) => e.target_is_library).length,
+      non_library_edges: edges.filter((e) => !e.target_is_library).length,
+    },
     total_edges: edges.length,
     mean_delta_primary: Number(meanDp.toFixed(3)),
     max_delta_primary: maxDp,

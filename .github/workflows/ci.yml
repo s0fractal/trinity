@@ -59,6 +59,12 @@ jobs:
       - name: Verify inbox JSON summary
         run: ./t inbox --json | jq -e '.type == "inbox" and .position == "2/D" and (.summary.total_pending | type) == "number" and (.summary.voices_with_pending | type) == "number"'
 
+      - name: Verify heartbeat JSON summary
+        run: ./t heartbeat --json | jq -e '.type == "heartbeat" and .position == "2/7" and (.summary.chords_28d | type) == "number" and (.summary.stalled | type) == "boolean"'
+
+      - name: Verify gravity JSON summary
+        run: ./t gravity --json | jq -e '.type == "gravity" and .position == "6/02" and .summary.total_edges == .total_edges and (.summary.library_edges | type) == "number"'
+
       - name: Verify clean export dry-run
         run: ./t export-clean --dry-run | jq -e '.type == "export_clean" and .position == "7/4" and .dry_run == true and .summary.files > 0'
 

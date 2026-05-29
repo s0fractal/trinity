@@ -313,6 +313,35 @@ function inboxSummary(allInboxes: Record<string, InboxItem[]>): {
   };
 }
 
+function pendingVoiceSummaries(
+  allInboxes: Record<string, InboxItem[]>,
+): Array<{
+  voice: string;
+  count: number;
+  oldest: string | null;
+  oldest_path: string | null;
+  oldest_days_ago: number | null;
+  top_sender: string | null;
+}> {
+  return Object.entries(allInboxes)
+    .map(([voice, items]) => ({
+      voice,
+      count: items.length,
+      oldest: items[0]?.chord_id ?? null,
+      oldest_path: items[0]?.chord_path ?? null,
+      oldest_days_ago: items[0] ? chordDaysAgo(items[0].chord_id) : null,
+      top_sender: topSenderOf(items),
+    }))
+    .filter((entry) => entry.count > 0)
+    .sort((a, b) => {
+      if (b.count !== a.count) return b.count - a.count;
+      const ageA = a.oldest_days_ago ?? -1;
+      const ageB = b.oldest_days_ago ?? -1;
+      if (ageB !== ageA) return ageB - ageA;
+      return a.voice.localeCompare(b.voice);
+    });
+}
+
 function renderTextSummary(allInboxes: Record<string, InboxItem[]>): string {
   const lines: string[] = [
     `# inbox @ 2/D — chords addressed to each voice, unresponded`,
@@ -418,6 +447,7 @@ async function main() {
   }
   if (jsonMode) {
     const summary = inboxSummary(allInboxes);
+    const pending_voices = pendingVoiceSummaries(allInboxes);
     console.log(JSON.stringify(
       {
         type: "inbox",
@@ -426,12 +456,15 @@ async function main() {
         position: "2/D",
         mode: "summary",
         summary,
+        pending_voices,
         voices: Object.fromEntries(
           Object.entries(allInboxes).map((
             [v, items],
           ) => [v, {
+            voice: v,
             count: items.length,
             oldest: items[0]?.chord_id ?? null,
+            oldest_path: items[0]?.chord_path ?? null,
             oldest_days_ago: items[0] ? chordDaysAgo(items[0].chord_id) : null,
             top_sender: topSenderOf(items),
           }]),

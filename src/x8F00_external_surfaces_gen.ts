@@ -29,6 +29,12 @@ import {
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
 const OUTPUT_PATH = join(HERE, "x8F88_external_surfaces.myc.md");
+const PRUNE_RECEIPT_PATH = join(
+  HERE,
+  "x8F88_external_surfaces_prune.receipt.myc.json",
+);
+const PRUNE_RECEIPT_SURFACE =
+  "src/x8F88_external_surfaces_prune.receipt.myc.json";
 
 interface PruneCandidate {
   surface: string;
@@ -115,9 +121,17 @@ async function pruneStaleRuntimeCaches(args: string[]) {
       deleted: deleted.length,
       bytes: candidates.reduce((sum, e) => sum + e.size, 0),
     },
+    receipt_path: apply ? PRUNE_RECEIPT_SURFACE : null,
     candidates,
     deleted,
   };
+
+  if (apply) {
+    await Deno.writeTextFile(
+      PRUNE_RECEIPT_PATH,
+      JSON.stringify(payload, null, 2) + "\n",
+    );
+  }
 
   if (wantJson) {
     console.log(JSON.stringify(payload, null, 2));

@@ -105,35 +105,16 @@ function renderDetail(r: Recipe): void {
   console.log("# In future record-graph form, these become t <word> calls.");
 }
 
-if (import.meta.main) {
-  const args = Deno.args;
-  const wantJson = args.includes("--json");
-  const recipes = await loadRecipes();
-
-  if (args[0] === "show" && args[1]) {
-    const target = args[1].toLowerCase();
-    const r = recipes.find((r) => r.id.toLowerCase().includes(target));
-    if (!r) {
-      console.log(
-        JSON.stringify({
-          type: "error",
-          message: `unknown recipe: ${args[1]}`,
-        }),
-      );
-      Deno.exit(1);
-    }
-    if (wantJson) {
-      console.log(JSON.stringify(r, null, 2));
-    } else {
-      renderDetail(r);
-    }
-    Deno.exit(0);
-  }
-
-  const receipt = {
+function recipesReceipt(
+  recipes: Recipe[],
+  action: "list" | "show",
+  target?: string,
+) {
+  return {
     type: "recipes",
     position: "3/C",
-    action: "list",
+    action,
+    target,
     note: "triangle+container-pair = workflow composition templates",
     source: "src/x0001_glossary.ndjson kind:8 recipe records",
     summary: {
@@ -153,6 +134,36 @@ if (import.meta.main) {
     topology:
       "live projection from ledger records; templates compose existing t/workflow steps into sequences",
   };
+}
+
+if (import.meta.main) {
+  const args = Deno.args;
+  const wantJson = args.includes("--json");
+  const recipes = await loadRecipes();
+
+  if (args[0] === "show" && args[1]) {
+    const target = args[1].toLowerCase();
+    const r = recipes.find((r) => r.id.toLowerCase().includes(target));
+    if (!r) {
+      console.log(
+        JSON.stringify({
+          type: "error",
+          message: `unknown recipe: ${args[1]}`,
+        }),
+      );
+      Deno.exit(1);
+    }
+    if (wantJson) {
+      console.log(
+        JSON.stringify(recipesReceipt([r], "show", args[1]), null, 2),
+      );
+    } else {
+      renderDetail(r);
+    }
+    Deno.exit(0);
+  }
+
+  const receipt = recipesReceipt(recipes, "list");
 
   if (wantJson) {
     console.log(JSON.stringify(receipt, null, 2));

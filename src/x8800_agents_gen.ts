@@ -91,6 +91,7 @@ interface OrganMeta {
 interface Args {
   bucket: string | null;
   stable: boolean;
+  force: boolean;
 }
 
 interface VoiceProfile {
@@ -102,9 +103,10 @@ interface VoiceProfile {
 }
 
 function parseArgs(argv: string[]): Args {
-  const out: Args = { bucket: null, stable: false };
+  const out: Args = { bucket: null, stable: false, force: false };
   for (const a of argv) {
     if (a === "--stable") out.stable = true;
+    else if (a === "--force") out.force = true;
     else if (a.startsWith("--bucket=")) {
       out.bucket = a.split("=")[1].toUpperCase();
     }
@@ -631,6 +633,50 @@ async function main(argv: string[]) {
   const global_manifest_hash = await manifestHash(organs);
   const source_root = relative(join(SRC, ".."), SRC);
 
+  if (!args.bucket && !args.force) {
+    const globalSidecarPath = join(OUT, "x8888_agents.manifest.json");
+    const agentsPath = join(OUT, "x8888_agents.myc.md");
+    const bootstrapPath = join(OUT, "x88F0_agents_bootstrap.myc.md");
+    try {
+      const existingManifest = await Deno.readTextFile(globalSidecarPath);
+      const parsed = JSON.parse(existingManifest) as {
+        hash: string;
+        path: string;
+        size: number;
+      }[];
+      const entries = parsed
+        .slice()
+        .sort((a, b) => a.path.localeCompare(b.path))
+        .map((e) => ({
+          hash: e.hash,
+          path: e.path,
+          size: e.size,
+        }));
+      const existingHash = `sha256:${await sha256Hex(
+        new TextEncoder().encode(JSON.stringify(entries)),
+      )}`;
+      if (existingHash === global_manifest_hash) {
+        await Deno.stat(agentsPath);
+        await Deno.stat(bootstrapPath);
+        for (const bucket of buckets.keys()) {
+          await Deno.stat(join(OUT, `x${bucket}888_state.myc.md`));
+          await Deno.stat(join(OUT, `x${bucket}888_state.manifest.json`));
+        }
+        console.log(
+          `[skip] agents (whole substrate up to date; no global manifest drift)`,
+        );
+        console.log(
+          `done. 0 files. global_manifest_hash=${global_manifest_hash}${
+            args.stable ? " (stable)" : ""
+          }`,
+        );
+        return;
+      }
+    } catch {
+      // proceed with generation
+    }
+  }
+
   // Mode hygiene (per Codex P3 review): clean stale outputs from the OTHER mode.
   if (args.bucket) {
     for (const stale of ["x8888_agents.myc.md", "x8888_agents.manifest.json"]) {
@@ -660,30 +706,32 @@ async function main(argv: string[]) {
     const sidecarPath = join(OUT, `x${bucket}888_state.manifest.json`);
 
     let skip = false;
-    try {
-      const existingManifest = await Deno.readTextFile(sidecarPath);
-      const parsed = JSON.parse(existingManifest) as {
-        hash: string;
-        path: string;
-        size: number;
-      }[];
-      const entries = parsed
-        .slice()
-        .sort((a, b) => a.path.localeCompare(b.path))
-        .map((e) => ({
-          hash: e.hash,
-          path: e.path,
-          size: e.size,
-        }));
-      const existingHash = `sha256:${await sha256Hex(
-        new TextEncoder().encode(JSON.stringify(entries)),
-      )}`;
-      if (existingHash === bucketManifestHash) {
-        await Deno.stat(statePath);
-        skip = true;
+    if (!args.force) {
+      try {
+        const existingManifest = await Deno.readTextFile(sidecarPath);
+        const parsed = JSON.parse(existingManifest) as {
+          hash: string;
+          path: string;
+          size: number;
+        }[];
+        const entries = parsed
+          .slice()
+          .sort((a, b) => a.path.localeCompare(b.path))
+          .map((e) => ({
+            hash: e.hash,
+            path: e.path,
+            size: e.size,
+          }));
+        const existingHash = `sha256:${await sha256Hex(
+          new TextEncoder().encode(JSON.stringify(entries)),
+        )}`;
+        if (existingHash === bucketManifestHash) {
+          await Deno.stat(statePath);
+          skip = true;
+        }
+      } catch {
+        // Missing manifest or state file -> don't skip
       }
-    } catch {
-      // Missing manifest or state file -> don't skip
     }
 
     if (skip) {

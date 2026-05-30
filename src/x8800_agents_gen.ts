@@ -656,41 +656,85 @@ async function main(argv: string[]) {
 
   for (const [bucket, bucketOrgans] of buckets) {
     const bucketManifestHash = await manifestHash(bucketOrgans);
-    const bucketReceipts = {
-      generated_at,
-      manifest_hash: bucketManifestHash,
-      source_root,
-      source_files: bucketOrgans.length,
-    };
-
     const statePath = join(OUT, `x${bucket}888_state.myc.md`);
-    const content = renderBucketState(bucket, bucketOrgans, bucketReceipts);
-    await Deno.writeTextFile(statePath, content + "\n");
-    await formatGeneratedFile(statePath);
-    const formattedBytes = await Deno.readFile(statePath);
-    bucketHashes.set(bucket, `sha256:${await sha256Hex(formattedBytes)}`);
-
     const sidecarPath = join(OUT, `x${bucket}888_state.manifest.json`);
-    await Deno.writeTextFile(
-      sidecarPath,
-      canonicalManifest(bucketOrgans) + "\n",
-    );
-    await formatGeneratedFile(sidecarPath);
-    written += 2;
 
-    const invalidCount = bucketOrgans.filter((o) => o.invalid_maturity).length;
-    const tag = invalidCount > 0 ? ` (${invalidCount} INVALID-maturity)` : "";
-    console.log(
-      `[write] x${bucket}888_state.myc.md (${bucketOrgans.length} organs)${tag}`,
-    );
-    console.log(
-      `[write] x${bucket}888_state.manifest.json (${bucketOrgans.length} entries)`,
-    );
-    if (invalidCount > 0) {
-      for (const o of bucketOrgans.filter((o) => o.invalid_maturity)) {
-        console.warn(
-          `  ⚠️  x${o.coordinate}_${o.handle}: invalid maturity '${o.invalid_maturity}'`,
+    let skip = false;
+    try {
+      const existingManifest = await Deno.readTextFile(sidecarPath);
+      const parsed = JSON.parse(existingManifest) as {
+        hash: string;
+        path: string;
+        size: number;
+      }[];
+      const entries = parsed
+        .slice()
+        .sort((a, b) => a.path.localeCompare(b.path))
+        .map((e) => ({
+          hash: e.hash,
+          path: e.path,
+          size: e.size,
+        }));
+      const existingHash = `sha256:${await sha256Hex(
+        new TextEncoder().encode(JSON.stringify(entries)),
+      )}`;
+      if (existingHash === bucketManifestHash) {
+        await Deno.stat(statePath);
+        skip = true;
+      }
+    } catch {
+      // Missing manifest or state file -> don't skip
+    }
+
+    if (skip) {
+      try {
+        const formattedBytes = await Deno.readFile(statePath);
+        bucketHashes.set(bucket, `sha256:${await sha256Hex(formattedBytes)}`);
+        console.log(
+          `[skip] x${bucket}888_state.myc.md (up to date; no manifest drift)`,
         );
+      } catch {
+        skip = false;
+      }
+    }
+
+    if (!skip) {
+      const bucketReceipts = {
+        generated_at,
+        manifest_hash: bucketManifestHash,
+        source_root,
+        source_files: bucketOrgans.length,
+      };
+
+      const content = renderBucketState(bucket, bucketOrgans, bucketReceipts);
+      await Deno.writeTextFile(statePath, content + "\n");
+      await formatGeneratedFile(statePath);
+      const formattedBytes = await Deno.readFile(statePath);
+      bucketHashes.set(bucket, `sha256:${await sha256Hex(formattedBytes)}`);
+
+      await Deno.writeTextFile(
+        sidecarPath,
+        canonicalManifest(bucketOrgans) + "\n",
+      );
+      await formatGeneratedFile(sidecarPath);
+      written += 2;
+
+      const invalidCount = bucketOrgans.filter((o) =>
+        o.invalid_maturity
+      ).length;
+      const tag = invalidCount > 0 ? ` (${invalidCount} INVALID-maturity)` : "";
+      console.log(
+        `[write] x${bucket}888_state.myc.md (${bucketOrgans.length} organs)${tag}`,
+      );
+      console.log(
+        `[write] x${bucket}888_state.manifest.json (${bucketOrgans.length} entries)`,
+      );
+      if (invalidCount > 0) {
+        for (const o of bucketOrgans.filter((o) => o.invalid_maturity)) {
+          console.warn(
+            `  ⚠️  x${o.coordinate}_${o.handle}: invalid maturity '${o.invalid_maturity}'`,
+          );
+        }
       }
     }
   }

@@ -9,16 +9,16 @@ tasks extracted from the chord trail in jazz/chords/._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  352  |
+| Total Chords                             |  353  |
 | Proposals                                |  52   |
-| Unresolved Proposals (Heuristic)         |  16   |
-| Decisions                                |  36   |
+| Unresolved Proposals (Heuristic)         |  15   |
+| Decisions                                |  37   |
 | Receipts                                 |  108  |
 | Critiques                                |   3   |
 | Unresolved Critiques (Heuristic)         |   0   |
 | Other Observations                       |  153  |
 | Open Debts (TODO/DEBT)                   |   0   |
-| Closed Items                             |   1   |
+| Closed Items                             |   2   |
 | Invalid Closures                         |   0   |
 | Ritual Receipts (no verifiable artifact) |  32   |
 | ↳ recent (last 7d)                       |   1   |
@@ -35,7 +35,6 @@ first item without writing files.
 | review     | [2026-05-12T091110Z-claude-proposal-folder-topology-filesystem-resonance.md](../jazz/chords/2026-05-12T091110Z-claude-proposal-folder-topology-filesystem-resonance.md) | stale_18d, topology_or_destructive_risk                  |
 | review     | [2026-05-13T103500Z-gemini-proposal-dual-layer-filesystem-topology.md](../jazz/chords/2026-05-13T103500Z-gemini-proposal-dual-layer-filesystem-topology.md)             | stale_17d, topology_or_destructive_risk                  |
 | review     | [2026-05-13T134500Z-gemini-proposal-recursive-dispatcher-continuations.md](../jazz/chords/2026-05-13T134500Z-gemini-proposal-recursive-dispatcher-continuations.md)     | stale_17d, topology_or_destructive_risk                  |
-| review     | [2026-05-13T152500Z-gemini-codeicide-delete-papers.md](../jazz/chords/2026-05-13T152500Z-gemini-codeicide-delete-papers.md)                                             | stale_16d, topology_or_destructive_risk                  |
 | review     | [2026-05-13T153000Z-gemini-proposal-scattered-stigmergic-chords.md](../jazz/chords/2026-05-13T153000Z-gemini-proposal-scattered-stigmergic-chords.md)                   | stale_16d, topology_or_destructive_risk                  |
 | revalidate | [2026-05-09T183630Z-codex-spatial-materialization.md](../jazz/chords/2026-05-09T183630Z-codex-spatial-materialization.md)                                               | stale_20d, missing_falsifier, missing_suggested_commands |
 | revalidate | [2026-05-09T203819Z-codex-counterclockwise-idea-descent.md](../jazz/chords/2026-05-09T203819Z-codex-counterclockwise-idea-descent.md)                                   | stale_20d, missing_falsifier, missing_suggested_commands |
@@ -84,10 +83,6 @@ decisions or receipts referencing them._
   closure_)
 - **PROPOSAL**:
   [PROPOSAL: Topological Continuations (Killing `console.log`)](../jazz/chords/2026-05-13T134500Z-gemini-proposal-recursive-dispatcher-continuations.md)
-  (by _gemini-3-1-pro_ — _proposal has no subsequent receipt or decision
-  closure_)
-- **PROPOSAL**:
-  [DECISION: Execute Codeicide on `papers/`](../jazz/chords/2026-05-13T152500Z-gemini-codeicide-delete-papers.md)
   (by _gemini-3-1-pro_ — _proposal has no subsequent receipt or decision
   closure_)
 - **PROPOSAL**:
@@ -401,6 +396,7 @@ _No open debts detected in the chord trail._
 | [2026-05-23T133425Z-codex-repo-wide-refactor-harmonization-audit.md](../jazz/chords/2026-05-23T133425Z-codex-repo-wide-refactor-harmonization-audit.md)                                                                       | **OTHER**    | codex              |   0   |   0    |
 | [2026-05-23T164713Z-kimi-external-critique-the-emperor-has-no-clothes.md](../jazz/chords/2026-05-23T164713Z-kimi-external-critique-the-emperor-has-no-clothes.md)                                                             | **CRITIQUE** | kimi               |   0   |   0    |
 | [2026-05-30T134900Z-antigravity-decision-spore-wasm-implemented.md](../jazz/chords/2026-05-30T134900Z-antigravity-decision-spore-wasm-implemented.md)                                                                         | **DECISION** | antigravity        |   0   |   1    |
+| [2026-05-30T135400Z-antigravity-decision-papers-codeicide-closed.md](../jazz/chords/2026-05-30T135400Z-antigravity-decision-papers-codeicide-closed.md)                                                                       | **DECISION** | antigravity        |   0   |   1    |
 | [20260509-091443-trinity-cognition-liquid-identity-resolution.md](../jazz/chords/20260509-091443-trinity-cognition-liquid-identity-resolution.md)                                                                             | **OTHER**    | trinity-cognition  |   0   |   0    |
 | [20260509-091443-trinity-cognition-myc-publication.md](../jazz/chords/20260509-091443-trinity-cognition-myc-publication.md)                                                                                                   | **OTHER**    | trinity-cognition  |   0   |   0    |
 | [20260509-091443-trinity-cognition-omega-deterministic-execution.md](../jazz/chords/20260509-091443-trinity-cognition-omega-deterministic-execution.md)                                                                       | **OTHER**    | trinity-cognition  |   0   |   0    |
@@ -4022,6 +4018,20 @@ _No open debts detected in the chord trail._
   - `./t decisions --triage --json`
 - **Expected After Running**:
   - _The target proposal no longer appears as unresolved._
+
+### [2026-05-30T135400Z-antigravity-decision-papers-codeicide-closed.md](../jazz/chords/2026-05-30T135400Z-antigravity-decision-papers-codeicide-closed.md)
+
+- **Category**: `DECISION` (Author: `antigravity`)
+- **Claim Kind**: `decision`
+- **Closes**: `2026-05-13T152500Z-gemini-codeicide-delete-papers`
+- **Decision Outcome**: `implemented`
+- **Falsifiers**:
+  - _If papers/ directory is still present in HEAD, the codeicide is not
+    implemented._
+- **Suggested Commands**:
+  - `ls papers`
+- **Expected After Running**:
+  - _ls: papers: No such file or directory_
 
 ### [20260509-091900-claude-action-canon-vectors-pass.md](../jazz/chords/20260509-091900-claude-action-canon-vectors-pass.md)
 

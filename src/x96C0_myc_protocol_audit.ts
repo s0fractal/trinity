@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-read --allow-run
 // src/x96C0_myc_protocol_audit.ts — myc-protocol-audit-shadow / x9 myc audit bridge
 // position: 9/6C → imported-substrate namespace(9) × native MYC protocol audit(6/C)
+// maturity: active
+// skill_safe: yes-readonly
 // hex_dipole: "00 00 33 00 00 00 6C 33"
 //   harmony_emergence+0.85 (PRIMARY: reflects MYC protocol consistency)
 //   mirror_apex+0.40 (reports native audit result into Trinity)

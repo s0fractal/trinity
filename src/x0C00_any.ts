@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-all
 // src/x0C00_any.ts — any / race / first-success
 // position: 0/0C → foundation × container/cycle
+// maturity: active
+// skill_safe: yes
 // hex_dipole: "00 4C 00 33 00 33 40 00"
 //   first_penultimate+0.60 (PRIMARY: first-match wins = approach-to-close)
 //   harmony_emergence+0.40 (emergence from candidate set)

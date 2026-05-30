@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-read --allow-write
 // src/x7F00_daemon.ts — daemon status / runtime state surface
 // position: 7/F → completion(7) × action(5) = decisive runtime act
+// maturity: active
+// skill_safe: yes-with-care
 // hex_dipole: "26 26 26 33 4C 59 26 6C"
 //   completion_frontier+0.85 (PRIMARY: daemon closes the action loop)
 //   action_decision+0.70 (runtime IS the decision to act)

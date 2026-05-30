@@ -1,4 +1,6 @@
 // src/x8F10_external_surfaces_core.ts — core logic and definitions for external surfaces registry
+// maturity: active
+// skill_safe: yes-readonly
 // Coordinate 8/F10 → void-infinity(8) × completion-edge(F) = structural model of external surfaces registry.
 // Imports and exports the types and core logic shared between x8F00 and x2F00_self.
 

@@ -1,4 +1,6 @@
 // src/x0011_glossary_parser.ts — shared glossary parser
+// maturity: active
+// skill_safe: yes
 // Coordinate 0011 = void/primitives → singular → singular → void (primitive of identity registry).
 // Centralizes glossary access so organs don't duplicate the line-by-line parse loop.
 // Importable from any organ; the convention "no imports between executables" was retired

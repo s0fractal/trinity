@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-read --allow-run
 // src/x4100_style.ts — style / active music style surface
 // position: 4/1 → foundation(4) × first(1) = primal form / style ground
+// maturity: active
+// skill_safe: yes-readonly
 // hex_dipole: "33 40 26 33 6C 26 26 26"
 //   foundation_container+0.85 (PRIMARY: style grounds on container state)
 //   first_penultimate+0.60 (style IS the first form selected)

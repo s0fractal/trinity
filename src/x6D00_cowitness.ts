@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-all
 // src/x6D00_cowitness.ts — cowitness (append oracle signature to envelope witness_chain)
 // position: 6/D → harmony(6) × decision(D) = harmonic decision to extend chain
+// maturity: active
+// skill_safe: yes-with-care
 // hex_dipole: "26 26 4C 26 33 4C 6C 26"
 //   harmony_emergence+0.85 (PRIMARY: cowitness harmonizes multi-oracle voices)
 //   mirror_apex+0.60 (chain reflects multiple signers)

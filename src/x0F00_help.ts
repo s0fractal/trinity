@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-read
 // src/x0F00_help.ts — help (substrate self-introspection)
 // position: 0/0F → foundation × frontier-edge
+// maturity: active
+// skill_safe: yes
 // hex_dipole: "00 00 00 00 59 00 00 59"
 //   foundation_container+0.70, completion_frontier+0.70 (Kimi: container/edge view)
 //   bucket 0/0F: primary axis foundation (4) or completion (7), bucket 0 ← MISMATCH

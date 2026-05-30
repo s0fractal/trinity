@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-all
 // src/x0600_try.ts — try / attempt / graceful fallback
 // position: 0/06 → foundation × serpent/curve
+// maturity: active
+// skill_safe: yes
 // hex_dipole: "00 00 26 00 00 33 59 40"
 //   harmony_emergence+0.70 (PRIMARY: graceful recovery = order restoration)
 //   completion_frontier+0.50 (handles boundary case)

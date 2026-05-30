@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run -A
 // src/x5300_recommend_to_chord.ts — recommend_to_chord (Action + Triangle/Build)
 // position: 5/3 → action(5) × triangle(3)
+// maturity: active
+// skill_safe: yes-with-care
 // hex_dipole: "26 26 26 59 26 6C 26 26"
 // placement_policy: axis
 //

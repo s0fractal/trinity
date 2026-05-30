@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run -A
 // src/x5E00_cognition_recommend_receipt.ts — cognition_recommend_receipt (Action + Harmony-pair)
 // position: 5/E → action(5) × harmony-pair(E)
+// maturity: active
+// skill_safe: yes-with-care
 // hex_dipole: "26 26 26 26 26 6C 59 26"
 // placement_policy: axis
 //

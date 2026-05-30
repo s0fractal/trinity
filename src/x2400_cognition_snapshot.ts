@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run -A
 // src/x2400_cognition_snapshot.ts — cognition_snapshot (Mirror + Foundation)
 // position: 2/4 → mirror(2) × foundation(4)
+// maturity: active
+// skill_safe: yes-with-care
 // hex_dipole: "26 26 6C 26 59 26 26 26"
 // placement_policy: axis
 //

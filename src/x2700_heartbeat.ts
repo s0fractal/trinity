@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-read --allow-run
 // src/x2700_heartbeat.ts — substrate heartbeat (chord+commit cadence)
 // position: 2/7 → mirror(2) × completion(7) = reflection on activity completion
+// maturity: active
+// skill_safe: yes-readonly
 // hex_dipole: "00 00 6C 33 00 00 00 59"
 //   mirror_apex+0.85 (PRIMARY: reflects substrate temporal pulse to caller)
 //   completion_frontier+0.60 (terminal-rate signal)

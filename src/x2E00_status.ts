@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-read --allow-run
 // src/x2E00_status.ts — status / state / "how-are-you" / composite self-reflection
 // position: 2/E → mirror(2) × harmony-pair(E) = state-aware self-reflection
+// maturity: active
+// skill_safe: yes-readonly
 // hex_dipole: "00 00 6C 40 33 26 4C 33"
 //   mirror_apex+0.85 (PRIMARY: reflects substrate state to caller)
 //   harmony_emergence+0.60 (synthesizes order assessment from organs)

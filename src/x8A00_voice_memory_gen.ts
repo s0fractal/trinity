@@ -1,6 +1,7 @@
 #!/usr/bin/env -S deno run --allow-read --allow-write --allow-run
 // src/x8A00_voice_memory_gen.ts — voice memory / recall projection generator
 // position: 8/A → cache(8) × apex(A) = cache of self / accumulated stigmergic traces
+// skill_safe: yes-with-care
 // hex_dipole: "93 00 E6 00 00 00 00 33"
 //   void_infinity-0.85 (PRIMARY: negative pole = infinity/cache; bucket 8 PAIR-MATCH)
 //   mirror_apex-0.20   (sub-archetype A: apex direction; "self" pole)

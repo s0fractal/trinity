@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-all
 // src/x0400_each.ts — each / for-each / sequential apply
 // position: 0/04 → foundation × cardinal/four-square
+// maturity: active
+// skill_safe: yes
 // hex_dipole: "00 00 00 6C 00 40 40 33"
 //   triangle_build+0.85 (PRIMARY: sequential composition is the act)
 //   action_decision+0.50, harmony_emergence+0.50 (ordered doing)

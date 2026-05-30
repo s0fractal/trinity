@@ -1,3 +1,10 @@
+// src/x6420_phi_roundtrip.ts — phi roundtrip fixture generator
+// position: 6/42 → harmony(6) × foundation(4) = phi roundtrip verification
+// placement_policy: axis
+// intent: execute liquid/omega/myc integration pipeline and output fixture
+// maturity: active
+// skill_safe: yes-with-care
+
 type Step = {
   name: string;
   cwd: string;

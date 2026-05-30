@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-read --allow-run
 // src/x7B00_evidence.ts — evidence / ci-status / claims-evidence
 // position: 7/B → completion(7) × build(B) = evidence spine matching
+// maturity: active
+// skill_safe: yes-with-care
 // hex_dipole: "00 00 00 00 00 00 00 76"
 //   completion_frontier+0.92 (PRIMARY: evidence bounds the claims)
 //   bucket 7/B: primary axis completion (7), bucket 7 ← MATCH

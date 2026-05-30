@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-all
 // src/x0B00_until.ts — until / retry / loop-until-success
 // position: 0/0B → foundation × edge/eleven
+// maturity: active
+// skill_safe: yes
 // hex_dipole: "00 33 26 00 00 40 00 59"
 //   completion_frontier+0.70 (PRIMARY: until IS termination condition)
 //   action_decision+0.50 (retry body)

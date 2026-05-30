@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-all
 // src/x7D00_verdict.ts — verdict (court over codeicide proposal + cowitness chain)
 // position: 7/D → completion(7) × decision(D) = decisive completion of governance flow
+// maturity: active
+// skill_safe: yes
 // hex_dipole: "26 26 26 33 33 4C 26 6C"
 //   completion_frontier+0.85 (PRIMARY: verdict completes a governance loop)
 //   action_decision+0.60 (verdict IS the decision)

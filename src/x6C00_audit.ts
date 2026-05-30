@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-read
 // src/x6C00_audit.ts — audit / place-check / introspect
 // position: 6/C → harmony(6) × container-pair(C) = order-check of container state
+// maturity: active
+// skill_safe: yes-readonly
 // hex_dipole: "00 00 40 33 4C 26 6C 33"
 //   harmony_emergence+0.85 (PRIMARY: measures dissonance from intended order)
 //   foundation_container+0.60 (examines bucket/container state)

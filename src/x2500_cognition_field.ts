@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run -A
 // src/x2500_cognition_field.ts — cognition_field (Mirror + Action)
 // position: 2/5 → mirror(2) × action(5)
+// maturity: active
+// skill_safe: yes-with-care
 // hex_dipole: "26 26 6C 26 26 59 26 26"
 // placement_policy: axis
 //

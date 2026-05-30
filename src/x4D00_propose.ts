@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-all
 // src/x4D00_propose.ts — propose (codeicide proposal — reversible meta-ledger archival)
 // position: 4/D → foundation(4) × decision(D) = foundational decisive grounding
+// maturity: active
+// skill_safe: yes-with-care
 // hex_dipole: "26 26 33 26 6C 4C 33 33"
 //   foundation_container+0.85 (PRIMARY: codeicide lays foundation of decision)
 //   action_decision+0.60 (proposal IS a decision act)

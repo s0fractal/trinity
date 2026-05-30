@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-all
 // src/x0900_repeat.ts — repeat / loop / iterate
 // position: 0/09 → foundation × completion/circle
+// maturity: active
+// skill_safe: yes
 // hex_dipole: "00 40 00 00 33 4C 00 33"
 //   action_decision+0.60 (PRIMARY: iterative doing)
 //   first_penultimate+0.50 (cyclic / counting / approach-to-close)

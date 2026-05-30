@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-all
 // src/x0700_cond.ts — cond / branch / if-then-else
 // position: 0/07 → foundation × threshold/seven
+// maturity: active
+// skill_safe: yes
 // hex_dipole: "00 00 26 33 00 66 33 00"
 //   action_decision+0.80 (PRIMARY: cond IS the decision primitive)
 //   triangle_build+0.40 (branches into structure)

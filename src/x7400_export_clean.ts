@@ -11,7 +11,7 @@
 // intent: dump trinity substrate (excluding submodules, heavy logs, tests) to single markdown for external review
 // maturity: active
 // horizon: none (incremental and bucket-split exports implemented)
-// skill_tag: export
+// skill_tag: export-clean
 // skill_safe: yes-with-care
 
 import { ensureDir } from "https://deno.land/std@0.224.0/fs/ensure_dir.ts";

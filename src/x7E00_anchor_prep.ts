@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-all
 // src/x7E00_anchor_prep.ts — anchor-prep (Bitcoin-style inscription payload for N envelopes)
 // position: 7/E → completion(7) × edge(E) = completion act at the frontier
+// maturity: active
+// skill_safe: yes-readonly
 // hex_dipole: "26 26 26 33 4C 33 26 6C"
 //   completion_frontier+0.85 (PRIMARY: anchor closes a witness epoch)
 //   foundation_container+0.60 (anchor grounds receipts on external chain)

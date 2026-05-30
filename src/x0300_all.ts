@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-all
 // src/x0300_all.ts — all / map / broadcast
 // position: 0/03 → foundation × triangle/trinity
+// maturity: active
+// skill_safe: yes
 // hex_dipole: "00 00 33 6C 33 33 40 33"
 //   void_infinity 0 first_penultimate 0 mirror_apex+0.40
 //   triangle_build+0.85 foundation_container+0.40 action_decision+0.40

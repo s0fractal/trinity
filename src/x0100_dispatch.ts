@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-read --allow-run
 // src/x0100_dispatch.ts — t (the runtime dispatcher)
 // position: 0/01 → foundation/byte01
+// maturity: active
+// skill_safe: yes-readonly
 // hex_dipole: "6C 26 40 33 66 40 40 19"
 //   void_infinity+0.85 first_penultimate+0.30 mirror_apex+0.50
 //   triangle_build+0.40 foundation_container+0.80 action_decision+0.50

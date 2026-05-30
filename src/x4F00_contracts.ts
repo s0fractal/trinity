@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-read
 // src/x4F00_contracts.ts — contracts / agreements / stabilized-schemas
 // position: 4/F → foundation(4) × frontier-pair(F) = stable-edge agreements
+// maturity: active
+// skill_safe: yes-readonly
 // hex_dipole: "26 26 40 33 6C 26 4C 59"
 //   foundation_container+0.85 (PRIMARY: stable infrastructure)
 //   completion_frontier+0.70 (boundary commitments)

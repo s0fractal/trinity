@@ -1,3 +1,10 @@
+// src/x6500_run_baseline.ts — test baseline runner
+// position: 6/5 → harmony(6) × action(5) = composite test baseline execution
+// placement_policy: axis
+// intent: run test commands and audit tasks across all submodules
+// maturity: active
+// skill_safe: yes-with-care
+
 type Gate = {
   name: string;
   cwd: string;

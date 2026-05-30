@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-read
 // src/x4A00_capabilities.ts — capabilities / affordances / what-can-I-do
 // position: 4/A → foundation(4) × mirror-pair(A) = reflective affordance inventory
+// maturity: active
+// skill_safe: yes
 // hex_dipole: "26 00 59 40 6C 33 33 40"
 //   foundation_container+0.85 (PRIMARY: it IS the affordance inventory)
 //   mirror_apex+0.70 (reflects every word's metadata into structured answer)

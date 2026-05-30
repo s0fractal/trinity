@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-all
 // src/x0800_join.ts — join / zip / parallel collect
 // position: 0/08 → foundation × infinity/all
+// maturity: active
+// skill_safe: yes
 // hex_dipole: "00 00 00 59 40 33 40 00"
 //   triangle_build+0.70 (PRIMARY: union/composition primitive)
 //   foundation_container+0.50 (gathers in container)

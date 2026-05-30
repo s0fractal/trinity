@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-all
 // src/x5C00_cross_verify.ts — cross-verify compatibility wrapper
 // position: 5/C → action(5) × container/cycle(C)
+// maturity: active
+// skill_safe: yes-readonly
 // hex_dipole: "00 00 40 00 66 6C 59 00"
 //   mirror_apex+0.50 (compatibility reflection)
 //   foundation_container+0.80 (container of substrate mappings)

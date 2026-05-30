@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-all
 // src/x5900_nay.ts — nay (emit CodeicideNay envelope rejecting a proposal)
 // position: 5/9 → action(5) × penultimate(9) = act-to-prevent-close
+// maturity: active
+// skill_safe: yes-with-care
 // hex_dipole: "26 4C 33 26 33 6C 26 26"
 //   axis 5 action_decision +0.85 (PRIMARY: NAY is a decision act)
 //   axis 1 first_penultimate +0.60 (secondary: hex 9 = axis 1 neg pole;

@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run -A
 // src/x6300_ontology_coverage.ts — ontology_coverage (Harmony + Build)
 // position: 6/3 → harmony(6) × build(3)
+// maturity: active
+// skill_safe: yes
 // hex_dipole: "26 26 26 59 26 26 6C 26"
 // placement_policy: axis
 //

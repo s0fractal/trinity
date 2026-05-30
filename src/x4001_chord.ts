@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-net --allow-env --allow-read
 // src/x4001_chord.ts — chord (substrate-native chord scaffolding + dipole math)
 // position: 4/0 → foundation(4) × void(0) = primal toolkit / blank-scaffold
+// maturity: active
+// skill_safe: yes
 // hex_dipole: "26 00 40 40 6C 19 33 26"
 //   foundation_container+0.85 (PRIMARY: provides chord infrastructure)
 //   mirror_apex+0.50 (parse reflects hex → readings)

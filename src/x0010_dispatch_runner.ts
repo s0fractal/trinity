@@ -1,4 +1,6 @@
 // src/x0010_dispatch_runner.ts — shared runner utilities
+// maturity: active
+// skill_safe: yes-readonly
 // Hex substrate infrastructure: NOT an executable.
 // Provides position→path resolution, step execution, and substrate
 // spawning with timeout/abort. Centralizes duplicated logic from

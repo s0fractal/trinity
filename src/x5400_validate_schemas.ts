@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run -A
 // src/x5400_validate_schemas.ts — validate_schemas (Action + Foundation)
 // position: 5/4 → action(5) × foundation(4)
+// maturity: active
+// skill_safe: yes-readonly
 // hex_dipole: "26 26 26 26 59 6C 26 26"
 // placement_policy: axis
 //

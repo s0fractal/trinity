@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run -A
 // src/x7001_grind.ts — grind (Completion + Void)
 // position: 7/0 → completion(7) × void(0)
+// maturity: active
+// skill_safe: yes-with-care
 // hex_dipole: "8E 00 00 00 00 00 00 59"
 // placement_policy: composite
 //

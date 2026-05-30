@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-read
 // src/x2300_self_portrait.ts — self-portrait (voice's self-declared vs historical comfort field)
 // position: 2/3 → mirror(2) × triangle(3) = stable mirror reflection
+// maturity: active
+// skill_safe: yes-readonly
 // hex_dipole: "26 26 6C 4C 33 26 33 33"
 //   axis 2 mirror_apex +0.85 (PRIMARY: self-portrait IS reflection)
 //   axis 3 triangle_build +0.76 (stable witness — portrait is stable, not fleeting)

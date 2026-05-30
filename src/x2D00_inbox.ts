@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-read
 // src/x2D00_inbox.ts — inbox (chords addressed to a voice that the voice has not yet responded to)
 // position: 2/D → mirror(2) × decision(D) = reflect-on-pending-decisions
+// maturity: active
+// skill_safe: yes-with-care
 // hex_dipole: "26 26 6C 26 33 4C 33 26"
 //   axis 2 mirror_apex +0.85 (PRIMARY: inbox IS reflection of incoming)
 //   axis 5 action_decision +0.60 (secondary: hex D = axis 5 decision-pole;

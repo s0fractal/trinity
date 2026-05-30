@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run -A
 // src/x2C00_cognition_phase_report.ts — cognition_phase_report (Mirror + Build-pair)
 // position: 2/C → mirror(2) × build-pair(C)
+// maturity: active
+// skill_safe: yes
 // hex_dipole: "26 26 6C 59 26 26 26 26"
 // placement_policy: axis
 //

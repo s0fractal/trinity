@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-all
 // src/x4E00_snapshot.ts — snapshot (canonical envelope of trinity meta-ledger state)
 // position: 4/E → foundation(4) × edge(E) = foundational edge / state boundary
+// maturity: active
+// skill_safe: yes-with-care
 // hex_dipole: "26 26 26 33 6C 33 4C 33"
 //   foundation_container+0.85 (PRIMARY: snapshot is foundational state)
 //   harmony_emergence+0.60 (snapshot harmonizes meta-ledger into one identity)

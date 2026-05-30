@@ -1,6 +1,7 @@
 #!/usr/bin/env -S deno run --allow-read
 // src/x3C00_recipes.ts — recipes / workflows / templates / sequences
 // position: 3/C → triangle(3) × container-pair(C) = composition-templates
+// skill_safe: yes-readonly
 // hex_dipole: "19 00 40 66 33 40 40 33"
 //   triangle_build+0.80 (PRIMARY: composition of steps)
 //   mirror_apex+0.50 (reflects workflow patterns)

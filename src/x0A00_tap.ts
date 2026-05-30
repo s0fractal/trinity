@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-all
 // src/x0A00_tap.ts — tap / touch / side-effect decorator
 // position: 0/0A → foundation × ten/apex
+// maturity: active
+// skill_safe: yes
 // hex_dipole: "26 00 59 33 00 26 00 00"
 //   mirror_apex+0.70 (PRIMARY: observes without consuming = reflection)
 //   triangle_build+0.40 (composition decoration)

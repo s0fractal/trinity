@@ -1,6 +1,7 @@
 #!/usr/bin/env -S deno run -A
 // src/x3500_chord_play.ts — chord_play (Triangle/Build + Action)
 // position: 3/5 → triangle(3) × action(5)
+// skill_safe: yes-with-care
 // hex_dipole: "26 26 26 6C 26 59 26 26"
 // placement_policy: axis
 // intent: parse and visualize chord structure; scaffold new chord files

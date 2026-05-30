@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-all
 // src/x5D00_apply_codeicide.ts — apply-codeicide (reversible archival of meta-ledger item)
 // position: 5/D → action(5) × decision(D) = decisive execution
+// maturity: active
+// skill_safe: yes-with-care
 // hex_dipole: "26 26 26 33 4C 6C 33 33"
 //   action_decision+0.85 (PRIMARY: this IS the decisive action)
 //   foundation_container+0.60 (action grounds the verdict in filesystem)

@@ -1,4 +1,6 @@
 // src/x0012_generated_format.ts — shared formatter helper for generated files
+// maturity: active
+// skill_safe: yes-readonly
 // Coordinate 0012 = void/primitives → singular → singular → mirror (formatting primitive).
 // Centralizes call to deno fmt so generators do not duplicate Deno Command logic.
 

@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-read
 // src/x6A00_health.ts — health / harmony / fresh check
 // position: 6/A → harmony(6) × apex/fresh(A)
+// maturity: active
+// skill_safe: yes
 // hex_dipole: "00 59 00 00 00 00 59 00"
 //   first_penultimate+0.70, harmony_emergence+0.70 (Kimi: cyclic check, order signal)
 //   bucket 6/A: primary axis tied (first_pen 1, harmony 6), bucket 6 ← MATCH on harmony

@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-read --allow-run
 // src/x94A0_myc_capabilities.ts — myc-capabilities-shadow / x9 myc capabilities bridge
 // position: 9/4A → imported-substrate namespace(9) × native MYC capabilities(4/A)
+// maturity: active
+// skill_safe: yes-readonly
 // hex_dipole: "00 00 00 00 6C 33 00 00"
 //   foundation_container+0.85 (PRIMARY: reflects MYC capability foundation)
 //   action_decision+0.40 (wraps native command execution)

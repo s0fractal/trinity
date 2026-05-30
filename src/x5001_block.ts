@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-net
 // src/x5001_block.ts — block (Bitcoin tip height fetcher)
 // position: 5/0 → action × void = pure fetch / bare timestamp
+// maturity: active
+// skill_safe: yes
 // hex_dipole: "8E 00 00 00 00 59 00 00"
 //   void_infinity-0.90 (need ground / not foundation-content),
 //   action_decision+0.70 (Kimi: the fetch act)

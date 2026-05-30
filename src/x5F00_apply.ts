@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-all
 // src/x5F00_apply.ts — apply (SPORE Primitive)
 // position: 5/F → action_frontier
+// maturity: active
+// skill_safe: yes
 // hex_dipole: "26 26 40 33 40 6C 40 59"
 // placement_policy: axis
 

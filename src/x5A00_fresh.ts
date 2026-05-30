@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-read
 // src/x5A00_fresh.ts — fresh action / verify / init
 // position: 5/A → action(5) × apex/fresh(A)
+// maturity: active
+// skill_safe: yes
 // hex_dipole: "00 00 59 00 00 59 00 00"
 //   mirror_apex+0.70, action_decision+0.70 (Kimi: action + apex reflection)
 //   bucket 5/A: primary axis tied (mirror 2, action 5), bucket 5 ← MATCH on action

@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-all
 // src/x6E00_court.ts — court (Substrate Court verifier)
 // position: 6/E → harmony(6) × harmony-pair(E) = verdict-of-witnesses
+// maturity: active
+// skill_safe: yes-readonly
 // hex_dipole: "26 26 33 26 33 26 6C 59"
 //   harmony_emergence+0.85 (PRIMARY: court harmonizes witness envelopes)
 //   completion_frontier+0.70 (verdict completes a witness chain)

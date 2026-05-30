@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run -A
 // src/x2600_cognition_delta.ts — cognition_delta (Mirror + Harmony)
 // position: 2/6 → mirror(2) × harmony(6)
+// maturity: active
+// skill_safe: yes
 // hex_dipole: "26 26 6C 26 26 26 59 26"
 // placement_policy: axis
 //

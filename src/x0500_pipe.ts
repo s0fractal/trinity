@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-all
 // src/x0500_pipe.ts — pipe / flow / conditional compose
 // position: 0/05 → foundation × hand/action
+// maturity: active
+// skill_safe: yes
 // hex_dipole: "00 00 00 66 00 33 33 40"
 //   triangle_build+0.80 (PRIMARY: chain composition)
 //   completion_frontier+0.50 (short-circuit termination)

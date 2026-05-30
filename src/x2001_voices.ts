@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-read
 // src/x2001_voices.ts — voices / synthetic voice profiles from chord history
 // position: 2/0 → mirror(2) × void(0) = reflection surface / identity pool
+// maturity: active
+// skill_safe: yes
 // hex_dipole: "33 26 6C 26 26 26 26 26"
 //   axis 0 void_infinity +0.30 (secondary: reflection surface from emptiness)
 //   axis 2 mirror_apex +0.85 (PRIMARY: reflects who speaks into substrate)

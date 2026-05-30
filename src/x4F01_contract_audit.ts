@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-read --allow-run
 // src/x4F01_contract_audit.ts — contract classification audit (refs-graph)
 // position: 4/F1 → foundation(4) × frontier(F) sub-1 = classification probe
+// maturity: active
+// skill_safe: yes-readonly
 // hex_dipole: "26 26 40 33 6C 26 4C 33"
 //   foundation_container+0.80 (PRIMARY: reads stabilized schemas)
 //   completion_frontier+0.60 (sits at audit boundary)

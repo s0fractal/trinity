@@ -200,7 +200,11 @@ async function scanOrgans(): Promise<OrganMeta[]> {
 
     // Dispatchable = has main entry point; library = exports only.
     // Distinguishes runtime commands (t-dispatched) from helper modules.
-    const is_dispatchable = /\bimport\.meta\.main\b/.test(content);
+    // Strip comments to prevent matching import.meta.main inside comments.
+    const codeOnly = content
+      .replace(/\/\*[\s\S]*?\*\//g, "")
+      .replace(/\/\/.*/g, "");
+    const is_dispatchable = /\bimport\.meta\.main\b/.test(codeOnly);
 
     let behavior_drift: string | undefined;
     if (skill_safe && (skill_safe === "yes" || skill_safe === "yes-readonly")) {

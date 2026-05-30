@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-all
 // src/x5910_compost_watchdog.ts — compost watchdog (archive sunset draft contracts)
 // position: 5/91 → action(5) × penultimate(9) = act-to-prevent-close / clear out stale drafts
+// maturity: active
+// skill_safe: yes-with-care
 // hex_dipole: "26 4C 33 26 33 6C 26 26"
 //   axis 5 action_decision +0.85 (PRIMARY: decision/action to archive/compost)
 //   axis 1 first_penultimate +0.60 (secondary: hex 9 = axis 1 neg pole; sunset clearance)

@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-read --allow-run
 // src/x92E0_myc_status.ts — myc-status-shadow / x9 myc status bridge
 // position: 9/2E → imported-substrate namespace(9) × native MYC status(2/E)
+// maturity: active
+// skill_safe: yes-readonly
 // hex_dipole: "00 00 6C 33 00 00 00 00"
 //   mirror_apex+0.85 (PRIMARY: reflects native MYC status into Trinity)
 //   triangle_build+0.40 (wraps one substrate receipt into another)

@@ -128,7 +128,7 @@ jobs:
         run: ./t decisions --triage --json | jq -e '.type == "decisions_triage" and .position == "8/B" and .action == "triage" and (.summary.review | type) == "number" and (.summary.revalidate | type) == "number" and (.queue | type) == "array"'
 
       - name: Verify decisions triage template
-        run: ./t decisions --triage-template --json | jq -e '.type == "decisions_triage_template" and .position == "8/B" and .action == "triage_template" and (.target_id | type) == "string" and (.suggested_filename | type) == "string" and (.template | contains("closes_hash"))'
+        run: ./t decisions --triage-template --json | jq -e '.type == "decisions_triage_template" and .position == "8/B" and .action == "triage_template" and (.target_id | type) == "string" and (.suggested_filename | type) == "string" and (.template | contains("closes_hash")) and (.template | contains("decision_outcome")) and (.template | contains("resolution_status") | not)'
 
       - name: Verify decisions closure validity (no invalid manual closures)
         run: |

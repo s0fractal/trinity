@@ -318,7 +318,7 @@ author_identity: "${author}"
 claim_kind: "decision"
 topic: "triage-${slug}"
 closes_hash: "${item.id}"
-resolution_status: "closed" # choose: closed | superseded | historical
+decision_outcome: "historical" # choose: revalidate | superseded | historical | implemented
 resolved_by:
   - "jazz/chords/${item.filename}"
 falsifiers:
@@ -348,8 +348,9 @@ Evidence / rationale:
 
 - ...
 
-Do not implement the target proposal from this scaffold alone. This chord is for
-making the ledger decision explicit first.
+Do not implement the target proposal from this scaffold alone. If you leave
+\`decision_outcome: "historical"\`, explain why the idea is stale or unsafe now.
+Use \`implemented\` only with concrete artifact evidence.
 `;
 
   return {

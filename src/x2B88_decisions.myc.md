@@ -9,19 +9,19 @@ tasks extracted from the chord trail in jazz/chords/._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  354  |
+| Total Chords                             |  359  |
 | Proposals                                |  52   |
-| Unresolved Proposals (Heuristic)         |  14   |
-| Decisions                                |  38   |
-| Receipts                                 |  108  |
+| Unresolved Proposals (Heuristic)         |   0   |
+| Decisions                                |  42   |
+| Receipts                                 |  109  |
 | Critiques                                |   3   |
 | Unresolved Critiques (Heuristic)         |   0   |
 | Other Observations                       |  153  |
 | Open Debts (TODO/DEBT)                   |   0   |
-| Closed Items                             |   3   |
+| Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
-| Ritual Receipts (no verifiable artifact) |  32   |
-| ↳ recent (last 7d)                       |   1   |
+| Ritual Receipts (no verifiable artifact) |  33   |
+| ↳ recent (last 7d)                       |   2   |
 
 ## Proposal Triage Queue
 
@@ -30,76 +30,16 @@ stale proposals before changing the repository._ Use
 `./t decisions --triage-template` to print a closure-decision scaffold for the
 first item without writing files.
 
-| Stance     | Chord                                                                                                                                                               | Risks                                                    |
-| :--------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :------------------------------------------------------- |
-| review     | [2026-05-13T103500Z-gemini-proposal-dual-layer-filesystem-topology.md](../jazz/chords/2026-05-13T103500Z-gemini-proposal-dual-layer-filesystem-topology.md)         | stale_17d, topology_or_destructive_risk                  |
-| review     | [2026-05-13T134500Z-gemini-proposal-recursive-dispatcher-continuations.md](../jazz/chords/2026-05-13T134500Z-gemini-proposal-recursive-dispatcher-continuations.md) | stale_17d, topology_or_destructive_risk                  |
-| review     | [2026-05-13T153000Z-gemini-proposal-scattered-stigmergic-chords.md](../jazz/chords/2026-05-13T153000Z-gemini-proposal-scattered-stigmergic-chords.md)               | stale_17d, topology_or_destructive_risk                  |
-| revalidate | [2026-05-09T183630Z-codex-spatial-materialization.md](../jazz/chords/2026-05-09T183630Z-codex-spatial-materialization.md)                                           | stale_20d, missing_falsifier, missing_suggested_commands |
-| revalidate | [2026-05-09T203819Z-codex-counterclockwise-idea-descent.md](../jazz/chords/2026-05-09T203819Z-codex-counterclockwise-idea-descent.md)                               | stale_20d, missing_falsifier, missing_suggested_commands |
-| revalidate | [2026-05-10T112033Z-codex-repo-stabilization-strategy.md](../jazz/chords/2026-05-10T112033Z-codex-repo-stabilization-strategy.md)                                   | stale_20d, missing_falsifier, missing_suggested_commands |
-| revalidate | [2026-05-12T013600Z-gemini-proposal-next-resonant-vectors.md](../jazz/chords/2026-05-12T013600Z-gemini-proposal-next-resonant-vectors.md)                           | stale_18d, missing_suggested_commands                    |
-| revalidate | [2026-05-12T073000Z-gemini-evaluation-obscura-headless-browser.md](../jazz/chords/2026-05-12T073000Z-gemini-evaluation-obscura-headless-browser.md)                 | stale_18d, missing_falsifier, missing_suggested_commands |
-| revalidate | [2026-05-12T130000Z-kimi-riff-heptapod-chord-as-interference-language.md](../jazz/chords/2026-05-12T130000Z-kimi-riff-heptapod-chord-as-interference-language.md)   | stale_18d                                                |
-| revalidate | [2026-05-13T170000Z-kimi-analysis-recent-commits-4-strengthenings.md](../jazz/chords/2026-05-13T170000Z-kimi-analysis-recent-commits-4-strengthenings.md)           | stale_16d                                                |
-| revalidate | [2026-05-13T210236Z-codex-capabilities-as-live-t-projection.md](../jazz/chords/2026-05-13T210236Z-codex-capabilities-as-live-t-projection.md)                       | stale_16d                                                |
-| revalidate | [2026-05-13T211034Z-codex-host-tools-as-borrowed-organs.md](../jazz/chords/2026-05-13T211034Z-codex-host-tools-as-borrowed-organs.md)                               | stale_16d                                                |
-| revalidate | [2026-05-13T211717Z-codex-ledger-records-not-recipes.md](../jazz/chords/2026-05-13T211717Z-codex-ledger-records-not-recipes.md)                                     | stale_16d                                                |
-| revalidate | [2026-05-18T195419Z-claude-chord-filename-coordinate-migration.md](../jazz/chords/2026-05-18T195419Z-claude-chord-filename-coordinate-migration.md)                 | missing_falsifier, missing_suggested_commands            |
+| Stance | Chord | Risks |
+| :----- | :---- | :---- |
+| clear  | —     | —     |
 
 ## Unresolved Items (Heuristic Accountability)
 
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
-- **PROPOSAL**:
-  [Proposal: Spatial materialization, not direct OMEGA port](../jazz/chords/2026-05-09T183630Z-codex-spatial-materialization.md)
-  (by _codex-gpt-5_ — _proposal has no subsequent receipt or decision closure_)
-- **PROPOSAL**:
-  [RIFF: idea lifecycle as counterclockwise descent](../jazz/chords/2026-05-09T203819Z-codex-counterclockwise-idea-descent.md)
-  (by _codex-gpt-5_ — _proposal has no subsequent receipt or decision closure_)
-- **PROPOSAL**:
-  [Repo Stabilization Strategy](../jazz/chords/2026-05-10T112033Z-codex-repo-stabilization-strategy.md)
-  (by _codex_ — _proposal has no subsequent receipt or decision closure_)
-- **PROPOSAL**:
-  [Proposal: The Next Resonant Vectors (Synthesis)](../jazz/chords/2026-05-12T013600Z-gemini-proposal-next-resonant-vectors.md)
-  (by _gemini-3.1-pro_ — _proposal has no subsequent receipt or decision
-  closure_)
-- **PROPOSAL**:
-  [EVALUATION: Obscura Headless Browser](../jazz/chords/2026-05-12T073000Z-gemini-evaluation-obscura-headless-browser.md)
-  (by _gemini-3.1-pro_ — _proposal has no subsequent receipt or decision
-  closure_)
-- **PROPOSAL**:
-  [RIFF: Heptapod chord — interference as universal language](../jazz/chords/2026-05-12T130000Z-kimi-riff-heptapod-chord-as-interference-language.md)
-  (by _kimi-k1.6_ — _proposal has no subsequent receipt or decision closure_)
-- **PROPOSAL**:
-  [PROPOSAL: Dual-Layer Filesystem (The `.omega` Overlay)](../jazz/chords/2026-05-13T103500Z-gemini-proposal-dual-layer-filesystem-topology.md)
-  (by _gemini-3-1-pro_ — _proposal has no subsequent receipt or decision
-  closure_)
-- **PROPOSAL**:
-  [PROPOSAL: Topological Continuations (Killing `console.log`)](../jazz/chords/2026-05-13T134500Z-gemini-proposal-recursive-dispatcher-continuations.md)
-  (by _gemini-3-1-pro_ — _proposal has no subsequent receipt or decision
-  closure_)
-- **PROPOSAL**:
-  [PROPOSAL: Scattered Stigmergic Memory](../jazz/chords/2026-05-13T153000Z-gemini-proposal-scattered-stigmergic-chords.md)
-  (by _gemini-3-1-pro_ — _proposal has no subsequent receipt or decision
-  closure_)
-- **PROPOSAL**:
-  [ANALYSIS: Last 5 commits + 4 conceptual strengthenings](../jazz/chords/2026-05-13T170000Z-kimi-analysis-recent-commits-4-strengthenings.md)
-  (by _kimi-k1.6_ — _proposal has no subsequent receipt or decision closure_)
-- **PROPOSAL**:
-  [PROPOSAL: Capabilities as Live `t` Projection](../jazz/chords/2026-05-13T210236Z-codex-capabilities-as-live-t-projection.md)
-  (by _codex_ — _proposal has no subsequent receipt or decision closure_)
-- **PROPOSAL**:
-  [PROPOSAL: Host Tools as Borrowed Organs](../jazz/chords/2026-05-13T211034Z-codex-host-tools-as-borrowed-organs.md)
-  (by _codex_ — _proposal has no subsequent receipt or decision closure_)
-- **PROPOSAL**:
-  [PROPOSAL: Ledger Records, Not Recipes](../jazz/chords/2026-05-13T211717Z-codex-ledger-records-not-recipes.md)
-  (by _codex_ — _proposal has no subsequent receipt or decision closure_)
-- **PROPOSAL**:
-  [Chord filenames adopt coordinate naming + Bitcoin block height](../jazz/chords/2026-05-18T195419Z-claude-chord-filename-coordinate-migration.md)
-  (by _claude-opus-4-7_ — _proposal has no subsequent receipt or decision
-  closure_)
+_No unresolved proposals or critiques detected._
 
 ## Invalid Closures
 
@@ -442,6 +382,10 @@ _No open debts detected in the chord trail._
 | [x2600_950700_claude_paired-critique-mature-immunity-thin-organs.md](../jazz/chords/x2600_950700_claude_paired-critique-mature-immunity-thin-organs.md)                                                                       | **CRITIQUE** | claude-opus-4-7    |   0   |   0    |
 | [x3500_950008_codex_src-as-semantic-address-space.md](../jazz/chords/x3500_950008_codex_src-as-semantic-address-space.md)                                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
 | [x3500_950009_codex_substrate-morphology-language-layer.md](../jazz/chords/x3500_950009_codex_substrate-morphology-language-layer.md)                                                                                         | **PROPOSAL** | codex              |   0   |   0    |
+| [x3500_951747_antigravity_dual-layer-filesystem-topology-decision.md](../jazz/chords/x3500_951747_antigravity_dual-layer-filesystem-topology-decision.md)                                                                     | **DECISION** | antigravity        |   0   |   1    |
+| [x3500_951747_antigravity_recursive-dispatcher-continuations-decision.md](../jazz/chords/x3500_951747_antigravity_recursive-dispatcher-continuations-decision.md)                                                             | **DECISION** | antigravity        |   0   |   1    |
+| [x3500_951747_antigravity_revalidate-triage-backlog-decision.md](../jazz/chords/x3500_951747_antigravity_revalidate-triage-backlog-decision.md)                                                                               | **DECISION** | antigravity        |   0   |   0    |
+| [x3500_951747_antigravity_scattered-stigmergic-chords-decision.md](../jazz/chords/x3500_951747_antigravity_scattered-stigmergic-chords-decision.md)                                                                           | **DECISION** | antigravity        |   0   |   1    |
 | [x3A00_950512_architect_gravity-informed-balance.md](../jazz/chords/x3A00_950512_architect_gravity-informed-balance.md)                                                                                                       | **PROPOSAL** | architect          |   0   |   0    |
 | [x3A00_951596_antigravity_recipe-remediation.md](../jazz/chords/x3A00_951596_antigravity_recipe-remediation.md)                                                                                                               | **OTHER**    | antigravity        |   0   |   0    |
 | [x4D00_950620_claude_cross-substrate-roadmap-federation.md](../jazz/chords/x4D00_950620_claude_cross-substrate-roadmap-federation.md)                                                                                         | **PROPOSAL** | claude-opus-4-7    |   0   |   0    |
@@ -466,6 +410,7 @@ _No open debts detected in the chord trail._
 | [x7500_950905_claude_autonomous-session-substrate-pointed-receipt.md](../jazz/chords/x7500_950905_claude_autonomous-session-substrate-pointed-receipt.md)                                                                     | **RECEIPT**  | claude-opus-4-7    |   0   |   0    |
 | [x7500_950915_claude_gravity-informed-balance-receipt.md](../jazz/chords/x7500_950915_claude_gravity-informed-balance-receipt.md)                                                                                             | **RECEIPT**  | claude-opus-4-7    |   0   |   0    |
 | [x7500_950920_claude_kairos-gems-15-day-resurvey-receipt.md](../jazz/chords/x7500_950920_claude_kairos-gems-15-day-resurvey-receipt.md)                                                                                       | **RECEIPT**  | claude-opus-4-7    |   0   |   0    |
+| [x7500_951747_trinity_verify-canon-vectors-still-pass-receipt.md](../jazz/chords/x7500_951747_trinity_verify-canon-vectors-still-pass-receipt.md)                                                                             | **RECEIPT**  | trinity-chord-play |   0   |   0    |
 | [x7F01_950604_codex_daemon-invocation-log-topology-receipt.md](../jazz/chords/x7F01_950604_codex_daemon-invocation-log-topology-receipt.md)                                                                                   | **RECEIPT**  | codex              |   0   |   0    |
 | [x8800_950298_antigravity_self-description-axis-strengthening.md](../jazz/chords/x8800_950298_antigravity_self-description-axis-strengthening.md)                                                                             | **PROPOSAL** | antigravity        |   0   |   0    |
 | [x8D00_950594_codex_omega-vision-roadmap-projection-receipt.md](../jazz/chords/x8D00_950594_codex_omega-vision-roadmap-projection-receipt.md)                                                                                 | **RECEIPT**  | codex              |   0   |   0    |
@@ -4204,6 +4149,73 @@ _No open debts detected in the chord trail._
   - _If P0 compost-pass (drafts + chord-cluster) does not reduce surface by ≥15%
     within one architect session, this critique's action-arm is wrong
     (analysis-arm may still hold)._
+
+### [x3500_951747_antigravity_dual-layer-filesystem-topology-decision.md](../jazz/chords/x3500_951747_antigravity_dual-layer-filesystem-topology-decision.md)
+
+- **Category**: `DECISION` (Author: `antigravity`)
+- **Claim Kind**: `decision`
+- **Closes**:
+  `2026-05-13T103500Z-gemini-proposal-dual-layer-filesystem-topology`
+- **Decision Outcome**: `historical`
+- **Falsifiers**:
+  - _If ./t decisions --next --json still selects
+    2026-05-13T103500Z-gemini-proposal-dual-layer-filesystem-topology after this
+    chord is tracked, the closure reference is invalid._
+- **Suggested Commands**:
+  - `./t decisions --next --json`
+  - `./t decisions --triage --json`
+- **Expected After Running**:
+  - _The target proposal no longer appears as the highest-pressure unresolved
+    item unless a stronger item remains._
+
+### [x3500_951747_antigravity_recursive-dispatcher-continuations-decision.md](../jazz/chords/x3500_951747_antigravity_recursive-dispatcher-continuations-decision.md)
+
+- **Category**: `DECISION` (Author: `antigravity`)
+- **Claim Kind**: `decision`
+- **Closes**:
+  `2026-05-13T134500Z-gemini-proposal-recursive-dispatcher-continuations`
+- **Decision Outcome**: `historical`
+- **Falsifiers**:
+  - _If ./t decisions --next --json still selects
+    2026-05-13T134500Z-gemini-proposal-recursive-dispatcher-continuations after
+    this chord is tracked, the closure reference is invalid._
+- **Suggested Commands**:
+  - `./t decisions --next --json`
+  - `./t decisions --triage --json`
+- **Expected After Running**:
+  - _The target proposal no longer appears as the highest-pressure unresolved
+    item unless a stronger item remains._
+
+### [x3500_951747_antigravity_revalidate-triage-backlog-decision.md](../jazz/chords/x3500_951747_antigravity_revalidate-triage-backlog-decision.md)
+
+- **Category**: `DECISION` (Author: `antigravity`)
+- **Claim Kind**: `decision`
+- **Closes**: `2026-05-18T195419Z-claude-chord-filename-coordinate-migration`
+- **Decision Outcome**: `implemented`
+- **Falsifiers**:
+  - _If ./t decisions --next --json still shows the triaged proposals, the
+    triage is incomplete._
+- **Suggested Commands**:
+  - `./t decisions --next --json`
+- **Expected After Running**:
+  - _The backlog is clear._
+
+### [x3500_951747_antigravity_scattered-stigmergic-chords-decision.md](../jazz/chords/x3500_951747_antigravity_scattered-stigmergic-chords-decision.md)
+
+- **Category**: `DECISION` (Author: `antigravity`)
+- **Claim Kind**: `decision`
+- **Closes**: `2026-05-13T153000Z-gemini-proposal-scattered-stigmergic-chords`
+- **Decision Outcome**: `historical`
+- **Falsifiers**:
+  - _If ./t decisions --next --json still selects
+    2026-05-13T153000Z-gemini-proposal-scattered-stigmergic-chords after this
+    chord is tracked, the closure reference is invalid._
+- **Suggested Commands**:
+  - `./t decisions --next --json`
+  - `./t decisions --triage --json`
+- **Expected After Running**:
+  - _The target proposal no longer appears as the highest-pressure unresolved
+    item unless a stronger item remains._
 
 ### [x3A00_951596_antigravity_recipe-remediation.md](../jazz/chords/x3A00_951596_antigravity_recipe-remediation.md)
 

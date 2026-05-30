@@ -24,8 +24,6 @@ import {
   join,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { listContracts } from "./x4F00_contracts.ts";
-import { collectExternalSurfaces } from "./x8F10_external_surfaces_core.ts";
-import { collectDecisions } from "./x8B00_decisions_gen.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
@@ -277,8 +275,6 @@ async function main() {
   // Query statuses in parallel to prevent bottlenecks
   const [
     contractsList,
-    surfaces,
-    decisions,
     statusData,
     surfacesData,
     decisionsData,
@@ -290,19 +286,6 @@ async function main() {
     mycProtocolAuditShadowData,
   ] = await Promise.all([
     listContracts().catch(() => []),
-    collectExternalSurfaces({ stable: true, includeVolatile: false }).catch(
-      () => [],
-    ),
-    collectDecisions(true).catch(() => ({
-      summary: {
-        total_chords: 0,
-        proposals: 0,
-        decisions: 0,
-        receipts: 0,
-        critiques: 0,
-      },
-      entries: [],
-    })),
     callTStatus(),
     callTExternalSurfaces(),
     callTDecisions(),
@@ -320,17 +303,6 @@ async function main() {
   const aspirational_contracts = contractsList.filter(
     (c) => c.implementation_status === "aspirational",
   ).length;
-
-  // Count surfaces by category
-  const compCount =
-    surfaces.filter((s) => s.category === "compatibility_abi").length;
-  const docsCount =
-    surfaces.filter((s) => s.category === "compatibility").length;
-  const probeCount =
-    surfaces.filter((s) => s.category === "experimental").length;
-  const chordCount = surfaces.filter((s) => s.category === "live_chord").length;
-
-  const decSummary = decisions.summary;
 
   // Extract divergence metrics for antigravity
   const antigravityVoice = portraitData?.voices?.find(

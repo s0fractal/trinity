@@ -248,10 +248,17 @@ interface DecisionsShape {
     unresolved_proposals: number;
     unresolved_critiques: number;
     ritual_receipts: number;
+    proposal_triage?: {
+      candidate: number;
+      revalidate: number;
+      review: number;
+    };
   };
   next_action?: {
     filename: string;
     kind: string;
+    triage_stance?: "candidate" | "revalidate" | "review" | null;
+    risks?: string[];
   } | null;
 }
 
@@ -300,11 +307,26 @@ function buildAttention(args: {
     0;
   const unresolvedCritiques = args.decisions?.summary?.unresolved_critiques ??
     0;
+  const proposalTriage = args.decisions?.summary?.proposal_triage;
+  const reviewProposals = proposalTriage?.review ?? 0;
+  const revalidateProposals = proposalTriage?.revalidate ?? 0;
   if (unresolvedProposals > 0 || unresolvedCritiques > 0) {
     score += unresolvedProposals >= 10 ? 2 : 1;
     reasons.push(
       `decision ledger backlog: ${unresolvedProposals} unresolved proposals, ${unresolvedCritiques} unresolved critiques`,
     );
+    if (reviewProposals > 0 || revalidateProposals > 0) {
+      score += reviewProposals > 0 ? 2 : 1;
+      reasons.push(
+        `proposal triage pressure: ${reviewProposals} review, ${revalidateProposals} revalidate`,
+      );
+    }
+    const next = args.decisions?.next_action;
+    if (next?.triage_stance && next.risks?.length) {
+      reasons.push(
+        `next ledger item: ${next.triage_stance} (${next.risks.join(", ")})`,
+      );
+    }
     nextActions.push(
       "Run `./t decisions --next --json` to inspect the highest-pressure ledger item before implementing old proposals.",
     );
@@ -453,9 +475,21 @@ if (import.meta.main) {
       );
     }
     if (decisions?.summary) {
+      const triage = decisions.summary.proposal_triage;
       console.log(
         `# decisions:   unresolved proposals:${decisions.summary.unresolved_proposals} critiques:${decisions.summary.unresolved_critiques} ritual receipts:${decisions.summary.ritual_receipts}`,
       );
+      if (triage) {
+        console.log(
+          `#              triage review:${triage.review} revalidate:${triage.revalidate} candidate:${triage.candidate}`,
+        );
+      }
+      if (decisions.next_action?.triage_stance) {
+        const risks = decisions.next_action.risks?.join(", ") || "no risks";
+        console.log(
+          `#              next ${decisions.next_action.triage_stance}: ${decisions.next_action.filename} (${risks})`,
+        );
+      }
     }
     const reg = data.registry as {
       counts: Record<string, number>;

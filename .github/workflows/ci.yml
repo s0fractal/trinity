@@ -60,7 +60,7 @@ jobs:
         run: ./t recipes show recipe.metacognition.field-cycle --json | jq -e '.type == "recipes" and .position == "3/C" and .action == "show" and .recipes[0].id == "recipe.metacognition.field-cycle"'
 
       - name: Verify self attention summary
-        run: ./t self --json | jq -e '(.attention.level | IN("clear", "watch", "act")) and (.attention.score | type) == "number" and (.attention.reasons | type) == "array" and (.attention.next_actions | type) == "array" and (.decisions.unresolved_proposals | type) == "number"'
+        run: ./t self --json | jq -e '(.attention.level | IN("clear", "watch", "act")) and (.attention.score | type) == "number" and (.attention.reasons | type) == "array" and (.attention.next_actions | type) == "array" and (.decisions.unresolved_proposals | type) == "number" and (.decisions.proposal_triage.review | type) == "number"'
 
       - name: Verify MYC x9 shadow status
         run: ./t myc-status-shadow --json | jq -e '.type == "status" and .position == "9/2E" and .shadow == true and .summary.overall == "healthy"'

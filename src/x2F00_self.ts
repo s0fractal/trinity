@@ -306,7 +306,7 @@ function buildAttention(args: {
       `decision ledger backlog: ${unresolvedProposals} unresolved proposals, ${unresolvedCritiques} unresolved critiques`,
     );
     nextActions.push(
-      "Run `./t decisions --next --json` to inspect the oldest ledger closure candidate.",
+      "Run `./t decisions --next --json` to inspect the highest-pressure ledger item before implementing old proposals.",
     );
   }
 

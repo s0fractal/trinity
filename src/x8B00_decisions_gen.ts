@@ -53,6 +53,13 @@ export interface DecisionEntry {
   // (substance=false) is a narrative chord that claims work was done without
   // pointing at any verifiable artifact. Always true for non-receipt categories.
   substance: boolean;
+  proposal_triage: ProposalTriage | null;
+}
+
+interface ProposalTriage {
+  stance: "candidate" | "revalidate" | "review";
+  risks: string[];
+  reason: string;
 }
 
 interface DecisionNextAction {
@@ -62,6 +69,8 @@ interface DecisionNextAction {
   author: string;
   timestamp: string;
   reason: string;
+  triage_stance: ProposalTriage["stance"] | null;
+  risks: string[];
   suggested_command: string;
 }
 
@@ -121,12 +130,77 @@ function timestampFromFilename(filename: string): string | null {
   return null;
 }
 
+function daysSinceTimestamp(
+  timestamp: string,
+  nowMs = Date.now(),
+): number | null {
+  const t = new Date(timestamp).getTime();
+  if (!Number.isFinite(t)) return null;
+  return Math.max(0, Math.floor((nowMs - t) / 86_400_000));
+}
+
+function triageProposal(entry: {
+  category: DecisionEntry["category"];
+  is_unresolved: boolean;
+  filename: string;
+  title: string;
+  timestamp: string;
+  has_falsifier: boolean;
+  has_suggested_commands: boolean;
+}): ProposalTriage | null {
+  if (entry.category !== "proposal" || !entry.is_unresolved) return null;
+
+  const risks: string[] = [];
+  const lower = `${entry.filename} ${entry.title}`.toLowerCase();
+  const ageDays = daysSinceTimestamp(entry.timestamp);
+
+  if (ageDays !== null && ageDays >= 14) {
+    risks.push(`stale_${ageDays}d`);
+  }
+  if (!entry.has_falsifier) risks.push("missing_falsifier");
+  if (!entry.has_suggested_commands) risks.push("missing_suggested_commands");
+  if (
+    /delete|codeicide|folder[- ]topology|scattered|overlay|shadow|recursive-dispatcher/
+      .test(lower)
+  ) {
+    risks.push("topology_or_destructive_risk");
+  }
+
+  const stance: ProposalTriage["stance"] = risks.includes(
+      "topology_or_destructive_risk",
+    )
+    ? "review"
+    : risks.some((r) => r.startsWith("stale_")) || risks.length > 0
+    ? "revalidate"
+    : "candidate";
+
+  const reason = stance === "candidate"
+    ? "proposal has enough shape for implementation review"
+    : stance === "review"
+    ? "proposal may degrade topology, safety, or repository cognition; review before any implementation"
+    : "proposal is old or under-specified; revalidate against current substrate before implementation";
+
+  return { stance, risks, reason };
+}
+
 function chooseNextAction(entries: DecisionEntry[]): DecisionNextAction | null {
   const unresolved = entries
     .filter((e) => e.is_unresolved)
-    .sort((a, b) => a.timestamp.localeCompare(b.timestamp));
+    .sort((a, b) => {
+      const priority = (e: DecisionEntry) =>
+        e.proposal_triage?.stance === "review"
+          ? 0
+          : e.proposal_triage?.stance === "revalidate"
+          ? 1
+          : 2;
+      const pa = priority(a);
+      const pb = priority(b);
+      if (pa !== pb) return pa - pb;
+      return a.timestamp.localeCompare(b.timestamp);
+    });
   const firstUnresolved = unresolved[0];
   if (firstUnresolved) {
+    const triage = firstUnresolved.proposal_triage;
     return {
       kind: firstUnresolved.category === "critique" ? "critique" : "proposal",
       id: firstUnresolved.id,
@@ -135,8 +209,10 @@ function chooseNextAction(entries: DecisionEntry[]): DecisionNextAction | null {
       timestamp: firstUnresolved.timestamp,
       reason: firstUnresolved.resolution_hint ??
         `${firstUnresolved.category} has no subsequent decision/receipt closure`,
+      triage_stance: triage?.stance ?? null,
+      risks: triage?.risks ?? [],
       suggested_command:
-        `Review jazz/chords/${firstUnresolved.filename} and close it with a decision or receipt chord that references this id.`,
+        `Review jazz/chords/${firstUnresolved.filename}; do not implement before deciding whether to revalidate, supersede, compost, or close it with a decision/receipt chord that references this id.`,
     };
   }
 
@@ -151,6 +227,8 @@ function chooseNextAction(entries: DecisionEntry[]): DecisionNextAction | null {
       author: ritualReceipt.author,
       timestamp: ritualReceipt.timestamp,
       reason: "receipt has no verifiable artifact link",
+      triage_stance: null,
+      risks: [],
       suggested_command:
         `Review jazz/chords/${ritualReceipt.filename} and add artifact evidence or mark it as narrative-only.`,
     };
@@ -517,6 +595,7 @@ async function scanChordFile(
       resolved_by_valid: true,
       resolution_validation_errors: [],
       substance: true,
+      proposal_triage: null,
       mentions,
     };
   } catch {
@@ -737,6 +816,16 @@ export async function collectDecisions(stable: boolean): Promise<{
       }
     }
 
+    const proposal_triage = triageProposal({
+      category: raw.category,
+      is_unresolved,
+      filename: raw.filename,
+      title: raw.title,
+      timestamp: raw.timestamp,
+      has_falsifier: raw.falsifiers.length > 0,
+      has_suggested_commands: raw.suggested_commands.length > 0,
+    });
+
     return {
       filename: raw.filename,
       id: raw.id,
@@ -771,15 +860,30 @@ export async function collectDecisions(stable: boolean): Promise<{
           /\.md$/.test(m) && m.includes("contracts")
         )
       ),
+      proposal_triage,
     };
   });
 
+  const triagedProposals = entries.filter((e) => e.proposal_triage !== null);
   const summary = {
     total_chords: entries.length,
     proposals: entries.filter((e) => e.category === "proposal").length,
     unresolved_proposals: entries.filter(
       (e) => e.category === "proposal" && e.is_unresolved,
     ).length,
+    proposal_triage: {
+      candidate:
+        triagedProposals.filter((e) =>
+          e.proposal_triage?.stance === "candidate"
+        ).length,
+      revalidate:
+        triagedProposals.filter((e) =>
+          e.proposal_triage?.stance === "revalidate"
+        ).length,
+      review:
+        triagedProposals.filter((e) => e.proposal_triage?.stance === "review")
+          .length,
+    },
     decisions: entries.filter((e) => e.category === "decision").length,
     receipts: entries.filter((e) => e.category === "receipt").length,
     critiques: entries.filter((e) => e.category === "critique").length,

@@ -119,10 +119,10 @@ jobs:
         run: ./t evidence --strict --json | jq -e '.strict_mode == true and .strict_ok == true'
 
       - name: Verify decisions JSON format
-        run: ./t decisions --json | jq -e '.type == "decisions" and .position == "8/B" and ((.next_action == null) or (.next_action.filename | type) == "string")'
+        run: ./t decisions --json | jq -e '.type == "decisions" and .position == "8/B" and (.summary.proposal_triage.review | type) == "number" and (.summary.proposal_triage.revalidate | type) == "number" and ((.next_action == null) or ((.next_action.filename | type) == "string" and (.next_action.risks | type) == "array"))'
 
       - name: Verify decisions next action
-        run: ./t decisions --next --json | jq -e '.type == "decisions_next" and .position == "8/B" and .action == "next" and ((.next_action == null) or (.next_action.filename | type) == "string")'
+        run: ./t decisions --next --json | jq -e '.type == "decisions_next" and .position == "8/B" and .action == "next" and ((.next_action == null) or ((.next_action.filename | type) == "string" and (.next_action.risks | type) == "array" and (.next_action.triage_stance | type) == "string"))'
 
       - name: Verify decisions closure validity (no invalid manual closures)
         run: |

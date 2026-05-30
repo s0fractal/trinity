@@ -124,6 +124,9 @@ jobs:
       - name: Verify decisions next action
         run: ./t decisions --next --json | jq -e '.type == "decisions_next" and .position == "8/B" and .action == "next" and ((.next_action == null) or ((.next_action.filename | type) == "string" and (.next_action.risks | type) == "array" and (.next_action.triage_stance | type) == "string"))'
 
+      - name: Verify decisions triage queue
+        run: ./t decisions --triage --json | jq -e '.type == "decisions_triage" and .position == "8/B" and .action == "triage" and (.summary.review | type) == "number" and (.summary.revalidate | type) == "number" and (.queue | type) == "array"'
+
       - name: Verify decisions closure validity (no invalid manual closures)
         run: |
           ./t decisions --json | jq -e '

@@ -74,6 +74,18 @@ interface DecisionNextAction {
   suggested_command: string;
 }
 
+interface DecisionTriageQueueItem {
+  id: string;
+  filename: string;
+  title: string;
+  author: string;
+  timestamp: string;
+  stance: ProposalTriage["stance"];
+  risks: string[];
+  reason: string;
+  suggested_command: string;
+}
+
 // Minimal YAML frontmatter parser — extracts only the flat scalar fields we need.
 function parseFrontmatter(text: string): Record<string, any> {
   const out: Record<string, any> = {};
@@ -235,6 +247,33 @@ function chooseNextAction(entries: DecisionEntry[]): DecisionNextAction | null {
   }
 
   return null;
+}
+
+function proposalTriagePriority(stance: ProposalTriage["stance"]): number {
+  return stance === "review" ? 0 : stance === "revalidate" ? 1 : 2;
+}
+
+function buildTriageQueue(entries: DecisionEntry[]): DecisionTriageQueueItem[] {
+  return entries
+    .filter((e) => e.proposal_triage !== null)
+    .sort((a, b) => {
+      const pa = proposalTriagePriority(a.proposal_triage!.stance);
+      const pb = proposalTriagePriority(b.proposal_triage!.stance);
+      if (pa !== pb) return pa - pb;
+      return a.timestamp.localeCompare(b.timestamp);
+    })
+    .map((e) => ({
+      id: e.id,
+      filename: e.filename,
+      title: e.title,
+      author: e.author,
+      timestamp: e.timestamp,
+      stance: e.proposal_triage!.stance,
+      risks: e.proposal_triage!.risks,
+      reason: e.proposal_triage!.reason,
+      suggested_command:
+        `Review jazz/chords/${e.filename}; decide revalidate, supersede, compost, close, or only then implement.`,
+    }));
 }
 
 // Recover author from chord filename when frontmatter omits speaker/actor/
@@ -676,6 +715,11 @@ export async function collectDecisions(stable: boolean): Promise<{
     total_chords: number;
     proposals: number;
     unresolved_proposals: number;
+    proposal_triage: {
+      candidate: number;
+      revalidate: number;
+      review: number;
+    };
     decisions: number;
     receipts: number;
     critiques: number;
@@ -921,10 +965,12 @@ async function main() {
   const wantJson = args.includes("--json");
   const wantVolatile = args.includes("--volatile");
   const wantNext = args.includes("--next");
+  const wantTriage = args.includes("--triage");
   const stable = args.includes("--stable") || !wantVolatile;
 
   const { summary, entries } = await collectDecisions(stable);
   const next_action = chooseNextAction(entries);
+  const triage_queue = buildTriageQueue(entries);
 
   if (wantNext) {
     const payload = {
@@ -937,12 +983,26 @@ async function main() {
     return;
   }
 
+  if (wantTriage) {
+    const payload = {
+      type: "decisions_triage",
+      position: "8/B",
+      action: "triage",
+      summary: summary.proposal_triage,
+      next_action,
+      queue: triage_queue,
+    };
+    console.log(JSON.stringify(payload, null, 2));
+    return;
+  }
+
   if (wantJson) {
     const payload = {
       type: "decisions",
       position: "8/B",
       summary,
       next_action,
+      triage_queue,
       entries,
     };
     console.log(JSON.stringify(payload, null, 2));
@@ -988,6 +1048,27 @@ async function main() {
   lines.push(
     `| ↳ recent (last 7d) | ${summary.ritual_receipts_recent_7d} |`,
   );
+  lines.push(``);
+
+  lines.push(`## Proposal Triage Queue`);
+  lines.push(``);
+  lines.push(
+    `*Unresolved proposals are not implementation orders. Review/revalidate risky or stale proposals before changing the repository.*`,
+  );
+  lines.push(``);
+  lines.push(`| Stance | Chord | Risks |`);
+  lines.push(`| :--- | :--- | :--- |`);
+  if (triage_queue.length === 0) {
+    lines.push(`| clear | — | — |`);
+  } else {
+    for (const item of triage_queue) {
+      lines.push(
+        `| ${item.stance} | [${item.filename}](../jazz/chords/${item.filename}) | ${
+          item.risks.join(", ") || "none"
+        } |`,
+      );
+    }
+  }
   lines.push(``);
 
   const unresolved = entries.filter((e) => e.is_unresolved);

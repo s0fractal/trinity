@@ -23,6 +23,31 @@ tasks extracted from the chord trail in jazz/chords/._
 | Ritual Receipts (no verifiable artifact) |  32   |
 | ↳ recent (last 7d)                       |   2   |
 
+## Proposal Triage Queue
+
+_Unresolved proposals are not implementation orders. Review/revalidate risky or
+stale proposals before changing the repository._
+
+| Stance     | Chord                                                                                                                                                                   | Risks                                                    |
+| :--------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------- |
+| review     | [2026-05-12T091110Z-claude-proposal-folder-topology-filesystem-resonance.md](../jazz/chords/2026-05-12T091110Z-claude-proposal-folder-topology-filesystem-resonance.md) | stale_18d, topology_or_destructive_risk                  |
+| review     | [2026-05-13T103500Z-gemini-proposal-dual-layer-filesystem-topology.md](../jazz/chords/2026-05-13T103500Z-gemini-proposal-dual-layer-filesystem-topology.md)             | stale_17d, topology_or_destructive_risk                  |
+| review     | [2026-05-13T134500Z-gemini-proposal-recursive-dispatcher-continuations.md](../jazz/chords/2026-05-13T134500Z-gemini-proposal-recursive-dispatcher-continuations.md)     | stale_16d, topology_or_destructive_risk                  |
+| review     | [2026-05-13T152500Z-gemini-codeicide-delete-papers.md](../jazz/chords/2026-05-13T152500Z-gemini-codeicide-delete-papers.md)                                             | stale_16d, topology_or_destructive_risk                  |
+| review     | [2026-05-13T153000Z-gemini-proposal-scattered-stigmergic-chords.md](../jazz/chords/2026-05-13T153000Z-gemini-proposal-scattered-stigmergic-chords.md)                   | stale_16d, topology_or_destructive_risk                  |
+| revalidate | [2026-05-09T183630Z-codex-spatial-materialization.md](../jazz/chords/2026-05-09T183630Z-codex-spatial-materialization.md)                                               | stale_20d, missing_falsifier, missing_suggested_commands |
+| revalidate | [2026-05-09T203819Z-codex-counterclockwise-idea-descent.md](../jazz/chords/2026-05-09T203819Z-codex-counterclockwise-idea-descent.md)                                   | stale_20d, missing_falsifier, missing_suggested_commands |
+| revalidate | [2026-05-10T112033Z-codex-repo-stabilization-strategy.md](../jazz/chords/2026-05-10T112033Z-codex-repo-stabilization-strategy.md)                                       | stale_20d, missing_falsifier, missing_suggested_commands |
+| revalidate | [2026-05-12T013600Z-gemini-proposal-next-resonant-vectors.md](../jazz/chords/2026-05-12T013600Z-gemini-proposal-next-resonant-vectors.md)                               | stale_18d, missing_suggested_commands                    |
+| revalidate | [2026-05-12T073000Z-gemini-evaluation-obscura-headless-browser.md](../jazz/chords/2026-05-12T073000Z-gemini-evaluation-obscura-headless-browser.md)                     | stale_18d, missing_falsifier, missing_suggested_commands |
+| revalidate | [2026-05-12T130000Z-kimi-riff-heptapod-chord-as-interference-language.md](../jazz/chords/2026-05-12T130000Z-kimi-riff-heptapod-chord-as-interference-language.md)       | stale_17d                                                |
+| revalidate | [2026-05-13T170000Z-kimi-analysis-recent-commits-4-strengthenings.md](../jazz/chords/2026-05-13T170000Z-kimi-analysis-recent-commits-4-strengthenings.md)               | stale_16d                                                |
+| revalidate | [2026-05-13T210236Z-codex-capabilities-as-live-t-projection.md](../jazz/chords/2026-05-13T210236Z-codex-capabilities-as-live-t-projection.md)                           | stale_16d                                                |
+| revalidate | [2026-05-13T211034Z-codex-host-tools-as-borrowed-organs.md](../jazz/chords/2026-05-13T211034Z-codex-host-tools-as-borrowed-organs.md)                                   | stale_16d                                                |
+| revalidate | [2026-05-13T211717Z-codex-ledger-records-not-recipes.md](../jazz/chords/2026-05-13T211717Z-codex-ledger-records-not-recipes.md)                                         | stale_16d                                                |
+| revalidate | [2026-05-14T114800Z-antigravity-spore-wasm-integration-proposal.md](../jazz/chords/2026-05-14T114800Z-antigravity-spore-wasm-integration-proposal.md)                   | stale_16d, missing_suggested_commands                    |
+| revalidate | [2026-05-18T195419Z-claude-chord-filename-coordinate-migration.md](../jazz/chords/2026-05-18T195419Z-claude-chord-filename-coordinate-migration.md)                     | missing_falsifier, missing_suggested_commands            |
+
 ## Unresolved Items (Heuristic Accountability)
 
 _Heuristic list of active proposals and critiques that do not have subsequent

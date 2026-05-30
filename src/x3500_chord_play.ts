@@ -294,6 +294,17 @@ async function runCommands(commands: string[]): Promise<boolean> {
   return true;
 }
 
+const BTC_TIP_URL = "https://blockstream.info/api/blocks/tip/height";
+
+async function fetchBtcBlock(): Promise<number> {
+  const res = await fetch(BTC_TIP_URL);
+  if (!res.ok) throw new Error(`BTC API ${res.status}`);
+  const text = (await res.text()).trim();
+  const n = Number(text);
+  if (!Number.isFinite(n)) throw new Error(`bad block height: ${text}`);
+  return n;
+}
+
 async function emitReceiptChord(opts: {
   chordPath: string;
   fm: ChordFrontmatter;
@@ -305,13 +316,18 @@ async function emitReceiptChord(opts: {
   const { chordPath, fm, results, verdict, pre, post } = opts;
   const chordContent = await Deno.readTextFile(chordPath);
   const chordHash = `h.${(await sha256Hex(chordContent)).slice(0, 12)}`;
-  const ts = chordTimestamp();
+
+  const block = await fetchBtcBlock().catch(() => null);
+  const blockStr = block ? String(block) : chordTimestamp();
   const slug = (fm.tension ?? "unspecified").slice(0, 40);
-  const filename = `${ts}-trinity-receipt-${slug}.md`;
+  const filename = `x7500_${blockStr}_trinity_${slug}-receipt.md`;
   const path = join(CHORDS_DIR, filename);
 
   const lines: string[] = [];
   lines.push("---");
+  if (block) {
+    lines.push(`anchor_block: ${block}`);
+  }
   lines.push("chord:");
   lines.push('  primary: "oct:5.5"');
   lines.push('  secondary: ["oct:7.2"]');

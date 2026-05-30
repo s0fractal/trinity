@@ -5,7 +5,7 @@
 // placement_policy: axis
 // intent: scan files and build profile metadata
 // maturity: active
-// horizon: extend schema parsing
+// horizon: none (schema parsing extended for chords)
 // skill_tag: scan
 // skill_safe: yes
 //
@@ -204,8 +204,16 @@ export async function analyzeFile(
 
   if (isLiquid && content.includes("ρ:") && content.includes("Σ\n")) {
     profile.L3_schema_valid = true;
-  } else if (fm && hasJsonBlock(content)) {
-    profile.L3_schema_valid = true;
+  } else if (fm) {
+    const isChord = path.replace(/\\/g, "/").includes("jazz/chords/");
+    if (isChord) {
+      const required = ["id", "speaker", "chord", "mode", "claim"];
+      if (required.every((field) => field in fm)) {
+        profile.L3_schema_valid = true;
+      }
+    } else if (hasJsonBlock(content)) {
+      profile.L3_schema_valid = true;
+    }
   }
 
   if (filename.startsWith("h.") || content.includes("0x")) {

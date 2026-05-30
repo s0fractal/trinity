@@ -9,19 +9,19 @@ tasks extracted from the chord trail in jazz/chords/._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  349  |
+| Total Chords                             |  351  |
 | Proposals                                |  52   |
 | Unresolved Proposals (Heuristic)         |  17   |
 | Decisions                                |  35   |
 | Receipts                                 |  108  |
 | Critiques                                |   3   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  151  |
+| Other Observations                       |  153  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   0   |
 | Invalid Closures                         |   0   |
 | Ritual Receipts (no verifiable artifact) |  32   |
-| ↳ recent (last 7d)                       |   4   |
+| ↳ recent (last 7d)                       |   2   |
 
 ## Unresolved Items (Heuristic Accountability)
 
@@ -427,6 +427,7 @@ _No open debts detected in the chord trail._
 | [x3500_950008_codex_src-as-semantic-address-space.md](../jazz/chords/x3500_950008_codex_src-as-semantic-address-space.md)                                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
 | [x3500_950009_codex_substrate-morphology-language-layer.md](../jazz/chords/x3500_950009_codex_substrate-morphology-language-layer.md)                                                                                         | **PROPOSAL** | codex              |   0   |   0    |
 | [x3A00_950512_architect_gravity-informed-balance.md](../jazz/chords/x3A00_950512_architect_gravity-informed-balance.md)                                                                                                       | **PROPOSAL** | architect          |   0   |   0    |
+| [x3A00_951596_antigravity_recipe-remediation.md](../jazz/chords/x3A00_951596_antigravity_recipe-remediation.md)                                                                                                               | **OTHER**    | antigravity        |   0   |   0    |
 | [x4D00_950620_claude_cross-substrate-roadmap-federation.md](../jazz/chords/x4D00_950620_claude_cross-substrate-roadmap-federation.md)                                                                                         | **PROPOSAL** | claude-opus-4-7    |   0   |   0    |
 | [x4D00_950622_claude_fifth-axis-probes-as-generated-organ.md](../jazz/chords/x4D00_950622_claude_fifth-axis-probes-as-generated-organ.md)                                                                                     | **PROPOSAL** | claude-opus-4-7    |   0   |   0    |
 | [x4D00_950624_claude_probes-chord-refs-cross-axis.md](../jazz/chords/x4D00_950624_claude_probes-chord-refs-cross-axis.md)                                                                                                     | **PROPOSAL** | claude-opus-4-7    |   0   |   0    |
@@ -452,6 +453,7 @@ _No open debts detected in the chord trail._
 | [x7F01_950604_codex_daemon-invocation-log-topology-receipt.md](../jazz/chords/x7F01_950604_codex_daemon-invocation-log-topology-receipt.md)                                                                                   | **RECEIPT**  | codex              |   0   |   0    |
 | [x8800_950298_antigravity_self-description-axis-strengthening.md](../jazz/chords/x8800_950298_antigravity_self-description-axis-strengthening.md)                                                                             | **PROPOSAL** | antigravity        |   0   |   0    |
 | [x8D00_950594_codex_omega-vision-roadmap-projection-receipt.md](../jazz/chords/x8D00_950594_codex_omega-vision-roadmap-projection-receipt.md)                                                                                 | **RECEIPT**  | codex              |   0   |   0    |
+| [x8F00_951596_antigravity_x9000-projection.md](../jazz/chords/x8F00_951596_antigravity_x9000-projection.md)                                                                                                                   | **OTHER**    | antigravity        |   0   |   0    |
 
 ## Actionable Details
 
@@ -4139,6 +4141,18 @@ _No open debts detected in the chord trail._
     within one architect session, this critique's action-arm is wrong
     (analysis-arm may still hold)._
 
+### [x3A00_951596_antigravity_recipe-remediation.md](../jazz/chords/x3A00_951596_antigravity_recipe-remediation.md)
+
+- **Category**: `OTHER` (Author: `antigravity`)
+- **Claim Kind**: `action`
+- **Receipt Type**: `file`
+- **Falsifiers**:
+  - _deno check src/x3A00_balance.ts exits with non-zero code_
+  - _t balance --json | grep -q 'recipe.spatial-materialization-bootstrap'_
+- **Suggested Commands**:
+  - `deno check src/x3A00_balance.ts`
+  - `./t balance --json`
+
 ### [x4D00_950812_codex_response-myc-x9000-hard-tweak.md](../jazz/chords/x4D00_950812_codex_response-myc-x9000-hard-tweak.md)
 
 - **Category**: `OTHER` (Author: `codex-gpt-5`)
@@ -4228,3 +4242,15 @@ _No open debts detected in the chord trail._
     incorrect._
   - _If lambda-composer was reconstructed and lives outside trinity scope (e.g.
     ~/.claude/skills/), the LOST tag is wrong._
+
+### [x8F00_951596_antigravity_x9000-projection.md](../jazz/chords/x8F00_951596_antigravity_x9000-projection.md)
+
+- **Category**: `OTHER` (Author: `antigravity`)
+- **Claim Kind**: `action`
+- **Receipt Type**: `file`
+- **Falsifiers**:
+  - _deno check src/x8F00_external_surfaces_gen.ts exits with non-zero code_
+  - _grep -q 'x9000/MANIFEST.myc.ndjson' src/x8F88_external_surfaces.myc.md_
+- **Suggested Commands**:
+  - `deno check src/x8F00_external_surfaces_gen.ts`
+  - `grep -q 'x9000/MANIFEST.myc.ndjson' src/x8F88_external_surfaces.myc.md`

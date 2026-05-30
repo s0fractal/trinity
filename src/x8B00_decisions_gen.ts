@@ -55,6 +55,16 @@ export interface DecisionEntry {
   substance: boolean;
 }
 
+interface DecisionNextAction {
+  kind: "proposal" | "critique" | "ritual_receipt";
+  id: string;
+  filename: string;
+  author: string;
+  timestamp: string;
+  reason: string;
+  suggested_command: string;
+}
+
 // Minimal YAML frontmatter parser — extracts only the flat scalar fields we need.
 function parseFrontmatter(text: string): Record<string, any> {
   const out: Record<string, any> = {};
@@ -108,6 +118,44 @@ function timestampFromFilename(filename: string): string | null {
       return blockHeightToISO(block);
     }
   }
+  return null;
+}
+
+function chooseNextAction(entries: DecisionEntry[]): DecisionNextAction | null {
+  const unresolved = entries
+    .filter((e) => e.is_unresolved)
+    .sort((a, b) => a.timestamp.localeCompare(b.timestamp));
+  const firstUnresolved = unresolved[0];
+  if (firstUnresolved) {
+    return {
+      kind: firstUnresolved.category === "critique" ? "critique" : "proposal",
+      id: firstUnresolved.id,
+      filename: firstUnresolved.filename,
+      author: firstUnresolved.author,
+      timestamp: firstUnresolved.timestamp,
+      reason: firstUnresolved.resolution_hint ??
+        `${firstUnresolved.category} has no subsequent decision/receipt closure`,
+      suggested_command:
+        `Review jazz/chords/${firstUnresolved.filename} and close it with a decision or receipt chord that references this id.`,
+    };
+  }
+
+  const ritualReceipt = entries
+    .filter((e) => e.category === "receipt" && !e.substance)
+    .sort((a, b) => a.timestamp.localeCompare(b.timestamp))[0];
+  if (ritualReceipt) {
+    return {
+      kind: "ritual_receipt",
+      id: ritualReceipt.id,
+      filename: ritualReceipt.filename,
+      author: ritualReceipt.author,
+      timestamp: ritualReceipt.timestamp,
+      reason: "receipt has no verifiable artifact link",
+      suggested_command:
+        `Review jazz/chords/${ritualReceipt.filename} and add artifact evidence or mark it as narrative-only.`,
+    };
+  }
+
   return null;
 }
 
@@ -768,15 +816,29 @@ async function main() {
   const args = Deno.args;
   const wantJson = args.includes("--json");
   const wantVolatile = args.includes("--volatile");
+  const wantNext = args.includes("--next");
   const stable = args.includes("--stable") || !wantVolatile;
 
   const { summary, entries } = await collectDecisions(stable);
+  const next_action = chooseNextAction(entries);
+
+  if (wantNext) {
+    const payload = {
+      type: "decisions_next",
+      position: "8/B",
+      action: "next",
+      next_action,
+    };
+    console.log(JSON.stringify(payload, null, 2));
+    return;
+  }
 
   if (wantJson) {
     const payload = {
       type: "decisions",
       position: "8/B",
       summary,
+      next_action,
       entries,
     };
     console.log(JSON.stringify(payload, null, 2));

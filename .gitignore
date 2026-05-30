@@ -73,3 +73,6 @@ src/x2A88_lexicon.myc.json
 # Migrated from state/daemon.* → src/x7F88_daemon.* (flat-src migration).
 src/x7F88_daemon.last-check
 src/x7F88_daemon.lock
+
+# Generated export dumps and reports
+reports/

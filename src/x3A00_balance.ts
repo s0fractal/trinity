@@ -17,7 +17,7 @@
 // maturity: active
 // horizon: cross-link with x3C00_recipes — when a balance suggestion has a matching recipe, surface it as remediation candidate (pairs with x3C00's "recipe-as-remediation" horizon)
 // skill_tag: balance
-// skill_safe: yes
+// skill_safe: yes-readonly
 //
 // balance — dipole-driven rebalancing proposals (read-only)
 //

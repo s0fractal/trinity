@@ -10,7 +10,7 @@
 // maturity: active
 // horizon: none (refresh and submodule rollups implemented)
 // skill_tag: self
-// skill_safe: yes
+// skill_safe: yes-readonly
 //
 // "self" — single command answering "show me yourself".
 //

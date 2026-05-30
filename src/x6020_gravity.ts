@@ -11,7 +11,7 @@
 // maturity: active
 // horizon: none (AST resolver integrated)
 // skill_tag: gravity
-// skill_safe: yes
+// skill_safe: yes-readonly
 //
 // gravity — edge tension report. Reads import statements via Deno info AST and
 // derives source→target edges by filename coordinates. Computes

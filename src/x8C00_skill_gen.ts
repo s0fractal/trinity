@@ -66,7 +66,8 @@ const KNOWN_FIELDS = new Set([
 
 const VALID_SKILL_SAFE = new Set(["yes", "yes-readonly", "yes-with-care"]);
 
-const MUTATION_RE = /\bDeno\.(writeTextFile|writeTextFileSync|writeFile|writeFileSync|remove|removeSync|mkdir|mkdirSync|rename|renameSync|copyFile|copyFileSync|truncate|truncateSync)\b/;
+const MUTATION_RE =
+  /\bDeno\.(writeTextFile|writeTextFileSync|writeFile|writeFileSync|remove|removeSync|mkdir|mkdirSync|rename|renameSync|copyFile|copyFileSync|truncate|truncateSync|create|createSync|chmod|chmodSync|chown|chownSync|makeTempDir|makeTempDirSync|makeTempFile|makeTempFileSync|symlink|symlinkSync)\b/;
 
 // Embedded morphology-v0 import-policy table.
 // SWAP-OUT: when morphology graduates to a live organ (probable coord x6F00),
@@ -206,6 +207,12 @@ async function scanOrgans(): Promise<OrganMeta[]> {
       const match = MUTATION_RE.exec(content);
       if (match) {
         behavior_drift = `declared skill_safe: "${skill_safe}" but contains mutating API call: Deno.${match[1]}`;
+      }
+    }
+    if (!behavior_drift && skill_safe === "yes") {
+      const cmdMatch = /\bDeno\.(Command|run)\b/.exec(content);
+      if (cmdMatch) {
+        behavior_drift = `declared skill_safe: "yes" (pure local/cheap) but contains subprocess execution API: Deno.${cmdMatch[1]} (should be classified as yes-readonly or yes-with-care)`;
       }
     }
 

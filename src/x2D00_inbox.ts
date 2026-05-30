@@ -507,7 +507,9 @@ async function main() {
   const jsonMode = args.includes("--json");
   const nextMode = args.includes("--next");
   const compostStale = args.includes("--compost-stale");
-  const voiceArg = args.find((a) => !a.startsWith("--") && a !== "compost-stale");
+  const voiceArg = args.find((a) =>
+    !a.startsWith("--") && a !== "compost-stale"
+  );
 
   const chords = await loadAllChords();
 
@@ -522,7 +524,10 @@ async function main() {
       allInboxes[v] = computeInbox(v, chords);
     }
 
-    const staleCandidates = new Map<string, { chord_id: string; path: string; age_days: number }>();
+    const staleCandidates = new Map<
+      string,
+      { chord_id: string; path: string; age_days: number }
+    >();
     for (const items of Object.values(allInboxes)) {
       for (const item of items) {
         const age = chordDaysAgo(item.chord_id, nowMs);
@@ -537,7 +542,7 @@ async function main() {
     }
 
     const candidates = [...staleCandidates.values()].sort(
-      (a, b) => b.age_days - a.age_days || a.chord_id.localeCompare(b.chord_id)
+      (a, b) => b.age_days - a.age_days || a.chord_id.localeCompare(b.chord_id),
     );
 
     const applied: string[] = [];
@@ -572,10 +577,14 @@ async function main() {
       } else {
         for (const c of candidates) {
           const action = apply ? "COMPOSTED" : "WOULD COMPOST";
-          console.log(`#   • [${action}] ${c.chord_id} (${c.age_days}d ago) -> ${c.path}`);
+          console.log(
+            `#   • [${action}] ${c.chord_id} (${c.age_days}d ago) -> ${c.path}`,
+          );
         }
         if (!apply) {
-          console.log(`# Run with --apply to write status: compost to frontmatter of these chords.`);
+          console.log(
+            `# Run with --apply to write status: compost to frontmatter of these chords.`,
+          );
         }
       }
     }

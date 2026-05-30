@@ -1,4 +1,13 @@
 {
+  "workspace": [
+    "./liquid",
+    "./myc",
+    "./omega"
+  ],
+  "unstable": [
+    "worker-options",
+    "webgpu"
+  ],
   "tasks": {
     "status": "deno run -A src/x0100_dispatch.ts status",
     "gravity": "deno run -A src/x6020_gravity.ts",
@@ -39,7 +48,16 @@
       "liquid/",
       "myc/",
       "omega/",
+      "probes/",
       "jazz/chords/"
+    ]
+  },
+  "lint": {
+    "exclude": [
+      "liquid/",
+      "myc/",
+      "omega/",
+      "probes/"
     ]
   }
 }

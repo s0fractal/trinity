@@ -524,7 +524,9 @@ async function main() {
       test: "./t status --json && ./t roadmap && ./t probes",
       evidence: `status:${
         statusData?.substrate_health?.overall ?? "?"
-      }, decisions:${decisionsData?.summary?.total_chords ?? 0} chords, 3 self-description axes generating`,
+      }, decisions:${
+        decisionsData?.summary?.total_chords ?? 0
+      } chords, 3 self-description axes generating`,
       evidence_source: statusData && decisionsData ? "live" : "missing",
     },
     {
@@ -532,7 +534,8 @@ async function main() {
       claim_status: "partially_implemented",
       contract_status: null,
       contract: "contracts/GOVERNANCE_FLOW.v0.md",
-      command: "./t propose / ./t cowitness / ./t verdict / ./t apply-codeicide",
+      command:
+        "./t propose / ./t cowitness / ./t verdict / ./t apply-codeicide",
       test: "./t decisions --json",
       evidence: `${decisionsData?.summary?.proposals ?? 0} proposals, ${
         decisionsData?.summary?.decisions ?? 0

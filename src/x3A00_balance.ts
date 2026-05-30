@@ -47,7 +47,7 @@ import {
   dirname,
   fromFileUrl,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
-import { type Recipe, loadRecipes } from "./x3C00_recipes.ts";
+import { loadRecipes, type Recipe } from "./x3C00_recipes.ts";
 
 const DIPOLE_AXES = [
   "void_infinity",
@@ -176,21 +176,30 @@ function matchRecipeToFile(filename: string, recipe: Recipe): boolean {
 
   // Determine singular form of filename if it ends in 's' but not 'us'/'ss'/'is'
   let fileSingular = normalizedFile;
-  if (normalizedFile.endsWith("s") && !normalizedFile.endsWith("us") && !normalizedFile.endsWith("ss") && !normalizedFile.endsWith("is")) {
+  if (
+    normalizedFile.endsWith("s") && !normalizedFile.endsWith("us") &&
+    !normalizedFile.endsWith("ss") && !normalizedFile.endsWith("is")
+  ) {
     fileSingular = normalizedFile.slice(0, -1);
   }
 
   // 1. Check if normalized filename (or singular) is a substring of any step (normalized to underscores)
   for (const step of recipe.steps) {
     const normalizedStep = step.toLowerCase().replace(/[\.-]/g, "_");
-    if (normalizedStep.includes(normalizedFile) || normalizedStep.includes(fileSingular)) {
+    if (
+      normalizedStep.includes(normalizedFile) ||
+      normalizedStep.includes(fileSingular)
+    ) {
       return true;
     }
   }
 
   // 2. Check if normalized filename (or singular) matches the recipe ID
   const normalizedRecipeId = recipe.id.toLowerCase().replace(/[\.-]/g, "_");
-  if (normalizedRecipeId.includes(normalizedFile) || normalizedRecipeId.includes(fileSingular)) {
+  if (
+    normalizedRecipeId.includes(normalizedFile) ||
+    normalizedRecipeId.includes(fileSingular)
+  ) {
     return true;
   }
 

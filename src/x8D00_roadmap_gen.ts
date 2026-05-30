@@ -149,7 +149,8 @@ async function parseGeneratedBriefs(): Promise<BriefGaps> {
   try {
     const agentsPath = join(OUT, "x8888_agents.myc.md");
     const agentsText = await Deno.readTextFile(agentsPath);
-    const bucketRe = /-\s+\*\*bucket\s+(\d+)\*\*\s+—\s+\d+\s+organs\s+\([^)]*?(\d+)\s+unclassified\)/g;
+    const bucketRe =
+      /-\s+\*\*bucket\s+(\d+)\*\*\s+—\s+\d+\s+organs\s+\([^)]*?(\d+)\s+unclassified\)/g;
     let match;
     while ((match = bucketRe.exec(agentsText)) !== null) {
       const bucket = match[1];
@@ -163,7 +164,8 @@ async function parseGeneratedBriefs(): Promise<BriefGaps> {
   try {
     const skillsPath = join(OUT, "x8888_skills.myc.md");
     const skillsText = await Deno.readTextFile(skillsPath);
-    const skillsRe = /<!--\s*unclassified:\s*(\d+)\s+invalid_skill_safe:\s*(\d+)\s+skill_tag_drift:\s*(\d+)\s+behavior_drift:\s*(\d+)\s*-->/;
+    const skillsRe =
+      /<!--\s*unclassified:\s*(\d+)\s+invalid_skill_safe:\s*(\d+)\s+skill_tag_drift:\s*(\d+)\s+behavior_drift:\s*(\d+)\s*-->/;
     const commentMatch = skillsRe.exec(skillsText);
     if (commentMatch) {
       gaps.unclassifiedSkillsCount = parseInt(commentMatch[1], 10);
@@ -179,7 +181,10 @@ async function parseGeneratedBriefs(): Promise<BriefGaps> {
       let insideDrifts = false;
       for (const line of lines) {
         const trimmed = line.trim();
-        if (trimmed.startsWith("##") && !trimmed.includes("Substrate classification gaps")) {
+        if (
+          trimmed.startsWith("##") &&
+          !trimmed.includes("Substrate classification gaps")
+        ) {
           break;
         }
         if (trimmed.startsWith("-") && /skill_tag.*drift/.test(trimmed)) {
@@ -187,17 +192,28 @@ async function parseGeneratedBriefs(): Promise<BriefGaps> {
           continue;
         }
         if (insideDrifts) {
-          if (trimmed.startsWith("-") && (line.startsWith("-") || line.startsWith("*"))) {
+          if (
+            trimmed.startsWith("-") &&
+            (line.startsWith("-") || line.startsWith("*"))
+          ) {
             insideDrifts = false;
           } else if (trimmed.startsWith("-") || trimmed.startsWith("*")) {
-            const content = trimmed.replace(/^[-*]\s+/, "").replace(/`/g, "").trim();
+            const content = trimmed.replace(/^[-*]\s+/, "").replace(/`/g, "")
+              .trim();
             if (content) {
               gaps.tagDriftDetails.push(content);
             }
-          } else if (line.startsWith("    ") || line.startsWith("\t\t") || line.startsWith("  ")) {
+          } else if (
+            line.startsWith("    ") || line.startsWith("\t\t") ||
+            line.startsWith("  ")
+          ) {
             if (gaps.tagDriftDetails.length > 0 && trimmed) {
               const lastIdx = gaps.tagDriftDetails.length - 1;
-              gaps.tagDriftDetails[lastIdx] = (gaps.tagDriftDetails[lastIdx] + " " + trimmed).replace(/`/g, "");
+              gaps.tagDriftDetails[lastIdx] =
+                (gaps.tagDriftDetails[lastIdx] + " " + trimmed).replace(
+                  /`/g,
+                  "",
+                );
             }
           }
         }
@@ -208,7 +224,9 @@ async function parseGeneratedBriefs(): Promise<BriefGaps> {
   return gaps;
 }
 
-async function generatedBriefSource(filename: string): Promise<SourceFile | null> {
+async function generatedBriefSource(
+  filename: string,
+): Promise<SourceFile | null> {
   const path = join(OUT, filename);
   try {
     const bytes = await Deno.readFile(path);
@@ -797,17 +815,24 @@ function renderSubstrateRoadmap(
   );
   lines.push(``);
 
-  const totalUnclassifiedOrgans = Object.values(briefGaps.unclassifiedOrgansByBucket).reduce((a, b) => a + b, 0);
+  const totalUnclassifiedOrgans = Object.values(
+    briefGaps.unclassifiedOrgansByBucket,
+  ).reduce((a, b) => a + b, 0);
   if (totalUnclassifiedOrgans > 0) {
     lines.push(
       `- **Unclassified Organs (Maturity)**: ${totalUnclassifiedOrgans} organs awaiting maturity classification:`,
     );
-    const sortedBuckets = Object.keys(briefGaps.unclassifiedOrgansByBucket).sort((a, b) => +a - +b);
+    const sortedBuckets = Object.keys(briefGaps.unclassifiedOrgansByBucket)
+      .sort((a, b) => +a - +b);
     for (const b of sortedBuckets) {
-      lines.push(`  - Bucket ${b}: ${briefGaps.unclassifiedOrgansByBucket[b]} organ(s)`);
+      lines.push(
+        `  - Bucket ${b}: ${briefGaps.unclassifiedOrgansByBucket[b]} organ(s)`,
+      );
     }
   } else {
-    lines.push(`- **Unclassified Organs (Maturity)**: None (perfect classification maturity!).`);
+    lines.push(
+      `- **Unclassified Organs (Maturity)**: None (perfect classification maturity!).`,
+    );
   }
 
   if (briefGaps.unclassifiedSkillsCount > 0) {
@@ -827,7 +852,11 @@ function renderSubstrateRoadmap(
       if (filenameMatch) {
         const fname = filenameMatch[0] + ".ts";
         const rest = d.substring(filenameMatch[0].length).replace(/^:\s*/, "");
-        lines.push(`  - [\`${fname}\`](file://${join(TRINITY_ROOT, "src", fname)}): ${rest}`);
+        lines.push(
+          `  - [\`${fname}\`](file://${
+            join(TRINITY_ROOT, "src", fname)
+          }): ${rest}`,
+        );
       } else {
         lines.push(`  - ${d}`);
       }
@@ -1228,7 +1257,14 @@ async function main(argv: string[]) {
     const path = join(OUT, `x8D00_${voice.key}_roadmap.myc.md`);
     await Deno.writeTextFile(
       path,
-      renderVoiceRoadmap(voice, vChords, horizons, closures, receipts, projections) +
+      renderVoiceRoadmap(
+        voice,
+        vChords,
+        horizons,
+        closures,
+        receipts,
+        projections,
+      ) +
         "\n",
     );
     await formatGeneratedFile(path);

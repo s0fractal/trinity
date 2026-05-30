@@ -60,25 +60,25 @@ preserves the native substrate axis (`2/E` status remains `x9 2 E 0`).
 
 The proposal `x4D00_950812_antigravity_propose-myc-to-x9000-flat-migration.md`
 listed six MYC sources to map. The first three (status, capabilities,
-protocol_audit) are the **observation triad** — single-action probes that
-report read-only substrate state. They are appropriate x9 shadows.
+protocol_audit) are the **observation triad** — single-action probes that report
+read-only substrate state. They are appropriate x9 shadows.
 
 The remaining three are deliberately NOT shadowed:
 
 - `myc/src/x0100_myc.ts` (≈3115 LOC) — library / HTTP server / CLI entrypoint.
   Not a single-action observation probe. A thin shadow would expose no new
-  capability the observation triad does not already provide. Trinity needing
-  to host an HTTP resolver would be a different decision, not an x9 bridge.
+  capability the observation triad does not already provide. Trinity needing to
+  host an HTTP resolver would be a different decision, not an x9 bridge.
 - `myc/src/x5F00_import_spore_receipt.ts` — writes SPORE apply receipts under
   `myc/substrates/spore/receipts/`. A shadow that wrote into MYC's filesystem
-  would duplicate ownership rather than bridge observation. If Trinity needs
-  to import SPORE receipts, that is a Trinity-native organ, not an x9 shadow.
+  would duplicate ownership rather than bridge observation. If Trinity needs to
+  import SPORE receipts, that is a Trinity-native organ, not an x9 shadow.
 - `myc/src/x5F10_import_substrate_receipt.ts` — writes PHI substrate receipts
   under `myc/substrates/liquid/receipts/`. Same reasoning: side-effect writer
   with MYC-side state ownership.
 
-Rule of thumb: x9 shadows are observers. Writers belong to their substrate or
-to a Trinity-native organ, not to the x9 bridge.
+Rule of thumb: x9 shadows are observers. Writers belong to their substrate or to
+a Trinity-native organ, not to the x9 bridge.
 
 ## Falsifiers
 

@@ -20,7 +20,11 @@ import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
 
 const OUTPUT_DIR = "reports";
 const OUTPUT_FILE = join(Deno.cwd(), OUTPUT_DIR, "trinity_clean_export.md");
-const MANIFEST_FILE = join(Deno.cwd(), OUTPUT_DIR, "trinity_clean_export.manifest.json");
+const MANIFEST_FILE = join(
+  Deno.cwd(),
+  OUTPUT_DIR,
+  "trinity_clean_export.manifest.json",
+);
 
 interface ExportEntry {
   path: string;
@@ -64,7 +68,9 @@ function parseArgs(argv: string[]): Args {
 }
 
 async function sha256Hex(data: string | Uint8Array): Promise<string> {
-  const bytes = typeof data === "string" ? new TextEncoder().encode(data) : data;
+  const bytes = typeof data === "string"
+    ? new TextEncoder().encode(data)
+    : data;
   const buf = await crypto.subtle.digest("SHA-256", bytes);
   return Array.from(new Uint8Array(buf))
     .map((b) => b.toString(16).padStart(2, "0"))
@@ -151,7 +157,10 @@ async function loadManifest(): Promise<ExportManifest | null> {
 }
 
 async function writeManifest(manifest: ExportManifest) {
-  await Deno.writeTextFile(MANIFEST_FILE, JSON.stringify(manifest, null, 2) + "\n");
+  await Deno.writeTextFile(
+    MANIFEST_FILE,
+    JSON.stringify(manifest, null, 2) + "\n",
+  );
 }
 
 async function writeExportFile(
@@ -240,8 +249,7 @@ async function exportCleanCodebase(argv: string[]) {
     ? Object.keys(buckets).filter((b) => b === args.bucket)
     : Object.keys(buckets);
 
-  const globalUnchanged =
-    oldManifest && oldManifest.global_hash === globalHash;
+  const globalUnchanged = oldManifest && oldManifest.global_hash === globalHash;
 
   if (globalUnchanged && !args.force && !args.bucket) {
     console.log(

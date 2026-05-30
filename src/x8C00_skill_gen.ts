@@ -210,13 +210,19 @@ async function scanOrgans(): Promise<OrganMeta[]> {
     if (skill_safe && (skill_safe === "yes" || skill_safe === "yes-readonly")) {
       const match = MUTATION_RE.exec(content);
       if (match) {
-        behavior_drift = `declared skill_safe: "${skill_safe}" but contains mutating API call: Deno.${match[1]}`;
+        behavior_drift =
+          `declared skill_safe: "${skill_safe}" but contains mutating API call: Deno.${
+            match[1]
+          }`;
       }
     }
     if (!behavior_drift && skill_safe === "yes") {
       const cmdMatch = /\bDeno\.(Command|run)\b/.exec(content);
       if (cmdMatch) {
-        behavior_drift = `declared skill_safe: "yes" (pure local/cheap) but contains subprocess execution API: Deno.${cmdMatch[1]} (should be classified as yes-readonly or yes-with-care)`;
+        behavior_drift =
+          `declared skill_safe: "yes" (pure local/cheap) but contains subprocess execution API: Deno.${
+            cmdMatch[1]
+          } (should be classified as yes-readonly or yes-with-care)`;
       }
     }
 
@@ -608,7 +614,10 @@ function renderSubstrateSkill(
   lines.push(
     `<!-- buckets: ${buckets.size}   organs: ${allOrgans.length}   t-commands: ${glossary.length} -->`,
   );
-  if (unclassified > 0 || invalid > 0 || tagDrift.length > 0 || behaviorDrift.length > 0) {
+  if (
+    unclassified > 0 || invalid > 0 || tagDrift.length > 0 ||
+    behaviorDrift.length > 0
+  ) {
     lines.push(
       `<!-- unclassified: ${unclassified}   invalid_skill_safe: ${invalid}   skill_tag_drift: ${tagDrift.length}   behavior_drift: ${behaviorDrift.length} -->`,
     );
@@ -660,7 +669,10 @@ function renderSubstrateSkill(
   );
   lines.push(``);
 
-  if (unclassified > 0 || invalid > 0 || tagDrift.length > 0 || behaviorDrift.length > 0) {
+  if (
+    unclassified > 0 || invalid > 0 || tagDrift.length > 0 ||
+    behaviorDrift.length > 0
+  ) {
     lines.push(`## ⚠️ Substrate classification gaps`);
     lines.push(``);
     if (unclassified > 0) {
@@ -941,7 +953,9 @@ async function main(argv: string[]) {
     const inv = bucketOrgans.filter((o) => o.invalid_skill_safe).length;
     const driftCount = bucketOrgans.filter((o) => o.behavior_drift).length;
     const tag = unc > 0 || inv > 0 || driftCount > 0
-      ? ` (${unc} unclassified${inv > 0 ? `, ${inv} invalid` : ""}${driftCount > 0 ? `, ${driftCount} drift` : ""})`
+      ? ` (${unc} unclassified${inv > 0 ? `, ${inv} invalid` : ""}${
+        driftCount > 0 ? `, ${driftCount} drift` : ""
+      })`
       : "";
     console.log(
       `[write] x${bucket}888_skill.myc.md (${bucketOrgans.length} organs)${tag}`,

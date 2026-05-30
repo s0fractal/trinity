@@ -396,10 +396,16 @@ function renderVoiceMemory(
     lines.push(`## Since you last spoke`);
     lines.push(``);
     lines.push(
-      `_Substrate evolution since your last chord (Δ ~${deltaDays} day${deltaDays === 1 ? "" : "s"}). Read this first on session start — it is your compressed catch-up._`,
+      `_Substrate evolution since your last chord (Δ ~${deltaDays} day${
+        deltaDays === 1 ? "" : "s"
+      }). Read this first on session start — it is your compressed catch-up._`,
     );
     lines.push(``);
-    lines.push(`**${dream.total} chord${dream.total === 1 ? "" : "s"} by others in your absence.**`);
+    lines.push(
+      `**${dream.total} chord${
+        dream.total === 1 ? "" : "s"
+      } by others in your absence.**`,
+    );
     lines.push(``);
     lines.push(`By voice:`);
     for (const v of dream.by_voice) {

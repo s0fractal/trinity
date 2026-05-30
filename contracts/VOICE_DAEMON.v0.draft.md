@@ -275,8 +275,8 @@ specify the mechanism.
 
 ## Falsifiers
 
-- If `t daemon run` writes to the log when `src/x7F88_daemon.lock` exists, the kill
-  switch is paper.
+- If `t daemon run` writes to the log when `src/x7F88_daemon.lock` exists, the
+  kill switch is paper.
 - If a receipt is emitted without `schema` field, future replay cannot determine
   receipt version.
 - If `backfill: true` receipts are mixed with real-time receipts in the same

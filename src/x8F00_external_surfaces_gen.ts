@@ -160,8 +160,8 @@ async function walkDir(
         const digest = new Uint8Array(
           await crypto.subtle.digest("SHA-256", data),
         );
-        const hex = Array.from(digest, (b) =>
-          b.toString(16).padStart(2, "0")).join("");
+        const hex = Array.from(digest, (b) => b.toString(16).padStart(2, "0"))
+          .join("");
         entries.push({
           path: relPath,
           size: data.length,

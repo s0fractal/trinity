@@ -94,6 +94,7 @@ interface FileReport {
   match: "match" | "mismatch" | "deferred" | "no_dipole" | "malformed";
   note: string;
   is_dispatchable: boolean;
+  import_warnings: string[];
 }
 
 function parsePlacementPolicy(text: string): PlacementPolicy {
@@ -175,6 +176,66 @@ async function scanHexFiles(root: string): Promise<string[]> {
   return out.sort();
 }
 
+function coordinateHexOf(relPath: string): string | null {
+  const name = relPath.split("/").pop() ?? "";
+  const m = name.match(/^x([0-9A-Fa-f]{4})_/);
+  return m ? m[1].toUpperCase() : null;
+}
+
+function getRelativeImports(text: string): string[] {
+  const imports: string[] = [];
+  const staticMatches = text.matchAll(
+    /import\s+.*?\s+from\s+["'](\.\.?\/[^"']+)["']/g,
+  );
+  for (const m of staticMatches) {
+    imports.push(m[1]);
+  }
+  const dynamicMatches = text.matchAll(
+    /import\s*\(\s*["'](\.\.?\/[^"']+)["']\s*\)/g,
+  );
+  for (const m of dynamicMatches) {
+    imports.push(m[1]);
+  }
+  return imports;
+}
+
+function auditRelativeImports(
+  relPath: string,
+  imports: string[],
+  fileCoordinateHex: string | null,
+): string[] {
+  const warnings: string[] = [];
+  const fileBucketInt = fileCoordinateHex
+    ? parseInt(fileCoordinateHex[0], 16)
+    : null;
+
+  for (const imp of imports) {
+    // 1. Check for submodule breach (starting with ../)
+    if (imp.startsWith("../")) {
+      warnings.push(
+        `Relative import "${imp}" reaches outside the package boundary (submodule/probe breach)`,
+      );
+    }
+
+    // 2. Check for coordinate gravity breach within flat src/
+    const fileName = imp.split("/").pop() ?? "";
+    const m = fileName.match(/^x([0-9A-Fa-f]{4})_/);
+    if (m && fileBucketInt !== null) {
+      const importedHex = m[1];
+      const importedBucketInt = parseInt(importedHex[0], 16);
+      if (importedBucketInt > fileBucketInt) {
+        warnings.push(
+          `Relative import "${imp}" violates coordinate gravity law (imported bucket ${
+            importedHex[0]
+          } is higher than file bucket ${fileCoordinateHex![0]})`,
+        );
+      }
+    }
+  }
+
+  return warnings;
+}
+
 async function inspectFile(
   absPath: string,
   relPath: string,
@@ -197,8 +258,18 @@ async function inspectFile(
       match: "no_dipole",
       note: "unreadable",
       is_dispatchable: false,
+      import_warnings: [],
     };
   }
+
+  const relImports = getRelativeImports(text);
+  const fileCoordHex = coordinateHexOf(relPath);
+  const import_warnings = auditRelativeImports(
+    relPath,
+    relImports,
+    fileCoordHex,
+  );
+
   const head = text.split("\n").slice(0, 30).join("\n");
   const { values, raw } = parseHexDipole(head);
   const policy = parsePlacementPolicy(head);
@@ -226,6 +297,7 @@ async function inspectFile(
       match: "no_dipole",
       note,
       is_dispatchable,
+      import_warnings,
     };
   }
   if (!values) {
@@ -242,6 +314,7 @@ async function inspectFile(
       match: "malformed",
       note: "could not parse 8 i8 bytes",
       is_dispatchable,
+      import_warnings,
     };
   }
 
@@ -260,6 +333,7 @@ async function inspectFile(
       match: "no_dipole",
       note: "neutral signature (all zero)",
       is_dispatchable,
+      import_warnings,
     };
   }
 
@@ -280,6 +354,7 @@ async function inspectFile(
       match: "malformed",
       note: "bucket not a hex digit",
       is_dispatchable,
+      import_warnings,
     };
   }
 
@@ -369,6 +444,7 @@ async function inspectFile(
     match: m,
     note,
     is_dispatchable,
+    import_warnings,
   };
 }
 
@@ -455,6 +531,10 @@ function renderReport(
     reports.filter((r) => r.match === "no_dipole" && r.is_dispatchable).length;
   const noDipoleLibraryOk = noDipole - noDipoleOrganGap;
   const malformed = reports.filter((r) => r.match === "malformed").length;
+  const totalImportWarnings = reports.reduce(
+    (acc, r) => acc + r.import_warnings.length,
+    0,
+  );
 
   if (!opts.quiet) {
     console.log(
@@ -481,12 +561,17 @@ function renderReport(
           r.placement_policy.padEnd(9)
         }  ${icon} ${r.match}`,
       );
+      if (r.import_warnings.length > 0) {
+        for (const w of r.import_warnings) {
+          console.log(`    ⚠ [Import Law] ${w}`);
+        }
+      }
     }
     console.log("-".repeat(86));
   }
 
   console.log(
-    `total: ${reports.length}  match: ${matches}  mismatch: ${mismatches}  deferred: ${deferred}  no_dipole: ${noDipole} (organ-gap: ${noDipoleOrganGap}, library-ok: ${noDipoleLibraryOk})  malformed: ${malformed}`,
+    `total: ${reports.length}  match: ${matches}  mismatch: ${mismatches}  deferred: ${deferred}  no_dipole: ${noDipole} (organ-gap: ${noDipoleOrganGap}, library-ok: ${noDipoleLibraryOk})  malformed: ${malformed}  import-warnings: ${totalImportWarnings}`,
   );
 
   if (!opts.quiet && orphans.length > 0) {
@@ -577,6 +662,10 @@ async function main(): Promise<void> {
           ).length,
           malformed: reports.filter((r) => r.match === "malformed").length,
           orphans_count: orphans.length,
+          import_warnings_count: reports.reduce(
+            (acc, r) => acc + r.import_warnings.length,
+            0,
+          ),
         },
         coordinate_uniqueness: {
           ok: uniqueness.ok,

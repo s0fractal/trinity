@@ -158,8 +158,12 @@ function renderTable(recipes: Recipe[]): void {
     console.log(`#   purpose:  ${r.purpose}`);
     console.log(`#   steps:    ${r.steps.length}`);
     if (r.receipt) console.log(`#   receipt:  ${r.receipt}`);
-    if (r.active_remediation_targets && r.active_remediation_targets.length > 0) {
-      const targets = r.active_remediation_targets.map((p) => p.split("/").pop()!).join(", ");
+    if (
+      r.active_remediation_targets && r.active_remediation_targets.length > 0
+    ) {
+      const targets = r.active_remediation_targets.map((p) =>
+        p.split("/").pop()!
+      ).join(", ");
       console.log(`#   remedies: ${targets}`);
     }
     console.log("");

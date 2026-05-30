@@ -599,6 +599,58 @@ function renderDetail(c: ContractEntry): void {
   console.log(`# To read body: cat ${c.path}`);
 }
 
+function contractsReceipt(
+  contracts: ContractEntry[],
+  action: "list" | "show",
+  target?: string,
+) {
+  return {
+    type: "contracts",
+    position: "4/F",
+    action,
+    target,
+    note: "foundation+frontier-pair = stabilized schemas (live projection)",
+    source_of_truth: "contracts/*.md frontmatter",
+    superseded_artifact:
+      "contracts/index.ndjson — replaced by this live projection",
+    summary: {
+      total: contracts.length,
+      active: contracts.filter((c) => c.status === "active").length,
+      draft: contracts.filter((c) => c.status === "draft").length,
+      open: contracts.filter((c) => c.status === "open").length,
+      superseded: contracts.filter((c) => c.status === "superseded").length,
+      pinned: contracts.filter((c) => c.pinned).length,
+      implemented:
+        contracts.filter((c) => c.implementation_status === "implemented")
+          .length,
+      partially_implemented:
+        contracts.filter((c) =>
+          c.implementation_status === "partially_implemented"
+        ).length,
+      prototype:
+        contracts.filter((c) => c.implementation_status === "prototype").length,
+      aspirational:
+        contracts.filter((c) => c.implementation_status === "aspirational")
+          .length,
+      obsolete:
+        contracts.filter((c) => c.implementation_status === "obsolete").length,
+    },
+    contracts,
+    synonyms: [
+      "contracts",
+      "agreements",
+      "schemas",
+      "pacts",
+      "контракти",
+      "угоди",
+      "схеми",
+      "пакти",
+    ],
+    topology:
+      "live read of contracts/*.md frontmatter; body remains as .md payload pending record-graph migration (codex 2026-05-13T211717Z)",
+  };
+}
+
 if (import.meta.main) {
   const args = Deno.args;
   const wantJson = args.includes("--json");
@@ -627,58 +679,16 @@ if (import.meta.main) {
       Deno.exit(1);
     }
     if (wantJson) {
-      console.log(JSON.stringify(cap, null, 2));
+      console.log(
+        JSON.stringify(contractsReceipt([cap], "show", args[1]), null, 2),
+      );
     } else {
       renderDetail(cap);
     }
     Deno.exit(0);
   }
 
-  const receipt = {
-    type: "contracts",
-    position: "4/F",
-    action: "list",
-    note: "foundation+frontier-pair = stabilized schemas (live projection)",
-    source_of_truth: "contracts/*.md frontmatter",
-    superseded_artifact:
-      "contracts/index.ndjson — replaced by this live projection",
-    summary: {
-      total: contracts.length,
-      active: contracts.filter((c) => c.status === "active").length,
-      draft: contracts.filter((c) => c.status === "draft").length,
-      open: contracts.filter((c) => c.status === "open").length,
-      superseded: contracts.filter((c) => c.status === "superseded").length,
-      pinned: contracts.filter((c) => c.pinned).length,
-      implemented: contracts.filter((c) =>
-        c.implementation_status === "implemented"
-      ).length,
-      partially_implemented: contracts.filter((c) =>
-        c.implementation_status === "partially_implemented"
-      ).length,
-      prototype: contracts.filter((c) =>
-        c.implementation_status === "prototype"
-      ).length,
-      aspirational: contracts.filter((c) =>
-        c.implementation_status === "aspirational"
-      ).length,
-      obsolete: contracts.filter((c) =>
-        c.implementation_status === "obsolete"
-      ).length,
-    },
-    contracts,
-    synonyms: [
-      "contracts",
-      "agreements",
-      "schemas",
-      "pacts",
-      "контракти",
-      "угоди",
-      "схеми",
-      "пакти",
-    ],
-    topology:
-      "live read of contracts/*.md frontmatter; body remains as .md payload pending record-graph migration (codex 2026-05-13T211717Z)",
-  };
+  const receipt = contractsReceipt(contracts, "list");
 
   if (wantJson) {
     console.log(JSON.stringify(receipt, null, 2));

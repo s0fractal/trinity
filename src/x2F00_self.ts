@@ -243,10 +243,23 @@ interface HeartbeatShape {
   };
 }
 
+interface DecisionsShape {
+  summary?: {
+    unresolved_proposals: number;
+    unresolved_critiques: number;
+    ritual_receipts: number;
+  };
+  next_action?: {
+    filename: string;
+    kind: string;
+  } | null;
+}
+
 function buildAttention(args: {
   status: StatusShape | null;
   inbox: InboxShape | null;
   heartbeat: HeartbeatShape | null;
+  decisions: DecisionsShape | null;
   runtimeCacheSummary: ReturnType<typeof summarizeRuntimeCaches>;
 }): {
   level: "clear" | "watch" | "act";
@@ -280,6 +293,20 @@ function buildAttention(args: {
     reasons.push("heartbeat stalled");
     nextActions.push(
       "Run `./t heartbeat --json` and choose a small closure step.",
+    );
+  }
+
+  const unresolvedProposals = args.decisions?.summary?.unresolved_proposals ??
+    0;
+  const unresolvedCritiques = args.decisions?.summary?.unresolved_critiques ??
+    0;
+  if (unresolvedProposals > 0 || unresolvedCritiques > 0) {
+    score += unresolvedProposals >= 10 ? 2 : 1;
+    reasons.push(
+      `decision ledger backlog: ${unresolvedProposals} unresolved proposals, ${unresolvedCritiques} unresolved critiques`,
+    );
+    nextActions.push(
+      "Run `./t decisions --next --json` to inspect the oldest ledger closure candidate.",
     );
   }
 
@@ -326,6 +353,7 @@ if (import.meta.main) {
     contracts: () => tryOr(() => callT("contracts", ["--json"]), null),
     inbox: () => tryOr(() => callT("inbox", ["--json"]), null),
     heartbeat: () => tryOr(() => callT("heartbeat", ["--json"]), null),
+    decisions: () => tryOr(() => callT("decisions", ["--json"]), null),
     organs: scanOrgans,
     voices: scanVoices,
     chords: scanChords,
@@ -340,6 +368,7 @@ if (import.meta.main) {
   const contracts = data.contracts as ContractsShape | null;
   const inbox = data.inbox as InboxShape | null;
   const heartbeat = data.heartbeat as HeartbeatShape | null;
+  const decisions = data.decisions as DecisionsShape | null;
 
   const composite = status?.substrate_health?.overall ?? "unknown";
   const audit = status?.summary?.audit
@@ -350,6 +379,7 @@ if (import.meta.main) {
     status,
     inbox,
     heartbeat,
+    decisions,
     runtimeCacheSummary: data.registry.runtimeCacheSummary,
   });
 
@@ -366,6 +396,7 @@ if (import.meta.main) {
     chords: data.chords,
     probes: data.probes,
     contracts: contracts?.summary ?? null,
+    decisions: decisions?.summary ?? null,
     external_surfaces: data.registry,
     inbox: inbox?.summary ?? null,
     heartbeat: heartbeat?.summary ?? null,
@@ -421,6 +452,11 @@ if (import.meta.main) {
     if (contracts?.summary) {
       console.log(
         `# contracts:   ${contracts.summary.total} total (active:${contracts.summary.active} draft:${contracts.summary.draft} pinned:${contracts.summary.pinned})`,
+      );
+    }
+    if (decisions?.summary) {
+      console.log(
+        `# decisions:   unresolved proposals:${decisions.summary.unresolved_proposals} critiques:${decisions.summary.unresolved_critiques} ritual receipts:${decisions.summary.ritual_receipts}`,
       );
     }
     const reg = data.registry as {

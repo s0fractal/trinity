@@ -10,12 +10,12 @@ documents, and local caches outside the core Deno flat-src code base._
 | Category          | File Count |
 | :---------------- | :--------: |
 | compatibility     |     8      |
-| compatibility abi |     53     |
+| compatibility abi |     52     |
 | compost           |     0      |
-| experimental      |     34     |
+| experimental      |     33     |
 | live chord        |    352     |
 | local cache       |     0      |
-| **Total**         |  **447**   |
+| **Total**         |  **445**   |
 
 ## Registered Surfaces
 
@@ -63,7 +63,6 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility abi | [contracts/SUBSTRATE_SELF_ABI.v0.1.md](../contracts/SUBSTRATE_SELF_ABI.v0.1.md)                                                                                                                                                           | compatibility    |                                           | keep        | active contract              |
 | compatibility abi | [contracts/THOUGHT_PHASES.v0.1.md](../contracts/THOUGHT_PHASES.v0.1.md)                                                                                                                                                                   | compatibility    |                                           | keep        | active contract              |
 | compatibility abi | [contracts/TOPOLOGICAL_GRINDING.v0.draft.md](../contracts/TOPOLOGICAL_GRINDING.v0.draft.md)                                                                                                                                               | compatibility    |                                           | keep        | draft status                 |
-| compatibility abi | [contracts/TRINITY_CAPABILITIES.v0.1.md](../contracts/TRINITY_CAPABILITIES.v0.1.md)                                                                                                                                                       | compost          |                                           | compost     | codeicide pending            |
 | compatibility abi | [contracts/VOICES.v0.1.md](../contracts/VOICES.v0.1.md)                                                                                                                                                                                   | compatibility    |                                           | keep        | active contract              |
 | compatibility abi | [contracts/VOICES.v0.draft.md](../contracts/VOICES.v0.draft.md)                                                                                                                                                                           | compatibility    |                                           | keep        | draft status                 |
 | compatibility abi | [contracts/VOICE_DAEMON.v0.draft.md](../contracts/VOICE_DAEMON.v0.draft.md)                                                                                                                                                               | compatibility    |                                           | keep        | draft status                 |
@@ -462,7 +461,6 @@ documents, and local caches outside the core Deno flat-src code base._
 | experimental      | [probes/voice-memory-v0/README.md](../probes/voice-memory-v0/README.md)                                                                                                                                                                   | experimental     |                                           | keep        | active experiment            |
 | experimental      | [probes/voices-routing-falsifier-v0/SPEC.md](../probes/voices-routing-falsifier-v0/SPEC.md)                                                                                                                                               | experimental     |                                           | keep        | active experiment            |
 | experimental      | [probes/voices-routing-falsifier-v0/result.latest.md](../probes/voices-routing-falsifier-v0/result.latest.md)                                                                                                                             | experimental     |                                           | keep        | active experiment            |
-| experimental      | [proposals/codeicide/TRINITY_CAPABILITIES.v0.1.cowitnesses/gemini-2026-05-16T08-37-00-875Z.json](../proposals/codeicide/TRINITY_CAPABILITIES.v0.1.cowitnesses/gemini-2026-05-16T08-37-00-875Z.json)                                       | experimental     |                                           | keep        | active governance proposal   |
 | experimental      | [proposals/codeicide/TRINITY_CAPABILITIES.v0.1.proposal.json](../proposals/codeicide/TRINITY_CAPABILITIES.v0.1.proposal.json)                                                                                                             | experimental     |                                           | keep        | active governance proposal   |
 | compatibility abi | [t](../t)                                                                                                                                                                                                                                 | compatibility    |                                           | keep        | command launcher             |
 | compatibility     | [x9000/MANIFEST.myc.ndjson](../x9000/MANIFEST.myc.ndjson)                                                                                                                                                                                 | compatibility    |                                           | keep        | compatibility projection     |

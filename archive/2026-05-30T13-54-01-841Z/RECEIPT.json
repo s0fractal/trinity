@@ -1,0 +1,78 @@
+{
+  "type": "ApplyCodeicideReceipt",
+  "schema": "trinity.codeicide-apply-receipt.v0.1",
+  "semantics": "ARCHIVE GOVERNANCE (reversible). NOT DELETION. NOT Omega's codeicide_law (which governs synthetic agent termination under Senate warrant). This is a trinity meta-ledger move from live/ to archive/.",
+  "target_path": "contracts/TRINITY_CAPABILITIES.v0.1.md",
+  "target_hash": "1220ed5b6c71202c97181384383cb3f564d8ef7e2e92ee75564df9324738eb705a74",
+  "archived_at": "2026-05-30T13-54-01-841Z",
+  "archived_to": "archive/2026-05-30T13-54-01-841Z/contracts/TRINITY_CAPABILITIES.v0.1.md",
+  "proposal_envelope": {
+    "schema": "trinity.receipt-envelope.v0.1",
+    "envelope_id": "12207e45333a6ecc94cc9a4c38ec8e685719cb8c18e9cbde07dcea6108ac3508bb1f",
+    "body_hash": "1220d791ea1cfe4883632bdb140311d61d0d10e82c33cb57910a11c1631c24e5752c",
+    "substrate_tag": "trinity",
+    "body_kind": "codeicide_proposal",
+    "body": {
+      "type": "CodeicideProposal",
+      "schema": "trinity.codeicide-proposal.v0.1",
+      "target_path": "contracts/TRINITY_CAPABILITIES.v0.1.md",
+      "target_hash": "1220ed5b6c71202c97181384383cb3f564d8ef7e2e92ee75564df9324738eb705a74",
+      "action": "ARCHIVE",
+      "reason": "Contract is explicitly marked status: superseded; live projection t capabilities (0x4/A.ts) replaces hand-maintained registry per Codex chord 2026-05-13T210236Z.",
+      "evidence": [
+        "frontmatter declares status: 'superseded' and superseded_by: 'live projection t capabilities (0x4/A.ts)'",
+        "no 0x*/ organ imports or references it as live authority",
+        "only references are chord history (immutable) and one cross-contract mention in SPATIAL_MATERIALIZATION.v0.1.md"
+      ],
+      "reversible_via": "mv archive/<timestamp>/contracts/TRINITY_CAPABILITIES.v0.1.md contracts/TRINITY_CAPABILITIES.v0.1.md  (RESURRECT.sh in archive directory)",
+      "falsifiers": [
+        "If any 0x*/ organ depends on the contract's text or schema, archival breaks live functionality",
+        "If the superseded_by claim is itself wrong (t capabilities does not cover all v0.1 functionality), the contract is not actually dead"
+      ],
+      "quorum": {
+        "threshold": 3,
+        "out_of": 5
+      },
+      "dwell": {
+        "min_chord_cycles": 0
+      }
+    },
+    "witness_chain": [],
+    "created_at_logical": {
+      "wall_time_utc": "2026-05-30T13:53:50.511Z"
+    }
+  },
+  "verdict": {
+    "type": "CodeicideVerdict",
+    "schema": "trinity.codeicide-verdict.v0.1",
+    "target_path": "contracts/TRINITY_CAPABILITIES.v0.1.md",
+    "target_hash": "1220ed5b6c71202c97181384383cb3f564d8ef7e2e92ee75564df9324738eb705a74",
+    "proposal_body_hash": "1220d791ea1cfe4883632bdb140311d61d0d10e82c33cb57910a11c1631c24e5752c",
+    "proposer_substrate_tag": "trinity",
+    "verdict": "AYE",
+    "agreement": true,
+    "aye_signers": [
+      {
+        "oracle": "antigravity",
+        "substrate_tag": "antigravity"
+      },
+      {
+        "oracle": "codex-gpt-5",
+        "substrate_tag": "codex"
+      },
+      {
+        "oracle": "gemini-pro-1-5",
+        "substrate_tag": "gemini"
+      }
+    ],
+    "nay_signers": [],
+    "quorum": {
+      "threshold": 3,
+      "out_of": 5
+    },
+    "reasons": [
+      "AYE count 3 >= quorum threshold 3"
+    ]
+  },
+  "resurrect_command": "bash archive/2026-05-30T13-54-01-841Z/RESURRECT.sh"
+}

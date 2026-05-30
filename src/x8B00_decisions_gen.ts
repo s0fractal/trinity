@@ -34,6 +34,12 @@ export interface DecisionEntry {
   claim_kind: string | null;
   receipt: string | null;
   closes_hash: string | null;
+  decision_outcome:
+    | "revalidate"
+    | "superseded"
+    | "historical"
+    | "implemented"
+    | null;
   falsifiers: string[];
   suggested_commands: string[];
   expected_after_running: string[];
@@ -651,6 +657,15 @@ async function scanChordFile(
     const suggested_commands = extractSuggestedCommands(text, fm);
     const expected_after_running = extractExpectedAfterRunning(text, fm);
     const closes_hash = extractClosesHash(text, fm);
+    const rawOutcome = fm.decision_outcome
+      ? String(fm.decision_outcome).trim().toLowerCase()
+      : null;
+    const decision_outcome = rawOutcome === "revalidate" ||
+        rawOutcome === "superseded" ||
+        rawOutcome === "historical" ||
+        rawOutcome === "implemented"
+      ? rawOutcome
+      : null;
     const claim_kind = fm.claim_kind ? String(fm.claim_kind).trim() : null;
     const receipt = fm.receipt ? String(fm.receipt).trim() : null;
 
@@ -702,6 +717,7 @@ async function scanChordFile(
       claim_kind,
       receipt,
       closes_hash,
+      decision_outcome,
       falsifiers,
       suggested_commands,
       expected_after_running,
@@ -965,6 +981,7 @@ export async function collectDecisions(stable: boolean): Promise<{
       claim_kind: raw.claim_kind,
       receipt: raw.receipt,
       closes_hash: raw.closes_hash,
+      decision_outcome: raw.decision_outcome,
       falsifiers: raw.falsifiers,
       suggested_commands: raw.suggested_commands,
       expected_after_running: raw.expected_after_running,
@@ -1304,6 +1321,9 @@ async function main() {
       }
       if (e.closes_hash) {
         lines.push(`- **Closes**: \`${e.closes_hash}\``);
+      }
+      if (e.decision_outcome) {
+        lines.push(`- **Decision Outcome**: \`${e.decision_outcome}\``);
       }
       if (e.falsifiers.length > 0) {
         lines.push(`- **Falsifiers**:`);

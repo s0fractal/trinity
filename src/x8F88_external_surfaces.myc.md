@@ -13,9 +13,9 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility abi |     53     |
 | compost           |     0      |
 | experimental      |     34     |
-| live chord        |    351     |
+| live chord        |    352     |
 | local cache       |     0      |
-| **Total**         |  **446**   |
+| **Total**         |  **447**   |
 
 ## Registered Surfaces
 
@@ -357,6 +357,7 @@ documents, and local caches outside the core Deno flat-src code base._
 | live chord        | [jazz/chords/2026-05-23T132237Z-codex-next-implementation-vector-after-beta.md](../jazz/chords/2026-05-23T132237Z-codex-next-implementation-vector-after-beta.md)                                                                         | canonical        |                                           | keep        |                              |
 | live chord        | [jazz/chords/2026-05-23T133425Z-codex-repo-wide-refactor-harmonization-audit.md](../jazz/chords/2026-05-23T133425Z-codex-repo-wide-refactor-harmonization-audit.md)                                                                       | canonical        |                                           | keep        |                              |
 | live chord        | [jazz/chords/2026-05-23T164713Z-kimi-external-critique-the-emperor-has-no-clothes.md](../jazz/chords/2026-05-23T164713Z-kimi-external-critique-the-emperor-has-no-clothes.md)                                                             | canonical        |                                           | keep        |                              |
+| live chord        | [jazz/chords/2026-05-30T134900Z-antigravity-decision-spore-wasm-implemented.md](../jazz/chords/2026-05-30T134900Z-antigravity-decision-spore-wasm-implemented.md)                                                                         | canonical        |                                           | keep        |                              |
 | live chord        | [jazz/chords/20260509-091443-trinity-cognition-liquid-identity-resolution.md](../jazz/chords/20260509-091443-trinity-cognition-liquid-identity-resolution.md)                                                                             | canonical        |                                           | keep        |                              |
 | live chord        | [jazz/chords/20260509-091443-trinity-cognition-myc-publication.md](../jazz/chords/20260509-091443-trinity-cognition-myc-publication.md)                                                                                                   | canonical        |                                           | keep        |                              |
 | live chord        | [jazz/chords/20260509-091443-trinity-cognition-omega-deterministic-execution.md](../jazz/chords/20260509-091443-trinity-cognition-omega-deterministic-execution.md)                                                                       | canonical        |                                           | keep        |                              |

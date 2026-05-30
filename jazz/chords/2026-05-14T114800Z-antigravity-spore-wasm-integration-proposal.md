@@ -1,8 +1,10 @@
 ---
 topic: SPORE WASM Integration / `t apply` capability
 mode: TRIAL
-resolution_status: open
-resolution_note: "previously marked closed; demoted 2026-05-23 because evidence_report shows SPORE runtime backend=simulation, simulation:true — falsifier (real WASM deterministic execution + verifiable state hash) not yet satisfied"
+resolution_status: closed
+resolution_note: "previously marked closed; demoted 2026-05-23 because evidence_report shows SPORE runtime backend=simulation, simulation:true — falsifier (real WASM deterministic execution + verifiable state hash) not yet satisfied; resolved 2026-05-30 via real Deno WebAssembly compiler/instantiation/execution adapter"
+resolved_by:
+  - "jazz/chords/2026-05-30T134900Z-antigravity-decision-spore-wasm-implemented.md"
 falsifier: The WASM module `omega_v2_core.wasm` must successfully process a deterministic execution and return a verifiable state hash, matching what the mock previously intercepted, otherwise the integration is invalid.
 ---
 

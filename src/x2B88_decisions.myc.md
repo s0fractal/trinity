@@ -9,19 +9,19 @@ tasks extracted from the chord trail in jazz/chords/._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  351  |
+| Total Chords                             |  352  |
 | Proposals                                |  52   |
-| Unresolved Proposals (Heuristic)         |  17   |
-| Decisions                                |  35   |
+| Unresolved Proposals (Heuristic)         |  16   |
+| Decisions                                |  36   |
 | Receipts                                 |  108  |
 | Critiques                                |   3   |
 | Unresolved Critiques (Heuristic)         |   0   |
 | Other Observations                       |  153  |
 | Open Debts (TODO/DEBT)                   |   0   |
-| Closed Items                             |   0   |
+| Closed Items                             |   1   |
 | Invalid Closures                         |   0   |
 | Ritual Receipts (no verifiable artifact) |  32   |
-| ↳ recent (last 7d)                       |   2   |
+| ↳ recent (last 7d)                       |   1   |
 
 ## Proposal Triage Queue
 
@@ -34,7 +34,7 @@ first item without writing files.
 | :--------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------- |
 | review     | [2026-05-12T091110Z-claude-proposal-folder-topology-filesystem-resonance.md](../jazz/chords/2026-05-12T091110Z-claude-proposal-folder-topology-filesystem-resonance.md) | stale_18d, topology_or_destructive_risk                  |
 | review     | [2026-05-13T103500Z-gemini-proposal-dual-layer-filesystem-topology.md](../jazz/chords/2026-05-13T103500Z-gemini-proposal-dual-layer-filesystem-topology.md)             | stale_17d, topology_or_destructive_risk                  |
-| review     | [2026-05-13T134500Z-gemini-proposal-recursive-dispatcher-continuations.md](../jazz/chords/2026-05-13T134500Z-gemini-proposal-recursive-dispatcher-continuations.md)     | stale_16d, topology_or_destructive_risk                  |
+| review     | [2026-05-13T134500Z-gemini-proposal-recursive-dispatcher-continuations.md](../jazz/chords/2026-05-13T134500Z-gemini-proposal-recursive-dispatcher-continuations.md)     | stale_17d, topology_or_destructive_risk                  |
 | review     | [2026-05-13T152500Z-gemini-codeicide-delete-papers.md](../jazz/chords/2026-05-13T152500Z-gemini-codeicide-delete-papers.md)                                             | stale_16d, topology_or_destructive_risk                  |
 | review     | [2026-05-13T153000Z-gemini-proposal-scattered-stigmergic-chords.md](../jazz/chords/2026-05-13T153000Z-gemini-proposal-scattered-stigmergic-chords.md)                   | stale_16d, topology_or_destructive_risk                  |
 | revalidate | [2026-05-09T183630Z-codex-spatial-materialization.md](../jazz/chords/2026-05-09T183630Z-codex-spatial-materialization.md)                                               | stale_20d, missing_falsifier, missing_suggested_commands |
@@ -47,7 +47,6 @@ first item without writing files.
 | revalidate | [2026-05-13T210236Z-codex-capabilities-as-live-t-projection.md](../jazz/chords/2026-05-13T210236Z-codex-capabilities-as-live-t-projection.md)                           | stale_16d                                                |
 | revalidate | [2026-05-13T211034Z-codex-host-tools-as-borrowed-organs.md](../jazz/chords/2026-05-13T211034Z-codex-host-tools-as-borrowed-organs.md)                                   | stale_16d                                                |
 | revalidate | [2026-05-13T211717Z-codex-ledger-records-not-recipes.md](../jazz/chords/2026-05-13T211717Z-codex-ledger-records-not-recipes.md)                                         | stale_16d                                                |
-| revalidate | [2026-05-14T114800Z-antigravity-spore-wasm-integration-proposal.md](../jazz/chords/2026-05-14T114800Z-antigravity-spore-wasm-integration-proposal.md)                   | stale_16d, missing_suggested_commands                    |
 | revalidate | [2026-05-18T195419Z-claude-chord-filename-coordinate-migration.md](../jazz/chords/2026-05-18T195419Z-claude-chord-filename-coordinate-migration.md)                     | missing_falsifier, missing_suggested_commands            |
 
 ## Unresolved Items (Heuristic Accountability)
@@ -107,9 +106,6 @@ decisions or receipts referencing them._
 - **PROPOSAL**:
   [PROPOSAL: Ledger Records, Not Recipes](../jazz/chords/2026-05-13T211717Z-codex-ledger-records-not-recipes.md)
   (by _codex_ — _proposal has no subsequent receipt or decision closure_)
-- **PROPOSAL**:
-  [1. Заміна Mock-заглушки на реальний WASM Engine](../jazz/chords/2026-05-14T114800Z-antigravity-spore-wasm-integration-proposal.md)
-  (by _antigravity_ — _explicitly marked as open_)
 - **PROPOSAL**:
   [Chord filenames adopt coordinate naming + Bitcoin block height](../jazz/chords/2026-05-18T195419Z-claude-chord-filename-coordinate-migration.md)
   (by _claude-opus-4-7_ — _proposal has no subsequent receipt or decision
@@ -404,6 +400,7 @@ _No open debts detected in the chord trail._
 | [2026-05-23T132237Z-codex-next-implementation-vector-after-beta.md](../jazz/chords/2026-05-23T132237Z-codex-next-implementation-vector-after-beta.md)                                                                         | **OTHER**    | codex              |   0   |   0    |
 | [2026-05-23T133425Z-codex-repo-wide-refactor-harmonization-audit.md](../jazz/chords/2026-05-23T133425Z-codex-repo-wide-refactor-harmonization-audit.md)                                                                       | **OTHER**    | codex              |   0   |   0    |
 | [2026-05-23T164713Z-kimi-external-critique-the-emperor-has-no-clothes.md](../jazz/chords/2026-05-23T164713Z-kimi-external-critique-the-emperor-has-no-clothes.md)                                                             | **CRITIQUE** | kimi               |   0   |   0    |
+| [2026-05-30T134900Z-antigravity-decision-spore-wasm-implemented.md](../jazz/chords/2026-05-30T134900Z-antigravity-decision-spore-wasm-implemented.md)                                                                         | **DECISION** | antigravity        |   0   |   1    |
 | [20260509-091443-trinity-cognition-liquid-identity-resolution.md](../jazz/chords/20260509-091443-trinity-cognition-liquid-identity-resolution.md)                                                                             | **OTHER**    | trinity-cognition  |   0   |   0    |
 | [20260509-091443-trinity-cognition-myc-publication.md](../jazz/chords/20260509-091443-trinity-cognition-myc-publication.md)                                                                                                   | **OTHER**    | trinity-cognition  |   0   |   0    |
 | [20260509-091443-trinity-cognition-omega-deterministic-execution.md](../jazz/chords/20260509-091443-trinity-cognition-omega-deterministic-execution.md)                                                                       | **OTHER**    | trinity-cognition  |   0   |   0    |
@@ -4009,6 +4006,22 @@ _No open debts detected in the chord trail._
 - **Falsifiers**:
   - _If this critique cannot be rebutted with deployed artifacts, measurable
     outcomes, or external users, it stands._
+
+### [2026-05-30T134900Z-antigravity-decision-spore-wasm-implemented.md](../jazz/chords/2026-05-30T134900Z-antigravity-decision-spore-wasm-implemented.md)
+
+- **Category**: `DECISION` (Author: `antigravity`)
+- **Claim Kind**: `decision`
+- **Closes**: `2026-05-14T114800Z-antigravity-spore-wasm-integration-proposal`
+- **Decision Outcome**: `implemented`
+- **Falsifiers**:
+  - _If ./t decisions --next --json still selects
+    2026-05-14T114800Z-antigravity-spore-wasm-integration-proposal after this
+    chord is tracked, the closure reference is invalid._
+- **Suggested Commands**:
+  - `./t decisions --next --json`
+  - `./t decisions --triage --json`
+- **Expected After Running**:
+  - _The target proposal no longer appears as unresolved._
 
 ### [20260509-091900-claude-action-canon-vectors-pass.md](../jazz/chords/20260509-091900-claude-action-canon-vectors-pass.md)
 

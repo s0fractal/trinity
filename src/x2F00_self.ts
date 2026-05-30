@@ -310,7 +310,7 @@ function buildAttention(args: {
     );
   }
 
-  if (args.runtimeCacheSummary.total > 0) {
+  if (args.runtimeCacheSummary.stale_7d > 0) {
     score += 1;
     const stale = args.runtimeCacheSummary.stale_7d;
     const oldest = args.runtimeCacheSummary.oldest_days_ago;
@@ -319,9 +319,7 @@ function buildAttention(args: {
       `${args.runtimeCacheSummary.total} volatile runtime cache files (${stale} stale >=7d, ${age})`,
     );
     nextActions.push(
-      stale > 0
-        ? "Run `./t external-surfaces --prune-stale-runtime --dry-run --json` to inspect safe cache cleanup."
-        : "Use `./t external-surfaces --volatile --json` if cache drift matters.",
+      "Run `./t external-surfaces --prune-stale-runtime --dry-run --json` to inspect safe cache cleanup.",
     );
   }
 

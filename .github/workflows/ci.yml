@@ -98,6 +98,9 @@ jobs:
       - name: Verify contracts detail lookup
         run: ./t contracts show IN_LEDGER_OUT.v0.1.md --json | jq -e '.type == "contracts" and .position == "4/F" and .action == "show" and .contracts[0].filename == "IN_LEDGER_OUT.v0.1.md"'
 
+      - name: Verify evidence and heartbeat schemas
+        run: ./t capabilities --json | jq -e '[.capabilities[] | select(.primary == "evidence" or .primary == "heartbeat") | select(.receipt_schema != null)] | length == 2'
+
       - name: Verify contract ref-graph audit format
         run: ./t contract-audit --json | jq -e '.type == "contract_audit" and .summary.total > 0 and (.summary.safe_to_compost // 0) == 0 and (.summary.needs_review // 0) == 0'
 

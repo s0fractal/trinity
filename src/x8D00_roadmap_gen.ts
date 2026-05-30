@@ -127,6 +127,101 @@ async function sha256Hex(bytes: Uint8Array): Promise<string> {
   ).join("");
 }
 
+interface BriefGaps {
+  unclassifiedOrgansByBucket: Record<string, number>;
+  unclassifiedSkillsCount: number;
+  invalidSkillSafeCount: number;
+  skillTagDriftCount: number;
+  behaviorDriftCount: number;
+  tagDriftDetails: string[];
+}
+
+async function parseGeneratedBriefs(): Promise<BriefGaps> {
+  const gaps: BriefGaps = {
+    unclassifiedOrgansByBucket: {},
+    unclassifiedSkillsCount: 0,
+    invalidSkillSafeCount: 0,
+    skillTagDriftCount: 0,
+    behaviorDriftCount: 0,
+    tagDriftDetails: [],
+  };
+
+  try {
+    const agentsPath = join(OUT, "x8888_agents.myc.md");
+    const agentsText = await Deno.readTextFile(agentsPath);
+    const bucketRe = /-\s+\*\*bucket\s+(\d+)\*\*\s+—\s+\d+\s+organs\s+\([^)]*?(\d+)\s+unclassified\)/g;
+    let match;
+    while ((match = bucketRe.exec(agentsText)) !== null) {
+      const bucket = match[1];
+      const count = parseInt(match[2], 10);
+      if (count > 0) {
+        gaps.unclassifiedOrgansByBucket[bucket] = count;
+      }
+    }
+  } catch { /* skip */ }
+
+  try {
+    const skillsPath = join(OUT, "x8888_skills.myc.md");
+    const skillsText = await Deno.readTextFile(skillsPath);
+    const skillsRe = /<!--\s*unclassified:\s*(\d+)\s+invalid_skill_safe:\s*(\d+)\s+skill_tag_drift:\s*(\d+)\s+behavior_drift:\s*(\d+)\s*-->/;
+    const commentMatch = skillsRe.exec(skillsText);
+    if (commentMatch) {
+      gaps.unclassifiedSkillsCount = parseInt(commentMatch[1], 10);
+      gaps.invalidSkillSafeCount = parseInt(commentMatch[2], 10);
+      gaps.skillTagDriftCount = parseInt(commentMatch[3], 10);
+      gaps.behaviorDriftCount = parseInt(commentMatch[4], 10);
+    }
+
+    const gapsIndex = skillsText.indexOf("## ⚠️ Substrate classification gaps");
+    if (gapsIndex !== -1) {
+      const gapsSection = skillsText.slice(gapsIndex);
+      const lines = gapsSection.split("\n");
+      let insideDrifts = false;
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (trimmed.startsWith("##") && !trimmed.includes("Substrate classification gaps")) {
+          break;
+        }
+        if (trimmed.startsWith("-") && /skill_tag.*drift/.test(trimmed)) {
+          insideDrifts = true;
+          continue;
+        }
+        if (insideDrifts) {
+          if (trimmed.startsWith("-") && (line.startsWith("-") || line.startsWith("*"))) {
+            insideDrifts = false;
+          } else if (trimmed.startsWith("-") || trimmed.startsWith("*")) {
+            const content = trimmed.replace(/^[-*]\s+/, "").replace(/`/g, "").trim();
+            if (content) {
+              gaps.tagDriftDetails.push(content);
+            }
+          } else if (line.startsWith("    ") || line.startsWith("\t\t") || line.startsWith("  ")) {
+            if (gaps.tagDriftDetails.length > 0 && trimmed) {
+              const lastIdx = gaps.tagDriftDetails.length - 1;
+              gaps.tagDriftDetails[lastIdx] = (gaps.tagDriftDetails[lastIdx] + " " + trimmed).replace(/`/g, "");
+            }
+          }
+        }
+      }
+    }
+  } catch { /* skip */ }
+
+  return gaps;
+}
+
+async function generatedBriefSource(filename: string): Promise<SourceFile | null> {
+  const path = join(OUT, filename);
+  try {
+    const bytes = await Deno.readFile(path);
+    return {
+      path: `src/${filename}`,
+      hash: `sha256:${await sha256Hex(bytes)}`,
+      size: bytes.length,
+    };
+  } catch {
+    return null;
+  }
+}
+
 interface OrganHorizon {
   filename: string;
   coordinate: string;
@@ -586,6 +681,7 @@ function renderSubstrateRoadmap(
   experimentalProbes: ProbeRecord[],
   closures: Map<string, Closure>,
   receipts: Receipts,
+  briefGaps: BriefGaps,
 ): string {
   const byBucket = new Map<string, OrganHorizon[]>();
   for (const h of horizons) {
@@ -693,6 +789,53 @@ function renderSubstrateRoadmap(
       lines.push(``);
     }
   }
+
+  lines.push(`## Systemic Tension — Classification & Maturity Gaps`);
+  lines.push(``);
+  lines.push(
+    `Synthesized from generated state and skill briefs. These gaps represent outstanding autopoietic alignment debt.`,
+  );
+  lines.push(``);
+
+  const totalUnclassifiedOrgans = Object.values(briefGaps.unclassifiedOrgansByBucket).reduce((a, b) => a + b, 0);
+  if (totalUnclassifiedOrgans > 0) {
+    lines.push(
+      `- **Unclassified Organs (Maturity)**: ${totalUnclassifiedOrgans} organs awaiting maturity classification:`,
+    );
+    const sortedBuckets = Object.keys(briefGaps.unclassifiedOrgansByBucket).sort((a, b) => +a - +b);
+    for (const b of sortedBuckets) {
+      lines.push(`  - Bucket ${b}: ${briefGaps.unclassifiedOrgansByBucket[b]} organ(s)`);
+    }
+  } else {
+    lines.push(`- **Unclassified Organs (Maturity)**: None (perfect classification maturity!).`);
+  }
+
+  if (briefGaps.unclassifiedSkillsCount > 0) {
+    lines.push(
+      `- **Unclassified Skills (Safety)**: ${briefGaps.unclassifiedSkillsCount} organs lack \`skill_safe\` classification (source: \`src/x8888_skills.myc.md\`).`,
+    );
+  } else {
+    lines.push(`- **Unclassified Skills (Safety)**: None.`);
+  }
+
+  if (briefGaps.skillTagDriftCount > 0) {
+    lines.push(
+      `- **Skill Tag Drift**: ${briefGaps.skillTagDriftCount} active drift(s) where an organ's tag does not resolve in the glossary:`,
+    );
+    for (const d of briefGaps.tagDriftDetails) {
+      const filenameMatch = /^x[0-9A-Fa-f]{4}_[a-zA-Z0-9_-]+/.exec(d);
+      if (filenameMatch) {
+        const fname = filenameMatch[0] + ".ts";
+        const rest = d.substring(filenameMatch[0].length).replace(/^:\s*/, "");
+        lines.push(`  - [\`${fname}\`](file://${join(TRINITY_ROOT, "src", fname)}): ${rest}`);
+      } else {
+        lines.push(`  - ${d}`);
+      }
+    }
+  } else {
+    lines.push(`- **Skill Tag Drift**: None.`);
+  }
+  lines.push(``);
 
   if (experimentalProbes.length > 0) {
     lines.push(`## Experimental horizons (probes with chord pressure)`);
@@ -1014,11 +1157,18 @@ async function main(argv: string[]) {
   );
   const closures = detectClosures(allProposals, chords, bodies);
 
+  const agentsBrief = await generatedBriefSource("x8888_agents.myc.md");
+  const skillsBrief = await generatedBriefSource("x8888_skills.myc.md");
+  const extraSources: SourceFile[] = [];
+  if (agentsBrief) extraSources.push(agentsBrief);
+  if (skillsBrief) extraSources.push(skillsBrief);
+
   const allSources: SourceFile[] = [
     ...horizons.map(organSource),
     ...chords.map(chordSource),
     ...voices.map(voiceSource),
     ...projections.map(substrateProjectionSource),
+    ...extraSources,
   ];
   const globalHash = await manifestHash(allSources);
   const globalReceipts: Receipts = {
@@ -1026,6 +1176,8 @@ async function main(argv: string[]) {
     manifest_hash: globalHash,
     source_files: allSources.length,
   };
+
+  const briefGaps = await parseGeneratedBriefs();
 
   let written = 0;
 
@@ -1041,6 +1193,7 @@ async function main(argv: string[]) {
         experimentalProbes,
         closures,
         globalReceipts,
+        briefGaps,
       ) + "\n",
     );
     await formatGeneratedFile(path);

@@ -52,6 +52,80 @@ export interface Recipe {
   purpose: string;
   steps: string[];
   receipt: string;
+  active_remediation_targets?: string[];
+}
+
+export function matchRecipeToFile(filename: string, recipe: Recipe): boolean {
+  const normalizedFile = filename
+    .replace(/^x[0-9A-Fa-f]{4}_/, "")
+    .replace(/\.(ts|sh)$/, "")
+    .toLowerCase()
+    .replace(/-/g, "_");
+
+  // Determine singular form of filename if it ends in 's' but not 'us'/'ss'/'is'
+  let fileSingular = normalizedFile;
+  if (
+    normalizedFile.endsWith("s") && !normalizedFile.endsWith("us") &&
+    !normalizedFile.endsWith("ss") && !normalizedFile.endsWith("is")
+  ) {
+    fileSingular = normalizedFile.slice(0, -1);
+  }
+
+  // 1. Check if normalized filename (or singular) is a substring of any step (normalized to underscores)
+  for (const step of recipe.steps) {
+    const normalizedStep = step.toLowerCase().replace(/[\.-]/g, "_");
+    if (
+      normalizedStep.includes(normalizedFile) ||
+      normalizedStep.includes(fileSingular)
+    ) {
+      return true;
+    }
+  }
+
+  // 2. Check if normalized filename (or singular) matches the recipe ID
+  const normalizedRecipeId = recipe.id.toLowerCase().replace(/[\.-]/g, "_");
+  if (
+    normalizedRecipeId.includes(normalizedFile) ||
+    normalizedRecipeId.includes(fileSingular)
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
+export async function fetchBalanceSuggestions(): Promise<any[]> {
+  try {
+    const balanceScript = join(ROOT, "src", "x3A00_balance.ts");
+    const proc = new Deno.Command("deno", {
+      args: ["run", "--allow-all", balanceScript, "--json"],
+      stdout: "piped",
+      stderr: "piped",
+    });
+    const out = await proc.output();
+    if (!out.success) return [];
+    const raw = new TextDecoder().decode(out.stdout).trim();
+    const parsed = JSON.parse(raw);
+    return parsed.suggestions ?? [];
+  } catch {
+    return [];
+  }
+}
+
+export async function populateRemediations(recipes: Recipe[]): Promise<void> {
+  const suggestions = await fetchBalanceSuggestions();
+  for (const recipe of recipes) {
+    const targets: string[] = [];
+    for (const s of suggestions) {
+      const filename = s.path.split("/").pop()!;
+      if (matchRecipeToFile(filename, recipe)) {
+        targets.push(s.path);
+      }
+    }
+    if (targets.length > 0) {
+      recipe.active_remediation_targets = targets;
+    }
+  }
 }
 
 export async function loadRecipes(): Promise<Recipe[]> {
@@ -83,6 +157,10 @@ function renderTable(recipes: Recipe[]): void {
     console.log(`#   purpose:  ${r.purpose}`);
     console.log(`#   steps:    ${r.steps.length}`);
     if (r.receipt) console.log(`#   receipt:  ${r.receipt}`);
+    if (r.active_remediation_targets && r.active_remediation_targets.length > 0) {
+      const targets = r.active_remediation_targets.map((p) => p.split("/").pop()!).join(", ");
+      console.log(`#   remedies: ${targets}`);
+    }
     console.log("");
   }
   console.log("# " + "─".repeat(80));
@@ -95,6 +173,13 @@ function renderDetail(r: Recipe): void {
   console.log("# " + "─".repeat(70));
   console.log(`# purpose: ${r.purpose}`);
   if (r.receipt) console.log(`# receipt: ${r.receipt}`);
+  if (r.active_remediation_targets && r.active_remediation_targets.length > 0) {
+    console.log("");
+    console.log("# Active Remediation Targets:");
+    for (const t of r.active_remediation_targets) {
+      console.log(`#   - ${t}`);
+    }
+  }
   console.log("");
   console.log("# steps (composition sequence):");
   for (let i = 0; i < r.steps.length; i++) {
@@ -140,6 +225,9 @@ if (import.meta.main) {
   const args = Deno.args;
   const wantJson = args.includes("--json");
   const recipes = await loadRecipes();
+
+  // Populate active remedies on the loaded recipes
+  await populateRemediations(recipes);
 
   if (args[0] === "show" && args[1]) {
     const target = args[1].toLowerCase();

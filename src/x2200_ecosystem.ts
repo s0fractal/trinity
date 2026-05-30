@@ -9,7 +9,7 @@
 // maturity: active
 // horizon: nested ecosystem (substrate-of-substrates if any submodule grows its own federation)
 // skill_tag: ecosystem
-// skill_safe: yes
+// skill_safe: yes-with-care
 //
 // "ecosystem" — unified mirror across all federated substrates.
 //

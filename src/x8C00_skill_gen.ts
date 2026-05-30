@@ -66,6 +66,8 @@ const KNOWN_FIELDS = new Set([
 
 const VALID_SKILL_SAFE = new Set(["yes", "yes-readonly", "yes-with-care"]);
 
+const MUTATION_RE = /\bDeno\.(writeTextFile|writeTextFileSync|writeFile|writeFileSync|remove|removeSync|mkdir|mkdirSync|rename|renameSync|copyFile|copyFileSync|truncate|truncateSync)\b/;
+
 // Embedded morphology-v0 import-policy table.
 // SWAP-OUT: when morphology graduates to a live organ (probable coord x6F00),
 // this generator should import its policy module instead of duplicating.
@@ -125,6 +127,7 @@ interface OrganMeta {
   skill_safe?: string;
   invalid_skill_safe?: string;
   skill_tag_drift?: string;
+  behavior_drift?: string;
   is_dispatchable: boolean;
   source_hash: string;
   source_size: number;
@@ -198,6 +201,14 @@ async function scanOrgans(): Promise<OrganMeta[]> {
     // Distinguishes runtime commands (t-dispatched) from helper modules.
     const is_dispatchable = /\bimport\.meta\.main\b/.test(content);
 
+    let behavior_drift: string | undefined;
+    if (skill_safe && (skill_safe === "yes" || skill_safe === "yes-readonly")) {
+      const match = MUTATION_RE.exec(content);
+      if (match) {
+        behavior_drift = `declared skill_safe: "${skill_safe}" but contains mutating API call: Deno.${match[1]}`;
+      }
+    }
+
     out.push({
       filename: entry.name,
       coordinate: (bucket + sub).toUpperCase(),
@@ -209,6 +220,7 @@ async function scanOrgans(): Promise<OrganMeta[]> {
       skill_tag: fields.get("skill_tag"),
       skill_safe,
       invalid_skill_safe,
+      behavior_drift,
       is_dispatchable,
       source_hash: await sha256Hex(bytes),
       source_size: bytes.length,
@@ -360,6 +372,7 @@ function renderBucketSkill(
     !o.skill_safe && !o.invalid_skill_safe
   );
   const invalid = organs.filter((o) => o.invalid_skill_safe);
+  const drifts = organs.filter((o) => o.behavior_drift);
 
   const lines: string[] = [];
   lines.push(
@@ -465,6 +478,17 @@ function renderBucketSkill(
     lines.push(``);
   }
 
+  if (drifts.length > 0) {
+    lines.push(`## ⚠️ Behavior Drift detected`);
+    lines.push(``);
+    for (const o of drifts) {
+      lines.push(
+        `- **x${o.coordinate}_${o.handle}** — ${o.behavior_drift}`,
+      );
+    }
+    lines.push(``);
+  }
+
   lines.push(`## Import policy for x${bucket}`);
   lines.push(``);
   if (rules.allowed_targets.length > 0) {
@@ -559,6 +583,7 @@ function renderSubstrateSkill(
     allOrgans.filter((o) => !o.skill_safe && !o.invalid_skill_safe).length;
   const invalid = allOrgans.filter((o) => o.invalid_skill_safe).length;
   const tagDrift = allOrgans.filter((o) => o.skill_tag_drift);
+  const behaviorDrift = allOrgans.filter((o) => o.behavior_drift);
 
   const lines: string[] = [];
   lines.push(
@@ -572,9 +597,9 @@ function renderSubstrateSkill(
   lines.push(
     `<!-- buckets: ${buckets.size}   organs: ${allOrgans.length}   t-commands: ${glossary.length} -->`,
   );
-  if (unclassified > 0 || invalid > 0 || tagDrift.length > 0) {
+  if (unclassified > 0 || invalid > 0 || tagDrift.length > 0 || behaviorDrift.length > 0) {
     lines.push(
-      `<!-- unclassified: ${unclassified}   invalid_skill_safe: ${invalid}   skill_tag_drift: ${tagDrift.length} -->`,
+      `<!-- unclassified: ${unclassified}   invalid_skill_safe: ${invalid}   skill_tag_drift: ${tagDrift.length}   behavior_drift: ${behaviorDrift.length} -->`,
     );
   }
   lines.push(``);
@@ -624,7 +649,7 @@ function renderSubstrateSkill(
   );
   lines.push(``);
 
-  if (unclassified > 0 || invalid > 0 || tagDrift.length > 0) {
+  if (unclassified > 0 || invalid > 0 || tagDrift.length > 0 || behaviorDrift.length > 0) {
     lines.push(`## ⚠️ Substrate classification gaps`);
     lines.push(``);
     if (unclassified > 0) {
@@ -644,6 +669,16 @@ function renderSubstrateSkill(
       for (const o of tagDrift) {
         lines.push(
           `  - \`x${o.coordinate}_${o.handle}\`: ${o.skill_tag_drift}`,
+        );
+      }
+    }
+    if (behaviorDrift.length > 0) {
+      lines.push(
+        `- ${behaviorDrift.length} organs have actual behavior drift (actual code does not match declared skill_safe):`,
+      );
+      for (const o of behaviorDrift) {
+        lines.push(
+          `  - \`x${o.coordinate}_${o.handle}\`: ${o.behavior_drift}`,
         );
       }
     }
@@ -893,8 +928,9 @@ async function main(argv: string[]) {
       !o.skill_safe && !o.invalid_skill_safe
     ).length;
     const inv = bucketOrgans.filter((o) => o.invalid_skill_safe).length;
-    const tag = unc > 0 || inv > 0
-      ? ` (${unc} unclassified${inv > 0 ? `, ${inv} invalid` : ""})`
+    const driftCount = bucketOrgans.filter((o) => o.behavior_drift).length;
+    const tag = unc > 0 || inv > 0 || driftCount > 0
+      ? ` (${unc} unclassified${inv > 0 ? `, ${inv} invalid` : ""}${driftCount > 0 ? `, ${driftCount} drift` : ""})`
       : "";
     console.log(
       `[write] x${bucket}888_skill.myc.md (${bucketOrgans.length} organs)${tag}`,
@@ -908,6 +944,14 @@ async function main(argv: string[]) {
       for (const o of bucketOrgans.filter((o) => o.invalid_skill_safe)) {
         console.warn(
           `  ⚠️  x${o.coordinate}_${o.handle}: invalid skill_safe '${o.invalid_skill_safe}'`,
+        );
+      }
+    }
+
+    if (driftCount > 0) {
+      for (const o of bucketOrgans.filter((o) => o.behavior_drift)) {
+        console.warn(
+          `  ⚠️  x${o.coordinate}_${o.handle}: behavior drift: ${o.behavior_drift}`,
         );
       }
     }

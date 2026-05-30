@@ -9,7 +9,7 @@
 // maturity: active
 // horizon: none
 // skill_tag: decisions
-// skill_safe: yes
+// skill_safe: yes-with-care
 
 import {
   dirname,

@@ -10,7 +10,7 @@
 // maturity: active
 // horizon: none (external surfaces registry implemented)
 // skill_tag: external-surfaces
-// skill_safe: yes
+// skill_safe: yes-with-care
 
 import {
   dirname,

@@ -15,7 +15,7 @@
 //          breakdown when chord history >1000 makes voice-specific
 //          patterns statistically meaningful
 // skill_tag: lexicon
-// skill_safe: yes
+// skill_safe: yes-with-care
 //
 // lexicon — empirical chord-form dictionary
 //

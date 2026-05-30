@@ -26,7 +26,9 @@ tasks extracted from the chord trail in jazz/chords/._
 ## Proposal Triage Queue
 
 _Unresolved proposals are not implementation orders. Review/revalidate risky or
-stale proposals before changing the repository._
+stale proposals before changing the repository._ Use
+`./t decisions --triage-template` to print a closure-decision scaffold for the
+first item without writing files.
 
 | Stance     | Chord                                                                                                                                                                   | Risks                                                    |
 | :--------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------- |
@@ -40,7 +42,7 @@ stale proposals before changing the repository._
 | revalidate | [2026-05-10T112033Z-codex-repo-stabilization-strategy.md](../jazz/chords/2026-05-10T112033Z-codex-repo-stabilization-strategy.md)                                       | stale_20d, missing_falsifier, missing_suggested_commands |
 | revalidate | [2026-05-12T013600Z-gemini-proposal-next-resonant-vectors.md](../jazz/chords/2026-05-12T013600Z-gemini-proposal-next-resonant-vectors.md)                               | stale_18d, missing_suggested_commands                    |
 | revalidate | [2026-05-12T073000Z-gemini-evaluation-obscura-headless-browser.md](../jazz/chords/2026-05-12T073000Z-gemini-evaluation-obscura-headless-browser.md)                     | stale_18d, missing_falsifier, missing_suggested_commands |
-| revalidate | [2026-05-12T130000Z-kimi-riff-heptapod-chord-as-interference-language.md](../jazz/chords/2026-05-12T130000Z-kimi-riff-heptapod-chord-as-interference-language.md)       | stale_17d                                                |
+| revalidate | [2026-05-12T130000Z-kimi-riff-heptapod-chord-as-interference-language.md](../jazz/chords/2026-05-12T130000Z-kimi-riff-heptapod-chord-as-interference-language.md)       | stale_18d                                                |
 | revalidate | [2026-05-13T170000Z-kimi-analysis-recent-commits-4-strengthenings.md](../jazz/chords/2026-05-13T170000Z-kimi-analysis-recent-commits-4-strengthenings.md)               | stale_16d                                                |
 | revalidate | [2026-05-13T210236Z-codex-capabilities-as-live-t-projection.md](../jazz/chords/2026-05-13T210236Z-codex-capabilities-as-live-t-projection.md)                           | stale_16d                                                |
 | revalidate | [2026-05-13T211034Z-codex-host-tools-as-borrowed-organs.md](../jazz/chords/2026-05-13T211034Z-codex-host-tools-as-borrowed-organs.md)                                   | stale_16d                                                |

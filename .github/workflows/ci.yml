@@ -127,6 +127,9 @@ jobs:
       - name: Verify decisions triage queue
         run: ./t decisions --triage --json | jq -e '.type == "decisions_triage" and .position == "8/B" and .action == "triage" and (.summary.review | type) == "number" and (.summary.revalidate | type) == "number" and (.queue | type) == "array"'
 
+      - name: Verify decisions triage template
+        run: ./t decisions --triage-template --json | jq -e '.type == "decisions_triage_template" and .position == "8/B" and .action == "triage_template" and (.target_id | type) == "string" and (.suggested_filename | type) == "string" and (.template | contains("closes_hash"))'
+
       - name: Verify decisions closure validity (no invalid manual closures)
         run: |
           ./t decisions --json | jq -e '

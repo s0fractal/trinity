@@ -86,6 +86,13 @@ interface DecisionTriageQueueItem {
   suggested_command: string;
 }
 
+interface DecisionTriageTemplate {
+  target_id: string;
+  target_filename: string;
+  suggested_filename: string;
+  template: string;
+}
+
 // Minimal YAML frontmatter parser — extracts only the flat scalar fields we need.
 function parseFrontmatter(text: string): Record<string, any> {
   const out: Record<string, any> = {};
@@ -274,6 +281,83 @@ function buildTriageQueue(entries: DecisionEntry[]): DecisionTriageQueueItem[] {
       suggested_command:
         `Review jazz/chords/${e.filename}; decide revalidate, supersede, compost, close, or only then implement.`,
     }));
+}
+
+function argValue(args: string[], name: string): string | null {
+  const prefix = `--${name}=`;
+  const inline = args.find((arg) => arg.startsWith(prefix));
+  if (inline) return inline.slice(prefix.length);
+  const idx = args.indexOf(`--${name}`);
+  if (idx >= 0 && idx + 1 < args.length) return args[idx + 1];
+  return null;
+}
+
+function slugify(text: string, maxLen = 56): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, maxLen)
+    .replace(/-+$/g, "") || "untitled";
+}
+
+function buildTriageTemplate(
+  item: DecisionTriageQueueItem,
+  author = "codex",
+): DecisionTriageTemplate {
+  const now = new Date();
+  const stamp = now.toISOString().replace(/[-:]/g, "").replace(
+    /\.\d{3}Z$/,
+    "Z",
+  );
+  const slug = slugify(`${item.stance}-${item.title}`);
+  const suggested_filename = `${stamp}-${author}-decision-${slug}.md`;
+  const risks = item.risks.length > 0 ? item.risks.join(", ") : "none";
+  const template = `---
+author_identity: "${author}"
+claim_kind: "decision"
+topic: "triage-${slug}"
+closes_hash: "${item.id}"
+resolution_status: "closed" # choose: closed | superseded | historical
+resolved_by:
+  - "jazz/chords/${item.filename}"
+falsifiers:
+  - "If ./t decisions --next --json still selects ${item.id} after this chord is tracked, the closure reference is invalid."
+suggested_commands:
+  - "./t decisions --next --json"
+  - "./t decisions --triage --json"
+expected_after_running:
+  - "The target proposal no longer appears as the highest-pressure unresolved item unless a stronger item remains."
+---
+
+# Decision: triage ${item.title}
+
+Target: \`jazz/chords/${item.filename}\`
+Target id: \`${item.id}\`
+Triage stance: \`${item.stance}\`
+Risks: ${risks}
+
+Decision:
+
+- [ ] Revalidate and keep open.
+- [ ] Supersede with a newer topology-safe direction.
+- [ ] Mark historical/composted because the current substrate has moved on.
+- [ ] Close as implemented, with concrete artifact evidence below.
+
+Evidence / rationale:
+
+- ...
+
+Do not implement the target proposal from this scaffold alone. This chord is for
+making the ledger decision explicit first.
+`;
+
+  return {
+    target_id: item.id,
+    target_filename: item.filename,
+    suggested_filename,
+    template,
+  };
 }
 
 // Recover author from chord filename when frontmatter omits speaker/actor/
@@ -966,6 +1050,7 @@ async function main() {
   const wantVolatile = args.includes("--volatile");
   const wantNext = args.includes("--next");
   const wantTriage = args.includes("--triage");
+  const wantTriageTemplate = args.includes("--triage-template");
   const stable = args.includes("--stable") || !wantVolatile;
 
   const { summary, entries } = await collectDecisions(stable);
@@ -993,6 +1078,39 @@ async function main() {
       queue: triage_queue,
     };
     console.log(JSON.stringify(payload, null, 2));
+    return;
+  }
+
+  if (wantTriageTemplate) {
+    const target = argValue(args, "id");
+    const item = target
+      ? triage_queue.find((e) => e.id === target || e.filename === target)
+      : triage_queue[0];
+    if (!item) {
+      console.error(
+        target
+          ? `No triage queue item found for --id=${target}`
+          : "No proposal triage queue item found.",
+      );
+      Deno.exit(1);
+    }
+    const author = argValue(args, "author") ?? "codex";
+    const scaffold = buildTriageTemplate(item, author);
+    if (wantJson) {
+      console.log(JSON.stringify(
+        {
+          type: "decisions_triage_template",
+          position: "8/B",
+          action: "triage_template",
+          ...scaffold,
+        },
+        null,
+        2,
+      ));
+    } else {
+      console.log(`# suggested_filename: ${scaffold.suggested_filename}`);
+      console.log(scaffold.template);
+    }
     return;
   }
 
@@ -1054,6 +1172,9 @@ async function main() {
   lines.push(``);
   lines.push(
     `*Unresolved proposals are not implementation orders. Review/revalidate risky or stale proposals before changing the repository.*`,
+  );
+  lines.push(
+    `Use \`./t decisions --triage-template\` to print a closure-decision scaffold for the first item without writing files.`,
   );
   lines.push(``);
   lines.push(`| Stance | Chord | Risks |`);

@@ -176,7 +176,7 @@ async function callTApplyDryRun(): Promise<any> {
       "run",
       "--allow-all",
       join(ROOT, "src", "x5F00_apply.ts"),
-      "0000",
+      "bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi",
       "0000",
     ],
     stdout: "piped",
@@ -406,8 +406,8 @@ async function main() {
       contract_status: null,
       contract: "contracts/SPORE.v0.draft.md",
       command: "./t apply",
-      test: "./t apply 0000 0000",
-      evidence: `SPORE simulation active (backend: ${
+      test: "./t apply bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi 0000",
+      evidence: `SPORE execution active (backend: ${
         applyData?.backend_kind ?? "unknown"
       }, simulation: ${applyData?.simulation ?? false})`,
       evidence_source: applyData ? "live" : "missing",

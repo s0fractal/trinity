@@ -6,7 +6,7 @@
 // placement_policy: axis
 // intent: small FP toolkit — pipe / flow / tap / ifElse / tryOr / fromNullable / parallel
 // maturity: active
-// horizon: typed-overload count beyond 6 args if patterns demand it; Result<T,E> if error-handling becomes complex enough
+// horizon: typed-overload count beyond 6 args if patterns demand it
 // skill_tag: compose
 // skill_safe: yes
 //

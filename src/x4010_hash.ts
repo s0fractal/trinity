@@ -5,7 +5,7 @@
 // placement_policy: axis
 // intent: compute canonical FQDN hashes and signatures
 // maturity: active
-// horizon: add schema verification
+// horizon: none (schema verification implemented)
 // skill_tag: hash
 // skill_safe: yes
 //
@@ -59,4 +59,22 @@ export async function verifyFqdnPrefix(
 ): Promise<boolean> {
   const expected = await fqdnPrefix(body);
   return expected === claimed;
+}
+
+/** Regular expression for validating canonical FQDN prefixes.
+ *  Matches exactly "h." followed by 12 lowercase hexadecimal characters. */
+export const FQDN_PREFIX_REGEX = /^h\.[0-9a-f]{12}$/;
+
+/** Regular expression for validating standard SHA-256 hashes in hexadecimal format.
+ *  Matches exactly 64 lowercase hexadecimal characters. */
+export const SHA256_HEX_REGEX = /^[0-9a-f]{64}$/;
+
+/** Validates that a string matches the FQDN prefix syntax. */
+export function isValidFqdnPrefix(str: string): boolean {
+  return FQDN_PREFIX_REGEX.test(str);
+}
+
+/** Validates that a string matches the SHA-256 hex syntax. */
+export function isValidSha256Hex(str: string): boolean {
+  return SHA256_HEX_REGEX.test(str);
 }

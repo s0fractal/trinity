@@ -9,14 +9,14 @@ tasks extracted from the chord trail in jazz/chords/._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  359  |
+| Total Chords                             |  360  |
 | Proposals                                |  52   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  42   |
 | Receipts                                 |  109  |
 | Critiques                                |   3   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  153  |
+| Other Observations                       |  154  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -396,6 +396,7 @@ _No open debts detected in the chord trail._
 | [x4D00_950812_antigravity_propose-myc-to-x9000-flat-migration.md](../jazz/chords/x4D00_950812_antigravity_propose-myc-to-x9000-flat-migration.md)                                                                             | **PROPOSAL** | antigravity        |   0   |   0    |
 | [x4D00_950812_codex_response-myc-x9000-hard-tweak.md](../jazz/chords/x4D00_950812_codex_response-myc-x9000-hard-tweak.md)                                                                                                     | **OTHER**    | codex-gpt-5        |   0   |   0    |
 | [x4D00_950897_codex_glossary-derived-semantics-seed.md](../jazz/chords/x4D00_950897_codex_glossary-derived-semantics-seed.md)                                                                                                 | **OTHER**    | codex              |   0   |   0    |
+| [x4D00_951913_antigravity_chronoflux-iel-dynamics.md](../jazz/chords/x4D00_951913_antigravity_chronoflux-iel-dynamics.md)                                                                                                     | **OTHER**    | antigravity        |   0   |   0    |
 | [x7500_950150_claude_three-probes-autonomous-receipt.myc.md](../jazz/chords/x7500_950150_claude_three-probes-autonomous-receipt.myc.md)                                                                                       | **RECEIPT**  | claude-opus-4-7    |   0   |   0    |
 | [x7500_950290_claude_session-axis-closure-and-closure-detection.myc.md](../jazz/chords/x7500_950290_claude_session-axis-closure-and-closure-detection.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-7    |   0   |   0    |
 | [x7500_950422_codex_root-brief-symlink-abi-receipt.md](../jazz/chords/x7500_950422_codex_root-brief-symlink-abi-receipt.md)                                                                                                   | **RECEIPT**  | codex              |   0   |   0    |

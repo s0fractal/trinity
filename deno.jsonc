@@ -23,6 +23,7 @@
     "check:liquid:audit": "cd liquid && deno task audit:strict",
     "check:liquid:doctor": "cd liquid && deno task ledger:doctor --json",
     "check:liquid:unit": "cd liquid && deno task test:unit",
+    "check:hash:unit": "deno test src/hash_test.ts",
     "ontology:coverage": "deno run -A src/x6300_ontology_coverage.ts",
     "cognition:phase-report": "deno run -A src/x2C00_cognition_phase_report.ts",
     "cognition:snapshot": "deno run -A src/x2400_cognition_snapshot.ts",

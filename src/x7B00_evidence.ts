@@ -406,7 +406,8 @@ async function main() {
       contract_status: null,
       contract: "contracts/SPORE.v0.draft.md",
       command: "./t apply",
-      test: "./t apply bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi 0000",
+      test:
+        "./t apply bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi 0000",
       evidence: `SPORE execution active (backend: ${
         applyData?.backend_kind ?? "unknown"
       }, simulation: ${applyData?.simulation ?? false})`,

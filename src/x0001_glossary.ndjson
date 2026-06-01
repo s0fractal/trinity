@@ -174,7 +174,7 @@
 
 {"00":"5","02":["contract-audit","контракт-аудит","contracts-audit","ref-graph","refs-audit"],"04":"4/F1","09":"foundation+frontier-sub1 = ref-graph classification of contracts (non-destructive read)","11":"26 26 40 33 6C 26 4C 33"}
 {"00":"5","02":["heartbeat","pulse","cadence","tempo","серцебиття","пульс","темп","активність"],"04":"2/7","09":"mirror+completion-pair = rolling chord+commit cadence over 28-day window","11":"00 00 6C 33 00 00 00 59"}
-{"00":"07","01":"heartbeat","02":"type,position,action,summary","03":"window_days,chords,commits,stall_warning,note","04":"heartbeat receipt from x2700_heartbeat.ts; rolling chord and commit cadence over a 28-day window"}
+{"00":"07","01":"heartbeat","02":"type,position,action,summary","03":"window_days,chords,commits,stall_warning,pulse_state,note","04":"heartbeat receipt from x2700_heartbeat.ts; rolling chord and commit cadence over a 28-day window with healthy/consolidating/stalled pulse state"}
 {"00":"5","02":["myc-status-shadow","myc-shadow-status","myc-x9-status","статус-myc-тінь"],"04":"9/2E","09":"x9 imported-substrate namespace = MYC native status shadow adapter","11":"00 00 6C 33 00 00 00 00"}
 {"00":"5","02":["myc-capabilities-shadow","myc-shadow-capabilities","myc-x9-capabilities"],"04":"9/4A","09":"x9 imported-substrate namespace = MYC native capabilities shadow adapter","11":"00 00 00 00 6C 33 00 00"}
 {"00":"5","02":["myc-protocol-audit-shadow","myc-shadow-protocol-audit","myc-x9-protocol-audit"],"04":"9/6C","09":"x9 imported-substrate namespace = MYC native protocol audit shadow adapter","11":"00 00 33 00 00 00 6C 33"}
@@ -182,4 +182,3 @@
 {"00":"07","01":"export_clean","02":"type,position,action,dry_run,summary","03":"out","04":"clean export receipt from x7400_export_clean.ts; writes reports/trinity_clean_export.md unless --dry-run is passed"}
 {"00":"5","02":["lexicon","словник","dictionary","chord-effects","lexicon-effects"],"04":"2/A","09":"mirror+apex = empirical chord-form effects dictionary (per-pattern occurrences, voices, falsifier-rate, closure-rate, downstream-refs)","11":"26 26 6C 26 26 26 26 26"}
 {"00":"5","02":["contract-status-compiler","glossary-compiler","компілятор-статусів"],"04":"4/011","09":"foundation+first-sub11 = compile contract status family from glossary","11":"00 00 00 00 6C 00 33 00"}
-

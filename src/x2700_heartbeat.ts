@@ -204,10 +204,12 @@ function statsForDates(dates: Date[], windowDays: number): HeartbeatStats {
 }
 
 const STALL_RATIO_THRESHOLD = 0.2;
+type HeartbeatPulseState = "healthy" | "consolidating" | "stalled";
 
 export async function collectHeartbeat(windowDays = 28): Promise<{
   chords: HeartbeatStats;
   commits: HeartbeatStats;
+  pulse_state: HeartbeatPulseState;
   stall_warning: string | null;
 }> {
   const [chordDates, commitDates] = await Promise.all([
@@ -219,17 +221,26 @@ export async function collectHeartbeat(windowDays = 28): Promise<{
   const commits = statsForDates(commitDates, windowDays);
 
   let stall_warning: string | null = null;
+  let pulse_state: HeartbeatPulseState = "healthy";
   if (
     chords.ratio_7d_to_28d !== null &&
     chords.ratio_7d_to_28d <= STALL_RATIO_THRESHOLD &&
     chords.rolling_28d >= 14
   ) {
+    const commitsActive = commits.rolling_7d > 0 &&
+      (commits.ratio_7d_to_28d === null ||
+        commits.ratio_7d_to_28d > STALL_RATIO_THRESHOLD);
+    pulse_state = commitsActive ? "consolidating" : "stalled";
     stall_warning = `chord cadence: 7d avg ${chords.daily_avg_7d}/day is ${
       Math.round(chords.ratio_7d_to_28d * 100)
-    }% of 28d avg ${chords.daily_avg_28d}/day — consolidation phase OR exhaustion; substrate cannot distinguish without architect input`;
+    }% of 28d avg ${chords.daily_avg_28d}/day — ${
+      commitsActive
+        ? "commit cadence is still active; likely consolidation or implementation without enough chord receipts"
+        : "commit cadence is also low; possible substrate stall"
+    }`;
   }
 
-  return { chords, commits, stall_warning };
+  return { chords, commits, pulse_state, stall_warning };
 }
 
 function renderRow(label: string, s: HeartbeatStats): void {
@@ -258,7 +269,10 @@ if (import.meta.main) {
   const daysArg = args.find((a) => a.startsWith("--days="));
   const windowDays = daysArg ? Number(daysArg.split("=")[1]) : 28;
 
-  const { chords, commits, stall_warning } = await collectHeartbeat(windowDays);
+  const { chords, commits, pulse_state, stall_warning } =
+    await collectHeartbeat(
+      windowDays,
+    );
 
   if (wantJson) {
     console.log(
@@ -275,7 +289,8 @@ if (import.meta.main) {
             commits_7d: commits.rolling_7d,
             commits_28d: commits.rolling_28d,
             chord_ratio_7d_to_28d: chords.ratio_7d_to_28d,
-            stalled: stall_warning !== null,
+            pulse_state,
+            stalled: pulse_state === "stalled",
           },
           stall_warning,
           chords,
@@ -296,7 +311,10 @@ if (import.meta.main) {
     renderHistogram("chords", chords);
     console.log("# " + "─".repeat(80));
     if (stall_warning) {
-      console.error(`# [STALL WARNING] ${stall_warning}`);
+      const label = pulse_state === "stalled"
+        ? "STALL WARNING"
+        : "CONSOLIDATION WARNING";
+      console.error(`# [${label}] ${stall_warning}`);
     } else {
       console.log("# pulse healthy (7d cadence within normal range vs 28d)");
     }

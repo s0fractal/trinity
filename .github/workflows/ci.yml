@@ -84,7 +84,7 @@ jobs:
         run: ./t inbox --next --json | jq -e '.type == "inbox_next" and .position == "2/D" and ((.next_action == null) or ((.next_action.voice | type) == "string" and (.next_action.chord_path | type) == "string"))'
 
       - name: Verify heartbeat JSON summary
-        run: ./t heartbeat --json | jq -e '.type == "heartbeat" and .position == "2/7" and (.summary.chords_28d | type) == "number" and (.summary.stalled | type) == "boolean"'
+        run: ./t heartbeat --json | jq -e '.type == "heartbeat" and .position == "2/7" and (.summary.chords_28d | type) == "number" and (.summary.stalled | type) == "boolean" and (.summary.pulse_state | IN("healthy", "consolidating", "stalled"))'
 
       - name: Verify gravity JSON summary
         run: ./t gravity --json | jq -e '.type == "gravity" and .position == "6/02" and .summary.total_edges == .total_edges and (.summary.library_edges | type) == "number"'

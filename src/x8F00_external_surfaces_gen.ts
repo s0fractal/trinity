@@ -267,24 +267,31 @@ async function main() {
   lines.push(
     `Volatile runtime caches are ignored by stable registry entries but still scanned for hygiene.`,
   );
-  lines.push(``);
-  lines.push(`| Total | Stale >=7d | Oldest Days Ago |`);
-  lines.push(`| :---: | :---: | :---: |`);
-  lines.push(
-    `| ${runtime_cache_summary.total} | ${runtime_cache_summary.stale_7d} | ${
-      runtime_cache_summary.oldest_days_ago ?? "n/a"
-    } |`,
-  );
-  if (runtime_cache_summary.oldest.length > 0) {
+  if (stable) {
     lines.push(``);
-    lines.push(`Oldest runtime caches:`);
+    lines.push(
+      `Run \`./t external-surfaces --json\` for live cache counts, or \`./t external-surfaces --volatile\` for a non-stable diagnostic table.`,
+    );
+  } else {
     lines.push(``);
-    for (const cache of runtime_cache_summary.oldest) {
-      lines.push(
-        `- \`${cache.surface}\` (${
-          cache.days_ago ?? "unknown"
-        }d, ${cache.mtime})`,
-      );
+    lines.push(`| Total | Stale >=7d | Oldest Days Ago |`);
+    lines.push(`| :---: | :---: | :---: |`);
+    lines.push(
+      `| ${runtime_cache_summary.total} | ${runtime_cache_summary.stale_7d} | ${
+        runtime_cache_summary.oldest_days_ago ?? "n/a"
+      } |`,
+    );
+    if (runtime_cache_summary.oldest.length > 0) {
+      lines.push(``);
+      lines.push(`Oldest runtime caches:`);
+      lines.push(``);
+      for (const cache of runtime_cache_summary.oldest) {
+        lines.push(
+          `- \`${cache.surface}\` (${
+            cache.days_ago ?? "unknown"
+          }d, ${cache.mtime})`,
+        );
+      }
     }
   }
   lines.push(``);

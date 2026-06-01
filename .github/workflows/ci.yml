@@ -105,7 +105,7 @@ jobs:
         run: ./t contract-audit --json | jq -e '.type == "contract_audit" and .summary.total > 0 and (.summary.safe_to_compost // 0) == 0 and (.summary.needs_review // 0) == 0'
 
       - name: Verify external surfaces format
-        run: ./t external-surfaces --json | jq -e '.type == "external_surfaces" and (.runtime_cache_summary.total | type) == "number" and (.runtime_cache_summary.stale_7d | type) == "number"'
+        run: ./t external-surfaces --json | jq -e '.type == "external_surfaces" and ([.entries[] | select(.category == "local_cache")] | length) == 0 and (.runtime_cache_summary.total | type) == "number" and (.runtime_cache_summary.stale_7d | type) == "number"'
 
       - name: Verify external surfaces stale runtime prune dry-run
         run: ./t external-surfaces --prune-stale-runtime --dry-run --json | jq -e '.type == "external_surfaces_prune" and .dry_run == true and .receipt_path == null and (.summary.candidates | type) == "number" and (.candidates | type) == "array"'

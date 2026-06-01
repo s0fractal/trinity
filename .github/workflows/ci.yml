@@ -51,7 +51,7 @@ jobs:
         run: ./t status --live | jq -e '.summary.ci_freshness == "fresh" and .substrate_health.external_ci.source == "live" and .substrate_health.external_ci.is_stale == false'
 
       - name: Verify self and capabilities receipt schemas
-        run: ./t capabilities --json | jq -e '[.capabilities[] | select(.primary == "self" or .primary == "capabilities" or .primary == "external-surfaces") | select(.receipt_schema != null)] | length == 3'
+        run: ./t capabilities --json | jq -e '[.capabilities[] | select(.primary == "audit" or .primary == "status" or .primary == "self" or .primary == "capabilities" or .primary == "external-surfaces") | select(.receipt_schema != null)] | length == 5'
 
       - name: Verify capabilities detail lookup
         run: ./t capabilities external-surfaces --json | jq -e '.type == "capabilities" and .position == "4/A" and .action == "show" and .capabilities[0].primary == "external-surfaces" and (.capabilities[0].receipt_schema.type == "external_surfaces")'

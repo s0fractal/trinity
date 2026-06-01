@@ -217,9 +217,15 @@ async function main() {
     stable,
     includeVolatile: !stable,
   });
+  const runtimeEntries = stable
+    ? await collectExternalSurfaces({
+      stable: false,
+      includeVolatile: true,
+    })
+    : entries;
 
   const summary = summarizeExternalSurfaces(entries);
-  const runtime_cache_summary = summarizeRuntimeCaches(entries);
+  const runtime_cache_summary = summarizeRuntimeCaches(runtimeEntries);
 
   if (wantJson) {
     const payload = {
@@ -255,6 +261,32 @@ async function main() {
     lines.push(`| ${cat.replace(/_/g, " ")} | ${count} |`);
   }
   lines.push(`| **Total** | **${entries.length}** |`);
+  lines.push(``);
+  lines.push(`## Runtime Cache Diagnostics`);
+  lines.push(``);
+  lines.push(
+    `Volatile runtime caches are ignored by stable registry entries but still scanned for hygiene.`,
+  );
+  lines.push(``);
+  lines.push(`| Total | Stale >=7d | Oldest Days Ago |`);
+  lines.push(`| :---: | :---: | :---: |`);
+  lines.push(
+    `| ${runtime_cache_summary.total} | ${runtime_cache_summary.stale_7d} | ${
+      runtime_cache_summary.oldest_days_ago ?? "n/a"
+    } |`,
+  );
+  if (runtime_cache_summary.oldest.length > 0) {
+    lines.push(``);
+    lines.push(`Oldest runtime caches:`);
+    lines.push(``);
+    for (const cache of runtime_cache_summary.oldest) {
+      lines.push(
+        `- \`${cache.surface}\` (${
+          cache.days_ago ?? "unknown"
+        }d, ${cache.mtime})`,
+      );
+    }
+  }
   lines.push(``);
   lines.push(`## Registered Surfaces`);
   lines.push(``);

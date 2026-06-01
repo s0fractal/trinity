@@ -17,6 +17,21 @@ documents, and local caches outside the core Deno flat-src code base._
 | local cache       |     0      |
 | **Total**         |  **457**   |
 
+## Runtime Cache Diagnostics
+
+Volatile runtime caches are ignored by stable registry entries but still scanned
+for hygiene.
+
+| Total | Stale >=7d | Oldest Days Ago |
+| :---: | :--------: | :-------------: |
+|   3   |     0      |        3        |
+
+Oldest runtime caches:
+
+- `src/x2A88_lexicon.myc.json` (3d, 2026-05-29T11:22:04Z)
+- `src/x6500_latest-green-audit.myc.json` (0d, 2026-06-01T17:26:13Z)
+- `src/x6500_latest-green-audit.myc.md` (0d, 2026-06-01T17:26:13Z)
+
 ## Registered Surfaces
 
 | Category          | Surface                                                                                                                                                                                                                                   | Canonical Status | Canonical Target                          | Next Action | Blocked By                   |

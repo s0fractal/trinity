@@ -6,7 +6,7 @@
 // hex_dipole: "26 26 40 33 40 6C 40 59"
 // placement_policy: axis
 
-import { SporeApplyBackend } from "../liquid/src/xA507_spore_apply_backend.ts";
+import { SporeApplyBackend } from "./x5F10_spore_apply_backend.ts";
 
 async function main() {
   const args = Deno.args;

@@ -64,6 +64,13 @@ jobs:
           ./t roadmap --stable --json | jq -e '.type == "roadmap" and .position == "8/D" and (.manifest_hash | startswith("sha256:"))'
           ./t probes --stable --json | jq -e '.type == "probes" and .position == "8/E" and (.manifest_hash | startswith("sha256:"))'
 
+      - name: Verify cross-substrate flat-src mappings
+        run: |
+          ./t all 5/C --only trinity | jq -e '.type == "all" and .mode == "only:trinity" and .summary.overall == "passed"'
+          ./t all 5/C --only liquid | jq -e '.type == "all" and .mode == "only:liquid" and .summary.overall == "passed"'
+          ./t cross-verify trinity | jq -e '.type == "all" and .mode == "only:trinity" and .summary.overall == "passed"'
+          ./t cross-verify liquid | jq -e '.type == "all" and .mode == "only:liquid" and .summary.overall == "passed"'
+
       - name: Verify recipes detail lookup
         run: ./t recipes show recipe.metacognition.field-cycle --json | jq -e '.type == "recipes" and .position == "3/C" and .action == "show" and .recipes[0].id == "recipe.metacognition.field-cycle"'
 

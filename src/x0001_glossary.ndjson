@@ -43,9 +43,9 @@
 
 {"11":"00 00 40 00 66 6C 59 00","00":"5","02":["cross-verify","verify-all","test-all","перехресна-перевірка","перевірити-все"],"04":"5/C","09":"action+container = compatibility wrapper over all 5/C map+join"}
 {"00":"02","02":"06","03":"substrate_mapping"}
-{"00":"6","02":["trinity","тринити","trinity-substrate","коренева"],"03":"5/C","04":".","05":"deno check 0x0/01.ts 0x5/0.ts 0x5/A.ts 0x5/C.ts","09":"type-check hex substrate files"}
+{"00":"6","02":["trinity","тринити","trinity-substrate","коренева"],"03":"5/C","04":".","05":"deno check src/x0100_dispatch.ts src/x5001_block.ts src/x5A00_fresh.ts src/x5C00_cross_verify.ts","09":"type-check flat-src substrate files"}
 {"00":"6","02":["omega","омега","ω"],"03":"5/C","04":"omega","05":"cargo check","09":"compile check (quick); use --deep for cargo test"}
-{"00":"6","02":["liquid","ліквід","рідина"],"03":"5/C","04":"liquid","05":"deno check 00_core/liquid_pipe.ts 00_core/phase_engine.ts 00_core/hydrate.ts 00_core/seed.ts","09":"type-check core files (hex→φ adapter pending)"}
+{"00":"6","02":["liquid","ліквід","рідина"],"03":"5/C","04":"liquid","05":"deno check src/xA031_liquid_pipe.ts src/xA053_phase_engine.ts src/xA027_hydrate.ts src/xA069_seed.ts","09":"type-check flat-src liquid core files"}
 {"00":"6","02":["myc","міц","грибниця","mycelium"],"03":"5/C","04":"myc","05":"deno task test","09":"deno task test (42 tests)"}
 {"11":"00 59 00 00 00 00 59 00","00":"5","02":["health","harmony","здоров'я","гармонія"],"04":"6/A","09":"harmony+apex = fresh health check"}
 {"00":"5","02":["audit","аудит","place-check","перевірка-розміщення","introspect","інтроспекція","place"],"04":"6/C","09":"harmony+container-pair = bucket vs dipole self-introspection","11":"00 00 40 33 4C 26 6C 33"}
@@ -60,15 +60,15 @@
 {"00":"5","02":["recipes","workflows","templates","sequences","рецепти","потоки-роботи","шаблони","послідовності"],"04":"3/C","09":"triangle+container-pair = workflow composition templates (live projection)","11":"19 00 40 66 33 40 40 33"}
 {"00":"07","01":"recipes","02":"type,position,action,summary,recipes","03":"target,note,source,synonyms,topology","04":"recipes receipt from x3C00_recipes.ts; live projection of kind:8 workflow templates from glossary"}
 {"00":"5","02":["compost-watchdog","compost","компост","watchdog","compost_watchdog"],"04":"5/91","09":"action+penultimate = archive expired draft contracts","11":"26 4C 33 26 33 6C 26 26"}
-{"00":"6","02":["trinity","тринити","trinity-substrate","коренева"],"03":"5/A","04":".","05":"deno check 0x5/A.ts","09":"type-check verify executable"}
+{"00":"6","02":["trinity","тринити","trinity-substrate","коренева"],"03":"5/A","04":".","05":"deno check src/x5A00_fresh.ts","09":"type-check verify executable"}
 {"00":"6","02":["omega","омега","ω"],"03":"5/A","04":"omega","05":"cargo check","09":"compile check (verify placeholder)"}
-{"00":"6","02":["liquid","ліквід","рідина"],"03":"5/A","04":"liquid","05":"deno check 00_core/liquid_pipe.ts","09":"type-check core (verify placeholder)"}
+{"00":"6","02":["liquid","ліквід","рідина"],"03":"5/A","04":"liquid","05":"deno check src/xA031_liquid_pipe.ts","09":"type-check core (verify placeholder)"}
 {"00":"6","02":["myc","міц","грибниця","mycelium"],"03":"5/A","04":"myc","05":"deno task test","09":"deno task test (verify placeholder)"}
 
-{"00":"01","09":"end-marker. 16 symbols, 7 projections, 8 words, 16 substrate mappings (5/A×4, 5/C×4). 7 hex executables: 0x0/01, 0x0/02, 0x0/0F, 0x5/0, 0x5/A, 0x5/C, 0x6/A. type:06 substrate registry operational. Glossary drives cross-substrate execution. Open: liquid hex→φ adapter, SPORE receipt schema, extend registry to all positions."}
+{"00":"01","09":"end-marker. 16 symbols, 7 projections, 8 words, 16 substrate mappings (5/A×4, 5/C×4). Flat-src executables are resolved through x0010_dispatch_runner.ts. type:06 substrate registry operational. Glossary drives cross-substrate execution. Open: liquid φ adapter, SPORE receipt schema, extend registry to all positions."}
 {"00":"02","02":"07","03":"receipt_schema"}
 {"00":"07","01":"status","02":"type,position,action,summary,substrate_health","03":"args,note,synonyms,subsets,todo,organs,submodules,substrate_health_envelope,topology","04":"status receipt from x2E00_status.ts; summary.audit includes match/mismatch/total plus import_warnings and declared boundary_imports; summary.worktree surfaces git dirty/staged/unstaged/untracked counts; substrate_health follows SUBSTRATE_HEALTH.v0.1; --live refreshes green-audit evidence and sets external_ci.source=live; --envelope adds substrate_health_envelope per RECEIPT_ENVELOPE.v1.0 (see contracts/)"}
-{"00":"07","01":"health","02":"type,position,action,summary,checks","03":"note,synonyms","04":"health check receipt from 0x6/A.ts"}
+{"00":"07","01":"health","02":"type,position,action,summary,checks","03":"note,synonyms","04":"health check receipt from x6A00_health.ts"}
 {"00":"07","01":"audit","02":"type,position,action,total,summary,coordinate_uniqueness,reports","03":"orphans,note","04":"audit receipt from x6C00_audit.ts; summary distinguishes mismatches/malformed/orphans, undeclared import_warnings, and declared boundary_imports"}
 {"00":"07","01":"self","02":"type,position,action,composite_health,audit_match,audit_boundaries,organs,voices,chords,probes,external_surfaces,attention,submodules","03":"note,synonyms,contracts,decisions,inbox,heartbeat,topology","04":"self receipt from x2F00_self.ts; composed substrate self-introspection across status, audit boundaries, organs, voices, chords, probes, contracts, decisions, external surfaces, attention pressure, and submodules"}
 {"00":"07","01":"capabilities","02":"type,position,action,summary,capabilities","03":"target,note,source_of_truth,legacy_artifact,synonyms,topology","04":"capabilities receipt from x4A00_capabilities.ts; live affordance projection from glossary type:05/06/07, organ headers, and deno.jsonc tasks"}
@@ -81,11 +81,11 @@
 {"00":"07","01":"probes","02":"type,position,action,stable,written,probes,referenced_chords,source_files,manifest_hash,diagnostics","03":"","04":"probe index generator receipt from x8E00_probes_gen.ts; --json suppresses write logs from stdout and returns machine-readable regeneration summary"}
 {"00":"07","01":"help","02":"type,mode","03":"records,record","04":"help receipt from 0x0/0F.ts"}
 {"11":"00 00 33 6C 33 33 40 33","00":"5","02":["all","every","all-of","map","все","всі","все-разом","мап"],"04":"0/03","09":"foundation+trinity = map signal across all substrates"}
-{"00":"6","02":["trinity","тринити","trinity-substrate","коренева"],"03":"6/A","04":".","05":"deno run --allow-read 0x6/A.ts","09":"health check for trinity substrate"}
+{"00":"6","02":["trinity","тринити","trinity-substrate","коренева"],"03":"6/A","04":".","05":"deno run --allow-read src/x6A00_health.ts","09":"health check for trinity substrate"}
 {"00":"6","02":["omega","омега","ω"],"03":"6/A","04":"omega","05":"cargo check","09":"compile check (health placeholder)"}
-{"00":"6","02":["liquid","ліквід","рідина"],"03":"6/A","04":"liquid","05":"deno check 00_core/liquid_pipe.ts","09":"type-check core (health placeholder)"}
+{"00":"6","02":["liquid","ліквід","рідина"],"03":"6/A","04":"liquid","05":"deno check src/xA031_liquid_pipe.ts","09":"type-check core (health placeholder)"}
 {"00":"6","02":["myc","міц","грибниця","mycelium"],"03":"6/A","04":"myc","05":"deno task test","09":"deno task test (health placeholder)"}
-{"00":"07","01":"all","02":"type,position,action,summary,substrates","03":"mode,note,topology,falsifier","04":"map receipt from 0x0/03.ts (all primitive)"}
+{"00":"07","01":"all","02":"type,position,action,summary,substrates","03":"mode,note,topology,falsifier","04":"map receipt from x0300_all.ts (all primitive)"}
 {"11":"00 00 00 6C 00 40 40 33","00":"5","02":["each","sequence","for","compose","кожен","послідовно","для","композиція"],"04":"0/04","09":"foundation+cardinal = sequential composition primitive"}
 {"11":"00 00 00 66 00 33 33 40","00":"5","02":["pipe","flow","conditional-compose","chain","труба","потік","умовна-композиція","ланцюг"],"04":"0/05","09":"foundation+action = conditional sequential composition with short-circuit"}
 {"11":"00 00 26 00 00 33 59 40","00":"5","02":["try","attempt","recover","fallback","спроба","відновлення","запасний"],"04":"0/06","09":"foundation+serpent = attempt with graceful fallback"}

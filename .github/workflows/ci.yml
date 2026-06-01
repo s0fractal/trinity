@@ -51,7 +51,7 @@ jobs:
         run: ./t status --live | jq -e '.summary.ci_freshness == "fresh" and .substrate_health.external_ci.source == "live" and .substrate_health.external_ci.is_stale == false'
 
       - name: Verify self and capabilities receipt schemas
-        run: ./t capabilities --json | jq -e '[.capabilities[] | select(.primary == "audit" or .primary == "status" or .primary == "self" or .primary == "capabilities" or .primary == "external-surfaces" or .primary == "agents" or .primary == "skill" or .primary == "memory" or .primary == "roadmap" or .primary == "probes") | select(.receipt_schema != null)] | length == 10'
+        run: ./t capabilities --json | jq -e '[.capabilities[] | select(.primary == "audit" or .primary == "status" or .primary == "self" or .primary == "capabilities" or .primary == "external-surfaces" or .primary == "agents" or .primary == "skill" or .primary == "memory" or .primary == "roadmap" or .primary == "probes" or .primary == "ecosystem" or .primary == "gravity" or .primary == "contract-audit" or .primary == "lexicon") | select(.receipt_schema != null)] | length == 14'
 
       - name: Verify capabilities detail lookup
         run: ./t capabilities external-surfaces --json | jq -e '.type == "capabilities" and .position == "4/A" and .action == "show" and .capabilities[0].primary == "external-surfaces" and (.capabilities[0].receipt_schema.type == "external_surfaces")'
@@ -73,6 +73,12 @@ jobs:
 
       - name: Verify recipes detail lookup
         run: ./t recipes show recipe.metacognition.field-cycle --json | jq -e '.type == "recipes" and .position == "3/C" and .action == "show" and .recipes[0].id == "recipe.metacognition.field-cycle"'
+
+      - name: Verify diagnostic JSON receipts
+        run: |
+          ./t ecosystem --json | jq -e '.type == "ecosystem" and .position == "2/2" and (.summary.substrates | type) == "number"'
+          ./t contract-audit --json | jq -e '.type == "contract_audit" and .position == "4/F1" and .summary.total > 0'
+          ./t lexicon --json | jq -e '.type == "lexicon" and .position == "2/A" and .summary.surfaced_patterns > 0'
 
       - name: Verify self attention summary
         run: ./t self --json | jq -e '(.attention.level | IN("clear", "watch", "act")) and (.attention.score | type) == "number" and (.attention.reasons | type) == "array" and (.attention.next_actions | type) == "array" and (.audit_boundaries.import_warnings == 0) and (.audit_boundaries.boundary_imports | type) == "number" and (.audit_boundaries.registry_warnings == 0) and (.decisions.unresolved_proposals | type) == "number" and (.decisions.proposal_triage.review | type) == "number"'

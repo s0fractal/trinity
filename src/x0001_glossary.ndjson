@@ -52,6 +52,7 @@
 {"11":"00 00 6C 40 33 26 4C 33","00":"5","02":["status","state","how-are-you","статус","стан","як","ти-як"],"04":"2/E","09":"mirror+harmony-pair = composite self-reflection across organs"}
 {"00":"5","02":["self","я","себе","substrate-self","substrate"],"04":"2/F","09":"mirror+frontier-pair = composed substrate self-introspection (status + organs + voices + chords + probes + contracts)","11":"26 26 6C 26 26 26 26 59"}
 {"00":"5","02":["ecosystem","federation","all-substrates","екосистема","ecosystem-mirror"],"04":"2/2","09":"mirror+mirror = substrate federation mirror; reads SUBSTRATE_SELF_ABI.v0.1 slots from each substrate (omega/liquid/myc) in parallel and renders unified dashboard","11":"26 26 6C 26 26 26 26 59"}
+{"00":"07","01":"ecosystem","02":"type,position,action,summary,mirrors","03":"diff,note,synonyms,topology","04":"ecosystem receipt from x2200_ecosystem.ts; substrate federation mirror over SUBSTRATE_SELF_ABI.v0.1 slots with coverage summary"}
 {"11":"00 00 40 6C 26 33 4C 40","00":"5","02":["balance","suggest","recommend","rebalance","баланс","балансуй","запропонуй","порадь"],"04":"3/A","09":"triangle+mirror-pair = dipole-driven rebalance proposals (read-only)"}
 {"11":"26 00 40 40 6C 19 33 26","00":"5","02":["chord","scaffold","frontmatter","акорд","скаффолд","каркас"],"04":"4/0","09":"foundation+void = chord scaffolding + dipole math toolkit"}
 {"11":"26 00 59 40 6C 33 33 40","00":"5","02":["capabilities","affordances","can-do","спроможності","що-можу"],"04":"4/A","09":"foundation+mirror-pair = live affordance projection from glossary (per codex 2026-05-13T210236Z)"}
@@ -79,7 +80,7 @@
 {"00":"07","01":"skill","02":"type,position,action,stable,bucket,written,source_files,manifest_hash,diagnostics","03":"","04":"skill/operating-brief generator receipt from x8C00_skill_gen.ts; --json suppresses write logs from stdout and returns machine-readable regeneration summary"}
 {"00":"07","01":"roadmap","02":"type,position,action,stable,voice,written,source_files,manifest_hash,diagnostics","03":"","04":"roadmap generator receipt from x8D00_roadmap_gen.ts; --json suppresses write logs from stdout and returns machine-readable regeneration summary"}
 {"00":"07","01":"probes","02":"type,position,action,stable,written,probes,referenced_chords,source_files,manifest_hash,diagnostics","03":"","04":"probe index generator receipt from x8E00_probes_gen.ts; --json suppresses write logs from stdout and returns machine-readable regeneration summary"}
-{"00":"07","01":"help","02":"type,mode","03":"records,record","04":"help receipt from 0x0/0F.ts"}
+{"00":"07","01":"help","02":"type,mode","03":"records,record","04":"help receipt from x0F00_help.ts"}
 {"11":"00 00 33 6C 33 33 40 33","00":"5","02":["all","every","all-of","map","все","всі","все-разом","мап"],"04":"0/03","09":"foundation+trinity = map signal across all substrates"}
 {"00":"6","02":["trinity","тринити","trinity-substrate","коренева"],"03":"6/A","04":".","05":"deno run --allow-read src/x6A00_health.ts","09":"health check for trinity substrate"}
 {"00":"6","02":["omega","омега","ω"],"03":"6/A","04":"omega","05":"cargo check","09":"compile check (health placeholder)"}
@@ -148,6 +149,7 @@
 {"00":"07","01":"inbox","02":"type,schema,action,position","03":"voice,count,items,summary,pending_voices,next_action,voices,mode,note,synonyms","04":"inbox receipt from x2D00_inbox.ts; per-voice unresponded-to chord list plus ranked pending_voices summary and next_action for autonomous backlog routing"}
 {"00":"07","01":"inbox_compost_stale","02":"type,position,action,dry_run,min_age_days,summary,candidates,applied","03":"","04":"inbox compost stale receipt from x2D00_inbox.ts"}
 {"00":"5","02":["gravity","tension","drift","гравітація","натяг"],"04":"6/02","09":"harmony+void-mirror = edge tension report from filename coordinates and Deno dependency graph","11":"00 00 33 00 00 00 6C 00"}
+{"00":"07","01":"gravity","02":"type,position,action,summary,total_edges,mean_delta_primary,max_delta_primary,heatmap,edges_by_tension","03":"note","04":"gravity receipt from x6020_gravity.ts; edge tension report over filename coordinates and Deno dependency graph"}
 {"00":"5","02":["agents","agents-brief","self-brief","бриф","агенти"],"04":"8/8","09":"cache+cache = substrate self-brief generator (regenerates xN888_state.myc.md + x8888_agents.myc.md from organ headers)","11":"00 00 33 00 00 00 00 6C"}
 {"00":"5","02":["skill","skills","operating-brief","навик","навички"],"04":"8/C","09":"cache+chaos = operating brief generator (regenerates xN888_skill.myc.md + x8888_skills.myc.md from organ headers + glossary + embedded policy)","11":"93 00 00 00 33 00 33 00"}
 {"00":"5","02":["memory","recall","спогади","memory-brief","пам'ять"],"04":"8/A","09":"cache+apex = voice recall projection (regenerates x8888_<voice>_memory.myc.md + x2888_voices_state.myc.md from tracked voices + tracked chords)","11":"93 00 E6 00 00 00 00 33"}
@@ -178,7 +180,8 @@
 {"11":"93 00 00 00 00 00 00 33","00":"5","02":["decisions","ledger","chords-ledger","рішення","леджер","децізії"],"04":"8/B","09":"action+apex = chord decision ledger generation; --next selects pressure; --triage lists review/revalidate queue; --triage-template scaffolds a closure decision without writing"}
 {"00":"07","01":"decisions","02":"type,position,summary,entries","03":"action,next_action,proposal_triage,triage_queue,queue,template,decision_outcome","04":"decisions receipt from x8B00_decisions_gen.ts; generated chord proposal/decision/receipt ledger with proposal triage queue, closure template, and machine-readable decision outcome"}
 
-{"00":"5","02":["contract-audit","контракт-аудит","contracts-audit","ref-graph","refs-audit"],"04":"4/F1","09":"foundation+frontier-sub1 = ref-graph classification of contracts (non-destructive read)","11":"26 26 40 33 6C 26 4C 33"}
+{"00":"5","02":["contract-audit","contract_audit","контракт-аудит","contracts-audit","ref-graph","refs-audit"],"04":"4/F1","09":"foundation+frontier-sub1 = ref-graph classification of contracts (non-destructive read)","11":"26 26 40 33 6C 26 4C 33"}
+{"00":"07","01":"contract_audit","02":"type,position,action,scope,summary,entries","03":"note","04":"contract audit receipt from x4F01_contract_audit.ts; ref-graph classification for contracts and safe compost review"}
 {"00":"5","02":["heartbeat","pulse","cadence","tempo","серцебиття","пульс","темп","активність"],"04":"2/7","09":"mirror+completion-pair = rolling chord+commit cadence over 28-day window","11":"00 00 6C 33 00 00 00 59"}
 {"00":"07","01":"heartbeat","02":"type,position,action,summary","03":"window_days,chords,commits,stall_warning,pulse_state,note","04":"heartbeat receipt from x2700_heartbeat.ts; rolling chord and commit cadence over a 28-day window with healthy/consolidating/stalled pulse state"}
 {"00":"5","02":["myc-status-shadow","myc-shadow-status","myc-x9-status","статус-myc-тінь"],"04":"9/2E","09":"x9 imported-substrate namespace = MYC native status shadow adapter","11":"00 00 6C 33 00 00 00 00"}
@@ -187,4 +190,5 @@
 {"00":"5","02":["export-clean","clean-export","codebase-export","експорт"],"04":"7/4","09":"completion+foundation = clean markdown export of Trinity source surface","11":"26 00 26 00 4C 00 26 6C"}
 {"00":"07","01":"export_clean","02":"type,position,action,dry_run,summary","03":"out","04":"clean export receipt from x7400_export_clean.ts; writes reports/trinity_clean_export.md unless --dry-run is passed"}
 {"00":"5","02":["lexicon","словник","dictionary","chord-effects","lexicon-effects"],"04":"2/A","09":"mirror+apex = empirical chord-form effects dictionary (per-pattern occurrences, voices, falsifier-rate, closure-rate, downstream-refs)","11":"26 26 6C 26 26 26 26 26"}
+{"00":"07","01":"lexicon","02":"type,position,action,summary,entries,bigrams","03":"generated_at,note,synonyms,topology","04":"lexicon receipt from x2A00_lexicon.ts; empirical chord-form effects dictionary with surfaced patterns and bigrams"}
 {"00":"5","02":["contract-status-compiler","glossary-compiler","компілятор-статусів"],"04":"4/011","09":"foundation+first-sub11 = compile contract status family from glossary","11":"00 00 00 00 6C 00 33 00"}

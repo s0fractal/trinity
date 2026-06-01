@@ -143,12 +143,14 @@ interface GlossaryEntry {
 interface Args {
   bucket: string | null;
   stable: boolean;
+  json: boolean;
 }
 
 function parseArgs(argv: string[]): Args {
-  const out: Args = { bucket: null, stable: false };
+  const out: Args = { bucket: null, stable: false, json: false };
   for (const a of argv) {
     if (a === "--stable") out.stable = true;
+    else if (a === "--json") out.json = true;
     else if (a.startsWith("--bucket=")) {
       out.bucket = a.split("=")[1].toUpperCase();
     }
@@ -872,6 +874,13 @@ function renderSkillsBootstrap(
 
 async function main(argv: string[]) {
   const args = parseArgs(argv);
+  const originalLog = console.log;
+  const originalWarn = console.warn;
+  const diagnostics: string[] = [];
+  if (args.json) {
+    console.log = (...parts: unknown[]) => diagnostics.push(parts.join(" "));
+    console.warn = (...parts: unknown[]) => diagnostics.push(parts.join(" "));
+  }
   const allOrgans = await scanOrgans();
   const organs = args.bucket
     ? allOrgans.filter((o) => o.bucket === args.bucket)
@@ -881,6 +890,25 @@ async function main(argv: string[]) {
     console.log(
       `no organs found${args.bucket ? ` in bucket ${args.bucket}` : ""}`,
     );
+    if (args.json) {
+      console.log = originalLog;
+      console.warn = originalWarn;
+      originalLog(JSON.stringify(
+        {
+          type: "skill",
+          position: "8/C",
+          action: "generate",
+          stable: args.stable,
+          bucket: args.bucket,
+          written: 0,
+          source_files: 0,
+          manifest_hash: null,
+          diagnostics,
+        },
+        null,
+        2,
+      ));
+    }
     return;
   }
 
@@ -915,6 +943,8 @@ async function main(argv: string[]) {
   }
 
   let written = 0;
+  let receiptHash = "";
+  let receiptSourceFiles = 0;
   for (const [bucket, bucketOrgans] of buckets) {
     const bucketSources: SourceFile[] = [
       ...bucketOrgans.map<SourceFile>((o) => ({
@@ -925,6 +955,8 @@ async function main(argv: string[]) {
       glossaryFile,
     ];
     const bucketManifest = await manifestHash(bucketSources);
+    receiptHash = bucketManifest;
+    receiptSourceFiles = bucketSources.length;
     const bucketReceipts = {
       generated_at,
       manifest_hash: bucketManifest,
@@ -992,6 +1024,8 @@ async function main(argv: string[]) {
       glossaryFile,
     ];
     const globalManifest = await manifestHash(allSources);
+    receiptHash = globalManifest;
+    receiptSourceFiles = allSources.length;
     const subsReceipts = {
       generated_at,
       manifest_hash: globalManifest,
@@ -1035,6 +1069,25 @@ async function main(argv: string[]) {
         args.stable ? " (stable)" : ""
       }`,
     );
+  }
+  if (args.json) {
+    console.log = originalLog;
+    console.warn = originalWarn;
+    originalLog(JSON.stringify(
+      {
+        type: "skill",
+        position: "8/C",
+        action: "generate",
+        stable: args.stable,
+        bucket: args.bucket,
+        written,
+        source_files: receiptSourceFiles,
+        manifest_hash: receiptHash,
+        diagnostics,
+      },
+      null,
+      2,
+    ));
   }
 }
 

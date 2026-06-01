@@ -575,11 +575,13 @@ function renderVoicesState(
 interface Args {
   voice: string | null;
   stable: boolean;
+  json: boolean;
 }
 function parseArgs(argv: string[]): Args {
-  const out: Args = { voice: null, stable: false };
+  const out: Args = { voice: null, stable: false, json: false };
   for (const a of argv) {
     if (a === "--stable") out.stable = true;
+    else if (a === "--json") out.json = true;
     else if (a.startsWith("--voice=")) {
       out.voice = a.split("=")[1].toLowerCase();
     }
@@ -589,6 +591,13 @@ function parseArgs(argv: string[]): Args {
 
 async function main(argv: string[]) {
   const args = parseArgs(argv);
+  const originalLog = console.log;
+  const originalWarn = console.warn;
+  const diagnostics: string[] = [];
+  if (args.json) {
+    console.log = (...parts: unknown[]) => diagnostics.push(parts.join(" "));
+    console.warn = (...parts: unknown[]) => diagnostics.push(parts.join(" "));
+  }
   const voices = await loadVoices();
   const chords = await loadChords();
   const generated_at = args.stable ? null : new Date().toISOString();
@@ -616,6 +625,8 @@ async function main(argv: string[]) {
     : voices;
 
   let written = 0;
+  let receiptHash = "";
+  let receiptSourceFiles = 0;
   for (const voice of voicesToProcess) {
     const vChords = chordsByVoice.get(voice.key) ?? [];
     const sources: SourceFile[] = [
@@ -623,6 +634,8 @@ async function main(argv: string[]) {
       ...vChords.map(chordSourceFile),
     ];
     const hash = await manifestHash(sources);
+    receiptHash = hash;
+    receiptSourceFiles += sources.length;
     const receipts: Receipts = {
       generated_at,
       manifest_hash: hash,
@@ -653,6 +666,8 @@ async function main(argv: string[]) {
       ...chords.map(chordSourceFile),
     ];
     const globalHash = await manifestHash(allSources);
+    receiptHash = globalHash;
+    receiptSourceFiles = allSources.length;
     const receipts: Receipts = {
       generated_at,
       manifest_hash: globalHash,
@@ -685,6 +700,25 @@ async function main(argv: string[]) {
         args.stable ? " (stable)" : ""
       }`,
     );
+  }
+  if (args.json) {
+    console.log = originalLog;
+    console.warn = originalWarn;
+    originalLog(JSON.stringify(
+      {
+        type: "memory",
+        position: "8/A",
+        action: "generate",
+        stable: args.stable,
+        voice: args.voice,
+        written,
+        source_files: receiptSourceFiles,
+        manifest_hash: receiptHash,
+        diagnostics,
+      },
+      null,
+      2,
+    ));
   }
 }
 

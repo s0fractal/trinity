@@ -51,10 +51,18 @@ jobs:
         run: ./t status --live | jq -e '.summary.ci_freshness == "fresh" and .substrate_health.external_ci.source == "live" and .substrate_health.external_ci.is_stale == false'
 
       - name: Verify self and capabilities receipt schemas
-        run: ./t capabilities --json | jq -e '[.capabilities[] | select(.primary == "audit" or .primary == "status" or .primary == "self" or .primary == "capabilities" or .primary == "external-surfaces") | select(.receipt_schema != null)] | length == 5'
+        run: ./t capabilities --json | jq -e '[.capabilities[] | select(.primary == "audit" or .primary == "status" or .primary == "self" or .primary == "capabilities" or .primary == "external-surfaces" or .primary == "agents" or .primary == "skill" or .primary == "memory" or .primary == "roadmap" or .primary == "probes") | select(.receipt_schema != null)] | length == 10'
 
       - name: Verify capabilities detail lookup
         run: ./t capabilities external-surfaces --json | jq -e '.type == "capabilities" and .position == "4/A" and .action == "show" and .capabilities[0].primary == "external-surfaces" and (.capabilities[0].receipt_schema.type == "external_surfaces")'
+
+      - name: Verify generator JSON receipts
+        run: |
+          ./t agents --stable --json | jq -e '.type == "agents" and .position == "8/8" and (.manifest_hash | startswith("sha256:"))'
+          ./t skill --stable --json | jq -e '.type == "skill" and .position == "8/C" and (.manifest_hash | startswith("sha256:"))'
+          ./t memory --stable --json | jq -e '.type == "memory" and .position == "8/A" and (.manifest_hash | startswith("sha256:"))'
+          ./t roadmap --stable --json | jq -e '.type == "roadmap" and .position == "8/D" and (.manifest_hash | startswith("sha256:"))'
+          ./t probes --stable --json | jq -e '.type == "probes" and .position == "8/E" and (.manifest_hash | startswith("sha256:"))'
 
       - name: Verify recipes detail lookup
         run: ./t recipes show recipe.metacognition.field-cycle --json | jq -e '.type == "recipes" and .position == "3/C" and .action == "show" and .recipes[0].id == "recipe.metacognition.field-cycle"'

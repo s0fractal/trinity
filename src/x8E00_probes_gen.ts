@@ -607,11 +607,13 @@ function renderProbesIndex(
 
 interface Args {
   stable: boolean;
+  json: boolean;
 }
 function parseArgs(argv: string[]): Args {
-  const out: Args = { stable: false };
+  const out: Args = { stable: false, json: false };
   for (const a of argv) {
     if (a === "--stable") out.stable = true;
+    else if (a === "--json") out.json = true;
   }
   return out;
 }
@@ -649,6 +651,13 @@ export async function loadAllProbes(): Promise<
 
 async function main(argv: string[]) {
   const args = parseArgs(argv);
+  const originalLog = console.log;
+  const originalWarn = console.warn;
+  const diagnostics: string[] = [];
+  if (args.json) {
+    console.log = (...parts: unknown[]) => diagnostics.push(parts.join(" "));
+    console.warn = (...parts: unknown[]) => diagnostics.push(parts.join(" "));
+  }
   const chords = await loadChordSources();
   const { probes, referencedChordFilenames } = await loadAllProbes();
 
@@ -693,6 +702,26 @@ async function main(argv: string[]) {
       args.stable ? " (stable)" : ""
     }`,
   );
+  if (args.json) {
+    console.log = originalLog;
+    console.warn = originalWarn;
+    originalLog(JSON.stringify(
+      {
+        type: "probes",
+        position: "8/E",
+        action: "generate",
+        stable: args.stable,
+        written: 2,
+        probes: probes.length,
+        referenced_chords: referencedChordSources.length,
+        source_files: allSources.length,
+        manifest_hash,
+        diagnostics,
+      },
+      null,
+      2,
+    ));
+  }
 }
 
 if (import.meta.main) {

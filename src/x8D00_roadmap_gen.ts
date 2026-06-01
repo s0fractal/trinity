@@ -1122,11 +1122,13 @@ function renderVoiceRoadmap(
 interface Args {
   voice: string | null;
   stable: boolean;
+  json: boolean;
 }
 function parseArgs(argv: string[]): Args {
-  const out: Args = { voice: null, stable: false };
+  const out: Args = { voice: null, stable: false, json: false };
   for (const a of argv) {
     if (a === "--stable") out.stable = true;
+    else if (a === "--json") out.json = true;
     else if (a.startsWith("--voice=")) {
       out.voice = a.split("=")[1].toLowerCase();
     }
@@ -1136,6 +1138,13 @@ function parseArgs(argv: string[]): Args {
 
 async function main(argv: string[]) {
   const args = parseArgs(argv);
+  const originalLog = console.log;
+  const originalWarn = console.warn;
+  const diagnostics: string[] = [];
+  if (args.json) {
+    console.log = (...parts: unknown[]) => diagnostics.push(parts.join(" "));
+    console.warn = (...parts: unknown[]) => diagnostics.push(parts.join(" "));
+  }
   // Five independent source loads — parallel for I/O speedup, named
   // keys preserve clarity over Promise.all([...]) destructuring.
   // probesBundle is cross-axis: roadmap surfaces non-graduated probes
@@ -1200,6 +1209,8 @@ async function main(argv: string[]) {
     ...extraSources,
   ];
   const globalHash = await manifestHash(allSources);
+  let receiptHash = globalHash;
+  let receiptSourceFiles = allSources.length;
   const globalReceipts: Receipts = {
     generated_at,
     manifest_hash: globalHash,
@@ -1249,6 +1260,10 @@ async function main(argv: string[]) {
       ...horizons.map(organSource),
     ];
     const vHash = await manifestHash(voiceSources);
+    if (args.voice) {
+      receiptHash = vHash;
+      receiptSourceFiles = voiceSources.length;
+    }
     const receipts: Receipts = {
       generated_at,
       manifest_hash: vHash,
@@ -1288,6 +1303,25 @@ async function main(argv: string[]) {
       args.stable ? " (stable)" : ""
     }`,
   );
+  if (args.json) {
+    console.log = originalLog;
+    console.warn = originalWarn;
+    originalLog(JSON.stringify(
+      {
+        type: "roadmap",
+        position: "8/D",
+        action: "generate",
+        stable: args.stable,
+        voice: args.voice,
+        written,
+        source_files: receiptSourceFiles,
+        manifest_hash: receiptHash,
+        diagnostics,
+      },
+      null,
+      2,
+    ));
+  }
 }
 
 if (import.meta.main) {

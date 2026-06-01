@@ -201,7 +201,12 @@ async function countSubmoduleOrgans(sub: string): Promise<number> {
 interface StatusShape {
   summary?: {
     overall?: string;
-    audit?: { match: number; total: number };
+    audit?: {
+      match: number;
+      total: number;
+      import_warnings?: number;
+      boundary_imports?: number;
+    };
     worktree?: {
       dirty: boolean;
       staged: number;
@@ -394,6 +399,12 @@ if (import.meta.main) {
   const audit = status?.summary?.audit
     ? `${status.summary.audit.match}/${status.summary.audit.total}`
     : "?/?";
+  const auditBoundaries = status?.summary?.audit
+    ? {
+      import_warnings: status.summary.audit.import_warnings ?? null,
+      boundary_imports: status.summary.audit.boundary_imports ?? null,
+    }
+    : null;
   const submodules = status?.submodules ?? {};
   const attention = buildAttention({
     status,
@@ -411,6 +422,7 @@ if (import.meta.main) {
       "mirror+frontier-pair — composed substrate self-introspection across the 6 self-description axes",
     composite_health: composite,
     audit_match: audit,
+    audit_boundaries: auditBoundaries,
     organs: data.organs,
     voices: { count: data.voices.total, identities: data.voices.identities },
     chords: data.chords,

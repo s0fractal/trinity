@@ -370,6 +370,8 @@ if (import.meta.main) {
 
   const auditMatch = auditSummary.match ?? null;
   const auditMismatch = auditSummary.mismatch ?? null;
+  const auditImportWarnings = auditSummary.import_warnings_count ?? null;
+  const auditBoundaryImports = auditSummary.boundary_imports_count ?? null;
   const auditTotal = auditAny?.total ?? null;
   const healthOverall = healthSummary.overall ?? null;
   const healthOk = healthSummary.ok ?? null;
@@ -451,6 +453,8 @@ if (import.meta.main) {
           match: auditMatch,
           mismatch: auditMismatch,
           total: auditTotal,
+          import_warnings: auditImportWarnings,
+          boundary_imports: auditBoundaryImports,
         },
       },
       "trinity.worktree": {
@@ -498,6 +502,8 @@ if (import.meta.main) {
         match: auditMatch,
         mismatch: auditMismatch,
         total: auditTotal,
+        import_warnings: auditImportWarnings,
+        boundary_imports: auditBoundaryImports,
       },
       worktree,
     },

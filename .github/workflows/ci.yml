@@ -60,7 +60,7 @@ jobs:
         run: ./t recipes show recipe.metacognition.field-cycle --json | jq -e '.type == "recipes" and .position == "3/C" and .action == "show" and .recipes[0].id == "recipe.metacognition.field-cycle"'
 
       - name: Verify self attention summary
-        run: ./t self --json | jq -e '(.attention.level | IN("clear", "watch", "act")) and (.attention.score | type) == "number" and (.attention.reasons | type) == "array" and (.attention.next_actions | type) == "array" and (.decisions.unresolved_proposals | type) == "number" and (.decisions.proposal_triage.review | type) == "number"'
+        run: ./t self --json | jq -e '(.attention.level | IN("clear", "watch", "act")) and (.attention.score | type) == "number" and (.attention.reasons | type) == "array" and (.attention.next_actions | type) == "array" and (.audit_boundaries.import_warnings == 0) and (.audit_boundaries.boundary_imports | type) == "number" and (.decisions.unresolved_proposals | type) == "number" and (.decisions.proposal_triage.review | type) == "number"'
 
       - name: Verify MYC x9 shadow status
         run: ./t myc-status-shadow --json | jq -e '.type == "status" and .position == "9/2E" and .shadow == true and .summary.overall == "healthy"'
@@ -72,7 +72,7 @@ jobs:
         run: ./t myc-protocol-audit-shadow --json | jq -e '.type == "protocol_audit" and .position == "9/6C" and .shadow == true and .summary.overall == "healthy"'
 
       - name: Audit coordinates
-        run: ./t audit --json | jq -e '.summary.mismatch == 0 and .summary.malformed == 0 and .summary.no_dipole_organ_gap == 0 and .summary.orphans_count == 0 and .coordinate_uniqueness.ok == true'
+        run: ./t audit --json | jq -e '.summary.mismatch == 0 and .summary.malformed == 0 and .summary.no_dipole_organ_gap == 0 and .summary.orphans_count == 0 and .summary.import_warnings_count == 0 and .coordinate_uniqueness.ok == true'
 
       - name: Verify lexicon block ordering
         run: ./t lexicon --stable --json | jq -e '.type == "lexicon" and .position == "2/A" and .summary.surfaced_patterns > 0 and ([.entries[] | select(.first_seen_block > 0 and .last_seen_block >= .first_seen_block)] | length) > 0'

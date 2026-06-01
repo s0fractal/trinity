@@ -54,6 +54,7 @@ const POSITION_TO_FILE: Record<string, string> = {
   "4/E": "x4E00_snapshot.ts",
   "4/F": "x4F00_contracts.ts",
   "4/F1": "x4F01_contract_audit.ts",
+  "4/011": "x4011_contract_status_compiler.ts",
   "5/0": "x5001_block.ts",
   "5/2": "x5200_cognition_recommend.ts",
   "5/3": "x5300_recommend_to_chord.ts",

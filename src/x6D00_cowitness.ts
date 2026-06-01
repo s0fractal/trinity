@@ -44,9 +44,9 @@ import {
 } from "https://deno.land/std@0.224.0/path/mod.ts";
 import {
   coWitness,
-  Envelope,
-  WitnessEntry,
-} from "../probes/receipt-envelope-encoder-v0/ts/envelope.ts";
+  type Envelope,
+  type WitnessEntry,
+} from "./x4012_receipt_envelope.ts";
 
 function parseArgs(args: string[]): {
   envelopePath?: string;

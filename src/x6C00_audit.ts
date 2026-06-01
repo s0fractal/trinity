@@ -183,20 +183,20 @@ function coordinateHexOf(relPath: string): string | null {
 }
 
 function getRelativeImports(text: string): string[] {
-  const imports: string[] = [];
+  const imports = new Set<string>();
   const staticMatches = text.matchAll(
-    /import\s+.*?\s+from\s+["'](\.\.?\/[^"']+)["']/g,
+    /(?:import|export)\s+[\s\S]*?\s+from\s+["'](\.\.?\/[^"']+)["']/g,
   );
   for (const m of staticMatches) {
-    imports.push(m[1]);
+    imports.add(m[1]);
   }
   const dynamicMatches = text.matchAll(
     /import\s*\(\s*["'](\.\.?\/[^"']+)["']\s*\)/g,
   );
   for (const m of dynamicMatches) {
-    imports.push(m[1]);
+    imports.add(m[1]);
   }
-  return imports;
+  return [...imports];
 }
 
 async function isRuntimeOrganImport(

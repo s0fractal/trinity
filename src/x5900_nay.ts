@@ -41,10 +41,10 @@ import {
   resolve,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
 import {
-  Envelope,
+  type CborValue,
+  type Envelope,
   wrap,
-} from "../probes/receipt-envelope-encoder-v0/ts/envelope.ts";
-import { CborValue } from "../probes/receipt-envelope-encoder-v0/ts/canonical_cbor.ts";
+} from "./x4012_receipt_envelope.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);

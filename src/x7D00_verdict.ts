@@ -35,15 +35,12 @@
 // Governance flow reference:
 //   contracts/GOVERNANCE_FLOW.v0.md
 
+import { coWitness, type Envelope } from "./x4012_receipt_envelope.ts";
 import {
-  coWitness,
-  Envelope,
-} from "../probes/receipt-envelope-encoder-v0/ts/envelope.ts";
-import {
-  CborValue,
+  type CborValue,
   encodeCanonical,
   multihashSha256,
-} from "../probes/receipt-envelope-encoder-v0/ts/canonical_cbor.ts";
+} from "./x4012_receipt_envelope.ts";
 
 type CodeicideProposalBody = {
   type: "CodeicideProposal";

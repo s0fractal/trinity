@@ -99,6 +99,16 @@ interface FileReport {
   import_warnings: string[];
 }
 
+interface RegistryWarning {
+  substrate: string;
+  position: string;
+  cwd: string;
+  command: string;
+  token: string;
+  expected_path: string;
+  message: string;
+}
+
 function parsePlacementPolicy(text: string): PlacementPolicy {
   const m = text.match(
     /placement_policy:\s*(axis|composite|tier|legacy|substrate_namespace)/,
@@ -570,10 +580,59 @@ async function findOrphans(files: string[]): Promise<string[]> {
   return orphans.sort();
 }
 
+async function auditSubstrateRegistry(
+  root: string,
+): Promise<RegistryWarning[]> {
+  const warnings: RegistryWarning[] = [];
+  const glossaryPath = join(root, "src", "x0001_glossary.ndjson");
+  const text = await Deno.readTextFile(glossaryPath);
+
+  for (const line of text.trim().split("\n")) {
+    let record: Record<string, unknown>;
+    try {
+      record = JSON.parse(line);
+    } catch {
+      continue;
+    }
+    if (record["00"] !== "6") continue;
+
+    const handles = Array.isArray(record["02"]) ? record["02"] : [];
+    const substrate = String(handles[0] ?? "");
+    const position = String(record["03"] ?? "");
+    const cwd = String(record["04"] ?? ".");
+    const command = String(record["05"] ?? "");
+    if (!command) continue;
+
+    for (const token of command.split(/\s+/).filter(Boolean)) {
+      if (token.startsWith("-")) continue;
+      if (!/\.(ts|tsx|js|jsx|json|jsonc|toml|md)$/.test(token)) continue;
+      if (/^[a-z]+:\/\//i.test(token)) continue;
+
+      const expected = join(root, cwd, token);
+      try {
+        await Deno.stat(expected);
+      } catch {
+        warnings.push({
+          substrate,
+          position,
+          cwd,
+          command,
+          token,
+          expected_path: expected.replace(`${root}/`, ""),
+          message: "type:06 command references a missing local file",
+        });
+      }
+    }
+  }
+
+  return warnings;
+}
+
 function renderReport(
   reports: FileReport[],
   opts: { quiet: boolean; mismatchOnly: boolean },
   orphans: string[],
+  registryWarnings: RegistryWarning[],
 ): void {
   const matches = reports.filter((r) => r.match === "match").length;
   const mismatches = reports.filter((r) => r.match === "mismatch").length;
@@ -632,7 +691,7 @@ function renderReport(
   }
 
   console.log(
-    `total: ${reports.length}  match: ${matches}  mismatch: ${mismatches}  deferred: ${deferred}  no_dipole: ${noDipole} (organ-gap: ${noDipoleOrganGap}, library-ok: ${noDipoleLibraryOk})  malformed: ${malformed}  import-warnings: ${totalImportWarnings}  boundary-imports: ${totalBoundaryImports}`,
+    `total: ${reports.length}  match: ${matches}  mismatch: ${mismatches}  deferred: ${deferred}  no_dipole: ${noDipole} (organ-gap: ${noDipoleOrganGap}, library-ok: ${noDipoleLibraryOk})  malformed: ${malformed}  import-warnings: ${totalImportWarnings}  boundary-imports: ${totalBoundaryImports}  registry-warnings: ${registryWarnings.length}`,
   );
 
   if (!opts.quiet && orphans.length > 0) {
@@ -642,6 +701,18 @@ function renderReport(
     );
     for (const o of orphans) {
       console.log(`#     ${o}`);
+    }
+  }
+
+  if (!opts.quiet && registryWarnings.length > 0) {
+    console.log("-".repeat(86));
+    console.log(
+      `# ⚠ ${registryWarnings.length} substrate registry command warning(s):`,
+    );
+    for (const w of registryWarnings) {
+      console.log(
+        `#     ${w.substrate} ${w.position}: ${w.token} → ${w.expected_path}`,
+      );
     }
   }
 }
@@ -702,6 +773,7 @@ async function main(): Promise<void> {
 
   const orphans = await findOrphans(files);
   const uniqueness = await checkCoordinateUniqueness(ROOT);
+  const registryWarnings = await auditSubstrateRegistry(ROOT);
 
   if (json) {
     console.log(JSON.stringify(
@@ -731,19 +803,21 @@ async function main(): Promise<void> {
             (acc, r) => acc + r.boundary_imports.length,
             0,
           ),
+          registry_warnings_count: registryWarnings.length,
         },
         coordinate_uniqueness: {
           ok: uniqueness.ok,
           duplicates: uniqueness.duplicates,
         },
         orphans,
+        registry_warnings: registryWarnings,
         reports,
       },
       null,
       2,
     ));
   } else {
-    renderReport(reports, { quiet, mismatchOnly }, orphans);
+    renderReport(reports, { quiet, mismatchOnly }, orphans, registryWarnings);
     if (!quiet && !uniqueness.ok) {
       console.error("-".repeat(86));
       console.error(

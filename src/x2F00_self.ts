@@ -206,6 +206,7 @@ interface StatusShape {
       total: number;
       import_warnings?: number;
       boundary_imports?: number;
+      registry_warnings?: number;
     };
     worktree?: {
       dirty: boolean;
@@ -403,6 +404,7 @@ if (import.meta.main) {
     ? {
       import_warnings: status.summary.audit.import_warnings ?? null,
       boundary_imports: status.summary.audit.boundary_imports ?? null,
+      registry_warnings: status.summary.audit.registry_warnings ?? null,
     }
     : null;
   const submodules = status?.submodules ?? {};

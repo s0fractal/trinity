@@ -199,11 +199,28 @@ function getRelativeImports(text: string): string[] {
   return imports;
 }
 
-function auditRelativeImports(
+async function isRuntimeOrganImport(
+  importerRelPath: string,
+  imp: string,
+): Promise<boolean> {
+  try {
+    const importerDir = dirname(join(ROOT, importerRelPath));
+    const importedPath = join(importerDir, imp);
+    const rootSrc = join(ROOT, "src") + "/";
+    if (!importedPath.startsWith(rootSrc)) return false;
+    const text = await Deno.readTextFile(importedPath);
+    return /\bimport\.meta\.main\b/.test(text);
+  } catch {
+    // Missing/unreadable imports should keep the warning path conservative.
+    return true;
+  }
+}
+
+async function auditRelativeImports(
   relPath: string,
   imports: string[],
   fileCoordinateHex: string | null,
-): string[] {
+): Promise<string[]> {
   const warnings: string[] = [];
   const fileBucketInt = fileCoordinateHex
     ? parseInt(fileCoordinateHex[0], 16)
@@ -215,12 +232,17 @@ function auditRelativeImports(
       warnings.push(
         `Relative import "${imp}" reaches outside the package boundary (submodule/probe breach)`,
       );
+      continue;
     }
 
-    // 2. Check for coordinate gravity breach within flat src/
+    // 2. Check for coordinate gravity breach within flat src/ runtime organs.
+    // Library helpers are load-bearing infrastructure, not independent organs;
+    // importing x4010_hash.ts from a lower bucket should not look like a
+    // topological breach.
     const fileName = imp.split("/").pop() ?? "";
     const m = fileName.match(/^x([0-9A-Fa-f]{4})_/);
     if (m && fileBucketInt !== null) {
+      if (!(await isRuntimeOrganImport(relPath, imp))) continue;
       const importedHex = m[1];
       const importedBucketInt = parseInt(importedHex[0], 16);
       if (importedBucketInt > fileBucketInt) {
@@ -264,7 +286,7 @@ async function inspectFile(
 
   const relImports = getRelativeImports(text);
   const fileCoordHex = coordinateHexOf(relPath);
-  const import_warnings = auditRelativeImports(
+  const import_warnings = await auditRelativeImports(
     relPath,
     relImports,
     fileCoordHex,

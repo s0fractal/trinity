@@ -1,6 +1,7 @@
 // src/x5F10_spore_apply_backend.ts — local SPORE apply backend adapter
 // maturity: active
 // skill_safe: yes-with-care
+// boundary_adapter: liquid/spore-apply-backend
 //
 // Keeps the `t apply` runtime organ on a local src ABI while the concrete
 // backend still lives in the liquid substrate. This makes the cross-substrate

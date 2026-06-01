@@ -94,6 +94,8 @@ interface FileReport {
   match: "match" | "mismatch" | "deferred" | "no_dipole" | "malformed";
   note: string;
   is_dispatchable: boolean;
+  boundary_adapter: string | null;
+  boundary_imports: string[];
   import_warnings: string[];
 }
 
@@ -102,6 +104,11 @@ function parsePlacementPolicy(text: string): PlacementPolicy {
     /placement_policy:\s*(axis|composite|tier|legacy|substrate_namespace)/,
   );
   return (m?.[1] as PlacementPolicy) ?? "axis";
+}
+
+function parseBoundaryAdapter(text: string): string | null {
+  const m = text.match(/boundary_adapter:\s*([^\n]+)/);
+  return m?.[1].trim() ?? null;
 }
 
 function pathComponents(relPath: string): number[] {
@@ -220,8 +227,10 @@ async function auditRelativeImports(
   relPath: string,
   imports: string[],
   fileCoordinateHex: string | null,
-): Promise<string[]> {
+  boundaryAdapter: string | null,
+): Promise<{ warnings: string[]; boundaryImports: string[] }> {
   const warnings: string[] = [];
+  const boundaryImports: string[] = [];
   const fileBucketInt = fileCoordinateHex
     ? parseInt(fileCoordinateHex[0], 16)
     : null;
@@ -229,6 +238,12 @@ async function auditRelativeImports(
   for (const imp of imports) {
     // 1. Check for submodule breach (starting with ../)
     if (imp.startsWith("../")) {
+      if (boundaryAdapter) {
+        boundaryImports.push(
+          `Declared adapter "${boundaryAdapter}" imports "${imp}"`,
+        );
+        continue;
+      }
       warnings.push(
         `Relative import "${imp}" reaches outside the package boundary (submodule/probe breach)`,
       );
@@ -255,7 +270,7 @@ async function auditRelativeImports(
     }
   }
 
-  return warnings;
+  return { warnings, boundaryImports };
 }
 
 async function inspectFile(
@@ -280,19 +295,24 @@ async function inspectFile(
       match: "no_dipole",
       note: "unreadable",
       is_dispatchable: false,
+      boundary_adapter: null,
+      boundary_imports: [],
       import_warnings: [],
     };
   }
 
   const relImports = getRelativeImports(text);
   const fileCoordHex = coordinateHexOf(relPath);
-  const import_warnings = await auditRelativeImports(
-    relPath,
-    relImports,
-    fileCoordHex,
-  );
-
   const head = text.split("\n").slice(0, 30).join("\n");
+  const boundaryAdapter = parseBoundaryAdapter(head);
+  const { warnings: import_warnings, boundaryImports } =
+    await auditRelativeImports(
+      relPath,
+      relImports,
+      fileCoordHex,
+      boundaryAdapter,
+    );
+
   const { values, raw } = parseHexDipole(head);
   const policy = parsePlacementPolicy(head);
   // Dispatchable = has `import.meta.main` block (runtime entry point).
@@ -319,6 +339,8 @@ async function inspectFile(
       match: "no_dipole",
       note,
       is_dispatchable,
+      boundary_adapter: boundaryAdapter,
+      boundary_imports: boundaryImports,
       import_warnings,
     };
   }
@@ -336,6 +358,8 @@ async function inspectFile(
       match: "malformed",
       note: "could not parse 8 i8 bytes",
       is_dispatchable,
+      boundary_adapter: boundaryAdapter,
+      boundary_imports: boundaryImports,
       import_warnings,
     };
   }
@@ -355,6 +379,8 @@ async function inspectFile(
       match: "no_dipole",
       note: "neutral signature (all zero)",
       is_dispatchable,
+      boundary_adapter: boundaryAdapter,
+      boundary_imports: boundaryImports,
       import_warnings,
     };
   }
@@ -376,6 +402,8 @@ async function inspectFile(
       match: "malformed",
       note: "bucket not a hex digit",
       is_dispatchable,
+      boundary_adapter: boundaryAdapter,
+      boundary_imports: boundaryImports,
       import_warnings,
     };
   }
@@ -466,6 +494,8 @@ async function inspectFile(
     match: m,
     note,
     is_dispatchable,
+    boundary_adapter: boundaryAdapter,
+    boundary_imports: boundaryImports,
     import_warnings,
   };
 }
@@ -557,6 +587,10 @@ function renderReport(
     (acc, r) => acc + r.import_warnings.length,
     0,
   );
+  const totalBoundaryImports = reports.reduce(
+    (acc, r) => acc + r.boundary_imports.length,
+    0,
+  );
 
   if (!opts.quiet) {
     console.log(
@@ -588,12 +622,17 @@ function renderReport(
           console.log(`    ⚠ [Import Law] ${w}`);
         }
       }
+      if (r.boundary_imports.length > 0) {
+        for (const b of r.boundary_imports) {
+          console.log(`    ↔ [Boundary Adapter] ${b}`);
+        }
+      }
     }
     console.log("-".repeat(86));
   }
 
   console.log(
-    `total: ${reports.length}  match: ${matches}  mismatch: ${mismatches}  deferred: ${deferred}  no_dipole: ${noDipole} (organ-gap: ${noDipoleOrganGap}, library-ok: ${noDipoleLibraryOk})  malformed: ${malformed}  import-warnings: ${totalImportWarnings}`,
+    `total: ${reports.length}  match: ${matches}  mismatch: ${mismatches}  deferred: ${deferred}  no_dipole: ${noDipole} (organ-gap: ${noDipoleOrganGap}, library-ok: ${noDipoleLibraryOk})  malformed: ${malformed}  import-warnings: ${totalImportWarnings}  boundary-imports: ${totalBoundaryImports}`,
   );
 
   if (!opts.quiet && orphans.length > 0) {
@@ -686,6 +725,10 @@ async function main(): Promise<void> {
           orphans_count: orphans.length,
           import_warnings_count: reports.reduce(
             (acc, r) => acc + r.import_warnings.length,
+            0,
+          ),
+          boundary_imports_count: reports.reduce(
+            (acc, r) => acc + r.boundary_imports.length,
             0,
           ),
         },

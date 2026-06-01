@@ -1,6 +1,7 @@
 // src/x4012_receipt_envelope.ts — local receipt-envelope adapter
 // maturity: active
 // skill_safe: yes-readonly
+// boundary_adapter: probes/receipt-envelope-encoder-v0
 //
 // Centralizes the only Trinity runtime dependency on the receipt-envelope
 // probe implementation. Runtime organs import this local ABI instead of

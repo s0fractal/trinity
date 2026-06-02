@@ -51,10 +51,13 @@ jobs:
         run: ./t status --live | jq -e '.summary.ci_freshness == "fresh" and .substrate_health.external_ci.source == "live" and .substrate_health.external_ci.is_stale == false'
 
       - name: Verify self and capabilities receipt schemas
-        run: ./t capabilities --json | jq -e '[.capabilities[] | select(.primary == "audit" or .primary == "status" or .primary == "self" or .primary == "capabilities" or .primary == "external-surfaces" or .primary == "agents" or .primary == "skill" or .primary == "memory" or .primary == "roadmap" or .primary == "probes" or .primary == "ecosystem" or .primary == "gravity" or .primary == "contract-audit" or .primary == "lexicon" or .primary == "myc-status-shadow" or .primary == "myc-capabilities-shadow" or .primary == "myc-protocol-audit-shadow") | select(.receipt_schema != null)] | length == 17'
+        run: ./t capabilities --json | jq -e '[.capabilities[] | select(.primary == "audit" or .primary == "status" or .primary == "self" or .primary == "capabilities" or .primary == "external-surfaces" or .primary == "agents" or .primary == "skill" or .primary == "memory" or .primary == "roadmap" or .primary == "probes" or .primary == "ecosystem" or .primary == "gravity" or .primary == "contract-audit" or .primary == "lexicon" or .primary == "myc-status-shadow" or .primary == "myc-capabilities-shadow" or .primary == "myc-protocol-audit-shadow" or .primary == "export-clean" or .primary == "self-portrait") | select(.receipt_schema != null)] | length == 19'
 
       - name: Verify capabilities detail lookup
         run: ./t capabilities external-surfaces --json | jq -e '.type == "capabilities" and .position == "4/A" and .action == "show" and .capabilities[0].primary == "external-surfaces" and (.capabilities[0].receipt_schema.type == "external_surfaces")'
+
+      - name: Verify capabilities schema inventory
+        run: ./t capabilities validate --json | jq -e '.type == "capabilities_validation" and .summary.valid == true and .summary.duplicate_schema_types == 0 and .summary.schemas_total >= .summary.linked_schema_types and (.unlinked_schema_types | type) == "array"'
 
       - name: Verify generator JSON receipts
         run: |

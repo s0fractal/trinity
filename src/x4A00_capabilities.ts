@@ -307,7 +307,14 @@ function renderDetail(cap: Capability): void {
 
 function validate(
   caps: Capability[],
-): { errors: string[]; warnings: string[] } {
+  schemas: SchemaRecord[],
+): {
+  errors: string[];
+  warnings: string[];
+  duplicate_schema_types: Record<string, number>;
+  linked_schema_types_count: number;
+  unlinked_schema_types: string[];
+} {
   const errors: string[] = [];
   const warnings: string[] = [];
   const positions = new Set<string>();
@@ -326,7 +333,42 @@ function validate(
       warnings.push(`word "${c.primary}" has neutral dipole`);
     }
   }
-  return { errors, warnings };
+
+  const schemaCounts = new Map<string, number>();
+  for (const schema of schemas) {
+    schemaCounts.set(schema.type, (schemaCounts.get(schema.type) ?? 0) + 1);
+  }
+
+  const duplicate_schema_types: Record<string, number> = {};
+  for (const [type, count] of schemaCounts) {
+    if (count > 1) {
+      duplicate_schema_types[type] = count;
+      errors.push(`duplicate schema type: ${type} (${count} records)`);
+    }
+  }
+
+  const wordHandles = new Set(caps.flatMap((c) => c.handles));
+  const linkedSchemaTypes = new Set(
+    schemas.filter((schema) => wordHandles.has(schema.type)).map((schema) =>
+      schema.type
+    ),
+  );
+  const unlinked_schema_types = [...schemaCounts.keys()]
+    .filter((type) => !linkedSchemaTypes.has(type))
+    .sort();
+  if (unlinked_schema_types.length > 0) {
+    warnings.push(
+      `${unlinked_schema_types.length} schema type(s) are payload-only or not linked to a command handle`,
+    );
+  }
+
+  return {
+    errors,
+    warnings,
+    duplicate_schema_types,
+    linked_schema_types_count: linkedSchemaTypes.size,
+    unlinked_schema_types,
+  };
 }
 
 function legacyJsonFor(caps: Capability[]): unknown {
@@ -453,18 +495,31 @@ if (import.meta.main) {
   }
 
   if (args[0] === "validate") {
-    const { errors, warnings } = validate(caps);
+    const {
+      errors,
+      warnings,
+      duplicate_schema_types,
+      linked_schema_types_count,
+      unlinked_schema_types,
+    } = validate(caps, schemas);
     const result = {
       type: "capabilities_validation",
       position: "4/A",
+      action: "validate",
       summary: {
         total: caps.length,
+        schemas_total: schemas.length,
+        linked_schema_types: linked_schema_types_count,
+        unlinked_schema_types: unlinked_schema_types.length,
+        duplicate_schema_types: Object.keys(duplicate_schema_types).length,
         errors: errors.length,
         warnings: warnings.length,
         valid: errors.length === 0,
       },
       errors,
       warnings,
+      duplicate_schema_types,
+      unlinked_schema_types,
     };
     if (wantJson) {
       console.log(JSON.stringify(result, null, 2));

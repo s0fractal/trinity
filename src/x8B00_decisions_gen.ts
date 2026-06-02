@@ -45,6 +45,7 @@ export interface DecisionEntry {
   expected_after_running: string[];
   open_debts: string[];
   closed_items: string[];
+  evidence_markers: string[];
   has_falsifier: boolean;
   has_suggested_commands: boolean;
   has_receipt: boolean;
@@ -260,6 +261,40 @@ function chooseNextAction(entries: DecisionEntry[]): DecisionNextAction | null {
   }
 
   return null;
+}
+
+function receiptEvidenceMarkers(
+  raw: DecisionEntry & { mentions: string[]; text: string },
+): string[] {
+  if (raw.category !== "receipt") return [];
+
+  const markers: string[] = [];
+  if (raw.closes_hash !== null) markers.push("closes_hash");
+  if (raw.suggested_commands.length > 0) markers.push("suggested_commands");
+  if (raw.expected_after_running.length > 0) {
+    markers.push("expected_after_running");
+  }
+  if (raw.falsifiers.length > 0) markers.push("falsifiers");
+  if (raw.resolved_by.length > 0) markers.push("resolved_by");
+  if (
+    raw.mentions.some((m) =>
+      m.startsWith("contracts/") ||
+      /\.md$/.test(m) && m.includes("contracts")
+    )
+  ) {
+    markers.push("contract_reference");
+  }
+
+  const hasTargetChord = /Target chord:\s*`?jazz\/chords\/[^`\n]+\.md`?/i
+    .test(raw.text);
+  const hasComparison = /^##\s+Comparison\b/im.test(raw.text);
+  const hasPreSnapshot = /^##\s+Pre-snapshot\b/im.test(raw.text);
+  const hasPostSnapshot = /^##\s+Post-snapshot\b/im.test(raw.text);
+  if (hasTargetChord && hasComparison && hasPreSnapshot && hasPostSnapshot) {
+    markers.push("target_chord_snapshot_comparison");
+  }
+
+  return [...new Set(markers)].sort();
 }
 
 function proposalTriagePriority(stance: ProposalTriage["stance"]): number {
@@ -618,7 +653,7 @@ function extractResolvedBy(text: string, fm: Record<string, any>): string[] {
 
 async function scanChordFile(
   filename: string,
-): Promise<(DecisionEntry & { mentions: string[] }) | null> {
+): Promise<(DecisionEntry & { mentions: string[]; text: string }) | null> {
   try {
     const path = join(CHORDS_DIR, filename);
     const text = await Deno.readTextFile(path);
@@ -723,6 +758,7 @@ async function scanChordFile(
       expected_after_running,
       open_debts,
       closed_items,
+      evidence_markers: [],
       has_falsifier: falsifiers.length > 0,
       has_suggested_commands: suggested_commands.length > 0,
       has_receipt: false,
@@ -737,6 +773,7 @@ async function scanChordFile(
       substance: true,
       proposal_triage: null,
       mentions,
+      text,
     };
   } catch {
     return null;
@@ -835,7 +872,8 @@ export async function collectDecisions(stable: boolean): Promise<{
   entries: DecisionEntry[];
 }> {
   const trackedFiles = await getGitTrackedFiles();
-  const rawEntries: (DecisionEntry & { mentions: string[] })[] = [];
+  const rawEntries: (DecisionEntry & { mentions: string[]; text: string })[] =
+    [];
 
   for await (const entry of Deno.readDir(CHORDS_DIR)) {
     if (!entry.isFile || !entry.name.endsWith(".md")) continue;
@@ -970,6 +1008,7 @@ export async function collectDecisions(stable: boolean): Promise<{
       has_falsifier: raw.falsifiers.length > 0,
       has_suggested_commands: raw.suggested_commands.length > 0,
     });
+    const evidence_markers = receiptEvidenceMarkers(raw);
 
     return {
       filename: raw.filename,
@@ -987,6 +1026,7 @@ export async function collectDecisions(stable: boolean): Promise<{
       expected_after_running: raw.expected_after_running,
       open_debts: raw.open_debts,
       closed_items: raw.closed_items,
+      evidence_markers,
       has_falsifier: raw.falsifiers.length > 0,
       has_suggested_commands: raw.suggested_commands.length > 0,
       has_receipt,
@@ -996,16 +1036,7 @@ export async function collectDecisions(stable: boolean): Promise<{
       resolved_by: raw.resolved_by,
       resolved_by_valid: validation.valid,
       resolution_validation_errors: validation.errors,
-      substance: raw.category !== "receipt" || (
-        raw.closes_hash !== null ||
-        raw.suggested_commands.length > 0 ||
-        raw.falsifiers.length > 0 ||
-        raw.resolved_by.length > 0 ||
-        raw.mentions.some((m) =>
-          m.startsWith("contracts/") ||
-          /\.md$/.test(m) && m.includes("contracts")
-        )
-      ),
+      substance: raw.category !== "receipt" || evidence_markers.length > 0,
       proposal_triage,
     };
   });

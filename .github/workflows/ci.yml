@@ -143,10 +143,10 @@ jobs:
         run: ./t evidence --strict --json | jq -e '.strict_mode == true and .strict_ok == true'
 
       - name: Verify decisions JSON format
-        run: ./t decisions --json | jq -e '.type == "decisions" and .position == "8/B" and (.summary.proposal_triage.review | type) == "number" and (.summary.proposal_triage.revalidate | type) == "number" and ([.entries[] | has("decision_outcome")] | all) and ((.next_action == null) or ((.next_action.filename | type) == "string" and (.next_action.risks | type) == "array"))'
+        run: ./t decisions --json | jq -e '.type == "decisions" and .position == "8/B" and (.summary.proposal_triage.review | type) == "number" and (.summary.proposal_triage.revalidate | type) == "number" and ([.entries[] | has("decision_outcome") and has("evidence_markers")] | all) and ([.entries[] | select(.filename == "20260509-094224-trinity-receipt-two-models-on-same-chord-multi-model-jam.md") | select(.substance == true and (.evidence_markers | index("target_chord_snapshot_comparison")))] | length) == 1 and ((.next_action == null) or ((.next_action.filename | type) == "string" and (.next_action.risks | type) == "array"))'
 
       - name: Verify decisions next action
-        run: ./t decisions --next --json | jq -e '.type == "decisions_next" and .position == "8/B" and .action == "next" and ((.next_action == null) or ((.next_action.filename | type) == "string" and (.next_action.risks | type) == "array" and (.next_action.triage_stance | type) == "string"))'
+        run: ./t decisions --next --json | jq -e '.type == "decisions_next" and .position == "8/B" and .action == "next" and ((.next_action == null) or ((.next_action.filename | type) == "string" and (.next_action.risks | type) == "array" and ((.next_action.triage_stance == null) or (.next_action.triage_stance | type) == "string")))'
 
       - name: Verify decisions triage queue
         run: ./t decisions --triage --json | jq -e '.type == "decisions_triage" and .position == "8/B" and .action == "triage" and (.summary.review | type) == "number" and (.summary.revalidate | type) == "number" and (.queue | type) == "array"'

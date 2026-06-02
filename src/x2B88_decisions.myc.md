@@ -14,6 +14,9 @@ tasks extracted from the chord trail in jazz/chords/._
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  42   |
 | Receipts                                 |  109  |
+| ↳ strong evidence                        |  83   |
+| ↳ weak evidence                          |  15   |
+| ↳ no evidence                            |  11   |
 | Critiques                                |   3   |
 | Unresolved Critiques (Heuristic)         |   0   |
 | Other Observations                       |  154  |

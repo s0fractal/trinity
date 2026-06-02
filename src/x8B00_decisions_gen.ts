@@ -46,6 +46,7 @@ export interface DecisionEntry {
   open_debts: string[];
   closed_items: string[];
   evidence_markers: string[];
+  evidence_strength: "strong" | "weak" | "none" | "not_applicable";
   has_falsifier: boolean;
   has_suggested_commands: boolean;
   has_receipt: boolean;
@@ -243,8 +244,15 @@ function chooseNextAction(entries: DecisionEntry[]): DecisionNextAction | null {
   }
 
   const ritualReceipt = entries
-    .filter((e) => e.category === "receipt" && !e.substance)
-    .sort((a, b) => a.timestamp.localeCompare(b.timestamp))[0];
+    .filter((e) => e.category === "receipt" && e.evidence_strength !== "strong")
+    .sort((a, b) => {
+      const strengthPriority = (e: DecisionEntry) =>
+        e.evidence_strength === "none" ? 0 : 1;
+      const pa = strengthPriority(a);
+      const pb = strengthPriority(b);
+      if (pa !== pb) return pa - pb;
+      return a.timestamp.localeCompare(b.timestamp);
+    })[0];
   if (ritualReceipt) {
     return {
       kind: "ritual_receipt",
@@ -252,11 +260,13 @@ function chooseNextAction(entries: DecisionEntry[]): DecisionNextAction | null {
       filename: ritualReceipt.filename,
       author: ritualReceipt.author,
       timestamp: ritualReceipt.timestamp,
-      reason: "receipt has no verifiable artifact link",
+      reason: ritualReceipt.evidence_strength === "none"
+        ? "receipt has no verifiable artifact link"
+        : "receipt has only weak artifact references",
       triage_stance: null,
       risks: [],
       suggested_command:
-        `Review jazz/chords/${ritualReceipt.filename} and add artifact evidence or mark it as narrative-only.`,
+        `Review jazz/chords/${ritualReceipt.filename} and add strong artifact evidence or mark it as narrative-only.`,
     };
   }
 
@@ -319,6 +329,15 @@ function hasReceiptSubstance(markers: string[]): boolean {
   return markers.some((marker) =>
     marker !== "artifact_reference" && marker !== "contract_reference"
   );
+}
+
+function receiptEvidenceStrength(
+  category: DecisionEntry["category"],
+  markers: string[],
+): DecisionEntry["evidence_strength"] {
+  if (category !== "receipt") return "not_applicable";
+  if (hasReceiptSubstance(markers)) return "strong";
+  return markers.length > 0 ? "weak" : "none";
 }
 
 function proposalTriagePriority(stance: ProposalTriage["stance"]): number {
@@ -783,6 +802,7 @@ async function scanChordFile(
       open_debts,
       closed_items,
       evidence_markers: [],
+      evidence_strength: "not_applicable",
       has_falsifier: falsifiers.length > 0,
       has_suggested_commands: suggested_commands.length > 0,
       has_receipt: false,
@@ -892,6 +912,11 @@ export async function collectDecisions(stable: boolean): Promise<{
     invalid_closures: number;
     ritual_receipts: number;
     ritual_receipts_recent_7d: number;
+    receipt_evidence: {
+      strong: number;
+      weak: number;
+      none: number;
+    };
   };
   entries: DecisionEntry[];
 }> {
@@ -1033,6 +1058,10 @@ export async function collectDecisions(stable: boolean): Promise<{
       has_suggested_commands: raw.suggested_commands.length > 0,
     });
     const evidence_markers = receiptEvidenceMarkers(raw);
+    const evidence_strength = receiptEvidenceStrength(
+      raw.category,
+      evidence_markers,
+    );
 
     return {
       filename: raw.filename,
@@ -1051,6 +1080,7 @@ export async function collectDecisions(stable: boolean): Promise<{
       open_debts: raw.open_debts,
       closed_items: raw.closed_items,
       evidence_markers,
+      evidence_strength,
       has_falsifier: raw.falsifiers.length > 0,
       has_suggested_commands: raw.suggested_commands.length > 0,
       has_receipt,
@@ -1060,8 +1090,7 @@ export async function collectDecisions(stable: boolean): Promise<{
       resolved_by: raw.resolved_by,
       resolved_by_valid: validation.valid,
       resolution_validation_errors: validation.errors,
-      substance: raw.category !== "receipt" ||
-        hasReceiptSubstance(evidence_markers),
+      substance: raw.category !== "receipt" || evidence_strength === "strong",
       proposal_triage,
     };
   });
@@ -1103,16 +1132,29 @@ export async function collectDecisions(stable: boolean): Promise<{
         !e.resolved_by_valid,
     ).length,
     ritual_receipts: entries.filter(
-      (e) => e.category === "receipt" && !e.substance,
+      (e) => e.category === "receipt" && e.evidence_strength !== "strong",
     ).length,
     ritual_receipts_recent_7d: (() => {
       const cutoff = Date.now() - 7 * 86400000;
       return entries.filter((e) => {
-        if (e.category !== "receipt" || e.substance) return false;
+        if (e.category !== "receipt" || e.evidence_strength === "strong") {
+          return false;
+        }
         const t = new Date(e.timestamp).getTime();
         return Number.isFinite(t) && t >= cutoff;
       }).length;
     })(),
+    receipt_evidence: {
+      strong: entries.filter(
+        (e) => e.category === "receipt" && e.evidence_strength === "strong",
+      ).length,
+      weak: entries.filter(
+        (e) => e.category === "receipt" && e.evidence_strength === "weak",
+      ).length,
+      none: entries.filter(
+        (e) => e.category === "receipt" && e.evidence_strength === "none",
+      ).length,
+    },
   };
 
   return { summary, entries };
@@ -1226,6 +1268,9 @@ async function main() {
   );
   lines.push(`| Decisions | ${summary.decisions} |`);
   lines.push(`| Receipts | ${summary.receipts} |`);
+  lines.push(`| ↳ strong evidence | ${summary.receipt_evidence.strong} |`);
+  lines.push(`| ↳ weak evidence | ${summary.receipt_evidence.weak} |`);
+  lines.push(`| ↳ no evidence | ${summary.receipt_evidence.none} |`);
   lines.push(`| Critiques | ${summary.critiques} |`);
   lines.push(
     `| Unresolved Critiques (Heuristic) | ${summary.unresolved_critiques} |`,

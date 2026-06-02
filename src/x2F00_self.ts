@@ -6,7 +6,7 @@
 //   completion_frontier+0.70 (frontier-pair sub-position F)
 //   triangle/foundation/action/harmony+0.30 (composes all axes)
 // placement_policy: axis
-// intent: composed substrate self-introspection — status + organ count + voices + chord activity + probe distribution + contracts in one summary
+// intent: composed substrate self-introspection — status + organ count + voices + chord activity + probe distribution + contracts + capability schema health in one summary
 // maturity: active
 // horizon: none (refresh and submodule rollups implemented)
 // skill_tag: self
@@ -30,6 +30,7 @@
 //   - jazz/chords/*.md count for chord trail size
 //   - probes/* dir count for experimental frontier
 //   - `t contracts --json` for sunset/draft summary
+//   - `t capabilities validate --json` for affordance/schema linkage health
 //
 // Glossary words: self, я, себе, substrate-self, substrate
 
@@ -230,6 +231,21 @@ interface ContractsShape {
   };
 }
 
+interface CapabilitiesValidationShape {
+  summary?: {
+    schemas_total: number;
+    linked_schema_types: number;
+    unlinked_schema_types: number;
+    unclassified_schema_types: number;
+    duplicate_schema_types: number;
+    errors: number;
+    warnings: number;
+    valid: boolean;
+  };
+  schema_classes?: Record<string, number>;
+  unclassified_schema_types?: string[];
+}
+
 interface InboxShape {
   summary?: {
     total_pending: number;
@@ -270,6 +286,7 @@ interface DecisionsShape {
 
 function buildAttention(args: {
   status: StatusShape | null;
+  capabilitiesValidation: CapabilitiesValidationShape | null;
   inbox: InboxShape | null;
   heartbeat: HeartbeatShape | null;
   decisions: DecisionsShape | null;
@@ -289,6 +306,29 @@ function buildAttention(args: {
     score += 4;
     reasons.push(`worktree dirty: ${worktree.changed_files} changed files`);
     nextActions.push("Inspect `git status --short` before editing.");
+  }
+
+  const caps = args.capabilitiesValidation?.summary;
+  if (caps) {
+    if (!caps.valid) {
+      score += 4;
+      reasons.push(
+        `capabilities validation failed: ${caps.errors} errors, ${caps.warnings} warnings`,
+      );
+      nextActions.push(
+        "Run `./t capabilities validate --json` and fix schema/word linkage before relying on generated briefs.",
+      );
+    } else if (
+      caps.unclassified_schema_types > 0 || caps.duplicate_schema_types > 0
+    ) {
+      score += 2;
+      reasons.push(
+        `capabilities schema linkage pressure: ${caps.unclassified_schema_types} unclassified, ${caps.duplicate_schema_types} duplicate`,
+      );
+      nextActions.push(
+        "Classify unlinked type:07 schemas or add command handles in `src/x0001_glossary.ndjson`.",
+      );
+    }
   }
 
   const pending = args.inbox?.summary?.total_pending ?? 0;
@@ -377,6 +417,8 @@ if (import.meta.main) {
   const data = await parallel({
     status: () => tryOr(() => callT("status", ["--json"]), null),
     contracts: () => tryOr(() => callT("contracts", ["--json"]), null),
+    capabilitiesValidation: () =>
+      tryOr(() => callT("capabilities", ["validate", "--json"]), null),
     inbox: () => tryOr(() => callT("inbox", ["--json"]), null),
     heartbeat: () => tryOr(() => callT("heartbeat", ["--json"]), null),
     decisions: () => tryOr(() => callT("decisions", ["--json"]), null),
@@ -392,6 +434,9 @@ if (import.meta.main) {
 
   const status = data.status as StatusShape | null;
   const contracts = data.contracts as ContractsShape | null;
+  const capabilitiesValidation = data.capabilitiesValidation as
+    | CapabilitiesValidationShape
+    | null;
   const inbox = data.inbox as InboxShape | null;
   const heartbeat = data.heartbeat as HeartbeatShape | null;
   const decisions = data.decisions as DecisionsShape | null;
@@ -410,6 +455,7 @@ if (import.meta.main) {
   const submodules = status?.submodules ?? {};
   const attention = buildAttention({
     status,
+    capabilitiesValidation,
     inbox,
     heartbeat,
     decisions,
@@ -430,6 +476,9 @@ if (import.meta.main) {
     chords: data.chords,
     probes: data.probes,
     contracts: contracts?.summary ?? null,
+    capabilities_validation: capabilitiesValidation?.summary ?? null,
+    capabilities_schema_classes: capabilitiesValidation?.schema_classes ??
+      null,
     decisions: decisions?.summary ?? null,
     external_surfaces: data.registry,
     inbox: inbox?.summary ?? null,
@@ -451,7 +500,7 @@ if (import.meta.main) {
     },
     synonyms: ["self", "я", "себе", "substrate-self", "substrate"],
     topology:
-      "parallel reads of status + contracts + organ/voice/chord/probe scans; renders unified dashboard; --refresh option regenerates all 6 self-description axes in parallel before scanning",
+      "parallel reads of status + contracts + capabilities validation + organ/voice/chord/probe scans; renders unified dashboard; --refresh option regenerates all 6 self-description axes in parallel before scanning",
   };
 
   if (wantJson) {
@@ -486,6 +535,12 @@ if (import.meta.main) {
     if (contracts?.summary) {
       console.log(
         `# contracts:   ${contracts.summary.total} total (active:${contracts.summary.active} draft:${contracts.summary.draft} pinned:${contracts.summary.pinned})`,
+      );
+    }
+    if (capabilitiesValidation?.summary) {
+      const caps = capabilitiesValidation.summary;
+      console.log(
+        `# capabilities: schemas ${caps.linked_schema_types}/${caps.schemas_total} linked, ${caps.unclassified_schema_types} unclassified, valid:${caps.valid}`,
       );
     }
     if (decisions?.summary) {

@@ -277,10 +277,13 @@ interface DecisionsShape {
     };
   };
   next_action?: {
+    id?: string;
     filename: string;
     kind: string;
+    reason?: string;
     triage_stance?: "candidate" | "revalidate" | "review" | null;
     risks?: string[];
+    suggested_command?: string;
   } | null;
 }
 
@@ -375,6 +378,18 @@ function buildAttention(args: {
     }
     nextActions.push(
       "Run `./t decisions --next --json` to inspect the highest-pressure ledger item before implementing old proposals.",
+    );
+  } else if (args.decisions?.next_action) {
+    const next = args.decisions.next_action;
+    score += 1;
+    reasons.push(
+      `decision ledger next item: ${next.kind} (${
+        next.reason ?? "review recommended"
+      })`,
+    );
+    nextActions.push(
+      next.suggested_command ??
+        "Run `./t decisions --next --json` to inspect the next ledger item.",
     );
   }
 
@@ -480,6 +495,7 @@ if (import.meta.main) {
     capabilities_schema_classes: capabilitiesValidation?.schema_classes ??
       null,
     decisions: decisions?.summary ?? null,
+    decision_next_action: decisions?.next_action ?? null,
     external_surfaces: data.registry,
     inbox: inbox?.summary ?? null,
     heartbeat: heartbeat?.summary ?? null,
@@ -557,6 +573,10 @@ if (import.meta.main) {
         const risks = decisions.next_action.risks?.join(", ") || "no risks";
         console.log(
           `#              next ${decisions.next_action.triage_stance}: ${decisions.next_action.filename} (${risks})`,
+        );
+      } else if (decisions.next_action) {
+        console.log(
+          `#              next ${decisions.next_action.kind}: ${decisions.next_action.filename}`,
         );
       }
     }

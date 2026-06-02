@@ -311,6 +311,13 @@ function receiptEvidenceMarkers(
     markers.push("review_verdict");
   }
   if (
+    /^claim_kind:\s*review-(?:ack|aye)\b/im.test(fmText) &&
+    /^hears:\s*$/im.test(fmText) &&
+    /^\s+-\s+(?:jazz\/chords\/)?[^\n]+\.md\s*$/im.test(fmText)
+  ) {
+    markers.push("review_acknowledgement");
+  }
+  if (
     /^##\s+Verification\b/im.test(raw.text) &&
     /Commands run:/i.test(raw.text)
   ) {

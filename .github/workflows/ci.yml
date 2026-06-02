@@ -57,7 +57,7 @@ jobs:
         run: ./t capabilities external-surfaces --json | jq -e '.type == "capabilities" and .position == "4/A" and .action == "show" and .capabilities[0].primary == "external-surfaces" and (.capabilities[0].receipt_schema.type == "external_surfaces")'
 
       - name: Verify capabilities schema inventory
-        run: ./t capabilities validate --json | jq -e '.type == "capabilities_validation" and .summary.valid == true and .summary.duplicate_schema_types == 0 and .summary.schemas_total >= .summary.linked_schema_types and (.unlinked_schema_types | type) == "array"'
+        run: ./t capabilities validate --json | jq -e '.type == "capabilities_validation" and .summary.valid == true and .summary.duplicate_schema_types == 0 and .summary.unclassified_schema_types == 0 and .summary.schemas_total >= .summary.linked_schema_types and (.schema_linkage | type) == "array"'
 
       - name: Verify generator JSON receipts
         run: |

@@ -89,6 +89,19 @@ interface Capability {
   legacy_tasks: string[];
 }
 
+type SchemaLinkClass =
+  | "linked_command"
+  | "payload"
+  | "event_receipt"
+  | "diagnostic"
+  | "unclassified";
+
+interface SchemaLinkage {
+  type: string;
+  class: SchemaLinkClass;
+  linked: boolean;
+}
+
 const DIPOLE_AXES = [
   "void_infinity",
   "first_penultimate",
@@ -313,7 +326,10 @@ function validate(
   warnings: string[];
   duplicate_schema_types: Record<string, number>;
   linked_schema_types_count: number;
+  schema_linkage: SchemaLinkage[];
+  schema_classes: Record<SchemaLinkClass, number>;
   unlinked_schema_types: string[];
+  unclassified_schema_types: string[];
 } {
   const errors: string[] = [];
   const warnings: string[] = [];
@@ -353,12 +369,35 @@ function validate(
       schema.type
     ),
   );
-  const unlinked_schema_types = [...schemaCounts.keys()]
-    .filter((type) => !linkedSchemaTypes.has(type))
-    .sort();
-  if (unlinked_schema_types.length > 0) {
+
+  const schema_linkage = schemas
+    .map((schema) => ({
+      type: schema.type,
+      class: classifySchema(schema, linkedSchemaTypes.has(schema.type)),
+      linked: linkedSchemaTypes.has(schema.type),
+    }))
+    .sort((a, b) => a.type.localeCompare(b.type));
+
+  const schema_classes: Record<SchemaLinkClass, number> = {
+    linked_command: 0,
+    payload: 0,
+    event_receipt: 0,
+    diagnostic: 0,
+    unclassified: 0,
+  };
+  for (const link of schema_linkage) {
+    schema_classes[link.class]++;
+  }
+
+  const unlinked_schema_types = schema_linkage
+    .filter((schema) => !schema.linked)
+    .map((schema) => schema.type);
+  const unclassified_schema_types = schema_linkage
+    .filter((schema) => schema.class === "unclassified")
+    .map((schema) => schema.type);
+  if (unclassified_schema_types.length > 0) {
     warnings.push(
-      `${unlinked_schema_types.length} schema type(s) are payload-only or not linked to a command handle`,
+      `${unclassified_schema_types.length} unlinked schema type(s) need an explicit command handle or classification`,
     );
   }
 
@@ -367,8 +406,41 @@ function validate(
     warnings,
     duplicate_schema_types,
     linked_schema_types_count: linkedSchemaTypes.size,
+    schema_linkage,
+    schema_classes,
     unlinked_schema_types,
+    unclassified_schema_types,
   };
+}
+
+function classifySchema(
+  schema: SchemaRecord,
+  linked: boolean,
+): SchemaLinkClass {
+  if (linked) return "linked_command";
+
+  const type = schema.type;
+  const description = (schema.description ?? "").toLowerCase();
+  if (/^[A-Z]/.test(type) || description.includes(" payload ")) {
+    return "payload";
+  }
+  if (
+    /(_emitted|_written|_receipt|_dry_run|_verdict)$/.test(type) ||
+    type === "snapshot_written" ||
+    type === "substrate_snapshot" ||
+    type === "spore_apply"
+  ) {
+    return "event_receipt";
+  }
+  if (
+    type === "error" ||
+    type === "capabilities_validation" ||
+    type === "cross_substrate_verify" ||
+    type === "inbox_compost_stale"
+  ) {
+    return "diagnostic";
+  }
+  return "unclassified";
 }
 
 function legacyJsonFor(caps: Capability[]): unknown {
@@ -500,7 +572,10 @@ if (import.meta.main) {
       warnings,
       duplicate_schema_types,
       linked_schema_types_count,
+      schema_linkage,
+      schema_classes,
       unlinked_schema_types,
+      unclassified_schema_types,
     } = validate(caps, schemas);
     const result = {
       type: "capabilities_validation",
@@ -511,6 +586,7 @@ if (import.meta.main) {
         schemas_total: schemas.length,
         linked_schema_types: linked_schema_types_count,
         unlinked_schema_types: unlinked_schema_types.length,
+        unclassified_schema_types: unclassified_schema_types.length,
         duplicate_schema_types: Object.keys(duplicate_schema_types).length,
         errors: errors.length,
         warnings: warnings.length,
@@ -519,7 +595,10 @@ if (import.meta.main) {
       errors,
       warnings,
       duplicate_schema_types,
+      schema_classes,
+      schema_linkage,
       unlinked_schema_types,
+      unclassified_schema_types,
     };
     if (wantJson) {
       console.log(JSON.stringify(result, null, 2));

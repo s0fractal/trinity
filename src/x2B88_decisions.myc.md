@@ -20,7 +20,7 @@ tasks extracted from the chord trail in jazz/chords/._
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
-| Ritual Receipts (no verifiable artifact) |  28   |
+| Ritual Receipts (no verifiable artifact) |  26   |
 | ↳ recent (last 7d)                       |   0   |
 
 ## Proposal Triage Queue

@@ -284,6 +284,24 @@ function receiptEvidenceMarkers(
   ) {
     markers.push("contract_reference");
   }
+  if (
+    /^transition_receipt:\s*$/im.test(raw.text) &&
+    /^\s+evidence:\s*$/im.test(raw.text)
+  ) {
+    markers.push("transition_receipt_evidence");
+  }
+  if (
+    /^##\s+Verification\b/im.test(raw.text) &&
+    /Commands run:/i.test(raw.text)
+  ) {
+    markers.push("verification_commands");
+  }
+  if (
+    /`(?:reports|src|contracts|omega|liquid|myc|public-candidates|tools)\/[^`\n]+`/
+      .test(raw.text)
+  ) {
+    markers.push("artifact_reference");
+  }
 
   const hasTargetChord = /Target chord:\s*`?jazz\/chords\/[^`\n]+\.md`?/i
     .test(raw.text);
@@ -295,6 +313,12 @@ function receiptEvidenceMarkers(
   }
 
   return [...new Set(markers)].sort();
+}
+
+function hasReceiptSubstance(markers: string[]): boolean {
+  return markers.some((marker) =>
+    marker !== "artifact_reference" && marker !== "contract_reference"
+  );
 }
 
 function proposalTriagePriority(stance: ProposalTriage["stance"]): number {
@@ -1036,7 +1060,8 @@ export async function collectDecisions(stable: boolean): Promise<{
       resolved_by: raw.resolved_by,
       resolved_by_valid: validation.valid,
       resolution_validation_errors: validation.errors,
-      substance: raw.category !== "receipt" || evidence_markers.length > 0,
+      substance: raw.category !== "receipt" ||
+        hasReceiptSubstance(evidence_markers),
       proposal_triage,
     };
   });

@@ -14,16 +14,16 @@ tasks extracted from the chord trail in jazz/chords/._
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  42   |
 | Receipts                                 |  109  |
-| ↳ strong evidence                        |  83   |
+| ↳ strong evidence                        |  85   |
 | ↳ weak evidence                          |  15   |
-| ↳ no evidence                            |  11   |
+| ↳ no evidence                            |   9   |
 | Critiques                                |   3   |
 | Unresolved Critiques (Heuristic)         |   0   |
 | Other Observations                       |  154  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
-| Ritual Receipts (no verifiable artifact) |  26   |
+| Ritual Receipts (no verifiable artifact) |  24   |
 | ↳ recent (last 7d)                       |   0   |
 
 ## Proposal Triage Queue

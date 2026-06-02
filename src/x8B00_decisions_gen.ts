@@ -279,6 +279,7 @@ function receiptEvidenceMarkers(
   if (raw.category !== "receipt") return [];
 
   const markers: string[] = [];
+  const fmText = raw.text.match(/^---\n([\s\S]*?)\n---/)?.[1] ?? "";
   if (raw.closes_hash !== null) markers.push("closes_hash");
   if (raw.suggested_commands.length > 0) markers.push("suggested_commands");
   if (raw.expected_after_running.length > 0) {
@@ -299,6 +300,15 @@ function receiptEvidenceMarkers(
     /^\s+evidence:\s*$/im.test(raw.text)
   ) {
     markers.push("transition_receipt_evidence");
+  }
+  if (/^expected_after_running:\s*$/im.test(fmText)) {
+    markers.push("expected_after_running_map");
+  }
+  if (/^falsifiers_for_these_artifacts:\s*$/im.test(fmText)) {
+    markers.push("artifact_falsifier");
+  }
+  if (/^\s+review_verdict:\s*$/im.test(fmText)) {
+    markers.push("review_verdict");
   }
   if (
     /^##\s+Verification\b/im.test(raw.text) &&

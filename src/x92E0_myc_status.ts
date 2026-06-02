@@ -66,7 +66,7 @@ async function main() {
   if (!sourceExists) {
     console.log(JSON.stringify(
       {
-        type: "status",
+        type: "myc_status_shadow",
         position: "9/2E",
         action: "status",
         substrate: "myc",
@@ -89,7 +89,7 @@ async function main() {
   const overall = native.code === 0 && native.parsed ? nativeStatus : "failed";
 
   const payload = {
-    type: "status",
+    type: "myc_status_shadow",
     position: "9/2E",
     action: "status",
     substrate: "myc",

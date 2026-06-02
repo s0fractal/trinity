@@ -59,7 +59,7 @@ async function main() {
   if (!(await fileExists(SOURCE))) {
     console.log(JSON.stringify(
       {
-        type: "protocol_audit",
+        type: "myc_protocol_audit_shadow",
         position: "9/6C",
         action: "audit",
         substrate: "myc",
@@ -81,7 +81,7 @@ async function main() {
   const nativeOk = native.parsed?.ok === true;
   const overall = native.code === 0 && nativeOk ? "healthy" : "failed";
   const payload = {
-    type: "protocol_audit",
+    type: "myc_protocol_audit_shadow",
     position: "9/6C",
     action: "audit",
     substrate: "myc",

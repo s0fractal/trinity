@@ -51,7 +51,7 @@ jobs:
         run: ./t status --live | jq -e '.summary.ci_freshness == "fresh" and .substrate_health.external_ci.source == "live" and .substrate_health.external_ci.is_stale == false'
 
       - name: Verify self and capabilities receipt schemas
-        run: ./t capabilities --json | jq -e '[.capabilities[] | select(.primary == "audit" or .primary == "status" or .primary == "self" or .primary == "capabilities" or .primary == "external-surfaces" or .primary == "agents" or .primary == "skill" or .primary == "memory" or .primary == "roadmap" or .primary == "probes" or .primary == "ecosystem" or .primary == "gravity" or .primary == "contract-audit" or .primary == "lexicon") | select(.receipt_schema != null)] | length == 14'
+        run: ./t capabilities --json | jq -e '[.capabilities[] | select(.primary == "audit" or .primary == "status" or .primary == "self" or .primary == "capabilities" or .primary == "external-surfaces" or .primary == "agents" or .primary == "skill" or .primary == "memory" or .primary == "roadmap" or .primary == "probes" or .primary == "ecosystem" or .primary == "gravity" or .primary == "contract-audit" or .primary == "lexicon" or .primary == "myc-status-shadow" or .primary == "myc-capabilities-shadow" or .primary == "myc-protocol-audit-shadow") | select(.receipt_schema != null)] | length == 17'
 
       - name: Verify capabilities detail lookup
         run: ./t capabilities external-surfaces --json | jq -e '.type == "capabilities" and .position == "4/A" and .action == "show" and .capabilities[0].primary == "external-surfaces" and (.capabilities[0].receipt_schema.type == "external_surfaces")'
@@ -84,13 +84,13 @@ jobs:
         run: ./t self --json | jq -e '(.attention.level | IN("clear", "watch", "act")) and (.attention.score | type) == "number" and (.attention.reasons | type) == "array" and (.attention.next_actions | type) == "array" and (.audit_boundaries.import_warnings == 0) and (.audit_boundaries.boundary_imports | type) == "number" and (.audit_boundaries.registry_warnings == 0) and (.decisions.unresolved_proposals | type) == "number" and (.decisions.proposal_triage.review | type) == "number"'
 
       - name: Verify MYC x9 shadow status
-        run: ./t myc-status-shadow --json | jq -e '.type == "status" and .position == "9/2E" and .shadow == true and .summary.overall == "healthy"'
+        run: ./t myc-status-shadow --json | jq -e '.type == "myc_status_shadow" and .position == "9/2E" and .shadow == true and .summary.overall == "healthy"'
 
       - name: Verify MYC x9 shadow capabilities
-        run: ./t myc-capabilities-shadow --json | jq -e '.type == "capabilities" and .position == "9/4A" and .shadow == true and .summary.total >= 0'
+        run: ./t myc-capabilities-shadow --json | jq -e '.type == "myc_capabilities_shadow" and .position == "9/4A" and .shadow == true and .summary.total >= 0'
 
       - name: Verify MYC x9 shadow protocol audit
-        run: ./t myc-protocol-audit-shadow --json | jq -e '.type == "protocol_audit" and .position == "9/6C" and .shadow == true and .summary.overall == "healthy"'
+        run: ./t myc-protocol-audit-shadow --json | jq -e '.type == "myc_protocol_audit_shadow" and .position == "9/6C" and .shadow == true and .summary.overall == "healthy"'
 
       - name: Audit coordinates
         run: ./t audit --json | jq -e '.summary.mismatch == 0 and .summary.malformed == 0 and .summary.no_dipole_organ_gap == 0 and .summary.orphans_count == 0 and .summary.import_warnings_count == 0 and .summary.registry_warnings_count == 0 and .coordinate_uniqueness.ok == true'

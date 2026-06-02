@@ -58,7 +58,7 @@ async function main() {
   if (!(await fileExists(SOURCE))) {
     console.log(JSON.stringify(
       {
-        type: "capabilities",
+        type: "myc_capabilities_shadow",
         position: "9/4A",
         action: "capabilities",
         substrate: "myc",
@@ -81,7 +81,7 @@ async function main() {
   const nativeOverall = native.parsed?.summary?.overall ?? "invalid";
   const overall = native.code === 0 && native.parsed ? nativeOverall : "failed";
   const payload = {
-    type: "capabilities",
+    type: "myc_capabilities_shadow",
     position: "9/4A",
     action: "capabilities",
     substrate: "myc",

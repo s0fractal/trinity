@@ -260,7 +260,12 @@ async function adversarialReview(
   const prompt =
     `You are an adversarial code reviewer for the trinity substrate. A task was:\n\n${taskSpec}\n\n` +
     `Here is the full diff produced (vs main):\n\n${diff.slice(0, 50000)}\n\n` +
-    `Decide if this change is: (a) correct, (b) strictly in-scope for the task, ` +
+    `Note: changes to AUTO-GENERATED projection files are EXPECTED and legitimate ` +
+    `— any organ edit drifts them and the harness refreshes them deterministically. ` +
+    `These are NOT scope creep: x88F0/x8CF0 (agents/skills bootstrap), x2888 ` +
+    `(voices), x8888_* (memory), x2B88 (decisions), x7B88 (evidence), x8F88 ` +
+    `(external-surfaces). Judge ONLY the hand-authored (non-generated) part of the diff.\n` +
+    `Decide if the authored change is: (a) correct, (b) in-scope for the task, ` +
     `(c) free of obvious bugs, security issues, or destructive/irreversible ` +
     `effects, (d) not weakening any test, gate, or safety check. ` +
     `Default to rejection if you are uncertain about ANY of these. ` +
@@ -465,8 +470,14 @@ async function main() {
   }
 
   const stages: Verdict[] = [];
-  const finish = async (final: Record<string, unknown>) => {
+  // Remove the worktree BEFORE deleting the branch — git refuses to delete a
+  // branch still checked out in a worktree.
+  const finish = async (
+    final: Record<string, unknown>,
+    opts: { keepBranch?: boolean } = {},
+  ) => {
     await run("git", ["worktree", "remove", "--force", wt], ROOT);
+    if (!opts.keepBranch) await run("git", ["branch", "-D", branch], ROOT);
     report({ ...final, stages });
   };
 
@@ -474,7 +485,6 @@ async function main() {
     let v = await authorInWorktree(wt, task);
     stages.push(v);
     if (!v.ok) {
-      await run("git", ["branch", "-D", branch], ROOT);
       return await finish({ action: "discarded", reason: v.detail });
     }
 
@@ -489,7 +499,6 @@ async function main() {
       v = await gate();
       stages.push(v);
       if (!v.ok) {
-        await run("git", ["branch", "-D", branch], ROOT);
         return await finish({
           action: "rejected",
           stage: v.stage,
@@ -513,7 +522,7 @@ async function main() {
         action: merge.code === 0 ? "auto-merged" : "merge-failed",
         branch,
         detail: merge.code === 0 ? "" : merge.out.slice(-200),
-      });
+      }, { keepBranch: true });
     }
     const pr = await run("gh", [
       "pr",
@@ -529,7 +538,7 @@ async function main() {
       action: "proposed",
       branch,
       pr: pr.out.trim().split("\n").pop(),
-    });
+    }, { keepBranch: true });
   } catch (e) {
     await run("git", ["worktree", "remove", "--force", wt], ROOT);
     await run("git", ["branch", "-D", branch], ROOT);

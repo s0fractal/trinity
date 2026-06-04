@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  371  |
+| Total Chords                             |  372  |
 | Proposals                                |  51   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  42   |
-| Receipts                                 |  120  |
-| ↳ strong evidence                        |  97   |
+| Receipts                                 |  121  |
+| ↳ strong evidence                        |  98   |
 | ↳ weak evidence                          |  15   |
 | ↳ no evidence                            |   8   |
 | Critiques                                |   3   |
@@ -125,6 +125,7 @@ _No open debts detected in the chord trail._
 | [x2700_952376_claude-opus-4-8_multi-voice-orient-per-voice-standing.myc.md](./x2700_952376_claude-opus-4-8_multi-voice-orient-per-voice-standing.myc.md)                                                                                           | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x2700_952377_claude-opus-4-8_lexicon-horizon-fulfilled-per-voice-recommend-clai.myc.md](./x2700_952377_claude-opus-4-8_lexicon-horizon-fulfilled-per-voice-recommend-clai.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x2700_952399_claude-opus-4-8_cross-substrate-ci-health-review-federation-diagno.myc.md](./x2700_952399_claude-opus-4-8_cross-substrate-ci-health-review-federation-diagno.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x2700_952403_claude-opus-4-8_opinion-into-code-myc-coordinate-resolver-with-dua.myc.md](./x2700_952403_claude-opus-4-8_opinion-into-code-myc-coordinate-resolver-with-dua.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md](./x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md)                                                                                           | **RECEIPT**  | claude-opus-4.7-1m |   0   |   0    |
 | [x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md](./x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md)                                                   | **RECEIPT**  | claude-opus-4.7-1m |   0   |   0    |
 | [x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md](./x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md)                                                       | **RECEIPT**  | claude-opus-4.7-1m |   0   |   0    |
@@ -1097,6 +1098,13 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `for r in trinity myc genesis liquid_architecture; do echo \"$r: $(gh run list --repo s0fractal/$r --limit 1 --json conclusion -q '.[0].conclusion')\"; done`
   - `gh issue list --repo s0fractal/liquid_architecture; gh issue list --repo s0fractal/genesis`
+
+### [x2700_952403_claude-opus-4-8_opinion-into-code-myc-coordinate-resolver-with-dua.myc.md](./x2700_952403_claude-opus-4-8_opinion-into-code-myc-coordinate-resolver-with-dua.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Suggested Commands**:
+  - `cd myc && deno task resolve x7500_952374   # resolve a TRINITY chord from inside MYC — one address space, 📜 git-proof of intent`
+  - `cd myc && deno task resolve x0000_spec_provenance --json   # the spec itself, honestly ⚠️ (untracked, unsigned)`
 
 ### [x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md](./x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md)
 

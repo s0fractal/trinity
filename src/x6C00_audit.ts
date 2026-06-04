@@ -586,10 +586,38 @@ async function findOrphans(files: string[]): Promise<string[]> {
   return orphans.sort();
 }
 
+// A top-level dir that is missing or empty is an un-checked-out submodule
+// (or otherwise absent component). Registry entries pointing into it are not
+// broken mappings — the submodule simply isn't present (the normal CI state
+// when submodules are private). Cached per cwd within one audit run.
+async function isAbsentComponent(
+  root: string,
+  cwd: string,
+  cache: Map<string, boolean>,
+): Promise<boolean> {
+  const top = cwd.split("/")[0];
+  if (!top || top === "." || top === "src") return false;
+  const cached = cache.get(top);
+  if (cached !== undefined) return cached;
+  let absent = false;
+  try {
+    absent = true;
+    for await (const _ of Deno.readDir(join(root, top))) {
+      absent = false;
+      break;
+    }
+  } catch {
+    absent = true; // dir does not exist
+  }
+  cache.set(top, absent);
+  return absent;
+}
+
 async function auditSubstrateRegistry(
   root: string,
 ): Promise<RegistryWarning[]> {
   const warnings: RegistryWarning[] = [];
+  const absentCache = new Map<string, boolean>();
   const glossaryPath = join(root, "src", "x0001_glossary.ndjson");
   const text = await Deno.readTextFile(glossaryPath);
 
@@ -608,6 +636,8 @@ async function auditSubstrateRegistry(
     const cwd = String(record["04"] ?? ".");
     const command = String(record["05"] ?? "");
     if (!command) continue;
+    // Skip entries whose substrate component (submodule) isn't checked out.
+    if (await isAbsentComponent(root, cwd, absentCache)) continue;
 
     for (const token of command.split(/\s+/).filter(Boolean)) {
       if (token.startsWith("-")) continue;

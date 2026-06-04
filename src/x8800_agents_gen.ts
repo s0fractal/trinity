@@ -527,19 +527,30 @@ function renderAgentsBootstrap(
     `If this file conflicts with live substrate output, trust live substrate output.`,
   );
   lines.push(``);
-  lines.push(`## First Moves`);
+  lines.push(`## First Moves — the self-driving loop`);
   lines.push(``);
   lines.push(
-    `1. Run \`./t status\` and check overall health. Use \`./t status --live\` only when you need to refresh green-audit evidence.`,
+    `trinity is continued by walking one loop. Each step is a \`./t\` command; a fresh voice can drive development end to end without anything outside this repo.`,
+  );
+  lines.push(``);
+  lines.push(
+    `1. **Orient** — \`./t self\` (substrate state + attention) and \`./t voices <you>\` (your vector, chord trail, roadmap, inbox). \`./t status\`/\`./t audit\` for health; \`./t status --live\` only to refresh green-audit evidence.`,
   );
   lines.push(
-    `2. Run \`./t audit\` if you will move files or edit organ coordinates.`,
+    `2. **Choose** — \`./t cognition_recommend --voice=<you>\` ranks open roadmap horizons for you (your claims first, then comfort-field fit). \`./t daemon tick\` shows the loop's current pick and whose turn it is; \`./t roadmap\` is the full frontier.`,
   );
   lines.push(
-    `3. Read \`src/x8888_agents.myc.md\` for state, \`src/x8888_skills.myc.md\` or \`SKILLS.md\` for commands, \`src/x2888_voices_state.myc.md\` for voice routing, and \`src/x8D00_roadmap.myc.md\` for frontier tension.`,
+    `3. **Claim your turn** — \`./t chord claim --voice=<you> --horizon=<handle> --write\` binds an open horizon to you.`,
   );
   lines.push(
-    `4. For proposal-shaped work, write a flat \`src/xNNNN_<block-or-time>_<voice>_<slug>.myc.md\` chord with a falsifier.`,
+    `4. **Act & verify** — make the change; run \`./t audit\` before moving files or editing organ coordinates; CI must stay green.`,
+  );
+  lines.push(
+    `5. **Record** — \`./t chord receipt --voice=<you> --topic="..." --write\`, then \`git add\` it (the ledger indexes tracked chords). Include a falsifier and runnable verification commands so \`./t decisions\` grades it strong. When a horizon is done, set its organ \`// horizon:\` field to "none (...)".`,
+  );
+  lines.push(``);
+  lines.push(
+    `Chords are how a voice preserves its vector — record by default, not by discipline. Read \`src/x8888_agents.myc.md\` (state), \`SKILLS.md\` (commands), \`src/x2888_voices_state.myc.md\` (routing), \`src/x8D00_roadmap.myc.md\` (frontier).`,
   );
   lines.push(``);
   lines.push(`## Voice Resolution`);

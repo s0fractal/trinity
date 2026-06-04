@@ -18,7 +18,8 @@
 //
 // Subcommands (canonical via `t chord <sub> ...`, legacy via `deno task chord:*`):
 //   block                          Print current Bitcoin block height
-//   init [opts]                    Print chord skeleton (frontmatter + body)
+//   init [opts]                    Draft any chord type in the living lean form
+//                                  (--type, --voice, --topic; --write to land)
 //   receipt [opts]                 Draft a receipt chord (living lean form,
 //                                  canonical flat-src filename; --write to land)
 //   claim --horizon=H [opts]       Bind an open roadmap horizon to a voice
@@ -133,14 +134,6 @@ function i8HexToFloat(hex: string): number {
   return i / 127;
 }
 
-/** Format 8 signed floats as space-separated hex bytes. */
-function formatDipoleVector(values: number[]): string {
-  if (values.length !== 8) {
-    throw new Error(`need 8 values, got ${values.length}`);
-  }
-  return values.map(floatToI8Hex).join(" ");
-}
-
 /** Parse "33 8E 59 40 00 26 4C 59" or "338E594000264C59" into 8 floats. */
 function parseDipoleVector(hex: string): number[] {
   const clean = hex.replace(/\s+/g, "").toUpperCase();
@@ -248,62 +241,50 @@ async function cmdBlock(): Promise<void> {
 
 async function cmdInit(flags: Record<string, string>): Promise<void> {
   const block = await fetchBtcBlock();
-  const author = flags.author ?? "anonymous";
-  const topic = chordSlug(flags.topic ?? "untitled");
-  const octet = flags.octet ?? "oct:7.0";
-  const claimKind = flags["claim-kind"] ?? "observation";
+  const voice = flags.voice ?? flags.author ?? "anonymous";
+  const type = flags.type ?? "observation";
+  const topicRaw = flags.topic ?? "untitled";
+  const slug = chordSlug(topicRaw);
+  const primary = flags.primary ?? flags.octet ?? "oct:3.observation";
+  const stance = flags.stance ?? type.toUpperCase();
+  const claimKind = flags["claim-kind"] ?? type;
+  const composed = flatSrcName({
+    primary,
+    mode: type,
+    claimKind,
+    block,
+    voice,
+    slug,
+  });
 
-  // Neutral vector as starting point: 8 bytes of 0x00
-  const neutralVector = formatDipoleVector(new Array(8).fill(0));
-
-  const skeleton = `---
-# Substrate-native anchoring (timestamps deprecated; transitional id below):
-anchor_block: ${block}
-author_identity: "${author}"
-identity_verification: "soft"
-id: btc${block}-${author}-${topic}
-
-# Semantic vector (8 i8 hex bytes, dipole axes 0↔8 .. 7↔F):
-self_dipole_position: "${neutralVector}"
-
-# Lifecycle (numeric primary, name transitional):
-self_lifecycle:
-  phase: 0           # 0=seed 1=active 2=compost
-  spiral_depth: 0
-  q_phase: 4         # subnet/chord-level subjective scale
-
-# Existing chord schema fields (kept for backward compat with chord_play.ts):
-topic: ${topic}
+  // Living lean form (matches what voices actually author; the old verbose
+  // anchor_block/self_dipole_position skeleton was used by no living chord).
+  const content = `---
+type: chord.${type}
+voice: ${voice}
+mode: ${type}
+created: ${new Date().toISOString()}
+bitcoin_block_height: ${block}
+topic: ${slug}
+stance: ${stance}
 chord:
-  primary: "${octet}"
+  primary: "${primary}"
   secondary: []
-energy_hex256: "0x80"      # 50% intensity
-stake_q16: 0
-mode_position: "hex:E"     # EXPLORATION (replace with chosen)
-mode_vector: "hex:0"       # toward existence (replace with chosen)
-tension: "fill-this-in-machine-readable"
-confidence_hex16: "hex:8"  # medium
-receipt: "file"
-actor: "${author}"
-claim_kind: "${claimKind}"
-claim_kind_position: "hex:1"
 hears: []
-claim:
-  summary: |
-    [write claim summary here]
-falsifiers:
-  - "[falsifier 1]"
-suggested_commands: []
-expected_after_running: {}
+references: []
 ---
 
-# [Chord title]
+# ${topicRaw}
 
-[body]
+[claim — what you observe or propose, and why it matters]
 
-— ${author}, anchor block ${block}.
+## Falsifier
+
+- [if this command/check fails, this chord is false]
+
+— ${voice}, anchor block ${block}.
 `;
-  console.log(skeleton);
+  await emitChord(composed, content, flags, "chord_init");
 }
 
 async function cmdReceipt(flags: Record<string, string>): Promise<void> {
@@ -522,9 +503,9 @@ async function printHelp(): Promise<void> {
 
 Subcommands:
   block                              Print current Bitcoin block height
-  init [--author=N] [--topic=T]      Print chord skeleton (frontmatter + body)
-       [--octet=oct:N.M]
-       [--claim-kind=KIND]
+  init --voice=N --topic=T           Draft any chord in the living lean form,
+       [--type=observation|...]      canonical flat-src filename computed.
+       [--primary=oct:N.M] [--write] --write lands it in src/; else prints (dry).
   receipt --voice=N --topic=T        Draft a receipt chord in the living lean
        [--primary=oct:N.M]           form, with the canonical flat-src filename
        [--closes=STEM] [--relation=R] computed for you. --write creates the file

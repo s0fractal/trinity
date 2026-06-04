@@ -26,6 +26,8 @@
 //        t all 5/C --deep omega  → map with deep override for omega
 //        t all 5/C --only myc    → map only one substrate
 //
+// Example: t all verify --only omega
+//
 // Returns unified receipt with per-substrate results.
 // Does NOT hardcode substrate commands — reads from glossary type:06.
 

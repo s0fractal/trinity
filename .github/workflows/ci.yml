@@ -156,7 +156,7 @@ jobs:
         run: ./t gravity --json | jq -e '.type == "gravity" and .position == "6/02" and .summary.total_edges == .total_edges and (.summary.library_edges | type) == "number"'
 
       - name: Verify clean export dry-run
-        run: ./t export-clean --dry-run | jq -e '.type == "export_clean" and .position == "7/4" and .dry_run == true and .summary.files > 0'
+        run: ./t export-clean --dry-run | jq -e '.type == "export_clean" and .position == "7/4" and .dry_run == true and .summary.total_files > 0'
 
       - name: Verify contracts
         run: ./t contracts

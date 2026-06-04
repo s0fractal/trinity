@@ -14,7 +14,23 @@ jobs:
       - name: Checkout codebase
         uses: actions/checkout@v4
         with:
-          submodules: recursive
+          # Submodules (myc/genesis/liquid_architecture) are private and
+          # unreachable to the default Actions token, which aborts a recursive
+          # checkout. trinity-core CI is self-sufficient; submodule-dependent
+          # gates are skipped when absent. To restore full coverage, add a
+          # read-scoped PAT secret and pass `token:` here, then flip to
+          # `submodules: recursive`.
+          submodules: false
+
+      - name: Detect submodules
+        id: subm
+        run: |
+          if [ -f liquid/deno.jsonc ] && [ -f myc/deno.jsonc ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::submodules absent — submodule-dependent gates skipped"
+          fi
 
       - name: Setup Deno
         uses: denoland/setup-deno@v1
@@ -30,7 +46,14 @@ jobs:
         run: deno fmt --check
 
       - name: Type check core source files
-        run: deno check src/*.ts
+        run: |
+          if [ "${{ steps.subm.outputs.present }}" = "true" ]; then
+            deno check src/*.ts
+          else
+            # x5F10 statically re-exports from the liquid submodule; exclude it
+            # (and only it — the sole cross-submodule import) when liquid absent.
+            deno check $(ls src/*.ts | grep -v 'x5F10')
+          fi
 
       - name: Substrate status check
         run: ./t status
@@ -68,6 +91,7 @@ jobs:
           ./t probes --stable --json | jq -e '.type == "probes" and .position == "8/E" and (.manifest_hash | startswith("sha256:"))'
 
       - name: Verify cross-substrate flat-src mappings
+        if: steps.subm.outputs.present == 'true'
         run: |
           ./t all 5/C --only trinity | jq -e '.type == "all" and .mode == "only:trinity" and .summary.overall == "passed"'
           ./t all 5/C --only liquid | jq -e '.type == "all" and .mode == "only:liquid" and .summary.overall == "passed"'
@@ -87,12 +111,15 @@ jobs:
         run: ./t self --json | jq -e '(.attention.level | IN("clear", "watch", "act")) and (.attention.score | type) == "number" and (.attention.reasons | type) == "array" and (.attention.next_actions | type) == "array" and (.audit_boundaries.import_warnings == 0) and (.audit_boundaries.boundary_imports | type) == "number" and (.audit_boundaries.registry_warnings == 0) and (.capabilities_validation.valid == true) and (.capabilities_validation.unclassified_schema_types == 0) and (.capabilities_schema_classes.linked_command | type) == "number" and (.decisions.unresolved_proposals | type) == "number" and (.decisions.proposal_triage.review | type) == "number" and ((.decision_next_action == null) or (.decision_next_action.kind | type) == "string")'
 
       - name: Verify MYC x9 shadow status
+        if: steps.subm.outputs.present == 'true'
         run: ./t myc-status-shadow --json | jq -e '.type == "myc_status_shadow" and .position == "9/2E" and .shadow == true and .summary.overall == "healthy"'
 
       - name: Verify MYC x9 shadow capabilities
+        if: steps.subm.outputs.present == 'true'
         run: ./t myc-capabilities-shadow --json | jq -e '.type == "myc_capabilities_shadow" and .position == "9/4A" and .shadow == true and .summary.total >= 0'
 
       - name: Verify MYC x9 shadow protocol audit
+        if: steps.subm.outputs.present == 'true'
         run: ./t myc-protocol-audit-shadow --json | jq -e '.type == "myc_protocol_audit_shadow" and .position == "9/6C" and .shadow == true and .summary.overall == "healthy"'
 
       - name: Audit coordinates

@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  370  |
+| Total Chords                             |  371  |
 | Proposals                                |  51   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  42   |
-| Receipts                                 |  119  |
-| ↳ strong evidence                        |  96   |
+| Receipts                                 |  120  |
+| ↳ strong evidence                        |  97   |
 | ↳ weak evidence                          |  15   |
 | ↳ no evidence                            |   8   |
 | Critiques                                |   3   |
@@ -413,6 +413,7 @@ _No open debts detected in the chord trail._
 | [x7600_t20260510211433_kimi-k1-5_kimi-trinity-deep-audit-erc-system.myc.md](./x7600_t20260510211433_kimi-k1-5_kimi-trinity-deep-audit-erc-system.myc.md)                                                                                           | **OTHER**    | kimi-k1.5          |   0   |   0    |
 | [x7600_t20260510220000_kimi-k1-5_kimi-no-single-crystal-spore-fuel-is-local-invariant.myc.md](./x7600_t20260510220000_kimi-k1-5_kimi-no-single-crystal-spore-fuel-is-local-invariant.myc.md)                                                       | **OTHER**    | kimi-k1.5          |   0   |   0    |
 | [x7600_t20260511015517_gemini-3-1-pro_autopoiesis-thermodynamic-memoization-and-time.myc.md](./x7600_t20260511015517_gemini-3-1-pro_autopoiesis-thermodynamic-memoization-and-time.myc.md)                                                         | **OTHER**    | gemini-3.1-pro     |   0   |   0    |
+| [x7700_952403_claude-opus-4-8_act-opened-to-code-t-author-safety-harness-proven.myc.md](./x7700_952403_claude-opus-4-8_act-opened-to-code-t-author-safety-harness-proven.myc.md)                                                                   | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -4242,6 +4243,14 @@ _No open debts detected in the chord trail._
   - `deno task status`
   - `deno task audit:green`
   - `deno task ontology:coverage`
+
+### [x7700_952403_claude-opus-4-8_act-opened-to-code-t-author-safety-harness-proven.myc.md](./x7700_952403_claude-opus-4-8_act-opened-to-code-t-author-safety-harness-proven.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Suggested Commands**:
+  - `./t author --dry-run --task 'x' --json | grep -v '^#' | jq '{merge_policy, protected_paths}'   # PR by default, 13 protected`
+  - `./t author --verify-only <branch> --no-review --json | grep -v '^#' | jq '.action'   # the harness verdict on any branch`
+  - `gh pr view 1 --json additions,deletions   # the loop's first autonomous PR: tiny + reviewable`
 
 ### [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)
 

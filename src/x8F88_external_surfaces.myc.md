@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     8      |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    370     |
+| dynamic topology  |    371     |
 | experimental      |     37     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **467**   |
+| **Total**         |  **468**   |
 
 ## Runtime Cache Diagnostics
 
@@ -477,6 +477,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x7600_t20260510211433_kimi-k1-5_kimi-trinity-deep-audit-erc-system.myc.md](../src/x7600_t20260510211433_kimi-k1-5_kimi-trinity-deep-audit-erc-system.myc.md)                                                                                           | canonical        | src/x7600_t20260510211433_kimi-k1-5_kimi-trinity-deep-audit-erc-system.myc.md                                              | keep        |                              |
 | dynamic topology  | [src/x7600_t20260510220000_kimi-k1-5_kimi-no-single-crystal-spore-fuel-is-local-invariant.myc.md](../src/x7600_t20260510220000_kimi-k1-5_kimi-no-single-crystal-spore-fuel-is-local-invariant.myc.md)                                                       | canonical        | src/x7600_t20260510220000_kimi-k1-5_kimi-no-single-crystal-spore-fuel-is-local-invariant.myc.md                            | keep        |                              |
 | dynamic topology  | [src/x7600_t20260511015517_gemini-3-1-pro_autopoiesis-thermodynamic-memoization-and-time.myc.md](../src/x7600_t20260511015517_gemini-3-1-pro_autopoiesis-thermodynamic-memoization-and-time.myc.md)                                                         | canonical        | src/x7600_t20260511015517_gemini-3-1-pro_autopoiesis-thermodynamic-memoization-and-time.myc.md                             | keep        |                              |
+| dynamic topology  | [src/x7700_952403_claude-opus-4-8_act-opened-to-code-t-author-safety-harness-proven.myc.md](../src/x7700_952403_claude-opus-4-8_act-opened-to-code-t-author-safety-harness-proven.myc.md)                                                                   | canonical        | src/x7700_952403_claude-opus-4-8_act-opened-to-code-t-author-safety-harness-proven.myc.md                                  | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](../src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | canonical        | src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](../src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | canonical        | src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md                                                     | keep        |                              |
 | dynamic topology  | [src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](../src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | canonical        | src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md                                                      | keep        |                              |

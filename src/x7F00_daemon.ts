@@ -1,4 +1,4 @@
-#!/usr/bin/env -S deno run --allow-read --allow-write
+#!/usr/bin/env -S deno run --allow-read --allow-write --allow-run
 // src/x7F00_daemon.ts — daemon status / runtime state surface
 // position: 7/F → completion(7) × action(5) = decisive runtime act
 // maturity: active
@@ -24,6 +24,8 @@
 //   t daemon run --dry-run    # inspect routing without writing receipts
 //   t daemon run --backfill   # route all historical chords (first run)
 //   t daemon run --since <iso> # explicit replay window
+//   t daemon tick             # safe-mode loop driver: orient → choose →
+//   t daemon tick --json      # propose next action (READ-ONLY, never acts)
 //
 // Glossary words: daemon, демон
 
@@ -531,6 +533,144 @@ async function handleRun(
   }
 }
 
+// ── tick (safe-mode loop driver) ─────────────────────────────────────────────
+//
+// One pass of the self-driving loop, READ-ONLY: orient (t self) → choose (the
+// roadmap-pointed recommendation) → propose the next action. It never acts:
+// the gate.would_act is always false in safe mode. This lets the loop run itself
+// up to — but not through — the irreversible step, so a human (or a future
+// explicitly-enabled --act capability) decides whether to take it.
+
+async function runTJson(
+  args: string[],
+): Promise<Record<string, unknown> | null> {
+  const tShim = join(ROOT, "t");
+  const { stdout } = await new Deno.Command(tShim, {
+    args: [...args, "--json"],
+    stdout: "piped",
+    stderr: "piped",
+  }).output();
+  const text = new TextDecoder().decode(stdout);
+  // Dispatcher prepends `# <action> → <pos>` header lines; drop them and parse.
+  const jsonText = text
+    .split("\n")
+    .filter((l) => !l.trimStart().startsWith("#"))
+    .join("\n")
+    .trim();
+  if (!jsonText) return null;
+  try {
+    return JSON.parse(jsonText) as Record<string, unknown>;
+  } catch {
+    return null;
+  }
+}
+
+async function readLatestRecommendation(): Promise<
+  Record<string, unknown> | null
+> {
+  try {
+    const text = await Deno.readTextFile(
+      join(ROOT, "src", "x5288_cognition_recommendation.latest.myc.json"),
+    );
+    return JSON.parse(text) as Record<string, unknown>;
+  } catch {
+    return null;
+  }
+}
+
+async function worktreeClean(): Promise<boolean> {
+  const { stdout } = await new Deno.Command("git", {
+    args: ["status", "--short"],
+    cwd: ROOT,
+    stdout: "piped",
+    stderr: "piped",
+  }).output();
+  return new TextDecoder().decode(stdout).trim().length === 0;
+}
+
+async function handleTick(useJson: boolean): Promise<void> {
+  const locked = await readLockFile();
+  if (locked) {
+    const msg = useJson
+      ? JSON.stringify({ type: "daemon_tick", error: "daemon_locked" })
+      : `# daemon @ 7/F — tick REFUSED (lock file present)`;
+    console.log(msg);
+    return;
+  }
+
+  const self = await runTJson(["self"]);
+  const attention = (self?.attention ?? {}) as {
+    level?: string;
+    score?: number;
+  };
+  const clean = await worktreeClean();
+
+  const rec = await readLatestRecommendation();
+  const recs = (rec?.recommendations ?? []) as Array<Record<string, unknown>>;
+  const top = recs[0] ?? null;
+  const openHorizons = (rec?.open_horizons ?? []) as unknown[];
+
+  // Safe mode: the driver never crosses the action boundary on its own.
+  const tick = {
+    type: "daemon_tick",
+    schema: "trinity.daemon-tick.v0.1",
+    mode: "safe-readonly",
+    oriented: {
+      attention_level: attention.level ?? null,
+      attention_score: attention.score ?? null,
+      worktree_clean: clean,
+    },
+    chosen: top
+      ? {
+        repo: top.repo,
+        action: top.action,
+        pressure: top.pressure,
+        phase: `${top.phase_from} → ${top.phase_to}`,
+      }
+      : null,
+    open_horizons: openHorizons.length,
+    recommendation_age: rec?.timestamp ?? null,
+    gate: {
+      would_act: false,
+      reason:
+        "safe mode: tick is read-only orientation + choice; acting requires an explicit --act capability that is not yet enabled",
+      next_command: Array.isArray(top?.commands)
+        ? (top!.commands as string[])[(top!.commands as string[]).length - 1] ??
+          null
+        : null,
+    },
+  };
+
+  if (useJson) {
+    console.log(JSON.stringify(tick, null, 2));
+    return;
+  }
+  console.log(`# daemon @ 7/F — tick (safe, read-only)`);
+  console.log(
+    `# ──────────────────────────────────────────────────────────────────`,
+  );
+  console.log(
+    `# orient:  attention ${tick.oriented.attention_level}(${tick.oriented.attention_score})  worktree ${
+      clean ? "clean" : "DIRTY"
+    }`,
+  );
+  if (top) {
+    console.log(`# choose:  ${top.repo} — ${top.action}`);
+    console.log(
+      `#          pressure ${top.pressure}  phase ${top.phase_from} → ${top.phase_to}`,
+    );
+  } else {
+    console.log(
+      `# choose:  (no recommendation — run 't cognition_recommend' first)`,
+    );
+  }
+  console.log(`# open horizons: ${openHorizons.length}`);
+  console.log(`# gate:    would_act=false (safe mode) — no action taken`);
+  if (tick.gate.next_command) {
+    console.log(`# next:    ${tick.gate.next_command}`);
+  }
+}
+
 // ── main ───────────────────────────────────────────────────────────────────
 
 async function main() {
@@ -563,6 +703,11 @@ async function main() {
 
   if (cmd === "run") {
     await handleRun(useJson, dryRun, backfill, sinceOverride);
+    return;
+  }
+
+  if (cmd === "tick") {
+    await handleTick(useJson);
     return;
   }
 

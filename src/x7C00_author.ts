@@ -329,6 +329,52 @@ async function main() {
         ).join("\n"),
     );
 
+  // --verify-only <branch>: run the safety harness on an existing branch
+  // (no authoring). Lets the gates be proven against deliberately-bad branches.
+  const verifyOnly = flag("--verify-only");
+  if (verifyOnly) {
+    const wt = join(
+      dirname(ROOT),
+      ("trinity-verify-" + verifyOnly).replace(/[^a-zA-Z0-9-]/g, "-").slice(
+        0,
+        60,
+      ),
+    );
+    await run("git", ["worktree", "remove", "--force", wt], ROOT);
+    const add = await run("git", ["worktree", "add", wt, verifyOnly], ROOT);
+    if (add.code !== 0) {
+      report({
+        action: "error",
+        stage: "worktree",
+        detail: add.out.slice(-160),
+      });
+      Deno.exit(1);
+    }
+    const stages: Verdict[] = [];
+    const noReview = args.includes("--no-review");
+    const gates = [
+      () => scopeCheck(wt),
+      () => verifyGates(wt),
+      ...(noReview
+        ? []
+        : [() => adversarialReview(wt, `verify-only ${verifyOnly}`)]),
+    ];
+    for (const gate of gates) {
+      const v = await gate();
+      stages.push(v);
+      if (!v.ok) break;
+    }
+    await run("git", ["worktree", "remove", "--force", wt], ROOT);
+    const passed = stages.every((s) => s.ok);
+    report({
+      action: passed ? "verified-pass" : "verified-reject",
+      stage: passed ? "all" : stages[stages.length - 1].stage,
+      reason: passed ? "" : stages[stages.length - 1].detail,
+      stages,
+    });
+    return;
+  }
+
   // Resolve the task.
   let task: Task | null = null;
   const horizon = flag("--horizon");

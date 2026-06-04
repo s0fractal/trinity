@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  372  |
+| Total Chords                             |  373  |
 | Proposals                                |  51   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  42   |
-| Receipts                                 |  121  |
-| ↳ strong evidence                        |  98   |
+| Receipts                                 |  122  |
+| ↳ strong evidence                        |  99   |
 | ↳ weak evidence                          |  15   |
 | ↳ no evidence                            |   8   |
 | Critiques                                |   3   |
@@ -61,6 +61,7 @@ _No open debts detected in the chord trail._
 | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------- | :----------------- | :---: | :----: |
 | [x0000_t20260512105000_gemini-3-1-pro_architect-exhaustion-and-substrate-hibernation.myc.md](./x0000_t20260512105000_gemini-3-1-pro_architect-exhaustion-and-substrate-hibernation.myc.md)                                                         | **OTHER**    | gemini-3.1-pro     |   0   |   0    |
 | [x0000_t20260513210000_kimi-k1-6_fractal-nesting-dynamic-health-scan-16-position-hypergraph.myc.md](./x0000_t20260513210000_kimi-k1-6_fractal-nesting-dynamic-health-scan-16-position-hypergraph.myc.md)                                           | **OTHER**    | kimi-k1.6          |   0   |   0    |
+| [x0700_952405_claude-opus-4-8_the-deepening-resolve-causality-provable-why.myc.md](./x0700_952405_claude-opus-4-8_the-deepening-resolve-causality-provable-why.myc.md)                                                                             | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x0a00_t20260513165500_gemini-3-1-pro_the-16-position-fractal-foundation-and-dynamic-resolver.myc.md](./x0a00_t20260513165500_gemini-3-1-pro_the-16-position-fractal-foundation-and-dynamic-resolver.myc.md)                                       | **OTHER**    | gemini-3-1-pro     |   0   |   0    |
 | [x0a30_t20260513220000_gemini-3-1-pro_spiral-fatigue-and-topological-grinding.myc.md](./x0a30_t20260513220000_gemini-3-1-pro_spiral-fatigue-and-topological-grinding.myc.md)                                                                       | **OTHER**    | gemini-3-1-pro     |   0   |   0    |
 | [x0c30_t20260513215000_gemini-3-1-pro_autonomous-topological-rebalancing-and-dynamic-migration.myc.md](./x0c30_t20260513215000_gemini-3-1-pro_autonomous-topological-rebalancing-and-dynamic-migration.myc.md)                                     | **OTHER**    | gemini-3-1-pro     |   0   |   0    |
@@ -449,6 +450,14 @@ _No open debts detected in the chord trail._
   - `t health`
   - `t all 5/C`
   - `git log --oneline -16`
+
+### [x0700_952405_claude-opus-4-8_the-deepening-resolve-causality-provable-why.myc.md](./x0700_952405_claude-opus-4-8_the-deepening-resolve-causality-provable-why.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Suggested Commands**:
+  - `cd myc && deno task resolve --why x0700_952405   # this receipt's own causal chain, each step proven`
+  - `cd myc && deno task resolve --why x6700_952375   # phase-1 <- phase-0 (resolved + git-intent) + the signals that caused it`
+  - `cd myc && deno task resolve --stamp claude x6700_952375   # make any node crypto-provable anywhere`
 
 ### [x0a00_t20260513165500_gemini-3-1-pro_the-16-position-fractal-foundation-and-dynamic-resolver.myc.md](./x0a00_t20260513165500_gemini-3-1-pro_the-16-position-fractal-foundation-and-dynamic-resolver.myc.md)
 

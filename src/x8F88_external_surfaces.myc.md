@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     8      |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    372     |
+| dynamic topology  |    373     |
 | experimental      |     37     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **469**   |
+| **Total**         |  **470**   |
 
 ## Runtime Cache Diagnostics
 
@@ -125,6 +125,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | experimental      | [proposals/codeicide/TRINITY_CAPABILITIES.v0.1.verdict.json](../proposals/codeicide/TRINITY_CAPABILITIES.v0.1.verdict.json)                                                                                                                                 | experimental     |                                                                                                                            | keep        | active governance proposal   |
 | dynamic topology  | [src/x0000_t20260512105000_gemini-3-1-pro_architect-exhaustion-and-substrate-hibernation.myc.md](../src/x0000_t20260512105000_gemini-3-1-pro_architect-exhaustion-and-substrate-hibernation.myc.md)                                                         | canonical        | src/x0000_t20260512105000_gemini-3-1-pro_architect-exhaustion-and-substrate-hibernation.myc.md                             | keep        |                              |
 | dynamic topology  | [src/x0000_t20260513210000_kimi-k1-6_fractal-nesting-dynamic-health-scan-16-position-hypergraph.myc.md](../src/x0000_t20260513210000_kimi-k1-6_fractal-nesting-dynamic-health-scan-16-position-hypergraph.myc.md)                                           | canonical        | src/x0000_t20260513210000_kimi-k1-6_fractal-nesting-dynamic-health-scan-16-position-hypergraph.myc.md                      | keep        |                              |
+| dynamic topology  | [src/x0700_952405_claude-opus-4-8_the-deepening-resolve-causality-provable-why.myc.md](../src/x0700_952405_claude-opus-4-8_the-deepening-resolve-causality-provable-why.myc.md)                                                                             | canonical        | src/x0700_952405_claude-opus-4-8_the-deepening-resolve-causality-provable-why.myc.md                                       | keep        |                              |
 | dynamic topology  | [src/x0a00_t20260513165500_gemini-3-1-pro_the-16-position-fractal-foundation-and-dynamic-resolver.myc.md](../src/x0a00_t20260513165500_gemini-3-1-pro_the-16-position-fractal-foundation-and-dynamic-resolver.myc.md)                                       | canonical        | src/x0a00_t20260513165500_gemini-3-1-pro_the-16-position-fractal-foundation-and-dynamic-resolver.myc.md                    | keep        |                              |
 | dynamic topology  | [src/x0a30_t20260513220000_gemini-3-1-pro_spiral-fatigue-and-topological-grinding.myc.md](../src/x0a30_t20260513220000_gemini-3-1-pro_spiral-fatigue-and-topological-grinding.myc.md)                                                                       | canonical        | src/x0a30_t20260513220000_gemini-3-1-pro_spiral-fatigue-and-topological-grinding.myc.md                                    | keep        |                              |
 | dynamic topology  | [src/x0c30_t20260513215000_gemini-3-1-pro_autonomous-topological-rebalancing-and-dynamic-migration.myc.md](../src/x0c30_t20260513215000_gemini-3-1-pro_autonomous-topological-rebalancing-and-dynamic-migration.myc.md)                                     | canonical        | src/x0c30_t20260513215000_gemini-3-1-pro_autonomous-topological-rebalancing-and-dynamic-migration.myc.md                   | keep        |                              |

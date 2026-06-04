@@ -42,6 +42,15 @@ jobs:
         with:
           toolchain: stable
 
+      - name: Drop submodule workspace members when absent
+        if: steps.subm.outputs.present == 'false'
+        run: |
+          # The root deno.jsonc lists ./liquid ./myc ./omega as workspace
+          # members; with the private submodules absent, deno cannot resolve the
+          # workspace and every deno command fails. Strip the workspace array for
+          # this ephemeral CI checkout (trinity-core needs none of the members).
+          perl -0pi -e 's/"workspace":\s*\[[^\]]*\],\s*//' deno.jsonc
+
       - name: Verify formatting
         run: deno fmt --check
 

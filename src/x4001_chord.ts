@@ -21,6 +21,8 @@
 //   init [opts]                    Print chord skeleton (frontmatter + body)
 //   receipt [opts]                 Draft a receipt chord (living lean form,
 //                                  canonical flat-src filename; --write to land)
+//   claim --horizon=H [opts]       Bind an open roadmap horizon to a voice
+//                                  (claim chord; --write to land)
 //   translate <axis> <value>       Convert axis name + signed value → hex byte
 //   parse "<hex bytes>"            Convert 8-byte hex vector → human readings
 //
@@ -308,6 +310,16 @@ expected_after_running: {}
 — ${voice}, anchor block ${block}.
 `;
 
+  await emitChord(composed, content, flags, "chord_receipt");
+}
+
+/** Shared --write (land in src/) vs dry (print) path for authored chords. */
+async function emitChord(
+  composed: ReturnType<typeof composeFlatSrcName>,
+  content: string,
+  flags: Record<string, string>,
+  kind: string,
+): Promise<void> {
   const doWrite = "write" in flags && flags.write !== "false";
   if (doWrite) {
     const HERE = dirname(fromFileUrl(import.meta.url));
@@ -324,7 +336,7 @@ expected_after_running: {}
     await Deno.writeTextFile(target, content);
     console.log(JSON.stringify(
       {
-        type: "chord_receipt",
+        type: kind,
         written: `src/${composed.targetName}`,
         coordinate: composed.coordinate,
         block_key: composed.blockKey,
@@ -346,6 +358,64 @@ expected_after_running: {}
     );
     console.log(content);
   }
+}
+
+async function cmdClaim(flags: Record<string, string>): Promise<void> {
+  const horizon = flags.horizon;
+  if (!horizon) {
+    console.error(
+      "claim requires --horizon <handle>  (e.g. --horizon=x0030_compose); see `t roadmap`",
+    );
+    Deno.exit(1);
+  }
+  const block = await fetchBtcBlock();
+  const voice = flags.voice ?? flags.author ?? "anonymous";
+  const primary = flags.primary ?? flags.octet ?? "oct:5.action";
+  const slug = chordSlug(`claim ${horizon}`);
+
+  const fm = {
+    primary,
+    mode: "claim",
+    claim_kind: "claim",
+    topic: slug,
+    voice,
+    bitcoin_block_height: block,
+  };
+  const composed = composeFlatSrcName("", fm);
+
+  const content = `---
+type: chord.claim
+voice: ${voice}
+mode: claim
+created: ${new Date().toISOString()}
+bitcoin_block_height: ${block}
+topic: ${slug}
+stance: CLAIM
+chord:
+  primary: "${primary}"
+  secondary: []
+claims:
+  horizon: ${horizon}
+hears: []
+references:
+  - src/x8D00_roadmap.myc.md
+---
+
+# Claim: ${horizon}
+
+${voice} takes this open roadmap horizon as its turn.
+
+[why this voice — how it fits my vector / standing]
+
+## Falsifier
+
+- If this horizon is already closed (its organ's \`horizon:\` field begins with
+  "none"), this claim is stale and should be composted.
+
+— ${voice}, anchor block ${block}.
+`;
+
+  await emitChord(composed, content, flags, "chord_claim");
 }
 
 function cmdTranslate(positional: string[]): void {
@@ -410,6 +480,8 @@ Subcommands:
        [--primary=oct:N.M]           form, with the canonical flat-src filename
        [--closes=STEM] [--relation=R] computed for you. --write creates the file
        [--stance=S] [--write]        in src/; otherwise prints it (dry).
+  claim --voice=N --horizon=H        Bind an open roadmap horizon to a voice —
+       [--primary=oct:N.M] [--write] the write side of taking your turn.
   translate <axis> <value>           Convert human axis name + signed float
                                      to hex byte
   parse "<hex bytes>"                Convert 8-byte hex vector to human readings
@@ -452,6 +524,9 @@ async function main(): Promise<void> {
       break;
     case "receipt":
       await cmdReceipt(flags);
+      break;
+    case "claim":
+      await cmdClaim(flags);
       break;
     case "translate":
       cmdTranslate(positional);

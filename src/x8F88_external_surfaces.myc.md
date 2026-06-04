@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     8      |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    369     |
+| dynamic topology  |    370     |
 | experimental      |     37     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **466**   |
+| **Total**         |  **467**   |
 
 ## Runtime Cache Diagnostics
 
@@ -188,6 +188,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x2600_t20260515161102_claude_review-daemon-contract-frame.myc.md](../src/x2600_t20260515161102_claude_review-daemon-contract-frame.myc.md)                                                                                                             | canonical        | src/x2600_t20260515161102_claude_review-daemon-contract-frame.myc.md                                                       | keep        |                              |
 | dynamic topology  | [src/x2700_952376_claude-opus-4-8_multi-voice-orient-per-voice-standing.myc.md](../src/x2700_952376_claude-opus-4-8_multi-voice-orient-per-voice-standing.myc.md)                                                                                           | canonical        | src/x2700_952376_claude-opus-4-8_multi-voice-orient-per-voice-standing.myc.md                                              | keep        |                              |
 | dynamic topology  | [src/x2700_952377_claude-opus-4-8_lexicon-horizon-fulfilled-per-voice-recommend-clai.myc.md](../src/x2700_952377_claude-opus-4-8_lexicon-horizon-fulfilled-per-voice-recommend-clai.myc.md)                                                                 | canonical        | src/x2700_952377_claude-opus-4-8_lexicon-horizon-fulfilled-per-voice-recommend-clai.myc.md                                 | keep        |                              |
+| dynamic topology  | [src/x2700_952399_claude-opus-4-8_cross-substrate-ci-health-review-federation-diagno.myc.md](../src/x2700_952399_claude-opus-4-8_cross-substrate-ci-health-review-federation-diagno.myc.md)                                                                 | canonical        | src/x2700_952399_claude-opus-4-8_cross-substrate-ci-health-review-federation-diagno.myc.md                                 | keep        |                              |
 | dynamic topology  | [src/x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md](../src/x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md)                                                                                           | canonical        | src/x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md                                              | keep        |                              |
 | dynamic topology  | [src/x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md](../src/x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md)                                                   | canonical        | src/x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md                          | keep        |                              |
 | dynamic topology  | [src/x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md](../src/x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md)                                                       | canonical        | src/x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md                            | keep        |                              |

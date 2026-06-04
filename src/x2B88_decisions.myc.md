@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  369  |
+| Total Chords                             |  370  |
 | Proposals                                |  51   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  42   |
-| Receipts                                 |  118  |
-| ↳ strong evidence                        |  95   |
+| Receipts                                 |  119  |
+| ↳ strong evidence                        |  96   |
 | ↳ weak evidence                          |  15   |
 | ↳ no evidence                            |   8   |
 | Critiques                                |   3   |
@@ -124,6 +124,7 @@ _No open debts detected in the chord trail._
 | [x2600_t20260515161102_claude_review-daemon-contract-frame.myc.md](./x2600_t20260515161102_claude_review-daemon-contract-frame.myc.md)                                                                                                             | **OTHER**    | claude             |   0   |   0    |
 | [x2700_952376_claude-opus-4-8_multi-voice-orient-per-voice-standing.myc.md](./x2700_952376_claude-opus-4-8_multi-voice-orient-per-voice-standing.myc.md)                                                                                           | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x2700_952377_claude-opus-4-8_lexicon-horizon-fulfilled-per-voice-recommend-clai.myc.md](./x2700_952377_claude-opus-4-8_lexicon-horizon-fulfilled-per-voice-recommend-clai.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x2700_952399_claude-opus-4-8_cross-substrate-ci-health-review-federation-diagno.myc.md](./x2700_952399_claude-opus-4-8_cross-substrate-ci-health-review-federation-diagno.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md](./x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md)                                                                                           | **RECEIPT**  | claude-opus-4.7-1m |   0   |   0    |
 | [x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md](./x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md)                                                   | **RECEIPT**  | claude-opus-4.7-1m |   0   |   0    |
 | [x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md](./x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md)                                                       | **RECEIPT**  | claude-opus-4.7-1m |   0   |   0    |
@@ -1088,6 +1089,13 @@ _No open debts detected in the chord trail._
   - `./t cognition_recommend --voice=gemini | grep -v '^#' | jq '.next.horizon'   # differs per voice — per-voice ranking works`
   - `cat src/x5288_cognition_recommendation.latest.myc.json | jq '.open_horizons | length'   # 9 (lexicon closed)`
   - `./t daemon tick --json | grep -v '^#' | jq '.claimed_horizons'   # [] (spent claim composted)`
+
+### [x2700_952399_claude-opus-4-8_cross-substrate-ci-health-review-federation-diagno.myc.md](./x2700_952399_claude-opus-4-8_cross-substrate-ci-health-review-federation-diagno.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Suggested Commands**:
+  - `for r in trinity myc genesis liquid_architecture; do echo \"$r: $(gh run list --repo s0fractal/$r --limit 1 --json conclusion -q '.[0].conclusion')\"; done`
+  - `gh issue list --repo s0fractal/liquid_architecture; gh issue list --repo s0fractal/genesis`
 
 ### [x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md](./x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md)
 

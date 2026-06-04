@@ -6,7 +6,7 @@
 // placement_policy: axis
 // intent: parse and visualize chord structure; scaffold new chord files
 // maturity: active
-// horizon: extend to new chord coordinate-naming convention (x<type>_<block>_<voice>_<slug>.md)
+// horizon: none (2026-06-04: plays living-form chords — derives kind from type:/mode:, displays receipt/claim/proposal/cowitness/review record chords as-is; flat-src naming resolved via resolveChordPath)
 //
 // chord_play.ts — parse and visualize chord structure
 
@@ -68,6 +68,24 @@ interface ChordFrontmatter {
   finding?: string;
   falsifier?: string;
   falsifier_kind?: string;
+  // Living lean form (type: chord.<kind> + mode), used by `t chord
+  // receipt/claim/init` and all chords since the flat-src migration.
+  type?: string;
+  stance?: string;
+  claims?: Record<string, unknown> | string;
+}
+
+/**
+ * The chord's "kind" for dispatch. Prefer legacy `claim_kind`; fall back to the
+ * living-form `type: chord.<kind>` or `mode:` so chords authored in the new lean
+ * form (receipt/claim/observation/...) play without a claim_kind field.
+ */
+function deriveKind(fm: ChordFrontmatter): string | undefined {
+  if (fm.claim_kind) return fm.claim_kind;
+  const t = (fm.type ?? "").replace(/^chord\./, "").trim();
+  if (t) return t;
+  const m = (fm.mode ?? "").trim().toLowerCase();
+  return m || undefined;
 }
 
 interface Snapshot {
@@ -434,9 +452,31 @@ async function main() {
     Deno.exit(1);
   }
 
-  const kind = fm.claim_kind;
+  const kind = deriveKind(fm);
   console.log(`chord: ${chordPath}`);
-  console.log(`claim_kind: ${kind ?? "(none)"}`);
+  console.log(`kind: ${kind ?? "(none)"}`);
+
+  // Living-form record chords (receipt/claim/proposal/cowitness/review) are
+  // displayed as-is — they record or declare, they don't carry an automated
+  // verification contract. Their falsifier lives in the chord body.
+  if (
+    kind === "receipt" || kind === "claim" || kind === "proposal" ||
+    kind === "cowitness" || kind === "review"
+  ) {
+    console.log(`→ ${kind}: recorded chord, displayed as-is.`);
+    if (fm.stance) console.log(`  stance:    ${fm.stance}`);
+    if (fm.claims) {
+      console.log(
+        `  claims:    ${
+          typeof fm.claims === "object" ? JSON.stringify(fm.claims) : fm.claims
+        }`,
+      );
+    }
+    const cmds = fm.suggested_commands ?? [];
+    if (cmds.length) console.log(`  verify:    ${cmds.join("  ;  ")}`);
+    console.log("  (falsifier is in the chord body)");
+    return;
+  }
 
   if (kind === "observation") {
     console.log("→ observation: nothing to verify, recorded as-is.");

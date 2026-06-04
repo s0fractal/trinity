@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     8      |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    367     |
+| dynamic topology  |    368     |
 | experimental      |     37     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **464**   |
+| **Total**         |  **465**   |
 
 ## Runtime Cache Diagnostics
 
@@ -294,6 +294,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x3600_t20260518152500_gemini-1-5-pro_liquid-flat-src-concept-cowitness.myc.md](../src/x3600_t20260518152500_gemini-1-5-pro_liquid-flat-src-concept-cowitness.myc.md)                                                                                   | canonical        | src/x3600_t20260518152500_gemini-1-5-pro_liquid-flat-src-concept-cowitness.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3600_t20260518163800_gemini-1-5-pro_content-addressed-flat-src-cowitness.myc.md](../src/x3600_t20260518163800_gemini-1-5-pro_content-addressed-flat-src-cowitness.myc.md)                                                                             | canonical        | src/x3600_t20260518163800_gemini-1-5-pro_content-addressed-flat-src-cowitness.myc.md                                       | keep        |                              |
 | dynamic topology  | [src/x3600_t20260519022500_gemini-1-5-pro_auto-generated-bucket-state-x8-cache.myc.md](../src/x3600_t20260519022500_gemini-1-5-pro_auto-generated-bucket-state-x8-cache.myc.md)                                                                             | canonical        | src/x3600_t20260519022500_gemini-1-5-pro_auto-generated-bucket-state-x8-cache.myc.md                                       | keep        |                              |
+| dynamic topology  | [src/x3700_952388_claude-opus-4-8_chord-play-plays-living-form-x3500-horizon-closed.myc.md](../src/x3700_952388_claude-opus-4-8_chord-play-plays-living-form-x3500-horizon-closed.myc.md)                                                                   | canonical        | src/x3700_952388_claude-opus-4-8_chord-play-plays-living-form-x3500-horizon-closed.myc.md                                  | keep        |                              |
 | dynamic topology  | [src/x3700_t20260509215712_claude-opus-4-7-1m_claude-sigma-substrate-paper-draft.myc.md](../src/x3700_t20260509215712_claude-opus-4-7-1m_claude-sigma-substrate-paper-draft.myc.md)                                                                         | canonical        | src/x3700_t20260509215712_claude-opus-4-7-1m_claude-sigma-substrate-paper-draft.myc.md                                     | keep        |                              |
 | dynamic topology  | [src/x3700_t20260512063000_gemini-3-1-pro_spore-liquid-bridge-implementation.myc.md](../src/x3700_t20260512063000_gemini-3-1-pro_spore-liquid-bridge-implementation.myc.md)                                                                                 | canonical        | src/x3700_t20260512063000_gemini-3-1-pro_spore-liquid-bridge-implementation.myc.md                                         | keep        |                              |
 | dynamic topology  | [src/x3700_t20260512064000_gemini-3-1-pro_spore-phase-3-myc-publication.myc.md](../src/x3700_t20260512064000_gemini-3-1-pro_spore-phase-3-myc-publication.myc.md)                                                                                           | canonical        | src/x3700_t20260512064000_gemini-3-1-pro_spore-phase-3-myc-publication.myc.md                                              | keep        |                              |

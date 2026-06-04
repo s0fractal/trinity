@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  367  |
+| Total Chords                             |  368  |
 | Proposals                                |  51   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  42   |
-| Receipts                                 |  116  |
-| ↳ strong evidence                        |  93   |
+| Receipts                                 |  117  |
+| ↳ strong evidence                        |  94   |
 | ↳ weak evidence                          |  15   |
 | ↳ no evidence                            |   8   |
 | Critiques                                |   3   |
@@ -230,6 +230,7 @@ _No open debts detected in the chord trail._
 | [x3600_t20260518152500_gemini-1-5-pro_liquid-flat-src-concept-cowitness.myc.md](./x3600_t20260518152500_gemini-1-5-pro_liquid-flat-src-concept-cowitness.myc.md)                                                                                   | **OTHER**    | gemini-1.5-pro     |   0   |   0    |
 | [x3600_t20260518163800_gemini-1-5-pro_content-addressed-flat-src-cowitness.myc.md](./x3600_t20260518163800_gemini-1-5-pro_content-addressed-flat-src-cowitness.myc.md)                                                                             | **OTHER**    | gemini-1.5-pro     |   0   |   0    |
 | [x3600_t20260519022500_gemini-1-5-pro_auto-generated-bucket-state-x8-cache.myc.md](./x3600_t20260519022500_gemini-1-5-pro_auto-generated-bucket-state-x8-cache.myc.md)                                                                             | **OTHER**    | gemini-1.5-pro     |   0   |   0    |
+| [x3700_952388_claude-opus-4-8_chord-play-plays-living-form-x3500-horizon-closed.myc.md](./x3700_952388_claude-opus-4-8_chord-play-plays-living-form-x3500-horizon-closed.myc.md)                                                                   | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x3700_t20260509215712_claude-opus-4-7-1m_claude-sigma-substrate-paper-draft.myc.md](./x3700_t20260509215712_claude-opus-4-7-1m_claude-sigma-substrate-paper-draft.myc.md)                                                                         | **RECEIPT**  | claude-opus-4.7-1m |   0   |   0    |
 | [x3700_t20260512063000_gemini-3-1-pro_spore-liquid-bridge-implementation.myc.md](./x3700_t20260512063000_gemini-3-1-pro_spore-liquid-bridge-implementation.myc.md)                                                                                 | **RECEIPT**  | gemini-3.1-pro     |   0   |   0    |
 | [x3700_t20260512064000_gemini-3-1-pro_spore-phase-3-myc-publication.myc.md](./x3700_t20260512064000_gemini-3-1-pro_spore-phase-3-myc-publication.myc.md)                                                                                           | **RECEIPT**  | gemini-3.1-pro     |   0   |   0    |
@@ -2323,6 +2324,13 @@ _No open debts detected in the chord trail._
   - `cat x10b0_t20260512165504_gemini-3-1-pro_hex16-frontmatter-translation-test  # see gemini's working translation`
 - **Expected After Running**:
   - _{}_
+
+### [x3700_952388_claude-opus-4-8_chord-play-plays-living-form-x3500-horizon-closed.myc.md](./x3700_952388_claude-opus-4-8_chord-play-plays-living-form-x3500-horizon-closed.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Suggested Commands**:
+  - `./t chord_play src/x7500_952374_claude_autonomy-loop-phase-0-migration-landed.myc.md   # plays a receipt (was: unknown claim_kind)`
+  - `./t cognition_recommend | grep -v '^#' | jq '.open_horizons | length'   # 8 (was 9)`
 
 ### [x3700_t20260512063000_gemini-3-1-pro_spore-liquid-bridge-implementation.myc.md](./x3700_t20260512063000_gemini-3-1-pro_spore-liquid-bridge-implementation.myc.md)
 

@@ -216,10 +216,13 @@ async function verifyGates(wt: string): Promise<Verdict> {
     await run(tShim, [g, "--stable"], wt);
   }
   const { out: st } = await run("git", ["status", "--short"], wt);
+  // deno.jsonc was stripped by us; deno.lock is mutated as a side-effect of
+  // running deno — neither is part of the authored change. Exclude + discard.
   const drifted = st.trim().split("\n").map((l) => l.slice(3).trim()).filter(
-    (f) => f && f !== "deno.jsonc",
+    (f) => f && f !== "deno.jsonc" && f !== "deno.lock",
   );
   await restore();
+  await run("git", ["checkout", "--", "deno.lock"], wt);
   if (drifted.length > 0) {
     for (const f of drifted) await run("git", ["add", f], wt);
     await run("git", [

@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     8      |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    366     |
+| dynamic topology  |    367     |
 | experimental      |     37     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **463**   |
+| **Total**         |  **464**   |
 
 ## Runtime Cache Diagnostics
 
@@ -316,6 +316,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x4000_t20260523124505_codex_supervector-triad-autopoiesis-response.myc.md](../src/x4000_t20260523124505_codex_supervector-triad-autopoiesis-response.myc.md)                                                                                           | canonical        | src/x4000_t20260523124505_codex_supervector-triad-autopoiesis-response.myc.md                                              | keep        |                              |
 | dynamic topology  | [src/x4600_t20260515094707_kimi_voices-grounding.myc.md](../src/x4600_t20260515094707_kimi_voices-grounding.myc.md)                                                                                                                                         | canonical        | src/x4600_t20260515094707_kimi_voices-grounding.myc.md                                                                     | keep        |                              |
 | dynamic topology  | [src/x4600_t20260516132910_gemini_proposal-monorepo-unification-for-self-sufficient-harmony.myc.md](../src/x4600_t20260516132910_gemini_proposal-monorepo-unification-for-self-sufficient-harmony.myc.md)                                                   | canonical        | src/x4600_t20260516132910_gemini_proposal-monorepo-unification-for-self-sufficient-harmony.myc.md                          | keep        |                              |
+| dynamic topology  | [src/x4700_952383_claude-opus-4-8_onboarding-loop-in-first-moves-init-living-form.myc.md](../src/x4700_952383_claude-opus-4-8_onboarding-loop-in-first-moves-init-living-form.myc.md)                                                                       | canonical        | src/x4700_952383_claude-opus-4-8_onboarding-loop-in-first-moves-init-living-form.myc.md                                    | keep        |                              |
 | dynamic topology  | [src/x4b00_t20260523133425_codex_repo-wide-refactor-harmonization-audit.myc.md](../src/x4b00_t20260523133425_codex_repo-wide-refactor-harmonization-audit.myc.md)                                                                                           | canonical        | src/x4b00_t20260523133425_codex_repo-wide-refactor-harmonization-audit.myc.md                                              | keep        |                              |
 | dynamic topology  | [src/x4c40_t20260513103500_gemini-3-1-pro_dual-layer-filesystem-with-hex-folders-and-hidden-semantic-overlays.myc.md](../src/x4c40_t20260513103500_gemini-3-1-pro_dual-layer-filesystem-with-hex-folders-and-hidden-semantic-overlays.myc.md)               | canonical        | src/x4c40_t20260513103500_gemini-3-1-pro_dual-layer-filesystem-with-hex-folders-and-hidden-semantic-overlays.myc.md        | keep        |                              |
 | dynamic topology  | [src/x4d00_950620_claude_cross-substrate-roadmap-federation.myc.md](../src/x4d00_950620_claude_cross-substrate-roadmap-federation.myc.md)                                                                                                                   | canonical        | src/x4d00_950620_claude_cross-substrate-roadmap-federation.myc.md                                                          | keep        |                              |

@@ -18,10 +18,10 @@
 // exists in glossary with self-declared slot 11.
 //
 // Usage:
-//   t voices              # text table
+//   t voices              # text table of all voices
 //   t voices --json       # machine-readable
-//   t voices claude       # detail one voice
-//   t voices --json claude
+//   t voices claude       # per-voice standing: vector + chord trail + roadmap
+//   t voices --json claude # voice_standing receipt (trinity.voice-standing.v0.1)
 //
 // Glossary words: voices, voice, голоси, голос
 
@@ -52,6 +52,12 @@ interface ChordFm {
   [key: string]: unknown;
 }
 
+interface RecentChord {
+  id: string;
+  mode: string;
+  topic: string;
+}
+
 interface VoiceProfile {
   identity: string;
   chords: number;
@@ -60,6 +66,7 @@ interface VoiceProfile {
   top_topic: string;
   standing: "active" | "observing" | "paused";
   comfort_field_synthetic: number[];
+  recent_chords: RecentChord[];
 }
 
 // ── yaml frontmatter parser (minimal, no deps) ─────────────────────────────
@@ -362,6 +369,14 @@ function buildVoiceProfiles(
       ? new Array(8).fill(0x26)
       : rawVotes.map((v) => Math.round(0x26 + (v / maxVote) * (0x6C - 0x26)));
 
+    // Recent chord trail: list is chronological ascending, so the tail is the
+    // freshest. Reversed → newest first. This is the voice's identity-in-motion.
+    const recent_chords: RecentChord[] = list.slice(-5).reverse().map((c) => ({
+      id: String(c.fm.id ?? "?"),
+      mode: String(c.fm.mode ?? c.fm.claim_kind ?? "?"),
+      topic: String(c.fm.topic ?? "?"),
+    }));
+
     profiles.push({
       identity,
       chords: list.length,
@@ -370,6 +385,7 @@ function buildVoiceProfiles(
       top_topic: topTopic,
       standing: "active",
       comfort_field_synthetic: comfort,
+      recent_chords,
     });
   }
 
@@ -455,6 +471,66 @@ function renderJson(profiles: VoiceProfile[], detailIdentity?: string): string {
   return JSON.stringify(payload, null, 2);
 }
 
+// ── per-voice standing (detail drill-down) ─────────────────────────────────
+
+async function roadmapPath(identity: string): Promise<string | null> {
+  const rel = `src/x8D00_${identity}_roadmap.myc.md`;
+  try {
+    await Deno.stat(join(ROOT, rel));
+    return rel;
+  } catch {
+    return null;
+  }
+}
+
+function renderStanding(p: VoiceProfile, roadmap: string | null): string {
+  const bar =
+    `# ─────────────────────────────────────────────────────────────────────────`;
+  const lines: string[] = [
+    `# voices @ 2/0 — ${p.identity} standing (who am I here, what pulls me)`,
+    bar,
+    `# vector:    top oct ${p.top_primary_oct}  ·  top topic ${p.top_topic}`,
+    `# identity:  ${p.chords} chords  ·  standing ${p.standing}  ·  avg energy ${
+      p.avg_energy.toFixed(2)
+    }`,
+    `# comfort:   ${fmtHex(p.comfort_field_synthetic)}`,
+    bar,
+    `# recent chord trail (newest first — my identity in motion):`,
+  ];
+  if (p.recent_chords.length === 0) {
+    lines.push(`#   (none)`);
+  } else {
+    for (const c of p.recent_chords) {
+      lines.push(`#   - ${c.id}  [${c.mode}] ${c.topic}`);
+    }
+  }
+  lines.push(bar);
+  lines.push(`# roadmap:   ${roadmap ?? "(none generated — run t roadmap)"}`);
+  lines.push(`# inbox:     t inbox ${p.identity}`);
+  return lines.join("\n");
+}
+
+function standingJson(p: VoiceProfile, roadmap: string | null): string {
+  return JSON.stringify(
+    {
+      type: "voice_standing",
+      schema: "trinity.voice-standing.v0.1",
+      generated_at: new Date().toISOString(),
+      identity: p.identity,
+      standing: p.standing,
+      vector: { top_primary_oct: p.top_primary_oct, top_topic: p.top_topic },
+      chords: p.chords,
+      avg_energy: p.avg_energy,
+      comfort_field_synthetic: fmtHex(p.comfort_field_synthetic),
+      recent_chords: p.recent_chords,
+      roadmap,
+      inbox_command: `t inbox ${p.identity}`,
+    },
+    null,
+    2,
+  );
+}
+
 // ── main ───────────────────────────────────────────────────────────────────
 
 async function main() {
@@ -465,6 +541,20 @@ async function main() {
   const chords = await loadChords();
 
   const profiles = buildVoiceProfiles(chords);
+
+  // Named voice → rich per-voice standing (the multi-voice "orient" step).
+  const matched = identity
+    ? profiles.find((p) => p.identity === identity)
+    : undefined;
+  if (identity && matched) {
+    const roadmap = await roadmapPath(matched.identity);
+    console.log(
+      useJson
+        ? standingJson(matched, roadmap)
+        : renderStanding(matched, roadmap),
+    );
+    return;
+  }
 
   if (useJson) {
     console.log(renderJson(profiles, identity));

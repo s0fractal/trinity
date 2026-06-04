@@ -578,6 +578,53 @@ async function readLatestRecommendation(): Promise<
   }
 }
 
+/** Scan chord surface files for claim chords → horizon-key → claiming voice. */
+async function loadClaims(): Promise<
+  Map<string, { voice: string; chord_id: string }>
+> {
+  const claims = new Map<string, { voice: string; chord_id: string }>();
+  for (const chord of await listChordSurfaceFiles()) {
+    const text = await Deno.readTextFile(chord.fullPath);
+    const parsed = parseYamlFrontmatter(text);
+    if (!parsed) continue;
+    const fm = parsed.fm;
+    if (fm.type !== "chord.claim") continue;
+    // parseYamlFrontmatter flattens nested maps, so `claims: { horizon: X }`
+    // surfaces as top-level `horizon`.
+    const horizon = fm.horizon ? String(fm.horizon) : null;
+    if (!horizon) continue;
+    const voice = String(fm.voice ?? fm.speaker ?? "unknown");
+    const chord_id = fm.id ? String(fm.id) : chord.flatId;
+    claims.set(horizon, { voice, chord_id }); // latest write wins
+  }
+  return claims;
+}
+
+/** First hex digit of a coordinate is its bucket; bucket mod 8 is the axis. */
+function axisFromCoordinate(coord: string): number | null {
+  const m = coord.replace(/^x/i, "").match(/^([0-9a-f])/i);
+  if (!m) return null;
+  return parseInt(m[1], 16) % 8;
+}
+
+/** Best-fit voice for a horizon: strongest comfort-field byte on its axis. */
+function bestFitVoice(
+  coord: string,
+  voices: Array<{ identity: string; comfort_field_synthetic?: string }>,
+): string | null {
+  const axis = axisFromCoordinate(coord);
+  if (axis === null) return null;
+  let best: { voice: string; score: number } | null = null;
+  for (const v of voices) {
+    const bytes = String(v.comfort_field_synthetic ?? "").split(/\s+/).map((
+      h,
+    ) => parseInt(h, 16));
+    const score = Number.isFinite(bytes[axis]) ? bytes[axis] : 0;
+    if (!best || score > best.score) best = { voice: v.identity, score };
+  }
+  return best?.voice ?? null;
+}
+
 async function worktreeClean(): Promise<boolean> {
   const { stdout } = await new Deno.Command("git", {
     args: ["status", "--short"],
@@ -608,7 +655,50 @@ async function handleTick(useJson: boolean): Promise<void> {
   const rec = await readLatestRecommendation();
   const recs = (rec?.recommendations ?? []) as Array<Record<string, unknown>>;
   const top = recs[0] ?? null;
-  const openHorizons = (rec?.open_horizons ?? []) as unknown[];
+  const openHorizons = (rec?.open_horizons ?? []) as Array<
+    { coordinate?: string; handle?: string; horizon?: string }
+  >;
+
+  // Whose turn: for the chosen (top) open horizon, surface the voice that
+  // claimed it, or — if unclaimed — the best-fit voice by standing. Plus the
+  // full claim board across open horizons. This is routing only; the safe gate
+  // still forbids acting.
+  const claims = await loadClaims();
+  const claimed_horizons = openHorizons
+    .filter((h) => h.coordinate && h.handle)
+    .map((h) => ({ horizon: `x${h.coordinate}_${h.handle}`, h }))
+    .filter((x) => claims.has(x.horizon))
+    .map((x) => ({ horizon: x.horizon, voice: claims.get(x.horizon)!.voice }));
+
+  const chosen = openHorizons[0] ?? null;
+  let whoseTurn:
+    | {
+      horizon: string;
+      claimed_by: string | null;
+      claim_chord: string | null;
+      best_fit: string | null;
+      source: "claim" | "best-fit-standing";
+    }
+    | null = null;
+  if (chosen?.coordinate && chosen?.handle) {
+    const horizonKey = `x${chosen.coordinate}_${chosen.handle}`;
+    const claimed = claims.get(horizonKey) ?? null;
+    let bestFit: string | null = null;
+    if (!claimed) {
+      const voicesData = await runTJson(["voices"]);
+      const voices = (voicesData?.voices ?? []) as Array<
+        { identity: string; comfort_field_synthetic?: string }
+      >;
+      bestFit = bestFitVoice(chosen.coordinate, voices);
+    }
+    whoseTurn = {
+      horizon: horizonKey,
+      claimed_by: claimed?.voice ?? null,
+      claim_chord: claimed?.chord_id ?? null,
+      best_fit: claimed ? null : bestFit,
+      source: claimed ? "claim" : "best-fit-standing",
+    };
+  }
 
   // Safe mode: the driver never crosses the action boundary on its own.
   const tick = {
@@ -629,6 +719,8 @@ async function handleTick(useJson: boolean): Promise<void> {
       }
       : null,
     open_horizons: openHorizons.length,
+    whose_turn: whoseTurn,
+    claimed_horizons,
     recommendation_age: rec?.timestamp ?? null,
     gate: {
       would_act: false,
@@ -665,6 +757,19 @@ async function handleTick(useJson: boolean): Promise<void> {
     );
   }
   console.log(`# open horizons: ${openHorizons.length}`);
+  if (whoseTurn) {
+    const who = whoseTurn.claimed_by
+      ? `${whoseTurn.claimed_by} (claimed)`
+      : `${whoseTurn.best_fit ?? "—"} (best fit, unclaimed)`;
+    console.log(`# whose turn: ${who}  for ${whoseTurn.horizon}`);
+  }
+  if (claimed_horizons.length > 0) {
+    console.log(
+      `# claims:  ${
+        claimed_horizons.map((c) => `${c.horizon}→${c.voice}`).join(", ")
+      }`,
+    );
+  }
   console.log(`# gate:    would_act=false (safe mode) — no action taken`);
   if (tick.gate.next_command) {
     console.log(`# next:    ${tick.gate.next_command}`);

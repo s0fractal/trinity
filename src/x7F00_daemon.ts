@@ -769,6 +769,10 @@ async function handleAct(useJson: boolean, push: boolean): Promise<void> {
     return;
   }
 
+  // Log BEFORE staging so the act record (a tracked file) is committed in the
+  // same commit — otherwise the appended line leaves the tree dirty and the
+  // next --act refuses.
+  await appendActLog({ action: "committed", files: drifted, pushed: push });
   await runGit(["add", "-A"]);
   const commitMsg =
     "auto(daemon): refresh stable projections [tick --act]\n\n" +
@@ -786,12 +790,6 @@ async function handleAct(useJson: boolean, push: boolean): Promise<void> {
     const p = await runGit(["push", "origin", "main"]);
     pushed = p.ok;
   }
-  await appendActLog({
-    action: "committed",
-    commit: head,
-    files: drifted,
-    pushed,
-  });
   report({ action: "committed", commit: head, files: drifted, pushed });
 }
 

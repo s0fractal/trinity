@@ -1,4 +1,4 @@
-#!/usr/bin/env -S deno run --allow-net --allow-env --allow-read
+#!/usr/bin/env -S deno run --allow-net --allow-env --allow-read --allow-write
 // src/x4001_chord.ts — chord (substrate-native chord scaffolding + dipole math)
 // position: 4/0 → foundation(4) × void(0) = primal toolkit / blank-scaffold
 // maturity: active
@@ -19,6 +19,8 @@
 // Subcommands (canonical via `t chord <sub> ...`, legacy via `deno task chord:*`):
 //   block                          Print current Bitcoin block height
 //   init [opts]                    Print chord skeleton (frontmatter + body)
+//   receipt [opts]                 Draft a receipt chord (living lean form,
+//                                  canonical flat-src filename; --write to land)
 //   translate <axis> <value>       Convert axis name + signed value → hex byte
 //   parse "<hex bytes>"            Convert 8-byte hex vector → human readings
 //
@@ -47,6 +49,13 @@
 //   - Identity verification: soft (trust-based) for v0.0
 //   - Path resolution unchanged: ../src/x0001_glossary.ndjson still resolves correctly
 //     from 0x4/0.ts (same depth as old tools/ location)
+
+import {
+  dirname,
+  fromFileUrl,
+  join,
+} from "https://deno.land/std@0.224.0/path/mod.ts";
+import { composeFlatSrcName } from "./x8F20_chord_migrate.ts";
 
 const BTC_TIP_URL = "https://blockstream.info/api/blocks/tip/height";
 
@@ -243,6 +252,102 @@ expected_after_running: {}
   console.log(skeleton);
 }
 
+async function cmdReceipt(flags: Record<string, string>): Promise<void> {
+  const block = await fetchBtcBlock();
+  const voice = flags.voice ?? flags.author ?? "anonymous";
+  const topicRaw = flags.topic ?? "untitled";
+  const slug = chordSlug(topicRaw);
+  const primary = flags.primary ?? flags.octet ?? "oct:7.completion";
+  const stance = flags.stance ?? "RECEIPT";
+  const claimKind = flags["claim-kind"] ?? "receipt";
+
+  // Derive the canonical flat-src filename via x8F20's single source of truth,
+  // so this chord is already-migrated / zero-inference by construction (CI
+  // invariants stay green; `t chord-migrate` sees nothing to do).
+  const fm = {
+    primary,
+    mode: "receipt",
+    claim_kind: claimKind,
+    topic: slug,
+    voice,
+    bitcoin_block_height: block,
+  };
+  const composed = composeFlatSrcName("", fm);
+
+  const closesBlock = flags.closes
+    ? `closes:\n  path_hint: ${flags.closes}\n  relation: ${
+      flags.relation ?? "implements"
+    }\n`
+    : "";
+
+  const content = `---
+type: chord.receipt
+voice: ${voice}
+mode: receipt
+created: ${new Date().toISOString()}
+bitcoin_block_height: ${block}
+topic: ${slug}
+stance: ${stance}
+chord:
+  primary: "${primary}"
+  secondary: []
+${closesBlock}hears: []
+references: []
+suggested_commands: []
+expected_after_running: {}
+---
+
+# Receipt: ${topicRaw}
+
+[claim — what landed, why it is real, and what it closes]
+
+## Falsifiers
+
+- [if this command/check fails, this receipt is false]
+
+— ${voice}, anchor block ${block}.
+`;
+
+  const doWrite = "write" in flags && flags.write !== "false";
+  if (doWrite) {
+    const HERE = dirname(fromFileUrl(import.meta.url));
+    const target = join(HERE, composed.targetName);
+    try {
+      await Deno.lstat(target);
+      console.error(
+        `refusing to overwrite existing chord: src/${composed.targetName}`,
+      );
+      Deno.exit(1);
+    } catch {
+      // does not exist — safe to write
+    }
+    await Deno.writeTextFile(target, content);
+    console.log(JSON.stringify(
+      {
+        type: "chord_receipt",
+        written: `src/${composed.targetName}`,
+        coordinate: composed.coordinate,
+        block_key: composed.blockKey,
+        voice: composed.voice,
+        warnings: composed.warnings,
+        next:
+          `git add src/${composed.targetName}  # ledger indexes tracked chords only`,
+      },
+      null,
+      2,
+    ));
+  } else {
+    console.log(`# would write: src/${composed.targetName}`);
+    if (composed.warnings.length) {
+      console.log(`# warnings: ${composed.warnings.join("; ")}`);
+    }
+    console.log(
+      `# add --write to create it, then: git add src/${composed.targetName}`,
+    );
+    console.log(content);
+  }
+}
+
 function cmdTranslate(positional: string[]): void {
   if (positional.length < 2) {
     console.error("usage: translate <axis_name> <signed_value>");
@@ -301,6 +406,10 @@ Subcommands:
   init [--author=N] [--topic=T]      Print chord skeleton (frontmatter + body)
        [--octet=oct:N.M]
        [--claim-kind=KIND]
+  receipt --voice=N --topic=T        Draft a receipt chord in the living lean
+       [--primary=oct:N.M]           form, with the canonical flat-src filename
+       [--closes=STEM] [--relation=R] computed for you. --write creates the file
+       [--stance=S] [--write]        in src/; otherwise prints it (dry).
   translate <axis> <value>           Convert human axis name + signed float
                                      to hex byte
   parse "<hex bytes>"                Convert 8-byte hex vector to human readings
@@ -308,6 +417,8 @@ Subcommands:
 Examples:
   deno run -A src/x4001_chord.ts block
   deno run -A src/x4001_chord.ts init --author=claude --topic="my topic"
+  deno run -A src/x4001_chord.ts receipt --voice=claude --topic="x organ landed" \
+    --closes=x4d00_950812_codex_some-proposal --write
   deno run -A src/x4001_chord.ts translate void_infinity +0.4
   deno run -A src/x4001_chord.ts parse "33 8E 59 40 00 26 4C 59"
 
@@ -338,6 +449,9 @@ async function main(): Promise<void> {
       break;
     case "init":
       await cmdInit(flags);
+      break;
+    case "receipt":
+      await cmdReceipt(flags);
       break;
     case "translate":
       cmdTranslate(positional);

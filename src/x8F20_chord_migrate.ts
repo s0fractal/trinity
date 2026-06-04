@@ -252,8 +252,26 @@ async function readLegacyChords(): Promise<
   return out;
 }
 
-function planEntry(name: string, text: string): MigrationEntry {
-  const fm = parseFrontmatter(text) as Record<string, unknown> | null;
+/**
+ * Compose the canonical flat-src chord filename from a name + frontmatter.
+ * Single source of truth for chord coordinate/block/voice/slug derivation —
+ * shared with `t chord receipt` (x4001) so newly-authored chords are byte-for-byte
+ * what `t chord-migrate` would assign (idempotent: migration sees them as
+ * already-migrated, no inference, no warnings). `name` may be empty for a
+ * fresh chord — derivation then falls through to frontmatter fields.
+ */
+export function composeFlatSrcName(
+  name: string,
+  fm: Record<string, unknown> | null,
+): {
+  targetName: string;
+  coordinate: string;
+  blockKey: string;
+  voice: string;
+  slug: string;
+  inferred: { coordinate: boolean; block_key: boolean; voice: boolean };
+  warnings: string[];
+} {
   const coordinate = inferCoordinate(name, fm);
   const block = inferBlockKey(name, fm);
   const voice = inferVoice(name, fm);
@@ -261,13 +279,10 @@ function planEntry(name: string, text: string): MigrationEntry {
   const slug = slugify(topic, stripLegacyPrefixSlug(name));
   const targetName =
     `${coordinate.coordinate}_${block.blockKey}_${voice.voice}_${slug}.myc.md`;
-  const flatId = targetName.replace(/\.myc\.md$/, "");
   return {
-    source: `jazz/chords/${name}`,
-    target: `src/${targetName}`,
-    flat_id: flatId,
+    targetName,
     coordinate: coordinate.coordinate,
-    block_key: block.blockKey,
+    blockKey: block.blockKey,
     voice: voice.voice,
     slug,
     inferred: {
@@ -280,6 +295,22 @@ function planEntry(name: string, text: string): MigrationEntry {
       ...block.warnings,
       ...voice.warnings,
     ],
+  };
+}
+
+function planEntry(name: string, text: string): MigrationEntry {
+  const fm = parseFrontmatter(text) as Record<string, unknown> | null;
+  const c = composeFlatSrcName(name, fm);
+  return {
+    source: `jazz/chords/${name}`,
+    target: `src/${c.targetName}`,
+    flat_id: c.targetName.replace(/\.myc\.md$/, ""),
+    coordinate: c.coordinate,
+    block_key: c.blockKey,
+    voice: c.voice,
+    slug: c.slug,
+    inferred: c.inferred,
+    warnings: c.warnings,
   };
 }
 

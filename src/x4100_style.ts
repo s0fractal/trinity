@@ -21,15 +21,7 @@
 //
 // Glossary words: style, стиль, music-style
 
-import {
-  dirname,
-  fromFileUrl,
-  join,
-} from "https://deno.land/std@0.224.0/path/mod.ts";
-
-const HERE = dirname(fromFileUrl(import.meta.url));
-const ROOT = dirname(HERE);
-const CHORDS_DIR = join(ROOT, "jazz", "chords");
+import { listChordSurfaceFiles } from "./x2F21_chord_surface.ts";
 
 // ── types ──────────────────────────────────────────────────────────────────
 
@@ -82,9 +74,8 @@ async function readHealth(): Promise<string | null> {
 async function minutesSinceLastChord(): Promise<number | null> {
   let latest = 0;
   try {
-    for await (const entry of Deno.readDir(CHORDS_DIR)) {
-      if (!entry.isFile || !entry.name.endsWith(".md")) continue;
-      const stat = await Deno.stat(join(CHORDS_DIR, entry.name));
+    for (const chord of await listChordSurfaceFiles()) {
+      const stat = await Deno.stat(chord.fullPath);
       const mtime = stat.mtime?.getTime() ?? 0;
       if (mtime > latest) latest = mtime;
     }

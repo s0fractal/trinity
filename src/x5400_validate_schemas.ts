@@ -8,7 +8,7 @@
 //
 // validate_schemas.ts — validate substrate artifacts against contracts/schema/*.json
 //
-// Walks jazz/chords/*.md and validates each chord's YAML frontmatter against
+// Walks chord surface files and validates each chord's YAML frontmatter against
 // contracts/schema/chord.schema.json. Validates src/x5288_cognition_recommendation.latest.myc.json
 // against recommendation.schema.json. Reports pass/fail counts and the first few errors.
 //
@@ -17,9 +17,9 @@
 // Strict mode fails only on non-grandfathered failures.
 
 import { parse as parseYaml } from "jsr:@std/yaml@1.0.5";
-import { walk } from "jsr:@std/fs@1.0.5/walk";
 import { parseArgs } from "jsr:@std/cli@1.0.13/parse-args";
 import Ajv2020Module from "npm:ajv@8.17.1/dist/2020.js";
+import { listChordSurfaceFiles } from "./x2F21_chord_surface.ts";
 
 const ROOT = new URL("..", import.meta.url).pathname;
 const DEFAULT_GRANDFATHER_BEFORE = "2026-05-12T130546Z";
@@ -36,6 +36,7 @@ interface ValidationResult {
 
 interface ChordFile {
   path: string;
+  relPath: string;
 }
 
 type AjvError = {
@@ -74,6 +75,14 @@ function parseChordTimestamp(path: string): Date | null {
   const filename = path.split("/").pop() ?? path;
 
   let match = filename.match(
+    /^x[0-9A-Fa-f]{4}_t(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})_/,
+  );
+  if (match) {
+    const [, y, mo, d, h, mi, s] = match;
+    return new Date(`${y}-${mo}-${d}T${h}:${mi}:${s}Z`);
+  }
+
+  match = filename.match(
     /^(\d{4})-?(\d{2})-?(\d{2})T(\d{2}):?(\d{2}):?(\d{2})Z/,
   );
   if (match) {
@@ -132,28 +141,12 @@ function recordFailure(
 }
 
 async function listChordFiles(trackedOnly: boolean): Promise<ChordFile[]> {
-  if (trackedOnly) {
-    const output = await new Deno.Command("git", {
-      args: ["ls-files", "jazz/chords/*.md"],
-      cwd: ROOT,
-      stdout: "piped",
-      stderr: "piped",
-    }).output();
-    if (output.code !== 0) {
-      const stderr = new TextDecoder().decode(output.stderr).trim();
-      throw new Error(`git ls-files failed: ${stderr}`);
-    }
-    return new TextDecoder().decode(output.stdout).trim().split("\n")
-      .filter(Boolean)
-      .map((path) => ({ path: `${ROOT}${path}` }));
-  }
-
-  const files: ChordFile[] = [];
-  const chordsDir = `${ROOT}jazz/chords`;
-  for await (const entry of walk(chordsDir, { exts: [".md"], maxDepth: 4 })) {
-    if (entry.isFile) files.push({ path: entry.path });
-  }
-  return files;
+  return (await listChordSurfaceFiles({ stable: trackedOnly })).map((
+    chord,
+  ) => ({
+    path: chord.fullPath,
+    relPath: chord.relPath,
+  }));
 }
 
 async function validateChords(
@@ -168,7 +161,7 @@ async function validateChords(
   const result = emptyResult();
   for (const entry of await listChordFiles(trackedOnly)) {
     result.total++;
-    const path = entry.path.replace(ROOT, "");
+    const path = entry.relPath;
     const grandfathered = isGrandfathered(entry.path, grandfatherBefore);
     try {
       const content = await Deno.readTextFile(entry.path);

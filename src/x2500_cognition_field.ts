@@ -16,11 +16,11 @@ import {
   scanEcosystem,
   type ThoughtPhase,
 } from "./x0020_scanner_core.ts";
+import { listChordSurfaceFiles } from "./x2F21_chord_surface.ts";
 
 const REC_PATH = "src/x5288_cognition_recommendation.latest.myc.json";
 const OUT_JSON = "src/x2588_cognition_field.latest.myc.json";
 const OUT_MD = "src/x2588_cognition_field.latest.myc.md";
-const CHORDS_DIR = "jazz/chords";
 
 const PHASES: ThoughtPhase[] = [
   "raw-fantasy",
@@ -105,26 +105,30 @@ async function readRecommendations(): Promise<Recommendation[]> {
 }
 
 async function readPastReceipts(limit = 5): Promise<PastReceipt[]> {
-  const entries: { name: string; mtime: number }[] = [];
+  const entries: { relPath: string; fullPath: string; mtime: number }[] = [];
   try {
-    for await (const entry of Deno.readDir(CHORDS_DIR)) {
-      if (!entry.isFile || !entry.name.endsWith(".md")) continue;
-      const stat = await Deno.stat(join(CHORDS_DIR, entry.name));
-      entries.push({ name: entry.name, mtime: stat.mtime?.getTime() ?? 0 });
+    for (const chord of await listChordSurfaceFiles()) {
+      const stat = await Deno.stat(chord.fullPath);
+      entries.push({
+        relPath: chord.relPath,
+        fullPath: chord.fullPath,
+        mtime: stat.mtime?.getTime() ?? 0,
+      });
     }
   } catch {
     return [];
   }
 
-  entries.sort((a, b) => b.mtime - a.mtime || b.name.localeCompare(a.name));
+  entries.sort((a, b) =>
+    b.mtime - a.mtime || b.relPath.localeCompare(a.relPath)
+  );
   const receipts: PastReceipt[] = [];
   for (const entry of entries) {
-    const path = join(CHORDS_DIR, entry.name);
-    const body = await Deno.readTextFile(path);
+    const body = await Deno.readTextFile(entry.fullPath);
     const fm = parseFrontmatter(body);
     if (!fm || !fm.receipt || fm.receipt === "none") continue;
     receipts.push({
-      path,
+      path: entry.relPath,
       tension: String(fm.tension ?? "unspecified"),
       actor: String(fm.actor ?? "unknown"),
       receipt: String(fm.receipt),

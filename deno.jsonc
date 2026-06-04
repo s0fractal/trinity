@@ -42,7 +42,8 @@
     "chord:block": "deno run --allow-net src/x4001_chord.ts block",
     "chord:init": "deno run --allow-net src/x4001_chord.ts init",
     "chord:translate": "deno run --allow-net src/x4001_chord.ts translate",
-    "chord:parse": "deno run --allow-net src/x4001_chord.ts parse"
+    "chord:parse": "deno run --allow-net src/x4001_chord.ts parse",
+    "chord:migrate": "deno run --allow-read --allow-write src/x8F20_chord_migrate.ts"
   },
   "fmt": {
     "exclude": [

@@ -5,7 +5,7 @@
 //   void_infinity-1.09 (PRIMARY: builds the index of decisions from chords)
 //   harmony_emergence+0.33 (systemic coherence)
 // placement_policy: axis
-// intent: parse chords in jazz/chords/ and generate src/x2B88_decisions.myc.md ledger
+// intent: parse dynamic chord surfaces and generate src/x2B88_decisions.myc.md ledger
 // maturity: active
 // horizon: none
 // skill_tag: decisions
@@ -18,14 +18,15 @@ import {
 } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { formatGeneratedFile } from "./x0012_generated_format.ts";
 import { getGitTrackedFiles } from "./x8F10_external_surfaces_core.ts";
+import { listChordSurfaceFiles } from "./x2F21_chord_surface.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
-const CHORDS_DIR = join(ROOT, "jazz", "chords");
 const OUTPUT_PATH = join(HERE, "x2B88_decisions.myc.md");
 
 export interface DecisionEntry {
   filename: string;
+  rel_path: string;
   id: string;
   category: "proposal" | "decision" | "receipt" | "critique" | "other";
   title: string;
@@ -74,6 +75,7 @@ interface DecisionNextAction {
   kind: "proposal" | "critique" | "ritual_receipt";
   id: string;
   filename: string;
+  rel_path: string;
   author: string;
   timestamp: string;
   reason: string;
@@ -85,6 +87,7 @@ interface DecisionNextAction {
 interface DecisionTriageQueueItem {
   id: string;
   filename: string;
+  rel_path: string;
   title: string;
   author: string;
   timestamp: string;
@@ -145,6 +148,13 @@ function timestampFromFilename(filename: string): string | null {
   );
   if (legacyMatch) {
     const [_, y, mo, d, h, mi, s] = legacyMatch;
+    return `${y}-${mo}-${d}T${h}:${mi}:${s}Z`;
+  }
+  const topologicalTimeMatch = filename.match(
+    /^x[0-9A-Fa-f]{4}_t(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})_/,
+  );
+  if (topologicalTimeMatch) {
+    const [_, y, mo, d, h, mi, s] = topologicalTimeMatch;
     return `${y}-${mo}-${d}T${h}:${mi}:${s}Z`;
   }
   const hexBlockMatch = filename.match(/^x[0-9A-Fa-f]{4}_(\d+)_/);
@@ -232,6 +242,7 @@ function chooseNextAction(entries: DecisionEntry[]): DecisionNextAction | null {
       kind: firstUnresolved.category === "critique" ? "critique" : "proposal",
       id: firstUnresolved.id,
       filename: firstUnresolved.filename,
+      rel_path: firstUnresolved.rel_path,
       author: firstUnresolved.author,
       timestamp: firstUnresolved.timestamp,
       reason: firstUnresolved.resolution_hint ??
@@ -239,7 +250,7 @@ function chooseNextAction(entries: DecisionEntry[]): DecisionNextAction | null {
       triage_stance: triage?.stance ?? null,
       risks: triage?.risks ?? [],
       suggested_command:
-        `Review jazz/chords/${firstUnresolved.filename}; do not implement before deciding whether to revalidate, supersede, compost, or close it with a decision/receipt chord that references this id.`,
+        `Review chord ${firstUnresolved.id}; do not implement before deciding whether to revalidate, supersede, compost, or close it with a decision/receipt chord that references this flat id.`,
     };
   }
 
@@ -258,6 +269,7 @@ function chooseNextAction(entries: DecisionEntry[]): DecisionNextAction | null {
       kind: "ritual_receipt",
       id: ritualReceipt.id,
       filename: ritualReceipt.filename,
+      rel_path: ritualReceipt.rel_path,
       author: ritualReceipt.author,
       timestamp: ritualReceipt.timestamp,
       reason: ritualReceipt.evidence_strength === "none"
@@ -266,7 +278,7 @@ function chooseNextAction(entries: DecisionEntry[]): DecisionNextAction | null {
       triage_stance: null,
       risks: [],
       suggested_command:
-        `Review jazz/chords/${ritualReceipt.filename} and add strong artifact evidence or mark it as narrative-only.`,
+        `Review chord ${ritualReceipt.id} and add strong artifact evidence or mark it as narrative-only.`,
     };
   }
 
@@ -313,7 +325,8 @@ function receiptEvidenceMarkers(
   if (
     /^claim_kind:\s*review-(?:ack|aye)\b/im.test(fmText) &&
     /^hears:\s*$/im.test(fmText) &&
-    /^\s+-\s+(?:jazz\/chords\/)?[^\n]+\.md\s*$/im.test(fmText)
+    /^\s+-\s+(?:"?)(?:(?:jazz\/chords|src)\/)?x?[a-zA-Z0-9_.:-][^"\n]*(?:"?)\s*$/im
+      .test(fmText)
   ) {
     markers.push("review_acknowledgement");
   }
@@ -330,8 +343,9 @@ function receiptEvidenceMarkers(
     markers.push("artifact_reference");
   }
 
-  const hasTargetChord = /Target chord:\s*`?jazz\/chords\/[^`\n]+\.md`?/i
-    .test(raw.text);
+  const hasTargetChord =
+    /Target chord:\s*(?:\r?\n\s*)?`?(?:(?:jazz\/chords|src)\/)?x?[a-zA-Z0-9_.:-][^`\n]*`?/i
+      .test(raw.text);
   const hasComparison = /^##\s+Comparison\b/im.test(raw.text);
   const hasPreSnapshot = /^##\s+Pre-snapshot\b/im.test(raw.text);
   const hasPostSnapshot = /^##\s+Post-snapshot\b/im.test(raw.text);
@@ -373,6 +387,7 @@ function buildTriageQueue(entries: DecisionEntry[]): DecisionTriageQueueItem[] {
     .map((e) => ({
       id: e.id,
       filename: e.filename,
+      rel_path: e.rel_path,
       title: e.title,
       author: e.author,
       timestamp: e.timestamp,
@@ -380,7 +395,7 @@ function buildTriageQueue(entries: DecisionEntry[]): DecisionTriageQueueItem[] {
       risks: e.proposal_triage!.risks,
       reason: e.proposal_triage!.reason,
       suggested_command:
-        `Review jazz/chords/${e.filename}; decide revalidate, supersede, compost, close, or only then implement.`,
+        `Review chord ${e.id}; decide revalidate, supersede, compost, close, or only then implement.`,
     }));
 }
 
@@ -421,7 +436,7 @@ topic: "triage-${slug}"
 closes_hash: "${item.id}"
 decision_outcome: "historical" # choose: revalidate | superseded | historical | implemented
 resolved_by:
-  - "jazz/chords/${item.filename}"
+  - "${item.id}"
 falsifiers:
   - "If ./t decisions --next --json still selects ${item.id} after this chord is tracked, the closure reference is invalid."
 suggested_commands:
@@ -433,7 +448,7 @@ expected_after_running:
 
 # Decision: triage ${item.title}
 
-Target: \`jazz/chords/${item.filename}\`
+Target: \`${item.id}\`
 Target id: \`${item.id}\`
 Triage stance: \`${item.stance}\`
 Risks: ${risks}
@@ -462,11 +477,22 @@ Use \`implemented\` only with concrete artifact evidence.
   };
 }
 
+function chordHref(relPath: string, filename: string): string {
+  return relPath.startsWith("src/") ? `./${filename}` : `../${relPath}`;
+}
+
+function chordLink(
+  item: Pick<DecisionEntry, "filename" | "rel_path">,
+  label = item.filename,
+): string {
+  return `[${label}](${chordHref(item.rel_path, item.filename)})`;
+}
+
 // Recover author from chord filename when frontmatter omits speaker/actor/
 // author_identity/voice. Three filename conventions are supported:
 //   ISO timestamp:  2026-05-23T164713Z-<voice>-<slug>.md
 //   legacy compact: 20260509-103147-<voice>-<slug>.md
-//   hex-block:      xNNNN_<height>_<voice>_<slug>.md
+//   hex-block:      xNNNN_<height-or-timestamp>_<voice>_<slug>.md
 // Returns null when no clear voice token is present.
 function extractAuthorFromFilename(filename: string): string | null {
   // ISO timestamp + voice
@@ -476,7 +502,9 @@ function extractAuthorFromFilename(filename: string): string | null {
   m = filename.match(/^\d{8}-\d{6}-([a-z][a-z0-9]*?)(?:-|\.)/);
   if (m) return m[1];
   // Hex-block + voice
-  m = filename.match(/^x[0-9A-Fa-f]{4}_\d+_([a-z][a-z0-9]*?)_/);
+  m = filename.match(
+    /^x[0-9A-Fa-f]{4}_(?:\d+|t\d{14})_([a-z][a-z0-9-]*?)_/,
+  );
   if (m) return m[1];
   return null;
 }
@@ -485,9 +513,10 @@ function classifyCategory(
   filename: string,
   fm: Record<string, any>,
 ): DecisionEntry["category"] {
-  const name = filename.toLowerCase();
+  const name = String(fm.id ?? filename).toLowerCase();
   const claimKind = String(fm.claim_kind ?? "").toLowerCase();
   const mode = String(fm.mode ?? "").toLowerCase();
+  const stance = String(fm.stance ?? "").toUpperCase();
 
   // Frontmatter is authoritative when an explicit claim_kind or mode is set.
   // Filename heuristics are fallback only — otherwise a receipt chord whose
@@ -495,10 +524,21 @@ function classifyCategory(
   // gets misclassified as the closed item.
   // Both claim_kind and mode are honored symmetrically — new-form chords
   // (x<coord>_<block>_<voice>_<slug>.md) typically declare mode: only.
-  if (claimKind === "critique" || mode === "critique") return "critique";
-  if (claimKind === "proposal" || mode === "proposal") return "proposal";
-  if (claimKind === "receipt" || mode === "receipt") return "receipt";
-  if (claimKind === "decision" || mode === "decision") return "decision";
+  if (claimKind === "critique" || mode === "critique" || stance === "NAY") {
+    return "critique";
+  }
+  if (claimKind === "proposal" || mode === "proposal" || stance === "PROPOSE") {
+    return "proposal";
+  }
+  if (claimKind === "receipt" || mode === "receipt" || stance === "RECEIPT") {
+    return "receipt";
+  }
+  if (
+    claimKind === "decision" || mode === "decision" ||
+    stance === "AYE" || stance === "TWEAK" || stance === "DECISION"
+  ) {
+    return "decision";
+  }
 
   if (name.includes("critique") || name.includes("nay")) return "critique";
   if (name.includes("proposal")) return "proposal";
@@ -713,10 +753,11 @@ function extractResolvedBy(text: string, fm: Record<string, any>): string[] {
 
 async function scanChordFile(
   filename: string,
+  fullPath: string,
+  relPath: string,
 ): Promise<(DecisionEntry & { mentions: string[]; text: string }) | null> {
   try {
-    const path = join(CHORDS_DIR, filename);
-    const text = await Deno.readTextFile(path);
+    const text = await Deno.readTextFile(fullPath);
     const fm = parseFrontmatter(text);
 
     let title = filename;
@@ -793,7 +834,7 @@ async function scanChordFile(
       }
     }
     const wordMatches = text.matchAll(
-      /\b(\d{4}-\d{2}-\d{2}T\d{6}Z|\d{8}-\d{6}|x\d{4}_\d+_[a-z0-9_-]+)\b/g,
+      /\b(\d{4}-\d{2}-\d{2}T\d{6}Z|\d{8}-\d{6}|x[0-9A-Fa-f]{4}_(?:\d+|t\d{14})_[a-z0-9_.-]+)\b/g,
     );
     for (const m of wordMatches) {
       const matchWord = m[1];
@@ -804,6 +845,7 @@ async function scanChordFile(
 
     return {
       filename,
+      rel_path: relPath,
       id: String(fm.id ?? filename.replace(/\.md$/, "")),
       category,
       title,
@@ -839,6 +881,21 @@ async function scanChordFile(
   } catch {
     return null;
   }
+}
+
+function chordAliases(
+  entry: Pick<DecisionEntry, "filename" | "id">,
+): Set<string> {
+  const stem = entry.filename.replace(/(?:\.myc)?\.md$/, "");
+  return new Set([
+    entry.filename,
+    entry.id,
+    `${entry.id}.md`,
+    `${entry.id}.myc.md`,
+    stem,
+    `${stem}.md`,
+    `${stem}.myc.md`,
+  ]);
 }
 
 function validateResolvedByEntries(
@@ -941,21 +998,29 @@ export async function collectDecisions(stable: boolean): Promise<{
   const rawEntries: (DecisionEntry & { mentions: string[]; text: string })[] =
     [];
 
-  for await (const entry of Deno.readDir(CHORDS_DIR)) {
-    if (!entry.isFile || !entry.name.endsWith(".md")) continue;
-
-    const relPath = `jazz/chords/${entry.name}`;
-    if (stable && !trackedFiles.has(relPath)) {
-      continue;
-    }
-
-    const record = await scanChordFile(entry.name);
+  const chordFiles = await listChordSurfaceFiles({
+    stable,
+    tracked: trackedFiles,
+  });
+  for (const chordFile of chordFiles) {
+    const record = await scanChordFile(
+      chordFile.name,
+      chordFile.fullPath,
+      chordFile.relPath,
+    );
     if (record) {
       rawEntries.push(record);
     }
   }
 
   rawEntries.sort((a, b) => a.filename.localeCompare(b.filename));
+  const chordIdSet = new Set(
+    rawEntries.flatMap((r) => [
+      r.filename,
+      r.id,
+      r.filename.replace(/(?:\.myc)?\.md$/, ""),
+    ]),
+  );
 
   const entries: DecisionEntry[] = rawEntries.map((raw) => {
     // Find later decisions or receipts that close or mention this entry.
@@ -970,21 +1035,22 @@ export async function collectDecisions(stable: boolean): Promise<{
         (other.category === "decision" || other.category === "receipt"),
     );
 
+    const aliases = chordAliases(raw);
+    const hasMention = (
+      other: DecisionEntry & { mentions: string[]; text: string },
+    ) => other.mentions.some((mention) => aliases.has(mention));
+
     let has_receipt = laterClosures.some(
       (other) =>
-        other.closes_hash === raw.id ||
-        other.closes_hash === raw.filename ||
+        (other.closes_hash !== null && aliases.has(other.closes_hash)) ||
         (raw.closes_hash !== null && other.closes_hash === raw.closes_hash) ||
-        other.mentions.includes(raw.filename) ||
-        other.mentions.includes(raw.id + ".md") ||
-        other.mentions.includes(raw.id),
+        hasMention(other),
     );
 
     let is_unresolved = false;
     let resolution_hint: string | null = null;
 
     // Validate resolved_by against tracked files / chord-ID universe.
-    const chordIdSet = new Set(rawEntries.map((r) => r.filename));
     const validation = validateResolvedByEntries(
       raw.resolved_by,
       raw.resolution_status,
@@ -1035,11 +1101,8 @@ export async function collectDecisions(stable: boolean): Promise<{
         );
         const critique_resolved = laterCritiqueClosures.some(
           (other) =>
-            other.closes_hash === raw.id ||
-            other.closes_hash === raw.filename ||
-            other.mentions.includes(raw.filename) ||
-            other.mentions.includes(raw.id + ".md") ||
-            other.mentions.includes(raw.id),
+            (other.closes_hash !== null && aliases.has(other.closes_hash)) ||
+            hasMention(other),
         );
         is_unresolved = !critique_resolved;
         if (is_unresolved) {
@@ -1082,6 +1145,7 @@ export async function collectDecisions(stable: boolean): Promise<{
 
     return {
       filename: raw.filename,
+      rel_path: raw.rel_path,
       id: raw.id,
       category: raw.category,
       title: raw.title,
@@ -1220,12 +1284,29 @@ async function main() {
       ? triage_queue.find((e) => e.id === target || e.filename === target)
       : triage_queue[0];
     if (!item) {
-      console.error(
-        target
-          ? `No triage queue item found for --id=${target}`
-          : "No proposal triage queue item found.",
-      );
-      Deno.exit(1);
+      const reason = target
+        ? `No triage queue item found for --id=${target}`
+        : "No proposal triage queue item found.";
+      if (wantJson) {
+        console.log(JSON.stringify(
+          {
+            type: "decisions_triage_template",
+            position: "8/B",
+            action: "triage_template",
+            empty: true,
+            reason,
+            target_id: null,
+            target_filename: null,
+            suggested_filename: null,
+            template: null,
+          },
+          null,
+          2,
+        ));
+      } else {
+        console.log(reason);
+      }
+      return;
     }
     const author = argValue(args, "author") ?? "codex";
     const scaffold = buildTriageTemplate(item, author);
@@ -1235,6 +1316,7 @@ async function main() {
           type: "decisions_triage_template",
           position: "8/B",
           action: "triage_template",
+          empty: false,
           ...scaffold,
         },
         null,
@@ -1271,7 +1353,7 @@ async function main() {
   lines.push(`# Substrate decision ledger`);
   lines.push(``);
   lines.push(
-    `*Generated index of proposals, decisions, receipts, critiques, and open/closed tasks extracted from the chord trail in jazz/chords/.*`,
+    `*Generated index of proposals, decisions, receipts, critiques, and open/closed tasks extracted from dynamic chord surfaces.*`,
   );
   lines.push(``);
   lines.push(`## Summary`);
@@ -1320,7 +1402,7 @@ async function main() {
   } else {
     for (const item of triage_queue) {
       lines.push(
-        `| ${item.stance} | [${item.filename}](../jazz/chords/${item.filename}) | ${
+        `| ${item.stance} | ${chordLink(item)} | ${
           item.risks.join(", ") || "none"
         } |`,
       );
@@ -1341,7 +1423,9 @@ async function main() {
   } else {
     for (const e of unresolved) {
       lines.push(
-        `- **${e.category.toUpperCase()}**: [${e.title}](../jazz/chords/${e.filename}) (by *${e.author}* — *${e.resolution_hint}*)`,
+        `- **${e.category.toUpperCase()}**: ${
+          chordLink(e, e.title)
+        } (by *${e.author}* — *${e.resolution_hint}*)`,
       );
     }
     lines.push(``);
@@ -1366,7 +1450,9 @@ async function main() {
   } else {
     for (const e of invalidClosures) {
       lines.push(
-        `- **${e.category.toUpperCase()}** [${e.filename}](../jazz/chords/${e.filename}) marked \`${e.resolution_status}\`:`,
+        `- **${e.category.toUpperCase()}** ${
+          chordLink(e)
+        } marked \`${e.resolution_status}\`:`,
       );
       for (const err of e.resolution_validation_errors) {
         lines.push(`  - ${err}`);
@@ -1375,10 +1461,10 @@ async function main() {
     lines.push(``);
   }
 
-  const allOpenDebts: { task: string; chord: string }[] = [];
+  const allOpenDebts: { task: string; chord: DecisionEntry }[] = [];
   for (const e of entries) {
     for (const d of e.open_debts) {
-      allOpenDebts.push({ task: d, chord: e.filename });
+      allOpenDebts.push({ task: d, chord: e });
     }
   }
 
@@ -1390,7 +1476,7 @@ async function main() {
   } else {
     for (const d of allOpenDebts) {
       lines.push(
-        `- [ ] ${d.task} (in [${d.chord}](../jazz/chords/${d.chord}))`,
+        `- [ ] ${d.task} (in ${chordLink(d.chord)})`,
       );
     }
     lines.push(``);
@@ -1406,7 +1492,9 @@ async function main() {
   );
   for (const e of entries) {
     lines.push(
-      `| [${e.filename}](../jazz/chords/${e.filename}) | **${e.category.toUpperCase()}** | ${e.author} | ${e.open_debts.length} | ${e.closed_items.length} |`,
+      `| ${
+        chordLink(e)
+      } | **${e.category.toUpperCase()}** | ${e.author} | ${e.open_debts.length} | ${e.closed_items.length} |`,
     );
   }
   lines.push(``);
@@ -1427,7 +1515,7 @@ async function main() {
     lines.push(``);
   } else {
     for (const e of detailedEntries) {
-      lines.push(`### [${e.filename}](../jazz/chords/${e.filename})`);
+      lines.push(`### ${chordLink(e)}`);
       lines.push(
         `- **Category**: \`${e.category.toUpperCase()}\` (Author: \`${e.author}\`)`,
       );

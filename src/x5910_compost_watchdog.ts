@@ -29,7 +29,7 @@ import { listContracts } from "./x4F00_contracts.ts";
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
 const CONTRACTS_DIR = join(ROOT, "contracts");
-const CHORDS_DIR = join(ROOT, "jazz", "chords");
+const CHORDS_DIR = join(ROOT, "src");
 
 async function findUniqueCompostPath(filename: string): Promise<string> {
   const cleanBase = filename.replace(/\.md$/, "").replace(
@@ -103,7 +103,8 @@ async function main() {
       if (composted.length > 0) {
         // Generate receipt chord
         const block = getBlockHeight();
-        const chordFilename = `x2600_${block}_antigravity_compost_receipt.md`;
+        const chordFilename =
+          `x2600_${block}_antigravity_compost-receipt.myc.md`;
         const chordPath = join(CHORDS_DIR, chordFilename);
 
         const chordContent = `---

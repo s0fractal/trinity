@@ -85,6 +85,7 @@ const POSITION_TO_FILE: Record<string, string> = {
   "8/D": "x8D00_roadmap_gen.ts",
   "8/E": "x8E00_probes_gen.ts",
   "8/F": "x8F00_external_surfaces_gen.ts",
+  "8/F2": "x8F20_chord_migrate.ts",
   "9/4A": "x94A0_myc_capabilities.ts",
   "9/6C": "x96C0_myc_protocol_audit.ts",
   "9/2E": "x92E0_myc_status.ts",

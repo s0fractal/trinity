@@ -7,7 +7,7 @@
 //   mirror_apex-0.20   (sub-archetype A: apex direction; "self" pole)
 //   completion_frontier+0.40 (projection terminus, where traces crystallize)
 // placement_policy: axis
-// intent: scan src/x8A*_voice_*.myc.json + jazz/chords (tracked-only), render per-voice recall digest + substrate voices state
+// intent: scan src/x8A*_voice_*.myc.json + dynamic chord surfaces (tracked-only), render per-voice recall digest + substrate voices state
 // maturity: active
 // horizon: detect closure of cowitness rounds via reference traversal (v1 deferred per Codex review)
 //
@@ -20,7 +20,7 @@
 //
 // Reads (READ-ONLY, tracked-only via git ls-files):
 //   src/x8A*_voice_*.myc.json — authored voice profiles (identity / physics)
-//   jazz/chords/*.md       — chord history for stigmergic trace
+//   chord surface files     — chord history for stigmergic trace
 //
 // Renders (all gitignored):
 //   src/x8888_<voice>_memory.myc.md     per-voice recall projection
@@ -47,16 +47,17 @@ import {
   relative,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { formatGeneratedFile } from "./x0012_generated_format.ts";
+import { listChordSurfaceFiles } from "./x2F21_chord_surface.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const TRINITY_ROOT = dirname(HERE);
 const VOICES_DIR = HERE;
-const CHORDS_DIR = join(TRINITY_ROOT, "jazz", "chords");
 const OUT = HERE;
 
 const VOICE_FILE_RE = /^x8A[0-9A-Fa-f]{2}_voice_([^.]+)\.myc\.json$/;
 const OLD_FORM = /^(\d{4}-\d{2}-\d{2}T\d{6}Z)-([a-z]+)-(.+)\.md$/;
-const NEW_FORM = /^x([0-9A-Fa-f]{4})_(\d+)_([a-z0-9-]+)_(.+)\.md$/;
+const NEW_FORM =
+  /^x([0-9A-Fa-f]{4})_(\d+|t\d{14})_([a-z0-9-]+)_(.+?)(?:\.myc)?\.md$/;
 // Proto-form: pre-T-Z bootstrap timestamps (May 9-10 2026), Z optional.
 const PROTO_FORM =
   /^(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})Z?-([a-z]+)-(.+)\.md$/;
@@ -78,10 +79,12 @@ function wallclockToEpoch(ts: string): number {
   return Math.floor(Date.UTC(+y, +mo - 1, +d, +h, +mi, +s) / 1000);
 }
 
-async function gitTrackedSet(subdir: string): Promise<Set<string>> {
+async function gitTrackedSet(subdir?: string): Promise<Set<string>> {
   try {
+    const args = ["-C", TRINITY_ROOT, "ls-files"];
+    if (subdir) args.push(subdir);
     const proc = new Deno.Command("git", {
-      args: ["-C", TRINITY_ROOT, "ls-files", subdir],
+      args,
       stdout: "piped",
       stderr: "piped",
     });
@@ -106,6 +109,7 @@ async function sha256Hex(bytes: Uint8Array): Promise<string> {
 
 interface Chord {
   filename: string;
+  rel_path: string;
   sort_key: number;
   voice: string;
   topic: string;
@@ -185,18 +189,21 @@ async function loadVoices(): Promise<VoiceProfile[]> {
   return out.sort((a, b) => a.identity.localeCompare(b.identity));
 }
 
+function sortKeyFromBlockKey(blockKey: string): number {
+  if (/^\d+$/.test(blockKey)) return blockHeightToEpoch(parseInt(blockKey, 10));
+  const m = /^t(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/.exec(blockKey);
+  if (!m) return 0;
+  const [, y, mo, d, h, mi, s] = m;
+  return Math.floor(Date.UTC(+y, +mo - 1, +d, +h, +mi, +s) / 1000);
+}
+
 async function loadChords(): Promise<Chord[]> {
-  const tracked = await gitTrackedSet("jazz/chords");
+  const tracked = await gitTrackedSet();
   const out: Chord[] = [];
   let skipped = 0;
-  for await (const entry of Deno.readDir(CHORDS_DIR)) {
-    if (!entry.isFile || !entry.name.endsWith(".md")) continue;
-    const relPath = `jazz/chords/${entry.name}`;
-    if (!tracked.has(relPath)) {
-      skipped++;
-      continue;
-    }
-    const bytes = await Deno.readFile(join(CHORDS_DIR, entry.name));
+  const chordFiles = await listChordSurfaceFiles({ stable: true, tracked });
+  for (const chordFile of chordFiles) {
+    const bytes = await Deno.readFile(chordFile.fullPath);
     const text = new TextDecoder().decode(bytes);
 
     let voice = "", topic = "";
@@ -204,20 +211,20 @@ async function loadChords(): Promise<Chord[]> {
     let bucket_coord: string | null = null;
     let sort_key = 0;
 
-    const newM = NEW_FORM.exec(entry.name);
+    const newM = NEW_FORM.exec(chordFile.name);
     if (newM) {
       bucket_coord = newM[1].toUpperCase();
       voice = newM[3].toLowerCase();
-      sort_key = blockHeightToEpoch(parseInt(newM[2], 10));
+      sort_key = sortKeyFromBlockKey(newM[2]);
       topic = newM[4];
     } else {
-      const oldM = OLD_FORM.exec(entry.name);
+      const oldM = OLD_FORM.exec(chordFile.name);
       if (oldM) {
         voice = oldM[2].toLowerCase();
         sort_key = wallclockToEpoch(oldM[1]);
         topic = oldM[3];
       } else {
-        const protoM = PROTO_FORM.exec(entry.name);
+        const protoM = PROTO_FORM.exec(chordFile.name);
         if (protoM) {
           const [, y, mo, d, h, mi, s] = protoM;
           voice = protoM[7].toLowerCase();
@@ -240,7 +247,8 @@ async function loadChords(): Promise<Chord[]> {
     }
 
     out.push({
-      filename: entry.name,
+      filename: chordFile.name,
+      rel_path: chordFile.relPath,
       sort_key,
       voice,
       topic,
@@ -266,7 +274,7 @@ function voiceSourceFile(voice: VoiceProfile): SourceFile {
 }
 function chordSourceFile(c: Chord): SourceFile {
   return {
-    path: relative(TRINITY_ROOT, join(CHORDS_DIR, c.filename)),
+    path: c.rel_path,
     hash: `sha256:${c.source_hash}`,
     size: c.source_size,
   };

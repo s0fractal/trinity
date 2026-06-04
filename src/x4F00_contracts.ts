@@ -50,6 +50,10 @@ import {
   join,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { parallel, pipe, tryOr } from "./x0030_compose.ts";
+import {
+  chordDateFromName,
+  listChordSurfaceFiles,
+} from "./x2F21_chord_surface.ts";
 import { loadLifecycleFamily } from "./x4011_contract_status_compiler.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
@@ -156,24 +160,6 @@ async function loadAddedAtCache(): Promise<Map<string, Date>> {
   return _addedAtCache;
 }
 
-// Extract chord's date from its filename (newer x<coord>_<block>_ or
-// older YYYY-MM-DDTHHMMSSZ form). Null if neither matches.
-function chordDateFromFilename(filename: string): Date | null {
-  const newM = /^x[0-9A-Fa-f]{4}_(\d+)_/.exec(filename);
-  if (newM) {
-    // Block height → approx epoch: ref 950000 = 2026-05-19T00:00Z
-    const block = parseInt(newM[1], 10);
-    const epoch = 1779148800 + (block - 950000) * 600;
-    return new Date(epoch * 1000);
-  }
-  const oldM = /^(\d{4})-(\d{2})-(\d{2})T(\d{2})(\d{2})(\d{2})Z/.exec(filename);
-  if (oldM) {
-    const [, y, mo, d, h, mi, s] = oldM;
-    return new Date(Date.UTC(+y, +mo - 1, +d, +h, +mi, +s));
-  }
-  return null;
-}
-
 // Extract distinct contract filenames mentioned in chord body.
 function contractRefsInChord(body: string): Set<string> {
   const out = new Set<string>();
@@ -220,12 +206,10 @@ async function loadCowitnessCache(): Promise<
       string,
       { count: number; latestDaysAgo: number | null }
     >();
-    const chordsDir = join(ROOT, "jazz", "chords");
     const now = Date.now();
-    for await (const entry of Deno.readDir(chordsDir)) {
-      if (!entry.isFile || !entry.name.endsWith(".md")) continue;
-      const text = await Deno.readTextFile(join(chordsDir, entry.name));
-      const chordDate = chordDateFromFilename(entry.name);
+    for (const chord of await listChordSurfaceFiles()) {
+      const text = await Deno.readTextFile(chord.fullPath);
+      const chordDate = chordDateFromName(chord.name);
       for (const contractFile of contractRefsInChord(text)) {
         recordCowitness(out, contractFile, chordDate, now);
       }

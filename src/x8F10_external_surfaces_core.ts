@@ -11,6 +11,7 @@ import {
   relative,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { parseFrontmatter } from "./x0020_scanner_core.ts";
+import { listChordSurfaceFiles } from "./x2F21_chord_surface.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
@@ -22,6 +23,7 @@ export interface SurfaceEntry {
     | "compatibility"
     | "experimental"
     | "live_chord"
+    | "dynamic_topology"
     | "local_cache"
     | "compost";
   canonical_status:
@@ -373,31 +375,29 @@ async function scanProbes(includeVolatile: boolean): Promise<SurfaceEntry[]> {
 
 async function scanChords(includeVolatile: boolean): Promise<SurfaceEntry[]> {
   const out: SurfaceEntry[] = [];
-  const dir = join(ROOT, "jazz", "chords");
-  try {
-    for await (const entry of Deno.readDir(dir)) {
-      if (entry.isFile && entry.name.endsWith(".md")) {
-        const relPath = `jazz/chords/${entry.name}`;
-        const fullPath = join(dir, entry.name);
+  const chordFiles = await listChordSurfaceFiles();
+  for (const chordFile of chordFiles) {
+    const migrated = chordFile.surface === "topological";
+    const item: SurfaceEntry = {
+      surface: chordFile.relPath,
+      category: "dynamic_topology",
+      canonical_status: migrated ? "canonical" : "migration_input",
+      canonical_target: migrated
+        ? chordFile.relPath
+        : "src/xNNNN_<block>_<voice>_<slug>.myc.md",
+      next_action: migrated ? "keep" : "migrate_to_src",
+      blocked_by: migrated
+        ? ""
+        : "run ./t chord-migrate --write-plan, then --apply after review",
+    };
 
-        const item: SurfaceEntry = {
-          surface: relPath,
-          category: "live_chord",
-          canonical_status: "canonical",
-          canonical_target: "",
-          next_action: "keep",
-          blocked_by: "",
-        };
-
-        if (includeVolatile) {
-          const { size, mtime } = await getFileInfo(fullPath);
-          item.size = size;
-          item.mtime = mtime;
-        }
-        out.push(item);
-      }
+    if (includeVolatile) {
+      const { size, mtime } = await getFileInfo(chordFile.fullPath);
+      item.size = size;
+      item.mtime = mtime;
     }
-  } catch { /* ignore */ }
+    out.push(item);
+  }
   return out;
 }
 
@@ -705,6 +705,7 @@ export function summarizeExternalSurfaces(
     compatibility: 0,
     experimental: 0,
     live_chord: 0,
+    dynamic_topology: 0,
     local_cache: 0,
     compost: 0,
   };

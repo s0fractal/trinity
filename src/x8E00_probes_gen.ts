@@ -38,7 +38,7 @@
 //   probes/<probe>/README.md  (status banner)
 //   probes/<probe>/SPEC.md    (status section, fallback)
 //   src/x*.ts                 (filename inference)
-//   jazz/chords/*.md          (chord references — finds chords mentioning
+//   chord surface files       (chord references — finds chords mentioning
 //                              probes/<probe>/; surfaces activity per probe)
 //
 // Renders (gitignored):
@@ -57,6 +57,10 @@ import {
   join,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { formatGeneratedFile } from "./x0012_generated_format.ts";
+import {
+  chordBlockHeightFromName,
+  listChordSurfaceFiles,
+} from "./x2F21_chord_surface.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const TRINITY_ROOT = dirname(HERE);
@@ -243,26 +247,10 @@ async function findExactOrganForProbe(
 // `probes/<probe-name>/`. Returns deduplicated list sorted by block height ascending.
 interface ChordSource {
   filename: string;
+  relPath: string;
   body: string;
   hash: string;
   size: number;
-}
-
-const CHORD_NEW_FORM = /^x[0-9A-Fa-f]{4}_(\d+)_/;
-const CHORD_OLD_FORM = /^(\d{4})-(\d{2})-(\d{2})T(\d{2})(\d{2})(\d{2})Z/;
-// Proto-form: pre-T-Z bootstrap timestamps from May 9-10 2026, Z optional.
-const CHORD_PROTO_FORM = /^(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})Z?/;
-const CHORD_BLOCK_REF = 950000;
-const CHORD_EPOCH_REF = 1779148800; // 2026-05-19T00:00:00Z
-
-function chordBlockHeight(filename: string): number {
-  const n = CHORD_NEW_FORM.exec(filename);
-  if (n) return parseInt(n[1], 10);
-  const o = CHORD_OLD_FORM.exec(filename) ?? CHORD_PROTO_FORM.exec(filename);
-  if (!o) return 0;
-  const [, y, mo, d, h, mi, s] = o;
-  const epoch = Math.floor(Date.UTC(+y, +mo - 1, +d, +h, +mi, +s) / 1000);
-  return CHORD_BLOCK_REF + Math.floor((epoch - CHORD_EPOCH_REF) / 600);
 }
 
 function isReceiptFilename(filename: string): boolean {
@@ -271,16 +259,13 @@ function isReceiptFilename(filename: string): boolean {
 }
 
 async function loadChordSources(): Promise<ChordSource[]> {
-  const tracked = await gitTrackedSet("jazz/chords");
   const out: ChordSource[] = [];
-  const chordsDir = join(TRINITY_ROOT, "jazz", "chords");
-  for await (const entry of Deno.readDir(chordsDir)) {
-    if (!entry.isFile || !entry.name.endsWith(".md")) continue;
-    if (!tracked.has(`jazz/chords/${entry.name}`)) continue;
-    const bytes = await Deno.readFile(join(chordsDir, entry.name));
+  for (const chord of await listChordSurfaceFiles({ stable: true })) {
+    const bytes = await Deno.readFile(chord.fullPath);
     const text = new TextDecoder().decode(bytes);
     out.push({
-      filename: entry.name,
+      filename: chord.name,
+      relPath: chord.relPath,
       body: text,
       hash: await sha256Hex(bytes),
       size: bytes.length,
@@ -300,7 +285,7 @@ function findChordRefs(
     if (!c.body.includes(needle)) continue;
     refs.push({
       filename: c.filename,
-      block_height: chordBlockHeight(c.filename),
+      block_height: chordBlockHeightFromName(c.filename),
       is_receipt: isReceiptFilename(c.filename),
     });
     matchedFilenames.push(c.filename);
@@ -501,7 +486,7 @@ function renderProbesIndex(
   );
   lines.push(``);
   lines.push(
-    `*Status detected from (highest first): README banner → SPEC top banner → SPEC \`## Status\` section → filename inference → default unknown. Each probe also surfaces chord activity (count, latest, latest receipt) from cross-axis scan of \`jazz/chords/\`.*`,
+    `*Status detected from (highest first): README banner → SPEC top banner → SPEC \`## Status\` section → filename inference → default unknown. Each probe also surfaces chord activity (count, latest, latest receipt) from the flat chord topology.*`,
   );
   lines.push(``);
 
@@ -620,7 +605,7 @@ function parseArgs(argv: string[]): Args {
 
 function chordSource(c: ChordSource): SourceFile {
   return {
-    path: `jazz/chords/${c.filename}`,
+    path: c.relPath,
     hash: `sha256:${c.hash}`,
     size: c.size,
   };

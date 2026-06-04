@@ -60,6 +60,7 @@ src/x8D00_*_roadmap.manifest.json
 # tracked src/ organs (for filename inference).
 src/x8E00_probes.myc.md
 src/x8E00_probes.manifest.json
+src/x8F20_chord_migration_plan.myc.json
 
 # Auto-generated chord-form effects dictionary — `t lexicon`.
 # Empirical statistics over jazz/chords/. Regenerable on demand.

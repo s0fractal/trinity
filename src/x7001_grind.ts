@@ -152,7 +152,7 @@ if (import.meta.main) {
   console.log(`nonce:       ${result.nonce}`);
   console.log(`attempts:    ${result.attempts}`);
   console.log(`elapsed_ms:  ${elapsed.toFixed(1)}`);
-  console.log(`target_dir:  jazz/chords/${targetFolder(result.hexPrefix)}/`);
+  console.log(`target_dir:  src/`);
 
   if (inPlace) {
     Deno.writeTextFileSync(path, result.content);

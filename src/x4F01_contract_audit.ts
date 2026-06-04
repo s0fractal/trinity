@@ -331,7 +331,7 @@ function renderTable(entries: AuditEntry[]): void {
 }
 
 const SCOPE_NOTE =
-  "scan scope: trinity src/*.ts + chords/* + contracts/* + submodules myc/omega/liquid (git grep, .gitignore-respecting). Caveat: cross-substrate references typically use concept names rather than full filenames; filename scan will miss those. A contract reported as needs_review may still be semantically referenced under a different identifier.";
+  "scan scope: trinity src/*.ts + chord surface + contracts/* + submodules myc/omega/liquid (git grep, .gitignore-respecting). Caveat: cross-substrate references typically use concept names rather than full filenames; filename scan will miss those. A contract reported as needs_review may still be semantically referenced under a different identifier.";
 
 if (import.meta.main) {
   const args = Deno.args;

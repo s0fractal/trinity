@@ -26,7 +26,7 @@
 //
 // Reads (READ-ONLY, tracked-only via git ls-files for trinity sources):
 //   src/x*.ts                            organ horizons
-//   jazz/chords/*.md                     chord pressure
+//   chord surface files                  chord pressure
 //   src/x8A*_voice_*.myc.json            voice profiles
 //   <substrate>/src/x8D00_*projection*.myc.md
 //                                        substrate-owned roadmap projections
@@ -57,11 +57,11 @@ import {
   relative,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { formatGeneratedFile } from "./x0012_generated_format.ts";
+import { listChordSurfaceFiles } from "./x2F21_chord_surface.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const TRINITY_ROOT = dirname(HERE);
 const SRC = HERE;
-const CHORDS_DIR = join(TRINITY_ROOT, "jazz", "chords");
 const VOICES_DIR = HERE;
 const OUT = HERE;
 
@@ -71,7 +71,8 @@ const SUBSTRATE_DIRS = ["omega", "liquid", "myc"];
 const PROJECTION_RE = /^x8D00_.*projection.*\.myc\.md$/;
 const HEADER_RE = /^\/\/\s*(\w+):\s*(.+?)\s*$/;
 const OLD_FORM = /^(\d{4}-\d{2}-\d{2}T\d{6}Z)-([a-z]+)-(.+)\.md$/;
-const NEW_FORM = /^x([0-9A-Fa-f]{4})_(\d+)_([a-z0-9-]+)_(.+)\.md$/;
+const NEW_FORM =
+  /^x([0-9A-Fa-f]{4})_(\d+|t\d{14})_([a-z0-9-]+)_(.+?)(?:\.myc)?\.md$/;
 // Proto-form: earliest chord naming (May 9-10 2026) before T-Z separator
 // was adopted. Two sub-variants: no-suffix (May 9) and Z-suffix (May 10).
 // Captures bootstrap chords that OLD_FORM misses.
@@ -93,6 +94,13 @@ const REFERENCE_EPOCH_SEC = 1779148800; // 2026-05-19T00:00:00Z
 function blockHeightToEpoch(b: number): number {
   return REFERENCE_EPOCH_SEC + (b - REFERENCE_BLOCK) * 600;
 }
+function sortKeyFromBlockKey(blockKey: string): number {
+  if (/^\d+$/.test(blockKey)) return blockHeightToEpoch(parseInt(blockKey, 10));
+  const m = /^t(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/.exec(blockKey);
+  if (!m) return 0;
+  const [, y, mo, d, h, mi, s] = m;
+  return Math.floor(Date.UTC(+y, +mo - 1, +d, +h, +mi, +s) / 1000);
+}
 
 function wallclockToEpoch(ts: string): number {
   const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2})(\d{2})(\d{2})Z$/.exec(ts);
@@ -101,10 +109,12 @@ function wallclockToEpoch(ts: string): number {
   return Math.floor(Date.UTC(+y, +mo - 1, +d, +h, +mi, +s) / 1000);
 }
 
-async function gitTrackedSet(subdir: string): Promise<Set<string>> {
+async function gitTrackedSet(subdir?: string): Promise<Set<string>> {
   try {
+    const args = ["-C", TRINITY_ROOT, "ls-files"];
+    if (subdir) args.push(subdir);
     const proc = new Deno.Command("git", {
-      args: ["-C", TRINITY_ROOT, "ls-files", subdir],
+      args,
       stdout: "piped",
       stderr: "piped",
     });
@@ -252,6 +262,7 @@ interface OrganHorizon {
 }
 interface ChordRef {
   filename: string;
+  rel_path: string;
   sort_key: number;
   voice: string;
   topic: string;
@@ -388,33 +399,31 @@ async function loadOrganHorizons(): Promise<OrganHorizon[]> {
 async function loadChords(): Promise<
   { chords: ChordRef[]; bodies: Map<string, string> }
 > {
-  const tracked = await gitTrackedSet("jazz/chords");
+  const tracked = await gitTrackedSet();
   const out: ChordRef[] = [];
   const bodies = new Map<string, string>();
-  for await (const entry of Deno.readDir(CHORDS_DIR)) {
-    if (!entry.isFile || !entry.name.endsWith(".md")) continue;
-    const relPath = `jazz/chords/${entry.name}`;
-    if (!tracked.has(relPath)) continue;
-    const bytes = await Deno.readFile(join(CHORDS_DIR, entry.name));
+  const chordFiles = await listChordSurfaceFiles({ stable: true, tracked });
+  for (const chordFile of chordFiles) {
+    const bytes = await Deno.readFile(chordFile.fullPath);
     const text = new TextDecoder().decode(bytes);
 
     let voice = "", topic = "";
     let mode: string | null = null, stance: string | null = null;
     let sort_key = 0;
 
-    const newM = NEW_FORM.exec(entry.name);
+    const newM = NEW_FORM.exec(chordFile.name);
     if (newM) {
       voice = newM[3].toLowerCase();
-      sort_key = blockHeightToEpoch(parseInt(newM[2], 10));
+      sort_key = sortKeyFromBlockKey(newM[2]);
       topic = newM[4];
     } else {
-      const oldM = OLD_FORM.exec(entry.name);
+      const oldM = OLD_FORM.exec(chordFile.name);
       if (oldM) {
         voice = oldM[2].toLowerCase();
         sort_key = wallclockToEpoch(oldM[1]);
         topic = oldM[3];
       } else {
-        const protoM = PROTO_FORM.exec(entry.name);
+        const protoM = PROTO_FORM.exec(chordFile.name);
         if (protoM) {
           const [, y, mo, d, h, mi, s] = protoM;
           voice = protoM[7].toLowerCase();
@@ -440,7 +449,8 @@ async function loadChords(): Promise<
     }
 
     out.push({
-      filename: entry.name,
+      filename: chordFile.name,
+      rel_path: chordFile.relPath,
       sort_key,
       voice,
       topic,
@@ -451,7 +461,7 @@ async function loadChords(): Promise<
       closes: closesObj,
       closes_hash: closesHash,
     });
-    bodies.set(entry.name, text);
+    bodies.set(chordFile.name, text);
   }
   out.sort((a, b) => a.sort_key - b.sort_key);
   return { chords: out, bodies };
@@ -665,7 +675,7 @@ function organSource(o: OrganHorizon): SourceFile {
 }
 function chordSource(c: ChordRef): SourceFile {
   return {
-    path: `jazz/chords/${c.filename}`,
+    path: c.rel_path,
     hash: `sha256:${c.source_hash}`,
     size: c.source_size,
   };

@@ -849,7 +849,7 @@ function renderSkillsBootstrap(
     `- Read before write: \`./t status\`, \`./t audit\`, and relevant \`src/x?888_*.myc.md\`.`,
   );
   lines.push(
-    `- Cross-bucket or governance-shaped moves should leave a chord with falsifier in \`jazz/chords/\`.`,
+    `- Cross-bucket or governance-shaped moves should leave a flat \`src/xNNNN_<block-or-time>_<voice>_<slug>.myc.md\` chord with falsifier.`,
   );
   lines.push(
     `- Destructive git/file operations require explicit architect instruction.`,

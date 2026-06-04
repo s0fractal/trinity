@@ -11,12 +11,13 @@
 import { ensureDir } from "https://deno.land/std@0.224.0/fs/ensure_dir.ts";
 import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { sha256Hex } from "./x4010_hash.ts";
+import { listChordSurfaceFiles } from "./x2F21_chord_surface.ts";
 
 /**
  * recommend_to_chord
  *
  * Reads the latest CognitiveRecommendationDescriptor JSON and writes one
- * chord per recommendation into jazz/chords/.
+ * chord per recommendation into the flat src chord topology.
  *
  * Scene model: a chord is a self-contained sonic gesture. It may have
  * heard zero, one, or many prior chords (or non-ontological inputs like
@@ -30,7 +31,7 @@ import { sha256Hex } from "./x4010_hash.ts";
  */
 
 const REC_PATH = "src/x5288_cognition_recommendation.latest.myc.json";
-const CHORDS_DIR = "jazz/chords";
+const CHORDS_DIR = "src";
 const ACTOR = "trinity-cognition";
 
 const REPO_OCTET: Record<string, string> = {
@@ -92,14 +93,13 @@ function slugify(text: string, maxLen = 60): string {
 }
 
 function chordTimestamp(): string {
-  // YYYYMMDD-HHMMSS in UTC
+  // YYYYMMDDHHMMSS in UTC
   const d = new Date();
   const pad = (n: number) => String(n).padStart(2, "0");
   return [
     d.getUTCFullYear(),
     pad(d.getUTCMonth() + 1),
     pad(d.getUTCDate()),
-    "-",
     pad(d.getUTCHours()),
     pad(d.getUTCMinutes()),
     pad(d.getUTCSeconds()),
@@ -124,15 +124,14 @@ async function chordFingerprint(
 }
 
 async function findChordByFingerprint(fp: string): Promise<string | null> {
-  try {
-    for await (const entry of Deno.readDir(CHORDS_DIR)) {
-      if (!entry.isFile || !entry.name.endsWith(".md")) continue;
-      const body = await Deno.readTextFile(join(CHORDS_DIR, entry.name));
+  for (const chord of await listChordSurfaceFiles()) {
+    try {
+      const body = await Deno.readTextFile(chord.fullPath);
       const match = body.match(/^fingerprint:\s*"?([^"\n]+)"?$/m);
-      if (match && match[1] === fp) return entry.name;
+      if (match && match[1] === fp) return chord.relPath;
+    } catch (e) {
+      if (!(e instanceof Deno.errors.NotFound)) throw e;
     }
-  } catch (e) {
-    if (!(e instanceof Deno.errors.NotFound)) throw e;
   }
   return null;
 }
@@ -262,7 +261,7 @@ async function main() {
 
     const topic = `${rec.repo}-${slugify(rec.vector, 24)}`;
     const chordId = `${ts}-${ACTOR}-${topic}`;
-    const filename = `${chordId}.md`;
+    const filename = `x5300_t${ts}_${ACTOR}_${topic}.myc.md`;
     const path = join(CHORDS_DIR, filename);
 
     const body = buildChord(rec, chordId, hears, fp);

@@ -27,7 +27,7 @@
 //   - `t status --json` for composite health + audit summary + submodules
 //   - src/x*.ts file scan for organ count grouped by bucket
 //   - src/x8A*_voice_*.myc.json count for voice registry
-//   - jazz/chords/*.md count for chord trail size
+//   - chord surface count for chord trail size
 //   - probes/* dir count for experimental frontier
 //   - `t contracts --json` for sunset/draft summary
 //   - `t capabilities validate --json` for affordance/schema linkage health
@@ -40,6 +40,7 @@ import {
   join,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { parallel, tryOr } from "./x0030_compose.ts";
+import { listChordSurfaceFiles } from "./x2F21_chord_surface.ts";
 import {
   chooseNextMigration,
   collectExternalSurfaces,
@@ -110,18 +111,15 @@ async function scanChords(): Promise<{
   total: number;
   newForm: number;
 }> {
-  const dir = join(ROOT, "jazz", "chords");
   let total = 0;
   let newForm = 0;
   let tracked = 0;
   let local = 0;
   const gitTracked = await getGitTrackedFiles();
-  for await (const entry of Deno.readDir(dir)) {
-    if (!entry.isFile || !entry.name.endsWith(".md")) continue;
+  for (const chord of await listChordSurfaceFiles()) {
     total++;
-    if (/^x[0-9A-Fa-f]{4}_\d+_/.test(entry.name)) newForm++;
-    const relPath = `jazz/chords/${entry.name}`;
-    if (gitTracked.has(relPath)) {
+    if (/^x[0-9A-Fa-f]{4}_(?:\d+|t\d{14})_/.test(chord.name)) newForm++;
+    if (gitTracked.has(chord.relPath)) {
       tracked++;
     } else {
       local++;

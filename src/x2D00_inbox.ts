@@ -17,7 +17,7 @@
 //
 // inbox — what a voice has been addressed to without yet responding
 //
-// Reads jazz/chords/*.md frontmatter. For a given voice:
+// Reads dynamic chord surface frontmatter. For a given voice:
 //   1. Find all chords with this voice in `addressed_to` field
 //   2. Find all chords by this voice that hear those chords (via `hears`)
 //   3. Inbox = addressed-to set MINUS hears-by-voice set
@@ -34,14 +34,15 @@
 // Glossary words: inbox, pending, backlog, очікує, скринька
 
 import {
+  basename,
   dirname,
   fromFileUrl,
   join,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { listChordSurfaceFiles } from "./x2F21_chord_surface.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
-const CHORDS_DIR = join(ROOT, "jazz", "chords");
 
 // ── types ──────────────────────────────────────────────────────────────────
 
@@ -80,6 +81,12 @@ interface InboxNextAction {
   response_hint: string;
 }
 
+interface ChordRecord {
+  fm: ChordFm;
+  path: string;
+  aliases: Set<string>;
+}
+
 // ── helpers ────────────────────────────────────────────────────────────────
 
 function normSpeaker(s: string): string {
@@ -97,11 +104,39 @@ function normSpeaker(s: string): string {
 }
 
 function extractChordId(hearsEntry: string): string | null {
-  // Accept "jazz/chords/2026-...md", "2026-...md", "2026-..." (no .md)
+  // Accept path refs and flat refs:
+  // "jazz/chords/2026-...md", "src/xNNNN_...myc.md", "xNNNN_...", etc.
   let s = hearsEntry.trim();
   if (s.startsWith("jazz/chords/")) s = s.slice("jazz/chords/".length);
-  if (s.endsWith(".md")) s = s.slice(0, -3);
+  if (s.startsWith("src/")) s = s.slice("src/".length);
+  if (s.endsWith(".myc.md")) s = s.slice(0, -7);
+  else if (s.endsWith(".md")) s = s.slice(0, -3);
   return s || null;
+}
+
+function chordAliases(fm: ChordFm, path: string): Set<string> {
+  const file = basename(path);
+  const raw = [
+    fm.id,
+    path,
+    file,
+    file.replace(/(?:\.myc)?\.md$/, ""),
+  ].filter((v): v is string => typeof v === "string" && v.length > 0);
+  const aliases = new Set<string>();
+  for (const value of raw) {
+    const normalized = extractChordId(value);
+    if (normalized) aliases.add(normalized);
+  }
+  return aliases;
+}
+
+function createdFromPath(path: string): string | null {
+  const file = basename(path);
+  const m = /^x[0-9A-Fa-f]{4}_t(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})_/
+    .exec(file);
+  if (!m) return null;
+  const [, y, mo, d, h, mi, s] = m;
+  return `${y}-${mo}-${d}T${h}:${mi}:${s}Z`;
 }
 
 function parseYamlFrontmatter(text: string): ChordFm | null {
@@ -162,18 +197,21 @@ function parseYamlFrontmatter(text: string): ChordFm | null {
   return fm as ChordFm;
 }
 
-async function loadAllChords(): Promise<{ fm: ChordFm; path: string }[]> {
-  const out: { fm: ChordFm; path: string }[] = [];
+async function loadAllChords(): Promise<ChordRecord[]> {
+  const out: ChordRecord[] = [];
   try {
-    for await (const entry of Deno.readDir(CHORDS_DIR)) {
-      if (!entry.isFile || !entry.name.endsWith(".md")) continue;
-      const path = join("jazz", "chords", entry.name);
-      const text = await Deno.readTextFile(join(CHORDS_DIR, entry.name));
+    const chordFiles = await listChordSurfaceFiles();
+    for (const chordFile of chordFiles) {
+      const path = chordFile.relPath;
+      const text = await Deno.readTextFile(chordFile.fullPath);
       const fm = parseYamlFrontmatter(text);
       if (!fm) continue;
-      if (!fm.id) fm.id = entry.name.replace(/\.md$/, "");
+      if (!fm.id) {
+        fm.id = chordFile.name.replace(/\.myc\.md$/, "").replace(/\.md$/, "");
+      }
+      if (!fm.created) fm.created = createdFromPath(path) ?? undefined;
       if (fm.speaker) fm.speaker = normSpeaker(fm.speaker);
-      out.push({ fm, path });
+      out.push({ fm, path, aliases: chordAliases(fm, path) });
     }
   } catch {
     /* directory missing */
@@ -185,7 +223,7 @@ async function loadAllChords(): Promise<{ fm: ChordFm; path: string }[]> {
 
 function computeInbox(
   voice: string,
-  chords: { fm: ChordFm; path: string }[],
+  chords: ChordRecord[],
 ): InboxItem[] {
   // Set of chord_ids that this voice has heard (responded to).
   const heard = new Set<string>();
@@ -200,11 +238,11 @@ function computeInbox(
 
   // Filter to chords addressed to this voice that voice has not heard.
   const items: InboxItem[] = [];
-  for (const { fm, path } of chords) {
+  for (const { fm, path, aliases } of chords) {
     if (!Array.isArray(fm.addressed_to)) continue;
     const addrs = fm.addressed_to.map((a) => normSpeaker(String(a)));
     if (!addrs.includes(voice)) continue;
-    if (fm.id && heard.has(fm.id)) continue;
+    if ([...aliases].some((alias) => heard.has(alias))) continue;
     // Skip if composted, rejected, superseded, or deprecated
     if (
       fm.status === "compost" ||
@@ -235,7 +273,7 @@ function computeInbox(
   return items;
 }
 
-function listAllVoices(chords: { fm: ChordFm; path: string }[]): string[] {
+function listAllVoices(chords: ChordRecord[]): string[] {
   const voices = new Set<string>();
   for (const { fm } of chords) {
     if (fm.speaker) voices.add(fm.speaker);

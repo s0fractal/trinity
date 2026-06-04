@@ -15,6 +15,10 @@ import { ensureDir } from "https://deno.land/std@0.224.0/fs/ensure_dir.ts";
 import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { sha256Hex } from "./x4010_hash.ts";
 import { type FileProfile, scanEcosystem } from "./x0020_scanner_core.ts";
+import {
+  listChordSurfaceFiles,
+  normalizeChordRef,
+} from "./x2F21_chord_surface.ts";
 
 /**
  * chord_play
@@ -41,7 +45,7 @@ import { type FileProfile, scanEcosystem } from "./x0020_scanner_core.ts";
  * Spec: contracts/CHORD_CLAIM.v0.1.md (TRIAL added in v0.2 amendment)
  */
 
-const CHORDS_DIR = "jazz/chords";
+const CHORDS_DIR = "src";
 
 interface ChordFrontmatter {
   chord?: { primary?: string; secondary?: string[] };
@@ -318,9 +322,9 @@ async function emitReceiptChord(opts: {
   const chordHash = `h.${(await sha256Hex(chordContent)).slice(0, 12)}`;
 
   const block = await fetchBtcBlock().catch(() => null);
-  const blockStr = block ? String(block) : chordTimestamp();
-  const slug = (fm.tension ?? "unspecified").slice(0, 40);
-  const filename = `x7500_${blockStr}_trinity_${slug}-receipt.md`;
+  const blockStr = block ? String(block) : `t${chordTimestamp()}`;
+  const slug = slugify(fm.tension ?? "unspecified").slice(0, 40);
+  const filename = `x7500_${blockStr}_trinity_${slug}-receipt.myc.md`;
   const path = join(CHORDS_DIR, filename);
 
   const lines: string[] = [];
@@ -383,11 +387,35 @@ function chordTimestamp(): string {
     d.getUTCFullYear(),
     pad(d.getUTCMonth() + 1),
     pad(d.getUTCDate()),
-    "-",
     pad(d.getUTCHours()),
     pad(d.getUTCMinutes()),
     pad(d.getUTCSeconds()),
   ].join("");
+}
+
+function slugify(text: string): string {
+  return text.toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "") || "unspecified";
+}
+
+async function resolveChordPath(ref: string): Promise<string> {
+  try {
+    const stat = await Deno.stat(ref);
+    if (stat.isFile) return ref;
+  } catch { /* try flat chord surface below */ }
+
+  const normalized = normalizeChordRef(ref);
+  for (const chord of await listChordSurfaceFiles()) {
+    if (
+      chord.relPath === ref ||
+      chord.name === ref ||
+      chord.flatId === normalized ||
+      chord.name === `${normalized}.md` ||
+      chord.name === `${normalized}.myc.md`
+    ) return chord.fullPath;
+  }
+  return ref;
 }
 
 async function main() {
@@ -398,7 +426,7 @@ async function main() {
     console.error("usage: deno task chord:play <chord-file> [--execute]");
     Deno.exit(1);
   }
-  const chordPath = positional[0];
+  const chordPath = await resolveChordPath(positional[0]);
   const body = await Deno.readTextFile(chordPath);
   const { fm } = parseFrontmatter(body);
   if (!fm) {

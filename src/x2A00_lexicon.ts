@@ -19,7 +19,7 @@
 //
 // lexicon — empirical chord-form dictionary
 //
-// Reads all chords in jazz/chords/, aggregates statistics per
+// Reads all dynamic chord surfaces, aggregates statistics per
 // (chord.primary, mode-normalized) pattern. Skips patterns with <2
 // occurrences (weak signal). Outputs both human table and JSON sidecar
 // for cross-axis consumption by cognition:recommend.
@@ -41,14 +41,15 @@ import {
   fromFileUrl,
   join,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { listChordSurfaceFiles } from "./x2F21_chord_surface.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const TRINITY_ROOT = dirname(HERE);
-const CHORDS_DIR = join(TRINITY_ROOT, "jazz", "chords");
 const OUT = HERE;
 
 // Chord filename forms — reusing patterns established in x8D00/x8A00/x8E00.
-const NEW_FORM = /^x([0-9A-Fa-f]{4})_(\d+)_([a-z0-9-]+)_(.+)\.md$/;
+const NEW_FORM =
+  /^x([0-9A-Fa-f]{4})_(\d+|t\d{14})_([a-z0-9-]+)_(.+?)(?:\.myc)?\.md$/;
 const OLD_FORM = /^(\d{4}-\d{2}-\d{2}T\d{6}Z)-([a-z]+)-(.+)\.md$/;
 const PROTO_FORM =
   /^(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})Z?-([a-z]+)-(.+)\.md$/;
@@ -134,7 +135,16 @@ function epochFromCompactUtc(
 
 function blockHeight(filename: string): number {
   const n = NEW_FORM.exec(filename);
-  if (n) return parseInt(n[2], 10);
+  if (n) {
+    if (/^\d+$/.test(n[2])) return parseInt(n[2], 10);
+    const t = n[2].match(
+      /^t(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/,
+    );
+    if (!t) return 0;
+    const [, y, mo, d, h, mi, s] = t;
+    const epoch = epochFromCompactUtc(y, mo, d, h, mi, s);
+    return 950000 + Math.floor((epoch - 1779148800) / 600);
+  }
   const o = OLD_FORM.exec(filename);
   if (o) {
     const compact = o[1].match(
@@ -154,9 +164,12 @@ function blockHeight(filename: string): number {
   return 0;
 }
 
-async function loadChord(filename: string): Promise<Chord | null> {
+async function loadChord(
+  filename: string,
+  fullPath: string,
+): Promise<Chord | null> {
   try {
-    const text = await Deno.readTextFile(join(CHORDS_DIR, filename));
+    const text = await Deno.readTextFile(fullPath);
     const fm = FRONTMATTER_RE.exec(text);
     if (!fm) return null;
     const fmText = fm[1];
@@ -179,9 +192,9 @@ async function loadChord(filename: string): Promise<Chord | null> {
 
 async function loadAllChords(): Promise<Chord[]> {
   const out: Chord[] = [];
-  for await (const entry of Deno.readDir(CHORDS_DIR)) {
-    if (!entry.isFile || !entry.name.endsWith(".md")) continue;
-    const c = await loadChord(entry.name);
+  const chordFiles = await listChordSurfaceFiles();
+  for (const chordFile of chordFiles) {
+    const c = await loadChord(chordFile.name, chordFile.fullPath);
     if (c) out.push(c);
   }
   return out;
@@ -377,7 +390,7 @@ function buildReceipt(
     entries,
     bigrams: bigramEntries,
     topology:
-      "reads jazz/chords/ → groups by (chord.primary, mode-normalized) → emits surfaced patterns + bigram transitions (occurrences ≥ 2)",
+      "reads dynamic chord surfaces → groups by (chord.primary, mode-normalized) → emits surfaced patterns + bigram transitions (occurrences >= 2)",
     synonyms: ["lexicon", "dictionary", "словник", "accumulated-effects"],
   };
 }

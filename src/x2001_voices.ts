@@ -13,7 +13,7 @@
 //
 // voices — surface synthetic voice profiles from chord history
 //
-// Reads jazz/chords/*.md, parses frontmatter, aggregates per voice.
+// Reads chord surface files, parses frontmatter, aggregates per voice.
 // Comfort field is synthetic (historical average) unless a voice record
 // exists in glossary with self-declared slot 11.
 //
@@ -30,10 +30,10 @@ import {
   fromFileUrl,
   join,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { listChordSurfaceFiles } from "./x2F21_chord_surface.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
-const CHORDS_DIR = join(ROOT, "jazz", "chords");
 
 // ── types ──────────────────────────────────────────────────────────────────
 
@@ -202,9 +202,8 @@ function parseDipole(d: unknown): number[] {
 async function loadChords(): Promise<{ fm: ChordFm; body: string }[]> {
   const entries: { fm: ChordFm; body: string }[] = [];
   const aliases = await loadHandleAliases();
-  for await (const entry of Deno.readDir(CHORDS_DIR)) {
-    if (!entry.isFile || !entry.name.endsWith(".md")) continue;
-    const text = await Deno.readTextFile(join(CHORDS_DIR, entry.name));
+  for (const chord of await listChordSurfaceFiles()) {
+    const text = await Deno.readTextFile(chord.fullPath);
     const parsed = parseYamlFrontmatter(text);
     if (!parsed) continue;
     const fm = parsed.fm as ChordFm;
@@ -212,7 +211,7 @@ async function loadChords(): Promise<{ fm: ChordFm; body: string }[]> {
     // as id fallback. Required: SOME speaker/voice identifier.
     const rawSpeaker = fm.speaker ?? fm.voice;
     if (!rawSpeaker) continue;
-    if (!fm.id) fm.id = entry.name.replace(/\.md$/, "");
+    if (!fm.id) fm.id = chord.flatId;
     fm.speaker = normSpeaker(String(rawSpeaker), aliases);
     entries.push({ fm, body: parsed.body });
   }

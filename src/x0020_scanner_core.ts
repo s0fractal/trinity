@@ -205,7 +205,12 @@ export async function analyzeFile(
   if (isLiquid && content.includes("ρ:") && content.includes("Σ\n")) {
     profile.L3_schema_valid = true;
   } else if (fm) {
-    const isChord = path.replace(/\\/g, "/").includes("jazz/chords/");
+    const normalizedPath = path.replace(/\\/g, "/");
+    const filename = normalizedPath.split("/").pop() ?? normalizedPath;
+    const isChord = normalizedPath.includes("jazz/chords/") ||
+      /^x[0-9A-Fa-f]{4}_(?:\d+|t\d{14})_[a-z0-9-]+_.+\.myc\.md$/.test(
+        filename,
+      );
     if (isChord) {
       const required = ["id", "speaker", "chord", "mode", "claim"];
       if (required.every((field) => field in fm)) {

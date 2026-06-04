@@ -35,10 +35,10 @@ import {
   fromFileUrl,
   join,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { listChordSurfaceFiles } from "./x2F21_chord_surface.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
-const CHORDS_DIR = join(ROOT, "jazz", "chords");
 
 function isoDateOnly(d: Date): string {
   return d.toISOString().slice(0, 10);
@@ -79,10 +79,11 @@ async function readBlockHeightFromFrontmatter(
 
 async function collectChordDates(): Promise<Date[]> {
   const dates: Date[] = [];
-  for await (const entry of Deno.readDir(CHORDS_DIR)) {
-    if (!entry.isFile || !entry.name.endsWith(".md")) continue;
+  const chordFiles = await listChordSurfaceFiles();
+  for (const chordFile of chordFiles) {
+    const name = chordFile.name;
     // ISO timestamp: 2026-05-23T164713Z-...
-    const isoMatch = entry.name.match(
+    const isoMatch = name.match(
       /^(\d{4})-(\d{2})-(\d{2})T(\d{2})(\d{2})(\d{2})Z/,
     );
     if (isoMatch) {
@@ -91,7 +92,7 @@ async function collectChordDates(): Promise<Date[]> {
       continue;
     }
     // Legacy compact: 20260509-103147-...
-    const legacyMatch = entry.name.match(
+    const legacyMatch = name.match(
       /^(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})/,
     );
     if (legacyMatch) {
@@ -102,7 +103,15 @@ async function collectChordDates(): Promise<Date[]> {
     // Hex-block convention: xNNNN_<block>_<voice>_<slug>.md — block in
     // filename is authoritative. Fall back to frontmatter bitcoin_block_height
     // when the filename slot isn't a valid integer.
-    const hexBlockMatch = entry.name.match(
+    const topologicalTimestampMatch = name.match(
+      /^x[0-9A-Fa-f]{4}_t(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})_/,
+    );
+    if (topologicalTimestampMatch) {
+      const [_, y, mo, d, h, mi, s] = topologicalTimestampMatch;
+      dates.push(new Date(`${y}-${mo}-${d}T${h}:${mi}:${s}Z`));
+      continue;
+    }
+    const hexBlockMatch = name.match(
       /^x[0-9A-Fa-f]{4}_(\d+)_/,
     );
     if (hexBlockMatch) {
@@ -114,7 +123,7 @@ async function collectChordDates(): Promise<Date[]> {
     }
     // Last resort: frontmatter scan (slower; used only for non-conforming files).
     const fmBlock = await readBlockHeightFromFrontmatter(
-      join(CHORDS_DIR, entry.name),
+      chordFile.fullPath,
     );
     if (fmBlock !== null) {
       dates.push(blockHeightToDate(fmBlock));

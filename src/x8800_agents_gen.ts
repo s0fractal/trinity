@@ -539,7 +539,7 @@ function renderAgentsBootstrap(
     `3. Read \`src/x8888_agents.myc.md\` for state, \`src/x8888_skills.myc.md\` or \`SKILLS.md\` for commands, \`src/x2888_voices_state.myc.md\` for voice routing, and \`src/x8D00_roadmap.myc.md\` for frontier tension.`,
   );
   lines.push(
-    `4. For proposal-shaped work, write a chord in \`jazz/chords/\` with a falsifier.`,
+    `4. For proposal-shaped work, write a flat \`src/xNNNN_<block-or-time>_<voice>_<slug>.myc.md\` chord with a falsifier.`,
   );
   lines.push(``);
   lines.push(`## Voice Resolution`);

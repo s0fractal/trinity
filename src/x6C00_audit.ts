@@ -199,6 +199,12 @@ function coordinateHexOf(relPath: string): string | null {
   return m ? m[1].toUpperCase() : null;
 }
 
+function isDynamicChordTopologyFile(name: string): boolean {
+  return /^x[0-9A-Fa-f]{4}_(?:\d+|t\d{14})_[a-z0-9-]+_.+\.myc\.md$/.test(
+    name,
+  );
+}
+
 function getRelativeImports(text: string): string[] {
   const imports = new Set<string>();
   const staticMatches = text.matchAll(
@@ -737,6 +743,7 @@ async function checkCoordinateUniqueness(root: string): Promise<{
   const coordMap: Record<string, string[]> = {};
   for (const file of files) {
     const name = file.split("/").pop() ?? "";
+    if (isDynamicChordTopologyFile(name)) continue;
     const m = name.match(/^x([0-9A-Fa-f]{4})_/);
     if (m) {
       const coord = `x${m[1].toLowerCase()}`;

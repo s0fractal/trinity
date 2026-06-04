@@ -32,6 +32,7 @@ import {
   fromFileUrl,
   join,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { listChordSurfaceFiles } from "./x2F21_chord_surface.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
@@ -42,7 +43,6 @@ const ROOT = dirname(HERE);
 const LOCK_FILE = join(ROOT, "src", "x7F88_daemon.lock");
 const LAST_CHECK_FILE = join(ROOT, "src", "x7F88_daemon.last-check");
 const LOG_FILE = join(ROOT, "src", "x7F01_daemon_invocations.ndjson");
-const CHORDS_DIR = join(ROOT, "jazz", "chords");
 
 // ── types ──────────────────────────────────────────────────────────────────
 
@@ -274,18 +274,16 @@ async function loadNewChords(
   since: number,
 ): Promise<{ fm: ChordFm; path: string; mtime: number }[]> {
   const entries: { fm: ChordFm; path: string; mtime: number }[] = [];
-  for await (const entry of Deno.readDir(CHORDS_DIR)) {
-    if (!entry.isFile || !entry.name.endsWith(".md")) continue;
-    const path = join(CHORDS_DIR, entry.name);
-    const stat = await Deno.stat(path);
+  for (const chord of await listChordSurfaceFiles()) {
+    const stat = await Deno.stat(chord.fullPath);
     const mtime = stat.mtime?.getTime() ?? 0;
     if (mtime <= since) continue;
-    const text = await Deno.readTextFile(path);
+    const text = await Deno.readTextFile(chord.fullPath);
     const parsed = parseYamlFrontmatter(text);
     if (!parsed) continue;
     const fm = parsed.fm as ChordFm;
-    if (!fm.id) continue;
-    entries.push({ fm, path, mtime });
+    if (!fm.id) fm.id = chord.flatId;
+    entries.push({ fm, path: chord.relPath, mtime });
   }
   entries.sort((a, b) => a.mtime - b.mtime);
   return entries;

@@ -75,6 +75,7 @@ const POSITION_TO_FILE: Record<string, string> = {
   "7/0": "x7001_grind.ts",
   "7/4": "x7400_export_clean.ts",
   "7/B": "x7B00_evidence.ts",
+  "7/C": "x7C00_author.ts",
   "7/D": "x7D00_verdict.ts",
   "7/E": "x7E00_anchor_prep.ts",
   "7/F": "x7F00_daemon.ts",

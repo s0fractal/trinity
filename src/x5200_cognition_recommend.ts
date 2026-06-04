@@ -13,7 +13,13 @@ import {
   scanEcosystem,
   type ThoughtPhase,
 } from "./x0020_scanner_core.ts";
+import { loadOrganHorizons, type OrganHorizon } from "./x8D00_roadmap_gen.ts";
 type RepoName = typeof REPOS[number];
+
+/** A declared organ horizon is "open" unless it begins with "none". */
+function isOpenHorizon(h: OrganHorizon): boolean {
+  return !/^none\b/i.test(h.horizon.trim());
+}
 
 interface RepoSignal {
   repo: RepoName;
@@ -141,7 +147,10 @@ function chooseDominantPhase(signal: RepoSignal): ThoughtPhase {
   return best;
 }
 
-function buildRecommendations(signal: RepoSignal): Recommendation[] {
+function buildRecommendations(
+  signal: RepoSignal,
+  openHorizons: OrganHorizon[],
+): Recommendation[] {
   const recs: Omit<Recommendation, "rank">[] = [];
   const rawPressure = ratio(
     signal.phases["raw-fantasy"] + signal.phases.hypothesis,
@@ -162,24 +171,34 @@ function buildRecommendations(signal: RepoSignal): Recommendation[] {
   const dirtyPressure = Math.min(1, signal.dirtyLines.length / 8);
 
   if (signal.repo === "trinity") {
+    // Pull from declared roadmap horizons rather than a hardcoded self-audit:
+    // the substrate already states where each organ thinks it should go next.
+    const top = openHorizons[0];
+    const horizonPressure = Math.min(1, openHorizons.length / 8);
     recs.push({
       repo: signal.repo,
       vector: VECTORS[signal.repo],
       phase_from: chooseDominantPhase(signal),
-      phase_to: "formula",
-      pressure: Math.max(rawPressure, hashGap, dirtyPressure),
-      action:
-        "Audit the newly emitted recommendation receipts for phase-transition coherence.",
-      rationale:
-        "Metacognitive loop now emits receipts; the next step is to verify if these receipts correctly map to observed state shifts.",
-      expected_receipt:
-        "A comparison report between recommendation.receipt.json and cognition.delta.json proving coherence.",
-      commands: [
-        "deno task cognition:snapshot",
-        "deno task cognition:delta",
-        "deno task cognition:recommend",
-        "deno task cognition:recommend-receipt",
-      ],
+      phase_to: "proposal",
+      pressure: Math.max(rawPressure, hashGap, dirtyPressure, horizonPressure),
+      action: top
+        ? `Pursue declared horizon x${top.coordinate}_${top.handle}: ${top.horizon}`
+        : "No open organ horizons — survey for the next frontier (t roadmap).",
+      rationale: top
+        ? `${openHorizons.length} organ horizon(s) are declared open in the roadmap; the substrate is pulling toward them. Top by coordinate: x${top.coordinate}_${top.handle} (${
+          top.maturity ?? "active"
+        }).`
+        : "All declared organ horizons are closed; recommend a survey/expedition to find the next frontier.",
+      expected_receipt: top
+        ? `A proposal or receipt chord advancing x${top.coordinate}_${top.handle} and refining or closing its horizon field.`
+        : "A survey receipt naming candidate next frontiers.",
+      commands: top
+        ? [
+          "./t roadmap",
+          "./t self",
+          `./t chord receipt --voice=VOICE --topic='advance ${top.handle}' --write`,
+        ]
+        : ["./t roadmap", "./t self"],
     });
   }
 
@@ -318,7 +337,11 @@ async function main() {
   }
   const timestamp = new Date().toISOString();
   const signalList = REPOS.map((repo) => signals[repo]);
-  const recommendations = signalList.flatMap(buildRecommendations)
+  const openHorizons = (await loadOrganHorizons())
+    .filter(isOpenHorizon)
+    .sort((a, b) => a.coordinate.localeCompare(b.coordinate));
+  const recommendations = signalList
+    .flatMap((s) => buildRecommendations(s, openHorizons))
     .sort((a, b) => b.pressure - a.pressure)
     .map((rec, index) => ({ ...rec, rank: index + 1 }));
 
@@ -328,9 +351,16 @@ async function main() {
     timestamp,
     basis: {
       scanner: "src/x0020_scanner_core.ts",
+      roadmap: "src/x8D00_roadmap_gen.ts (open organ horizons)",
       contract: "contracts/COGNITIVE_RECOMMENDATION.v0.1.md",
       git_status: "observed",
     },
+    open_horizons: openHorizons.map((h) => ({
+      coordinate: h.coordinate,
+      handle: h.handle,
+      horizon: h.horizon,
+      maturity: h.maturity ?? "active",
+    })),
     signals: signalList,
     recommendations,
   };

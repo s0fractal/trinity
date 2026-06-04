@@ -250,7 +250,7 @@ async function generatedBriefSource(
   }
 }
 
-interface OrganHorizon {
+export interface OrganHorizon {
   filename: string;
   coordinate: string;
   bucket: string;
@@ -361,7 +361,7 @@ function normalizedSha256Ref(value?: string | null): string | null {
   return `sha256:${hash.toLowerCase()}`;
 }
 
-async function loadOrganHorizons(): Promise<OrganHorizon[]> {
+export async function loadOrganHorizons(): Promise<OrganHorizon[]> {
   const tracked = await gitTrackedSet("src");
   const out: OrganHorizon[] = [];
   for await (const entry of Deno.readDir(SRC)) {

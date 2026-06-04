@@ -216,13 +216,20 @@ async function verifyGates(wt: string): Promise<Verdict> {
     await run(tShim, [g, "--stable"], wt);
   }
   const { out: st } = await run("git", ["status", "--short"], wt);
-  // deno.jsonc was stripped by us; deno.lock is mutated as a side-effect of
-  // running deno — neither is part of the authored change. Exclude + discard.
-  const drifted = st.trim().split("\n").map((l) => l.slice(3).trim()).filter(
-    (f) => f && f !== "deno.jsonc" && f !== "deno.lock",
+  const allChanged = st.trim().split("\n").map((l) => l.slice(3).trim()).filter(
+    Boolean,
   );
+  // Only genuine trinity-core projection drift (src/*) is committed. deno.jsonc
+  // (we stripped it), deno.lock (deno side-effect), and submodule-dependent
+  // regen artifacts (e.g. x9000/ myc-shadow manifests, which the worktree
+  // cannot regenerate without the myc submodule) are NOT the authored change —
+  // discard them so the harness never produces a destructive side-effect.
+  const drifted = allChanged.filter((f) =>
+    f.startsWith("src/") && f !== "deno.jsonc" && f !== "deno.lock"
+  );
+  const discard = allChanged.filter((f) => !drifted.includes(f));
   await restore();
-  await run("git", ["checkout", "--", "deno.lock"], wt);
+  for (const f of discard) await run("git", ["checkout", "--", f], wt);
   if (drifted.length > 0) {
     for (const f of drifted) await run("git", ["add", f], wt);
     await run("git", [

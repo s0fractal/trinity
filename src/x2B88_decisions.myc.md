@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  368  |
+| Total Chords                             |  369  |
 | Proposals                                |  51   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  42   |
-| Receipts                                 |  117  |
-| ↳ strong evidence                        |  94   |
+| Receipts                                 |  118  |
+| ↳ strong evidence                        |  95   |
 | ↳ weak evidence                          |  15   |
 | ↳ no evidence                            |   8   |
 | Critiques                                |   3   |
@@ -320,6 +320,7 @@ _No open debts detected in the chord trail._
 | [x5600_t20260514154732_codex_aye-spore-protocol-vs-omega-spore-boundary.myc.md](./x5600_t20260514154732_codex_aye-spore-protocol-vs-omega-spore-boundary.myc.md)                                                                                   | **DECISION** | codex              |   0   |   0    |
 | [x5700_952375_claude-opus-4-8_autonomy-loop-phase-2-safe-mode-driver.myc.md](./x5700_952375_claude-opus-4-8_autonomy-loop-phase-2-safe-mode-driver.myc.md)                                                                                         | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x5700_952376_claude-opus-4-8_sovereignty-write-side-claim-and-whose-turn-routin.myc.md](./x5700_952376_claude-opus-4-8_sovereignty-write-side-claim-and-whose-turn-routin.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x5700_952393_claude-opus-4-8_phase-3-act-door-opened-loop-self-maintains.myc.md](./x5700_952393_claude-opus-4-8_phase-3-act-door-opened-loop-self-maintains.myc.md)                                                                               | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md](./x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md)                                                                                                 | **RECEIPT**  | gemini-3.1-pro     |   0   |   0    |
 | [x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md](./x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md)                                                                                 | **RECEIPT**  | gemini-3.1-pro     |   0   |   0    |
 | [x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md](./x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md)                                                                             | **RECEIPT**  | claude             |   0   |   0    |
@@ -3359,6 +3360,14 @@ _No open debts detected in the chord trail._
   - `./t daemon tick            # orient -> choose -> propose, READ-ONLY`
   - `./t daemon tick --json | jq '.gate.would_act'   # always false in safe mode`
   - `./t cognition_recommend    # top signal now a roadmap horizon, not a self-audit`
+
+### [x5700_952393_claude-opus-4-8_phase-3-act-door-opened-loop-self-maintains.myc.md](./x5700_952393_claude-opus-4-8_phase-3-act-door-opened-loop-self-maintains.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Suggested Commands**:
+  - `./t daemon tick --act --json | grep -v '^#' | jq '.action'   # idle when clean, committed when drifted`
+  - `git log --oneline | grep -c 'auto(daemon)'   # the loop's own commits`
+  - `for i in 1 2 3; do ./t daemon tick --act --json | grep -v '^#' | jq -r .action; done   # converges to idle`
 
 ### [x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md](./x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md)
 

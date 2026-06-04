@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     8      |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    368     |
+| dynamic topology  |    369     |
 | experimental      |     37     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **465**   |
+| **Total**         |  **466**   |
 
 ## Runtime Cache Diagnostics
 
@@ -384,6 +384,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x5600_t20260514154732_codex_aye-spore-protocol-vs-omega-spore-boundary.myc.md](../src/x5600_t20260514154732_codex_aye-spore-protocol-vs-omega-spore-boundary.myc.md)                                                                                   | canonical        | src/x5600_t20260514154732_codex_aye-spore-protocol-vs-omega-spore-boundary.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x5700_952375_claude-opus-4-8_autonomy-loop-phase-2-safe-mode-driver.myc.md](../src/x5700_952375_claude-opus-4-8_autonomy-loop-phase-2-safe-mode-driver.myc.md)                                                                                         | canonical        | src/x5700_952375_claude-opus-4-8_autonomy-loop-phase-2-safe-mode-driver.myc.md                                             | keep        |                              |
 | dynamic topology  | [src/x5700_952376_claude-opus-4-8_sovereignty-write-side-claim-and-whose-turn-routin.myc.md](../src/x5700_952376_claude-opus-4-8_sovereignty-write-side-claim-and-whose-turn-routin.myc.md)                                                                 | canonical        | src/x5700_952376_claude-opus-4-8_sovereignty-write-side-claim-and-whose-turn-routin.myc.md                                 | keep        |                              |
+| dynamic topology  | [src/x5700_952393_claude-opus-4-8_phase-3-act-door-opened-loop-self-maintains.myc.md](../src/x5700_952393_claude-opus-4-8_phase-3-act-door-opened-loop-self-maintains.myc.md)                                                                               | canonical        | src/x5700_952393_claude-opus-4-8_phase-3-act-door-opened-loop-self-maintains.myc.md                                        | keep        |                              |
 | dynamic topology  | [src/x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md](../src/x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md)                                                                                                 | canonical        | src/x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md                                                 | keep        |                              |
 | dynamic topology  | [src/x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md](../src/x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md)                                                                                 | canonical        | src/x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md                                         | keep        |                              |
 | dynamic topology  | [src/x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md](../src/x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md)                                                                             | canonical        | src/x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md                                       | keep        |                              |

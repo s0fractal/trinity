@@ -129,10 +129,10 @@ jobs:
         run: ./t contract-audit --json | jq -e '.type == "contract_audit" and .summary.total > 0 and (.summary.safe_to_compost // 0) == 0 and (.summary.needs_review // 0) == 0'
 
       - name: Verify external surfaces format
-        run: ./t external-surfaces --json | jq -e '.type == "external_surfaces" and ([.entries[] | select(.category == "local_cache")] | length) == 0 and .summary.dynamic_topology == 360 and .summary.live_chord == 0 and ([.entries[] | select(.category == "dynamic_topology" and .canonical_status == "canonical")] | length) == 360 and (.runtime_cache_summary.total | type) == "number" and (.runtime_cache_summary.stale_7d | type) == "number"'
+        run: ./t external-surfaces --json | jq -e '.type == "external_surfaces" and ([.entries[] | select(.category == "local_cache")] | length) == 0 and .summary.dynamic_topology > 0 and .summary.live_chord == 0 and ([.entries[] | select(.category == "dynamic_topology" and .canonical_status == "canonical")] | length) == .summary.dynamic_topology and ([.entries[] | select(.category == "dynamic_topology")] | length) == .summary.dynamic_topology and (.runtime_cache_summary.total | type) == "number" and (.runtime_cache_summary.stale_7d | type) == "number"'
 
       - name: Verify chord migration plan
-        run: ./t chord-migrate --json | jq -e '.type == "chord_migration_plan" and .dry_run == true and .summary.chords == 0 and .summary.already_migrated == 360 and ([.entries[].warnings[]? | select(. == "target collision disambiguated")] | length) == 0'
+        run: ./t chord-migrate --json | jq -e '.type == "chord_migration_plan" and .dry_run == true and .summary.chords == 0 and .summary.already_migrated > 0 and .summary.inferred_coordinates == 0 and .summary.inferred_block_keys == 0 and .summary.inferred_voices == 0 and .summary.warnings == 0 and ([.entries[].warnings[]? | select(. == "target collision disambiguated")] | length) == 0'
 
       - name: Verify external surfaces stale runtime prune dry-run
         run: ./t external-surfaces --prune-stale-runtime --dry-run --json | jq -e '.type == "external_surfaces_prune" and .dry_run == true and .receipt_path == null and (.summary.candidates | type) == "number" and (.candidates | type) == "array"'

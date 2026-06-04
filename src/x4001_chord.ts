@@ -57,7 +57,6 @@ import {
   fromFileUrl,
   join,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
-import { composeFlatSrcName } from "./x8F20_chord_migrate.ts";
 
 const BTC_TIP_URL = "https://blockstream.info/api/blocks/tip/height";
 
@@ -189,6 +188,59 @@ function chordSlug(text: string, maxLen = 50): string {
     .replace(/-+$/g, "") || "untitled";
 }
 
+// Canonical flat-src chord filename for a NEWLY authored chord. Kept local
+// rather than imported from x8F20_chord_migrate (a higher-bucket runtime organ —
+// importing it from bucket 4 violates the coordinate gravity law). Produces the
+// same coordinate x8F20 would assign, so `t chord-migrate` sees these chords as
+// already-migrated / zero-inference.
+interface FlatSrcName {
+  targetName: string;
+  coordinate: string;
+  blockKey: string;
+  voice: string;
+  warnings: string[];
+}
+
+function octHexDigit(value: string): string | null {
+  const m = String(value).match(/(?:oct|hex):([0-9A-Fa-f])/i);
+  return m ? m[1].toUpperCase() : null;
+}
+
+function modeDigit(mode: string): string {
+  const s = mode.toLowerCase();
+  if (/propos/.test(s)) return "D";
+  if (/receipt/.test(s)) return "7";
+  if (/cowitness|witness|aye|review/.test(s)) return "6";
+  if (/audit/.test(s)) return "B";
+  if (/critique|nay|reject/.test(s)) return "9";
+  if (/observation|riff|synthesis/.test(s)) return "3";
+  return "0";
+}
+
+function flatSrcName(opts: {
+  primary: string;
+  mode: string;
+  claimKind: string;
+  block: number;
+  voice: string;
+  slug: string;
+}): FlatSrcName {
+  const bucket = octHexDigit(opts.primary) ?? "3";
+  const coordinate = `x${bucket}${modeDigit(opts.mode)}${
+    octHexDigit(opts.claimKind) ?? "0"
+  }0`
+    .toLowerCase();
+  const blockKey = String(opts.block);
+  const voiceSlug = chordSlug(opts.voice);
+  return {
+    targetName: `${coordinate}_${blockKey}_${voiceSlug}_${opts.slug}.myc.md`,
+    coordinate,
+    blockKey,
+    voice: voiceSlug,
+    warnings: [],
+  };
+}
+
 async function cmdBlock(): Promise<void> {
   const h = await fetchBtcBlock();
   console.log(h);
@@ -263,18 +315,16 @@ async function cmdReceipt(flags: Record<string, string>): Promise<void> {
   const stance = flags.stance ?? "RECEIPT";
   const claimKind = flags["claim-kind"] ?? "receipt";
 
-  // Derive the canonical flat-src filename via x8F20's single source of truth,
-  // so this chord is already-migrated / zero-inference by construction (CI
-  // invariants stay green; `t chord-migrate` sees nothing to do).
-  const fm = {
+  // Canonical flat-src filename (matches what x8F20 would assign — already
+  // migrated, zero inference, CI invariants stay green).
+  const composed = flatSrcName({
     primary,
     mode: "receipt",
-    claim_kind: claimKind,
-    topic: slug,
+    claimKind,
+    block,
     voice,
-    bitcoin_block_height: block,
-  };
-  const composed = composeFlatSrcName("", fm);
+    slug,
+  });
 
   const closesBlock = flags.closes
     ? `closes:\n  path_hint: ${flags.closes}\n  relation: ${
@@ -315,7 +365,7 @@ expected_after_running: {}
 
 /** Shared --write (land in src/) vs dry (print) path for authored chords. */
 async function emitChord(
-  composed: ReturnType<typeof composeFlatSrcName>,
+  composed: FlatSrcName,
   content: string,
   flags: Record<string, string>,
   kind: string,
@@ -373,15 +423,14 @@ async function cmdClaim(flags: Record<string, string>): Promise<void> {
   const primary = flags.primary ?? flags.octet ?? "oct:5.action";
   const slug = chordSlug(`claim ${horizon}`);
 
-  const fm = {
+  const composed = flatSrcName({
     primary,
     mode: "claim",
-    claim_kind: "claim",
-    topic: slug,
+    claimKind: "claim",
+    block,
     voice,
-    bitcoin_block_height: block,
-  };
-  const composed = composeFlatSrcName("", fm);
+    slug,
+  });
 
   const content = `---
 type: chord.claim

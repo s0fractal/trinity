@@ -13,9 +13,47 @@ import {
   scanEcosystem,
   type ThoughtPhase,
 } from "./x0020_scanner_core.ts";
-import { loadOrganHorizons, type OrganHorizon } from "./x8D00_roadmap_gen.ts";
 import { listChordSurfaceFiles } from "./x2F21_chord_surface.ts";
 type RepoName = typeof REPOS[number];
+
+// Organ-horizon scan, kept local rather than imported from x8D00_roadmap_gen
+// (a higher-bucket runtime organ — importing it from bucket 5 would violate the
+// coordinate gravity law). The substrate's convention is to duplicate small
+// cross-organ helpers rather than import uphill.
+interface OrganHorizon {
+  coordinate: string;
+  handle: string;
+  horizon: string;
+  maturity?: string;
+}
+
+const ORGAN_FILE_RE = /^x([0-9A-Fa-f])([0-9A-Fa-f]{3})_([^.]+)\.ts$/;
+const HEADER_RE = /^\/\/\s*(\w+):\s*(.+?)\s*$/;
+
+async function loadOrganHorizons(): Promise<OrganHorizon[]> {
+  const out: OrganHorizon[] = [];
+  for await (const entry of Deno.readDir("src")) {
+    if (!entry.isFile) continue;
+    const m = ORGAN_FILE_RE.exec(entry.name);
+    if (!m) continue;
+    const text = await Deno.readTextFile(`src/${entry.name}`);
+    let horizon = "", maturity: string | undefined;
+    for (const line of text.split("\n").slice(0, 40)) {
+      const hm = HEADER_RE.exec(line);
+      if (!hm) continue;
+      if (hm[1] === "horizon") horizon = hm[2];
+      else if (hm[1] === "maturity") maturity = hm[2];
+    }
+    if (!horizon) continue;
+    out.push({
+      coordinate: (m[1] + m[2]).toUpperCase(),
+      handle: m[3],
+      horizon,
+      maturity,
+    });
+  }
+  return out;
+}
 
 /** A declared organ horizon is "open" unless it begins with "none". */
 function isOpenHorizon(h: OrganHorizon): boolean {

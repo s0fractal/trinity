@@ -652,6 +652,16 @@ async function main() {
     lines.push(
       "| :--- | :--- | :--- | :--- | :--- | :--- | :--- |",
     );
+    // Stable mode must be environment-independent so the committed report
+    // reproduces in CI. These rows reflect LIVE submodule state (present
+    // locally, absent when the private submodules aren't checked out), so they
+    // are canonicalized here — the live values stay available via `t evidence`
+    // (non-stable) and the strict JSON gate. All other rows keep drift-detection.
+    const CROSS_SUBSTRATE_CLAIMS = new Set([
+      "Ecosystem Submodule Federation",
+      "SPORE Runtime Execution",
+      "MYC x9 Shadow Parity",
+    ]);
     for (const c of claims_matrix) {
       const contractCell = c.contract
         ? `[${c.contract.split("/").pop()}](${c.contract})`
@@ -662,8 +672,13 @@ async function main() {
       const contractStatusCell = c.contract_status
         ? `**${c.contract_status.toUpperCase()}**`
         : "*none*";
+      const isXSub = CROSS_SUBSTRATE_CLAIMS.has(c.claim);
+      const evidenceSource = isXSub ? "live" : c.evidence_source;
+      const evidenceCell = isXSub
+        ? "submodule-dependent (run the command for live evidence)"
+        : c.evidence;
       lines.push(
-        `| ${c.claim} | **${c.claim_status.toUpperCase()}** | ${contractCell} | ${contractStatusCell} | ${cmdCell} | \`${c.evidence_source}\` | ${c.evidence} |`,
+        `| ${c.claim} | **${c.claim_status.toUpperCase()}** | ${contractCell} | ${contractStatusCell} | ${cmdCell} | \`${evidenceSource}\` | ${evidenceCell} |`,
       );
     }
     lines.push(``);

@@ -59,9 +59,11 @@ jobs:
           if [ "${{ steps.subm.outputs.present }}" = "true" ]; then
             deno check src/*.ts
           else
-            # x5F10 statically re-exports from the liquid submodule; exclude it
-            # (and only it — the sole cross-submodule import) when liquid absent.
-            deno check $(ls src/*.ts | grep -v 'x5F10')
+            # The liquid submodule is reached only by x5F10 (re-export) and its
+            # sole importer x5F00 (the t-apply organ, loaded dynamically). That
+            # 2-file closure is the complete static liquid dependency; exclude
+            # both when liquid is absent. Everything else type-checks standalone.
+            deno check $(ls src/*.ts | grep -vE 'x5F00|x5F10')
           fi
 
       - name: Substrate status check

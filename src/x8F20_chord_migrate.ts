@@ -243,10 +243,17 @@ async function readLegacyChords(): Promise<
   Array<{ name: string; text: string }>
 > {
   const out: Array<{ name: string; text: string }> = [];
-  for await (const entry of Deno.readDir(LEGACY_CHORDS_DIR)) {
-    if (!entry.isFile || !entry.name.endsWith(".md")) continue;
-    const text = await Deno.readTextFile(join(LEGACY_CHORDS_DIR, entry.name));
-    out.push({ name: entry.name, text });
+  try {
+    for await (const entry of Deno.readDir(LEGACY_CHORDS_DIR)) {
+      if (!entry.isFile || !entry.name.endsWith(".md")) continue;
+      const text = await Deno.readTextFile(join(LEGACY_CHORDS_DIR, entry.name));
+      out.push({ name: entry.name, text });
+    }
+  } catch (e) {
+    // Once the migration is fully landed the legacy dir is removed entirely.
+    // A missing source dir means "nothing left to migrate", not an error —
+    // otherwise the tool (and its CI gate) crash on a clean post-migration tree.
+    if (!(e instanceof Deno.errors.NotFound)) throw e;
   }
   out.sort((a, b) => a.name.localeCompare(b.name));
   return out;

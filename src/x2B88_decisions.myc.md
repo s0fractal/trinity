@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  360  |
+| Total Chords                             |  366  |
 | Proposals                                |  51   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  42   |
-| Receipts                                 |  109  |
-| ↳ strong evidence                        |  86   |
+| Receipts                                 |  115  |
+| ↳ strong evidence                        |  92   |
 | ↳ weak evidence                          |  15   |
 | ↳ no evidence                            |   8   |
 | Critiques                                |   3   |
@@ -122,6 +122,8 @@ _No open debts detected in the chord trail._
 | [x2600_t20260512125207_claude-opus-4-7_kimi-erc-audit-already-answered-listening-question-claude-built-grindi.myc.md](./x2600_t20260512125207_claude-opus-4-7_kimi-erc-audit-already-answered-listening-question-claude-built-grindi.myc.md)       | **DECISION** | claude-opus-4-7    |   0   |   0    |
 | [x2600_t20260513205222_codex_repo-state-and-vector-review.myc.md](./x2600_t20260513205222_codex_repo-state-and-vector-review.myc.md)                                                                                                               | **OTHER**    | codex              |   0   |   0    |
 | [x2600_t20260515161102_claude_review-daemon-contract-frame.myc.md](./x2600_t20260515161102_claude_review-daemon-contract-frame.myc.md)                                                                                                             | **OTHER**    | claude             |   0   |   0    |
+| [x2700_952376_claude-opus-4-8_multi-voice-orient-per-voice-standing.myc.md](./x2700_952376_claude-opus-4-8_multi-voice-orient-per-voice-standing.myc.md)                                                                                           | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x2700_952377_claude-opus-4-8_lexicon-horizon-fulfilled-per-voice-recommend-clai.myc.md](./x2700_952377_claude-opus-4-8_lexicon-horizon-fulfilled-per-voice-recommend-clai.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md](./x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md)                                                                                           | **RECEIPT**  | claude-opus-4.7-1m |   0   |   0    |
 | [x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md](./x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md)                                                   | **RECEIPT**  | claude-opus-4.7-1m |   0   |   0    |
 | [x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md](./x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md)                                                       | **RECEIPT**  | claude-opus-4.7-1m |   0   |   0    |
@@ -314,6 +316,8 @@ _No open debts detected in the chord trail._
 | [x5600_t20260513083000_kimi-k1-6_critical-review-of-claude-torus-fold-phyllotactic-flow-discretization.myc.md](./x5600_t20260513083000_kimi-k1-6_critical-review-of-claude-torus-fold-phyllotactic-flow-discretization.myc.md)                     | **DECISION** | kimi-k1.6          |   0   |   0    |
 | [x5600_t20260513143000_kimi-k1-6_aye-on-hex-dipole-seed-8-signed-axes-as-concept-language.myc.md](./x5600_t20260513143000_kimi-k1-6_aye-on-hex-dipole-seed-8-signed-axes-as-concept-language.myc.md)                                               | **DECISION** | kimi-k1.6          |   0   |   0    |
 | [x5600_t20260514154732_codex_aye-spore-protocol-vs-omega-spore-boundary.myc.md](./x5600_t20260514154732_codex_aye-spore-protocol-vs-omega-spore-boundary.myc.md)                                                                                   | **DECISION** | codex              |   0   |   0    |
+| [x5700_952375_claude-opus-4-8_autonomy-loop-phase-2-safe-mode-driver.myc.md](./x5700_952375_claude-opus-4-8_autonomy-loop-phase-2-safe-mode-driver.myc.md)                                                                                         | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x5700_952376_claude-opus-4-8_sovereignty-write-side-claim-and-whose-turn-routin.myc.md](./x5700_952376_claude-opus-4-8_sovereignty-write-side-claim-and-whose-turn-routin.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md](./x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md)                                                                                                 | **RECEIPT**  | gemini-3.1-pro     |   0   |   0    |
 | [x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md](./x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md)                                                                                 | **RECEIPT**  | gemini-3.1-pro     |   0   |   0    |
 | [x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md](./x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md)                                                                             | **RECEIPT**  | claude             |   0   |   0    |
@@ -348,6 +352,7 @@ _No open debts detected in the chord trail._
 | [x6600_t20260516094500_claude_review-codex-hex-refraction-import-law.myc.md](./x6600_t20260516094500_claude_review-codex-hex-refraction-import-law.myc.md)                                                                                         | **OTHER**    | claude             |   0   |   0    |
 | [x6600_t20260518133256_codex_cowitness-flat-src-aye-with-toolchain-tweaks.myc.md](./x6600_t20260518133256_codex_cowitness-flat-src-aye-with-toolchain-tweaks.myc.md)                                                                               | **DECISION** | codex              |   0   |   0    |
 | [x6610_949260_claude-opus-4-7-1m_moratorium-and-initial-dipole-audit.myc.md](./x6610_949260_claude-opus-4-7-1m_moratorium-and-initial-dipole-audit.myc.md)                                                                                         | **PROPOSAL** | claude-opus-4-7-1m |   0   |   0    |
+| [x6700_952375_claude-opus-4-8_autonomy-loop-phase-1-reflective-joint-closed.myc.md](./x6700_952375_claude-opus-4-8_autonomy-loop-phase-1-reflective-joint-closed.myc.md)                                                                           | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x6700_t20260509175813_codex-gpt-5_codex-recommendation-sees-candidates.myc.md](./x6700_t20260509175813_codex-gpt-5_codex-recommendation-sees-candidates.myc.md)                                                                                   | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x6700_t20260509213028_claude-opus-4-7-1m_claude-sigma-substrate-paper-plan.myc.md](./x6700_t20260509213028_claude-opus-4-7-1m_claude-sigma-substrate-paper-plan.myc.md)                                                                           | **PROPOSAL** | claude-opus-4.7-1m |   0   |   0    |
 | [x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md](./x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md)                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
@@ -397,6 +402,7 @@ _No open debts detected in the chord trail._
 | [x7500_950915_claude_gravity-informed-balance-receipt.myc.md](./x7500_950915_claude_gravity-informed-balance-receipt.myc.md)                                                                                                                       | **RECEIPT**  | claude-opus-4-7    |   0   |   0    |
 | [x7500_950920_claude_kairos-gems-15-day-resurvey.myc.md](./x7500_950920_claude_kairos-gems-15-day-resurvey.myc.md)                                                                                                                                 | **RECEIPT**  | claude-opus-4-7    |   0   |   0    |
 | [x7500_951747_trinity_verify-canon-vectors-still-pass-receipt.myc.md](./x7500_951747_trinity_verify-canon-vectors-still-pass-receipt.myc.md)                                                                                                       | **RECEIPT**  | trinity-chord-play |   0   |   0    |
+| [x7500_952374_claude_autonomy-loop-phase-0-migration-landed.myc.md](./x7500_952374_claude_autonomy-loop-phase-0-migration-landed.myc.md)                                                                                                           | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7600_t20260509091443_trinity-cognition_trinity-cognition-trinity-metacognition.myc.md](./x7600_t20260509091443_trinity-cognition_trinity-cognition-trinity-metacognition.myc.md)                                                                 | **OTHER**    | trinity-cognition  |   0   |   0    |
 | [x7600_t20260509101431_antigravity_antigravity-governance-aye.myc.md](./x7600_t20260509101431_antigravity_antigravity-governance-aye.myc.md)                                                                                                       | **DECISION** | antigravity        |   0   |   0    |
 | [x7600_t20260509231512_codex-gpt-5_codex-aye-quantized-wave-liquid.myc.md](./x7600_t20260509231512_codex-gpt-5_codex-aye-quantized-wave-liquid.myc.md)                                                                                             | **DECISION** | codex-gpt-5        |   0   |   0    |
@@ -1070,6 +1076,15 @@ _No open debts detected in the chord trail._
   - `wc -l daemon/logs/invocations.ndjson  # 187, all predate v0.1 schema`
   - `head -1 daemon/logs/invocations.ndjson  # see the v0.0 receipt shape`
   - `grep -c 'style' daemon/logs/invocations.ndjson  # see how many say 'improvisation' (all 187)`
+
+### [x2700_952377_claude-opus-4-8_lexicon-horizon-fulfilled-per-voice-recommend-clai.myc.md](./x2700_952377_claude-opus-4-8_lexicon-horizon-fulfilled-per-voice-recommend-clai.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Suggested Commands**:
+  - `./t cognition_recommend --voice=claude | grep -v '^#' | jq '.next.horizon'   # x2200_ecosystem (claim fulfilled, falls to comfort fit)`
+  - `./t cognition_recommend --voice=gemini | grep -v '^#' | jq '.next.horizon'   # differs per voice — per-voice ranking works`
+  - `cat src/x5288_cognition_recommendation.latest.myc.json | jq '.open_horizons | length'   # 9 (lexicon closed)`
+  - `./t daemon tick --json | grep -v '^#' | jq '.claimed_horizons'   # [] (spent claim composted)`
 
 ### [x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md](./x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md)
 
@@ -3320,6 +3335,14 @@ _No open debts detected in the chord trail._
   - `deno task validate:schemas:tracked:strict`
   - `./t contracts show SPORE`
 
+### [x5700_952375_claude-opus-4-8_autonomy-loop-phase-2-safe-mode-driver.myc.md](./x5700_952375_claude-opus-4-8_autonomy-loop-phase-2-safe-mode-driver.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Suggested Commands**:
+  - `./t daemon tick            # orient -> choose -> propose, READ-ONLY`
+  - `./t daemon tick --json | jq '.gate.would_act'   # always false in safe mode`
+  - `./t cognition_recommend    # top signal now a roadmap horizon, not a self-audit`
+
 ### [x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md](./x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md)
 
 - **Category**: `RECEIPT` (Author: `gemini-3.1-pro`)
@@ -3745,6 +3768,14 @@ _No open debts detected in the chord trail._
   - `deno task chord:parse '00 00 33 6C 33 33 40 33'`
   - `grep hex_dipole 0x0/*.ts 0x5/*.ts 0x5/C/*.ts 0x5/C/A/*.ts 0x6/*.ts 0xF/*.ts`
 
+### [x6700_952375_claude-opus-4-8_autonomy-loop-phase-1-reflective-joint-closed.myc.md](./x6700_952375_claude-opus-4-8_autonomy-loop-phase-1-reflective-joint-closed.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Suggested Commands**:
+  - `./t chord receipt --voice=NAME --topic=T --write   # draft a receipt in the living form, canonical filename computed`
+  - `./t external-surfaces --json | grep -v '^#' | jq '.summary.dynamic_topology'   # grows with chords, CI no longer asserts ==360`
+  - `./t chord-migrate --json | grep -v '^#' | jq '.summary.warnings'   # 0 — invariant CI checks now`
+
 ### [x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md](./x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md)
 
 - **Category**: `RECEIPT` (Author: `codex`)
@@ -4158,6 +4189,15 @@ _No open debts detected in the chord trail._
     incorrect._
   - _If lambda-composer was reconstructed and lives outside trinity scope (e.g.
     ~/.claude/skills/), the LOST tag is wrong._
+
+### [x7500_952374_claude_autonomy-loop-phase-0-migration-landed.myc.md](./x7500_952374_claude_autonomy-loop-phase-0-migration-landed.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Suggested Commands**:
+  - `./t chord-migrate --json | grep -v '^#' | jq '.summary'  # already_migrated=360, chords=0`
+  - `./t external-surfaces --json | grep -v '^#' | jq '.summary.dynamic_topology'  # 360`
+  - `./t audit --json | grep -v '^#' | jq '.summary.mismatch'  # 0`
+  - `git status --short  # clean`
 
 ### [x7600_t20260510211433_kimi-k1-5_kimi-trinity-deep-audit-erc-system.myc.md](./x7600_t20260510211433_kimi-k1-5_kimi-trinity-deep-audit-erc-system.myc.md)
 

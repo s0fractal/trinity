@@ -26,6 +26,9 @@
 //   t daemon run --since <iso> # explicit replay window
 //   t daemon tick             # safe-mode loop driver: orient → choose →
 //   t daemon tick --json      # propose next action (READ-ONLY, never acts)
+//   t daemon tick --act       # autonomous self-maintenance: regen drifted
+//   t daemon tick --act --push  # projections, verify, commit (+push); clean
+//                             # tree required, reverts on verify failure
 //
 // Glossary words: daemon, демон
 
@@ -635,6 +638,163 @@ async function worktreeClean(): Promise<boolean> {
   return new TextDecoder().decode(stdout).trim().length === 0;
 }
 
+// ── --act: bounded autonomous self-maintenance ───────────────────────────────
+//
+// `t daemon tick --act` lets the loop take ONE step without a human, restricted
+// to the safe-by-construction class: regenerate drifted stable projections,
+// verify, commit (reversible via git), optionally push. Hard preconditions
+// (clean tree, no lock) and revert-on-verify-failure mean it cannot leave the
+// substrate in a broken or surprising state. It deliberately does NOT author
+// code or proposals — arbitrary autonomous code generation is a separate safety
+// frontier. Opened 2026-06-04 on explicit architect authorization.
+
+async function runGit(
+  args: string[],
+): Promise<{ ok: boolean; out: string }> {
+  const { code, stdout, stderr } = await new Deno.Command("git", {
+    args,
+    cwd: ROOT,
+    stdout: "piped",
+    stderr: "piped",
+  }).output();
+  const out = new TextDecoder().decode(stdout) +
+    new TextDecoder().decode(stderr);
+  return { ok: code === 0, out };
+}
+
+async function regenerateProjections(): Promise<void> {
+  const tShim = join(ROOT, "t");
+  for (
+    const gen of [
+      "agents",
+      "skill",
+      "memory",
+      "probes",
+      "decisions",
+      "evidence",
+      "external-surfaces",
+    ]
+  ) {
+    await new Deno.Command(tShim, {
+      args: [gen, "--stable"],
+      cwd: ROOT,
+      stdout: "null",
+      stderr: "null",
+    }).output();
+  }
+}
+
+/** fmt --check + type-check must pass before the loop commits anything. */
+async function localGatesPass(): Promise<boolean> {
+  const fmt = await new Deno.Command("deno", {
+    args: ["fmt", "--check"],
+    cwd: ROOT,
+    stdout: "null",
+    stderr: "null",
+  }).output();
+  if (fmt.code !== 0) return false;
+  const chk = await new Deno.Command("bash", {
+    args: ["-c", "deno check src/*.ts"],
+    cwd: ROOT,
+    stdout: "null",
+    stderr: "null",
+  }).output();
+  return chk.code === 0;
+}
+
+async function appendActLog(entry: Record<string, unknown>): Promise<void> {
+  await Deno.mkdir(dirname(LOG_FILE), { recursive: true });
+  await Deno.writeTextFile(
+    LOG_FILE,
+    JSON.stringify({
+      timestamp: new Date().toISOString(),
+      kind: "tick_act",
+      ...entry,
+    }) + "\n",
+    { append: true },
+  );
+}
+
+async function handleAct(useJson: boolean, push: boolean): Promise<void> {
+  const report = (o: Record<string, unknown>) => {
+    if (useJson) {
+      console.log(JSON.stringify({ type: "daemon_act", ...o }, null, 2));
+    } else {
+      console.log(`# daemon @ 7/F — tick --act`);
+      console.log(
+        `# ──────────────────────────────────────────────────────────────────`,
+      );
+      for (const [k, v] of Object.entries(o)) {
+        console.log(`# ${k}: ${typeof v === "object" ? JSON.stringify(v) : v}`);
+      }
+    }
+  };
+
+  // Hard preconditions — the loop only acts from a known-good, human-free state.
+  if (await readLockFile()) {
+    report({ action: "refused", reason: "daemon locked" });
+    return;
+  }
+  if (!(await worktreeClean())) {
+    report({
+      action: "refused",
+      reason: "worktree dirty — commit or stash human work before --act",
+    });
+    return;
+  }
+
+  // Safe deterministic action: bring the stable projections current.
+  await regenerateProjections();
+  const status = await runGit(["status", "--short"]);
+  const drifted = status.out.trim().split("\n").map((l) => l.trim()).filter(
+    Boolean,
+  );
+  if (drifted.length === 0) {
+    report({
+      action: "idle",
+      note: "projections current — nothing safe to maintain",
+    });
+    return;
+  }
+
+  // Verify before committing; revert if the regenerated state is unsound.
+  if (!(await localGatesPass())) {
+    await runGit(["checkout", "--", "."]);
+    await appendActLog({ action: "reverted", drifted });
+    report({
+      action: "reverted",
+      reason: "fmt/type-check failed after regen — left tree clean",
+      drifted,
+    });
+    return;
+  }
+
+  await runGit(["add", "-A"]);
+  const commitMsg =
+    "auto(daemon): refresh stable projections [tick --act]\n\n" +
+    "The self-driving loop regenerated drifted stable projections to keep CI\n" +
+    "green. Deterministic, verified (fmt + type-check), reversible via git.\n\n" +
+    "Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>";
+  const commit = await runGit(["commit", "-q", "-m", commitMsg]);
+  if (!commit.ok) {
+    report({ action: "error", reason: "commit failed", detail: commit.out });
+    return;
+  }
+  const head = (await runGit(["rev-parse", "--short", "HEAD"])).out.trim();
+  let pushed = false;
+  if (push) {
+    const p = await runGit(["push", "origin", "main"]);
+    pushed = p.ok;
+  }
+  await appendActLog({
+    action: "committed",
+    commit: head,
+    files: drifted,
+    pushed,
+  });
+  report({ action: "committed", commit: head, files: drifted, pushed });
+}
+
 async function handleTick(useJson: boolean): Promise<void> {
   const locked = await readLockFile();
   if (locked) {
@@ -812,7 +972,11 @@ async function main() {
   }
 
   if (cmd === "tick") {
-    await handleTick(useJson);
+    if (args.includes("--act")) {
+      await handleAct(useJson, args.includes("--push"));
+    } else {
+      await handleTick(useJson);
+    }
     return;
   }
 

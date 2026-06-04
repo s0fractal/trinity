@@ -18,6 +18,15 @@ references:
 closes:
   path_hint: x8D00_lexicon_horizon
   relation: fulfils_horizon
+suggested_commands:
+  - "./t cognition_recommend --voice=claude | grep -v '^#' | jq '.next.horizon'   # x2200_ecosystem (claim fulfilled, falls to comfort fit)"
+  - "./t cognition_recommend --voice=gemini | grep -v '^#' | jq '.next.horizon'   # differs per voice — per-voice ranking works"
+  - "cat src/x5288_cognition_recommendation.latest.myc.json | jq '.open_horizons | length'   # 9 (lexicon closed)"
+  - "./t daemon tick --json | grep -v '^#' | jq '.claimed_horizons'   # [] (spent claim composted)"
+expected_after_running:
+  open_horizons: 9
+  claimed_horizons_empty: true
+  per_voice_differs: true
 ---
 
 # Receipt: lexicon horizon fulfilled — the full claim cycle, end to end

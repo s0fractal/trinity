@@ -152,15 +152,32 @@ async function scopeCheck(wt: string): Promise<Verdict> {
 
 /** The mechanical gates: fmt, type-check, audit invariants, projection drift. */
 async function verifyGates(wt: string): Promise<Verdict> {
+  // A worktree has no submodules checked out (they're private), so deno can't
+  // resolve the workspace members (liquid/myc/omega). Strip the workspace for
+  // the verification run, exactly as CI does; restore deno.jsonc afterward.
+  const denoCfg = join(wt, "deno.jsonc");
+  const orig = await Deno.readTextFile(denoCfg);
+  await Deno.writeTextFile(
+    denoCfg,
+    orig.replace(/"workspace":\s*\[[^\]]*\],\s*/, ""),
+  );
+  const restore = () => Deno.writeTextFile(denoCfg, orig);
+
   const fmt = await run("deno", ["fmt", "--check"], wt);
   if (fmt.code !== 0) {
+    await restore();
     return fail("fmt", fmt.out.trim().split("\n").pop() ?? "");
   }
-  const chk = await run("bash", ["-c", "deno check src/*.ts"], wt);
+  // x5F00/x5F10 statically reach the liquid submodule (absent here) — exclude.
+  const chk = await run(
+    "bash",
+    ["-c", "deno check $(ls src/*.ts | grep -vE 'x5F00|x5F10')"],
+    wt,
+  );
   if (chk.code !== 0) {
+    await restore();
     return fail("type-check", chk.out.trim().split("\n").slice(-2).join(" "));
   }
-  // Audit invariants via the worktree's own t shim.
   const tShim = join(wt, "t");
   const audit = await run(tShim, ["audit", "--json"], wt);
   const auditJson = audit.out.split("\n").filter((l) =>
@@ -173,16 +190,18 @@ async function verifyGates(wt: string): Promise<Verdict> {
       s.mismatch !== 0 || s.malformed !== 0 || s.import_warnings_count !== 0 ||
       s.registry_warnings_count !== 0 || !a.coordinate_uniqueness?.ok
     ) {
+      await restore();
       return fail(
         "audit",
-        `mismatch=${s.mismatch} import_warn=${s.import_warnings_count} reg_warn=${s.registry_warnings_count} uniq=${a.coordinate_uniqueness?.ok}`,
+        `mismatch=${s.mismatch} import_warn=${s.import_warnings_count} reg_warn=${s.registry_warnings_count}`,
       );
     }
   } catch {
+    await restore();
     return fail("audit", "audit did not return parseable JSON");
   }
-  // Projections must regenerate to no drift (the change keeps generated state
-  // consistent — a frequent silent breakage).
+  // Projection drift: regenerate; commit any drift (the change must keep
+  // generated state consistent). Exclude the temporarily-stripped deno.jsonc.
   for (
     const g of [
       "agents",
@@ -196,10 +215,13 @@ async function verifyGates(wt: string): Promise<Verdict> {
   ) {
     await run(tShim, [g, "--stable"], wt);
   }
-  if (!(await worktreeClean(wt))) {
-    // regen produced drift the author didn't commit — stage it so the diff is
-    // complete, then re-scope-check happens by the caller. Here: just flag.
-    await run("git", ["add", "-A"], wt);
+  const { out: st } = await run("git", ["status", "--short"], wt);
+  const drifted = st.trim().split("\n").map((l) => l.slice(3).trim()).filter(
+    (f) => f && f !== "deno.jsonc",
+  );
+  await restore();
+  if (drifted.length > 0) {
+    for (const f of drifted) await run("git", ["add", f], wt);
     await run("git", [
       "commit",
       "-q",

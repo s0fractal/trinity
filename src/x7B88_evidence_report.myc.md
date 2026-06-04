@@ -7,14 +7,14 @@ invariants._
 
 ## Operational Integrity
 
-| Metric                       | Value |
-| :--------------------------- | :---- |
-| CI Configured                | YES   |
-| Daemon Invocation Records    | 27    |
-| Autonomous Voice Invocations | 0     |
-| Executable Contracts         | 1     |
-| Aspirational Contracts       | 29    |
-| Strict Verification Status   | PASS  |
+| Metric                       | Value                      |
+| :--------------------------- | :------------------------- |
+| CI Configured                | YES                        |
+| Daemon Invocation Records    | runtime (see `t evidence`) |
+| Autonomous Voice Invocations | 0                          |
+| Executable Contracts         | 1                          |
+| Aspirational Contracts       | 29                         |
+| Strict Verification Status   | PASS                       |
 
 ## Claims-to-Evidence Matrix
 
@@ -27,7 +27,7 @@ invariants._
 | Ecosystem Submodule Federation                        | **PARTIALLY_IMPLEMENTED** | [SUBSTRATE_SELF_ABI.v0.1.md](contracts/SUBSTRATE_SELF_ABI.v0.1.md)                 | **PARTIALLY_IMPLEMENTED** | `git submodule status`                                                                  | `live`         | submodule-dependent (run the command for live evidence)                           |
 | SPORE Runtime Execution                               | **PROTOTYPE**             | [SPORE.v0.draft.md](contracts/SPORE.v0.draft.md)                                   | **PROTOTYPE**             | `./t apply`                                                                             | `live`         | submodule-dependent (run the command for live evidence)                           |
 | MYC x9 Shadow Parity                                  | **PROTOTYPE**             | [X9_SUBSTRATE_NAMESPACE.v0.draft.md](contracts/X9_SUBSTRATE_NAMESPACE.v0.draft.md) | **PROTOTYPE**             | `./t myc-status-shadow && ./t myc-capabilities-shadow && ./t myc-protocol-audit-shadow` | `live`         | submodule-dependent (run the command for live evidence)                           |
-| AI Voice Citizenship & Daemon                         | **PROTOTYPE**             | [VOICE_DAEMON.v0.draft.md](contracts/VOICE_DAEMON.v0.draft.md)                     | **PROTOTYPE**             | `./t daemon`                                                                            | `live`         | 27 daemon invocation records, autonomous voice triggers: 0 (manual loop)          |
+| AI Voice Citizenship & Daemon                         | **PROTOTYPE**             | [VOICE_DAEMON.v0.draft.md](contracts/VOICE_DAEMON.v0.draft.md)                     | **PROTOTYPE**             | `./t daemon`                                                                            | `live`         | submodule-dependent (run the command for live evidence)                           |
 | Bitcoin History Anchoring                             | **ASPIRATIONAL**          | [SPORE_BOOTSTRAP_PIN.v0.md](contracts/SPORE_BOOTSTRAP_PIN.v0.md)                   | **PROTOTYPE**             | `./t anchor-prep`                                                                       | `live`         | bitcoin_block: null (no active transaction RPC)                                   |
 | Free Energy Principle (FEP) Minimization              | **ASPIRATIONAL**          | [FREE_ENERGY_PRINCIPLE.v0.1.md](contracts/FREE_ENERGY_PRINCIPLE.v0.1.md)           | **ASPIRATIONAL**          | _none_                                                                                  | `hardcoded_v0` | F_total calculation: null (no active variational entropy phase coherence)         |
 | Kuramoto Phase Coherence                              | **ASPIRATIONAL**          | [HEX_DIPOLE_SEED.v0.draft.md](contracts/HEX_DIPOLE_SEED.v0.draft.md)               | **ASPIRATIONAL**          | _none_                                                                                  | `hardcoded_v0` | phase_coherence: null                                                             |

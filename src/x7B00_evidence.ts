@@ -631,9 +631,11 @@ async function main() {
     lines.push(`| Metric | Value |`);
     lines.push(`| :--- | :--- |`);
     lines.push(`| CI Configured | ${ci_present ? "YES" : "NO"} |`);
-    lines.push(
-      `| Daemon Invocation Records | ${payload.daemon_invocation_records} |`,
-    );
+    // Daemon invocation count is runtime-volatile (it grows on every `t daemon
+    // run`/`tick --act`); a live count here would make this stable report churn
+    // — and self-trigger `tick --act` into an infinite refresh loop, since --act
+    // logs an invocation. Canonicalized; live count via `t evidence` (non-stable).
+    lines.push(`| Daemon Invocation Records | runtime (see \`t evidence\`) |`);
     lines.push(
       `| Autonomous Voice Invocations | ${payload.autonomous_voice_invocations} |`,
     );
@@ -653,14 +655,18 @@ async function main() {
       "| :--- | :--- | :--- | :--- | :--- | :--- | :--- |",
     );
     // Stable mode must be environment-independent so the committed report
-    // reproduces in CI. These rows reflect LIVE submodule state (present
-    // locally, absent when the private submodules aren't checked out), so they
-    // are canonicalized here — the live values stay available via `t evidence`
-    // (non-stable) and the strict JSON gate. All other rows keep drift-detection.
-    const CROSS_SUBSTRATE_CLAIMS = new Set([
+    // reproduces in CI. These rows are environment-volatile: cross-substrate
+    // rows reflect LIVE submodule state (absent when the private submodules
+    // aren't checked out), and the daemon row reflects the runtime invocation
+    // count (which `tick --act` itself increments — a live count would self-
+    // trigger an infinite refresh loop). Canonicalized here; live values stay
+    // available via `t evidence` (non-stable) and the strict JSON gate. All
+    // other rows keep drift-detection.
+    const VOLATILE_CLAIMS = new Set([
       "Ecosystem Submodule Federation",
       "SPORE Runtime Execution",
       "MYC x9 Shadow Parity",
+      "AI Voice Citizenship & Daemon",
     ]);
     for (const c of claims_matrix) {
       const contractCell = c.contract
@@ -672,7 +678,7 @@ async function main() {
       const contractStatusCell = c.contract_status
         ? `**${c.contract_status.toUpperCase()}**`
         : "*none*";
-      const isXSub = CROSS_SUBSTRATE_CLAIMS.has(c.claim);
+      const isXSub = VOLATILE_CLAIMS.has(c.claim);
       const evidenceSource = isXSub ? "live" : c.evidence_source;
       const evidenceCell = isXSub
         ? "submodule-dependent (run the command for live evidence)"

@@ -11,7 +11,7 @@
 //         give cognition:recommend evidence-based suggestions instead of
 //         ungrounded guess
 // maturity: active
-// horizon: cross-axis feed into x52 cognition:recommend; per-voice
+// horizon: none (cross-axis feed into x52 cognition:recommend landed 2026-06-04 Phase 2a via loadOrganHorizons; per-voice ranking landed via `t cognition_recommend --voice=N` — own claims first, then comfort-field fit)
 //          breakdown when chord history >1000 makes voice-specific
 //          patterns statistically meaningful
 // skill_tag: lexicon

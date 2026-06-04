@@ -14,11 +14,81 @@ import {
   type ThoughtPhase,
 } from "./x0020_scanner_core.ts";
 import { loadOrganHorizons, type OrganHorizon } from "./x8D00_roadmap_gen.ts";
+import { listChordSurfaceFiles } from "./x2F21_chord_surface.ts";
 type RepoName = typeof REPOS[number];
 
 /** A declared organ horizon is "open" unless it begins with "none". */
 function isOpenHorizon(h: OrganHorizon): boolean {
   return !/^none\b/i.test(h.horizon.trim());
+}
+
+/** Normalize a voice handle to its family key (claude-opus-4-8 → claude). */
+function normVoice(s: string): string {
+  return s.split("-")[0].toLowerCase();
+}
+
+/** Scan chord surface files for claim chords → horizon-key → claiming voice. */
+async function loadClaims(): Promise<Map<string, string>> {
+  const claims = new Map<string, string>();
+  for (const chord of await listChordSurfaceFiles()) {
+    const text = await Deno.readTextFile(chord.fullPath);
+    if (!/^type:\s*chord\.claim\s*$/m.test(text)) continue;
+    const v = text.match(/^voice:\s*(.+?)\s*$/m)?.[1]?.trim();
+    const h = text.match(/^\s+horizon:\s*(.+?)\s*$/m)?.[1]?.trim();
+    if (v && h) claims.set(h, v); // latest file wins
+  }
+  return claims;
+}
+
+/** A voice's synthetic comfort field (8 bytes) via `t voices --json <voice>`. */
+async function loadComfortField(
+  voice: string,
+  cwd: string,
+): Promise<number[] | null> {
+  try {
+    const out = await commandOutput(`${cwd}/t`, [
+      "voices",
+      "--json",
+      voice,
+    ], cwd);
+    const jsonText = out
+      .split("\n")
+      .filter((l) => !l.trimStart().startsWith("#"))
+      .join("\n");
+    const data = JSON.parse(jsonText);
+    const hex = data.comfort_field_synthetic as string | undefined;
+    if (!hex) return null;
+    return hex.split(/\s+/).map((h) => parseInt(h, 16));
+  } catch {
+    return null;
+  }
+}
+
+function axisOfCoordinate(coord: string): number {
+  return parseInt(coord[0], 16) % 8;
+}
+
+/**
+ * Rank open horizons for one voice (the per-voice half of x2A00_lexicon):
+ * a voice's own claims first (its turn), others' claims excluded (their turn),
+ * remaining unclaimed horizons by comfort-field fit on the horizon's axis.
+ */
+function rankHorizonsForVoice(
+  voice: string,
+  horizons: OrganHorizon[],
+  claims: Map<string, string>,
+  comfort: number[] | null,
+): OrganHorizon[] {
+  const score = (h: OrganHorizon): number => {
+    const key = `x${h.coordinate}_${h.handle}`;
+    const claimedBy = claims.get(key);
+    if (claimedBy && normVoice(claimedBy) === voice) return 1_000_000;
+    if (claimedBy) return -1; // someone else's turn — exclude
+    return comfort ? (comfort[axisOfCoordinate(h.coordinate)] ?? 0) : 0;
+  };
+  return [...horizons]
+    .filter((h) => score(h) >= 0)
+    .sort((a, b) => score(b) - score(a));
 }
 
 interface RepoSignal {
@@ -337,9 +407,51 @@ async function main() {
   }
   const timestamp = new Date().toISOString();
   const signalList = REPOS.map((repo) => signals[repo]);
-  const openHorizons = (await loadOrganHorizons())
+  const openHorizons0 = (await loadOrganHorizons())
     .filter(isOpenHorizon)
     .sort((a, b) => a.coordinate.localeCompare(b.coordinate));
+
+  // Per-voice mode (`--voice=N`): rank horizons for that voice and print only —
+  // never clobber the shared global recommendation the daemon tick reads.
+  const voiceArg = Deno.args.find((a) => a.startsWith("--voice="))?.slice(8);
+  if (voiceArg) {
+    const v = normVoice(voiceArg);
+    const claims = await loadClaims();
+    const comfort = await loadComfortField(v, cwd);
+    const ranked = rankHorizonsForVoice(v, openHorizons0, claims, comfort);
+    const myClaims = [...claims]
+      .filter(([, cv]) => normVoice(cv) === v)
+      .map(([k]) => k);
+    console.log(JSON.stringify(
+      {
+        type: "CognitiveRecommendationPerVoice",
+        schema: "trinity.cognition-recommend-voice.v0.1",
+        voice: v,
+        timestamp,
+        comfort_field_resolved: comfort !== null,
+        my_claims: myClaims,
+        next: ranked[0]
+          ? {
+            horizon: `x${ranked[0].coordinate}_${ranked[0].handle}`,
+            why:
+              myClaims.includes(`x${ranked[0].coordinate}_${ranked[0].handle}`)
+                ? "your claim — your turn"
+                : "best fit by your comfort field",
+            action: ranked[0].horizon,
+          }
+          : null,
+        ranked: ranked.map((h) => ({
+          horizon: `x${h.coordinate}_${h.handle}`,
+          horizon_text: h.horizon,
+        })),
+      },
+      null,
+      2,
+    ));
+    return;
+  }
+
+  const openHorizons = openHorizons0;
   const recommendations = signalList
     .flatMap((s) => buildRecommendations(s, openHorizons))
     .sort((a, b) => b.pressure - a.pressure)

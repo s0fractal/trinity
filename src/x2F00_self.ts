@@ -216,7 +216,15 @@ interface StatusShape {
       sample: string[];
     };
   };
-  substrate_health?: { overall?: string };
+  substrate_health?: {
+    overall?: string;
+    external_ci?: {
+      is_stale?: boolean;
+      green?: boolean | null;
+      age_seconds?: number | null;
+      red_signals?: string[];
+    };
+  };
   submodules?: Record<string, { summary?: { overall?: string } } | null>;
 }
 
@@ -402,6 +410,32 @@ function buildAttention(args: {
     nextActions.push(
       "Run `./t external-surfaces --prune-stale-runtime --dry-run --json` to inspect safe cache cleanup.",
     );
+  }
+
+  // External CI freshness. The substrate reports internal health and external CI
+  // separately by design, so `overall` can read "well" while CI is unverified or
+  // red. Surface that here so a voice is nudged to check, not silently misled.
+  const ci = args.status?.substrate_health?.external_ci;
+  if (ci) {
+    const hasRed = (ci.red_signals?.length ?? 0) > 0;
+    if (hasRed && !ci.is_stale) {
+      score += 4;
+      reasons.push(`external CI is RED: ${ci.red_signals!.join(", ")}`);
+      nextActions.push(
+        "Run `gh run list --branch main --limit 1` and fix the failing CI gate before pushing more.",
+      );
+    } else if (ci.is_stale) {
+      score += 2;
+      const age = ci.age_seconds != null
+        ? `${Math.round(ci.age_seconds / 60)}m old`
+        : "unknown age";
+      reasons.push(
+        `external CI status is STALE (${age}) — green/red is unverified, do not trust the cached value`,
+      );
+      nextActions.push(
+        "Run `gh run list --branch main --limit 1` to verify CI before trusting `t status`.",
+      );
+    }
   }
 
   const level = score >= 4 ? "act" : score > 0 ? "watch" : "clear";

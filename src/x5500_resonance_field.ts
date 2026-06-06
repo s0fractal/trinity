@@ -20,10 +20,18 @@
 //            only, no text). Tests the CLOSED LOOP: does activity self-sustain
 //            after the real stream ends, or damp to silence, or explode?
 //
+// UNISON vs POLYPHONY: with a plain absolute threshold every voice spikes together
+// when the room gets loud (cv≈0 — unison). --homeostasis makes each voice fire on
+// a SPIKE above its OWN running baseline AND on the CENTERED field (its region's
+// deviation from the global mood) — so voices wake selectively, to different
+// chords, at different rates (cv>0 — polyphony). cv = coefficient of variation of
+// per-voice wake counts; 0 = unison, higher = more distinct voices.
+//
 // Usage:
 //   deno run --allow-read --allow-run --allow-env src/x5500_resonance_field.ts [--mode=echo|replay]
-//       [--threshold=0.18] [--decay=0.82] [--diffuse=0.12] [--refractory=3] [--json]
-//   (no --threshold ⇒ sweep a band and report where it sounds)
+//       [--homeostasis [--sens=0.5] [--hs-alpha=0.1]]
+//       [--threshold=0.5] [--decay=0.82] [--diffuse=0.12] [--refractory=3] [--json]
+//   (no --threshold ⇒ sweep a band and report where it sounds / goes polyphonic)
 
 const N = 8; // octet axes 0..7 on a ring
 const SRC = import.meta.dirname!;
@@ -141,6 +149,9 @@ interface Params {
   echo: boolean; // woken voices deposit a synthetic pulse back
   echoGain: number; // strength of that pulse
   ringSteps: number; // extra silent steps after the stream, to hear it ring
+  homeostasis: boolean; // fire on a SPIKE above the voice's own running baseline
+  sens: number; // homeostatic sensitivity: fire when r > baseline*(1+sens)
+  hsAlpha: number; // EMA weight for the baseline (per step)
 }
 
 interface RunResult {
@@ -154,6 +165,8 @@ interface RunResult {
   energyTrace: number[]; // total field energy per step
   ringTailWakes: number; // wakes during the silent ring-out (echo mode)
   cascades: number; // wakes that landed within 2 steps of a prior wake
+  cv: number; // coefficient of variation of per-voice counts (0 = unison)
+  topAxis: Record<string, number>; // each voice's most-present chord axis at wake
 }
 
 function deposit(field: number[], c: Chord) {
@@ -184,6 +197,10 @@ function runField(
     voices.map((v) => [v, 0]),
   );
   const energyTrace: number[] = [];
+  const baseline = new Map<string, number>(voices.map((v) => [v, 0]));
+  const axisTally: Record<string, number[]> = Object.fromEntries(
+    voices.map((v) => [v, new Array(N).fill(0)]),
+  );
   let wakes = 0, cascades = 0, ringTailWakes = 0, lastAnyWake = -99;
   const totalSteps = chords.length + (p.echo ? p.ringSteps : 0);
 
@@ -192,32 +209,54 @@ function runField(
     const inStream = step < chords.length;
     if (inStream) deposit(field, chords[step]);
 
-    // Threshold check: each voice resonates the field against its tuning.
+    // Contrast: under homeostasis, project the CENTERED field (minus its mean) so
+    // a voice responds to the SHAPE of the mood in its region, not the overall
+    // loudness — otherwise every voice spikes together when the room gets loud.
+    const meanField = p.homeostasis ? field.reduce((a, b) => a + b, 0) / N : 0;
     for (const v of voices) {
       const tune = tunings.get(v)!;
       let r = 0;
-      for (let i = 0; i < N; i++) r += field[i] * tune[i];
+      for (let i = 0; i < N; i++) r += (field[i] - meanField) * tune[i];
+      const base = baseline.get(v)!;
+      // Homeostasis: fire on a SPIKE above the voice's OWN running baseline (so a
+      // voice reacts to what is salient FOR IT, not to absolute loudness). A
+      // small floor stops firing on noise when the region is quiet.
+      const fires = p.homeostasis
+        ? r > Math.max(base * (1 + p.sens), p.threshold)
+        : r > p.threshold;
       const since = step - (lastWake.get(v) ?? -p.refractory - 1);
-      if (r > p.threshold && since > p.refractory) {
+      if (fires && since > p.refractory) {
         lastWake.set(v, step);
         perVoice[v]++;
         wakes++;
+        if (inStream) axisTally[v][chords[step].primary]++;
         if (step - lastAnyWake <= 2) cascades++;
         lastAnyWake = step;
         if (!inStream) ringTailWakes++;
-        // echo: the woken voice retransmits a pulse shaped by its own tuning,
-        // strongest where it is most sensitive (positive lobes only).
         if (p.echo) {
           for (let i = 0; i < N; i++) {
             if (tune[i] > 0) field[i] += p.echoGain * tune[i];
           }
         }
       }
+      // Update the baseline AFTER the test (EMA of observed resonance).
+      baseline.set(v, base + p.hsAlpha * (r - base));
     }
     energyTrace.push(field.reduce((a, b) => a + b, 0));
   }
 
   const active = voices.filter((v) => perVoice[v] > 0).length;
+  const counts = voices.map((v) => perVoice[v]);
+  const mean = counts.reduce((a, b) => a + b, 0) / (counts.length || 1);
+  const sd = Math.sqrt(
+    counts.reduce((a, b) => a + (b - mean) ** 2, 0) / (counts.length || 1),
+  );
+  const cv = mean > 0 ? sd / mean : 0;
+  const topAxis: Record<string, number> = {};
+  for (const v of voices) {
+    const t = axisTally[v];
+    topAxis[v] = t.indexOf(Math.max(...t));
+  }
   return {
     steps: totalSteps,
     streamLen: chords.length,
@@ -229,6 +268,8 @@ function runField(
     energyTrace,
     ringTailWakes,
     cascades,
+    cv,
+    topAxis,
   };
 }
 
@@ -296,6 +337,9 @@ async function main() {
     echo,
     echoGain: num("echo-gain", 0.45),
     ringSteps: num("ring", 40),
+    homeostasis: args.includes("--homeostasis"),
+    sens: num("sens", 0.5),
+    hsAlpha: num("hs-alpha", 0.1),
   };
 
   const [chords, tunings] = await Promise.all([
@@ -353,15 +397,15 @@ async function main() {
     console.log(
       `  ${
         sweepKnob.padEnd(9)
-      } wakes  rate   voices  ring-tail  finalE   verdict`,
+      } wakes  rate   voices  cv     ring-tail  verdict`,
     );
     for (const { x, r } of rows) {
       console.log(
         `  ${x.toFixed(2).padEnd(9)}${String(r.wakes).padStart(5)}  ${
           r.wakeRate.toFixed(3)
-        }   ${String(r.activeVoices).padStart(2)}/${tunings.size}    ${
-          String(r.ringTailWakes).padStart(5)
-        }   ${energyStats(r).finalE.toFixed(1).padStart(6)}   ${verdict(r)}`,
+        }   ${String(r.activeVoices).padStart(2)}/${tunings.size}   ${
+          r.cv.toFixed(2)
+        }    ${String(r.ringTailWakes).padStart(5)}    ${verdict(r)}`,
       );
     }
     const sounds = rows.filter(({ r }) =>
@@ -388,22 +432,44 @@ async function main() {
   console.log(
     `🎙  resonance field — mode=${mode} threshold=${base.threshold}${
       echo ? ` echo-gain=${base.echoGain}` : ""
-    }`,
+    }${base.homeostasis ? ` homeostasis(sens=${base.sens})` : ""}`,
   );
   console.log(`    energy: ${sparkline(r.energyTrace)}`);
   console.log(
     `    ${r.wakes} wakes · ${r.activeVoices}/${tunings.size} voices · rate ${
       r.wakeRate.toFixed(3)
-    } · cascades ${r.cascades}` +
+    } · cv ${r.cv.toFixed(2)} · cascades ${r.cascades}` +
       (echo ? ` · ring-tail ${r.ringTailWakes}` : ""),
   );
+  const axisName = (a: number) =>
+    [
+      "void",
+      "first",
+      "mirror",
+      "triangle",
+      "found",
+      "action",
+      "harmony",
+      "compl",
+    ][a] ??
+      String(a);
   const ranked = Object.entries(r.perVoice).sort((a, b) => b[1] - a[1]);
   for (const [v, n] of ranked) {
     if (n > 0) {
-      console.log(`      ${v.padEnd(10)} ${"▮".repeat(Math.min(40, n))} ${n}`);
+      console.log(
+        `      ${v.padEnd(10)} ${"▮".repeat(Math.min(40, n))} ${n}  ←${
+          axisName(r.topAxis[v])
+        }`,
+      );
     }
   }
-  console.log(`    verdict: ${verdict(r)}`);
+  console.log(
+    `    verdict: ${verdict(r)}  ${
+      r.cv < 0.15
+        ? "(unison — voices undifferentiated)"
+        : "(polyphonic — voices distinct)"
+    }`,
+  );
   if (echo && r.ringTailWakes > 0) {
     console.log(
       `    ↻ kept ringing ${r.ringTailWakes}× after the real stream ended.`,

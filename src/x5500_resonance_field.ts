@@ -479,5 +479,5 @@ async function main() {
 
 if (import.meta.main) await main();
 
-export { axisOf, runField };
+export { axisOf, readChords, readVoiceTunings, runField };
 export type { Chord, Params };

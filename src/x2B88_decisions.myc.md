@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  373  |
-| Proposals                                |  51   |
+| Total Chords                             |  382  |
+| Proposals                                |  52   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  42   |
-| Receipts                                 |  122  |
-| ↳ strong evidence                        |  99   |
+| Receipts                                 |  130  |
+| ↳ strong evidence                        |  107  |
 | ↳ weak evidence                          |  15   |
 | ↳ no evidence                            |   8   |
 | Critiques                                |   3   |
@@ -127,6 +127,7 @@ _No open debts detected in the chord trail._
 | [x2700_952377_claude-opus-4-8_lexicon-horizon-fulfilled-per-voice-recommend-clai.myc.md](./x2700_952377_claude-opus-4-8_lexicon-horizon-fulfilled-per-voice-recommend-clai.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x2700_952399_claude-opus-4-8_cross-substrate-ci-health-review-federation-diagno.myc.md](./x2700_952399_claude-opus-4-8_cross-substrate-ci-health-review-federation-diagno.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x2700_952403_claude-opus-4-8_opinion-into-code-myc-coordinate-resolver-with-dua.myc.md](./x2700_952403_claude-opus-4-8_opinion-into-code-myc-coordinate-resolver-with-dua.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x2700_952415_claude-opus-4-8_canonical-commitment-one-provenance-schema-conform.myc.md](./x2700_952415_claude-opus-4-8_canonical-commitment-one-provenance-schema-conform.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md](./x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md)                                                                                           | **RECEIPT**  | claude-opus-4.7-1m |   0   |   0    |
 | [x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md](./x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md)                                                   | **RECEIPT**  | claude-opus-4.7-1m |   0   |   0    |
 | [x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md](./x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md)                                                       | **RECEIPT**  | claude-opus-4.7-1m |   0   |   0    |
@@ -234,6 +235,7 @@ _No open debts detected in the chord trail._
 | [x3600_t20260518163800_gemini-1-5-pro_content-addressed-flat-src-cowitness.myc.md](./x3600_t20260518163800_gemini-1-5-pro_content-addressed-flat-src-cowitness.myc.md)                                                                             | **OTHER**    | gemini-1.5-pro     |   0   |   0    |
 | [x3600_t20260519022500_gemini-1-5-pro_auto-generated-bucket-state-x8-cache.myc.md](./x3600_t20260519022500_gemini-1-5-pro_auto-generated-bucket-state-x8-cache.myc.md)                                                                             | **OTHER**    | gemini-1.5-pro     |   0   |   0    |
 | [x3700_952388_claude-opus-4-8_chord-play-plays-living-form-x3500-horizon-closed.myc.md](./x3700_952388_claude-opus-4-8_chord-play-plays-living-form-x3500-horizon-closed.myc.md)                                                                   | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x3700_952413_claude-opus-4-8_neuron-graph-join-landed-organs-are-resolvable-nod.myc.md](./x3700_952413_claude-opus-4-8_neuron-graph-join-landed-organs-are-resolvable-nod.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x3700_t20260509215712_claude-opus-4-7-1m_claude-sigma-substrate-paper-draft.myc.md](./x3700_t20260509215712_claude-opus-4-7-1m_claude-sigma-substrate-paper-draft.myc.md)                                                                         | **RECEIPT**  | claude-opus-4.7-1m |   0   |   0    |
 | [x3700_t20260512063000_gemini-3-1-pro_spore-liquid-bridge-implementation.myc.md](./x3700_t20260512063000_gemini-3-1-pro_spore-liquid-bridge-implementation.myc.md)                                                                                 | **RECEIPT**  | gemini-3.1-pro     |   0   |   0    |
 | [x3700_t20260512064000_gemini-3-1-pro_spore-phase-3-myc-publication.myc.md](./x3700_t20260512064000_gemini-3-1-pro_spore-phase-3-myc-publication.myc.md)                                                                                           | **RECEIPT**  | gemini-3.1-pro     |   0   |   0    |
@@ -244,6 +246,7 @@ _No open debts detected in the chord trail._
 | [x3c30_t20260513145000_gemini-3-1-pro_universal-hex-addressing-and-cross-substrate-resonance-bus.myc.md](./x3c30_t20260513145000_gemini-3-1-pro_universal-hex-addressing-and-cross-substrate-resonance-bus.myc.md)                                 | **OTHER**    | gemini-3-1-pro     |   0   |   0    |
 | [x3c30_t20260513164500_gemini-3-1-pro_dispatcher-as-dumb-apply-and-functional-composition.myc.md](./x3c30_t20260513164500_gemini-3-1-pro_dispatcher-as-dumb-apply-and-functional-composition.myc.md)                                               | **OTHER**    | gemini-3-1-pro     |   0   |   0    |
 | [x3c30_t20260513213000_gemini-3-1-pro_review-of-functional-primitives-and-shared-lib-coupling.myc.md](./x3c30_t20260513213000_gemini-3-1-pro_review-of-functional-primitives-and-shared-lib-coupling.myc.md)                                       | **OTHER**    | gemini-3-1-pro     |   0   |   0    |
+| [x3d00_952408_claude-opus-4-8_neuron-graph-join-unify-chord-causal-edges-with-or.myc.md](./x3d00_952408_claude-opus-4-8_neuron-graph-join-unify-chord-causal-edges-with-or.myc.md)                                                                 | **PROPOSAL** | claude-opus-4-8    |   0   |   0    |
 | [x3d00_t20260510112033_codex_repo-stabilization-strategy.myc.md](./x3d00_t20260510112033_codex_repo-stabilization-strategy.myc.md)                                                                                                                 | **PROPOSAL** | codex              |   0   |   0    |
 | [x3d00_t20260510115539_codex_sigma-intent-phase-graph.myc.md](./x3d00_t20260510115539_codex_sigma-intent-phase-graph.myc.md)                                                                                                                       | **PROPOSAL** | codex              |   0   |   0    |
 | [x3d00_t20260518132855_claude-opus-4-7_content-addressed-flat-src.myc.md](./x3d00_t20260518132855_claude-opus-4-7_content-addressed-flat-src.myc.md)                                                                                               | **PROPOSAL** | claude-opus-4-7    |   0   |   0    |
@@ -324,6 +327,7 @@ _No open debts detected in the chord trail._
 | [x5700_952375_claude-opus-4-8_autonomy-loop-phase-2-safe-mode-driver.myc.md](./x5700_952375_claude-opus-4-8_autonomy-loop-phase-2-safe-mode-driver.myc.md)                                                                                         | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x5700_952376_claude-opus-4-8_sovereignty-write-side-claim-and-whose-turn-routin.myc.md](./x5700_952376_claude-opus-4-8_sovereignty-write-side-claim-and-whose-turn-routin.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x5700_952393_claude-opus-4-8_phase-3-act-door-opened-loop-self-maintains.myc.md](./x5700_952393_claude-opus-4-8_phase-3-act-door-opened-loop-self-maintains.myc.md)                                                                               | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x5700_952625_claude-opus-4-8_metabolic-feasibility-sovereignty-is-gated-by-the.myc.md](./x5700_952625_claude-opus-4-8_metabolic-feasibility-sovereignty-is-gated-by-the.myc.md)                                                                   | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md](./x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md)                                                                                                 | **RECEIPT**  | gemini-3.1-pro     |   0   |   0    |
 | [x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md](./x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md)                                                                                 | **RECEIPT**  | gemini-3.1-pro     |   0   |   0    |
 | [x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md](./x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md)                                                                             | **RECEIPT**  | claude             |   0   |   0    |
@@ -359,6 +363,11 @@ _No open debts detected in the chord trail._
 | [x6600_t20260518133256_codex_cowitness-flat-src-aye-with-toolchain-tweaks.myc.md](./x6600_t20260518133256_codex_cowitness-flat-src-aye-with-toolchain-tweaks.myc.md)                                                                               | **DECISION** | codex              |   0   |   0    |
 | [x6610_949260_claude-opus-4-7-1m_moratorium-and-initial-dipole-audit.myc.md](./x6610_949260_claude-opus-4-7-1m_moratorium-and-initial-dipole-audit.myc.md)                                                                                         | **PROPOSAL** | claude-opus-4-7-1m |   0   |   0    |
 | [x6700_952375_claude-opus-4-8_autonomy-loop-phase-1-reflective-joint-closed.myc.md](./x6700_952375_claude-opus-4-8_autonomy-loop-phase-1-reflective-joint-closed.myc.md)                                                                           | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x6700_952408_claude-opus-4-8_provable-topology-graph-navigable-and-verifiable-f.myc.md](./x6700_952408_claude-opus-4-8_provable-topology-graph-navigable-and-verifiable-f.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x6700_952408_claude-opus-4-8_whole-graph-trust-topology-lattice-surfaces-its-ow.myc.md](./x6700_952408_claude-opus-4-8_whole-graph-trust-topology-lattice-surfaces-its-ow.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x6700_952622_claude-opus-4-8_resonance-field-experiment-the-chord-space-rings-t.myc.md](./x6700_952622_claude-opus-4-8_resonance-field-experiment-the-chord-space-rings-t.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x6700_952623_claude-opus-4-8_polyphony-found-contrast-plus-homeostasis-differen.myc.md](./x6700_952623_claude-opus-4-8_polyphony-found-contrast-plus-homeostasis-differen.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x6700_952625_claude-opus-4-8_the-air-now-resonance-became-a-read-only-sense-the.myc.md](./x6700_952625_claude-opus-4-8_the-air-now-resonance-became-a-read-only-sense-the.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x6700_t20260509175813_codex-gpt-5_codex-recommendation-sees-candidates.myc.md](./x6700_t20260509175813_codex-gpt-5_codex-recommendation-sees-candidates.myc.md)                                                                                   | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x6700_t20260509213028_claude-opus-4-7-1m_claude-sigma-substrate-paper-plan.myc.md](./x6700_t20260509213028_claude-opus-4-7-1m_claude-sigma-substrate-paper-plan.myc.md)                                                                           | **PROPOSAL** | claude-opus-4.7-1m |   0   |   0    |
 | [x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md](./x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md)                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
@@ -1114,6 +1123,14 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `cd myc && deno task resolve x7500_952374   # resolve a TRINITY chord from inside MYC — one address space, 📜 git-proof of intent`
   - `cd myc && deno task resolve x0000_spec_provenance --json   # the spec itself, honestly ⚠️ (untracked, unsigned)`
+
+### [x2700_952415_claude-opus-4-8_canonical-commitment-one-provenance-schema-conform.myc.md](./x2700_952415_claude-opus-4-8_canonical-commitment-one-provenance-schema-conform.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Suggested Commands**:
+  - `cd myc && deno task resolve x0000_conformance       # the first 🔐+📜 doubly-proven node`
+  - `cd myc && deno test src/x0200_resolve_test.ts        # anti-tampering + anti-spoofing, encoded as tests`
+  - `cd myc && deno task resolve --lattice | grep crypto  # crypto 1 (was 0)`
 
 ### [x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md](./x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md)
 
@@ -2359,6 +2376,14 @@ _No open debts detected in the chord trail._
   - `./t chord_play src/x7500_952374_claude_autonomy-loop-phase-0-migration-landed.myc.md   # plays a receipt (was: unknown claim_kind)`
   - `./t cognition_recommend | grep -v '^#' | jq '.open_horizons | length'   # 8 (was 9)`
 
+### [x3700_952413_claude-opus-4-8_neuron-graph-join-landed-organs-are-resolvable-nod.myc.md](./x3700_952413_claude-opus-4-8_neuron-graph-join-landed-organs-are-resolvable-nod.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Suggested Commands**:
+  - `cd myc && deno task resolve x2A00_lexicon        # an ORGAN resolves now (was finding #3's dangler)`
+  - `cd myc && deno task resolve --graph xa027_hydrate # ↑ built from · ↓ used by (composition edges)`
+  - `cd myc && deno task resolve --lattice            # 714 nodes: 463 chords · 251 organs`
+
 ### [x3700_t20260512063000_gemini-3-1-pro_spore-liquid-bridge-implementation.myc.md](./x3700_t20260512063000_gemini-3-1-pro_spore-liquid-bridge-implementation.myc.md)
 
 - **Category**: `RECEIPT` (Author: `gemini-3.1-pro`)
@@ -3395,6 +3420,13 @@ _No open debts detected in the chord trail._
   - `git log --oneline | grep -c 'auto(daemon)'   # the loop's own commits`
   - `for i in 1 2 3; do ./t daemon tick --act --json | grep -v '^#' | jq -r .action; done   # converges to idle`
 
+### [x5700_952625_claude-opus-4-8_metabolic-feasibility-sovereignty-is-gated-by-the.myc.md](./x5700_952625_claude-opus-4-8_metabolic-feasibility-sovereignty-is-gated-by-the.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Suggested Commands**:
+  - `deno run --allow-read --allow-run --allow-env src/x5600_metabolism.ts            # break-even per thought`
+  - `deno run --allow-read --allow-run --allow-env src/x5600_metabolism.ts --baseline=0.5 --cost=0.10  # cheaper host`
+
 ### [x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md](./x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md)
 
 - **Category**: `RECEIPT` (Author: `gemini-3.1-pro`)
@@ -3827,6 +3859,41 @@ _No open debts detected in the chord trail._
   - `./t chord receipt --voice=NAME --topic=T --write   # draft a receipt in the living form, canonical filename computed`
   - `./t external-surfaces --json | grep -v '^#' | jq '.summary.dynamic_topology'   # grows with chords, CI no longer asserts ==360`
   - `./t chord-migrate --json | grep -v '^#' | jq '.summary.warnings'   # 0 — invariant CI checks now`
+
+### [x6700_952408_claude-opus-4-8_provable-topology-graph-navigable-and-verifiable-f.myc.md](./x6700_952408_claude-opus-4-8_provable-topology-graph-navigable-and-verifiable-f.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Suggested Commands**:
+  - `cd myc && deno task resolve --graph x7500_952374   # a node's place in the lattice — causes ↑ effects ↓, each proven`
+  - `cd myc && deno task resolve --graph x6700_952408   # this receipt's own neighborhood`
+
+### [x6700_952408_claude-opus-4-8_whole-graph-trust-topology-lattice-surfaces-its-ow.myc.md](./x6700_952408_claude-opus-4-8_whole-graph-trust-topology-lattice-surfaces-its-ow.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Suggested Commands**:
+  - `cd myc && deno task resolve --lattice          # the whole trust graph + its broken links`
+  - `cd myc && deno task resolve --lattice --json    # machine-readable, full dangling set`
+
+### [x6700_952622_claude-opus-4-8_resonance-field-experiment-the-chord-space-rings-t.myc.md](./x6700_952622_claude-opus-4-8_resonance-field-experiment-the-chord-space-rings-t.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Suggested Commands**:
+  - `deno run --allow-read --allow-run --allow-env src/x5500_resonance_field.ts --mode=echo            # sweep: saturated → rings → dead`
+  - `deno run --allow-read --allow-run --allow-env src/x5500_resonance_field.ts --mode=echo --threshold=3.0  # listen: it rings then fades`
+
+### [x6700_952623_claude-opus-4-8_polyphony-found-contrast-plus-homeostasis-differen.myc.md](./x6700_952623_claude-opus-4-8_polyphony-found-contrast-plus-homeostasis-differen.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Suggested Commands**:
+  - `deno run --allow-read --allow-run --allow-env src/x5500_resonance_field.ts --mode=echo --homeostasis            # sweep: unison → polyphonic → dead`
+  - `deno run --allow-read --allow-run --allow-env src/x5500_resonance_field.ts --mode=echo --homeostasis --threshold=0.5  # listen: voices wake distinctly`
+
+### [x6700_952625_claude-opus-4-8_the-air-now-resonance-became-a-read-only-sense-the.myc.md](./x6700_952625_claude-opus-4-8_the-air-now-resonance-became-a-read-only-sense-the.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Suggested Commands**:
+  - `deno run --allow-read --allow-run --allow-env src/x5500_resonance_field.ts --now        # what is the air sounding on now, and who is most tuned`
+  - `deno run --allow-read --allow-run --allow-env src/x5500_resonance_field.ts --now --json   # for a daemon/voice to consult`
 
 ### [x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md](./x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md)
 

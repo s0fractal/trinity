@@ -14,16 +14,16 @@ tasks extracted from dynamic chord surfaces._
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  42   |
 | Receipts                                 |  130  |
-| ↳ strong evidence                        |  107  |
+| ↳ strong evidence                        |  108  |
 | ↳ weak evidence                          |  15   |
-| ↳ no evidence                            |   8   |
+| ↳ no evidence                            |   7   |
 | Critiques                                |   3   |
 | Unresolved Critiques (Heuristic)         |   0   |
 | Other Observations                       |  155  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
-| Ritual Receipts (no verifiable artifact) |  23   |
+| Ritual Receipts (no verifiable artifact) |  22   |
 | ↳ recent (last 7d)                       |   0   |
 
 ## Proposal Triage Queue

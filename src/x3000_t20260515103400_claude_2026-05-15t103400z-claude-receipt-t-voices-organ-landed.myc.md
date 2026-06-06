@@ -66,3 +66,24 @@ part: a watcher that detects new chords and routes them.
 `t voices` could query liquid's T^8 resonance for comfort fields instead of
 computing synthetic averages. Deferred — requires liquid exposing a queryable
 interface.
+
+## Verification
+
+_(Evidence added 2026-06-06 to resolve the decision-ledger ritual-receipt flag.
+The original 2026-05-15 receipt predated the verifiable-evidence convention; the
+claim is true and checkable today — this section adds the proof, it does not
+change the claim.)_
+
+Commands run:
+
+```
+$ ./t voices --json | jq -r '.voices | length'
+6
+$ ./t voices --json | jq -r '[.voices[].identity] | join(", ")'
+claude, codex, gemini, kimi, antigravity, s0fractal
+```
+
+Artifact: the organ landed and lives at `src/x2001_voices.ts` (migrated from the
+original `0x2/0.ts` during the flat-src migration). `t voices` resolves and
+returns synthetic voice profiles, now across 6 voices. Anyone can re-run the
+commands above to falsify this receipt.

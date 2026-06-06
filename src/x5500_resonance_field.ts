@@ -185,6 +185,30 @@ function diffuseDecay(field: number[], p: Params): number[] {
   return out;
 }
 
+/** The CURRENT state of the air: run the field over the whole stream (decay makes
+ * old chords negligible, so the final state IS "now") and rank voices by their
+ * present resonance against the centered field. A read-only orientation sense —
+ * "what is sounding now, and who is most tuned to it" — not an actuator. */
+function fieldNow(
+  chords: Chord[],
+  tunings: Map<string, number[]>,
+  p: Params,
+): { field: number[]; ranked: Array<[string, number]>; topAxis: number } {
+  let field = new Array(N).fill(0);
+  for (const c of chords) {
+    field = diffuseDecay(field, p);
+    deposit(field, c);
+  }
+  const mean = field.reduce((a, b) => a + b, 0) / N;
+  const ranked = [...tunings.entries()].map(([v, tune]) => {
+    let r = 0;
+    for (let i = 0; i < N; i++) r += (field[i] - mean) * tune[i];
+    return [v, r] as [string, number];
+  }).sort((a, b) => b[1] - a[1]);
+  const topAxis = field.indexOf(Math.max(...field));
+  return { field, ranked, topAxis };
+}
+
 function runField(
   chords: Chord[],
   tunings: Map<string, number[]>,
@@ -349,6 +373,60 @@ async function main() {
   if (chords.length === 0 || tunings.size === 0) {
     console.error("no chords or no voice tunings found");
     Deno.exit(1);
+  }
+
+  // --now: the read-only orientation sense. What is the air resonating with right
+  // now, and which voice is most tuned to this moment? (homeostatic contrast on.)
+  if (args.includes("--now")) {
+    const { field, ranked, topAxis } = fieldNow(chords, tunings, {
+      ...base,
+      homeostasis: true,
+    });
+    const axisName = (a: number) =>
+      [
+        "void",
+        "first",
+        "mirror",
+        "triangle",
+        "found",
+        "action",
+        "harmony",
+        "compl",
+      ][a] ?? String(a);
+    if (json) {
+      console.log(JSON.stringify(
+        {
+          type: "field_now",
+          topAxis: axisName(topAxis),
+          field: field.map((x) => Number(x.toFixed(2))),
+          resonant: ranked.map(([v, r]) => ({
+            voice: v,
+            resonance: Number(r.toFixed(3)),
+          })),
+        },
+        null,
+        2,
+      ));
+      return;
+    }
+    const max = Math.max(...field, 1e-9);
+    console.log("🧭 the air, now —");
+    for (let i = 0; i < N; i++) {
+      const bar = "█".repeat(Math.round((field[i] / max) * 18));
+      console.log(`   ${axisName(i).padEnd(9)} ${bar} ${field[i].toFixed(1)}`);
+    }
+    console.log("");
+    console.log(`   sounding on: ${axisName(topAxis)}`);
+    console.log("   most tuned to this moment:");
+    for (const [v, r] of ranked.slice(0, 3)) {
+      console.log(`     ${v.padEnd(10)} ${r >= 0 ? "+" : ""}${r.toFixed(2)}`);
+    }
+    console.log(
+      `   (a sense, not a summons — ${
+        ranked[0][0]
+      } would resonate most if anyone asked)`,
+    );
+    return;
   }
 
   // The binding knob is the wake THRESHOLD relative to the field's energy scale:

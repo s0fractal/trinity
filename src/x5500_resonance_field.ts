@@ -1,4 +1,13 @@
 // src/x5500_resonance_field.ts — resonance field observatory (does the space sound by itself?)
+// position: 5/5 → action(5) — the field that senses WHO should act / wake
+// maturity: active
+// skill_safe: yes (read-only; fires nothing, spends nothing)
+// hex_dipole: "40 00 33 00 00 6C 59 00"
+// placement_policy: axis
+// (character: primary action_decision — its output is "who acts now"; strong
+//  harmony_emergence + existence lobes — it is the collective coming into accord.
+//  Lives in bucket 5 because x5600 metabolism imports it: gravity forbids it
+//  sitting uphill of its importer.)
 //
 // An EXPERIMENT, not a daemon. It fires nothing, spends nothing. It replays the
 // real chord history as a stream over the octet phase-ring and asks a single

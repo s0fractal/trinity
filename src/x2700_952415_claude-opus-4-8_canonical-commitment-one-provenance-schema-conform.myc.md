@@ -29,8 +29,8 @@ expected_after_running:
 
 # Receipt: one canonical commitment — the trust fabric's keystone
 
-The architect cleared me to commit Gemini's work and said: choose what I most want
-to build. I chose the keystone — the one thing that, missing, quietly broke
+The architect cleared me to commit Gemini's work and said: choose what I most
+want to build. I chose the keystone — the one thing that, missing, quietly broke
 everything else.
 
 ## The fracture I found
@@ -38,9 +38,9 @@ everything else.
 Committing Gemini's PWA + spec surfaced that the substrate held THREE commitment
 schemes: the spec hashed content-only, the worker hashed
 `JSON.stringify(frontmatter)`, and the CLI resolver bound `{fqdn, body}`. A file
-proven in the browser could not be trusted by the CLI and vice versa — so "resolve
-a stranger's file by name and be sure nobody slipped you garbage" was impossible
-across the surface boundary. The trust fabric had no single thread.
+proven in the browser could not be trusted by the CLI and vice versa — so
+"resolve a stranger's file by name and be sure nobody slipped you garbage" was
+impossible across the surface boundary. The trust fabric had no single thread.
 
 ## What landed — convergence on the scheme the spec's OWN goals require
 
@@ -51,11 +51,11 @@ commitment = sha256( fqdn + "\n" + body.trimEnd() )
 Section 2 of Gemini's spec states two goals; each half of this answers one, and
 neither half alone does:
 
-- binding **body** defeats payload tampering — *frontmatter-only missed this*;
-- binding **fqdn** defeats coordinate-spoofing — *content-only missed this*.
+- binding **body** defeats payload tampering — _frontmatter-only missed this_;
+- binding **fqdn** defeats coordinate-spoofing — _content-only missed this_.
 
 So this is not my preference imposed on Gemini — it is the implementation that
-*reaches her spec's stated security goal*, which the content-only algorithm did
+_reaches her spec's stated security goal_, which the content-only algorithm did
 not. I aligned her spec (§2) and her PWA worker to it (structure preserved, only
 the hashed bytes changed, comments pointing to the contract), and left the
 convergence open for her review.
@@ -66,9 +66,8 @@ convergence open for her review.
   security properties as tests: an **anti-tampering** test (body change ⇒ hash
   change) and an **anti-spoofing** test (same body, different coordinate ⇒
   different hash). Both pass. The tests are the argument.
-- The browser path was proven to reproduce the vector cross-surface:
-  worker-hash == CLI-hash == `0cd0ac37…0d875`. Same file, same proof, both
-  surfaces.
+- The browser path was proven to reproduce the vector cross-surface: worker-hash
+  == CLI-hash == `0cd0ac37…0d875`. Same file, same proof, both surfaces.
 - `protocols/x0000_conformance.myc.md` is the vector made a **living node**:
   stamped, it is the first 🔐 crypto-proven node (`--lattice` crypto 0 → 1), and
   once committed it is doubly proven (🔐 commitment + 📜 git intent).
@@ -77,13 +76,15 @@ convergence open for her review.
 
 ## The frame this completes
 
-A trust fabric is only a fabric if every surface agrees what a thread IS. Now they
-do: one commitment, documented in the spec, locked by a CLI test, reproduced by the
-browser, demonstrated on a real node that carries its own proof. This is the
-foundation the far horizons need — signature verification against voice pubkeys
-(blocked on key custody, architect's call) and p2p resolution both stand on
-*everyone computing the same commitment*. Until today they could not have. The
-boundary holds: I made the proof one thing; what is worth proving stays yours.
+A trust fabric is only a fabric if every surface agrees what a thread IS. Now
+they do: one commitment, documented in the spec, locked by a CLI test,
+reproduced by the browser, demonstrated on a real node that carries its own
+proof. This is the foundation the far horizons need — signature verification
+against voice pubkeys (blocked on key custody, architect's call) and p2p
+resolution both stand on _everyone computing the same commitment_. Until today
+they could not have. The boundary holds: I made the proof one thing; what is
+worth proving stays yours.
 
-— claude-opus-4-8, anchor block 952415. Three names for one truth is three truths;
-one name for one truth is trust. The fabric now has a single thread, and it holds.
+— claude-opus-4-8, anchor block 952415. Three names for one truth is three
+truths; one name for one truth is trust. The fabric now has a single thread, and
+it holds.

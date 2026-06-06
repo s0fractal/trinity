@@ -25,9 +25,9 @@ expected_after_running:
 
 # Receipt: the whole graph, with its gaps surfaced
 
-`--graph` walks the lattice from one node. The substrate's own next horizon
-(myc roadmap projection — **Phase 9: Witness And Trust Topology**) asks to take
-in the WHOLE shape — and to do it pluralistically, never hiding where trust is
+`--graph` walks the lattice from one node. The substrate's own next horizon (myc
+roadmap projection — **Phase 9: Witness And Trust Topology**) asks to take in
+the WHOLE shape — and to do it pluralistically, never hiding where trust is
 thin. That is `--lattice`.
 
 ## What landed
@@ -36,9 +36,9 @@ thin. That is `--lattice`.
 one walk (`git ls-files --recurse-submodules`, no per-file `git log`) — **461
 nodes in ~0.25s** — and reports:
 
-- **proven 420/461 (91%)** — 📜 git 420, 🔐 crypto 0 (provenance blocks exist but
-  no real node is stamped yet; honest signal: git is currently the sole proof in
-  practice).
+- **proven 420/461 (91%)** — 📜 git 420, 🔐 crypto 0 (provenance blocks exist
+  but no real node is stamped yet; honest signal: git is currently the sole
+  proof in practice).
 - **516 causal edges**, **157 orphans** (no edges either way — mostly the 360
   migrated chords that predate the `hears:` discipline), hub =
   `x2d00_…kimi_deep-analysis-eight-vectors` (7 cite it).
@@ -49,8 +49,8 @@ nodes in ~0.25s** — and reports:
      written**.
   2. `x5700_952375` cites `x2000_952376_…claim-x2a00-lexicon` — **no such claim
      file was ever recorded**.
-  3. `x5700_952375` cites `x2A00_lexicon` — a real node, but an **organ (`.ts`)**,
-     which the markdown-lattice does not index.
+  3. `x5700_952375` cites `x2A00_lexicon` — a real node, but an **organ
+     (`.ts`)**, which the markdown-lattice does not index.
 
 ## What I did and did NOT fix
 
@@ -66,22 +66,23 @@ roughly doubles node count, so it is a deliberate next step, not a quiet bundle.
 
 ## Why it is real (falsifiers)
 
-- If `--lattice` reports zero dangling when those three citations demonstrably do
-  not resolve, the integrity check is decorative. (Verified: it finds exactly the
-  three, and `resolve` confirms each target is absent or non-markdown.)
+- If `--lattice` reports zero dangling when those three citations demonstrably
+  do not resolve, the integrity check is decorative. (Verified: it finds exactly
+  the three, and `resolve` confirms each target is absent or non-markdown.)
 - If `--lattice --json` and the human view disagree on counts, one is lying.
   (Verified equal: 461 / 420 / 3.)
 
 ## The frame this serves
 
 The whole arc converges on one claim: this is a **trust fabric**, and a trust
-fabric earns the name only if it can show you where it is *not* yet trustworthy.
+fabric earns the name only if it can show you where it is _not_ yet trustworthy.
 `resolve` proves a node, `--why` proves its causes, `--graph` proves its
 neighborhood, and `--lattice` proves the shape of the whole — including the
 honest count of what is unproven, orphaned, and dangling. A topology that
 publishes its own broken links needs no central authority to be trusted; it
 hands you the means to check it. The boundary holds: I build the instrument that
-measures trust; what the graph is *for* stays yours.
+measures trust; what the graph is _for_ stays yours.
 
 — claude-opus-4-8, anchor block 952408. A graph that hides its broken links asks
-for faith; one that lists them offers proof. The cool topology is the second kind.
+for faith; one that lists them offers proof. The cool topology is the second
+kind.

@@ -32,22 +32,22 @@ cool topology. Done — and the graph now browses and verifies itself.
 ## What landed
 
 - **pushed** the resolver to myc (622cdc9); myc CI **green** — the resolver did
-  not touch the checked files, and the README now documents `resolve` / `--why` /
-  `--stamp` / dual-mode provenance (the doc that described only `h.<hash>` was the
-  stale one).
+  not touch the checked files, and the README now documents `resolve` / `--why`
+  / `--stamp` / dual-mode provenance (the doc that described only `h.<hash>` was
+  the stale one).
 - **`resolve --graph <coord>`** — a node's local TOPOLOGY: backward **causes**
   (what produced it) and forward **effects** (what cites it), and **each
   neighbour is itself a resolved, proven node**. Demonstrated: `--graph` on the
-  phase-0 receipt shows it was *caused by* the migration proposal it closed and
-  *feeds into* the phase-1 receipt — and you can `--graph` any of those to keep
+  phase-0 receipt shows it was _caused by_ the migration proposal it closed and
+  _feeds into_ the phase-1 receipt — and you can `--graph` any of those to keep
   walking.
 
 So the resolver now gives the whole shape: `resolve` (a node + its proof),
-`--why` (its causal chain), `--graph` (its bidirectional neighborhood), `--stamp`
-(make it crypto-provable anywhere). From any point you traverse the lattice in
-both directions and verify every step. That is the cool topology: **a graph
-browsed and trusted from anywhere, needing no authority but the proofs its nodes
-carry.**
+`--why` (its causal chain), `--graph` (its bidirectional neighborhood),
+`--stamp` (make it crypto-provable anywhere). From any point you traverse the
+lattice in both directions and verify every step. That is the cool topology: **a
+graph browsed and trusted from anywhere, needing no authority but the proofs its
+nodes carry.**
 
 ## Why it is real (falsifiers)
 
@@ -65,8 +65,8 @@ fabric made visible and walkable. The horizon continues: signature verification
 against voice pubkeys, aligning the PWA worker to the canonical `{fqdn,body}`
 commitment, a whole-graph projection, and then p2p — where this same provenance
 is exactly what lets a stranger resolve a name and trust it. And the boundary
-holds: I build the topology of *what* and *why*; the *what-for* stays yours.
+holds: I build the topology of _what_ and _why_; the _what-for_ stays yours.
 
-— claude-opus-4-8, anchor block 952408. A graph where every node proves itself and
-every edge can be walked both ways is a topology that needs no center — only its
-own coherence.
+— claude-opus-4-8, anchor block 952408. A graph where every node proves itself
+and every edge can be walked both ways is a topology that needs no center — only
+its own coherence.

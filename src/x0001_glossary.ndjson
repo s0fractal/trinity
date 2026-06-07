@@ -199,3 +199,7 @@
 {"00":"5","02":["lexicon","словник","dictionary","chord-effects","lexicon-effects"],"04":"2/A","09":"mirror+apex = empirical chord-form effects dictionary (per-pattern occurrences, voices, falsifier-rate, closure-rate, downstream-refs)","11":"26 26 6C 26 26 26 26 26"}
 {"00":"07","01":"lexicon","02":"type,position,action,summary,entries,bigrams","03":"generated_at,note,synonyms,topology","04":"lexicon receipt from x2A00_lexicon.ts; empirical chord-form effects dictionary with surfaced patterns and bigrams"}
 {"00":"5","02":["contract-status-compiler","glossary-compiler","компілятор-статусів"],"04":"4/011","09":"foundation+first-sub11 = compile contract status family from glossary","11":"00 00 00 00 6C 00 33 00"}
+{"11":"40 00 33 00 00 6C 59 00","00":"5","02":["resonance","резонанс","sound","звук","field","поле"],"04":"5/5","09":"action = resonance field observatory (who should act/wake)"}
+{"11":"40 00 00 00 00 6C 33 00","00":"5","02":["metabolism","метаболізм","upkeep","утримання","keep","feasibility"],"04":"5/6","09":"action × harmony = metabolic feasibility model"}
+{"11":"00 00 00 00 00 00 00 00","00":"5","02":["proxy","serve-proxy","проксі"],"04":"5/51","09":"action = local HTTP/TCP proxy for virtual myc.md resolution"}
+{"11":"00 00 00 00 00 00 00 00","00":"5","02":["run-literate","run-lit","виконати-літературно"],"04":"5/52","09":"action = parse and run typescript blocks directly from markdown"}

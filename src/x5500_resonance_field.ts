@@ -1,7 +1,7 @@
 // src/x5500_resonance_field.ts — resonance field observatory (does the space sound by itself?)
 // position: 5/5 → action(5) — the field that senses WHO should act / wake
 // maturity: active
-// skill_safe: yes (read-only; fires nothing, spends nothing)
+// skill_safe: yes-readonly
 // hex_dipole: "40 00 33 00 00 6C 59 00"
 // placement_policy: axis
 // (character: primary action_decision — its output is "who acts now"; strong

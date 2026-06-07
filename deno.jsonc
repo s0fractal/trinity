@@ -39,6 +39,8 @@
     "resonance": "deno run -A src/x5500_resonance_field.ts",
     "attend": "deno run -A src/x5500_resonance_field.ts --now",
     "metabolism": "deno run -A src/x5600_metabolism.ts",
+    "proxy": "deno run -A src/x5510_myc_proxy.ts",
+    "run-literate": "deno run -A src/x5520_run_literate.ts",
     "cognition:cycle": "deno task cognition:snapshot && deno task cognition:delta && deno task cognition:recommend && deno task cognition:recommend-receipt && deno task cognition:recommend-to-chord && deno task cognition:field",
     "canon:verify": "deno run -A src/x6410_verify_vectors.ts",
     "chord:play": "deno run -A src/x3500_chord_play.ts",
@@ -47,6 +49,14 @@
     "chord:translate": "deno run --allow-net src/x4001_chord.ts translate",
     "chord:parse": "deno run --allow-net src/x4001_chord.ts parse",
     "chord:migrate": "deno run --allow-read --allow-write src/x8F20_chord_migrate.ts"
+  },
+  // Canonical-address bridge: `import "myc.md/src/foo.myc.md"` resolves to the
+  // virtual host served by x5510_myc_proxy.ts (run `deno task proxy`, then point
+  // Deno at it via HTTP_PROXY=http://127.0.0.1:8787). This erases http:// and the
+  // port from the import — the next step toward bare `import "foo.myc.md"`.
+  // Inert until something actually imports under `myc.md/`.
+  "imports": {
+    "myc.md/": "http://myc.md/"
   },
   "fmt": {
     "exclude": [

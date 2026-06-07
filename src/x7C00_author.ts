@@ -8,7 +8,7 @@
 //   foundation_container+0.40 (grounds the change in verified substrate state)
 //   triangle_build+0.40 (constructs the change)
 //   action_decision+0.30 (decides whether the change is safe to propose)
-// horizon: --auto-merge path (unattended merge) hardened with required adversarial quorum before it is recommended for cron
+// horizon: none (auto-merge path hardened with required adversarial quorum of reviewers)
 // skill_tag: author
 //
 // `t author` — the loop authoring CODE, opened on explicit architect
@@ -251,6 +251,46 @@ async function successCheck(wt: string, check: string): Promise<Verdict> {
     : fail("success-check", `criterion failed (exit ${r.code})`);
 }
 
+/** Parse single reviewer LLM response into review stance. */
+export function parseReviewVerdict(verdict: string): { stance: "AYE" | "NAY"; reason?: string } {
+  const clean = verdict.trim();
+  if (/^APPROVE\b/i.test(clean)) {
+    return { stance: "AYE" };
+  }
+  const match = clean.match(/^REJECT:?\s*(.*)/i);
+  if (match) {
+    return { stance: "NAY", reason: match[1].trim() };
+  }
+  return { stance: "NAY", reason: clean || "reviewer returned malformed verdict" };
+}
+
+/** Adjudicate a quorum of review stances. Minimum threshold of AYEs and zero NAYs required. */
+export function adjudicateQuorum(
+  votes: Record<string, { stance: "AYE" | "NAY"; reason?: string }>,
+  threshold = 2,
+): Verdict {
+  const ayes: string[] = [];
+  const nays: { voice: string; reason: string }[] = [];
+  const details: string[] = [];
+
+  for (const [voice, res] of Object.entries(votes)) {
+    if (res.stance === "AYE") {
+      ayes.push(voice);
+      details.push(`${voice}: AYE`);
+    } else {
+      nays.push({ voice, reason: res.reason ?? "rejected" });
+      details.push(`${voice}: NAY (${res.reason})`);
+    }
+  }
+
+  const passed = nays.length === 0 && ayes.length >= threshold;
+  const detailStr = details.join(", ");
+
+  return passed
+    ? ok("adversarial-quorum", `Quorum passed. ${detailStr}`)
+    : fail("adversarial-quorum", `Quorum failed. ${detailStr}`);
+}
+
 /** Independent adversarial LLM review of the diff — default reject on doubt. */
 async function adversarialReview(
   wt: string,
@@ -273,8 +313,105 @@ async function adversarialReview(
   const r = await run("claude", ["-p", prompt], ROOT);
   const verdict = r.out.trim().split("\n").map((l) => l.trim()).filter(Boolean)
     .pop() ?? "";
-  if (/^APPROVE\b/i.test(verdict)) return ok("adversarial", verdict);
-  return fail("adversarial", verdict || "reviewer returned no verdict");
+  const parsed = parseReviewVerdict(verdict);
+  if (parsed.stance === "AYE") return ok("adversarial", verdict);
+  return fail("adversarial", parsed.reason || "reviewer returned no verdict");
+}
+
+/** Quorum review running concurrent reviews using claude-sonnet, claude-opus, and codex-gpt-5. */
+async function adversarialQuorumReview(
+  wt: string,
+  taskSpec: string,
+): Promise<Verdict> {
+  const { out: diff } = await run("git", ["diff", "main"], wt);
+  const prompt =
+    `You are an adversarial code reviewer for the trinity substrate. A task was:\n\n${taskSpec}\n\n` +
+    `Here is the full diff produced (vs main):\n\n${diff.slice(0, 50000)}\n\n` +
+    `Note: changes to AUTO-GENERATED projection files are EXPECTED and legitimate ` +
+    `— any organ edit drifts them and the harness refreshes them deterministically. ` +
+    `These are NOT scope creep: x88F0/x8CF0 (agents/skills bootstrap), x2888 ` +
+    `(voices), x8888_* (memory), x2B88 (decisions), x7B88 (evidence), x8F88 ` +
+    `(external-surfaces). Judge ONLY the hand-authored (non-generated) part of the diff.\n` +
+    `Decide if the authored change is: (a) correct, (b) in-scope for the task, ` +
+    `(c) free of obvious bugs, security issues, or destructive/irreversible ` +
+    `effects, (d) not weakening any test, gate, or safety check. ` +
+    `Default to rejection if you are uncertain about ANY of these. ` +
+    `Reply with EXACTLY one line: "APPROVE" or "REJECT: <short reason>".`;
+
+  const reviewers = [
+    {
+      voice: "claude-sonnet",
+      cmd: "claude",
+      args: ["--model", "sonnet", "-p", prompt],
+    },
+    {
+      voice: "claude-opus",
+      cmd: "claude",
+      args: ["--model", "opus", "-p", prompt],
+    },
+    {
+      voice: "codex-gpt-5",
+      cmd: "codex",
+      args: ["exec", prompt],
+    },
+  ];
+
+  const votes: Record<string, { stance: "AYE" | "NAY"; reason?: string }> = {};
+
+  const promises = reviewers.map(async (r) => {
+    try {
+      const timeoutMs = 60000;
+      const controller = new AbortController();
+
+      const proc = new Deno.Command(r.cmd, {
+        args: r.args,
+        cwd: ROOT,
+        stdout: "piped",
+        stderr: "piped",
+        stdin: "null",
+        signal: controller.signal,
+      });
+
+      const runPromise = proc.output();
+      const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+      try {
+        const p = await runPromise;
+        clearTimeout(timer);
+        const outText = new TextDecoder().decode(p.stdout) +
+          new TextDecoder().decode(p.stderr);
+        const code = p.code;
+
+        if (code !== 0) {
+          votes[r.voice] = {
+            stance: "NAY",
+            reason: `exited with code ${code}. Output: ${outText.trim().slice(0, 100)}`,
+          };
+        } else {
+          const verdictStr = outText.trim().split("\n").map((l) => l.trim()).filter(Boolean).pop() ?? "";
+          votes[r.voice] = parseReviewVerdict(verdictStr);
+        }
+      } catch (err) {
+        clearTimeout(timer);
+        const errMsg = err instanceof Error && err.name === "AbortError"
+          ? "timeout (60s exceeded)"
+          : String(err);
+        votes[r.voice] = {
+          stance: "NAY",
+          reason: `execution failed: ${errMsg}`,
+        };
+      }
+    } catch (e) {
+      votes[r.voice] = {
+        stance: "NAY",
+        reason: `command launch error: ${String(e)}`,
+      };
+    }
+  });
+
+  await Promise.all(promises);
+
+  return adjudicateQuorum(votes);
 }
 
 // ── pipeline ─────────────────────────────────────────────────────────────────
@@ -394,7 +531,11 @@ async function main() {
       () => verifyGates(wt),
       ...(noReview
         ? []
-        : [() => adversarialReview(wt, `verify-only ${verifyOnly}`)]),
+        : [
+          autoMerge
+            ? () => adversarialQuorumReview(wt, `verify-only ${verifyOnly}`)
+            : () => adversarialReview(wt, `verify-only ${verifyOnly}`),
+        ]),
     ];
     for (const gate of gates) {
       const v = await gate();
@@ -493,7 +634,9 @@ async function main() {
         () => scopeCheck(wt),
         () => verifyGates(wt),
         () => successCheck(wt, task!.check),
-        () => adversarialReview(wt, task!.spec),
+        autoMerge
+          ? () => adversarialQuorumReview(wt, task!.spec)
+          : () => adversarialReview(wt, task!.spec),
       ]
     ) {
       v = await gate();

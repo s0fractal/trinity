@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "resolve": "deno run --config=probe.jsonc --allow-read resolver.ts",
+    "resolve": "deno run --config=probe.jsonc --allow-read --allow-env resolver.ts",
     "test": "deno test --config=probe.jsonc --allow-read --allow-write resolver_test.ts"
   }
 }

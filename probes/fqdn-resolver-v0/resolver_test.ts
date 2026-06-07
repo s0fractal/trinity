@@ -3,7 +3,7 @@ import {
   assertEquals,
 } from "https://deno.land/std@0.224.0/assert/mod.ts";
 import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
-import { resolveFqdn } from "./resolver.ts";
+import { buildIndex, resolveFqdn, resolveFromIndex } from "./resolver.ts";
 
 // Build a throwaway federation of roots with known collisions.
 async function fixture(): Promise<{ roots: string[]; cleanup: () => Promise<void> }> {
@@ -31,6 +31,12 @@ async function fixture(): Promise<{ roots: string[]; cleanup: () => Promise<void
   // answer the query "hash.ts" — the exact (bare) one must win.
   await Deno.writeTextFile(join(a, "hash.ts"), "bare\n");
   await Deno.writeTextFile(join(a, "x4010_hash.ts"), "prefixed\n");
+
+  // chord slug: x<hex>_<block>_<voice>_<slug>.myc.md resolves by its slug
+  await Deno.writeTextFile(
+    join(a, "x4700_952699_claude-opus-4-8_my-proposal.myc.md"),
+    "chord body\n",
+  );
 
   return {
     roots: [a, b], // rootA has precedence
@@ -126,6 +132,32 @@ Deno.test("resolveFqdn — exact beats handle when both answer the same query", 
   }
 });
 
+Deno.test("resolveFqdn — chord slug: resolve x<hex>_<block>_<voice>_<slug> by its slug", async () => {
+  const { roots, cleanup } = await fixture();
+  try {
+    const r = await resolveFqdn("my-proposal.myc.md", roots);
+    assertEquals(r.identity, "unique");
+    assertEquals(r.resolved?.matchForm, "slug");
+    assertEquals(
+      r.resolved?.rel,
+      "x4700_952699_claude-opus-4-8_my-proposal.myc.md",
+    );
+  } finally {
+    await cleanup();
+  }
+});
+
+Deno.test("resolveFqdn — chord rule does not mis-fire on an organ handle", async () => {
+  const { roots, cleanup } = await fixture();
+  try {
+    // "myc_proxy.ts" is an organ handle, not a chord slug — must stay matchForm=handle
+    const r = await resolveFqdn("myc_proxy.ts", roots);
+    assertEquals(r.resolved?.matchForm, "handle");
+  } finally {
+    await cleanup();
+  }
+});
+
 Deno.test("resolveFqdn — missing root is skipped, not fatal (local-first)", async () => {
   const { roots, cleanup } = await fixture();
   try {
@@ -137,5 +169,44 @@ Deno.test("resolveFqdn — missing root is skipped, not fatal (local-first)", as
     assertEquals(r.candidates.length, 2);
   } finally {
     await cleanup();
+  }
+});
+
+Deno.test("buildIndex — walk once, resolve many queries against the same index", async () => {
+  const { roots, cleanup } = await fixture();
+  try {
+    const index = await buildIndex(roots);
+    assert(index.files > 0, "index should have walked files");
+    const a = await resolveFromIndex(index, "only_here.ts");
+    const b = await resolveFromIndex(index, "my-proposal.myc.md");
+    const c = await resolveFromIndex(index, "nowhere.myc.md");
+    assertEquals(a.identity, "unique");
+    assertEquals(b.resolved?.matchForm, "slug");
+    assertEquals(c.identity, "absent");
+  } finally {
+    await cleanup();
+  }
+});
+
+Deno.test("buildIndex — a depth-bounded (cloud) root at lower precedence still resolves, and the bound excludes too-deep files", async () => {
+  const { roots, cleanup } = await fixture();
+  const cloud = await Deno.makeTempDir({ prefix: "fqdn_cloud_" });
+  try {
+    // a node living "outside the repo", shallow → resolvable
+    await Deno.writeTextFile(join(cloud, "memory_note.md"), "lives in ~\n");
+    // a too-deep node under the same root → excluded by maxDepth: 1
+    await Deno.mkdir(join(cloud, "a", "b"), { recursive: true });
+    await Deno.writeTextFile(join(cloud, "a", "b", "buried.md"), "too deep\n");
+
+    const index = await buildIndex([...roots, { path: cloud, maxDepth: 1 }]);
+    const found = await resolveFromIndex(index, "memory_note.md");
+    assertEquals(found.identity, "unique");
+    assert(found.resolved!.path.startsWith(cloud), "should resolve from cloud root");
+
+    const buried = await resolveFromIndex(index, "buried.md");
+    assertEquals(buried.identity, "absent"); // beyond the depth bound
+  } finally {
+    await cleanup();
+    await Deno.remove(cloud, { recursive: true });
   }
 });

@@ -8,7 +8,7 @@
 // placement_policy: axis
 // intent: scan organ headers + glossary, render xN888_skill.myc.md per bucket + x8888_skills.myc.md substrate index
 // maturity: active
-// horizon: extend tag-vs-actual-behavior audit beyond handle-matching (currently checks tag-in-glossary-handles-for-position; future: AST-based behavior check)
+// horizon: none (AST-based behavior drift audit checks Deno mutating, subprocess, and network fetch APIs)
 // skill_tag: skill
 // skill_safe: yes-with-care
 //
@@ -44,6 +44,7 @@ import {
   join,
   relative,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
+import ts from "npm:typescript";
 import { formatGeneratedFile } from "./x0012_generated_format.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
@@ -179,11 +180,86 @@ function parseHeader(content: string): Map<string, string> {
   return fields;
 }
 
+interface BehaviorAnalysis {
+  mutations: string[];
+  subprocesses: string[];
+  fetches: string[];
+}
+
+/** Parse organ source with typescript AST and extract relevant API usages. */
+export function analyzeBehaviorWithAST(content: string, filename: string): BehaviorAnalysis {
+  const sourceFile = ts.createSourceFile(
+    filename,
+    content,
+    ts.ScriptTarget.Latest,
+    true
+  );
+
+  const mutations: string[] = [];
+  const subprocesses: string[] = [];
+  const fetches: string[] = [];
+
+  const mutatingAPIs = new Set([
+    "writeTextFile", "writeTextFileSync", "writeFile", "writeFileSync",
+    "remove", "removeSync", "mkdir", "mkdirSync", "rename", "renameSync",
+    "copyFile", "copyFileSync", "truncate", "truncateSync", "create", "createSync",
+    "chmod", "chmodSync", "chown", "chownSync", "makeTempDir", "makeTempDirSync",
+    "makeTempFile", "makeTempFileSync", "symlink", "symlinkSync"
+  ]);
+
+  const subprocessAPIs = new Set(["Command", "run"]);
+
+  function isReference(node: ts.Identifier): boolean {
+    const parent = node.parent;
+    if (!parent) return true;
+    if (ts.isPropertyAccessExpression(parent) && parent.name === node) return false;
+    if (ts.isPropertyAssignment(parent) && parent.name === node) return false;
+    if (ts.isMethodDeclaration(parent) && parent.name === node) return false;
+    if (ts.isMethodSignature(parent) && parent.name === node) return false;
+    if (ts.isPropertyDeclaration(parent) && parent.name === node) return false;
+    if (ts.isPropertySignature(parent) && parent.name === node) return false;
+    if (ts.isFunctionDeclaration(parent) && parent.name === node) return false;
+    if (ts.isVariableDeclaration(parent) && parent.name === node) return false;
+    if (ts.isImportSpecifier(parent) && (parent.name === node || parent.propertyName === node)) return false;
+    return true;
+  }
+
+  function walk(node: ts.Node) {
+    if (ts.isPropertyAccessExpression(node)) {
+      const obj = node.expression;
+      const prop = node.name;
+      if (ts.isIdentifier(obj) && obj.text === "Deno") {
+        const propName = prop.text;
+        if (mutatingAPIs.has(propName)) {
+          mutations.push(`Deno.${propName}`);
+        }
+        if (subprocessAPIs.has(propName)) {
+          subprocesses.push(`Deno.${propName}`);
+        }
+      }
+    } else if (ts.isIdentifier(node)) {
+      if (node.text === "fetch" && isReference(node)) {
+        fetches.push("fetch");
+      }
+    }
+
+    ts.forEachChild(node, walk);
+  }
+
+  walk(sourceFile);
+
+  return {
+    mutations: [...new Set(mutations)],
+    subprocesses: [...new Set(subprocesses)],
+    fetches: [...new Set(fetches)],
+  };
+}
+
 async function scanOrgans(): Promise<OrganMeta[]> {
   const out: OrganMeta[] = [];
   for await (const entry of Deno.readDir(SRC)) {
-    if (!entry.isFile) continue;
     if (entry.name === "x8C00_skill_gen.ts") continue; // skip self
+    if (!entry.isFile) continue;
     const m = FILENAME_RE.exec(entry.name);
     if (!m) continue;
     const [, bucket, sub, handle] = m;
@@ -209,22 +285,25 @@ async function scanOrgans(): Promise<OrganMeta[]> {
     const is_dispatchable = /\bimport\.meta\.main\b/.test(codeOnly);
 
     let behavior_drift: string | undefined;
+    const analysis = analyzeBehaviorWithAST(content, entry.name);
+
     if (skill_safe && (skill_safe === "yes" || skill_safe === "yes-readonly")) {
-      const match = MUTATION_RE.exec(content);
-      if (match) {
+      if (analysis.mutations.length > 0) {
         behavior_drift =
-          `declared skill_safe: "${skill_safe}" but contains mutating API call: Deno.${
-            match[1]
+          `declared skill_safe: "${skill_safe}" but contains mutating API call: ${
+            analysis.mutations.join(", ")
           }`;
       }
     }
     if (!behavior_drift && skill_safe === "yes") {
-      const cmdMatch = /\bDeno\.(Command|run)\b/.exec(content);
-      if (cmdMatch) {
+      if (analysis.subprocesses.length > 0) {
         behavior_drift =
-          `declared skill_safe: "yes" (pure local/cheap) but contains subprocess execution API: Deno.${
-            cmdMatch[1]
+          `declared skill_safe: "yes" (pure local/cheap) but contains subprocess execution API: ${
+            analysis.subprocesses.join(", ")
           } (should be classified as yes-readonly or yes-with-care)`;
+      } else if (analysis.fetches.length > 0) {
+        behavior_drift =
+          `declared skill_safe: "yes" (pure local/cheap) but contains network fetch call: fetch (should be classified as yes-readonly or yes-with-care)`;
       }
     }
 

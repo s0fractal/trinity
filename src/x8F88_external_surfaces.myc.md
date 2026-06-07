@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     8      |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    386     |
+| dynamic topology  |    387     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **484**   |
+| **Total**         |  **485**   |
 
 ## Runtime Cache Diagnostics
 
@@ -494,6 +494,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x7700_952771_claude-opus-4-8_fqdn-resolver-deep-poc-content-receipt-consensus-landed.myc.md](../src/x7700_952771_claude-opus-4-8_fqdn-resolver-deep-poc-content-receipt-consensus-landed.myc.md)                                                       | canonical        | src/x7700_952771_claude-opus-4-8_fqdn-resolver-deep-poc-content-receipt-consensus-landed.myc.md                            | keep        |                              |
 | dynamic topology  | [src/x7700_952776_antigravity_literate-programming-fqdn-proxy-implementation.myc.md](../src/x7700_952776_antigravity_literate-programming-fqdn-proxy-implementation.myc.md)                                                                                 | canonical        | src/x7700_952776_antigravity_literate-programming-fqdn-proxy-implementation.myc.md                                         | keep        |                              |
 | dynamic topology  | [src/x7700_952779_antigravity_harden-author-auto-merge-with-adversarial-quorum.myc.md](../src/x7700_952779_antigravity_harden-author-auto-merge-with-adversarial-quorum.myc.md)                                                                             | canonical        | src/x7700_952779_antigravity_harden-author-auto-merge-with-adversarial-quorum.myc.md                                       | keep        |                              |
+| dynamic topology  | [src/x7700_952780_antigravity_ast-behavior-drift-audit.myc.md](../src/x7700_952780_antigravity_ast-behavior-drift-audit.myc.md)                                                                                                                             | canonical        | src/x7700_952780_antigravity_ast-behavior-drift-audit.myc.md                                                               | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](../src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | canonical        | src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](../src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | canonical        | src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md                                                     | keep        |                              |
 | dynamic topology  | [src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](../src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | canonical        | src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md                                                      | keep        |                              |

@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  386  |
+| Total Chords                             |  387  |
 | Proposals                                |  53   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  42   |
-| Receipts                                 |  133  |
-| ↳ strong evidence                        |  111  |
+| Receipts                                 |  134  |
+| ↳ strong evidence                        |  112  |
 | ↳ weak evidence                          |  15   |
 | ↳ no evidence                            |   7   |
 | Critiques                                |   3   |
@@ -429,6 +429,7 @@ _No open debts detected in the chord trail._
 | [x7700_952771_claude-opus-4-8_fqdn-resolver-deep-poc-content-receipt-consensus-landed.myc.md](./x7700_952771_claude-opus-4-8_fqdn-resolver-deep-poc-content-receipt-consensus-landed.myc.md)                                                       | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_952776_antigravity_literate-programming-fqdn-proxy-implementation.myc.md](./x7700_952776_antigravity_literate-programming-fqdn-proxy-implementation.myc.md)                                                                                 | **RECEIPT**  | antigravity        |   0   |   0    |
 | [x7700_952779_antigravity_harden-author-auto-merge-with-adversarial-quorum.myc.md](./x7700_952779_antigravity_harden-author-auto-merge-with-adversarial-quorum.myc.md)                                                                             | **RECEIPT**  | antigravity        |   0   |   0    |
+| [x7700_952780_antigravity_ast-behavior-drift-audit.myc.md](./x7700_952780_antigravity_ast-behavior-drift-audit.myc.md)                                                                                                                             | **RECEIPT**  | antigravity        |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -4384,6 +4385,14 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `deno test --allow-all src/author_test.ts`
   - `./t audit`
+
+### [x7700_952780_antigravity_ast-behavior-drift-audit.myc.md](./x7700_952780_antigravity_ast-behavior-drift-audit.myc.md)
+
+- **Category**: `RECEIPT` (Author: `antigravity`)
+- **Suggested Commands**:
+  - `[]`
+- **Expected After Running**:
+  - _{}_
 
 ### [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)
 

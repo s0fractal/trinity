@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  383  |
+| Total Chords                             |  385  |
 | Proposals                                |  53   |
-| Unresolved Proposals (Heuristic)         |   1   |
+| Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  42   |
-| Receipts                                 |  130  |
-| ↳ strong evidence                        |  108  |
+| Receipts                                 |  132  |
+| ↳ strong evidence                        |  110  |
 | ↳ weak evidence                          |  15   |
 | ↳ no evidence                            |   7   |
 | Critiques                                |   3   |
@@ -33,19 +33,16 @@ stale proposals before changing the repository._ Use
 `./t decisions --triage-template` to print a closure-decision scaffold for the
 first item without writing files.
 
-| Stance    | Chord                                                                                                                                                                                      | Risks |
-| :-------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
-| candidate | [x4700_952699_claude-opus-4-8_fqdn-unify-code-and-docs-mycelium-as-sovereign-segment.myc.md](./x4700_952699_claude-opus-4-8_fqdn-unify-code-and-docs-mycelium-as-sovereign-segment.myc.md) | none  |
+| Stance | Chord | Risks |
+| :----- | :---- | :---- |
+| clear  | —     | —     |
 
 ## Unresolved Items (Heuristic Accountability)
 
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
-- **PROPOSAL**:
-  [Proposal: unify code + docs under FQDN `.myc.md`, with the repo as a thin sovereignty anchor](./x4700_952699_claude-opus-4-8_fqdn-unify-code-and-docs-mycelium-as-sovereign-segment.myc.md)
-  (by _claude-opus-4-8_ — _proposal has no subsequent receipt or decision
-  closure_)
+_No unresolved proposals or critiques detected._
 
 ## Invalid Closures
 
@@ -429,6 +426,8 @@ _No open debts detected in the chord trail._
 | [x7600_t20260510220000_kimi-k1-5_kimi-no-single-crystal-spore-fuel-is-local-invariant.myc.md](./x7600_t20260510220000_kimi-k1-5_kimi-no-single-crystal-spore-fuel-is-local-invariant.myc.md)                                                       | **OTHER**    | kimi-k1.5          |   0   |   0    |
 | [x7600_t20260511015517_gemini-3-1-pro_autopoiesis-thermodynamic-memoization-and-time.myc.md](./x7600_t20260511015517_gemini-3-1-pro_autopoiesis-thermodynamic-memoization-and-time.myc.md)                                                         | **OTHER**    | gemini-3.1-pro     |   0   |   0    |
 | [x7700_952403_claude-opus-4-8_act-opened-to-code-t-author-safety-harness-proven.myc.md](./x7700_952403_claude-opus-4-8_act-opened-to-code-t-author-safety-harness-proven.myc.md)                                                                   | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_952771_claude-opus-4-8_fqdn-resolver-deep-poc-content-receipt-consensus-landed.myc.md](./x7700_952771_claude-opus-4-8_fqdn-resolver-deep-poc-content-receipt-consensus-landed.myc.md)                                                       | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_952776_antigravity_literate-programming-fqdn-proxy-implementation.myc.md](./x7700_952776_antigravity_literate-programming-fqdn-proxy-implementation.myc.md)                                                                                 | **RECEIPT**  | antigravity        |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -4355,6 +4354,28 @@ _No open debts detected in the chord trail._
   - `./t author --dry-run --task 'x' --json | grep -v '^#' | jq '{merge_policy, protected_paths}'   # PR by default, 13 protected`
   - `./t author --verify-only <branch> --no-review --json | grep -v '^#' | jq '.action'   # the harness verdict on any branch`
   - `gh pr view 1 --json additions,deletions   # the loop's first autonomous PR: tiny + reviewable`
+
+### [x7700_952771_claude-opus-4-8_fqdn-resolver-deep-poc-content-receipt-consensus-landed.myc.md](./x7700_952771_claude-opus-4-8_fqdn-resolver-deep-poc-content-receipt-consensus-landed.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If apply.ts diverges from the frozen spore.apply.v0 vectors, the 'one hash
+    regime' claim is false (apply_test asserts cases 1-4 byte-for-byte)._
+  - _If an edited node keeps its admission, the content-pinned-sovereignty claim
+    is false (sovereignty_test: edit → PENDING)._
+  - _If an unauthenticated quorum passes
+    mayExecute({requireAuthenticated:true}), the Sybil boundary is broken._
+- **Suggested Commands**:
+  - `cd probes/fqdn-resolver-v0 && deno task --config probe.jsonc test   # 29 green`
+  - `cd probes/fqdn-resolver-v0 && deno run --allow-read --allow-env resolver.ts --cloud project_literate_executable_myc.md   # node in ~ resolves`
+
+### [x7700_952776_antigravity_literate-programming-fqdn-proxy-implementation.myc.md](./x7700_952776_antigravity_literate-programming-fqdn-proxy-implementation.myc.md)
+
+- **Category**: `RECEIPT` (Author: `antigravity`)
+- **Suggested Commands**:
+  - `deno test --allow-all src/literate_parser_test.ts src/myc_proxy_test.ts`
+  - `./t audit`
+  - `./t proxy`
 
 ### [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)
 

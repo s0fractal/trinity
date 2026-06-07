@@ -1,7 +1,8 @@
 // src/x5510_myc_proxy.ts — local HTTP/TCP proxy for virtual FQDN resolution
 // position: 5/51 → action(5) — resolves the `myc.md` virtual host to substrate organs
 // maturity: active
-// skill_safe: yes-with-care (binds a TCP port and, when used as Deno's HTTP_PROXY,
+// skill_safe: yes-with-care
+//   (binds a TCP port and, when used as Deno's HTTP_PROXY,
 //   tunnels all other imports through itself — not read-only)
 //
 // Purpose: collapse the difference between a file name and its canonical address.

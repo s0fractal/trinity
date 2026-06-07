@@ -63,7 +63,7 @@ wherever it happens to be", not "every root must exist".
 ```
 deno task --config=probe.jsonc resolve <fqdn-or-handle-or-slug>   # JSON resolution
 deno task --config=probe.jsonc resolve --cloud <query>           # + bounded ~ roots
-deno task --config=probe.jsonc test                              # all suites (21, all green)
+deno task --config=probe.jsonc test                              # all suites (27, all green)
 ```
 
 ## Live findings (default roots: `src`, `liquid`, `omega`, `myc`; 2026-06-07)
@@ -118,6 +118,32 @@ receipts, while unchanged bytes re-witnessed at a later block keep the same
 wire format, verified byte-for-byte against the canonical vectors in
 `apply_test.ts` — conformance, not drift.
 
+## Consensus root: the sovereignty gate (`sovereignty.ts`)
+
+The third leg. A resolved + witnessed node is only a **candidate**; it becomes a
+real, runnable organ when a **quorum of voices** attests it — "consensus root",
+not a single root and not a single key. This is **not a new consensus**: it
+mirrors the substrate's own codeicide/verdict rules (`src/x7D00_verdict.ts`) —
+`AYE >= threshold AND zero NAY AND no self-AYE`, default 3-of-5.
+
+`adjudicate(content_blake3, author, attestations, policy) → Verdict`;
+`mayExecute(verdict)` is the gate. The load-bearing property:
+
+> **Admission is content-pinned, even though identity is role-addressed.**
+> Attestations name the exact bytes they bless. Edit the node and its
+> `content_blake3` moves, so old attestations stop counting and it drops back to
+> PENDING until the quorum re-attests the NEW bytes.
+
+So no single root admits, and no one can silently swap code under an admitted
+role — the anti-exploitation core the architect named. **Keyless PoC:** an
+attestation's identity is the voice name; the real per-voice signature over
+`content_blake3` slots into `Attestation.sig` when key custody is decided
+(architect's call) — the gate logic does not change.
+
+Full arc (live): `resolve` (role) → `x5510_myc_proxy.ts`; `witness` (content) →
+`blake3:b59c…`; `adjudicate` 3-of-5 → `AYE`, `mayExecute=true`. Edit the bytes →
+same arc returns `PENDING`.
+
 ## Done in v0
 
 - **Handle resolution** (2026-06-07) — address a node with or without its
@@ -129,6 +155,10 @@ wire format, verified byte-for-byte against the canonical vectors in
 - **BLAKE3 + apply/witness convergence** (2026-06-08) — content identity is
   BLAKE3 (SPORE's regime); `witness()` turns a resolution into a content-pinned
   receipt via the frozen `spore.apply.v0` wrapper.
+- **Consensus-root sovereignty gate** (2026-06-08) — `adjudicate`/`mayExecute`
+  reuse the x7D00 verdict quorum (3-of-5, NAY-veto, no self-AYE); admission is
+  content-pinned, so an edit revokes it until re-attested. Keyless; signatures
+  slot in at key custody.
 
 ## Horizon (not in v0)
 

@@ -23,6 +23,8 @@ import {
   relative,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
 
+export type MatchForm = "exact" | "handle";
+
 export interface Candidate {
   root: string;
   rootIndex: number;
@@ -31,6 +33,7 @@ export interface Candidate {
   depth: number;
   size: number;
   hash: string; // sha256 hex of the bytes
+  matchForm: MatchForm; // exact basename, or handle (coordinate prefix stripped)
 }
 
 export type Identity = "unique" | "mirrored" | "conflict" | "absent";
@@ -43,6 +46,18 @@ export interface Resolution {
 }
 
 const SKIP = /(^|\/)(node_modules|\.git)(\/|$)/;
+
+// The coordinate prefix `x<hex>_` that names an organ/doc by its hex position.
+// Stripping it turns `x5510_myc_proxy.ts` into the handle `myc_proxy.ts`, so a
+// query may address a node WITH the prefix (exact) or WITHOUT it (handle).
+const COORD_PREFIX = /^x[0-9A-Fa-f]+_/;
+
+/** How a candidate basename matches a query, or null if it does not. */
+function matchForm(base: string, query: string): MatchForm | null {
+  if (base === query) return "exact";
+  if (base.replace(COORD_PREFIX, "") === query) return "handle";
+  return null;
+}
 
 async function sha256Hex(bytes: Uint8Array): Promise<string> {
   // Copy into a fresh ArrayBuffer-backed view so the type is BufferSource-clean
@@ -72,7 +87,8 @@ export async function resolveFqdn(
         const e of walk(root, { includeDirs: false, followSymlinks: false })
       ) {
         if (SKIP.test(e.path)) continue;
-        if (basename(e.path) !== fqdn) continue;
+        const form = matchForm(basename(e.path), fqdn);
+        if (form === null) continue;
         const bytes = await Deno.readFile(e.path);
         const rel = relative(root, e.path);
         found.push({
@@ -83,13 +99,18 @@ export async function resolveFqdn(
           depth: rel.split("/").length,
           size: bytes.byteLength,
           hash: await sha256Hex(bytes),
+          matchForm: form,
         });
       }
     } catch {
       continue; // missing/unreadable root — skip, stay local-first
     }
-    // Deterministic within-root order: shallowest first, then lexicographic.
-    found.sort((a, b) => a.depth - b.depth || a.rel.localeCompare(b.rel));
+    // Deterministic within-root order: exact match beats handle match, then
+    // shallowest, then lexicographic.
+    const rank = (c: Candidate) => (c.matchForm === "exact" ? 0 : 1);
+    found.sort((a, b) =>
+      rank(a) - rank(b) || a.depth - b.depth || a.rel.localeCompare(b.rel)
+    );
     candidates.push(...found);
   }
 

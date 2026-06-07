@@ -25,8 +25,14 @@ the network for the `myc.md` virtual host).
 
 `resolveFqdn(fqdn, roots)` walks each root in order and returns:
 
-- `resolved` — the precedence winner: first root, then shallowest path, then
-  lexicographic. Deterministic.
+- `resolved` — the precedence winner: first root, then **exact over handle**,
+  then shallowest path, then lexicographic. Deterministic.
+- each candidate's `matchForm`:
+  - **exact** — query equals the full basename (`x5510_myc_proxy.ts`).
+  - **handle** — query equals the basename with the `x<hex>_` coordinate prefix
+    stripped (`myc_proxy.ts` resolves `x5510_myc_proxy.ts`). So a node is
+    addressable **with or without** its coordinate prefix — no need to decide
+    which form is canonical; both resolve, and the winner reports which matched.
 - `identity`:
   - **unique** — one hit.
   - **mirrored** — N hits, **all same sha256** → one true identity, copies. Safe
@@ -48,12 +54,14 @@ deno task --config=probe.jsonc test                 # contract tests (5, all gre
 
 ## Live findings (default roots: `src`, `liquid`, `omega`, `myc`; 2026-06-07)
 
-| FQDN                 | identity   | hits | winner                |
-| :------------------- | :--------- | :--: | :-------------------- |
-| `x5510_myc_proxy.ts` | unique     |  1   | `src/...`             |
-| `README.md`          | conflict   |  19  | `liquid/README.md`    |
-| `AGENTS.md`          | conflict   |  3   | `liquid/AGENTS.md`    |
-| `mod.ts`             | absent     |  0   | —                     |
+| FQDN                 | identity | hits | winner (matchForm)               |
+| :------------------- | :------- | :--: | :------------------------------- |
+| `myc_proxy.ts`       | unique   |  1   | `x5510_myc_proxy.ts` (handle)    |
+| `literate_parser.ts` | unique   |  1   | `x0150_literate_parser.ts` (handle) |
+| `x5510_myc_proxy.ts` | unique   |  1   | `x5510_myc_proxy.ts` (exact)     |
+| `README.md`          | conflict |  19  | `liquid/README.md` (exact)       |
+| `AGENTS.md`          | conflict |  3   | `liquid/AGENTS.md` (exact)       |
+| `mod.ts`             | absent   |  0   | —                                |
 
 Two things this surfaces, both honest:
 
@@ -70,9 +78,10 @@ Two things this surfaces, both honest:
 
 ## Horizon (not in v0)
 
-- **Handle resolution** — resolve `<handle>` (the `_<handle>` part) not just exact
-  basename, so `import "foo.myc.md"` style lookups work without the `xNNNN_`
-  prefix.
+- **Handle resolution** — DONE (added 2026-06-07): a node resolves with or
+  without its `x<hex>_` coordinate prefix; the winner reports `matchForm`. Open
+  refinement: chord filenames carry `<block>_<voice>_<slug>`, so their stripped
+  handle is not yet clean — a chord-aware handle rule is future work.
 - **Cloud roots** — add `~`, Google Drive mounts as lower-precedence roots.
 - **Sovereignty gate** — distinguish "found" from "allowed to execute as a real
   organ"; depends on the signature layer (see `project_canonical_commitment`).

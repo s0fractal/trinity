@@ -35,9 +35,18 @@ export interface Policy {
 
 export const DEFAULT_POLICY: Policy = { threshold: 3, out_of: 5 };
 
+// Honest security boundary. A quorum only means something if the voices are
+// who they claim to be. With keyless attestations (no `sig`), one actor can mint
+// N "voices" and clear any threshold — the gate is Sybil-vulnerable. So the
+// verdict self-reports its assurance, and it UPGRADES automatically once every
+// counted AYE carries a real signature (key custody → architect). A future model
+// must NOT mistake an "unauthenticated" AYE for a real security decision.
+export type Assurance = "authenticated" | "unauthenticated";
+
 export interface Verdict {
   admitted: boolean;
   verdict: "AYE" | "NAY" | "PENDING";
+  assurance: Assurance;
   content_blake3: string | null;
   ayes: string[];
   nays: { voice: string; reason: string }[];
@@ -69,13 +78,27 @@ export function adjudicate(
   const ayeVoices = new Set<string>();
   const nays: { voice: string; reason: string }[] = [];
   let selfAye = false;
+  let allAyesSigned = true;
   for (const a of relevant) {
     if (a.stance === "AYE") {
       if (a.voice === author) selfAye = true;
-      else ayeVoices.add(a.voice);
+      else {
+        ayeVoices.add(a.voice);
+        if (!a.sig) allAyesSigned = false;
+      }
     } else {
       nays.push({ voice: a.voice, reason: a.reason ?? "(no reason given)" });
     }
+  }
+
+  // Authenticated only if there is at least one counted AYE and every one is signed.
+  const assurance: Assurance = ayeVoices.size > 0 && allAyesSigned
+    ? "authenticated"
+    : "unauthenticated";
+  if (assurance === "unauthenticated") {
+    reasons.push(
+      "UNAUTHENTICATED: voices unsigned — quorum is NOT Sybil-resistant until per-voice signatures (key custody)",
+    );
   }
 
   let verdict: "AYE" | "NAY" | "PENDING";
@@ -103,6 +126,7 @@ export function adjudicate(
   return {
     admitted: verdict === "AYE",
     verdict,
+    assurance,
     content_blake3: contentBlake3,
     ayes: [...ayeVoices],
     nays,
@@ -111,7 +135,19 @@ export function adjudicate(
   };
 }
 
-/** A node may execute as a real organ iff the quorum admitted its current bytes. */
-export function mayExecute(verdict: Verdict): boolean {
-  return verdict.admitted;
+/**
+ * A node may execute as a real organ iff the quorum admitted its current bytes.
+ * In the keyless PoC `requireAuthenticated` defaults to false; a real deployment
+ * (once keys exist) MUST pass `{ requireAuthenticated: true }` so an
+ * unauthenticated, Sybil-vulnerable quorum can never gate real execution.
+ */
+export function mayExecute(
+  verdict: Verdict,
+  opts: { requireAuthenticated?: boolean } = {},
+): boolean {
+  if (!verdict.admitted) return false;
+  if (opts.requireAuthenticated && verdict.assurance !== "authenticated") {
+    return false;
+  }
+  return true;
 }

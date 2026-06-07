@@ -73,6 +73,27 @@ Deno.test("sovereignty — admission is content-pinned: editing bytes drops it b
   assert(after.reasons.some((r) => r.includes("ignored")));
 });
 
+Deno.test("sovereignty — keyless AYEs are 'unauthenticated' and barred from strict execution (Sybil boundary)", () => {
+  const v = adjudicate(H, "claude", [aye("codex", H), aye("gemini", H), aye("kimi", H)]);
+  assertEquals(v.verdict, "AYE");
+  assertEquals(v.assurance, "unauthenticated");
+  assert(mayExecute(v)); // PoC default: admitted is enough
+  assert(!mayExecute(v, { requireAuthenticated: true })); // real deployment: barred
+  assert(v.reasons.some((r) => r.includes("Sybil")));
+});
+
+Deno.test("sovereignty — assurance upgrades to 'authenticated' once every AYE is signed", () => {
+  const signed = (voice: string): Attestation => ({
+    voice,
+    stance: "AYE",
+    content_blake3: H,
+    sig: `sig-of-${voice}-over-${H.slice(0, 8)}`, // placeholder; real per-voice sig at key custody
+  });
+  const v = adjudicate(H, "claude", [signed("codex"), signed("gemini"), signed("kimi")]);
+  assertEquals(v.assurance, "authenticated");
+  assert(mayExecute(v, { requireAuthenticated: true }));
+});
+
 Deno.test("sovereignty — full arc: resolve → witness → attest → admit, then edit revokes", async () => {
   const base = await Deno.makeTempDir({ prefix: "fqdn_sov_" });
   try {

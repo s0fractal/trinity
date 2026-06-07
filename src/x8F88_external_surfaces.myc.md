@@ -13,10 +13,10 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility abi |     52     |
 | compost           |     0      |
 | dynamic topology  |    383     |
-| experimental      |     37     |
+| experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **480**   |
+| **Total**         |  **481**   |
 
 ## Runtime Cache Diagnostics
 
@@ -99,6 +99,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | experimental      | [probes/falsifier-v0-honesty-check-v0/SPEC.md](../probes/falsifier-v0-honesty-check-v0/SPEC.md)                                                                                                                                                             | experimental     |                                                                                                                            | keep        | active experiment            |
 | experimental      | [probes/falsifier-v0-honesty-check-v0/result.latest.md](../probes/falsifier-v0-honesty-check-v0/result.latest.md)                                                                                                                                           | experimental     |                                                                                                                            | keep        | active experiment            |
 | experimental      | [probes/flat-src-v0/README.md](../probes/flat-src-v0/README.md)                                                                                                                                                                                             | experimental     |                                                                                                                            | keep        | active experiment            |
+| experimental      | [probes/fqdn-resolver-v0/README.md](../probes/fqdn-resolver-v0/README.md)                                                                                                                                                                                   | experimental     |                                                                                                                            | keep        | active experiment            |
 | experimental      | [probes/liquid-flat-src-v0/README.md](../probes/liquid-flat-src-v0/README.md)                                                                                                                                                                               | experimental     |                                                                                                                            | keep        | active experiment            |
 | experimental      | [probes/morphology-v0/README.md](../probes/morphology-v0/README.md)                                                                                                                                                                                         | experimental     |                                                                                                                            | keep        | active experiment            |
 | experimental      | [probes/receipt-envelope-encoder-v0/SPEC.md](../probes/receipt-envelope-encoder-v0/SPEC.md)                                                                                                                                                                 | experimental     |                                                                                                                            | keep        | active experiment            |

@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  382  |
-| Proposals                                |  52   |
-| Unresolved Proposals (Heuristic)         |   0   |
+| Total Chords                             |  383  |
+| Proposals                                |  53   |
+| Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  42   |
 | Receipts                                 |  130  |
 | ↳ strong evidence                        |  108  |
@@ -33,16 +33,19 @@ stale proposals before changing the repository._ Use
 `./t decisions --triage-template` to print a closure-decision scaffold for the
 first item without writing files.
 
-| Stance | Chord | Risks |
-| :----- | :---- | :---- |
-| clear  | —     | —     |
+| Stance    | Chord                                                                                                                                                                                      | Risks |
+| :-------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
+| candidate | [x4700_952699_claude-opus-4-8_fqdn-unify-code-and-docs-mycelium-as-sovereign-segment.myc.md](./x4700_952699_claude-opus-4-8_fqdn-unify-code-and-docs-mycelium-as-sovereign-segment.myc.md) | none  |
 
 ## Unresolved Items (Heuristic Accountability)
 
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
-_No unresolved proposals or critiques detected._
+- **PROPOSAL**:
+  [Proposal: unify code + docs under FQDN `.myc.md`, with the repo as a thin sovereignty anchor](./x4700_952699_claude-opus-4-8_fqdn-unify-code-and-docs-mycelium-as-sovereign-segment.myc.md)
+  (by _claude-opus-4-8_ — _proposal has no subsequent receipt or decision
+  closure_)
 
 ## Invalid Closures
 
@@ -260,6 +263,7 @@ _No open debts detected in the chord trail._
 | [x4600_t20260515094707_kimi_voices-grounding.myc.md](./x4600_t20260515094707_kimi_voices-grounding.myc.md)                                                                                                                                         | **OTHER**    | kimi               |   0   |   0    |
 | [x4600_t20260516132910_gemini_proposal-monorepo-unification-for-self-sufficient-harmony.myc.md](./x4600_t20260516132910_gemini_proposal-monorepo-unification-for-self-sufficient-harmony.myc.md)                                                   | **DECISION** | gemini             |   0   |   0    |
 | [x4700_952383_claude-opus-4-8_onboarding-loop-in-first-moves-init-living-form.myc.md](./x4700_952383_claude-opus-4-8_onboarding-loop-in-first-moves-init-living-form.myc.md)                                                                       | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x4700_952699_claude-opus-4-8_fqdn-unify-code-and-docs-mycelium-as-sovereign-segment.myc.md](./x4700_952699_claude-opus-4-8_fqdn-unify-code-and-docs-mycelium-as-sovereign-segment.myc.md)                                                         | **PROPOSAL** | claude-opus-4-8    |   0   |   0    |
 | [x4b00_t20260523133425_codex_repo-wide-refactor-harmonization-audit.myc.md](./x4b00_t20260523133425_codex_repo-wide-refactor-harmonization-audit.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x4c40_t20260513103500_gemini-3-1-pro_dual-layer-filesystem-with-hex-folders-and-hidden-semantic-overlays.myc.md](./x4c40_t20260513103500_gemini-3-1-pro_dual-layer-filesystem-with-hex-folders-and-hidden-semantic-overlays.myc.md)               | **PROPOSAL** | gemini-3-1-pro     |   0   |   0    |
 | [x4d00_950620_claude_cross-substrate-roadmap-federation.myc.md](./x4d00_950620_claude_cross-substrate-roadmap-federation.myc.md)                                                                                                                   | **PROPOSAL** | claude-opus-4-7    |   0   |   0    |
@@ -2577,6 +2581,22 @@ _No open debts detected in the chord trail._
   - `grep -A12 'self-driving loop' AGENTS.md   # First Moves = orient→choose→claim→act→record`
   - `./t chord init --voice=NAME --topic=T   # living lean form (was the stale anchor_block skeleton)`
   - `./t agents --stable && git diff --exit-code src/x88F0_agents_bootstrap.myc.md   # idempotent`
+
+### [x4700_952699_claude-opus-4-8_fqdn-unify-code-and-docs-mycelium-as-sovereign-segment.myc.md](./x4700_952699_claude-opus-4-8_fqdn-unify-code-and-docs-mycelium-as-sovereign-segment.myc.md)
+
+- **Category**: `PROPOSAL` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If byte-identical .ts files DO exist across repos, the 'dedup is conceptual
+    not copy' claim is wrong (checked 2026-06-07: 0 identical across 596 .ts in
+    src/liquid/omega/myc)._
+  - _If a sovereignty gate can be built without unforgeable attestation, the
+    'needs signatures' dependency is wrong — but then 'connected = real, not
+    emulated' is forgeable, which is the exact exploitation the architect wants
+    excluded._
+- **Suggested Commands**:
+  - `find . liquid omega myc -name '*.myc.md' -not -path '*/node_modules/*' | wc -l   # 799 already in the .myc.md skin`
+  - `find . liquid omega myc -name '*.md' ! -name '*.myc.md' -not -path '*/node_modules/*' -not -path '*/jazz/chords/*' | wc -l   # 648 plain .md remain`
+  - `readlink AGENTS.md SKILLS.md   # both already point at generated FQDN .myc.md projections; README.md is the holdout`
 
 ### [x4b00_t20260523133425_codex_repo-wide-refactor-harmonization-audit.myc.md](./x4b00_t20260523133425_codex_repo-wide-refactor-harmonization-audit.myc.md)
 

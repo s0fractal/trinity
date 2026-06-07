@@ -30,6 +30,7 @@ import {
   join,
   relative,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { blake3 } from "npm:@noble/hashes@1.4.0/blake3";
 
 export type MatchForm = "exact" | "handle" | "slug";
 
@@ -40,7 +41,7 @@ export interface Candidate {
   rel: string;
   depth: number;
   size: number;
-  hash: string; // sha256 hex of the bytes
+  hash: string; // BLAKE3-256 hex — same regime as SPORE apply (not a fresh sha256)
   matchForm: MatchForm;
 }
 
@@ -66,13 +67,13 @@ const CHORD_BODY = /^(?:t?\d+)_[a-z0-9.-]+_(.+)$/;
 
 const RANK: Record<MatchForm, number> = { exact: 0, handle: 1, slug: 2 };
 
-async function sha256Hex(bytes: Uint8Array): Promise<string> {
-  // Copy into a fresh ArrayBuffer-backed view so the type is BufferSource-clean
-  // regardless of how Deno.readFile typed its backing buffer.
-  const digest = await crypto.subtle.digest("SHA-256", new Uint8Array(bytes));
-  return Array.from(new Uint8Array(digest))
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
+// BLAKE3-256 hex — deliberately the SAME hash regime SPORE apply uses for its
+// multihash fields, so a resolved node's content identity is spore-compatible
+// (one substrate, not two). See ./apply.ts and probes/spore-apply-v0.
+function blake3Hex(bytes: Uint8Array): string {
+  return Array.from(blake3(bytes), (b) => b.toString(16).padStart(2, "0")).join(
+    "",
+  );
 }
 
 /** The address forms a basename answers to, each with its matchForm. */
@@ -164,7 +165,7 @@ export async function resolveFromIndex(
   const candidates: Candidate[] = [];
   for (const s of stored) {
     const bytes = await Deno.readFile(s.path);
-    candidates.push({ ...s, size: bytes.byteLength, hash: await sha256Hex(bytes) });
+    candidates.push({ ...s, size: bytes.byteLength, hash: blake3Hex(bytes) });
   }
   candidates.sort((a, b) =>
     a.rootIndex - b.rootIndex ||

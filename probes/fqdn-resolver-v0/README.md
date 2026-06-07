@@ -48,9 +48,9 @@ A resolution returns:
     human handle, not its full coordinate+block+voice name.
 - `identity`:
   - **unique** — one hit.
-  - **mirrored** — N hits, **all same sha256** → one true identity, copies. Safe
+  - **mirrored** — N hits, **all same BLAKE3** → one true identity, copies. Safe
     to collapse into a single node.
-  - **conflict** — N hits, **differing sha256** → different things sharing a
+  - **conflict** — N hits, **differing BLAKE3** → different things sharing a
     name. Precedence still resolves it, but this is the exact ambiguity that
     content-addressed naming ([`../blake3-fqdn-v0`](../blake3-fqdn-v0)) removes.
   - **absent** — no hit; `resolved` is `null`.
@@ -63,7 +63,7 @@ wherever it happens to be", not "every root must exist".
 ```
 deno task --config=probe.jsonc resolve <fqdn-or-handle-or-slug>   # JSON resolution
 deno task --config=probe.jsonc resolve --cloud <query>           # + bounded ~ roots
-deno task --config=probe.jsonc test                              # contract tests (12, all green)
+deno task --config=probe.jsonc test                              # all suites (21, all green)
 ```
 
 ## Live findings (default roots: `src`, `liquid`, `omega`, `myc`; 2026-06-07)
@@ -86,7 +86,7 @@ policy.
 Two things this surfaces, both honest:
 
 1. **Name alone is not identity.** `README.md` resolves to a *conflict* of 19
-   different files. Identity needs content (sha256 here; blake3-in-filename in
+   different files. Identity needs content (BLAKE3 here — the same regime as SPORE apply; blake3-in-filename in
    `blake3-fqdn-v0`). The resolver makes the ambiguity explicit instead of
    silently picking one.
 2. **The root-set IS the policy.** trinity's own top-level `README.md` lives at
@@ -96,6 +96,28 @@ Two things this surfaces, both honest:
    later policy may add the repo root, or resolve docs by FQDN handle rather than
    bare basename.
 
+## Convergence: content / receipt = two sides of `apply`
+
+`apply.ts` + `witness.ts` close the loop with SPORE (`probes/spore-apply-v0`).
+The whole thread reduces to one shape — `f(context, lens)`:
+
+- **content = role lens.** `resolveFqdn` finds the current node by FQDN; its
+  identity is mutable at a stable address.
+- **receipt = content lens.** `witness(resolution, blockHeight)` content-pins the
+  resolved bytes (BLAKE3 multihash) as the `f_hash` of an `apply` record, then
+  derives the receipt id with the frozen `spore.apply.v0` wrapper
+  (`BLAKE3.derive_key`). Same hash regime as SPORE — not a fresh sha256.
+
+So `{content, receipt}` are not two file types but the two faces of `apply`:
+input vs witnessed output. Demonstrated in `witness_test.ts`: a stable role
+address (`fqdn`) whose content mutates yields a chain of distinct content-pinned
+receipts, while unchanged bytes re-witnessed at a later block keep the same
+`receipt_id` (content-pinned, not time-pinned).
+
+`apply.ts` is an independent implementation of the **frozen** `spore.apply.v0`
+wire format, verified byte-for-byte against the canonical vectors in
+`apply_test.ts` — conformance, not drift.
+
 ## Done in v0
 
 - **Handle resolution** (2026-06-07) — address a node with or without its
@@ -104,6 +126,9 @@ Two things this surfaces, both honest:
   skipping `<block>_<voice>`.
 - **Index + bounded cloud roots** (2026-06-07) — walk once, resolve many; a
   depth-bounded `~`/cloud root resolves nodes living outside any repo.
+- **BLAKE3 + apply/witness convergence** (2026-06-08) — content identity is
+  BLAKE3 (SPORE's regime); `witness()` turns a resolution into a content-pinned
+  receipt via the frozen `spore.apply.v0` wrapper.
 
 ## Horizon (not in v0)
 

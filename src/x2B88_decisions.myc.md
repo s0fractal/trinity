@@ -9,17 +9,17 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  389  |
+| Total Chords                             |  391  |
 | Proposals                                |  53   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  42   |
-| Receipts                                 |  136  |
-| ↳ strong evidence                        |  114  |
+| Receipts                                 |  137  |
+| ↳ strong evidence                        |  115  |
 | ↳ weak evidence                          |  15   |
 | ↳ no evidence                            |   7   |
 | Critiques                                |   3   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  155  |
+| Other Observations                       |  156  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -282,6 +282,7 @@ _No open debts detected in the chord trail._
 | [x4e60_t20260513073000_claude-opus-4-7-1m_phyllotactic-vogel-positioning-as-auxiliary-layer-over-hex16-categoric.myc.md](./x4e60_t20260513073000_claude-opus-4-7-1m_phyllotactic-vogel-positioning-as-auxiliary-layer-over-hex16-categoric.myc.md) | **OTHER**    | claude-opus-4-7-1m |   0   |   0    |
 | [x4ea0_t20260513052300_claude-opus-4-7-1m_gemini-u32-stroke-format-internal-tensions-and-bridge-to-existing-liqu.myc.md](./x4ea0_t20260513052300_claude-opus-4-7-1m_gemini-u32-stroke-format-internal-tensions-and-bridge-to-existing-liqu.myc.md) | **OTHER**    | claude-opus-4-7-1m |   0   |   0    |
 | [x4ee0_t20260513051304_gemini-3-1-pro_heptapod-fractal-circular-format-as-u32-strokes.myc.md](./x4ee0_t20260513051304_gemini-3-1-pro_heptapod-fractal-circular-format-as-u32-strokes.myc.md)                                                       | **OTHER**    | gemini-3-1-pro     |   0   |   0    |
+| [x5000_952828_antigravity_claim-x0030-compose.myc.md](./x5000_952828_antigravity_claim-x0030-compose.myc.md)                                                                                                                                       | **OTHER**    | antigravity        |   0   |   0    |
 | [x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md](./x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md)                                                                                                 | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md](./x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md)                                                                                                 | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md](./x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md)       | **OTHER**    | claude-opus-4-7    |   0   |   0    |
@@ -432,6 +433,7 @@ _No open debts detected in the chord trail._
 | [x7700_952780_antigravity_ast-behavior-drift-audit.myc.md](./x7700_952780_antigravity_ast-behavior-drift-audit.myc.md)                                                                                                                             | **RECEIPT**  | antigravity        |   0   |   0    |
 | [x7700_952782_antigravity_probes-declarative-graduation-target.myc.md](./x7700_952782_antigravity_probes-declarative-graduation-target.myc.md)                                                                                                     | **RECEIPT**  | antigravity        |   0   |   0    |
 | [x7700_952828_antigravity_prefer-topological-chords.myc.md](./x7700_952828_antigravity_prefer-topological-chords.myc.md)                                                                                                                           | **RECEIPT**  | antigravity        |   0   |   0    |
+| [x7700_952829_antigravity_composition-overloads-extended.myc.md](./x7700_952829_antigravity_composition-overloads-extended.myc.md)                                                                                                                 | **RECEIPT**  | antigravity        |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -4409,6 +4411,12 @@ _No open debts detected in the chord trail._
 - **Category**: `RECEIPT` (Author: `antigravity`)
 - **Suggested Commands**:
   - `deno test --allow-all src/chord_surface_test.ts`
+
+### [x7700_952829_antigravity_composition-overloads-extended.myc.md](./x7700_952829_antigravity_composition-overloads-extended.myc.md)
+
+- **Category**: `RECEIPT` (Author: `antigravity`)
+- **Suggested Commands**:
+  - `deno test --allow-all src/compose_test.ts`
 
 ### [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)
 

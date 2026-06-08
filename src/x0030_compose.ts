@@ -6,7 +6,7 @@
 // placement_policy: axis
 // intent: small FP toolkit — pipe / flow / tap / ifElse / tryOr / fromNullable / parallel
 // maturity: active
-// horizon: typed-overload count beyond 6 args if patterns demand it
+// horizon: none (extended overloads implemented)
 // skill_tag: compose
 // skill_safe: yes
 //
@@ -63,6 +63,39 @@ export function pipe<A, B, C, D, E, F, G>(
   ef: (e: E) => F | Promise<F>,
   fg: (f: F) => G | Promise<G>,
 ): Promise<G>;
+export function pipe<A, B, C, D, E, F, G, H>(
+  value: A | Promise<A>,
+  ab: (a: A) => B | Promise<B>,
+  bc: (b: B) => C | Promise<C>,
+  cd: (c: C) => D | Promise<D>,
+  de: (d: D) => E | Promise<E>,
+  ef: (e: E) => F | Promise<F>,
+  fg: (f: F) => G | Promise<G>,
+  gh: (g: G) => H | Promise<H>,
+): Promise<H>;
+export function pipe<A, B, C, D, E, F, G, H, I>(
+  value: A | Promise<A>,
+  ab: (a: A) => B | Promise<B>,
+  bc: (b: B) => C | Promise<C>,
+  cd: (c: C) => D | Promise<D>,
+  de: (d: D) => E | Promise<E>,
+  ef: (e: E) => F | Promise<F>,
+  fg: (f: F) => G | Promise<G>,
+  gh: (g: G) => H | Promise<H>,
+  hi: (h: H) => I | Promise<I>,
+): Promise<I>;
+export function pipe<A, B, C, D, E, F, G, H, I, J>(
+  value: A | Promise<A>,
+  ab: (a: A) => B | Promise<B>,
+  bc: (b: B) => C | Promise<C>,
+  cd: (c: C) => D | Promise<D>,
+  de: (d: D) => E | Promise<E>,
+  ef: (e: E) => F | Promise<F>,
+  fg: (f: F) => G | Promise<G>,
+  gh: (g: G) => H | Promise<H>,
+  hi: (h: H) => I | Promise<I>,
+  ij: (i: I) => J | Promise<J>,
+): Promise<J>;
 // deno-lint-ignore no-explicit-any
 export async function pipe(
   value: any,
@@ -93,6 +126,51 @@ export function flow<A, B, C, D, E>(
   cd: (c: C) => D | Promise<D>,
   de: (d: D) => E | Promise<E>,
 ): (a: A | Promise<A>) => Promise<E>;
+export function flow<A, B, C, D, E, F>(
+  ab: (a: A) => B | Promise<B>,
+  bc: (b: B) => C | Promise<C>,
+  cd: (c: C) => D | Promise<D>,
+  de: (d: D) => E | Promise<E>,
+  ef: (e: E) => F | Promise<F>,
+): (a: A | Promise<A>) => Promise<F>;
+export function flow<A, B, C, D, E, F, G>(
+  ab: (a: A) => B | Promise<B>,
+  bc: (b: B) => C | Promise<C>,
+  cd: (c: C) => D | Promise<D>,
+  de: (d: D) => E | Promise<E>,
+  ef: (e: E) => F | Promise<F>,
+  fg: (f: F) => G | Promise<G>,
+): (a: A | Promise<A>) => Promise<G>;
+export function flow<A, B, C, D, E, F, G, H>(
+  ab: (a: A) => B | Promise<B>,
+  bc: (b: B) => C | Promise<C>,
+  cd: (c: C) => D | Promise<D>,
+  de: (d: D) => E | Promise<E>,
+  ef: (e: E) => F | Promise<F>,
+  fg: (f: F) => G | Promise<G>,
+  gh: (g: G) => H | Promise<H>,
+): (a: A | Promise<A>) => Promise<H>;
+export function flow<A, B, C, D, E, F, G, H, I>(
+  ab: (a: A) => B | Promise<B>,
+  bc: (b: B) => C | Promise<C>,
+  cd: (c: C) => D | Promise<D>,
+  de: (d: D) => E | Promise<E>,
+  ef: (e: E) => F | Promise<F>,
+  fg: (f: F) => G | Promise<G>,
+  gh: (g: G) => H | Promise<H>,
+  hi: (h: H) => I | Promise<I>,
+): (a: A | Promise<A>) => Promise<I>;
+export function flow<A, B, C, D, E, F, G, H, I, J>(
+  ab: (a: A) => B | Promise<B>,
+  bc: (b: B) => C | Promise<C>,
+  cd: (c: C) => D | Promise<D>,
+  de: (d: D) => E | Promise<E>,
+  ef: (e: E) => F | Promise<F>,
+  fg: (f: F) => G | Promise<G>,
+  gh: (g: G) => H | Promise<H>,
+  hi: (h: H) => I | Promise<I>,
+  ij: (i: I) => J | Promise<J>,
+): (a: A | Promise<A>) => Promise<J>;
 // deno-lint-ignore no-explicit-any
 export function flow(...fns: Array<(v: any) => any>): (v: any) => Promise<any> {
   return async (v) => {

@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     8      |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    391     |
+| dynamic topology  |    392     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **489**   |
+| **Total**         |  **490**   |
 
 ## Runtime Cache Diagnostics
 
@@ -499,6 +499,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x7700_952782_antigravity_probes-declarative-graduation-target.myc.md](../src/x7700_952782_antigravity_probes-declarative-graduation-target.myc.md)                                                                                                     | canonical        | src/x7700_952782_antigravity_probes-declarative-graduation-target.myc.md                                                   | keep        |                              |
 | dynamic topology  | [src/x7700_952828_antigravity_prefer-topological-chords.myc.md](../src/x7700_952828_antigravity_prefer-topological-chords.myc.md)                                                                                                                           | canonical        | src/x7700_952828_antigravity_prefer-topological-chords.myc.md                                                              | keep        |                              |
 | dynamic topology  | [src/x7700_952829_antigravity_composition-overloads-extended.myc.md](../src/x7700_952829_antigravity_composition-overloads-extended.myc.md)                                                                                                                 | canonical        | src/x7700_952829_antigravity_composition-overloads-extended.myc.md                                                         | keep        |                              |
+| dynamic topology  | [src/x7700_952830_antigravity_detect-closure-of-cowitness-rounds-via-reference-traversal.myc.md](../src/x7700_952830_antigravity_detect-closure-of-cowitness-rounds-via-reference-traversal.myc.md)                                                         | canonical        | src/x7700_952830_antigravity_detect-closure-of-cowitness-rounds-via-reference-traversal.myc.md                             | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](../src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | canonical        | src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](../src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | canonical        | src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md                                                     | keep        |                              |
 | dynamic topology  | [src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](../src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | canonical        | src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md                                                      | keep        |                              |

@@ -9,7 +9,7 @@
 // placement_policy: axis
 // intent: scan src/x8A*_voice_*.myc.json + dynamic chord surfaces (tracked-only), render per-voice recall digest + substrate voices state
 // maturity: active
-// horizon: detect closure of cowitness rounds via reference traversal (v1 deferred per Codex review)
+// horizon: none (cowitness round closure detection implemented)
 //
 // voice memory generator — fourth axis "що я лишив"
 //
@@ -46,6 +46,7 @@ import {
   join,
   relative,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { parse as parseYaml } from "https://deno.land/std@0.224.0/yaml/mod.ts";
 import { formatGeneratedFile } from "./x0012_generated_format.ts";
 import { listChordSurfaceFiles } from "./x2F21_chord_surface.ts";
 
@@ -107,7 +108,7 @@ async function sha256Hex(bytes: Uint8Array): Promise<string> {
   ).join("");
 }
 
-interface Chord {
+export interface Chord {
   filename: string;
   rel_path: string;
   sort_key: number;
@@ -118,9 +119,14 @@ interface Chord {
   bucket_coord: string | null;
   source_hash: string;
   source_size: number;
+  closes: any | null;
+  closes_hash: string | null;
+  hears: string[] | null;
+  references: string[] | null;
+  body: string;
 }
 
-interface VoiceProfile {
+export interface VoiceProfile {
   filename: string;
   rel_path: string;
   identity: string;
@@ -210,6 +216,10 @@ async function loadChords(): Promise<Chord[]> {
     let mode: string | null = null, stance: string | null = null;
     let bucket_coord: string | null = null;
     let sort_key = 0;
+    let closes: any | null = null;
+    let closes_hash: string | null = null;
+    let hears: string[] | null = null;
+    let references: string[] | null = null;
 
     const newM = NEW_FORM.exec(chordFile.name);
     if (newM) {
@@ -236,14 +246,38 @@ async function loadChords(): Promise<Chord[]> {
 
     const fm = FRONTMATTER_RE.exec(text);
     if (fm) {
-      const vm = VOICE_RE.exec(fm[1]);
-      if (vm) voice = vm[1].toLowerCase().split("-")[0];
-      const mm = MODE_RE.exec(fm[1]);
-      if (mm) mode = mm[1];
-      const sm = STANCE_RE.exec(fm[1]);
-      if (sm) stance = sm[1];
-      const tm = TOPIC_RE.exec(fm[1]);
-      if (tm) topic = tm[1];
+      try {
+        const doc = parseYaml(fm[1]) as Record<string, any>;
+        if (doc && typeof doc === "object") {
+          if (doc.voice) voice = String(doc.voice).toLowerCase().split("-")[0];
+          if (doc.mode) mode = String(doc.mode);
+          if (doc.stance) stance = String(doc.stance);
+          if (doc.topic) topic = String(doc.topic);
+          if (doc.closes !== undefined) closes = doc.closes;
+          if (doc.closes_hash !== undefined) {
+            closes_hash = String(doc.closes_hash);
+          }
+          if (Array.isArray(doc.hears)) {
+            hears = doc.hears.map(String);
+          } else if (doc.hears) {
+            hears = [String(doc.hears)];
+          }
+          if (Array.isArray(doc.references)) {
+            references = doc.references.map(String);
+          } else if (doc.references) {
+            references = [String(doc.references)];
+          }
+        }
+      } catch {
+        const vm = VOICE_RE.exec(fm[1]);
+        if (vm) voice = vm[1].toLowerCase().split("-")[0];
+        const mm = MODE_RE.exec(fm[1]);
+        if (mm) mode = mm[1];
+        const sm = STANCE_RE.exec(fm[1]);
+        if (sm) stance = sm[1];
+        const tm = TOPIC_RE.exec(fm[1]);
+        if (tm) topic = tm[1];
+      }
     }
 
     out.push({
@@ -257,6 +291,11 @@ async function loadChords(): Promise<Chord[]> {
       bucket_coord,
       source_hash: await sha256Hex(bytes),
       source_size: bytes.length,
+      closes,
+      closes_hash,
+      hears,
+      references,
+      body: text,
     });
   }
   if (skipped > 0) {
@@ -330,7 +369,77 @@ function computeDream(
   };
 }
 
-function renderVoiceMemory(
+export function escapeRegExp(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+export function isReferenceMatch(candidate: Chord, proposal: Chord): boolean {
+  if (candidate.filename === proposal.filename) return false;
+
+  const proposalStem = proposal.filename
+    .replace(/\.myc\.md$/, "")
+    .replace(/\.md$/, "");
+  const proposalHash = proposal.source_hash;
+  const proposalHashPrefixed = `sha256:${proposalHash}`;
+
+  const candidateStrings = new Set<string>();
+
+  if (candidate.closes_hash) {
+    candidateStrings.add(candidate.closes_hash.trim());
+  }
+
+  function collectStrings(val: any) {
+    if (typeof val === "string") {
+      candidateStrings.add(val.trim());
+    } else if (Array.isArray(val)) {
+      for (const item of val) collectStrings(item);
+    } else if (val && typeof val === "object") {
+      for (const k of Object.keys(val)) collectStrings(val[k]);
+    }
+  }
+  if (candidate.closes) {
+    collectStrings(candidate.closes);
+  }
+
+  if (candidate.hears) {
+    for (const h of candidate.hears) {
+      candidateStrings.add(h.trim());
+    }
+  }
+
+  if (candidate.references) {
+    for (const r of candidate.references) {
+      candidateStrings.add(r.trim());
+    }
+  }
+
+  for (const s of candidateStrings) {
+    if (
+      s === proposal.filename ||
+      s === proposalStem ||
+      s === proposalHash ||
+      s === proposalHashPrefixed
+    ) {
+      return true;
+    }
+    if (s.endsWith(proposal.filename) || s.endsWith(proposalStem)) {
+      return true;
+    }
+  }
+
+  const stemEscaped = escapeRegExp(proposalStem);
+  const fileEscaped = escapeRegExp(proposal.filename);
+  const stemRegex = new RegExp(`\\b${stemEscaped}\\b`);
+  const fileRegex = new RegExp(`\\b${fileEscaped}\\b`);
+
+  if (stemRegex.test(candidate.body) || fileRegex.test(candidate.body)) {
+    return true;
+  }
+
+  return false;
+}
+
+export function renderVoiceMemory(
   voice: VoiceProfile,
   chords: Chord[],
   receipts: Receipts,
@@ -444,6 +553,38 @@ function renderVoiceMemory(
       const stance = c.stance ? ` [${c.stance}]` : "";
       const coord = c.bucket_coord ? ` x${c.bucket_coord}` : "";
       lines.push(`- \`${c.filename}\`${coord}${stance} — ${c.topic}`);
+
+      // Render status: Open or Closed by <receipt_file>
+      const isReceipt = (chord: Chord) =>
+        chord.mode === "receipt" || chord.stance === "RECEIPT";
+      const proposalReceipts = allChords.filter(
+        (chord) => isReceipt(chord) && isReferenceMatch(chord, c)
+      );
+      if (proposalReceipts.length > 0) {
+        const links = proposalReceipts
+          .map((r) => `[\`${r.filename}\`](./${r.filename})`)
+          .join(", ");
+        lines.push(`  - **Status**: Closed by ${links}`);
+      } else {
+        lines.push(`  - **Status**: Open`);
+      }
+
+      // Render co-witnesses list
+      const isCowitness = (chord: Chord) =>
+        chord.mode === "cowitness" ||
+        (chord.stance !== null && /AYE|NAY|TWEAK/.test(chord.stance));
+      const proposalCowitnesses = allChords.filter(
+        (chord) => isCowitness(chord) && isReferenceMatch(chord, c)
+      );
+      if (proposalCowitnesses.length > 0) {
+        lines.push(`  - **Co-witnesses**:`);
+        for (const cow of proposalCowitnesses) {
+          const cowStance = cow.stance ?? "witness";
+          lines.push(`    - **${cow.voice}**: [${cowStance}](./${cow.filename})`);
+        }
+      } else {
+        lines.push(`  - **Co-witnesses**: none`);
+      }
     }
     lines.push(``);
   }
@@ -455,10 +596,24 @@ function renderVoiceMemory(
       `> v0 scope: chords with cowitness mode/stance authored by this voice. Does NOT yet scan others' chords for references to this voice in their witness_chain (deferred to v1).`,
     );
     lines.push(``);
+    const allProposals = allChords.filter(
+      (p) =>
+        p.mode === "proposal" ||
+        p.stance === "PROPOSE" ||
+        /PROPOSE/.test(p.stance ?? "")
+    );
     for (const c of cowitness.slice(-15).reverse()) {
       const stance = c.stance ? ` [${c.stance}]` : "";
       const coord = c.bucket_coord ? ` x${c.bucket_coord}` : "";
-      lines.push(`- \`${c.filename}\`${coord}${stance} — ${c.topic}`);
+      const cosigned = allProposals.filter((p) => isReferenceMatch(c, p));
+      let cosignedStr = "";
+      if (cosigned.length > 0) {
+        const links = cosigned
+          .map((p) => `[\`${p.filename}\`](./${p.filename})`)
+          .join(", ");
+        cosignedStr = ` (cosigned: ${links})`;
+      }
+      lines.push(`- \`${c.filename}\`${coord}${stance} — ${c.topic}${cosignedStr}`);
     }
     lines.push(``);
   }

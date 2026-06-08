@@ -7,7 +7,7 @@
 // placement_policy: axis
 // intent: read all 5 SUBSTRATE_SELF_ABI.v0.1 slots from each substrate (omega/liquid/myc) in parallel; render unified federation dashboard
 // maturity: active
-// horizon: nested ecosystem (substrate-of-substrates if any submodule grows its own federation)
+// horizon: none (nested ecosystem state loading and formatting implemented)
 // skill_tag: ecosystem
 // skill_safe: yes-with-care
 //
@@ -39,23 +39,24 @@ import { parallel, tryOr } from "./x0030_compose.ts";
 const HERE = dirname(fromFileUrl(import.meta.url));
 const TRINITY_ROOT = dirname(HERE);
 
-const SUBSTRATES = ["omega", "liquid", "myc"] as const;
-type Substrate = typeof SUBSTRATES[number];
+export const SUBSTRATES = ["omega", "liquid", "myc"] as const;
+export type Substrate = typeof SUBSTRATES[number];
 
 const STATE_FILE = join(TRINITY_ROOT, "src", "x2288_ecosystem.latest.myc.json");
 
-interface SavedSlotState {
+export interface SavedSlotState {
   present: boolean;
   summary?: string;
   error?: string;
+  mirrors?: Record<string, any>;
 }
 
-interface SavedSubstrateState {
+export interface SavedSubstrateState {
   abi_coverage: string;
   slots: Record<string, SavedSlotState>;
 }
 
-type SavedEcosystemState = Record<string, SavedSubstrateState>;
+export type SavedEcosystemState = Record<string, SavedSubstrateState>;
 
 interface DiffItem {
   substrate: string;
@@ -65,7 +66,7 @@ interface DiffItem {
 // Slot paths per SUBSTRATE_SELF_ABI.v0.1. Executable slots end in .ts
 // and get invoked via deno run; projection slots end in .md and get
 // read as text + frontmatter scanned.
-const SLOTS = {
+export const SLOTS = {
   status: { path: "src/x2E00_status.ts", kind: "executable" as const },
   capabilities: {
     path: "src/x4A00_capabilities.ts",
@@ -84,19 +85,25 @@ const SLOTS = {
     path: "src/x8E00_probes_projection.myc.md",
     kind: "projection" as const,
   },
+  ecosystem: {
+    path: "src/x2200_ecosystem.ts",
+    kind: "executable" as const,
+    fallbacks: ["src/x2288_ecosystem.latest.myc.json"],
+  },
 };
 
-interface SlotResult {
+export interface SlotResult {
   present: boolean;
   data?: unknown;
   summary?: string;
   error?: string;
+  mirrors?: Record<string, any>;
 }
 
-interface SubstrateMirror {
+export interface SubstrateMirror {
   substrate: Substrate;
   slots: Record<keyof typeof SLOTS, SlotResult>;
-  abi_coverage: string; // "5/5"
+  abi_coverage: string; // "5/5" or "5/6"
 }
 
 async function runExecutable(absPath: string): Promise<unknown> {
@@ -144,7 +151,7 @@ async function readProjection(
   return { frontmatter, sections };
 }
 
-async function readSlot(
+export async function readSlot(
   substrate: Substrate,
   slotName: keyof typeof SLOTS,
 ): Promise<SlotResult> {
@@ -162,13 +169,35 @@ async function readSlot(
       continue; // try next candidate
     }
     try {
-      if (slot.kind === "executable") {
-        const data = await runExecutable(absPath);
-        const d = data as { summary?: { overall?: string } };
+      if (absPath.endsWith(".json")) {
+        const text = await Deno.readTextFile(absPath);
+        const data = JSON.parse(text);
+        const nestedMirrors = data.mirrors || data;
+        let summary = "ok";
+        if (nestedMirrors && typeof nestedMirrors === "object") {
+          const keys = Object.keys(nestedMirrors);
+          summary = `${keys.length} nested substrate${keys.length === 1 ? "" : "s"}: ${keys.join("; ")}`;
+        }
         return {
           present: true,
           data,
-          summary: d.summary?.overall ?? "ok",
+          summary,
+          mirrors: nestedMirrors,
+        };
+      } else if (slot.kind === "executable") {
+        const data = await runExecutable(absPath);
+        const d = data as { summary?: { overall?: string }; mirrors?: Record<string, any> };
+        const nestedMirrors = d.mirrors;
+        let summary = d.summary?.overall ?? "ok";
+        if (nestedMirrors && typeof nestedMirrors === "object") {
+          const keys = Object.keys(nestedMirrors);
+          summary = `${keys.length} nested substrate${keys.length === 1 ? "" : "s"}: ${keys.join("; ")}`;
+        }
+        return {
+          present: true,
+          data,
+          summary,
+          mirrors: nestedMirrors,
         };
       } else {
         const proj = await readProjection(absPath);
@@ -189,7 +218,7 @@ async function readSlot(
   return { present: false };
 }
 
-async function readSubstrate(substrate: Substrate): Promise<SubstrateMirror> {
+export async function readSubstrate(substrate: Substrate): Promise<SubstrateMirror> {
   const slots = await parallel({
     status: () =>
       tryOr(() => readSlot(substrate, "status"), { present: false }),
@@ -200,12 +229,14 @@ async function readSubstrate(substrate: Substrate): Promise<SubstrateMirror> {
       tryOr(() => readSlot(substrate, "roadmap"), { present: false }),
     probes: () =>
       tryOr(() => readSlot(substrate, "probes"), { present: false }),
+    ecosystem: () =>
+      tryOr(() => readSlot(substrate, "ecosystem"), { present: false }),
   });
   const presentCount = Object.values(slots).filter((s) => s.present).length;
   return {
     substrate,
     slots,
-    abi_coverage: `${presentCount}/5`,
+    abi_coverage: `${presentCount}/6`,
   };
 }
 
@@ -230,6 +261,7 @@ async function saveCurrentState(
             present: v.present,
             summary: v.summary,
             error: v.error,
+            mirrors: v.mirrors,
           }]),
         ),
       };
@@ -238,7 +270,7 @@ async function saveCurrentState(
   }, undefined);
 }
 
-function diffEcosystem(
+export function diffEcosystem(
   prev: SavedEcosystemState,
   current: Record<Substrate, SubstrateMirror>,
 ): DiffItem[] {
@@ -355,7 +387,7 @@ if (import.meta.main) {
     mirrors.liquid,
     mirrors.myc,
   ];
-  const totalSlots = ordered.length * 5;
+  const totalSlots = ordered.length * 6;
   const presentSlots = ordered.reduce(
     (sum, m) => sum + Object.values(m.slots).filter((s) => s.present).length,
     0,
@@ -415,6 +447,18 @@ if (import.meta.main) {
           ? `⚠ error: ${result.error.slice(0, 60)}`
           : `✓ ${result.summary?.slice(0, 70) ?? "ok"}`;
         console.log(`#   ${slotName.padEnd(13)} ${status}`);
+        if (result.present && result.mirrors && typeof result.mirrors === "object") {
+          for (const [nSub, nMirror] of Object.entries(result.mirrors)) {
+            const nested = nMirror as { abi_coverage?: string; slots?: Record<string, any> };
+            const cov = nested.abi_coverage ? ` [${nested.abi_coverage}]` : "";
+            let nStatus = "";
+            if (nested.slots && nested.slots.status) {
+              const sRes = nested.slots.status;
+              nStatus = sRes.error ? ` ⚠ error` : (sRes.summary ? ` (status: ✓ ${sRes.summary})` : "");
+            }
+            console.log(`#     ↳ ${nSub.padEnd(11)}${cov}${nStatus}`);
+          }
+        }
       }
       console.log(`#`);
     }

@@ -8,7 +8,7 @@
 // placement_policy: axis
 // intent: scan organ horizons + tracked chords + voices; render frontier tension per substrate and per voice
 // maturity: active
-// horizon: consume generated state/skill/memory outputs; cross-bucket tension synthesis (per-voice far-horizon landed 2026-05-28 — projections threaded into renderVoiceRoadmap, condensed top-3 era-signals per substrate)
+// horizon: none (consume generated state/skill/memory outputs; cross-bucket tension synthesis implemented)
 // skill_tag: roadmap
 // skill_safe: yes-with-care
 //
@@ -19,10 +19,8 @@
 //   x8A00_voice_memory_gen — memory ("що я лишив")
 //   x8C00_skill_gen — skill ("як рухатись")
 //
-// V0 explicit scope (per Codex review): reads SOURCES directly (organ
-// headers + tracked chords + tracked voice profiles). Does NOT yet
-// consume generated state/skill/memory output files. Cross-axis
-// downstream consumption deferred to v1 after memory graduates.
+// V1 explicit scope: reads both SOURCES directly and parses generated
+// state/skill/memory output files for cross-bucket tension synthesis.
 //
 // Reads (READ-ONLY, tracked-only via git ls-files for trinity sources):
 //   src/x*.ts                            organ horizons

@@ -88,6 +88,40 @@ async function collectTopological(out: ChordSurfaceFile[]): Promise<void> {
   } catch { /* src always exists, but keep helper total */ }
 }
 
+interface MigrationPlan {
+  legacyToTopologicalPath: Map<string, string>;
+  legacyToTopologicalFlatId: Map<string, string>;
+}
+
+let cachedPlan: MigrationPlan | null = null;
+
+export function getMigrationPlan(): MigrationPlan {
+  if (cachedPlan) return cachedPlan;
+  const planPath = join(ROOT, "src", "x8F20_chord_migration_plan.myc.json");
+  const plan: MigrationPlan = {
+    legacyToTopologicalPath: new Map(),
+    legacyToTopologicalFlatId: new Map(),
+  };
+  try {
+    const text = Deno.readTextFileSync(planPath);
+    const data = JSON.parse(text);
+    if (data && Array.isArray(data.entries)) {
+      for (const entry of data.entries) {
+        if (entry.source && entry.target) {
+          plan.legacyToTopologicalPath.set(entry.source, entry.target);
+          const sourceStem = entry.source.replace(/^jazz\/chords\//, "").replace(/\.md$/, "");
+          const targetStem = entry.target.replace(/^src\//, "").replace(/\.myc\.md$/, "");
+          plan.legacyToTopologicalFlatId.set(sourceStem, targetStem);
+        }
+      }
+    }
+  } catch {
+    // If the plan is missing or malformed, continue with empty maps
+  }
+  cachedPlan = plan;
+  return plan;
+}
+
 export async function listChordSurfaceFiles(options: {
   stable?: boolean;
   tracked?: Set<string>;
@@ -99,7 +133,27 @@ export async function listChordSurfaceFiles(options: {
   const tracked = options.stable
     ? options.tracked ?? await gitTrackedSet()
     : null;
-  const filtered = tracked ? out.filter((f) => tracked.has(f.relPath)) : out;
+
+  const plan = getMigrationPlan();
+  const presentTopological = new Set(
+    out.filter((f) => f.surface === "topological").map((f) => f.relPath),
+  );
+
+  const deduplicated = out.filter((f) => {
+    if (f.surface === "legacy") {
+      const targetPath = plan.legacyToTopologicalPath.get(f.relPath);
+      if (targetPath) {
+        const present = presentTopological.has(targetPath);
+        const indexed = tracked?.has(targetPath);
+        if (present || indexed) {
+          return false;
+        }
+      }
+    }
+    return true;
+  });
+
+  const filtered = tracked ? deduplicated.filter((f) => tracked.has(f.relPath)) : deduplicated;
 
   filtered.sort((a, b) => {
     if (a.flatId !== b.flatId) return a.flatId.localeCompare(b.flatId);
@@ -109,11 +163,14 @@ export async function listChordSurfaceFiles(options: {
 }
 
 export function normalizeChordRef(ref: string): string {
-  return ref
+  const base = ref
     .replace(/^(\.\.\/)?jazz\/chords\//, "")
     .replace(/^src\//, "")
     .replace(/\.myc\.md$/, "")
     .replace(/\.md$/, "");
+
+  const plan = getMigrationPlan();
+  return plan.legacyToTopologicalFlatId.get(base) ?? base;
 }
 
 export function chordDateFromName(name: string): Date | null {

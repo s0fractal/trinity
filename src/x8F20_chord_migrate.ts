@@ -9,7 +9,7 @@
 // placement_policy: axis
 // intent: plan and optionally apply migration of jazz/chords/*.md into src/xNNNN_<block>_<voice>_<slug>.myc.md flat chord topology
 // maturity: active
-// horizon: teach all chord readers to prefer src topological chords once apply mode is exercised
+// horizon: none (readers prefer topological chords)
 // skill_tag: chord-migrate
 // skill_safe: yes-with-care
 

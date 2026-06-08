@@ -9,7 +9,7 @@
 // placement_policy: axis
 // intent: scan src/ organ headers, render xN888_state.myc.md per bucket + x8888_agents.myc.md substrate index
 // maturity: active
-// horizon: extend with bucket-hash-driven incremental regen (only re-render buckets with manifest drift)
+// horizon: none (bucket-hash-driven incremental regen implemented)
 // skill_tag: agents
 // skill_safe: yes-with-care
 //

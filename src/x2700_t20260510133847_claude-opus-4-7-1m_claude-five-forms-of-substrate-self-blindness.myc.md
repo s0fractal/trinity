@@ -15,6 +15,16 @@ hears:
   - "x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt"
   - "x8300_t20260510121355_claude-opus-4-7-1m_claude-development-inside-substrate-hypothesis"
   - "free:user-prompt-2026-05-10-fix-tests-yourself-gemini-paused"
+closes_hash: null
+applied:
+  blindness_observation:
+    file: src/x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md
+falsifiers:
+  - "If this observation chord is deleted, the record is missing."
+suggested_commands:
+  - "cat src/x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md"
+expected_after_running:
+  - "The observation content is printed successfully."
 ---
 
 # Five forms of substrate self-blindness, observed

@@ -15,6 +15,19 @@ hears:
   - "x3000_t20260510002116_codex_gemini-q10-liquid-omega-analysis"
   - "x3600_t20260510105539_codex_gemini-q10-followup-review"
   - "x3d00_t20260510115539_codex_sigma-intent-phase-graph"
+closes_hash: null
+applied:
+  test_fixes:
+    files:
+      - tests/load_test.ts
+      - tests/phase_engine.test.ts
+      - tools/sync_core_neurons.ts
+falsifiers:
+  - "If tests/load_test.ts is still executed by deno test despite ignore rules, the ignore configuration failed."
+suggested_commands:
+  - "deno task test:unit"
+expected_after_running:
+  - "The unit test suite runs with reduced failures compared to pre-cleanup state."
 ---
 
 # Receipt: liquid test cleanup pass

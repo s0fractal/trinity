@@ -15,8 +15,19 @@ actor: claude
 claim_kind: implementation-receipt
 hears:
   - contracts/VOICES.v0.1.md
-mode: RECEIPT
-oct: 2.receipt
+closes_hash: null
+applied:
+  style_organ:
+    file: src/x4100_style.ts
+falsifiers:
+  - "If ./t style reports 'improvisation' when daemon is locked, the trigger logic is wrong."
+  - "If ./t style reports 'silence' when new chords are being written every minute, the mtime reader is broken."
+  - "If health is 'degraded' but style is still 'improvisation' (not 'vigil'), the degraded+stale trigger is too weak."
+suggested_commands:
+  - "./t style"
+  - "./t style --json"
+expected_after_running:
+  - "The style projection returns a valid active music style based on the current daemon and health state."
 ---
 
 # Receipt: `t style` organ @ 0x4/1

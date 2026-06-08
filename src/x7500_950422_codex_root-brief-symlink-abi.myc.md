@@ -13,6 +13,21 @@ receipts:
   - src/x8CF0_skills_bootstrap.myc.md
   - src/x88A0_agents_palimpsest_2026_05_22.myc.md
 status: applied
+closes_hash: null
+applied:
+  symlink_abi:
+    files:
+      - AGENTS.md
+      - SKILLS.md
+      - src/x88F0_agents_bootstrap.myc.md
+      - src/x8CF0_skills_bootstrap.myc.md
+falsifiers:
+  - "If AGENTS.md is not a symlink to src/x88F0_agents_bootstrap.myc.md, the root brief symlink ABI was broken."
+suggested_commands:
+  - "readlink AGENTS.md"
+  - "readlink SKILLS.md"
+expected_after_running:
+  - "The symlinks resolve correctly to their bootstrap targets."
 ---
 
 # Receipt: root brief symlink ABI

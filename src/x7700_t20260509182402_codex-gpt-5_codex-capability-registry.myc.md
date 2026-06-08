@@ -15,6 +15,20 @@ hears:
   - "myc/protocols/capabilities/SPEC.draft.md"
   - "myc/protocols/recipes/SPEC.draft.md"
   - "free:user-prompt-2026-05-09-formal-file-with-capabilities"
+closes_hash: null
+applied:
+  capability_registry:
+    files:
+      - contracts/TRINITY_CAPABILITIES.v0.1.md
+      - capabilities/trinity.capabilities.v0.1.json
+      - tools/capabilities.ts
+falsifiers:
+  - "If deno task capabilities validation fails, the capabilities registry schema is broken."
+suggested_commands:
+  - "deno check tools/capabilities.ts"
+  - "deno task capabilities -- validate"
+expected_after_running:
+  - "The capabilities schema validation completes successfully."
 ---
 
 # Receipt: Capability registry before `t`

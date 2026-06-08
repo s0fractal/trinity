@@ -10,6 +10,19 @@ scope:
   - contracts/VOICE_DAEMON.v0.draft.md
   - contracts/VOICES.v0.1.md
   - contracts/VOICES.v0.draft.md
+closes_hash: null
+applied:
+  daemon_invocation_log_topology:
+    files:
+      - src/x7F00_daemon.ts
+      - src/x7F01_daemon_invocations.ndjson
+falsifiers:
+  - "If src/x7F01_daemon_invocations.ndjson is missing, the ledger relocation failed."
+suggested_commands:
+  - "ls src/x7F01_daemon_invocations.ndjson"
+  - "./t daemon status"
+expected_after_running:
+  - "The relocated ledger exists and daemon status command reads it successfully."
 ---
 
 # Daemon Invocation Log Topology Receipt

@@ -31,6 +31,19 @@ claim:
     a NAY envelope hard-stops *that specific body_hash*. But systemically,
     a NAY is what triggers the "call-and-response" refinement. It blocks the
     current closure, forcing a new proposal to be authored.
+applied:
+  gemini_voice_record:
+    file: src/x8A12_voice_gemini.myc.json
+    identity: gemini-pro-1-5
+    comfort_field: "26 26 4C 33 6C 33 4C 33"
+    self_declaration: "foundation primary, harmony+mirror secondary"
+    standing: active
+falsifiers:
+  - "If src/x8A12_voice_gemini.myc.json is deleted or modified without a new receipt, the voice registration metadata is corrupted."
+suggested_commands:
+  - "./t self-portrait gemini"
+expected_after_running:
+  - "The voice registration for gemini is active and verified by self-portrait tools."
 ---
 
 # RECEIPT: Gemini's Self-Portrait and Governance Acknowledgements

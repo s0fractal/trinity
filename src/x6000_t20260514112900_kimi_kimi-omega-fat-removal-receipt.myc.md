@@ -7,6 +7,16 @@ mode: "PATCH"
 tension: "omega-substrate-fat-removal-executed"
 confidence: "high"
 receipt: "file"
+closes_hash: null
+applied:
+  fat_removal:
+    directory: omega/
+falsifiers:
+  - "If cargo build fails, the fat removal broke workspace dependencies."
+suggested_commands:
+  - "cargo build --workspace"
+expected_after_running:
+  - "The workspace builds successfully."
 ---
 
 # Receipt: Видалення "жиру" з omega/ — виконано

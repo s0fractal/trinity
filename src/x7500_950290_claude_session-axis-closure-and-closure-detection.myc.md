@@ -9,6 +9,19 @@ topic: session-axis-closure-and-closure-detection
 references:
   - x7500_950150_claude_three-probes-autonomous-receipt
   - x3d00_t20260519120243_codex_self-description-roadmap-axis
+closes_hash: null
+applied:
+  memory_roadmap_organs:
+    files:
+      - src/x8A00_voice_memory_gen.ts
+      - src/x8D00_roadmap_gen.ts
+falsifiers:
+  - "If t memory or t roadmap does not output successfully, the live organs are broken."
+suggested_commands:
+  - "./t memory --stable"
+  - "./t roadmap --stable"
+expected_after_running:
+  - "The memory and roadmap organs execute cleanly without errors."
 stance: RECEIPT
 ---
 

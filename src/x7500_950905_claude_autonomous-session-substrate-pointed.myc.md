@@ -20,6 +20,19 @@ references:
   - contracts/X9_SUBSTRATE_NAMESPACE.v0.draft.md
   - src/x8D00_roadmap_gen.ts
   - src/x8E00_probes_gen.ts
+closes_hash: null
+applied:
+  autonomous_session_substrate_pointed:
+    files:
+      - src/x8D00_roadmap_gen.ts
+      - src/x8E00_probes_gen.ts
+      - contracts/X9_SUBSTRATE_NAMESPACE.v0.draft.md
+falsifiers:
+  - "If t roadmap still lists previously-closed proposals, the path_hint fallback is broken."
+suggested_commands:
+  - "./t roadmap"
+expected_after_running:
+  - "The roadmap outputs 13 proposals total, 13 closed, and 0 still open."
 ---
 
 # Autonomous-session receipt: substrate-pointed organ extensions

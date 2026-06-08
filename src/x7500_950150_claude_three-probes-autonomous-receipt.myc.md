@@ -15,6 +15,21 @@ references:
   - x3500_950008_codex_src-as-semantic-address-space
   - x3500_950009_codex_substrate-morphology-language-layer
   - x3600_t20260519022500_gemini-1-5-pro_auto-generated-bucket-state-x8-cache
+closes_hash: null
+applied:
+  three_probes_autonomous:
+    directories:
+      - probes/agents-gen-v0/
+      - probes/blake3-fqdn-v0/
+      - probes/morphology-v0/
+falsifiers:
+  - "If any of the three probes directories is missing, the autonomous land was incomplete."
+suggested_commands:
+  - "ls probes/agents-gen-v0/"
+  - "ls probes/blake3-fqdn-v0/"
+  - "ls probes/morphology-v0/"
+expected_after_running:
+  - "The three probe directories exist in the filesystem."
 stance: RECEIPT
 ---
 

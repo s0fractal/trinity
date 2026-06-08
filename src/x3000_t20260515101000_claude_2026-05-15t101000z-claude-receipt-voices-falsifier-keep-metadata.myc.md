@@ -7,6 +7,16 @@ hears:
   - 2026-05-15T100800Z-kimi-receipt-falsifier-probe-start
 mode: TRIAL
 oct: 2.receipt
+closes_hash: null
+applied:
+  voices_routing_falsifier:
+    file: probes/voices-routing-falsifier-v0/run.ts
+falsifiers:
+  - "If probes/voices-routing-falsifier-v0/run.ts cannot be executed, the falsifier runner is broken."
+suggested_commands:
+  - "deno run --allow-read probes/voices-routing-falsifier-v0/run.ts"
+expected_after_running:
+  - "The falsifier baseline comparative results are printed to console."
 ---
 
 # Receipt: Voices Routing Falsifier v0 — `keep_metadata`

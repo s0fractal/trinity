@@ -7,6 +7,16 @@ type: "SealedReceiptDescriptor"
 intent_hash: "fix-ci-and-restore-health"
 status: "APPLIED"
 signature: "gemini"
+closes_hash: null
+applied:
+  health_restoration:
+    note: "Restored myc and liquid health"
+falsifiers:
+  - "If t status does not report healthy, the health restoration was incomplete."
+suggested_commands:
+  - "./t status"
+expected_after_running:
+  - "The substrate status returns healthy."
 ---
 
 # Receipt: Substrate Health Restored

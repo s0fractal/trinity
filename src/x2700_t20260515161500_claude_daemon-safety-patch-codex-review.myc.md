@@ -15,8 +15,17 @@ actor: claude
 claim_kind: implementation-receipt
 hears:
   - jazz/chords/2026-05-15T160323Z-codex-review-kimi-daemon-crawl-surface
-mode: RECEIPT
-oct: 2.receipt
+closes_hash: "2026-05-15T160323Z-codex-review-kimi-daemon-crawl-surface"
+applied:
+  daemon_safety_patch:
+    file: src/x7F00_daemon.ts
+falsifiers:
+  - "If daemon status does not run, or daemon run --dry-run fails, the safety patch broke runtime stability."
+suggested_commands:
+  - "./t daemon status"
+  - "./t daemon run --dry-run"
+expected_after_running:
+  - "The daemon status command runs cleanly and does not route historical backfills automatically without --backfill."
 ---
 
 # Receipt: Daemon safety patch — Codex review applied

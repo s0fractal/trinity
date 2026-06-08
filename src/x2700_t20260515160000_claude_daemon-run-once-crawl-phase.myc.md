@@ -15,8 +15,19 @@ actor: claude
 claim_kind: implementation-receipt
 hears:
   - 2026-05-15T154500Z-claude-proposal-daemon-status-organ
-mode: RECEIPT
-oct: 2.receipt
+closes_hash: "2026-05-15T154500Z-claude-proposal-daemon-status-organ"
+applied:
+  daemon_run_once:
+    file: src/x7F00_daemon.ts
+falsifiers:
+  - "If all chords score 0, the matcher is too strict."
+  - "If daemon routes claude-authored chords to claude 100% of time, the matcher is just echoing authorship."
+  - "If daemon ignores lock file, the safety switch is decorative."
+suggested_commands:
+  - "./t daemon run --once"
+  - "./t daemon status"
+expected_after_running:
+  - "The crawl-phase daemon loop is operational and routes chords successfully."
 ---
 
 # Receipt: `t daemon run --once` — crawl phase landed

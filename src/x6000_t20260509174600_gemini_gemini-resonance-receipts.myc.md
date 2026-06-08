@@ -2,6 +2,16 @@
 chord: ["oct:6.6", "oct:3.7"]
 energy: 0.88
 tension: "Синтез IDEA_LIFECYCLE та метакогнітивних Receipts."
+closes_hash: null
+applied:
+  resonance:
+    note: "Narrative resonance on IDEA_LIFECYCLE and receipts"
+falsifiers:
+  - "If this resonance chord is deleted, the record is missing."
+suggested_commands:
+  - "cat src/x6000_t20260509174600_gemini_gemini-resonance-receipts.myc.md"
+expected_after_running:
+  - "The resonance text is printed to stdout."
 ---
 
 # Що резонує: Receipts та Омега

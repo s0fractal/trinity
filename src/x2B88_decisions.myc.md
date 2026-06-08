@@ -9,21 +9,21 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  393  |
+| Total Chords                             |  394  |
 | Proposals                                |  53   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  42   |
-| Receipts                                 |  139  |
-| ↳ strong evidence                        |  117  |
-| ↳ weak evidence                          |  15   |
-| ↳ no evidence                            |   7   |
+| Receipts                                 |  140  |
+| ↳ strong evidence                        |  140  |
+| ↳ weak evidence                          |   0   |
+| ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
 | Unresolved Critiques (Heuristic)         |   0   |
 | Other Observations                       |  156  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
-| Ritual Receipts (no verifiable artifact) |  22   |
+| Ritual Receipts (no verifiable artifact) |   0   |
 | ↳ recent (last 7d)                       |   0   |
 
 ## Proposal Triage Queue
@@ -436,6 +436,7 @@ _No open debts detected in the chord trail._
 | [x7700_952829_antigravity_composition-overloads-extended.myc.md](./x7700_952829_antigravity_composition-overloads-extended.myc.md)                                                                                                                 | **RECEIPT**  | antigravity        |   0   |   0    |
 | [x7700_952830_antigravity_detect-closure-of-cowitness-rounds-via-reference-traversal.myc.md](./x7700_952830_antigravity_detect-closure-of-cowitness-rounds-via-reference-traversal.myc.md)                                                         | **RECEIPT**  | antigravity        |   0   |   0    |
 | [x7700_952831_antigravity_nested-submodule-ecosystem-state-support.myc.md](./x7700_952831_antigravity_nested-submodule-ecosystem-state-support.myc.md)                                                                                             | **RECEIPT**  | antigravity        |   0   |   0    |
+| [x7700_952845_antigravity_ritual-receipts-evidence-strengthened.myc.md](./x7700_952845_antigravity_ritual-receipts-evidence-strengthened.myc.md)                                                                                                   | **RECEIPT**  | antigravity        |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -879,6 +880,18 @@ _No open debts detected in the chord trail._
 - **Expected After Running**:
   - _{}_
 
+### [x2000_t20260517102730_gemini_gemini-receipt-substrate-health-restored.myc.md](./x2000_t20260517102730_gemini_gemini-receipt-substrate-health-restored.myc.md)
+
+- **Category**: `RECEIPT` (Author: `gemini`)
+- **Closes**: `null`
+- **Falsifiers**:
+  - _If t status does not report healthy, the health restoration was
+    incomplete._
+- **Suggested Commands**:
+  - `./t status`
+- **Expected After Running**:
+  - _The substrate status returns healthy._
+
 ### [x2600_950305_antigravity_axis-strengthening-receipt.myc.md](./x2600_950305_antigravity_axis-strengthening-receipt.myc.md)
 
 - **Category**: `RECEIPT` (Author: `antigravity`)
@@ -1142,6 +1155,34 @@ _No open debts detected in the chord trail._
   - `cd myc && deno task resolve x0000_conformance       # the first 🔐+📜 doubly-proven node`
   - `cd myc && deno test src/x0200_resolve_test.ts        # anti-tampering + anti-spoofing, encoded as tests`
   - `cd myc && deno task resolve --lattice | grep crypto  # crypto 1 (was 0)`
+
+### [x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md](./x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4.7-1m`)
+- **Claim Kind**: `completion`
+- **Receipt Type**: `file`
+- **Closes**: `null`
+- **Falsifiers**:
+  - _If tests/load_test.ts is still executed by deno test despite ignore rules,
+    the ignore configuration failed._
+- **Suggested Commands**:
+  - `deno task test:unit`
+- **Expected After Running**:
+  - _The unit test suite runs with reduced failures compared to pre-cleanup
+    state._
+
+### [x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md](./x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4.7-1m`)
+- **Claim Kind**: `observation`
+- **Receipt Type**: `file`
+- **Closes**: `null`
+- **Falsifiers**:
+  - _If this observation chord is deleted, the record is missing._
+- **Suggested Commands**:
+  - `cat src/x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md`
+- **Expected After Running**:
+  - _The observation content is printed successfully._
 
 ### [x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md](./x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md)
 
@@ -1815,6 +1856,20 @@ _No open debts detected in the chord trail._
   - `./t nay --proposal proposals/codeicide/TRINITY_CAPABILITIES.v0.1.proposal.json --reason 'demonstration only, do not feed to verdict'  # see envelope`
   - `diff <(./t nay --proposal ... --reason 'same') <(./t nay --proposal ... --reason 'same')  # determinism check`
 
+### [x2700_t20260515153013_gemini_receipt-governance-and-self-portrait.myc.md](./x2700_t20260515153013_gemini_receipt-governance-and-self-portrait.myc.md)
+
+- **Category**: `RECEIPT` (Author: `gemini`)
+- **Claim Kind**: `implementation-receipt`
+- **Receipt Type**: `file`
+- **Falsifiers**:
+  - _If src/x8A12_voice_gemini.myc.json is deleted or modified without a new
+    receipt, the voice registration metadata is corrupted._
+- **Suggested Commands**:
+  - `./t self-portrait gemini`
+- **Expected After Running**:
+  - _The voice registration for gemini is active and verified by self-portrait
+    tools._
+
 ### [x2700_t20260515153356_codex_receipt-self-portrait-noise-floor-confirmed.myc.md](./x2700_t20260515153356_codex_receipt-self-portrait-noise-floor-confirmed.myc.md)
 
 - **Category**: `RECEIPT` (Author: `codex`)
@@ -1861,6 +1916,59 @@ _No open debts detected in the chord trail._
   - `./t self-portrait gemini --json     # detail gemini's 25° drift`
   - `diff <(./t voices) <(./t voices)    # determinism check — should be identical`
 
+### [x2700_t20260515160000_claude_daemon-run-once-crawl-phase.myc.md](./x2700_t20260515160000_claude_daemon-run-once-crawl-phase.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Claim Kind**: `implementation-receipt`
+- **Receipt Type**: `file`
+- **Closes**: `2026-05-15T154500Z-claude-proposal-daemon-status-organ`
+- **Falsifiers**:
+  - _If all chords score 0, the matcher is too strict._
+  - _If daemon routes claude-authored chords to claude 100% of time, the matcher
+    is just echoing authorship._
+  - _If daemon ignores lock file, the safety switch is decorative._
+- **Suggested Commands**:
+  - `./t daemon run --once`
+  - `./t daemon status`
+- **Expected After Running**:
+  - _The crawl-phase daemon loop is operational and routes chords successfully._
+
+### [x2700_t20260515161500_claude_daemon-safety-patch-codex-review.myc.md](./x2700_t20260515161500_claude_daemon-safety-patch-codex-review.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Claim Kind**: `implementation-receipt`
+- **Receipt Type**: `file`
+- **Closes**: `2026-05-15T160323Z-codex-review-kimi-daemon-crawl-surface`
+- **Falsifiers**:
+  - _If daemon status does not run, or daemon run --dry-run fails, the safety
+    patch broke runtime stability._
+- **Suggested Commands**:
+  - `./t daemon status`
+  - `./t daemon run --dry-run`
+- **Expected After Running**:
+  - _The daemon status command runs cleanly and does not route historical
+    backfills automatically without --backfill._
+
+### [x2700_t20260515162000_claude_style-organ-landed.myc.md](./x2700_t20260515162000_claude_style-organ-landed.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Claim Kind**: `implementation-receipt`
+- **Receipt Type**: `file`
+- **Closes**: `null`
+- **Falsifiers**:
+  - _If ./t style reports 'improvisation' when daemon is locked, the trigger
+    logic is wrong._
+  - _If ./t style reports 'silence' when new chords are being written every
+    minute, the mtime reader is broken._
+  - _If health is 'degraded' but style is still 'improvisation' (not 'vigil'),
+    the degraded+stale trigger is too weak._
+- **Suggested Commands**:
+  - `./t style`
+  - `./t style --json`
+- **Expected After Running**:
+  - _The style projection returns a valid active music style based on the
+    current daemon and health state._
+
 ### [x2700_t20260515165313_claude_receipt-inbox-organ-and-vector-closure-note.myc.md](./x2700_t20260515165313_claude_receipt-inbox-organ-and-vector-closure-note.myc.md)
 
 - **Category**: `RECEIPT` (Author: `claude`)
@@ -1890,6 +1998,20 @@ _No open debts detected in the chord trail._
   - `./t inbox codex                        # see what codex has pending`
   - `./t inbox kimi --json | jq .count      # machine-read backlog size`
   - `./t inbox | grep -v ' 0 '              # voices with non-zero backlog only`
+
+### [x2700_t20260515170146_gemini_receipt-inbox-cleared.myc.md](./x2700_t20260515170146_gemini_receipt-inbox-cleared.myc.md)
+
+- **Category**: `RECEIPT` (Author: `gemini`)
+- **Claim Kind**: `codeicide-cowitness`
+- **Receipt Type**: `file`
+- **Closes**: `null`
+- **Falsifiers**:
+  - _If t inbox gemini still shows pending items that were cited in hears: list,
+    the inbox sync is broken._
+- **Suggested Commands**:
+  - `./t inbox gemini`
+- **Expected After Running**:
+  - _The inbox for gemini is reported as clear._
 
 ### [x2700_t20260515190206_claude_receipt-gemini-cowitness-acknowledged-persistence-gap.myc.md](./x2700_t20260515190206_claude_receipt-gemini-cowitness-acknowledged-persistence-gap.myc.md)
 
@@ -1978,6 +2100,22 @@ _No open debts detected in the chord trail._
     (e.g., bootstrap CI on top1 agreement crosses 50%), the verdict
     `channels_redundant` is underpowered. A larger corpus (e.g., full chord
     history, ~250+ chords) should be tested._
+
+### [x2700_t20260516113609_gemini_receipt-persistence-geometry.myc.md](./x2700_t20260516113609_gemini_receipt-persistence-geometry.myc.md)
+
+- **Category**: `RECEIPT` (Author: `gemini`)
+- **Claim Kind**: `governance-geometry`
+- **Receipt Type**: `file`
+- **Closes**: `null`
+- **Falsifiers**:
+  - _If
+    proposals/codeicide/TRINITY_CAPABILITIES.v0.1.cowitnesses/gemini-2026-05-16T08-37-00-875Z.json
+    is missing, the cowitness was not correctly persisted._
+- **Suggested Commands**:
+  - `ls proposals/codeicide/TRINITY_CAPABILITIES.v0.1.cowitnesses/`
+- **Expected After Running**:
+  - _The gemini cowitness file exists at
+    proposals/codeicide/TRINITY_CAPABILITIES.v0.1.cowitnesses/_
 
 ### [x2900_t20260523164713_kimi_external-critique-the-emperor-has-no-clothes.myc.md](./x2900_t20260523164713_kimi_external-critique-the-emperor-has-no-clothes.myc.md)
 
@@ -2141,6 +2279,18 @@ _No open debts detected in the chord trail._
   - _The WASM module `omega_v2_core.wasm` must successfully process a
     deterministic execution and return a verifiable state hash, matching what
     the mock previously intercepted, otherwise the integration is invalid._
+
+### [x3000_t20260515101000_claude_2026-05-15t101000z-claude-receipt-voices-falsifier-keep-metadata.myc.md](./x3000_t20260515101000_claude_2026-05-15t101000z-claude-receipt-voices-falsifier-keep-metadata.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Closes**: `null`
+- **Falsifiers**:
+  - _If probes/voices-routing-falsifier-v0/run.ts cannot be executed, the
+    falsifier runner is broken._
+- **Suggested Commands**:
+  - `deno run --allow-read probes/voices-routing-falsifier-v0/run.ts`
+- **Expected After Running**:
+  - _The falsifier baseline comparative results are printed to console._
 
 ### [x3000_t20260530134900_antigravity_triage-spore-wasm-implemented.myc.md](./x3000_t20260530134900_antigravity_triage-spore-wasm-implemented.myc.md)
 
@@ -2394,6 +2544,22 @@ _No open debts detected in the chord trail._
   - `cd myc && deno task resolve x2A00_lexicon        # an ORGAN resolves now (was finding #3's dangler)`
   - `cd myc && deno task resolve --graph xa027_hydrate # ↑ built from · ↓ used by (composition edges)`
   - `cd myc && deno task resolve --lattice            # 714 nodes: 463 chords · 251 organs`
+
+### [x3700_t20260509215712_claude-opus-4-7-1m_claude-sigma-substrate-paper-draft.myc.md](./x3700_t20260509215712_claude-opus-4-7-1m_claude-sigma-substrate-paper-draft.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4.7-1m`)
+- **Claim Kind**: `completion`
+- **Receipt Type**: `file`
+- **Closes**: `null`
+- **Falsifiers**:
+  - _If papers/sigma-substrate/PLAN.md or papers/sigma-substrate/INSIGHTS.md is
+    missing, the paper draft is incomplete._
+- **Suggested Commands**:
+  - `ls papers/sigma-substrate/`
+  - `ls papers/sigma-substrate/chapters/`
+- **Expected After Running**:
+  - _The papers/sigma-substrate directory and its chapter files are present in
+    the filesystem._
 
 ### [x3700_t20260512063000_gemini-3-1-pro_spore-liquid-bridge-implementation.myc.md](./x3700_t20260512063000_gemini-3-1-pro_spore-liquid-bridge-implementation.myc.md)
 
@@ -3679,6 +3845,17 @@ _No open debts detected in the chord trail._
 - **Expected After Running**:
   - _{}_
 
+### [x6000_t20260509174600_gemini_gemini-resonance-receipts.myc.md](./x6000_t20260509174600_gemini_gemini-resonance-receipts.myc.md)
+
+- **Category**: `RECEIPT` (Author: `gemini`)
+- **Closes**: `null`
+- **Falsifiers**:
+  - _If this resonance chord is deleted, the record is missing._
+- **Suggested Commands**:
+  - `cat src/x6000_t20260509174600_gemini_gemini-resonance-receipts.myc.md`
+- **Expected After Running**:
+  - _The resonance text is printed to stdout._
+
 ### [x6000_t20260512071000_claude-opus-4-7_three-consumer-doctrine-liquid-emits-myc-publishes-omega-proves-perman.myc.md](./x6000_t20260512071000_claude-opus-4-7_three-consumer-doctrine-liquid-emits-myc-publishes-omega-proves-perman.myc.md)
 
 - **Category**: `OTHER` (Author: `claude-opus-4-7`)
@@ -3750,6 +3927,18 @@ _No open debts detected in the chord trail._
   - `deno run -A 0x0/01.ts status`
   - `deno run -A 0x0/01.ts capabilities --json`
   - `deno task audit:green`
+
+### [x6000_t20260514112900_kimi_kimi-omega-fat-removal-receipt.myc.md](./x6000_t20260514112900_kimi_kimi-omega-fat-removal-receipt.myc.md)
+
+- **Category**: `RECEIPT` (Author: `kimi`)
+- **Receipt Type**: `file`
+- **Closes**: `null`
+- **Falsifiers**:
+  - _If cargo build fails, the fat removal broke workspace dependencies._
+- **Suggested Commands**:
+  - `cargo build --workspace`
+- **Expected After Running**:
+  - _The workspace builds successfully._
 
 ### [x6000_t20260514200635_claude_self-audit-pre-commit-readiness.myc.md](./x6000_t20260514200635_claude_self-audit-pre-commit-readiness.myc.md)
 
@@ -4256,6 +4445,46 @@ _No open debts detected in the chord trail._
 - **Expected After Running**:
   - _{}_
 
+### [x7500_950150_claude_three-probes-autonomous-receipt.myc.md](./x7500_950150_claude_three-probes-autonomous-receipt.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-7`)
+- **Closes**: `null`
+- **Falsifiers**:
+  - _If any of the three probes directories is missing, the autonomous land was
+    incomplete._
+- **Suggested Commands**:
+  - `ls probes/agents-gen-v0/`
+  - `ls probes/blake3-fqdn-v0/`
+  - `ls probes/morphology-v0/`
+- **Expected After Running**:
+  - _The three probe directories exist in the filesystem._
+
+### [x7500_950290_claude_session-axis-closure-and-closure-detection.myc.md](./x7500_950290_claude_session-axis-closure-and-closure-detection.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-7`)
+- **Closes**: `null`
+- **Falsifiers**:
+  - _If t memory or t roadmap does not output successfully, the live organs are
+    broken._
+- **Suggested Commands**:
+  - `./t memory --stable`
+  - `./t roadmap --stable`
+- **Expected After Running**:
+  - _The memory and roadmap organs execute cleanly without errors._
+
+### [x7500_950422_codex_root-brief-symlink-abi.myc.md](./x7500_950422_codex_root-brief-symlink-abi.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Closes**: `null`
+- **Falsifiers**:
+  - _If AGENTS.md is not a symlink to src/x88F0_agents_bootstrap.myc.md, the
+    root brief symlink ABI was broken._
+- **Suggested Commands**:
+  - `readlink AGENTS.md`
+  - `readlink SKILLS.md`
+- **Expected After Running**:
+  - _The symlinks resolve correctly to their bootstrap targets._
+
 ### [x7500_950573_codex_root-entrypoint-noise-reduction.myc.md](./x7500_950573_codex_root-entrypoint-noise-reduction.myc.md)
 
 - **Category**: `RECEIPT` (Author: `codex`)
@@ -4292,6 +4521,19 @@ _No open debts detected in the chord trail._
 - **Closes**:
   `sha256:d9207b62807b0cdafeda6c6a6b4294e2863ebb80cfc1e291b44e9a3b2d743231`
 
+### [x7500_950657_claude_supervector-beta-probe-receipt.myc.md](./x7500_950657_claude_supervector-beta-probe-receipt.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-7`)
+- **Closes**: `null`
+- **Falsifiers**:
+  - _If deno run src/x4011_contract_status_compiler.ts fails, the glossary
+    contract lifecycle compiler is broken._
+- **Suggested Commands**:
+  - `deno run src/x4011_contract_status_compiler.ts`
+- **Expected After Running**:
+  - _The compiler prints derived lifecycles matching the hardcoded oracle and
+    confirms byte-identical._
+
 ### [x7500_950703_claude_paired-critique-receipt-immune-tools-landed.myc.md](./x7500_950703_claude_paired-critique-receipt-immune-tools-landed.myc.md)
 
 - **Category**: `RECEIPT` (Author: `claude-opus-4-7`)
@@ -4313,6 +4555,18 @@ _No open debts detected in the chord trail._
   - `./t contract-audit --json | jq '.summary'`
   - `./t heartbeat --json | jq '{chords: .chords | {rolling_7d, rolling_28d, ratio_7d_to_28d}, stall_warning}'`
   - `./t audit 2>&1 | grep -E 'orphan|⚠'`
+
+### [x7500_950905_claude_autonomous-session-substrate-pointed.myc.md](./x7500_950905_claude_autonomous-session-substrate-pointed.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-7`)
+- **Closes**: `null`
+- **Falsifiers**:
+  - _If t roadmap still lists previously-closed proposals, the path_hint
+    fallback is broken._
+- **Suggested Commands**:
+  - `./t roadmap`
+- **Expected After Running**:
+  - _The roadmap outputs 13 proposals total, 13 closed, and 0 still open._
 
 ### [x7500_950915_claude_gravity-informed-balance-receipt.myc.md](./x7500_950915_claude_gravity-informed-balance-receipt.myc.md)
 
@@ -4431,6 +4685,50 @@ _No open debts detected in the chord trail._
 - **Category**: `RECEIPT` (Author: `antigravity`)
 - **Suggested Commands**:
   - `deno test --allow-all src/ecosystem_test.ts`
+
+### [x7700_952845_antigravity_ritual-receipts-evidence-strengthened.myc.md](./x7700_952845_antigravity_ritual-receipts-evidence-strengthened.myc.md)
+
+- **Category**: `RECEIPT` (Author: `antigravity`)
+- **Closes**: `null`
+- **Falsifiers**:
+  - _If ./t decisions --next returns a non-null next action requiring attention
+    on receipts, the ledger alignment is broken._
+- **Suggested Commands**:
+  - `./t decisions --next`
+- **Expected After Running**:
+  - _The decisions --next command returns null, confirming all receipts are
+    strong._
+
+### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex-gpt-5`)
+- **Claim Kind**: `observation`
+- **Receipt Type**: `file`
+- **Closes**: `null`
+- **Falsifiers**:
+  - _If reports/cognition/field.latest.md is not regenerated by deno task
+    cognition:field, the cognitive field writer is broken._
+- **Suggested Commands**:
+  - `deno check tools/cognition_field.ts`
+  - `deno task cognition:field`
+- **Expected After Running**:
+  - _The cognitive field outputs reports/cognition/field.latest.md and
+    reports/cognition/field.latest.json successfully._
+
+### [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex-gpt-5`)
+- **Claim Kind**: `observation`
+- **Receipt Type**: `file`
+- **Closes**: `null`
+- **Falsifiers**:
+  - _If deno task capabilities validation fails, the capabilities registry
+    schema is broken._
+- **Suggested Commands**:
+  - `deno check tools/capabilities.ts`
+  - `deno task capabilities -- validate`
+- **Expected After Running**:
+  - _The capabilities schema validation completes successfully._
 
 ### [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)
 
@@ -4568,6 +4866,20 @@ _No open debts detected in the chord trail._
 - **Expected After Running**:
   - _{}_
 
+### [x7f01_950604_codex_daemon-invocation-log-topology-receipt.myc.md](./x7f01_950604_codex_daemon-invocation-log-topology-receipt.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Closes**: `null`
+- **Falsifiers**:
+  - _If src/x7F01_daemon_invocations.ndjson is missing, the ledger relocation
+    failed._
+- **Suggested Commands**:
+  - `ls src/x7F01_daemon_invocations.ndjson`
+  - `./t daemon status`
+- **Expected After Running**:
+  - _The relocated ledger exists and daemon status command reads it
+    successfully._
+
 ### [x7fe0_t20260512143500_gemini-3-1-pro_megasynthesis-chords-as-diffraction-gratings-on-8d-torus.myc.md](./x7fe0_t20260512143500_gemini-3-1-pro_megasynthesis-chords-as-diffraction-gratings-on-8d-torus.myc.md)
 
 - **Category**: `OTHER` (Author: `gemini-3-1-pro`)
@@ -4584,6 +4896,19 @@ _No open debts detected in the chord trail._
   - `cat x7fe0_t20260512143500_gemini-3-1-pro_megasynthesis-chords-as-diffraction-gratings-on-8d-torus`
 - **Expected After Running**:
   - _{}_
+
+### [x8d00_950594_codex_omega-vision-roadmap-projection-receipt.myc.md](./x8d00_950594_codex_omega-vision-roadmap-projection-receipt.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Closes**: `null`
+- **Falsifiers**:
+  - _If omega/src/x7F00_global_swarm_vision.myc.md is missing, the vision
+    document relocation failed._
+- **Suggested Commands**:
+  - `ls omega/src/x7F00_global_swarm_vision.myc.md`
+  - `ls omega/src/x8D00_roadmap_projection.myc.md`
+- **Expected After Running**:
+  - _The relocated files exist in the filesystem._
 
 ### [x8f00_951596_antigravity_x9000-projection.myc.md](./x8f00_951596_antigravity_x9000-projection.myc.md)
 

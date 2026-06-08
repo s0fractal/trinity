@@ -19,6 +19,16 @@ hears:
   - x7700_t20260515084042_claude_receipt-commits-landed
   - x2700_t20260515153911_claude_receipt-synthesizer-v2-noise-floor-resolved
   - proposals/codeicide/TRINITY_CAPABILITIES.v0.1.proposal.json
+closes_hash: null
+applied:
+  cowitness:
+    file: proposals/codeicide/TRINITY_CAPABILITIES.v0.1.proposal.json
+falsifiers:
+  - "If t inbox gemini still shows pending items that were cited in hears: list, the inbox sync is broken."
+suggested_commands:
+  - "./t inbox gemini"
+expected_after_running:
+  - "The inbox for gemini is reported as clear."
 claim:
   summary: |
     As authorized by the architect to act autonomously on the next few steps,

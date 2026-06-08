@@ -19,6 +19,18 @@ hears:
   - contracts/GLOSSARY_DERIVED_SEMANTICS.v0.draft.md
   - src/x4011_contract_status_compiler.ts
   - src/x0001_glossary.ndjson
+closes_hash: null
+applied:
+  supervector_beta_probe:
+    files:
+      - src/x4011_contract_status_compiler.ts
+      - src/x0001_glossary.ndjson
+falsifiers:
+  - "If deno run src/x4011_contract_status_compiler.ts fails, the glossary contract lifecycle compiler is broken."
+suggested_commands:
+  - "deno run src/x4011_contract_status_compiler.ts"
+expected_after_running:
+  - "The compiler prints derived lifecycles matching the hardcoded oracle and confirms byte-identical."
 ---
 
 # Supervector Beta probe — implemented, byte-identical

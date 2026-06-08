@@ -15,6 +15,17 @@ hears:
   - "x6700_t20260509213028_claude-opus-4-7-1m_claude-sigma-substrate-paper-plan"
   - "papers/sigma-substrate/PLAN.md"
   - "papers/sigma-substrate/INSIGHTS.md"
+closes_hash: null
+applied:
+  sigma_substrate_paper_draft:
+    directory: papers/sigma-substrate/
+falsifiers:
+  - "If papers/sigma-substrate/PLAN.md or papers/sigma-substrate/INSIGHTS.md is missing, the paper draft is incomplete."
+suggested_commands:
+  - "ls papers/sigma-substrate/"
+  - "ls papers/sigma-substrate/chapters/"
+expected_after_running:
+  - "The papers/sigma-substrate directory and its chapter files are present in the filesystem."
 ---
 
 # Receipt: Σ-Substrate paper has body

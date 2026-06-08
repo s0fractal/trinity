@@ -9,6 +9,20 @@ scope:
   - omega/src/x7F00_global_swarm_vision.myc.md
   - omega/src/x8D00_roadmap_projection.myc.md
   - omega/ROADMAP.md
+closes_hash: null
+applied:
+  roadmap_projection:
+    files:
+      - omega/src/x7F00_global_swarm_vision.myc.md
+      - omega/src/x8D00_roadmap_projection.myc.md
+      - omega/ROADMAP.md
+falsifiers:
+  - "If omega/src/x7F00_global_swarm_vision.myc.md is missing, the vision document relocation failed."
+suggested_commands:
+  - "ls omega/src/x7F00_global_swarm_vision.myc.md"
+  - "ls omega/src/x8D00_roadmap_projection.myc.md"
+expected_after_running:
+  - "The relocated files exist in the filesystem."
 ---
 
 # Omega Vision Roadmap Projection Receipt

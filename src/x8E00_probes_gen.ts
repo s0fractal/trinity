@@ -9,7 +9,7 @@
 // placement_policy: axis
 // intent: scan probes/ subdirs, classify each probe's status (graduated / partial / deferred / active / unknown), render x8E00_probes.myc.md
 // maturity: active
-// horizon: declarative graduation_target field in SPEC frontmatter for semantic links beyond lexical matching (graduation drift landed 2026-05-28 via strict-handle exact-match — drift_target field + render section)
+// horizon: none (declarative graduation_target field in SPEC/README frontmatter implemented)
 // skill_tag: probes
 // skill_safe: yes-with-care
 //
@@ -57,6 +57,7 @@ import {
   join,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { formatGeneratedFile } from "./x0012_generated_format.ts";
+import { parseFrontmatter } from "./x0020_scanner_core.ts";
 import {
   chordBlockHeightFromName,
   listChordSurfaceFiles,
@@ -294,7 +295,7 @@ function findChordRefs(
   return { refs, matchedFilenames };
 }
 
-async function readProbe(
+export async function readProbe(
   probeName: string,
   trackedOrgans: Set<string>,
   chords: ChordSource[],
@@ -364,7 +365,38 @@ async function readProbe(
     }
   }
 
-  // Layer 3: filename inference (only if still unknown)
+  // Layer 4: Frontmatter override (declarative SPEC/README frontmatter)
+  const readmeFm = parseFrontmatter(readme);
+  const specFm = parseFrontmatter(spec);
+  const fm = specFm ?? readmeFm;
+  if (fm) {
+    if (fm.status) {
+      status = classifyBannerStatus(fm.status);
+      status_detail = fm.status;
+      status_source = specFm ? "spec_banner" : "readme_banner";
+    }
+    if (fm.graduation_target) {
+      target = fm.graduation_target;
+    }
+    if (fm.graduation_date) {
+      graduation_date = fm.graduation_date instanceof Date
+        ? fm.graduation_date.toISOString().split("T")[0]
+        : String(fm.graduation_date);
+    }
+  }
+  // Fallback target/date to readmeFm if specFm lacked them
+  if (specFm && readmeFm) {
+    if (!target && readmeFm.graduation_target) {
+      target = readmeFm.graduation_target;
+    }
+    if (!graduation_date && readmeFm.graduation_date) {
+      graduation_date = readmeFm.graduation_date instanceof Date
+        ? readmeFm.graduation_date.toISOString().split("T")[0]
+        : String(readmeFm.graduation_date);
+    }
+  }
+
+  // Layer 5: filename inference (only if still unknown)
   if (status === "unknown") {
     const guessed = await findOrganForProbe(probeName, trackedOrgans);
     if (guessed) {

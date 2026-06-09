@@ -177,6 +177,26 @@ function softmax(
   );
 }
 
+function normalizeToSlug(name: string): string {
+  let s = name.toLowerCase();
+  // Remove path
+  const lastSlash = s.lastIndexOf("/");
+  if (lastSlash !== -1) {
+    s = s.slice(lastSlash + 1);
+  }
+  // Remove extension
+  s = s.replace(/\.myc\.md$/, "").replace(/\.md$/, "");
+  // Remove coordinate prefix (e.g. x1234_ or x1234_952776_ or x1234_t12345678901234_)
+  s = s.replace(/^x[0-9a-f]{4}_(?:\d+_|t\d{14}_)?/, "");
+  // Remove timestamp prefixes
+  s = s.replace(/^\d{4}-\d{2}-\d{2}t\d{6}z-/, "");
+  s = s.replace(/^t\d{14}z-/, "");
+  // Remove voice prefix if followed by _ or -
+  s = s.replace(/^(?:claude-opus-4-8|claude-opus-4-7-1m|claude-opus-4-7|claude-opus|claude|gemini-pro-1-5|gemini-3-1-pro|gemini|codex-gpt-5|codex|kimi-code-cli|kimi-k1\.6|kimi-k1-6|kimi-k1\.5|kimi-k1-5|kimi|antigravity|s0fractal|hermes|architect|trinity-cognition)[_-]/, "");
+  // Remove non-alphanumeric characters
+  return s.replace(/[^a-z0-9]/g, "");
+}
+
 // ── Load chords ────────────────────────────────────────────────────
 
 async function loadChords(dir: string): Promise<Chord[]> {
@@ -188,8 +208,17 @@ async function loadChords(dir: string): Promise<Chord[]> {
     const parsed = extractFrontmatter(text);
     if (!parsed) continue;
     const fm = parsed.fm as ChordFrontmatter;
-    if (!fm.speaker || !fm.id) continue;
-    fm.speaker = normSpeaker(fm.speaker);
+    
+    // Derive speaker/voice
+    const rawSpeaker = fm.voice ?? fm.speaker;
+    if (!rawSpeaker) continue;
+    fm.speaker = normSpeaker(String(rawSpeaker));
+    
+    // Derive ID if missing
+    if (!fm.id) {
+      fm.id = entry.name.replace(/\.myc\.md$/, "").replace(/\.md$/, "");
+    }
+
     const stat = await Deno.stat(path);
     chords.push({
       path,
@@ -198,8 +227,18 @@ async function loadChords(dir: string): Promise<Chord[]> {
       body: parsed.body,
     });
   }
-  // Sort by mtime (oldest first) to build chronological chain
-  return chords.sort((a, b) => a.mtime - b.mtime);
+  // Sort by bitcoin block height first, then created timestamp, then mtime (oldest first)
+  return chords.sort((a, b) => {
+    const bhA = Number(a.fm.bitcoin_block_height ?? 0);
+    const bhB = Number(b.fm.bitcoin_block_height ?? 0);
+    if (bhA !== bhB) return bhA - bhB;
+
+    const tA = a.fm.created ? new Date(String(a.fm.created)).getTime() : 0;
+    const tB = b.fm.created ? new Date(String(b.fm.created)).getTime() : 0;
+    if (tA !== tB) return tA - tB;
+
+    return a.mtime - b.mtime;
+  });
 }
 
 // ── Build voice profiles ───────────────────────────────────────────
@@ -282,15 +321,20 @@ function buildSamples(
     for (let j = i + 1; j < chords.length; j++) {
       const dst = chords[j];
       if (dst.fm.speaker === src.fm.speaker) continue;
-      // Check if dst hears src
+      // Check if dst hears, references, or closes src
       const rawHears = dst.fm.hears ?? [];
-      const hears = Array.isArray(rawHears)
-        ? rawHears.map((h) => String(h).trim())
-        : [String(rawHears).trim()];
-      const hearsSrc = hears.some((h) =>
-        h === src.fm.id || h.endsWith(`/${src.fm.id}.md`) ||
-        src.path.endsWith(h)
-      );
+      const rawRefs = dst.fm.references ?? [];
+      const rawCloses = dst.fm.closes ?? [];
+      const hears = [
+        ...(Array.isArray(rawHears) ? rawHears : [rawHears]),
+        ...(Array.isArray(rawRefs) ? rawRefs : [rawRefs]),
+        ...(Array.isArray(rawCloses) ? rawCloses : [rawCloses]),
+      ].map((h) => String(h).trim());
+      const hearsSrc = hears.some((h) => {
+        const hSlug = normalizeToSlug(h);
+        const srcSlug = normalizeToSlug(src.fm.id!);
+        return hSlug === srcSlug && hSlug !== "";
+      });
       if (!hearsSrc) continue;
       const delta = (dst.mtime - src.mtime) / 1000;
       candidates.push({ chord: dst, delta });
@@ -440,7 +484,13 @@ async function main() {
     /\/$/,
     "",
   );
-  const chordsDir = `${root}/jazz/chords`;
+  let chordsDir = `${root}/jazz/chords`;
+  try {
+    const stat = await Deno.stat(chordsDir);
+    if (!stat.isDirectory) throw new Error();
+  } catch {
+    chordsDir = `${root}/src`;
+  }
 
   console.log("Loading chords...");
   const chords = await loadChords(chordsDir);

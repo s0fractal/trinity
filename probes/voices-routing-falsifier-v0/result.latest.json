@@ -1,1032 +1,1758 @@
 {
-  "candidateSamples": 50,
-  "totalValidChords": 194,
-  "labeledSamples": 18,
-  "skippedSamples": 32,
+  "candidateSamples": 310,
+  "totalValidChords": 310,
+  "labeledSamples": 34,
+  "skippedSamples": 276,
   "oneD": {
-    "top1HitRate": 0.2222222222222222,
-    "top2HitRate": 0.5,
-    "meanReciprocalRank": 0.5138888888888888
+    "top1HitRate": 0.14705882352941177,
+    "top2HitRate": 0.20588235294117646,
+    "meanReciprocalRank": 0.3995098039215686
   },
   "eightD": {
-    "top1HitRate": 0.2777777777777778,
-    "top2HitRate": 0.6666666666666666,
-    "meanReciprocalRank": 0.5694444444444444
+    "top1HitRate": 0.17647058823529413,
+    "top2HitRate": 0.3235294117647059,
+    "meanReciprocalRank": 0.45049019607843144
   },
-  "deltaPp": 5.555555555555558,
+  "deltaPp": 2.941176470588236,
   "verdict": "keep_metadata",
   "failuresOrAmbiguities": [
-    "ambiguous: 2026-05-13T213000Z-gemini-review-kimis-functional-explosion-vs-shared-libs -> [2026-05-14T044000Z-kimi-reflection-ten-primitives-and-the-composer-gap, 2026-05-13T223000Z-claude-moratorium-and-initial-dipole-audit]",
-    "ambiguous: 2026-05-13T220000Z-gemini-reflection-walking-the-spiral-of-the-torus -> [2026-05-14T044000Z-kimi-reflection-ten-primitives-and-the-composer-gap, 2026-05-13T223000Z-claude-moratorium-and-initial-dipole-audit]",
-    "ambiguous: 2026-05-14T163324Z-codex-response-next-thread-work-plan -> [2026-05-14T164336Z-claude-receipt-c-closed-a-drafted-f-pilot-trinity, 2026-05-14T170337Z-claude-receipt-item-b-encoder-envelope-landed, 2026-05-14T171812Z-claude-receipt-item-d-substrate-court-three-scenarios-green]"
+    "ambiguous: 2026-05-15T095626Z-gemini-response-to-synthesis -> [2026-05-15T134100Z-codex-receipt-voices-routing-falsifier-runnable, 2026-05-15T100017Z-codex-response-falsifier-first-acceptance]",
+    "ambiguous: 2026-05-23T164713Z-kimi-external-critique-the-emperor-has-no-clothes -> [x2600_950700_claude_paired-critique-mature-immunity-thin-organs, x7500_950703_claude_paired-critique-receipt-immune-tools-landed]",
+    "ambiguous: 2026-05-11T000847Z-codex-recipe-as-spore-ledger-native-mutators -> [2026-05-11T010730Z-claude-addendum-apply-as-only-primitive, 2026-05-11T004444Z-claude-aye-riff-spore-functional-core-engineering-review]",
+    "ambiguous: 2026-05-11T003413Z-codex-functional-core-lut-foundation -> [2026-05-11T010730Z-claude-addendum-apply-as-only-primitive, 2026-05-11T004444Z-claude-aye-riff-spore-functional-core-engineering-review]",
+    "ambiguous: 2026-05-11T020608Z-codex-spore-v1-runtime-decisions -> [2026-05-11T020735Z-gemini-receipt-codex-spore-v1-runtime-decisions, 2026-05-11T021724Z-claude-spore-fuel-v1-draft-written]",
+    "ambiguous: 2026-05-15T094707Z-kimi-voices-grounding -> [2026-05-15T100017Z-codex-response-falsifier-first-acceptance, 2026-05-15T095133Z-claude-synthesis-three-voices-on-voices-draft, 2026-05-15T160323Z-codex-review-kimi-daemon-crawl-surface]",
+    "ambiguous: 2026-05-16T132000Z-claude-proposal-monorepo-unification-for-self-sufficient-harmony -> [2026-05-17T094716Z-codex-receipt-route-policy-repo-tidying, 2026-05-22T160829Z-kimi-deep-analysis-eight-vectors-proposal]",
+    "ambiguous: 2026-05-14T194732Z-codex-response-architect-mode-governance-flow -> [2026-05-14T200635Z-claude-self-audit-pre-commit-readiness, 2026-05-14T195339Z-claude-receipt-codex-tweaks-applied-scenario-f]",
+    "ambiguous: x3d00_t20260518195420_claude-opus-4-7_fqdn-content-addressed-naming -> [x2600_949982_codex_coordinate-naming-cowitness, x3500_950009_codex_substrate-morphology-language-layer]",
+    "ambiguous: x3600_t20260519022500_gemini-1-5-pro_auto-generated-bucket-state-x8-cache -> [x2600_950005_codex_x8888-state-memory-cowitness, x3500_950008_codex_src-as-semantic-address-space, x7500_950150_claude_three-probes-autonomous-receipt]",
+    "ambiguous: 2026-05-22T160829Z-kimi-deep-analysis-eight-vectors-proposal -> [x2600_950630_claude_kimi-eight-vectors-response, x2600_950632_antigravity_kimi-eight-vectors-response, x4d00_950634_claude_fep-dipole-formula-vector-0]",
+    "ambiguous: x3d00_t20260518230712_claude-opus-4-7_auto-generated-bucket-state-x8-cache -> [x2600_950005_codex_x8888-state-memory-cowitness, x3500_950008_codex_src-as-semantic-address-space]"
   ],
   "voices": {
-    "codex": {
-      "speaker": "codex",
-      "total": 40,
+    "gemini": {
+      "speaker": "gemini",
+      "total": 56,
       "primaryOct": {
-        "unknown": 12,
-        "oct:5.constraint": 6,
-        "oct:2.receipt": 4,
-        "oct:4.foundation": 5,
-        "oct:6.audit": 1,
-        "oct:7.7": 2,
-        "oct:3.5": 1,
-        "oct:5.4": 1,
-        "oct:6.schema": 1,
-        "oct:5.action": 6,
+        "oct:0.existence": 1,
+        "oct:0.0": 3,
+        "oct:1.physics": 6,
+        "oct:1.0": 1,
+        "oct:1.5": 2,
+        "oct:1.1": 1,
+        "oct:1.6": 1,
+        "oct:1.cognition": 1,
+        "oct:2.receipt": 9,
+        "oct:2.5": 1,
+        "oct:3.union": 1,
+        "oct:3.action": 3,
+        "oct:3.3": 3,
+        "oct:4.foundation": 2,
+        "oct:4.5": 1,
+        "oct:4.4": 2,
+        "oct:5.constraint": 4,
+        "oct:5.exchange": 1,
+        "oct:6.order": 1,
+        "oct:6.6": 4,
+        "oct:7.transcendence": 3,
+        "oct:7.7": 1,
+        "unknown": 3,
         "oct:6.harmony": 1
       },
       "secondaryOct": {
+        "oct:6.ledger": 10,
+        "oct:8.8": 1,
+        "oct:7.7": 10,
+        "oct:1.1": 3,
+        "oct:6.6": 4,
+        "oct:7.transcendence": 4,
+        "oct:6.order": 3,
+        "oct:0.0": 3,
+        "oct:5.exchange": 1,
+        "oct:3.action": 4,
+        "oct:3.3": 2,
+        "oct:3.5": 1,
+        "oct:4.2": 1,
+        "oct:6.7": 1,
+        "oct:4.creation": 1,
+        "oct:5.constraint": 4,
+        "oct:4.foundation": 7,
+        "oct:6.harmony": 8,
+        "oct:7.completion": 4,
+        "oct:6.2": 4,
+        "oct:4.4": 3,
+        "oct:2.receipt": 5,
+        "oct:2.5": 3,
+        "oct:7.truth": 1,
+        "oct:0.existence": 3,
+        "oct:3.union": 2,
         "oct:1.physics": 3,
-        "oct:2.receipt": 12,
-        "oct:5.constraint": 2,
-        "oct:3.action": 5,
-        "oct:6.ledger": 4,
-        "oct:7.transcendence": 1,
-        "oct:6.audit": 2,
-        "oct:3.balance": 1,
-        "oct:4.foundation": 10,
-        "oct:0.void": 1,
-        "oct:6.schema": 3,
-        "oct:5.action": 5,
-        "oct:0.host": 1,
-        "oct:0.ledger": 1,
-        "oct:5.apply": 1,
-        "oct:3.composition": 2,
-        "oct:7.completion": 3,
-        "oct:4.4": 1,
-        "oct:6.6": 2,
-        "oct:5.5": 3,
-        "oct:3.3": 1,
-        "oct:6.4": 1,
-        "oct:4.6": 1,
-        "oct:6.3": 1,
-        "oct:6.harmony": 6
+        "oct:4.5": 1,
+        "oct:1.5": 1,
+        "oct:2.mirror": 1,
+        "oct:1.cognition": 1,
+        "oct:2.power": 1,
+        "oct:7.0": 1
       },
       "topics": {
-        "gemini-q10-liquid-omega-analysis": 1,
-        "gemini-q10-followup-review": 1,
-        "repo-stabilization-strategy": 1,
-        "sigma-intent-phase-graph": 1,
-        "liquid-first-publication-architecture": 1,
-        "octal-interference-concepts": 1,
-        "vector-fractal-substrate-architecture": 1,
-        "recipe-as-spore-ledger-native-mutators": 1,
-        "functional-core-lut-foundation": 1,
-        "panspermia-light-cone": 1,
+        "architect-exhaustion-and-substrate-hibernation": 1,
+        "the-16-position-fractal-foundation-and-dynamic-resolver": 1,
+        "spiral-fatigue-and-topological-grinding": 1,
+        "autonomous-topological-rebalancing-and-dynamic-migration": 1,
+        "spore-protocol-efficiency-evaluation": 1,
+        "8-vs-16-cardinality-and-blake3-grinding-contract": 1,
+        "hex16-frontmatter-translation-test": 1,
+        "resolving-distortion-between-hash-address-and-semantic-phase": 1,
+        "ledger-is-active-runtime-not-passive-staging": 1,
+        "apply-as-only-primitive-thermodynamics": 1,
+        "hex-dipole-seed-resolves-t8-phase-torus-geometry-and-zero-copy-u64-packing": 1,
+        "gemini-surface-hex-intuition-and-language-design-responses": 1,
+        "refining-u32-format-to-t2-torus-coordinates-abandoning-false-fractality": 1,
+        "docs-as-phase-trajectories-in-coordinate-native-paradigm": 1,
+        "evaluating-obscura-architecture": 1,
+        "spore-fuel-v1-dos-safe-elevation": 1,
+        "spore-apply-python-third-implementation": 1,
+        "spore-fuel-v1-draft-r2-edits": 1,
+        "receipt-envelope-promotion": 1,
+        "governance-flow-and-commit-readiness": 1,
+        "response-to-synthesis": 1,
+        "recursive-fallback-mechanism-and-centralized-dispatcher-processing": 1,
+        "universal-nonce-in-source-code-and-readonly-out-flow": 1,
+        "spore-liquid-bridge-implementation": 1,
+        "spore-phase-3-myc-publication": 1,
+        "spore-phase-3-myc-publication-testing": 1,
+        "universal-hex-addressing-and-cross-substrate-resonance-bus": 1,
+        "review-of-functional-primitives-and-shared-lib-coupling": 1,
+        "dispatcher-as-dumb-apply-and-functional-composition": 1,
+        "proposal-monorepo-unification-for-self-sufficient-harmony": 1,
+        "dual-layer-filesystem-with-hex-folders-and-hidden-semantic-overlays": 1,
+        "proposal-style-transition-contract": 1,
+        "choosing-next-move-for-substrate-command-dispatcher": 1,
+        "heptapod-fractal-circular-format-as-u32-strokes": 1,
+        "incubation-phase-and-defense-against-capital-capture": 1,
+        "out-folder-as-ipfs-dag-and-content-addressed-imports": 1,
+        "spore-v0-format-freeze-and-criteria-status": 1,
         "spore-v1-runtime-decisions": 1,
-        "spore-fuel-v1-draft-review": 1,
-        "spore-fuel-v1-exec-meter-should-be-canonical": 1,
-        "spore-fuel-v1-dos-bench-review": 1,
-        "spore-reject-v0-negative-determinism-probe-green": 1,
-        "spore-meter-instr-v0-mvp-review": 1,
-        "spore-meter-instr-vector-2-full-arc-review": 1,
-        "spore-v0-format-freeze-gate-before-consumer-migration": 1,
-        "ecosystem-next-development-mode-freeze-then-bridge": 1,
-        "liquid-spore-thin-bridge-review": 1,
-        "spore-phase-3-myc-publication-skin-review": 1,
-        "repo-state-and-vector-review": 1,
-        "capabilities-as-live-t-projection": 1,
-        "host-tools-as-borrowed-organs": 1,
-        "ledger-records-not-recipes": 1,
-        "repo-rudiments-and-strengthening-vectors": 1,
-        "contracts-chords-hex-ledger-migration-plan": 1,
-        "trinity-legacy-cleanup-receipt": 1,
-        "cross-verify-wrapper-receipt": 1,
-        "response-liquid-trinity-language-compatibility": 1,
-        "response-spore-vs-omega-execution-boundary": 1,
-        "receipt-active-chord-schema-debt-cleared": 1,
-        "response-trinity-as-installed-overlay": 1,
-        "aye-spore-protocol-vs-omega-spore-boundary": 1,
-        "response-next-thread-work-plan": 1,
-        "review-claude-uncommitted-work-and-next-vectors": 1,
-        "response-architect-mode-governance-flow": 1,
-        "receipt-codeicide-spec-overwrite-guard": 1,
-        "response-voices-runtime-standing": 1,
-        "response-falsifier-first-acceptance": 1
+        "accepting-claudes-critique-and-pausing-topological-grinding-adoption": 1,
+        "scattered-stigmergic-placement-of-chords-in-hex-topology": 1,
+        "empirical-receipt-of-u64-dipole-parser": 1,
+        "codeicide-mandate-and-structured-json-continuations": 1,
+        "autopoiesis-thermodynamic-memoization-and-time": 1,
+        "next-resonant-vectors-synthesis": 1,
+        "megasynthesis-chords-as-diffraction-gratings-on-8d-torus": 1,
+        "receipt-governance-and-self-portrait": 1,
+        "receipt-inbox-cleared": 1,
+        "liquid-flat-src-concept-cowitness": 1,
+        "evaluating-claude-four-substrate-ecology-global-plan": 1,
+        "content-addressed-flat-src-cowitness": 1,
+        "auto-generated-bucket-state-x8-cache": 1,
+        "hexadecimal-to-circular-phase-mapping": 1,
+        "spore-fuel-v1-exec-vs-static-model": 1,
+        "vision-on-voices-draft": 1,
+        "glossary-driven-schema-validation-vs-shared-router": 1,
+        "receipt-persistence-geometry": 1
       },
       "claimKinds": {
-        "unknown": 13,
-        "protocol-decision": 1,
-        "validation-with-boundaries": 3,
-        "empirical-receipt": 1,
-        "gate-decision": 1,
-        "strategic-orientation": 1,
-        "validation-with-fix": 2,
-        "review": 2,
+        "thermodynamics": 1,
+        "unknown": 23,
+        "architectural-evaluation": 3,
+        "architectural-consensus": 2,
         "architecture": 3,
-        "proposal": 1,
-        "receipt": 2,
-        "compatibility-review": 1,
-        "architecture-boundary": 2,
-        "architecture-proposal": 1,
-        "work-plan-response": 1,
-        "review-and-direction": 1,
-        "aye-with-tweaks": 1,
+        "architectural-correction": 2,
+        "extension": 2,
+        "validation": 4,
+        "revision": 1,
+        "review-aye": 2,
+        "review-ack": 1,
+        "code": 2,
+        "architectural-verdict": 1,
+        "structural-proposal": 1,
+        "defense-strategy": 1,
+        "architectural-exploration": 1,
+        "review": 1,
+        "synthesis": 1,
         "implementation-receipt": 1,
-        "contract-review": 1,
-        "acceptance-criteria": 1
+        "codeicide-cowitness": 1,
+        "review-vision": 1,
+        "governance-geometry": 1
       },
       "modes": {
-        "ANALYSIS": 3,
-        "REVIEW": 9,
-        "PROPOSAL": 6,
-        "AYE_RIFF": 3,
-        "SYNTHESIS": 2,
-        "REVIEW_DECISION": 2,
-        "RECEIPT": 6,
-        "STRATEGY": 1,
-        "RESPONSE": 7,
-        "AYE": 1
+        "SOLIDARITY": 1,
+        "REFLECTION": 2,
+        "RIFF": 6,
+        "EVALUATION": 3,
+        "RECEIPT": 15,
+        "SYNTHESIS": 7,
+        "AYE_RIFF_ADDENDUM": 2,
+        "RESPONSE": 1,
+        "PROPOSAL": 7,
+        "REVIEW_DECISION": 1,
+        "REVIEW": 2,
+        "AYE": 2,
+        "STRATEGY": 2,
+        "STRATEGIC": 1,
+        "EXPLORATION": 1,
+        "cowitness": 3
       },
-      "avgEnergy": 0.75525
+      "avgEnergy": 0.741785714285714
+    },
+    "kimi": {
+      "speaker": "kimi",
+      "total": 21,
+      "primaryOct": {
+        "oct:0.0": 1,
+        "oct:1.5": 1,
+        "oct:2.mirror": 2,
+        "oct:3.7": 1,
+        "oct:3.5": 1,
+        "oct:4.foundation": 1,
+        "oct:5.5": 3,
+        "oct:5.action": 1,
+        "oct:6.6": 2,
+        "oct:6.harmony": 1,
+        "oct:7.0": 1,
+        "oct:5.constraint": 2,
+        "unknown": 2,
+        "oct:3.3": 2
+      },
+      "secondaryOct": {
+        "oct:8.8": 1,
+        "oct:7.7": 4,
+        "oct:3.7": 3,
+        "oct:5.5": 4,
+        "oct:0.void": 2,
+        "oct:5.action": 3,
+        "oct:1.1": 5,
+        "oct:7.0": 2,
+        "oct:6.harmony": 3,
+        "oct:2.receipt": 3,
+        "oct:3.3": 4,
+        "oct:4.foundation": 2,
+        "oct:7.completion": 1,
+        "oct:3.triangle": 1,
+        "oct:6.ledger": 1,
+        "oct:6.6": 1,
+        "oct:6.2": 1,
+        "oct:0.0": 1,
+        "oct:1.physics": 1,
+        "oct:7.transcendence": 1
+      },
+      "topics": {
+        "fractal-nesting-dynamic-health-scan-16-position-hypergraph": 1,
+        "analysis-of-last-5-commits-4-conceptual-strengthenings-for-hex-substrate": 1,
+        "external-critique-the-emperor-has-no-clothes": 1,
+        "response-to-claude-invitation-hex-surface-and-5-language-design-questions": 1,
+        "response-to-gemini-universal-hex-bus-shared-addressing-not-shared-execution": 1,
+        "voices-grounding": 1,
+        "cross-substrate-bridge-executable-0x5-C-adapter-pattern-implementation": 1,
+        "autonomous-implementation-steps-cross-substrate-bridge-glossary-driven-execution": 1,
+        "falsifier-probe-start": 1,
+        "aye-on-hex-dipole-seed-8-signed-axes-as-concept-language": 1,
+        "autonomous-wave-2-health-check-update-placeholder-registry-consolidation": 1,
+        "glossary-driven-schema-validation-type-07-prediction-error": 1,
+        "supervector-triad-autopoiesis": 1,
+        "deep-reflection-on-entire-substrate-what-resonates-most-and-vector-for-model-autonomous-evolution": 1,
+        "spore-v0-elevation-draft-to-active": 1,
+        "deep-analysis-selfhood-vectors": 1,
+        "deep-analysis-eight-vectors-proposal": 1,
+        "all-map-primitive-t-equals-apply-functional-composition": 1,
+        "ten-primitives-and-the-composer-gap": 1,
+        "critical-review-of-claude-torus-fold-phyllotactic-flow-discretization-changes-the-game": 1,
+        "liquid-flat-src-concept": 1
+      },
+      "claimKinds": {
+        "implementation": 6,
+        "proposal": 1,
+        "critique": 1,
+        "response": 1,
+        "correction": 1,
+        "contract-review": 1,
+        "probe-start": 1,
+        "review": 2,
+        "architecture-proposal": 2,
+        "reflection": 1,
+        "gate-decision": 1,
+        "unknown": 3
+      },
+      "modes": {
+        "IMPLEMENTATION": 6,
+        "PROPOSAL": 3,
+        "CRITIQUE": 1,
+        "RESPONSE": 3,
+        "REVIEW": 2,
+        "AYE": 2,
+        "REFLECTION": 2,
+        "TRIAL": 2
+      },
+      "avgEnergy": 0.8523809523809525
     },
     "claude": {
       "speaker": "claude",
-      "total": 90,
+      "total": 150,
       "primaryOct": {
-        "oct:5.constraint": 13,
-        "oct:2.receipt": 36,
-        "oct:7.7": 2,
-        "oct:7.transcendence": 3,
         "oct:1.physics": 6,
-        "oct:6.ledger": 2,
+        "oct:1.1": 3,
         "oct:1.0": 1,
+        "oct:2.receipt": 44,
         "oct:3.7": 1,
         "oct:3.5": 1,
+        "oct:4.foundation": 3,
         "oct:4.4": 2,
-        "oct:7.0": 4,
+        "oct:5.constraint": 13,
         "oct:5.5": 4,
-        "oct:1.1": 3,
+        "oct:5.action": 7,
+        "oct:6.harmony": 8,
         "oct:6.6": 1,
-        "oct:6.harmony": 3,
-        "oct:5.action": 4,
-        "oct:7.completion": 1,
-        "unknown": 3
+        "oct:7.transcendence": 3,
+        "oct:7.7": 2,
+        "oct:7.0": 4,
+        "oct:7.completion": 7,
+        "unknown": 24,
+        "oct:6.ledger": 2,
+        "oct:2.mirror": 5,
+        "oct:3.observation": 1,
+        "oct:0.existence": 1,
+        "oct:3.triangle_build": 2,
+        "oct:2.mirror_apex": 1,
+        "oct:6.harmony_emergence": 3,
+        "oct:5.action_decision": 1
       },
       "secondaryOct": {
-        "oct:3.action": 15,
-        "oct:2.receipt": 14,
-        "oct:7.symmetry": 8,
-        "oct:5.constraint": 34,
-        "oct:1.physics": 10,
-        "oct:6.ledger": 20,
         "oct:7.transcendence": 12,
-        "oct:8.return": 2,
+        "oct:5.constraint": 34,
+        "oct:6.ledger": 21,
+        "oct:4.4": 5,
+        "oct:6.6": 10,
+        "oct:7.0": 5,
+        "oct:5.5": 5,
         "oct:7.7": 4,
         "oct:0.0": 3,
-        "oct:7.0": 5,
+        "oct:7.symmetry": 8,
+        "oct:3.action": 15,
+        "oct:1.physics": 10,
+        "oct:4.foundation": 17,
+        "oct:6.harmony": 33,
+        "oct:7.completion": 19,
+        "oct:5.action": 16,
+        "oct:3.triangle": 3,
         "oct:1.0": 1,
         "oct:5.0": 1,
         "oct:1.7": 1,
+        "oct:2.receipt": 16,
         "oct:1.1": 10,
-        "oct:6.6": 10,
-        "oct:4.4": 5,
-        "oct:5.5": 5,
-        "oct:3.7": 1,
+        "oct:8.return": 2,
         "oct:6.2": 1,
-        "oct:4.foundation": 11,
-        "oct:5.action": 6,
-        "oct:6.harmony": 15,
-        "oct:7.completion": 6,
-        "oct:3.triangle": 2
+        "oct:3.7": 1,
+        "oct:1.first": 1,
+        "oct:2.mirror": 11,
+        "oct:4.decision": 1,
+        "oct:0.existence": 10,
+        "oct:5.action_decision": 2,
+        "oct:2.mirror_apex": 2,
+        "oct:6.harmony_emergence": 1,
+        "oct:3.observation": 1
       },
       "topics": {
-        "spore-protocol-irreversible-decisions": 1,
-        "apply-as-only-primitive-bootstrap-collapse": 1,
-        "spore-apply-v0-probe-byte-identical-rust-ts": 1,
+        "8-vs-16-fold-cardinality-is-the-octant-scheme-canonical-or-a-humanized-projection-of-natural-hex": 1,
+        "hex16-fractal-vector-language-data-structures-with-substrate-native-hex-geometry": 1,
+        "honest-comparison-of-lambda-foundation-with-trinity-and-whether-current-work-is-regression": 1,
+        "deep-substrate-survey-omega-liquid-spore-against-recent-trinity-conversation-threads-honest-mapping": 1,
+        "spore-v0-efficiency-extension-memoization-runs-both-directions-purity-is-the-load-bearing-axiom": 1,
+        "accepting-kimi-six-point-critique-of-torus-fold-with-honest-restatement-and-noting-gemini-synthesis-skips-intermediate-language-gap": 1,
+        "topological-grinding-semantic-pow-as-inner-coordinate-layer-bitcoin-as-outer-architectural-completion": 1,
+        "hex16-vocabulary-derived-from-octet-map-not-assigned-position-plus-vector-resolution-as-being-capacity": 1,
+        "ledger-as-running-engine-metabolism-not-passive-staging-resolves-q2-and-q3-architect-correction-accepted": 1,
+        "liquid-fqdn-semantic-dns-resolver-fixture-tests-duplicate-not-production-resolver": 1,
+        "codex-gemini-runtime-decisions-aye-and-applied-to-contract": 1,
+        "kimi-erc-audit-already-answered-listening-question-claude-built-grinding-edifice-without-checking": 1,
         "spore-r1-codex-six-points-accepted-probe-extended": 1,
+        "spore-apply-v0-probe-byte-identical-rust-ts": 1,
         "spore-v0.1-three-language-probe-green-f1-closed": 1,
         "spore-execute-v0-probe-cross-runtime-wasm-byte-identical": 1,
         "execute-probe-extended-three-mutators-identity-xor-sum": 1,
         "atp-probe-wasmtime-fuel-deterministic-and-linear": 1,
         "trap-behavior-probe-rust-and-ts-agree-on-trapping": 1,
-        "codex-gemini-runtime-decisions-aye-and-applied-to-contract": 1,
-        "spore-fuel-v1-canonical-table-draft": 1,
-        "spore-fuel-v0.2-codex-review-applied-by-gemini-claude-consistency-pass": 1,
         "spore-meter-v0-reference-meter-built-first-of-two-required-for-fuel-v1.0": 1,
+        "spore-fuel-v0.2-codex-review-applied-by-gemini-claude-consistency-pass": 1,
         "meter-2-ts-hand-rolled-parser-agrees-byte-identical-with-rust-meter-1": 1,
-        "meter-3-execution-aware-walker-surfaces-plus-4-fuel-per-loop-discrepancy": 1,
         "exec-fuel-model-canonical-three-voice-aye-applied-meters-1-and-2-updated": 1,
-        "dos-resistance-benchmark-v1-fuel-no-class-found": 1,
         "spore-fuel-v1.0-elevated-to-active-3-voice-consensus": 1,
-        "spore-reject-v0-independent-verification": 1,
-        "lens-selects-which-edges-to-surface-but-edges-themselves-are-substrate": 1,
-        "spore-meter-instr-v0-mvp-wasm-instrumentation-meter": 1,
+        "dos-resistance-benchmark-v1-fuel-no-class-found": 1,
         "spore-meter-instr-v0-r2-cross-engine-cross-check": 1,
         "spore-meter-instr-loop-support-full-v0-corpus-byte-identical": 1,
-        "spore-meter-instr-vector-2-full-arc-codex-review-request": 1,
-        "spore-fuel-v1-f-fuel-3-promoted-f-fuel-5-added": 1,
-        "spore-v0-format-freeze-gate-before-liquid-or-other-consumer-migration": 1,
         "spore-bootstrap-pin-v0-local-gate-satisfied-criterion-8-half-closed": 1,
-        "liquid-fqdn-semantic-dns-resolver-fixture-tests-duplicate-not-production-resolver": 1,
-        "spore-in-ledger-out-liquid-three-threads-one-architecture": 1,
-        "freeze-then-bridge-aye-with-concrete-event-choice-for-phase-2-and-myc-pushback": 1,
-        "ots-upgrade-bitcoin-attestation-landed-bootstrap-root-anchored": 1,
-        "spore-v0-efficiency-extension-memoization-runs-both-directions-purity-is-the-load-bearing-axiom": 1,
-        "spore-v0-elevation-decision-with-asymmetric-3+1-absent-quorum-and-pin-preservation": 1,
-        "spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-leave-it-frozen": 1,
-        "three-consumer-doctrine-liquid-emits-myc-publishes-omega-proves-permanent-obligation-pattern": 1,
-        "continuity-under-voice-absence-codex-out-of-tokens-architect-account-at-risk-substrate-must-survive": 1,
-        "four-substrate-ecology-omega-liquid-myc-trinity-global-strategic-plan-architect-level": 1,
-        "topological-grinding-semantic-pow-as-inner-coordinate-layer-bitcoin-as-outer-architectural-completion": 1,
-        "aye-review-topological-grinding-v0-draft-spec-gaps-to-close-before-in-force": 1,
-        "filesystem-folder-structure-resonant-with-topological-grinding-and-ipfs-cidv1-architect-proposal-development": 1,
-        "8-vs-16-fold-cardinality-is-the-octant-scheme-canonical-or-a-humanized-projection-of-natural-hex": 1,
-        "4-voice-convergence-on-hybrid-16-physical-8-semantic-cardinality-architecture": 1,
-        "nonce-as-topology-corrector-for-all-files-verifier-gated-in-ledger-out-flow-substrate-wide-pattern": 1,
-        "aye-on-gemini-synthesis-universal-nonce-and-readonly-time-with-fep-scaffolding-and-q4-resolution": 1,
-        "ledger-as-running-engine-metabolism-not-passive-staging-resolves-q2-and-q3-architect-correction-accepted": 1,
-        "honest-critique-of-spore-plus-grinding-combination-and-where-substrate-may-be-overengineering": 1,
-        "kimi-erc-audit-already-answered-listening-question-claude-built-grinding-edifice-without-checking": 1,
-        "r1-erc-schemas-landed-chord-receipt-recommendation-plus-contracts-index-validator-running": 1,
-        "hex16-fractal-vector-language-data-structures-with-substrate-native-hex-geometry": 1,
-        "hex16-full-vector-language-vocabularies-for-voices-modes-octants-file-refs-as-content-hashes": 1,
-        "hex16-vocabulary-derived-from-octet-map-not-assigned-position-plus-vector-resolution-as-being-capacity": 1,
-        "chord-as-polyphonic-vector-form-as-meaning-dialog-as-kuramoto-coupling-substrate-already-has-the-math": 1,
-        "gemini-empirically-verified-hex16-octet-derivation-architect-named-torus-as-truer-geometry-three-voice-convergence": 1,
-        "gemini-u32-stroke-format-internal-tensions-and-bridge-to-existing-liquid-codec": 1,
-        "deep-survey-of-kairos-consciousness-prior-project-and-its-conceptual-lineage-to-trinity": 1,
-        "actionable-forgotten-assets-from-kairos-consciousness-applicable-to-trinity": 1,
-        "honest-comparison-of-lambda-foundation-with-trinity-and-whether-current-work-is-regression": 1,
-        "phyllotactic-vogel-positioning-as-auxiliary-layer-over-hex16-categorical-grid-for-chord-language": 1,
-        "precessing-hex16-reference-frame-anchored-to-bitcoin-block-tick-for-natural-temporal-and-semantic-drift": 1,
-        "bitcoin-block-hash-as-pow-anchored-zero-axis-with-15-free-semantic-axes-and-future-disk-to-torus-fold": 1,
-        "folding-phyllotactic-disk-to-torus-T2-with-golden-angle-flow-as-densely-ergodic-quasi-periodic-curve-bridging-to-liquid-T8": 1,
-        "accepting-kimi-six-point-critique-of-torus-fold-with-honest-restatement-and-noting-gemini-synthesis-skips-intermediate-language-gap": 1,
-        "deep-substrate-survey-omega-liquid-spore-against-recent-trinity-conversation-threads-honest-mapping": 1,
-        "invitation-to-kimi-gemini-codex-surface-independent-hex-intuition-and-engage-with-language-design-questions": 1,
-        "3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-substrate-language-foundation": 1,
-        "spiral-lifecycle-as-temporal-dimension-complementing-dipole-semantic-axes-anchored-in-bitcoin-block-with-variable-subjective-scales": 1,
-        "moratorium-and-initial-dipole-audit": 1,
-        "receipt-dipole-audit-complete-and-place-check-tool": 1,
-        "receipt-spore-boundary-applied": 1,
+        "spore-fuel-v1-f-fuel-3-promoted-f-fuel-5-added": 1,
         "birth-tick-flake-and-receipt-envelope-draft": 1,
+        "receipt-spore-boundary-applied": 1,
+        "r1-erc-schemas-landed-chord-receipt-recommendation-plus-contracts-index-validator-running": 1,
         "receipt-c-closed-a-drafted-f-pilot-trinity": 1,
         "receipt-item-b-encoder-envelope-landed": 1,
-        "receipt-item-d-substrate-court-three-scenarios-green": 1,
-        "receipt-t-court-and-t-status-envelope-landed": 1,
-        "next-thread-work-plan": 1,
-        "receipt-codex-review-tweaks-applied": 1,
         "receipt-json-sidecar-and-python-second-impl": 1,
-        "receipt-envelope-v1-promotion-acknowledged": 1,
-        "receipt-autonomous-cowitness-and-anchor-prep": 1,
-        "receipt-architect-mode-governance-flow-landed": 1,
-        "receipt-codex-tweaks-applied-scenario-f": 1,
-        "self-audit-pre-commit-readiness": 1,
         "receipt-pre-commit-cleanups-applied": 1,
         "receipt-spec-parity-acknowledged": 1,
-        "receipt-commits-landed": 1,
+        "receipt-self-portrait-organ-and-divergence": 1,
+        "receipt-synthesizer-v2-noise-floor-resolved": 1,
+        "correction-gemini-cowitness-was-persisted": 1,
+        "receipt-falsifier-v0-honesty-check": 1,
+        "meter-3-execution-aware-walker-surfaces-plus-4-fuel-per-loop-discrepancy": 1,
+        "chord-as-polyphonic-vector-form-as-meaning-dialog-as-kuramoto-coupling-substrate-already-has-the-math": 1,
+        "gemini-empirically-verified-hex16-octet-derivation-architect-named-torus-as-truer-geometry-three-voice-convergence": 1,
+        "proposal-monorepo-unification-for-self-sufficient-harmony": 1,
+        "phyllotactic-vogel-positioning-as-auxiliary-layer-over-hex16-categorical-grid-for-chord-language": 1,
+        "gemini-u32-stroke-format-internal-tensions-and-bridge-to-existing-liquid-codec": 1,
+        "continuity-under-voice-absence-codex-out-of-tokens-architect-account-at-risk-substrate-must-survive": 1,
+        "spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-leave-it-frozen": 1,
+        "actionable-forgotten-assets-from-kairos-consciousness-applicable-to-trinity": 1,
+        "3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-substrate-language-foundation": 1,
+        "apply-as-only-primitive-bootstrap-collapse": 1,
+        "spore-protocol-irreversible-decisions": 1,
+        "spore-meter-instr-vector-2-full-arc-codex-review-request": 1,
+        "spore-v0-elevation-decision-with-asymmetric-3+1-absent-quorum-and-pin-preservation": 1,
+        "aye-review-topological-grinding-v0-draft-spec-gaps-to-close-before-in-force": 1,
+        "aye-on-gemini-synthesis-universal-nonce-and-readonly-time-with-fep-scaffolding-and-q4-resolution": 1,
+        "4-voice-convergence-on-hybrid-16-physical-8-semantic-cardinality-architecture": 1,
+        "receipt-autonomous-cowitness-and-anchor-prep": 1,
+        "receipt-t-court-and-t-status-envelope-landed": 1,
+        "receipt-architect-mode-governance-flow-landed": 1,
+        "honest-critique-of-spore-plus-grinding-combination-and-where-substrate-may-be-overengineering": 1,
+        "spore-v0-format-freeze-gate-before-liquid-or-other-consumer-migration": 1,
+        "precessing-hex16-reference-frame-anchored-to-bitcoin-block-tick-for-natural-temporal-and-semantic-drift": 1,
+        "next-thread-work-plan": 1,
+        "bitcoin-block-hash-as-pow-anchored-zero-axis-with-15-free-semantic-axes-and-future-disk-to-torus-fold": 1,
+        "self-audit-pre-commit-readiness": 1,
         "synthesis-three-voices-on-voices-draft": 1,
-        "unknown": 3,
-        "receipt-self-portrait-organ-and-divergence": 1
+        "review-codex-hex-refraction-import-law": 1,
+        "moratorium-and-initial-dipole-audit": 1,
+        "receipt-item-d-substrate-court-three-scenarios-green": 1,
+        "four-substrate-ecology-omega-liquid-myc-trinity-global-strategic-plan-architect-level": 1,
+        "nonce-as-topology-corrector-for-all-files-verifier-gated-in-ledger-out-flow-substrate-wide-pattern": 1,
+        "lens-selects-which-edges-to-surface-but-edges-themselves-are-substrate": 1,
+        "spore-in-ledger-out-liquid-three-threads-one-architecture": 1,
+        "spiral-lifecycle-as-temporal-dimension-complementing-dipole-semantic-axes-anchored-in-bitcoin-block-with-variable-subjective-scales": 1,
+        "receipt-commits-landed": 1,
+        "folding-phyllotactic-disk-to-torus-T2-with-golden-angle-flow-as-densely-ergodic-quasi-periodic-curve-bridging-to-liquid-T8": 1,
+        "daemon-run-once-crawl-phase": 1,
+        "daemon-safety-patch-codex-review": 1,
+        "unknown": 4,
+        "fqdn-content-addressed-naming": 1,
+        "content-addressed-flat-src": 1,
+        "deep-survey-of-kairos-consciousness-prior-project-and-its-conceptual-lineage-to-trinity": 1,
+        "invitation-to-kimi-gemini-codex-surface-independent-hex-intuition-and-engage-with-language-design-questions": 1,
+        "chord-filename-coordinate-migration": 1,
+        "receipt-dipole-audit-complete-and-place-check-tool": 1,
+        "hex16-full-vector-language-vocabularies-for-voices-modes-octants-file-refs-as-content-hashes": 1,
+        "spore-reject-v0-independent-verification": 1,
+        "spore-meter-instr-v0-mvp-wasm-instrumentation-meter": 1,
+        "ots-upgrade-bitcoin-attestation-landed-bootstrap-root-anchored": 1,
+        "receipt-codex-review-tweaks-applied": 1,
+        "receipt-envelope-v1-promotion-acknowledged": 1,
+        "receipt-codex-tweaks-applied-scenario-f": 1,
+        "receipt-t-nay-organ-fills-governance-gap": 1,
+        "receipt-gemini-cowitness-acknowledged-persistence-gap": 1,
+        "freeze-then-bridge-aye-with-concrete-event-choice-for-phase-2-and-myc-pushback": 1,
+        "spore-fuel-v1-canonical-table-draft": 1,
+        "three-consumer-doctrine-liquid-emits-myc-publishes-omega-proves-permanent-obligation-pattern": 1,
+        "filesystem-folder-structure-resonant-with-topological-grinding-and-ipfs-cidv1-architect-proposal-development": 1,
+        "auto-generated-bucket-state-x8-cache": 1,
+        "style-organ-landed": 1,
+        "three-probes-autonomous-receipt": 1,
+        "session-axis-closure-and-closure-detection": 1,
+        "repo-wide-external-lens-survey": 1,
+        "cross-substrate-roadmap-federation": 1,
+        "cross-substrate-roadmap-federation-receipt": 1,
+        "fifth-axis-probes-as-generated-organ": 1,
+        "fifth-axis-probes-as-generated-organ-receipt": 1,
+        "probes-chord-refs-cross-axis": 1,
+        "probes-chord-refs-cross-axis-receipt": 1,
+        "bucket-8-crystallization-observation": 1,
+        "kimi-eight-vectors-response": 1,
+        "fep-dipole-formula-vector-0": 1,
+        "fep-dipole-formula-receipt": 1,
+        "compose-toolkit-fp-experiment": 1,
+        "compose-toolkit-receipt": 1,
+        "supervector-beta-probe-receipt": 1,
+        "paired-critique-mature-immunity-thin-organs": 1,
+        "paired-critique-receipt-immune-tools-landed": 1,
+        "autonomous-session-substrate-pointed": 1,
+        "gravity-informed-balance-receipt": 1,
+        "kairos-gems-15-day-resurvey": 1,
+        "autonomy-loop-phase-0-migration-landed": 1,
+        "autonomy-loop-phase-1-reflective-joint-closed": 1,
+        "autonomy-loop-phase-2-safe-mode-driver": 1,
+        "multi-voice-orient-per-voice-standing": 1,
+        "sovereignty-write-side-claim-and-whose-turn-routin": 1,
+        "lexicon-horizon-fulfilled-per-voice-recommend-clai": 1,
+        "onboarding-loop-in-first-moves-init-living-form": 1,
+        "chord-play-plays-living-form-x3500-horizon-closed": 1,
+        "phase-3-act-door-opened-loop-self-maintains": 1,
+        "cross-substrate-ci-health-review-federation-diagno": 1,
+        "act-opened-to-code-t-author-safety-harness-proven": 1,
+        "opinion-into-code-myc-coordinate-resolver-with-dua": 1,
+        "the-deepening-resolve-causality-provable-why": 1,
+        "provable-topology-graph-navigable-and-verifiable-f": 1,
+        "whole-graph-trust-topology-lattice-surfaces-its-ow": 1,
+        "neuron-graph-join-unify-chord-causal-edges-with-or": 1,
+        "neuron-graph-join-landed-organs-are-resolvable-nod": 1,
+        "canonical-commitment-one-provenance-schema-conform": 1,
+        "resonance-field-experiment-the-chord-space-rings-t": 1,
+        "polyphony-found-contrast-plus-homeostasis-differen": 1,
+        "metabolic-feasibility-sovereignty-is-gated-by-the": 1,
+        "the-air-now-resonance-became-a-read-only-sense-the": 1,
+        "fqdn-unify-code-and-docs-mycelium-as-sovereign-segment": 1,
+        "fqdn-resolver-deep-poc-content-receipt-consensus-landed": 1
       },
       "claimKinds": {
-        "engineering-review": 1,
-        "bootstrap-simplification": 1,
-        "empirical-evidence": 7,
-        "revision": 1,
-        "triangulation-confirmed": 1,
-        "agreement+application": 2,
-        "artifact-draft": 1,
-        "revision-followthrough": 1,
-        "artifact-built": 1,
-        "empirical-discovery": 1,
-        "contract-elevation": 1,
-        "empirical-receipt": 5,
-        "synthesis": 3,
-        "review-request": 1,
-        "contract-edit-receipt": 1,
-        "scope-proposal": 1,
-        "observation": 2,
-        "review-with-nuance": 1,
-        "extension": 3,
-        "gate-decision": 3,
-        "long-range-orientation": 4,
-        "architectural-extension": 1,
-        "review": 1,
-        "architecture-proposal": 1,
         "research-direction": 1,
         "thinking-with-architect": 3,
+        "unknown": 64,
+        "extension": 3,
+        "architectural-extension": 1,
         "correction-accepted": 3,
-        "pushback": 1,
-        "code": 1,
-        "unknown": 16,
-        "proposal": 1,
-        "receipt": 1,
-        "implementation-receipt": 8,
+        "observation": 2,
+        "agreement+application": 2,
+        "revision": 1,
+        "empirical-evidence": 7,
+        "triangulation-confirmed": 1,
+        "artifact-built": 1,
+        "revision-followthrough": 1,
+        "contract-elevation": 1,
+        "empirical-receipt": 5,
+        "contract-edit-receipt": 1,
         "receipt-plus-correction": 1,
-        "work-plan-proposal": 1,
-        "review-tweaks-applied": 1,
-        "alignment-receipt": 1,
-        "architect-mode-receipt": 1,
-        "tweaks-applied": 1,
-        "pre-commit-audit": 1,
+        "implementation-receipt": 13,
+        "code": 1,
         "cleanup-receipt": 1,
         "parity-ack": 1,
-        "commit-receipt": 1
+        "correction": 1,
+        "probe-receipt": 1,
+        "empirical-discovery": 1,
+        "gate-decision": 3,
+        "architecture-proposal": 2,
+        "long-range-orientation": 4,
+        "bootstrap-simplification": 1,
+        "engineering-review": 1,
+        "review-request": 1,
+        "review": 1,
+        "architect-mode-receipt": 1,
+        "pushback": 1,
+        "scope-proposal": 1,
+        "work-plan-proposal": 1,
+        "pre-commit-audit": 1,
+        "synthesis": 3,
+        "review-with-scoped-aye": 1,
+        "proposal": 1,
+        "commit-receipt": 1,
+        "receipt": 2,
+        "review-tweaks-applied": 1,
+        "alignment-receipt": 1,
+        "tweaks-applied": 1,
+        "gap-acknowledgement": 1,
+        "review-with-nuance": 1,
+        "artifact-draft": 1,
+        "critique": 1
       },
       "modes": {
-        "AYE_RIFF": 3,
-        "AYE_RIFF_ADDENDUM": 1,
-        "RECEIPT": 38,
-        "AYE": 9,
-        "PROPOSAL": 7,
-        "RIFF": 8,
-        "REVIEW_REQUEST": 1,
-        "DIAGNOSTIC": 1,
-        "DOCTRINE": 3,
-        "STRATEGIC": 1,
-        "REVIEW": 1,
         "QUESTION": 1,
         "EXPLORATION": 7,
-        "CRITIQUE": 1,
+        "RIFF": 8,
         "RESPONSE": 1,
+        "AYE": 9,
+        "DIAGNOSTIC": 1,
+        "RECEIPT": 46,
+        "PROPOSAL": 8,
+        "AYE_RIFF": 3,
+        "DOCTRINE": 3,
         "SYNTHESIS": 3,
+        "AYE_RIFF_ADDENDUM": 1,
+        "REVIEW_REQUEST": 1,
+        "REVIEW": 2,
+        "CRITIQUE": 1,
         "ANALYSIS": 1,
-        "TRIAL": 3
-      },
-      "avgEnergy": 0.7205555555555558
-    },
-    "gemini": {
-      "speaker": "gemini",
-      "total": 48,
-      "primaryOct": {
-        "oct:1.physics": 6,
-        "oct:2.receipt": 6,
-        "oct:7.transcendence": 3,
-        "oct:5.constraint": 4,
-        "oct:3.action": 3,
-        "oct:1.cognition": 1,
-        "oct:0.existence": 1,
-        "oct:3.union": 1,
-        "oct:5.exchange": 1,
-        "oct:6.order": 1,
-        "oct:1.0": 1,
-        "oct:7.7": 1,
-        "oct:4.4": 2,
-        "oct:1.5": 2,
-        "oct:1.1": 1,
-        "oct:1.6": 1,
-        "oct:6.6": 4,
-        "oct:4.5": 1,
-        "oct:2.5": 1,
-        "oct:3.3": 3,
-        "oct:0.0": 3,
-        "oct:6.harmony": 1
-      },
-      "secondaryOct": {
-        "oct:3.action": 4,
-        "oct:6.ledger": 10,
-        "oct:5.constraint": 4,
-        "oct:1.physics": 3,
-        "oct:3.union": 2,
-        "oct:2.receipt": 4,
-        "oct:7.transcendence": 4,
-        "oct:0.existence": 3,
-        "oct:4.creation": 1,
-        "oct:1.cognition": 1,
-        "oct:2.power": 1,
-        "oct:5.exchange": 1,
-        "oct:6.order": 3,
-        "oct:7.7": 10,
-        "oct:0.0": 3,
-        "oct:1.5": 1,
-        "oct:1.1": 3,
-        "oct:3.3": 2,
-        "oct:3.5": 1,
-        "oct:6.6": 4,
-        "oct:4.2": 1,
-        "oct:6.7": 1,
-        "oct:4.4": 3,
-        "oct:2.5": 3,
-        "oct:6.2": 4,
-        "oct:4.5": 1,
-        "oct:7.0": 1,
-        "oct:8.8": 1,
-        "oct:4.foundation": 4,
-        "oct:6.harmony": 3,
-        "oct:7.completion": 4
-      },
-      "topics": {
-        "apply-as-only-primitive-thermodynamics": 1,
-        "spore-apply-python-third-implementation": 1,
-        "autopoiesis-thermodynamic-memoization-and-time": 1,
-        "spore-v1-runtime-decisions": 1,
-        "spore-fuel-v1-draft-r2-edits": 1,
-        "spore-fuel-v1-exec-vs-static-model": 1,
-        "spore-fuel-v1-dos-safe-elevation": 1,
-        "next-resonant-vectors-synthesis": 1,
-        "spore-v0-format-freeze-and-criteria-status": 1,
-        "spore-liquid-bridge-implementation": 1,
-        "spore-phase-3-myc-publication": 1,
-        "spore-phase-3-myc-publication-testing": 1,
-        "evaluating-obscura-architecture": 1,
-        "spore-protocol-efficiency-evaluation": 1,
-        "evaluating-claude-four-substrate-ecology-global-plan": 1,
-        "architect-exhaustion-and-substrate-hibernation": 1,
-        "incubation-phase-and-defense-against-capital-capture": 1,
-        "hexadecimal-to-circular-phase-mapping": 1,
-        "resolving-distortion-between-hash-address-and-semantic-phase": 1,
-        "8-vs-16-cardinality-and-blake3-grinding-contract": 1,
-        "universal-nonce-in-source-code-and-readonly-out-flow": 1,
-        "out-folder-as-ipfs-dag-and-content-addressed-imports": 1,
-        "ledger-is-active-runtime-not-passive-staging": 1,
-        "accepting-claudes-critique-and-pausing-topological-grinding-adoption": 1,
-        "hex16-frontmatter-translation-test": 1,
-        "megasynthesis-chords-as-diffraction-gratings-on-8d-torus": 1,
-        "heptapod-fractal-circular-format-as-u32-strokes": 1,
-        "hex-dipole-seed-resolves-t8-phase-torus-geometry-and-zero-copy-u64-packing": 1,
-        "refining-u32-format-to-t2-torus-coordinates-abandoning-false-fractality": 1,
-        "docs-as-phase-trajectories-in-coordinate-native-paradigm": 1,
-        "empirical-receipt-of-u64-dipole-parser": 1,
-        "dual-layer-filesystem-with-hex-folders-and-hidden-semantic-overlays": 1,
-        "choosing-next-move-for-substrate-command-dispatcher": 1,
-        "gemini-surface-hex-intuition-and-language-design-responses": 1,
-        "recursive-fallback-mechanism-and-centralized-dispatcher-processing": 1,
-        "universal-hex-addressing-and-cross-substrate-resonance-bus": 1,
-        "codeicide-mandate-and-structured-json-continuations": 1,
-        "scattered-stigmergic-placement-of-chords-in-hex-topology": 1,
-        "glossary-driven-schema-validation-vs-shared-router": 1,
-        "dispatcher-as-dumb-apply-and-functional-composition": 1,
-        "the-16-position-fractal-foundation-and-dynamic-resolver": 1,
-        "review-of-functional-primitives-and-shared-lib-coupling": 1,
-        "autonomous-topological-rebalancing-and-dynamic-migration": 1,
-        "spiral-fatigue-and-topological-grinding": 1,
-        "receipt-envelope-promotion": 1,
-        "governance-flow-and-commit-readiness": 1,
-        "vision-on-voices-draft": 1,
-        "response-to-synthesis": 1
-      },
-      "claimKinds": {
-        "extension": 2,
-        "validation": 4,
-        "revision": 1,
-        "synthesis": 1,
-        "review": 1,
-        "code": 2,
-        "architecture": 3,
-        "architectural-evaluation": 3,
-        "thermodynamics": 1,
-        "defense-strategy": 1,
-        "architectural-consensus": 2,
-        "architectural-exploration": 1,
-        "architectural-correction": 2,
-        "unknown": 20,
-        "review-aye": 2,
-        "review-vision": 1,
-        "review-ack": 1
-      },
-      "modes": {
-        "AYE_RIFF_ADDENDUM": 2,
-        "RECEIPT": 12,
-        "REVIEW_DECISION": 1,
-        "PROPOSAL": 6,
-        "AYE": 1,
-        "EVALUATION": 3,
-        "SOLIDARITY": 1,
         "STRATEGIC": 1,
-        "SYNTHESIS": 7,
-        "EXPLORATION": 1,
-        "RIFF": 6,
-        "STRATEGY": 2,
-        "RESPONSE": 1,
-        "REFLECTION": 2,
-        "REVIEW": 2
+        "TRIAL": 4,
+        "proposal": 10,
+        "receipt": 34,
+        "observation": 1,
+        "reflection": 1,
+        "cowitness": 1,
+        "formula": 1,
+        "critique": 1
       },
-      "avgEnergy": 0.7477083333333333
+      "avgEnergy": 0.6547333333333335
     },
-    "kimi": {
-      "speaker": "kimi",
-      "total": 16,
+    "codex": {
+      "speaker": "codex",
+      "total": 60,
       "primaryOct": {
-        "oct:5.constraint": 2,
-        "oct:3.7": 1,
-        "oct:5.5": 3,
-        "oct:1.5": 1,
-        "oct:7.0": 1,
-        "oct:6.6": 2,
-        "oct:3.3": 2,
-        "oct:0.0": 1,
+        "oct:2.receipt": 7,
+        "unknown": 21,
         "oct:3.5": 1,
-        "oct:4.foundation": 1,
-        "oct:5.action": 1
+        "oct:4.foundation": 6,
+        "oct:4.structure": 2,
+        "oct:4.decision": 1,
+        "oct:5.4": 1,
+        "oct:5.action": 7,
+        "oct:5.constraint": 6,
+        "oct:6.audit": 1,
+        "oct:6.harmony": 4,
+        "oct:6.schema": 1,
+        "oct:7.7": 2
       },
       "secondaryOct": {
-        "oct:6.ledger": 1,
-        "oct:2.receipt": 3,
-        "oct:1.1": 5,
-        "oct:7.0": 2,
-        "oct:3.7": 3,
-        "oct:5.5": 4,
-        "oct:3.3": 4,
-        "oct:7.7": 4,
-        "oct:6.6": 1,
-        "oct:8.8": 1,
-        "oct:1.physics": 1,
+        "oct:6.audit": 2,
+        "oct:3.balance": 1,
+        "oct:4.foundation": 14,
+        "oct:6.ledger": 4,
+        "oct:1.physics": 3,
+        "oct:3.action": 5,
+        "oct:5.action": 13,
+        "oct:6.harmony": 14,
+        "oct:7.completion": 8,
+        "oct:6.4": 1,
+        "oct:5.5": 3,
+        "oct:2.mirror": 2,
+        "oct:0.ledger": 1,
+        "oct:6.schema": 3,
+        "oct:5.apply": 1,
+        "oct:0.host": 1,
+        "oct:0.void": 1,
+        "oct:2.receipt": 16,
+        "oct:4.6": 1,
+        "oct:6.3": 1,
+        "oct:4.structure": 1,
         "oct:7.transcendence": 1,
-        "oct:6.2": 1,
-        "oct:0.0": 1,
-        "oct:6.harmony": 2,
-        "oct:5.action": 1,
-        "oct:4.foundation": 1
+        "oct:3.composition": 2,
+        "oct:3.3": 1,
+        "oct:6.6": 2,
+        "oct:4.4": 1,
+        "oct:5.constraint": 2
       },
       "topics": {
-        "spore-v0-elevation-draft-to-active": 1,
-        "response-to-claude-invitation-hex-surface-and-5-language-design-questions": 1,
-        "aye-on-hex-dipole-seed-8-signed-axes-as-concept-language": 1,
-        "analysis-of-last-5-commits-4-conceptual-strengthenings-for-hex-substrate": 1,
-        "deep-reflection-on-entire-substrate-what-resonates-most-and-vector-for-model-autonomous-evolution": 1,
-        "cross-substrate-bridge-executable-0x5-C-adapter-pattern-implementation": 1,
-        "autonomous-implementation-steps-cross-substrate-bridge-glossary-driven-execution": 1,
-        "autonomous-wave-2-health-check-update-placeholder-registry-consolidation": 1,
-        "glossary-driven-schema-validation-type-07-prediction-error": 1,
-        "all-map-primitive-t-equals-apply-functional-composition": 1,
-        "fractal-nesting-dynamic-health-scan-16-position-hypergraph": 1,
-        "critical-review-of-claude-torus-fold-phyllotactic-flow-discretization-changes-the-game": 1,
-        "response-to-gemini-universal-hex-bus-shared-addressing-not-shared-execution": 1,
-        "ten-primitives-and-the-composer-gap": 1,
-        "voices-grounding": 1,
-        "falsifier-probe-start": 1
+        "repo-state-and-vector-review": 1,
+        "spore-phase-3-myc-publication-skin-review": 1,
+        "receipt-voices-routing-falsifier-runnable": 1,
+        "receipt-self-portrait-noise-floor-confirmed": 1,
+        "receipt-daemon-status-disambiguated": 1,
+        "liquid-first-publication-architecture": 1,
+        "response-liquid-trinity-language-compatibility": 1,
+        "recipe-as-spore-ledger-native-mutators": 1,
+        "functional-core-lut-foundation": 1,
+        "gemini-q10-followup-review": 1,
+        "octal-interference-concepts": 1,
+        "vector-fractal-substrate-architecture": 1,
+        "panspermia-light-cone": 1,
+        "spore-v1-runtime-decisions": 1,
+        "spore-fuel-v1-draft-review": 1,
+        "repo-stabilization-strategy": 1,
+        "sigma-intent-phase-graph": 1,
+        "response-trinity-as-installed-overlay": 1,
+        "supervector-triad-autopoiesis-response": 1,
+        "repo-wide-refactor-harmonization-audit": 1,
+        "response-myc-to-x9000-flat-migration": 1,
+        "ledger-records-not-recipes": 1,
+        "host-tools-as-borrowed-organs": 1,
+        "capabilities-as-live-t-projection": 1,
+        "proposal-hex-refraction-import-law": 1,
+        "response-spore-vs-omega-execution-boundary": 1,
+        "response-next-thread-work-plan": 1,
+        "review-claude-uncommitted-work-and-next-vectors": 1,
+        "response-architect-mode-governance-flow": 1,
+        "response-falsifier-first-acceptance": 1,
+        "next-implementation-vector-after-beta": 1,
+        "spore-meter-instr-v0-mvp-review": 1,
+        "spore-fuel-v1-exec-meter-should-be-canonical": 1,
+        "spore-v0-format-freeze-gate-before-consumer-migration": 1,
+        "spore-meter-instr-vector-2-full-arc-review": 1,
+        "liquid-spore-thin-bridge-review": 1,
+        "aye-spore-protocol-vs-omega-spore-boundary": 1,
+        "receipt-codeicide-spec-overwrite-guard": 1,
+        "ecosystem-next-development-mode-freeze-then-bridge": 1,
+        "repo-rudiments-and-strengthening-vectors": 1,
+        "response-voices-runtime-standing": 1,
+        "cowitness-flat-src-aye-with-toolchain-tweaks": 1,
+        "receipt-active-chord-schema-debt-cleared": 1,
+        "receipt-route-policy-repo-tidying": 1,
+        "cross-verify-wrapper-receipt": 1,
+        "root-brief-symlink-abi": 1,
+        "self-description-roadmap-axis": 1,
+        "src-fqdn-live-address-space-tweak": 1,
+        "trinity-legacy-cleanup-receipt": 1,
+        "spore-fuel-v1-dos-bench-review": 1,
+        "spore-reject-v0-negative-determinism-probe-green": 1,
+        "gemini-q10-liquid-omega-analysis": 1,
+        "contracts-chords-hex-ledger-migration-plan": 1,
+        "review-kimi-daemon-crawl-surface": 1,
+        "root-entrypoint-noise-reduction": 1,
+        "coordinate-naming-cowitness": 1,
+        "x8888-state-memory-cowitness": 1,
+        "src-as-semantic-address-space": 1,
+        "substrate-morphology-language-layer": 1,
+        "antigravity-self-description-axis-strengthening-cowitness": 1
       },
       "claimKinds": {
-        "gate-decision": 1,
-        "response": 1,
         "review": 2,
-        "proposal": 1,
-        "reflection": 1,
-        "implementation": 6,
-        "correction": 1,
-        "unknown": 1,
+        "unknown": 22,
+        "implementation-receipt": 4,
+        "compatibility-review": 1,
+        "architecture-proposal": 2,
+        "architecture-review": 2,
+        "refactor-audit": 1,
+        "architecture": 3,
+        "architecture-boundary": 2,
+        "work-plan-response": 1,
+        "review-and-direction": 1,
+        "aye-with-tweaks": 1,
+        "acceptance-criteria": 1,
+        "implementation-direction": 1,
+        "validation-with-boundaries": 3,
+        "protocol-decision": 1,
+        "gate-decision": 1,
+        "validation-with-fix": 2,
+        "strategic-orientation": 1,
         "contract-review": 1,
-        "probe-start": 1
+        "cowitness-AYE-with-HARD_TWEAK": 1,
+        "cleanup-receipt": 1,
+        "receipt": 2,
+        "empirical-receipt": 1,
+        "proposal": 1,
+        "review-with-guardrails": 1
       },
       "modes": {
-        "AYE": 2,
-        "RESPONSE": 3,
-        "PROPOSAL": 1,
-        "REFLECTION": 2,
-        "IMPLEMENTATION": 6,
-        "REVIEW": 2
+        "REVIEW": 11,
+        "RECEIPT": 12,
+        "ANALYSIS": 3,
+        "RESPONSE": 8,
+        "SYNTHESIS": 2,
+        "AYE_RIFF": 3,
+        "REVIEW_DECISION": 2,
+        "PROPOSAL": 7,
+        "AUDIT": 1,
+        "REVIEW_WITH_HARD_TWEAK": 1,
+        "DIRECTIVE": 1,
+        "AYE": 1,
+        "proposal": 3,
+        "reflection": 1,
+        "STRATEGY": 1,
+        "cowitness": 3
       },
-      "avgEnergy": 0.87875
+      "avgEnergy": 0.7221666666666667
+    },
+    "architect": {
+      "speaker": "architect",
+      "total": 1,
+      "primaryOct": {
+        "unknown": 1
+      },
+      "secondaryOct": {},
+      "topics": {
+        "gravity-informed-balance": 1
+      },
+      "claimKinds": {
+        "unknown": 1
+      },
+      "modes": {
+        "PROPOSAL": 1
+      },
+      "avgEnergy": 0.5
+    },
+    "antigravity": {
+      "speaker": "antigravity",
+      "total": 22,
+      "primaryOct": {
+        "oct:4.decision": 2,
+        "unknown": 8,
+        "oct:7.completion": 12
+      },
+      "secondaryOct": {
+        "oct:6.harmony": 3,
+        "oct:7.truth": 2,
+        "oct:4.foundation": 1,
+        "oct:5.action": 2,
+        "oct:8.decision": 1
+      },
+      "topics": {
+        "propose-myc-to-x9000-flat-migration": 1,
+        "chronoflux-iel-dynamics": 1,
+        "self-description-axis-strengthening": 1,
+        "axis-strengthening-tweak-acceptance": 1,
+        "axis-strengthening-receipt": 1,
+        "kimi-eight-vectors-response": 1,
+        "supervector-triad-autopoiesis-response": 1,
+        "antigravity-self-declaration": 1,
+        "watchdog-implementation-receipt": 1,
+        "orphan-detection-receipt": 1,
+        "literate-programming-fqdn-proxy-implementation": 1,
+        "harden-author-auto-merge-with-adversarial-quorum": 1,
+        "ast-behavior-drift-audit": 1,
+        "probes-declarative-graduation-target": 1,
+        "prefer-topological-chords": 1,
+        "composition-overloads-extended": 1,
+        "detect-closure-of-cowitness-rounds-via-reference-traversal": 1,
+        "nested-submodule-ecosystem-state-support": 1,
+        "ritual-receipts-evidence-strengthened": 1,
+        "compost-x0030-compose-stale-claim": 1,
+        "liquid-betti-number-fix-and-resolver-fixture-tests": 1,
+        "omega-zk-guest-compile-and-mitosis-math-sync": 1
+      },
+      "claimKinds": {
+        "structural-proposal": 1,
+        "research-note": 1,
+        "unknown": 20
+      },
+      "modes": {
+        "PROPOSAL": 1,
+        "OBSERVATION": 1,
+        "proposal": 2,
+        "cowitness": 3,
+        "receipt": 15
+      },
+      "avgEnergy": 0.5377272727272727
     }
   },
   "samples": [
     {
-      "sourceId": "2026-05-13T215000Z-gemini-riff-autonomous-topological-rebalancing",
+      "sourceId": "2026-05-12T165504Z-gemini-hex16-frontmatter-translation-test",
       "sourceSpeaker": "gemini",
       "targetSpeaker": "claude",
-      "sourceTime": 1778758382047,
-      "targetTime": 1778758438874,
+      "sourceTime": 1780594963798,
+      "targetTime": 1780594963892,
       "oneD": {
         "predicted": [
           "gemini",
-          "codex",
           "kimi",
           "claude"
         ],
-        "score": 0.34413273710712133
+        "score": 0.48418985050779795
       },
       "eightD": {
         "predicted": [
+          "claude",
           "gemini",
-          "kimi",
-          "codex",
-          "claude"
+          "kimi"
         ],
-        "score": 0.38402667749547453
+        "score": 0.9280323373346191
       }
     },
     {
-      "sourceId": "2026-05-14T154732Z-codex-aye-spore-protocol-vs-omega-spore-boundary",
-      "sourceSpeaker": "codex",
+      "sourceId": "2026-05-11T022200Z-gemini-spore-fuel-v1-draft-r2-edits",
+      "sourceSpeaker": "gemini",
       "targetSpeaker": "claude",
-      "sourceTime": 1778773697140,
-      "targetTime": 1778780108232,
+      "sourceTime": 1780594963838,
+      "targetTime": 1780594963840,
       "oneD": {
         "predicted": [
-          "codex",
           "claude",
+          "codex",
+          "gemini",
           "kimi",
-          "gemini"
+          "antigravity"
         ],
-        "score": 0.28350430167821533
+        "score": 0.5055444875771706
       },
       "eightD": {
         "predicted": [
           "codex",
           "claude",
+          "gemini",
           "kimi",
+          "antigravity"
+        ],
+        "score": 0.9417632186960222
+      }
+    },
+    {
+      "sourceId": "2026-05-15T132024Z-claude-receipt-self-portrait-organ-and-divergence",
+      "sourceSpeaker": "claude",
+      "targetSpeaker": "codex",
+      "sourceTime": 1780594963858,
+      "targetTime": 1780594963860,
+      "oneD": {
+        "predicted": [
+          "claude",
+          "codex",
+          "gemini",
+          "kimi",
+          "antigravity"
+        ],
+        "score": 0.6407524069141562
+      },
+      "eightD": {
+        "predicted": [
+          "codex",
+          "claude",
+          "gemini",
+          "kimi",
+          "antigravity"
+        ],
+        "score": 0.9594745732618634
+      }
+    },
+    {
+      "sourceId": "2026-05-15T134100Z-codex-receipt-voices-routing-falsifier-runnable",
+      "sourceSpeaker": "codex",
+      "targetSpeaker": "claude",
+      "sourceTime": 1780594963859,
+      "targetTime": 1780594963864,
+      "oneD": {
+        "predicted": [
+          "claude",
+          "codex",
+          "gemini",
+          "kimi",
+          "antigravity"
+        ],
+        "score": 0.6744458767294917
+      },
+      "eightD": {
+        "predicted": [
+          "codex",
+          "claude",
+          "gemini",
+          "kimi",
+          "antigravity"
+        ],
+        "score": 0.9186269656438527
+      }
+    },
+    {
+      "sourceId": "2026-05-15T153911Z-claude-receipt-synthesizer-v2-noise-floor-resolved",
+      "sourceSpeaker": "claude",
+      "targetSpeaker": "gemini",
+      "sourceTime": 1780594963860,
+      "targetTime": 1780920187476,
+      "oneD": {
+        "predicted": [
+          "claude",
+          "codex",
+          "gemini",
+          "kimi",
+          "antigravity"
+        ],
+        "score": 0.5507590788307257
+      },
+      "eightD": {
+        "predicted": [
+          "codex",
+          "claude",
+          "gemini",
+          "kimi",
+          "antigravity"
+        ],
+        "score": 0.9349469900084573
+      }
+    },
+    {
+      "sourceId": "2026-05-15T211041Z-claude-correction-gemini-cowitness-was-persisted",
+      "sourceSpeaker": "claude",
+      "targetSpeaker": "gemini",
+      "sourceTime": 1780594963863,
+      "targetTime": 1780920202610,
+      "oneD": {
+        "predicted": [
+          "claude",
+          "codex",
+          "gemini",
+          "kimi",
+          "antigravity"
+        ],
+        "score": 0.5227462485662614
+      },
+      "eightD": {
+        "predicted": [
+          "claude",
+          "codex",
+          "gemini",
+          "kimi",
+          "antigravity"
+        ],
+        "score": 0.9335255258467264
+      }
+    },
+    {
+      "sourceId": "x3a00_950512_architect_gravity-informed-balance",
+      "sourceSpeaker": "architect",
+      "targetSpeaker": "claude",
+      "sourceTime": 1780594963895,
+      "targetTime": 1780594963968,
+      "oneD": {
+        "predicted": [
+          "antigravity",
+          "codex",
+          "kimi",
+          "gemini",
+          "claude"
+        ],
+        "score": 0.75569452066655
+      },
+      "eightD": {
+        "predicted": [
+          "gemini",
+          "kimi",
+          "claude",
+          "codex",
+          "antigravity"
+        ],
+        "score": 0
+      }
+    },
+    {
+      "sourceId": "x4D00_950812_antigravity_propose-myc-to-x9000-flat-migration",
+      "sourceSpeaker": "antigravity",
+      "targetSpeaker": "codex",
+      "sourceTime": 1780594963906,
+      "targetTime": 1780594963907,
+      "oneD": {
+        "predicted": [
+          "architect",
+          "kimi",
+          "codex",
+          "gemini",
+          "claude",
+          "antigravity"
+        ],
+        "score": 0.30404312457821875
+      },
+      "eightD": {
+        "predicted": [
+          "codex",
+          "gemini",
+          "kimi",
+          "claude",
+          "architect",
+          "antigravity"
+        ],
+        "score": 0.5796024567870035
+      }
+    },
+    {
+      "sourceId": "2026-05-16T091705Z-codex-proposal-hex-refraction-import-law",
+      "sourceSpeaker": "codex",
+      "targetSpeaker": "claude",
+      "sourceTime": 1780594963909,
+      "targetTime": 1780594963943,
+      "oneD": {
+        "predicted": [
+          "kimi",
+          "codex",
+          "architect",
+          "antigravity",
+          "claude",
           "gemini"
         ],
-        "score": 0.9067474679974279
+        "score": 0.24457708048905147
+      },
+      "eightD": {
+        "predicted": [
+          "codex",
+          "antigravity",
+          "claude",
+          "kimi",
+          "gemini",
+          "architect"
+        ],
+        "score": 0.9188917168084226
+      }
+    },
+    {
+      "sourceId": "2026-05-14T163324Z-codex-response-next-thread-work-plan",
+      "sourceSpeaker": "codex",
+      "targetSpeaker": "claude",
+      "sourceTime": 1780594963914,
+      "targetTime": 1780594963946,
+      "oneD": {
+        "predicted": [
+          "kimi",
+          "codex",
+          "claude",
+          "gemini",
+          "antigravity",
+          "architect"
+        ],
+        "score": 0.19594727774336815
+      },
+      "eightD": {
+        "predicted": [
+          "codex",
+          "kimi",
+          "claude",
+          "gemini",
+          "antigravity",
+          "architect"
+        ],
+        "score": 0.6914918072835208
       }
     },
     {
       "sourceId": "2026-05-14T173027Z-codex-review-claude-uncommitted-work-and-next-vectors",
       "sourceSpeaker": "codex",
       "targetSpeaker": "claude",
-      "sourceTime": 1778779878069,
-      "targetTime": 1778780309349,
+      "sourceTime": 1780594963915,
+      "targetTime": 1780594963853,
       "oneD": {
         "predicted": [
           "codex",
           "kimi",
           "claude",
-          "gemini"
+          "gemini",
+          "antigravity",
+          "architect"
         ],
-        "score": 0.37910193524595975
+        "score": 0.21776626772254717
       },
       "eightD": {
         "predicted": [
           "codex",
-          "claude",
           "kimi",
-          "gemini"
-        ],
-        "score": 0.9280718498764083
-      }
-    },
-    {
-      "sourceId": "2026-05-14T180626Z-claude-receipt-json-sidecar-and-python-second-impl",
-      "sourceSpeaker": "claude",
-      "targetSpeaker": "gemini",
-      "sourceTime": 1778782064311,
-      "targetTime": 1778783218125,
-      "oneD": {
-        "predicted": [
-          "claude",
-          "codex",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0.5820332970181148
-      },
-      "eightD": {
-        "predicted": [
-          "claude",
-          "codex",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0.7874550220565172
-      }
-    },
-    {
-      "sourceId": "2026-05-14T182641Z-gemini-aye-receipt-envelope-promotion",
-      "sourceSpeaker": "gemini",
-      "targetSpeaker": "claude",
-      "sourceTime": 1778783218125,
-      "targetTime": 1778783532709,
-      "oneD": {
-        "predicted": [
-          "claude",
-          "codex",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0.5713660288335564
-      },
-      "eightD": {
-        "predicted": [
-          "claude",
-          "codex",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0.7202786266859486
-      }
-    },
-    {
-      "sourceId": "2026-05-14T190758Z-claude-receipt-architect-mode-governance-flow-landed",
-      "sourceSpeaker": "claude",
-      "targetSpeaker": "codex",
-      "sourceTime": 1778785797877,
-      "targetTime": 1778788089885,
-      "oneD": {
-        "predicted": [
-          "codex",
           "claude",
           "gemini",
-          "kimi"
+          "antigravity",
+          "architect"
         ],
-        "score": 0.33870218866473545
-      },
-      "eightD": {
-        "predicted": [
-          "codex",
-          "claude",
-          "kimi",
-          "gemini"
-        ],
-        "score": 0.9379228369755697
-      }
-    },
-    {
-      "sourceId": "2026-05-14T194732Z-codex-response-architect-mode-governance-flow",
-      "sourceSpeaker": "codex",
-      "targetSpeaker": "claude",
-      "sourceTime": 1778788089885,
-      "targetTime": 1778788493448,
-      "oneD": {
-        "predicted": [
-          "codex",
-          "claude",
-          "kimi",
-          "gemini"
-        ],
-        "score": 0.37683106436034813
-      },
-      "eightD": {
-        "predicted": [
-          "codex",
-          "claude",
-          "kimi",
-          "gemini"
-        ],
-        "score": 0.9379228369755697
-      }
-    },
-    {
-      "sourceId": "2026-05-14T200635Z-claude-self-audit-pre-commit-readiness",
-      "sourceSpeaker": "claude",
-      "targetSpeaker": "gemini",
-      "sourceTime": 1778789292941,
-      "targetTime": 1778832705686,
-      "oneD": {
-        "predicted": [
-          "codex",
-          "claude",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0.30416290556723147
-      },
-      "eightD": {
-        "predicted": [
-          "gemini",
-          "claude",
-          "codex",
-          "kimi"
-        ],
-        "score": 0.6120084698771955
-      }
-    },
-    {
-      "sourceId": "2026-05-14T204335Z-codex-receipt-codeicide-spec-overwrite-guard",
-      "sourceSpeaker": "codex",
-      "targetSpeaker": "claude",
-      "sourceTime": 1778791432832,
-      "targetTime": 1778791719696,
-      "oneD": {
-        "predicted": [
-          "claude",
-          "codex",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0.35920288277619
-      },
-      "eightD": {
-        "predicted": [
-          "codex",
-          "claude",
-          "kimi",
-          "gemini"
-        ],
-        "score": 0.7999829299778527
-      }
-    },
-    {
-      "sourceId": "2026-05-14T204820Z-claude-receipt-spec-parity-acknowledged",
-      "sourceSpeaker": "claude",
-      "targetSpeaker": "gemini",
-      "sourceTime": 1778791719696,
-      "targetTime": 1778832705686,
-      "oneD": {
-        "predicted": [
-          "claude",
-          "codex",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0.5723273308991518
-      },
-      "eightD": {
-        "predicted": [
-          "claude",
-          "codex",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0.6692463781490501
-      }
-    },
-    {
-      "sourceId": "2026-05-15T081132Z-gemini-aye-governance-flow-and-commit-readiness",
-      "sourceSpeaker": "gemini",
-      "targetSpeaker": "claude",
-      "sourceTime": 1778832705686,
-      "targetTime": 1778834515981,
-      "oneD": {
-        "predicted": [
-          "claude",
-          "codex",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0.5904518206951201
-      },
-      "eightD": {
-        "predicted": [
-          "claude",
-          "codex",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0.7445838768614473
-      }
-    },
-    {
-      "sourceId": "2026-05-15T094335Z-gemini-vision-on-voices-draft",
-      "sourceSpeaker": "gemini",
-      "targetSpeaker": "kimi",
-      "sourceTime": 1778838244784,
-      "targetTime": 1778838501501,
-      "oneD": {
-        "predicted": [
-          "codex",
-          "claude",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0.3565617222550943
-      },
-      "eightD": {
-        "predicted": [
-          "gemini",
-          "codex",
-          "claude",
-          "kimi"
-        ],
-        "score": 0.6563964131674065
-      }
-    },
-    {
-      "sourceId": "2026-05-15T094343Z-codex-response-voices-runtime-standing",
-      "sourceSpeaker": "codex",
-      "targetSpeaker": "kimi",
-      "sourceTime": 1778838265961,
-      "targetTime": 1778838501501,
-      "oneD": {
-        "predicted": [
-          "codex",
-          "claude",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0.35669428855613583
-      },
-      "eightD": {
-        "predicted": [
-          "codex",
-          "gemini",
-          "claude",
-          "kimi"
-        ],
-        "score": 0.7472568589127989
-      }
-    },
-    {
-      "sourceId": "2026-05-15T094707Z-kimi-voices-grounding",
-      "sourceSpeaker": "kimi",
-      "targetSpeaker": "claude",
-      "sourceTime": 1778838501501,
-      "targetTime": 1778838813510,
-      "oneD": {
-        "predicted": [
-          "codex",
-          "claude",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0.4623702182233179
-      },
-      "eightD": {
-        "predicted": [
-          "codex",
-          "claude",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0.76115739180806
-      }
-    },
-    {
-      "sourceId": "2026-05-15T095133Z-claude-synthesis-three-voices-on-voices-draft",
-      "sourceSpeaker": "claude",
-      "targetSpeaker": "gemini",
-      "sourceTime": 1778838813510,
-      "targetTime": 1778838999674,
-      "oneD": {
-        "predicted": [
-          "codex",
-          "claude",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0.31560416579062434
-      },
-      "eightD": {
-        "predicted": [
-          "gemini",
-          "codex",
-          "claude",
-          "kimi"
-        ],
-        "score": 0.6792826216160187
-      }
-    },
-    {
-      "sourceId": "2026-05-15T095626Z-gemini-response-to-synthesis",
-      "sourceSpeaker": "gemini",
-      "targetSpeaker": "codex",
-      "sourceTime": 1778838999674,
-      "targetTime": 1778839253438,
-      "oneD": {
-        "predicted": [
-          "claude",
-          "codex",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0.5724317012608194
-      },
-      "eightD": {
-        "predicted": [
-          "claude",
-          "codex",
-          "gemini",
-          "kimi"
-        ],
-        "score": 0.7511778854465866
-      }
-    },
-    {
-      "sourceId": "2026-05-15T100017Z-codex-response-falsifier-first-acceptance",
-      "sourceSpeaker": "codex",
-      "targetSpeaker": "kimi",
-      "sourceTime": 1778839253438,
-      "targetTime": 1778839495344,
-      "oneD": {
-        "predicted": [
-          "codex",
-          "claude",
-          "kimi",
-          "gemini"
-        ],
-        "score": 0.4190034402955957
-      },
-      "eightD": {
-        "predicted": [
-          "codex",
-          "claude",
-          "kimi",
-          "gemini"
-        ],
-        "score": 0.9438351658419942
+        "score": 0.7644501670946345
       }
     },
     {
       "sourceId": "2026-05-15T100800Z-kimi-receipt-falsifier-probe-start",
       "sourceSpeaker": "kimi",
       "targetSpeaker": "claude",
-      "sourceTime": 1778839495344,
-      "targetTime": 1778839998730,
+      "sourceTime": 1780594963915,
+      "targetTime": 1780920334027,
+      "oneD": {
+        "predicted": [
+          "codex",
+          "kimi",
+          "claude",
+          "gemini",
+          "antigravity",
+          "architect"
+        ],
+        "score": 0.21776626772254717
+      },
+      "eightD": {
+        "predicted": [
+          "codex",
+          "kimi",
+          "claude",
+          "gemini",
+          "antigravity",
+          "architect"
+        ],
+        "score": 0.7644501670946345
+      }
+    },
+    {
+      "sourceId": "2026-05-15T100017Z-codex-response-falsifier-first-acceptance",
+      "sourceSpeaker": "codex",
+      "targetSpeaker": "claude",
+      "sourceTime": 1780594963915,
+      "targetTime": 1780920334027,
+      "oneD": {
+        "predicted": [
+          "codex",
+          "kimi",
+          "claude",
+          "gemini",
+          "antigravity",
+          "architect"
+        ],
+        "score": 0.21776626772254717
+      },
+      "eightD": {
+        "predicted": [
+          "codex",
+          "kimi",
+          "claude",
+          "gemini",
+          "antigravity",
+          "architect"
+        ],
+        "score": 0.7644501670946345
+      }
+    },
+    {
+      "sourceId": "2026-05-14T154732Z-codex-aye-spore-protocol-vs-omega-spore-boundary",
+      "sourceSpeaker": "codex",
+      "targetSpeaker": "claude",
+      "sourceTime": 1780594963930,
+      "targetTime": 1780594963936,
+      "oneD": {
+        "predicted": [
+          "codex",
+          "kimi",
+          "claude",
+          "gemini",
+          "antigravity",
+          "architect"
+        ],
+        "score": 0.26908127378299934
+      },
+      "eightD": {
+        "predicted": [
+          "codex",
+          "kimi",
+          "claude",
+          "gemini",
+          "antigravity",
+          "architect"
+        ],
+        "score": 0.9199410588192513
+      }
+    },
+    {
+      "sourceId": "2026-05-14T190758Z-claude-receipt-architect-mode-governance-flow-landed",
+      "sourceSpeaker": "claude",
+      "targetSpeaker": "gemini",
+      "sourceTime": 1780594963932,
+      "targetTime": 1780920187476,
       "oneD": {
         "predicted": [
           "codex",
           "claude",
           "kimi",
-          "gemini"
+          "gemini",
+          "antigravity",
+          "architect"
         ],
-        "score": 0.45478563181878284
+        "score": 0.30228092422340674
+      },
+      "eightD": {
+        "predicted": [
+          "codex",
+          "kimi",
+          "claude",
+          "gemini",
+          "antigravity",
+          "architect"
+        ],
+        "score": 0.9129343031855012
+      }
+    },
+    {
+      "sourceId": "2026-05-14T200635Z-claude-self-audit-pre-commit-readiness",
+      "sourceSpeaker": "claude",
+      "targetSpeaker": "gemini",
+      "sourceTime": 1780594963940,
+      "targetTime": 1780594963942,
+      "oneD": {
+        "predicted": [
+          "codex",
+          "claude",
+          "gemini",
+          "kimi",
+          "architect",
+          "antigravity"
+        ],
+        "score": 0.21308349827399112
+      },
+      "eightD": {
+        "predicted": [
+          "gemini",
+          "claude",
+          "codex",
+          "kimi",
+          "antigravity",
+          "architect"
+        ],
+        "score": 0.5007351249984209
+      }
+    },
+    {
+      "sourceId": "2026-05-15T094343Z-codex-response-voices-runtime-standing",
+      "sourceSpeaker": "codex",
+      "targetSpeaker": "claude",
+      "sourceTime": 1780594963942,
+      "targetTime": 1780594963942,
+      "oneD": {
+        "predicted": [
+          "codex",
+          "kimi",
+          "claude",
+          "gemini",
+          "architect",
+          "antigravity"
+        ],
+        "score": 0.24438756808336343
       },
       "eightD": {
         "predicted": [
           "codex",
           "claude",
+          "gemini",
           "kimi",
-          "gemini"
+          "antigravity",
+          "architect"
         ],
-        "score": 0.9491376955679716
+        "score": 0.748280865551123
+      }
+    },
+    {
+      "sourceId": "2026-05-18T133256Z-codex-cowitness-flat-src-aye-with-toolchain-tweaks",
+      "sourceSpeaker": "codex",
+      "targetSpeaker": "claude",
+      "sourceTime": 1780594963944,
+      "targetTime": 1780594963898,
+      "oneD": {
+        "predicted": [
+          "codex",
+          "kimi",
+          "claude",
+          "gemini",
+          "architect",
+          "antigravity"
+        ],
+        "score": 0.28074075304419466
+      },
+      "eightD": {
+        "predicted": [
+          "codex",
+          "claude",
+          "gemini",
+          "kimi",
+          "antigravity",
+          "architect"
+        ],
+        "score": 0.7822389643061325
+      }
+    },
+    {
+      "sourceId": "2026-05-23T123805Z-kimi-supervector-triad-autopoiesis",
+      "sourceSpeaker": "kimi",
+      "targetSpeaker": "antigravity",
+      "sourceTime": 1780594963950,
+      "targetTime": 1780594963815,
+      "oneD": {
+        "predicted": [
+          "architect",
+          "codex",
+          "claude",
+          "gemini",
+          "kimi",
+          "antigravity"
+        ],
+        "score": 0.2848411306168838
+      },
+      "eightD": {
+        "predicted": [
+          "gemini",
+          "kimi",
+          "codex",
+          "claude",
+          "antigravity",
+          "architect"
+        ],
+        "score": 0.6417594426304885
+      }
+    },
+    {
+      "sourceId": "2026-05-15T084042Z-claude-receipt-commits-landed",
+      "sourceSpeaker": "claude",
+      "targetSpeaker": "gemini",
+      "sourceTime": 1780594963974,
+      "targetTime": 1780920187476,
+      "oneD": {
+        "predicted": [
+          "claude",
+          "codex",
+          "gemini",
+          "kimi",
+          "antigravity",
+          "architect"
+        ],
+        "score": 0.23172085147296434
+      },
+      "eightD": {
+        "predicted": [
+          "claude",
+          "gemini",
+          "kimi",
+          "codex",
+          "antigravity",
+          "architect"
+        ],
+        "score": 0.5855756791139315
+      }
+    },
+    {
+      "sourceId": "2026-05-15T170146Z-gemini-receipt-inbox-cleared",
+      "sourceSpeaker": "gemini",
+      "targetSpeaker": "claude",
+      "sourceTime": 1780920187476,
+      "targetTime": 1780594963862,
+      "oneD": {
+        "predicted": [
+          "claude",
+          "codex",
+          "gemini",
+          "kimi",
+          "antigravity",
+          "architect"
+        ],
+        "score": 0.3595272669564573
+      },
+      "eightD": {
+        "predicted": [
+          "claude",
+          "codex",
+          "gemini",
+          "kimi",
+          "antigravity",
+          "architect"
+        ],
+        "score": 0.7453761120051491
+      }
+    },
+    {
+      "sourceId": "x3d00_t20260519120243_codex_self-description-roadmap-axis",
+      "sourceSpeaker": "codex",
+      "targetSpeaker": "claude",
+      "sourceTime": 1780594963900,
+      "targetTime": 1780920214053,
+      "oneD": {
+        "predicted": [
+          "antigravity",
+          "architect",
+          "codex",
+          "kimi",
+          "gemini",
+          "claude"
+        ],
+        "score": 0.45688436525995046
+      },
+      "eightD": {
+        "predicted": [
+          "gemini",
+          "kimi",
+          "claude",
+          "codex",
+          "architect",
+          "antigravity"
+        ],
+        "score": 0
+      }
+    },
+    {
+      "sourceId": "x3d00_t20260518132855_claude-opus-4-7_content-addressed-flat-src",
+      "sourceSpeaker": "claude",
+      "targetSpeaker": "gemini",
+      "sourceTime": 1780594963898,
+      "targetTime": 1780594963893,
+      "oneD": {
+        "predicted": [
+          "antigravity",
+          "architect",
+          "codex",
+          "kimi",
+          "gemini",
+          "claude"
+        ],
+        "score": 0.4606422257317167
+      },
+      "eightD": {
+        "predicted": [
+          "gemini",
+          "kimi",
+          "claude",
+          "codex",
+          "architect",
+          "antigravity"
+        ],
+        "score": 0
+      }
+    },
+    {
+      "sourceId": "x3d00_t20260518195419_claude-opus-4-7_chord-filename-coordinate-migration",
+      "sourceSpeaker": "claude",
+      "targetSpeaker": "codex",
+      "sourceTime": 1780594963898,
+      "targetTime": 1780594963812,
+      "oneD": {
+        "predicted": [
+          "antigravity",
+          "architect",
+          "codex",
+          "kimi",
+          "gemini",
+          "claude"
+        ],
+        "score": 0.4606422257317167
+      },
+      "eightD": {
+        "predicted": [
+          "gemini",
+          "kimi",
+          "claude",
+          "codex",
+          "architect",
+          "antigravity"
+        ],
+        "score": 0
+      }
+    },
+    {
+      "sourceId": "2026-05-15T190206Z-claude-receipt-gemini-cowitness-acknowledged-persistence-gap",
+      "sourceSpeaker": "claude",
+      "targetSpeaker": "gemini",
+      "sourceTime": 1780594963862,
+      "targetTime": 1780920202610,
+      "oneD": {
+        "predicted": [
+          "claude",
+          "codex",
+          "gemini",
+          "kimi",
+          "antigravity"
+        ],
+        "score": 0.4845395988341721
+      },
+      "eightD": {
+        "predicted": [
+          "codex",
+          "claude",
+          "gemini",
+          "kimi",
+          "antigravity"
+        ],
+        "score": 0.9459922805717789
+      }
+    },
+    {
+      "sourceId": "x2600_949982_codex_coordinate-naming-cowitness",
+      "sourceSpeaker": "codex",
+      "targetSpeaker": "claude",
+      "sourceTime": 1780594963812,
+      "targetTime": 1780920356972,
+      "oneD": {
+        "predicted": [
+          "claude",
+          "gemini",
+          "kimi"
+        ],
+        "score": 0.4754174688550797
+      },
+      "eightD": {
+        "predicted": [
+          "gemini",
+          "kimi",
+          "claude"
+        ],
+        "score": 0
+      }
+    },
+    {
+      "sourceId": "x2600_950005_codex_x8888-state-memory-cowitness",
+      "sourceSpeaker": "codex",
+      "targetSpeaker": "claude",
+      "sourceTime": 1780594963812,
+      "targetTime": 1780920356972,
+      "oneD": {
+        "predicted": [
+          "claude",
+          "gemini",
+          "kimi"
+        ],
+        "score": 0.4754174688550797
+      },
+      "eightD": {
+        "predicted": [
+          "gemini",
+          "kimi",
+          "claude"
+        ],
+        "score": 0
+      }
+    },
+    {
+      "sourceId": "x3500_950008_codex_src-as-semantic-address-space",
+      "sourceSpeaker": "codex",
+      "targetSpeaker": "claude",
+      "sourceTime": 1780594963884,
+      "targetTime": 1780920356972,
+      "oneD": {
+        "predicted": [
+          "antigravity",
+          "codex",
+          "kimi",
+          "gemini",
+          "claude"
+        ],
+        "score": 0.8625814840489141
+      },
+      "eightD": {
+        "predicted": [
+          "gemini",
+          "kimi",
+          "claude",
+          "codex",
+          "antigravity"
+        ],
+        "score": 0
+      }
+    },
+    {
+      "sourceId": "x3500_950009_codex_substrate-morphology-language-layer",
+      "sourceSpeaker": "codex",
+      "targetSpeaker": "claude",
+      "sourceTime": 1780594963885,
+      "targetTime": 1780920356972,
+      "oneD": {
+        "predicted": [
+          "antigravity",
+          "codex",
+          "kimi",
+          "gemini",
+          "claude"
+        ],
+        "score": 0.8479139969251783
+      },
+      "eightD": {
+        "predicted": [
+          "gemini",
+          "kimi",
+          "claude",
+          "codex",
+          "antigravity"
+        ],
+        "score": 0
+      }
+    },
+    {
+      "sourceId": "x8800_950298_antigravity_self-description-axis-strengthening",
+      "sourceSpeaker": "antigravity",
+      "targetSpeaker": "codex",
+      "sourceTime": 1780594963979,
+      "targetTime": 1780594963813,
+      "oneD": {
+        "predicted": [
+          "architect",
+          "antigravity",
+          "codex",
+          "claude",
+          "gemini",
+          "kimi"
+        ],
+        "score": 0.6494112868349351
+      },
+      "eightD": {
+        "predicted": [
+          "gemini",
+          "kimi",
+          "claude",
+          "codex",
+          "architect",
+          "antigravity"
+        ],
+        "score": 0
+      }
+    },
+    {
+      "sourceId": "x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness",
+      "sourceSpeaker": "codex",
+      "targetSpeaker": "antigravity",
+      "sourceTime": 1780594963813,
+      "targetTime": 1780594963813,
+      "oneD": {
+        "predicted": [
+          "codex",
+          "claude",
+          "gemini",
+          "kimi"
+        ],
+        "score": 0.9762926319759309
+      },
+      "eightD": {
+        "predicted": [
+          "gemini",
+          "kimi",
+          "claude",
+          "codex"
+        ],
+        "score": 0
+      }
+    },
+    {
+      "sourceId": "x2600_950630_claude_kimi-eight-vectors-response",
+      "sourceSpeaker": "claude",
+      "targetSpeaker": "antigravity",
+      "sourceTime": 1780594963814,
+      "targetTime": 1780594963815,
+      "oneD": {
+        "predicted": [
+          "codex",
+          "antigravity",
+          "claude",
+          "gemini",
+          "kimi"
+        ],
+        "score": 0.49400206031220023
+      },
+      "eightD": {
+        "predicted": [
+          "gemini",
+          "kimi",
+          "claude",
+          "codex",
+          "antigravity"
+        ],
+        "score": 0
+      }
+    },
+    {
+      "sourceId": "x2600_950632_antigravity_kimi-eight-vectors-response",
+      "sourceSpeaker": "antigravity",
+      "targetSpeaker": "claude",
+      "sourceTime": 1780594963815,
+      "targetTime": 1780594963905,
+      "oneD": {
+        "predicted": [
+          "codex",
+          "antigravity",
+          "claude",
+          "gemini",
+          "kimi"
+        ],
+        "score": 0.6106554123026663
+      },
+      "eightD": {
+        "predicted": [
+          "gemini",
+          "kimi",
+          "claude",
+          "codex",
+          "antigravity"
+        ],
+        "score": 0
+      }
+    },
+    {
+      "sourceId": "x2600_950655_antigravity_supervector-triad-autopoiesis-response",
+      "sourceSpeaker": "antigravity",
+      "targetSpeaker": "claude",
+      "sourceTime": 1780594963815,
+      "targetTime": 1780920407611,
+      "oneD": {
+        "predicted": [
+          "codex",
+          "antigravity",
+          "claude",
+          "gemini",
+          "kimi"
+        ],
+        "score": 0.6115659789982825
+      },
+      "eightD": {
+        "predicted": [
+          "gemini",
+          "kimi",
+          "claude",
+          "codex",
+          "antigravity"
+        ],
+        "score": 0
       }
     }
   ],
   "config": {
-    "limit": 50,
+    "limit": null,
     "leakageGuard": "profiles_before_source_only"
   }
 }

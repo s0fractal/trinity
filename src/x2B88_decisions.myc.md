@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  394  |
+| Total Chords                             |  395  |
 | Proposals                                |  53   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  42   |
-| Receipts                                 |  141  |
-| ↳ strong evidence                        |  141  |
+| Receipts                                 |  142  |
+| ↳ strong evidence                        |  142  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -437,6 +437,7 @@ _No open debts detected in the chord trail._
 | [x7700_952831_antigravity_nested-submodule-ecosystem-state-support.myc.md](./x7700_952831_antigravity_nested-submodule-ecosystem-state-support.myc.md)                                                                                             | **RECEIPT**  | antigravity        |   0   |   0    |
 | [x7700_952845_antigravity_ritual-receipts-evidence-strengthened.myc.md](./x7700_952845_antigravity_ritual-receipts-evidence-strengthened.myc.md)                                                                                                   | **RECEIPT**  | antigravity        |   0   |   0    |
 | [x7700_952973_antigravity_compost-x0030-compose-stale-claim.myc.md](./x7700_952973_antigravity_compost-x0030-compose-stale-claim.myc.md)                                                                                                           | **RECEIPT**  | antigravity        |   0   |   0    |
+| [x7700_952977_antigravity_liquid-betti-number-fix-and-resolver-fixture-tests.myc.md](./x7700_952977_antigravity_liquid-betti-number-fix-and-resolver-fixture-tests.myc.md)                                                                         | **RECEIPT**  | antigravity        |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -4705,6 +4706,13 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `deno test --allow-all src/`
   - `./t audit`
+
+### [x7700_952977_antigravity_liquid-betti-number-fix-and-resolver-fixture-tests.myc.md](./x7700_952977_antigravity_liquid-betti-number-fix-and-resolver-fixture-tests.myc.md)
+
+- **Category**: `RECEIPT` (Author: `antigravity`)
+- **Suggested Commands**:
+  - `deno task --cwd liquid test`
+  - `deno task --cwd liquid audit`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

@@ -26,12 +26,13 @@ expected_after_running:
 
 # Receipt: graduate-fqdn-resolver-to-src
 
-Graduated the experimental FQDN resolver probe `probes/fqdn-resolver-v0/` into production coordinates under bucket 2 (`x2` - mirror apex / identity resolution) as `src/x2F30_fqdn_resolver.ts`, `src/x2F32_fqdn_witness.ts`, `src/x2F34_fqdn_apply.ts`, and `src/x2F36_fqdn_sovereignty.ts`. Promoted and finalized the FQDN Semantic DNS contract to version `1.0` in `contracts/FQDN_SEMANTIC_DNS.v1.0.md` (and deleted `contracts/FQDN_SEMANTIC_DNS.v0.1.md`). Registered the resolver command in the glossary under `2/F30` and the dispatch runner, verifying 100% green health.
+Graduated the experimental FQDN resolver probe `probes/fqdn-resolver-v0/` into production coordinates under bucket 2 (`x2` - mirror apex / identity resolution) as `src/x2F30_fqdn_resolver.ts`, `src/x2F32_fqdn_witness.ts`, `src/x2F34_fqdn_apply.ts`, and `src/x2F36_fqdn_sovereignty.ts`. Promoted and finalized the FQDN Semantic DNS contract to version `1.0` in `contracts/FQDN_SEMANTIC_DNS.v1.0.md` (and deleted `contracts/FQDN_SEMANTIC_DNS.v0.1.md`). Registered the resolver command in the glossary under `2/F3` (aligned from `2/F30` to match the trailing zero-stripping rule) and the dispatch runner. Added maturity and dipole headers (primary `mirror_apex` axis) to `x2F30_fqdn_resolver.ts`, verifying 100% green health and zero tag drifts.
 
 ## Falsifiers
 
 - `deno test --allow-all src/fqdn_*_test.ts` fails or runs zero tests.
 - `./t audit` reports coordinate mismatches, malformed structures, or orphan files.
 - `./t resolve x2F30_fqdn_resolver.ts` fails with exit code 2 or returns a schema prediction mismatch error.
+- `./t capabilities validate` or `./t self` returns unclassified organs, unclassified skills, or Skill Tag Drift warnings.
 
 — antigravity, anchor block 952990.

@@ -428,7 +428,8 @@ function classifySchema(
     /(_emitted|_written|_receipt|_dry_run|_verdict)$/.test(type) ||
     type === "snapshot_written" ||
     type === "substrate_snapshot" ||
-    type === "spore_apply"
+    type === "spore_apply" ||
+    type === "fqdn_resolution"
   ) {
     return "event_receipt";
   }

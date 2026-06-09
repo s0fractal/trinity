@@ -1,0 +1,241 @@
+// src/x2F30_fqdn_resolver.ts — local-first FQDN resolution contract.
+//
+// Given an FQDN, report every place it lives across an ORDERED set of roots, and
+// whether those hits are one identity or several things colliding on a name:
+//
+//   resolved : precedence winner — root order, then exact>handle>slug, then
+//              shallowest, then lexicographic. Deterministic.
+//   identity : unique | mirrored | conflict | absent
+//       mirrored = N hits, ALL same sha256 → one true identity, copies; safe to
+//                  collapse into a single node.
+//       conflict = N hits, DIFFERING sha256 → different things sharing a name;
+//                  precedence resolves it, content-addressing (blake3-fqdn-v0)
+//                  removes it.
+//
+// A node is addressable three ways (matchForm):
+//   exact  — full basename            x5510_myc_proxy.ts
+//   handle — coordinate prefix gone   myc_proxy.ts
+//   slug   — chord <slug> only        fqdn-unify-...segment.myc.md
+//
+// "Find anywhere" cannot mean "walk all of ~" per query, so resolution goes
+// through an INDEX: walk the roots once (buildIndex), then resolve many queries
+// against it (resolveFromIndex), hashing only the files a query actually hits.
+// This is the filesystem generalisation of x5510_myc_proxy (the network case).
+
+import { walk } from "https://deno.land/std@0.224.0/fs/walk.ts";
+import {
+  basename,
+  dirname,
+  fromFileUrl,
+  join,
+  relative,
+} from "https://deno.land/std@0.224.0/path/mod.ts";
+import { blake3 } from "npm:@noble/hashes@1.4.0/blake3";
+
+export type MatchForm = "exact" | "handle" | "slug";
+
+export interface Candidate {
+  root: string;
+  rootIndex: number;
+  path: string;
+  rel: string;
+  depth: number;
+  size: number;
+  hash: string; // BLAKE3-256 hex — same regime as SPORE apply (not a fresh sha256)
+  matchForm: MatchForm;
+}
+
+export type Identity = "unique" | "mirrored" | "conflict" | "absent";
+
+export interface Resolution {
+  fqdn: string;
+  resolved: Candidate | null;
+  identity: Identity;
+  candidates: Candidate[]; // all hits, in precedence order
+}
+
+const SKIP = /(^|\/)(node_modules|\.git)(\/|$)/;
+
+// The coordinate prefix `x<hex>_` that names an organ/doc by its hex position.
+const COORD_PREFIX = /^x[0-9A-Fa-f]+_/;
+
+// Chord filenames carry `x<hex>_<block>_<voice>_<slug>`, where <block> is a
+// bitcoin height (digits) or legacy `t<timestamp>`, and <voice> is a model
+// handle (lowercase, hyphens/dots, no underscores). Organs do not match — their
+// first post-coordinate segment is not digits — so this never mis-fires.
+const CHORD_BODY = /^(?:t?\d+)_[a-z0-9.-]+_(.+)$/;
+
+const RANK: Record<MatchForm, number> = { exact: 0, handle: 1, slug: 2 };
+
+// BLAKE3-256 hex — deliberately the SAME hash regime SPORE apply uses for its
+// multihash fields, so a resolved node's content identity is spore-compatible
+// (one substrate, not two). See ./apply.ts and probes/spore-apply-v0.
+function blake3Hex(bytes: Uint8Array): string {
+  return Array.from(blake3(bytes), (b) => b.toString(16).padStart(2, "0")).join(
+    "",
+  );
+}
+
+/** The address forms a basename answers to, each with its matchForm. */
+function formsOf(base: string): Array<{ key: string; form: MatchForm }> {
+  const out: Array<{ key: string; form: MatchForm }> = [
+    { key: base, form: "exact" },
+  ];
+  const handle = base.replace(COORD_PREFIX, "");
+  if (handle !== base) out.push({ key: handle, form: "handle" });
+  const slugMatch = handle.match(CHORD_BODY);
+  const slug = slugMatch ? slugMatch[1] : null;
+  if (slug !== null && slug !== handle && slug !== base) {
+    out.push({ key: slug, form: "slug" });
+  }
+  return out;
+}
+
+interface Stored {
+  root: string;
+  rootIndex: number;
+  path: string;
+  rel: string;
+  depth: number;
+  matchForm: MatchForm;
+}
+
+// A root is a path, optionally depth-bounded (bound large/cloud roots, leave
+// substrate roots unbounded — never walk all of ~).
+export type Root = string | { path: string; maxDepth?: number };
+
+export interface Index {
+  roots: string[];
+  byKey: Map<string, Stored[]>;
+  files: number; // files indexed
+}
+
+/**
+ * Walk the roots ONCE and index every file under each address form it answers
+ * to. Missing/unreadable roots are skipped — local-first means "wherever it
+ * happens to be", not "every root must exist".
+ */
+export async function buildIndex(roots: Root[]): Promise<Index> {
+  const byKey = new Map<string, Stored[]>();
+  const paths: string[] = [];
+  let files = 0;
+  for (let i = 0; i < roots.length; i++) {
+    const r = roots[i];
+    const root = typeof r === "string" ? r : r.path;
+    const maxDepth = typeof r === "string" ? Infinity : (r.maxDepth ?? Infinity);
+    paths.push(root);
+    try {
+      for await (
+        const e of walk(root, {
+          includeDirs: false,
+          followSymlinks: false,
+          maxDepth,
+        })
+      ) {
+        if (SKIP.test(e.path)) continue;
+        const rel = relative(root, e.path);
+        files++;
+        const base = basename(e.path);
+        for (const { key, form } of formsOf(base)) {
+          const arr = byKey.get(key) ?? [];
+          arr.push({
+            root,
+            rootIndex: i,
+            path: e.path,
+            rel,
+            depth: rel.split("/").length,
+            matchForm: form,
+          });
+          byKey.set(key, arr);
+        }
+      }
+    } catch {
+      continue; // missing/unreadable root — skip, stay local-first
+    }
+  }
+  return { roots: paths, byKey, files };
+}
+
+/** Resolve one query against a prebuilt index, hashing only the files it hits. */
+export async function resolveFromIndex(
+  index: Index,
+  query: string,
+): Promise<Resolution> {
+  const stored = index.byKey.get(query) ?? [];
+  const candidates: Candidate[] = [];
+  for (const s of stored) {
+    const bytes = await Deno.readFile(s.path);
+    candidates.push({ ...s, size: bytes.byteLength, hash: blake3Hex(bytes) });
+  }
+  candidates.sort((a, b) =>
+    a.rootIndex - b.rootIndex ||
+    RANK[a.matchForm] - RANK[b.matchForm] ||
+    a.depth - b.depth ||
+    a.rel.localeCompare(b.rel)
+  );
+
+  let identity: Identity;
+  if (candidates.length === 0) identity = "absent";
+  else if (candidates.length === 1) identity = "unique";
+  else {
+    identity = candidates.every((c) => c.hash === candidates[0].hash)
+      ? "mirrored"
+      : "conflict";
+  }
+  return { fqdn: query, resolved: candidates[0] ?? null, identity, candidates };
+}
+
+/** Single-shot convenience: build an index over `roots` and resolve one query. */
+export async function resolveFqdn(
+  fqdn: string,
+  roots: Root[],
+): Promise<Resolution> {
+  return await resolveFromIndex(await buildIndex(roots), fqdn);
+}
+
+/** Default trinity roots, precedence order: own substrate first, then federated submodules. */
+export function defaultRoots(): string[] {
+  // resolver.ts lives at <trinity>/src/x2F30_fqdn_resolver.ts
+  const trinity = dirname(dirname(fromFileUrl(import.meta.url)));
+  return ["src", "liquid", "omega", "myc"].map((r) => join(trinity, r));
+}
+
+/**
+ * Designated, BOUNDED cloud/home roots that actually exist — never all of `~`.
+ * These sit at lower precedence than the substrate: a node may live outside any
+ * repo (here: the architect's memory dir) and still resolve.
+ */
+export function cloudRoots(home: string): string[] {
+  const candidates = [
+    join(home, ".claude/projects/-Users-s0fractal-trinity/memory"),
+    join(home, "mycelium"),
+    join(home, "Library/CloudStorage"),
+  ];
+  return candidates.filter((d) => {
+    try {
+      return Deno.statSync(d).isDirectory;
+    } catch {
+      return false;
+    }
+  });
+}
+
+if (import.meta.main) {
+  const args = [...Deno.args];
+  const useCloud = args.includes("--cloud");
+  const fqdn = args.find((a) => !a.startsWith("--"));
+  if (!fqdn) {
+    console.error("usage: resolver.ts [--cloud] <fqdn-or-handle-or-slug>");
+    Deno.exit(1);
+  }
+  const roots: Root[] = [...defaultRoots()];
+  if (useCloud) {
+    const home = Deno.env.get("HOME");
+    // cloud roots are depth-bounded; substrate roots stay unbounded above
+    if (home) {
+      for (const c of cloudRoots(home)) roots.push({ path: c, maxDepth: 6 });
+    }
+  }
+  const res = await resolveFqdn(fqdn, roots);
+  console.log(JSON.stringify({ type: "fqdn_resolution", ...res }, null, 2));
+}

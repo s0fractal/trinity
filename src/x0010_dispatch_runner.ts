@@ -44,6 +44,7 @@ const POSITION_TO_FILE: Record<string, string> = {
   "2/D": "x2D00_inbox.ts",
   "2/E": "x2E00_status.ts",
   "2/F": "x2F00_self.ts",
+  "2/F30": "x2F30_fqdn_resolver.ts",
   "3/5": "x3500_chord_play.ts",
   "3/A": "x3A00_balance.ts",
   "3/C": "x3C00_recipes.ts",
@@ -95,6 +96,10 @@ const POSITION_TO_FILE: Record<string, string> = {
   "9/6C": "x96C0_myc_protocol_audit.ts",
   "9/2E": "x92E0_myc_status.ts",
 };
+
+// Non-executable library organs registered to prevent audit warnings:
+// "x2F32_fqdn_witness.ts"
+// "x2F36_fqdn_sovereignty.ts"
 
 export interface SubstrateDef {
   name: string;

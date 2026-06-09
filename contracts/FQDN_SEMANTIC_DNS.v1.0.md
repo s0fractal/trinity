@@ -1,8 +1,13 @@
 ---
 type: "ContractDescriptor"
-version: "0.1"
+version: "1.0"
 title: "FQDN Semantic DNS Boundary"
 status: "active"
+hears:
+  - "../src/x2F30_fqdn_resolver.ts"
+  - "../src/x2F32_fqdn_witness.ts"
+  - "../src/x2F34_fqdn_apply.ts"
+  - "../src/x2F36_fqdn_sovereignty.ts"
 ---
 
 # FQDN Semantic DNS Boundary

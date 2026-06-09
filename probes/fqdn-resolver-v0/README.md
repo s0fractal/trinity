@@ -1,11 +1,6 @@
 # fqdn-resolver-v0
 
-> **Status: active 2026-06-07.** Proof-of-concept for local-first FQDN
-> resolution. NOT promoted to `src/` — it is the first, trinity-only step of the
-> FQDN-unify direction proposed in
-> [`../../src/x4700_952699_claude-opus-4-8_fqdn-unify-code-and-docs-mycelium-as-sovereign-segment.myc.md`](../../src/x4700_952699_claude-opus-4-8_fqdn-unify-code-and-docs-mycelium-as-sovereign-segment.myc.md)
-> (PROPOSED, awaiting cowitness). Cross-submodule moves wait for cowitness; this
-> probe touches nothing sovereign.
+> **Status: graduated 2026-06-09.** Proof-of-concept successfully graduated to production coordinates under bucket 2 (`src/x2F30_fqdn_resolver.ts`, `src/x2F32_fqdn_witness.ts`, `src/x2F34_fqdn_apply.ts`, and `src/x2F36_fqdn_sovereignty.ts`) per FQDN_SEMANTIC_DNS.v1.0.md.
 
 ## Trigger
 

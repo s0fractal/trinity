@@ -1,4 +1,13 @@
 // src/x2F30_fqdn_resolver.ts — local-first FQDN resolution contract.
+// position: 2/F30 → mirror(2) × frontier-pair(F) = FQDN resolver
+// hex_dipole: "26 26 6C 26 26 26 26 26"
+//   mirror_apex+0.85 (reflects FQDN resolution mirroring/mapping; bucket 2 MATCH)
+// placement_policy: axis
+// maturity: active
+// horizon: none (graduation completed)
+// skill_tag: resolve-fqdn
+// skill_safe: yes
+// intent: resolve an FQDN to candidate paths, check uniqueness/mirrors/conflicts
 //
 // Given an FQDN, report every place it lives across an ORDERED set of roots, and
 // whether those hits are one identity or several things colliding on a name:

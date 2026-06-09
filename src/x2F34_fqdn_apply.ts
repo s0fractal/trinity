@@ -1,4 +1,11 @@
 // src/x2F34_fqdn_apply.ts — independent implementation of the FROZEN
+// position: 2/F34 → mirror(2) × frontier-pair(F) = FQDN apply
+// maturity: active
+// horizon: none (graduation completed)
+// skill_tag: resolve-fqdn
+// skill_safe: yes
+// intent: encode apply records and derive deterministic spore IDs
+//
 // `spore.apply.v0` wire format (see probes/spore-apply-v0/SPEC.md). The whole
 // point of that contract is that independent implementations agree byte-for-byte
 // (rust + ts + python already do); this is a 4th, verified against the canonical

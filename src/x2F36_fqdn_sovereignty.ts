@@ -1,4 +1,10 @@
 // src/x2F36_fqdn_sovereignty.ts — the consensus-root gate.
+// position: 2/F36 → mirror(2) × frontier-pair(F) = FQDN sovereignty
+// maturity: active
+// horizon: none (graduation completed)
+// skill_tag: resolve-fqdn
+// skill_safe: yes
+// intent: adjudicate attestations and check quorum execute verdicts
 //
 // The missing third leg: a resolved (role lens) + witnessed (content lens) node
 // is only a CANDIDATE. It becomes a real, runnable organ when a QUORUM of voices

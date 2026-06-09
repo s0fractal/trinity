@@ -1,4 +1,10 @@
 // src/x2F32_fqdn_witness.ts — the content/receipt convergence.
+// position: 2/F32 → mirror(2) × frontier-pair(F) = FQDN witness
+// maturity: active
+// horizon: none (graduation completed)
+// skill_tag: resolve-fqdn
+// skill_safe: yes
+// intent: witness FQDN resolutions and generate content-pinned receipts
 //
 // The capstone of the FQDN-unify thread: {content, receipt} are the two sides of
 // `apply` (f(context, lens)), and the two addressing models map onto the two

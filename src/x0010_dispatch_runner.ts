@@ -44,7 +44,7 @@ const POSITION_TO_FILE: Record<string, string> = {
   "2/D": "x2D00_inbox.ts",
   "2/E": "x2E00_status.ts",
   "2/F": "x2F00_self.ts",
-  "2/F30": "x2F30_fqdn_resolver.ts",
+  "2/F3": "x2F30_fqdn_resolver.ts",
   "3/5": "x3500_chord_play.ts",
   "3/A": "x3A00_balance.ts",
   "3/C": "x3C00_recipes.ts",

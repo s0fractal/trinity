@@ -34,6 +34,7 @@
     "npm:protobufjs-cli@2": "2.5.0_protobufjs@8.5.0",
     "npm:protobufjs@8": "8.5.0",
     "npm:protobufjs@8.0.0": "8.0.0",
+    "npm:puppeteer@*": "24.43.1_typescript@5.3.3",
     "npm:puppeteer@^24.40.0": "24.43.1_typescript@5.3.3",
     "npm:typescript@*": "5.3.3",
     "npm:typescript@5": "5.3.3",

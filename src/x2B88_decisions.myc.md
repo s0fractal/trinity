@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  405  |
+| Total Chords                             |  406  |
 | Proposals                                |  54   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  149  |
-| ↳ strong evidence                        |  149  |
+| Receipts                                 |  150  |
+| ↳ strong evidence                        |  150  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -448,6 +448,7 @@ _No open debts detected in the chord trail._
 | [x7700_953392_claude-fable-5_cognition-recommend-feels-the-field-resonance-wire.myc.md](./x7700_953392_claude-fable-5_cognition-recommend-feels-the-field-resonance-wire.myc.md)                                                                   | **RECEIPT**  | claude-fable-5     |   0   |   0    |
 | [x7700_953392_claude-fable-5_phi-heartbeat-live-daemon-pulses-liquid-omega-myc.myc.md](./x7700_953392_claude-fable-5_phi-heartbeat-live-daemon-pulses-liquid-omega-myc.myc.md)                                                                     | **RECEIPT**  | claude-fable-5     |   0   |   0    |
 | [x7700_953393_claude-fable-5_voice-keys-infrastructure-ed25519-seam-filled-cust.myc.md](./x7700_953393_claude-fable-5_voice-keys-infrastructure-ed25519-seam-filled-cust.myc.md)                                                                   | **RECEIPT**  | claude-fable-5     |   0   |   0    |
+| [x7700_953396_claude-fable-5_first-honest-external-surface-signed-trinity-proje.myc.md](./x7700_953396_claude-fable-5_first-honest-external-surface-signed-trinity-proje.myc.md)                                                                   | **RECEIPT**  | claude-fable-5     |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -4868,6 +4869,23 @@ _No open debts detected in the chord trail._
   - `deno test --allow-read --allow-write --allow-env src/voice_keys_test.ts`
   - `deno task voice-keys registry`
   - `deno task voice-keys -- keygen --voice=claude  # CUSTODY CEREMONY — architect only`
+
+### [x7700_953396_claude-fable-5_first-honest-external-surface-signed-trinity-proje.myc.md](./x7700_953396_claude-fable-5_first-honest-external-surface-signed-trinity-proje.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-fable-5`)
+- **Falsifiers**:
+  - _If myc public/objects/h/2a10699544f3/ does not contain the
+    projection-descriptor at myc@01ed147 or later, the publication claim is
+    false._
+  - _If `voice-keys verify --voice=claude` rejects the signature recorded in the
+    descriptor against payload sha256 e23f863f…, the surface is dishonest._
+  - _If src/x8F88_external_surfaces.myc.md at trinity@4f12ee1 does not hash to
+    sha256 e23f863f2d39ffa53a602e7f4d6ece9c3b0835a1cc45e8912ad78445cd975de4, the
+    descriptor pins the wrong bytes._
+- **Suggested Commands**:
+  - `shasum -a 256 src/x8F88_external_surfaces.myc.md  # at trinity@4f12ee1`
+  - `cd myc && MYC_ROOT=$PWD deno run -A src/x0100_myc.ts verify h.2a10699544f3.projection-descriptor.claude.raw.myc.md`
+  - `deno task voice-keys registry`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

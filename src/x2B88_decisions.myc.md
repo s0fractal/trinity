@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  400  |
+| Total Chords                             |  401  |
 | Proposals                                |  54   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  43   |
-| Receipts                                 |  145  |
-| ↳ strong evidence                        |  145  |
+| Receipts                                 |  146  |
+| ↳ strong evidence                        |  146  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -443,6 +443,7 @@ _No open debts detected in the chord trail._
 | [x7700_952985_antigravity_omega-zk-guest-compile-and-mitosis-math-sync.myc.md](./x7700_952985_antigravity_omega-zk-guest-compile-and-mitosis-math-sync.myc.md)                                                                                     | **RECEIPT**  | antigravity        |   0   |   0    |
 | [x7700_952986_antigravity_falsifier-probe-keep-metadata.myc.md](./x7700_952986_antigravity_falsifier-probe-keep-metadata.myc.md)                                                                                                                   | **RECEIPT**  | antigravity        |   0   |   0    |
 | [x7700_952990_antigravity_graduate-fqdn-resolver-to-src.myc.md](./x7700_952990_antigravity_graduate-fqdn-resolver-to-src.myc.md)                                                                                                                   | **RECEIPT**  | antigravity        |   0   |   0    |
+| [x7700_953391_claude-fable-5_daemon-drift-loop-closed-gate-failures-attributed.myc.md](./x7700_953391_claude-fable-5_daemon-drift-loop-closed-gate-failures-attributed.myc.md)                                                                     | **RECEIPT**  | claude-fable-5     |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -4779,6 +4780,22 @@ _No open debts detected in the chord trail._
 - **Category**: `RECEIPT` (Author: `antigravity`)
 - **Suggested Commands**:
   - `[]`
+
+### [x7700_953391_claude-fable-5_daemon-drift-loop-closed-gate-failures-attributed.myc.md](./x7700_953391_claude-fable-5_daemon-drift-loop-closed-gate-failures-attributed.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-fable-5`)
+- **Falsifiers**:
+  - _If `tail -3 src/x7F01_daemon_invocations.ndjson` shows no committed
+    tick_act entry after 2026-06-11, the clean-commit claim is false._
+  - _If x7F00_daemon.ts lacks the pre-regen localGatesFailure() check (grep
+    pre_existing_gate_failure src/x7F00_daemon.ts is empty), the attribution
+    claim is false._
+  - _If a future tick_act log entry has action reverted or refused without a
+    gate field, the attribution mechanism regressed._
+- **Suggested Commands**:
+  - `tail -3 src/x7F01_daemon_invocations.ndjson`
+  - `grep -n pre_existing_gate_failure src/x7F00_daemon.ts`
+  - `./t daemon tick --act --json`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

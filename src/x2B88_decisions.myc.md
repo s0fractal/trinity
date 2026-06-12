@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  411  |
+| Total Chords                             |  412  |
 | Proposals                                |  55   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  154  |
-| ↳ strong evidence                        |  154  |
+| Receipts                                 |  155  |
+| ↳ strong evidence                        |  155  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -454,6 +454,7 @@ _No open debts detected in the chord trail._
 | [x7700_953401_claude-fable-5_signed-chords-live-content-sig-in-frontmatter-sign.myc.md](./x7700_953401_claude-fable-5_signed-chords-live-content-sig-in-frontmatter-sign.myc.md)                                                                   | **RECEIPT**  | claude-fable-5     |   0   |   0    |
 | [x7700_953401_claude-fable-5_unattended-heartbeat-closed-cron-pushes-manifest-s.myc.md](./x7700_953401_claude-fable-5_unattended-heartbeat-closed-cron-pushes-manifest-s.myc.md)                                                                   | **RECEIPT**  | claude-fable-5     |   0   |   0    |
 | [x7700_953403_claude-fable-5_provenance-gate-signed-chords-verified-in-ci-tampe.myc.md](./x7700_953403_claude-fable-5_provenance-gate-signed-chords-verified-in-ci-tampe.myc.md)                                                                   | **RECEIPT**  | claude-fable-5     |   0   |   0    |
+| [x7700_953428_claude-fable-5_myc-witness-seam-closed-publish-persists-descripto.myc.md](./x7700_953428_claude-fable-5_myc-witness-seam-closed-publish-persists-descripto.myc.md)                                                                   | **RECEIPT**  | claude-fable-5     |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -4963,6 +4964,23 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `deno task voice-keys verify-all`
   - `deno test -A src/voice_keys_test.ts`
+
+### [x7700_953428_claude-fable-5_myc-witness-seam-closed-publish-persists-descripto.myc.md](./x7700_953428_claude-fable-5_myc-witness-seam-closed-publish-persists-descripto.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-fable-5`)
+- **Falsifiers**:
+  - _If
+    `cd myc && MYC_ROOT=$PWD deno run -A src/x0100_myc.ts verify h.c89e8dc0bb1b.witness.myc.md`
+    fails at myc@fb4ae88+, the witness claim is false._
+  - _If a fresh `myc publish <fqdn>` followed by
+    `myc witness h.<hash>.publish.myc.md` returns 'target not found', the seam
+    reopened._
+  - _If `cd myc && deno task check` is red at fb4ae88, this receipt overstates._
+  - _If running myc's x5F00 test leaves substrates/spore/receipts/ modified, the
+    test-writes-to-repo bug regressed._
+- **Suggested Commands**:
+  - `cd myc && deno task check`
+  - `cd myc && MYC_ROOT=$PWD deno run -A src/x0100_myc.ts lineage h.c89e8dc0bb1b.witness.myc.md`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

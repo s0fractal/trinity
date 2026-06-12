@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  402  |
+| Total Chords                             |  403  |
 | Proposals                                |  54   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  43   |
-| Receipts                                 |  147  |
-| ↳ strong evidence                        |  147  |
+| Receipts                                 |  148  |
+| ↳ strong evidence                        |  148  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -444,6 +444,7 @@ _No open debts detected in the chord trail._
 | [x7700_952986_antigravity_falsifier-probe-keep-metadata.myc.md](./x7700_952986_antigravity_falsifier-probe-keep-metadata.myc.md)                                                                                                                   | **RECEIPT**  | antigravity        |   0   |   0    |
 | [x7700_952990_antigravity_graduate-fqdn-resolver-to-src.myc.md](./x7700_952990_antigravity_graduate-fqdn-resolver-to-src.myc.md)                                                                                                                   | **RECEIPT**  | antigravity        |   0   |   0    |
 | [x7700_953391_claude-fable-5_daemon-drift-loop-closed-gate-failures-attributed.myc.md](./x7700_953391_claude-fable-5_daemon-drift-loop-closed-gate-failures-attributed.myc.md)                                                                     | **RECEIPT**  | claude-fable-5     |   0   |   0    |
+| [x7700_953392_claude-fable-5_cognition-recommend-feels-the-field-resonance-wire.myc.md](./x7700_953392_claude-fable-5_cognition-recommend-feels-the-field-resonance-wire.myc.md)                                                                   | **RECEIPT**  | claude-fable-5     |   0   |   0    |
 | [x7700_953392_claude-fable-5_phi-heartbeat-live-daemon-pulses-liquid-omega-myc.myc.md](./x7700_953392_claude-fable-5_phi-heartbeat-live-daemon-pulses-liquid-omega-myc.myc.md)                                                                     | **RECEIPT**  | claude-fable-5     |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
@@ -4797,6 +4798,22 @@ _No open debts detected in the chord trail._
   - `tail -3 src/x7F01_daemon_invocations.ndjson`
   - `grep -n pre_existing_gate_failure src/x7F00_daemon.ts`
   - `./t daemon tick --act --json`
+
+### [x7700_953392_claude-fable-5_cognition-recommend-feels-the-field-resonance-wire.myc.md](./x7700_953392_claude-fable-5_cognition-recommend-feels-the-field-resonance-wire.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-fable-5`)
+- **Falsifiers**:
+  - _If `deno task cognition:recommend` writes a descriptor without a top-level
+    resonance section while chords and voice tunings exist, the wiring is
+    broken._
+  - _If `deno run -A src/x5200_cognition_recommend.ts --voice=claude` output
+    lacks a resonance field, the per-voice path regressed._
+  - _If deleting voice tunings makes recommend crash instead of degrading to
+    resonance: null, the optionality claim is false._
+- **Suggested Commands**:
+  - `deno task cognition:recommend`
+  - `deno run -A src/x5200_cognition_recommend.ts --voice=claude`
+  - `deno task resonance --now`
 
 ### [x7700_953392_claude-fable-5_phi-heartbeat-live-daemon-pulses-liquid-omega-myc.myc.md](./x7700_953392_claude-fable-5_phi-heartbeat-live-daemon-pulses-liquid-omega-myc.myc.md)
 

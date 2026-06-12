@@ -20,9 +20,11 @@
 // node drops back to PENDING until the quorum re-attests the NEW bytes. No single
 // root can admit; no one can silently swap code under an admitted role.
 //
-// KEYLESS PoC: an attestation's identity is just the voice name. The real
-// per-voice signature over content_blake3 slots into `Attestation.sig` when key
-// custody is decided (architect's call) — the gate logic does not change.
+// IDENTITY: an attestation's identity is its voice name, upgraded to
+// cryptographic identity when `sig` (Ed25519 over content_blake3) verifies
+// against the committed pubkey registry — x2F37_voice_keys.verifyAttestations
+// performs verification and sets `sig_verified`. The registry starts empty:
+// minting real voice keys is a custody ceremony that belongs to the architect.
 
 export type Stance = "AYE" | "NAY";
 
@@ -31,7 +33,11 @@ export interface Attestation {
   stance: Stance;
   content_blake3: string; // PINS the exact bytes blessed — admission follows content
   reason?: string;
-  sig?: string; // SEAM: real signature over content_blake3 lands here (key custody → architect)
+  sig?: string; // Ed25519 over content_blake3 (mint/sign/verify: x2F37_voice_keys)
+  // Set ONLY by x2F37.verifyAttestations after checking sig against the
+  // committed pubkey registry. Presence of `sig` alone proves nothing —
+  // assurance upgrades exclusively on sig_verified === true.
+  sig_verified?: boolean;
 }
 
 export interface Policy {
@@ -42,11 +48,13 @@ export interface Policy {
 export const DEFAULT_POLICY: Policy = { threshold: 3, out_of: 5 };
 
 // Honest security boundary. A quorum only means something if the voices are
-// who they claim to be. With keyless attestations (no `sig`), one actor can mint
+// who they claim to be. With unverified attestations, one actor can mint
 // N "voices" and clear any threshold — the gate is Sybil-vulnerable. So the
-// verdict self-reports its assurance, and it UPGRADES automatically once every
-// counted AYE carries a real signature (key custody → architect). A future model
-// must NOT mistake an "unauthenticated" AYE for a real security decision.
+// verdict self-reports its assurance, and it upgrades ONLY when every counted
+// AYE carries a signature VERIFIED against the committed pubkey registry
+// (x2F37.verifyAttestations sets sig_verified; sig presence alone is not
+// identity). A future model must NOT mistake an "unauthenticated" AYE for a
+// real security decision.
 export type Assurance = "authenticated" | "unauthenticated";
 
 export interface Verdict {
@@ -90,7 +98,7 @@ export function adjudicate(
       if (a.voice === author) selfAye = true;
       else {
         ayeVoices.add(a.voice);
-        if (!a.sig) allAyesSigned = false;
+        if (a.sig_verified !== true) allAyesSigned = false;
       }
     } else {
       nays.push({ voice: a.voice, reason: a.reason ?? "(no reason given)" });
@@ -103,7 +111,7 @@ export function adjudicate(
     : "unauthenticated";
   if (assurance === "unauthenticated") {
     reasons.push(
-      "UNAUTHENTICATED: voices unsigned — quorum is NOT Sybil-resistant until per-voice signatures (key custody)",
+      "UNAUTHENTICATED: not every counted AYE has a registry-verified signature — quorum is NOT Sybil-resistant (verify via x2F37_voice_keys)",
     );
   }
 

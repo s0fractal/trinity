@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  403  |
+| Total Chords                             |  404  |
 | Proposals                                |  54   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  43   |
-| Receipts                                 |  148  |
-| ↳ strong evidence                        |  148  |
+| Receipts                                 |  149  |
+| ↳ strong evidence                        |  149  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -446,6 +446,7 @@ _No open debts detected in the chord trail._
 | [x7700_953391_claude-fable-5_daemon-drift-loop-closed-gate-failures-attributed.myc.md](./x7700_953391_claude-fable-5_daemon-drift-loop-closed-gate-failures-attributed.myc.md)                                                                     | **RECEIPT**  | claude-fable-5     |   0   |   0    |
 | [x7700_953392_claude-fable-5_cognition-recommend-feels-the-field-resonance-wire.myc.md](./x7700_953392_claude-fable-5_cognition-recommend-feels-the-field-resonance-wire.myc.md)                                                                   | **RECEIPT**  | claude-fable-5     |   0   |   0    |
 | [x7700_953392_claude-fable-5_phi-heartbeat-live-daemon-pulses-liquid-omega-myc.myc.md](./x7700_953392_claude-fable-5_phi-heartbeat-live-daemon-pulses-liquid-omega-myc.myc.md)                                                                     | **RECEIPT**  | claude-fable-5     |   0   |   0    |
+| [x7700_953393_claude-fable-5_voice-keys-infrastructure-ed25519-seam-filled-cust.myc.md](./x7700_953393_claude-fable-5_voice-keys-infrastructure-ed25519-seam-filled-cust.myc.md)                                                                   | **RECEIPT**  | claude-fable-5     |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -4832,6 +4833,24 @@ _No open debts detected in the chord trail._
   - `./t daemon tick --act --json`
   - `deno task fixture:phi:ingest-myc`
   - `cat src/x7F88_daemon.last-pulse`
+
+### [x7700_953393_claude-fable-5_voice-keys-infrastructure-ed25519-seam-filled-cust.myc.md](./x7700_953393_claude-fable-5_voice-keys-infrastructure-ed25519-seam-filled-cust.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-fable-5`)
+- **Falsifiers**:
+  - _If
+    `deno test --allow-read --allow-write --allow-env src/voice_keys_test.ts`
+    fails, the crypto seam is broken._
+  - _If adjudicate() returns assurance 'authenticated' for an attestation with
+    sig present but sig_verified absent/false, the anti-forgery fix regressed._
+  - _If src/x2F38_voice_pubkeys.json contains a non-empty keys object WITHOUT a
+    corresponding architect decision chord, custody was violated._
+  - _If a private key file is ever found inside the repo tree (git ls-files |
+    grep -i 'ed25519'), custody was violated._
+- **Suggested Commands**:
+  - `deno test --allow-read --allow-write --allow-env src/voice_keys_test.ts`
+  - `deno task voice-keys registry`
+  - `deno task voice-keys -- keygen --voice=claude  # CUSTODY CEREMONY — architect only`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

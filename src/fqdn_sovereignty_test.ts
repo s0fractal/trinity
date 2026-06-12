@@ -90,20 +90,45 @@ Deno.test("sovereignty — keyless AYEs are 'unauthenticated' and barred from st
   assert(v.reasons.some((r) => r.includes("Sybil")));
 });
 
-Deno.test("sovereignty — assurance upgrades to 'authenticated' once every AYE is signed", () => {
+Deno.test("sovereignty — sig PRESENCE alone does not upgrade assurance (anti-forgery)", () => {
   const signed = (voice: string): Attestation => ({
     voice,
     stance: "AYE",
     content_blake3: H,
-    sig: `sig-of-${voice}-over-${H.slice(0, 8)}`, // placeholder; real per-voice sig at key custody
+    sig: `sig-of-${voice}-over-${H.slice(0, 8)}`, // unverified — could be anything
   });
   const v = adjudicate(H, "claude", [
     signed("codex"),
     signed("gemini"),
     signed("kimi"),
   ]);
+  assertEquals(v.assurance, "unauthenticated");
+  assert(!mayExecute(v, { requireAuthenticated: true }));
+});
+
+Deno.test("sovereignty — assurance upgrades to 'authenticated' only when every AYE is registry-verified", () => {
+  const verified = (voice: string): Attestation => ({
+    voice,
+    stance: "AYE",
+    content_blake3: H,
+    sig: `valid-sig-${voice}`,
+    sig_verified: true, // set by x2F37.verifyAttestations after real crypto
+  });
+  const v = adjudicate(H, "claude", [
+    verified("codex"),
+    verified("gemini"),
+    verified("kimi"),
+  ]);
   assertEquals(v.assurance, "authenticated");
   assert(mayExecute(v, { requireAuthenticated: true }));
+
+  // One unverified AYE in the quorum drags the whole verdict back down.
+  const mixed = adjudicate(H, "claude", [
+    verified("codex"),
+    verified("gemini"),
+    { voice: "kimi", stance: "AYE", content_blake3: H, sig: "unverified" },
+  ]);
+  assertEquals(mixed.assurance, "unauthenticated");
 });
 
 Deno.test("sovereignty — full arc: resolve → witness → attest → admit, then edit revokes", async () => {

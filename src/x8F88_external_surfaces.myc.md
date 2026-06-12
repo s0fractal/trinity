@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     8      |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    403     |
+| dynamic topology  |    404     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **501**   |
+| **Total**         |  **502**   |
 
 ## Runtime Cache Diagnostics
 
@@ -511,6 +511,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x7700_953391_claude-fable-5_daemon-drift-loop-closed-gate-failures-attributed.myc.md](../src/x7700_953391_claude-fable-5_daemon-drift-loop-closed-gate-failures-attributed.myc.md)                                                                     | canonical        | src/x7700_953391_claude-fable-5_daemon-drift-loop-closed-gate-failures-attributed.myc.md                                   | keep        |                              |
 | dynamic topology  | [src/x7700_953392_claude-fable-5_cognition-recommend-feels-the-field-resonance-wire.myc.md](../src/x7700_953392_claude-fable-5_cognition-recommend-feels-the-field-resonance-wire.myc.md)                                                                   | canonical        | src/x7700_953392_claude-fable-5_cognition-recommend-feels-the-field-resonance-wire.myc.md                                  | keep        |                              |
 | dynamic topology  | [src/x7700_953392_claude-fable-5_phi-heartbeat-live-daemon-pulses-liquid-omega-myc.myc.md](../src/x7700_953392_claude-fable-5_phi-heartbeat-live-daemon-pulses-liquid-omega-myc.myc.md)                                                                     | canonical        | src/x7700_953392_claude-fable-5_phi-heartbeat-live-daemon-pulses-liquid-omega-myc.myc.md                                   | keep        |                              |
+| dynamic topology  | [src/x7700_953393_claude-fable-5_voice-keys-infrastructure-ed25519-seam-filled-cust.myc.md](../src/x7700_953393_claude-fable-5_voice-keys-infrastructure-ed25519-seam-filled-cust.myc.md)                                                                   | canonical        | src/x7700_953393_claude-fable-5_voice-keys-infrastructure-ed25519-seam-filled-cust.myc.md                                  | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](../src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | canonical        | src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](../src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | canonical        | src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md                                                     | keep        |                              |
 | dynamic topology  | [src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](../src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | canonical        | src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md                                                      | keep        |                              |

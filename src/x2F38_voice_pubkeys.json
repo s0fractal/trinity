@@ -1,0 +1,5 @@
+{
+  "schema": "trinity.voice-pubkeys.v0.1",
+  "custody_note": "Public keys only. Private keys live outside the repo (~/.trinity/keys). Adding/rotating an entry is a custody ceremony: architect mints via `voice-keys keygen` and commits the entry with a decision chord.",
+  "keys": {}
+}

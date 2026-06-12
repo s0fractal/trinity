@@ -4658,6 +4658,7 @@
     }
   },
   "remote": {
+    "http://myc.md/src/x9998_temp_bare_target.myc.md": "52844a1fef84cc990ec7c14086618677c1cd52abe1f2ebf92b45fc37447e8fde",
     "https://deno.land/std@0.210.0/assert/_constants.ts": "8a9da298c26750b28b326b297316cdde860bc237533b07e1337c021379e6b2a9",
     "https://deno.land/std@0.210.0/assert/_diff.ts": "2c9371f17cf08cbb843c924bc31ca77af422ec4fe162f73d42c651d547573fa8",
     "https://deno.land/std@0.210.0/assert/_format.ts": "335ce8e15c65b679ad142dbc9e5e97e5d58602c39dd3c9175cef6c85fe22d6d5",

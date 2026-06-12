@@ -10,7 +10,20 @@
 //  runnable module from blocks. Measured by claude-fable-5.)
 
 import { extractCodeBlocks } from "./x0150_literate_parser.ts";
-import { dirname } from "https://deno.land/std@0.224.0/path/mod.ts";
+import {
+  dirname,
+  fromFileUrl,
+  join,
+} from "https://deno.land/std@0.224.0/path/mod.ts";
+
+// Generated bare-import map (x0160): lets the executed document say
+// `import "foo.myc.md"` and have the handle resolve through the myc.md
+// proxy. Passed to the child run only when present — absence degrades to
+// plain relative imports.
+const GENERATED_IMPORT_MAP = join(
+  dirname(fromFileUrl(import.meta.url)),
+  "x0188_import_map.json",
+);
 
 async function main() {
   const args = Deno.args;
@@ -41,9 +54,18 @@ async function main() {
     });
     await Deno.writeTextFile(tempFile, tsCode);
 
+    // --allow-import covers the myc.md virtual host the map points at
+    // (Deno 2 gates remote imports per-host).
+    const importMapArgs = await Deno.stat(GENERATED_IMPORT_MAP)
+      .then(() => [
+        `--import-map=${GENERATED_IMPORT_MAP}`,
+        "--allow-import=myc.md:80",
+      ])
+      .catch(() => [] as string[]);
+
     try {
       const proc = new Deno.Command("deno", {
-        args: ["run", ...passThroughArgs, tempFile],
+        args: ["run", ...importMapArgs, ...passThroughArgs, tempFile],
         stdout: "inherit",
         stderr: "inherit",
         stdin: "inherit",

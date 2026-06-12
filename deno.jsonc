@@ -42,6 +42,7 @@
     "proxy": "deno run -A src/x5510_myc_proxy.ts",
     "run-literate": "deno run -A src/x5520_run_literate.ts",
     "voice-keys": "deno run --allow-read --allow-write --allow-env src/x2F37_voice_keys.ts",
+    "import-map": "deno run --allow-read --allow-write src/x0160_import_map_gen.ts",
     "cognition:cycle": "deno task cognition:snapshot && deno task cognition:delta && deno task cognition:recommend && deno task cognition:recommend-receipt && deno task cognition:recommend-to-chord && deno task cognition:field",
     "canon:verify": "deno run -A src/x6410_verify_vectors.ts",
     "chord:play": "deno run -A src/x3500_chord_play.ts",

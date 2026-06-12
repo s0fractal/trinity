@@ -684,22 +684,26 @@ async function regenerateProjections(): Promise<void> {
   }
 }
 
-/** fmt --check + type-check must pass before the loop commits anything. */
-async function localGatesPass(): Promise<boolean> {
+/** fmt --check + type-check must pass before the loop commits anything.
+ *  Returns the first failing gate's name so the act log can say WHY a tick
+ *  reverted/refused — a bare revert masks pre-existing repo debt as "drift"
+ *  (observed 2026-06-08..11: unformatted files from f5b1156 reddened fmt
+ *  repo-wide and three ticks reverted with no recorded reason). */
+async function localGatesFailure(): Promise<"fmt" | "typecheck" | null> {
   const fmt = await new Deno.Command("deno", {
     args: ["fmt", "--check"],
     cwd: ROOT,
     stdout: "null",
     stderr: "null",
   }).output();
-  if (fmt.code !== 0) return false;
+  if (fmt.code !== 0) return "fmt";
   const chk = await new Deno.Command("bash", {
     args: ["-c", "deno check src/*.ts"],
     cwd: ROOT,
     stdout: "null",
     stderr: "null",
   }).output();
-  return chk.code === 0;
+  return chk.code === 0 ? null : "typecheck";
 }
 
 async function appendActLog(entry: Record<string, unknown>): Promise<void> {
@@ -743,6 +747,26 @@ async function handleAct(useJson: boolean, push: boolean): Promise<void> {
     return;
   }
 
+  // A gate that is already red BEFORE regen is pre-existing repo debt, not
+  // the daemon's drift. Reverting would mask it; refuse loudly instead so the
+  // failure is attributable to the commits that introduced it.
+  const preExisting = await localGatesFailure();
+  if (preExisting) {
+    await appendActLog({
+      action: "refused",
+      reason: "pre_existing_gate_failure",
+      gate: preExisting,
+    });
+    report({
+      action: "refused",
+      reason:
+        `pre-existing ${preExisting} failure — repo debt predates this tick; ` +
+        "fix the offending commits, the daemon will not mask them",
+      gate: preExisting,
+    });
+    return;
+  }
+
   // Safe deterministic action: bring the stable projections current.
   await regenerateProjections();
   const status = await runGit(["status", "--short"]);
@@ -758,13 +782,16 @@ async function handleAct(useJson: boolean, push: boolean): Promise<void> {
   }
 
   // Verify before committing; revert if the regenerated state is unsound.
-  if (!(await localGatesPass())) {
+  const postRegen = await localGatesFailure();
+  if (postRegen) {
     await runGit(["checkout", "--", "."]);
-    await appendActLog({ action: "reverted", drifted });
+    await appendActLog({ action: "reverted", drifted, gate: postRegen });
     report({
       action: "reverted",
-      reason: "fmt/type-check failed after regen — left tree clean",
+      reason:
+        `${postRegen} failed after regen (was green before) — left tree clean`,
       drifted,
+      gate: postRegen,
     });
     return;
   }

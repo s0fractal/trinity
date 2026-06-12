@@ -829,7 +829,12 @@ async function handleAct(useJson: boolean, push: boolean): Promise<void> {
     Boolean,
   );
   if (drifted.length === 0) {
-    await appendActLog({ action: "idle", pulse });
+    // Idle must leave the tree clean (next tick's precondition), so the
+    // heartbeat lands in the ignored runtime sidecar, not the tracked log.
+    await Deno.writeTextFile(
+      join(ROOT, "src", "x7F88_daemon.last-pulse"),
+      JSON.stringify({ timestamp: new Date().toISOString(), pulse }) + "\n",
+    );
     report({
       action: "idle",
       note: "projections current — nothing safe to maintain",

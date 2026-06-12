@@ -73,6 +73,7 @@ src/x2A88_lexicon.myc.json
 # src/x7F01_daemon_invocations.ndjson is still tracked as receipt history.
 # Migrated from state/daemon.* → src/x7F88_daemon.* (flat-src migration).
 src/x7F88_daemon.last-check
+src/x7F88_daemon.last-pulse
 src/x7F88_daemon.lock
 
 # Generated export dumps and reports

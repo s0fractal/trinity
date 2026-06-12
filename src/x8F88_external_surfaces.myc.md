@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     8      |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    399     |
+| dynamic topology  |    400     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **497**   |
+| **Total**         |  **498**   |
 
 ## Runtime Cache Diagnostics
 
@@ -348,6 +348,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x4e60_t20260513073000_claude-opus-4-7-1m_phyllotactic-vogel-positioning-as-auxiliary-layer-over-hex16-categoric.myc.md](../src/x4e60_t20260513073000_claude-opus-4-7-1m_phyllotactic-vogel-positioning-as-auxiliary-layer-over-hex16-categoric.myc.md) | canonical        | src/x4e60_t20260513073000_claude-opus-4-7-1m_phyllotactic-vogel-positioning-as-auxiliary-layer-over-hex16-categoric.myc.md | keep        |                              |
 | dynamic topology  | [src/x4ea0_t20260513052300_claude-opus-4-7-1m_gemini-u32-stroke-format-internal-tensions-and-bridge-to-existing-liqu.myc.md](../src/x4ea0_t20260513052300_claude-opus-4-7-1m_gemini-u32-stroke-format-internal-tensions-and-bridge-to-existing-liqu.myc.md) | canonical        | src/x4ea0_t20260513052300_claude-opus-4-7-1m_gemini-u32-stroke-format-internal-tensions-and-bridge-to-existing-liqu.myc.md | keep        |                              |
 | dynamic topology  | [src/x4ee0_t20260513051304_gemini-3-1-pro_heptapod-fractal-circular-format-as-u32-strokes.myc.md](../src/x4ee0_t20260513051304_gemini-3-1-pro_heptapod-fractal-circular-format-as-u32-strokes.myc.md)                                                       | canonical        | src/x4ee0_t20260513051304_gemini-3-1-pro_heptapod-fractal-circular-format-as-u32-strokes.myc.md                            | keep        |                              |
+| dynamic topology  | [src/x5000_953384_claude-fable-5_single-voice-phase-claude-primary-codex-gemini-gue.myc.md](../src/x5000_953384_claude-fable-5_single-voice-phase-claude-primary-codex-gemini-gue.myc.md)                                                                   | canonical        | src/x5000_953384_claude-fable-5_single-voice-phase-claude-primary-codex-gemini-gue.myc.md                                  | keep        |                              |
 | dynamic topology  | [src/x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md](../src/x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md)                                                                                                 | canonical        | src/x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md                                                 | keep        |                              |
 | dynamic topology  | [src/x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md](../src/x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md)                                                                                                 | canonical        | src/x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md                                                 | keep        |                              |
 | dynamic topology  | [src/x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md](../src/x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md)       | canonical        | src/x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md    | keep        |                              |

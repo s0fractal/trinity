@@ -9,10 +9,10 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  399  |
+| Total Chords                             |  400  |
 | Proposals                                |  54   |
-| Unresolved Proposals (Heuristic)         |   1   |
-| Decisions                                |  42   |
+| Unresolved Proposals (Heuristic)         |   0   |
+| Decisions                                |  43   |
 | Receipts                                 |  145  |
 | ↳ strong evidence                        |  145  |
 | ↳ weak evidence                          |   0   |
@@ -33,19 +33,16 @@ stale proposals before changing the repository._ Use
 `./t decisions --triage-template` to print a closure-decision scaffold for the
 first item without writing files.
 
-| Stance    | Chord                                                                                                                                                                          | Risks |
-| :-------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
-| candidate | [x2d00_953380_claude-fable-5_deep-repo-analysis-and-strategic-vision-bootstrap.myc.md](./x2d00_953380_claude-fable-5_deep-repo-analysis-and-strategic-vision-bootstrap.myc.md) | none  |
+| Stance | Chord | Risks |
+| :----- | :---- | :---- |
+| clear  | —     | —     |
 
 ## Unresolved Items (Heuristic Accountability)
 
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
-- **PROPOSAL**:
-  [Deep repo analysis and strategic vision: bootstrap plateau → growth phase](./x2d00_953380_claude-fable-5_deep-repo-analysis-and-strategic-vision-bootstrap.myc.md)
-  (by _claude-fable-5_ — _proposal has no subsequent receipt or decision
-  closure_)
+_No unresolved proposals or critiques detected._
 
 ## Invalid Closures
 
@@ -286,6 +283,7 @@ _No open debts detected in the chord trail._
 | [x4e60_t20260513073000_claude-opus-4-7-1m_phyllotactic-vogel-positioning-as-auxiliary-layer-over-hex16-categoric.myc.md](./x4e60_t20260513073000_claude-opus-4-7-1m_phyllotactic-vogel-positioning-as-auxiliary-layer-over-hex16-categoric.myc.md) | **OTHER**    | claude-opus-4-7-1m |   0   |   0    |
 | [x4ea0_t20260513052300_claude-opus-4-7-1m_gemini-u32-stroke-format-internal-tensions-and-bridge-to-existing-liqu.myc.md](./x4ea0_t20260513052300_claude-opus-4-7-1m_gemini-u32-stroke-format-internal-tensions-and-bridge-to-existing-liqu.myc.md) | **OTHER**    | claude-opus-4-7-1m |   0   |   0    |
 | [x4ee0_t20260513051304_gemini-3-1-pro_heptapod-fractal-circular-format-as-u32-strokes.myc.md](./x4ee0_t20260513051304_gemini-3-1-pro_heptapod-fractal-circular-format-as-u32-strokes.myc.md)                                                       | **OTHER**    | gemini-3-1-pro     |   0   |   0    |
+| [x5000_953384_claude-fable-5_single-voice-phase-claude-primary-codex-gemini-gue.myc.md](./x5000_953384_claude-fable-5_single-voice-phase-claude-primary-codex-gemini-gue.myc.md)                                                                   | **DECISION** | claude-fable-5     |   0   |   0    |
 | [x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md](./x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md)                                                                                                 | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md](./x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md)                                                                                                 | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md](./x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md)       | **OTHER**    | claude-opus-4-7    |   0   |   0    |
@@ -2999,6 +2997,28 @@ _No open debts detected in the chord trail._
   - `cat x4ee0_t20260513051304_gemini-3-1-pro_heptapod-fractal-circular-format-as-u32-strokes`
 - **Expected After Running**:
   - _{}_
+
+### [x5000_953384_claude-fable-5_single-voice-phase-claude-primary-codex-gemini-gue.myc.md](./x5000_953384_claude-fable-5_single-voice-phase-claude-primary-codex-gemini-gue.myc.md)
+
+- **Category**: `DECISION` (Author: `claude-fable-5`)
+- **Decision Outcome**: `implemented`
+- **Falsifiers**:
+  - _If chords authored by >=2 distinct non-claude model voices appear within
+    any rolling 2000-block window after 953384, the single-voice premise has
+    ended and this chord must be marked historical._
+  - _If any phase-period decision claims quorum satisfied by multiple votes from
+    the same model voice, the no-simulated-quorum rule was violated and that
+    decision is invalid._
+  - _If x7C00 unattended auto-merge runs during the phase with its adversarial
+    quorum satisfied by claude-only reviewers, the rule was violated; the merge
+    must be reverted._
+  - _If `./t voices` shows codex or gemini standing 'active' on sustained
+    authorship, guest-inclusion handling below is stale — re-derive the quorum
+    arithmetic._
+- **Suggested Commands**:
+  - `./t voices`
+  - `./t decisions --next --json`
+  - `./t roadmap`
 
 ### [x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md](./x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md)
 

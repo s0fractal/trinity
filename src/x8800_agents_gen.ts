@@ -695,8 +695,19 @@ async function main(argv: string[]) {
         new TextEncoder().encode(JSON.stringify(entries)),
       )}`;
       if (existingHash === global_manifest_hash) {
+        // The sidecar is gitignored, so it can be fresher than the tracked
+        // outputs (e.g. after a `git checkout` of the bootstrap). Trust it
+        // only if the tracked bootstrap embeds the same manifest hash —
+        // otherwise fall through and rewrite (observed 2026-06-12: stale
+        // embedded hash passed the skip and tripped CI idempotence).
+        const bootstrapText = await Deno.readTextFile(bootstrapPath);
+        const embedded = bootstrapText.match(
+          /source_manifest_hash: (sha256:[0-9a-f]+)/,
+        )?.[1];
+        if (embedded !== global_manifest_hash) {
+          throw new Error("tracked bootstrap stale — full regen");
+        }
         await Deno.stat(agentsPath);
-        await Deno.stat(bootstrapPath);
         for (const bucket of buckets.keys()) {
           await Deno.stat(join(OUT, `x${bucket}888_state.myc.md`));
           await Deno.stat(join(OUT, `x${bucket}888_state.manifest.json`));

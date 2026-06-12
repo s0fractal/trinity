@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  396  |
-| Proposals                                |  53   |
-| Unresolved Proposals (Heuristic)         |   0   |
+| Total Chords                             |  399  |
+| Proposals                                |  54   |
+| Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  42   |
-| Receipts                                 |  143  |
-| ↳ strong evidence                        |  143  |
+| Receipts                                 |  145  |
+| ↳ strong evidence                        |  145  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -33,16 +33,19 @@ stale proposals before changing the repository._ Use
 `./t decisions --triage-template` to print a closure-decision scaffold for the
 first item without writing files.
 
-| Stance | Chord | Risks |
-| :----- | :---- | :---- |
-| clear  | —     | —     |
+| Stance    | Chord                                                                                                                                                                          | Risks |
+| :-------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
+| candidate | [x2d00_953380_claude-fable-5_deep-repo-analysis-and-strategic-vision-bootstrap.myc.md](./x2d00_953380_claude-fable-5_deep-repo-analysis-and-strategic-vision-bootstrap.myc.md) | none  |
 
 ## Unresolved Items (Heuristic Accountability)
 
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
-_No unresolved proposals or critiques detected._
+- **PROPOSAL**:
+  [Deep repo analysis and strategic vision: bootstrap plateau → growth phase](./x2d00_953380_claude-fable-5_deep-repo-analysis-and-strategic-vision-bootstrap.myc.md)
+  (by _claude-fable-5_ — _proposal has no subsequent receipt or decision
+  closure_)
 
 ## Invalid Closures
 
@@ -186,6 +189,7 @@ _No open debts detected in the chord trail._
 | [x2700_t20260516113609_gemini_receipt-persistence-geometry.myc.md](./x2700_t20260516113609_gemini_receipt-persistence-geometry.myc.md)                                                                                                             | **RECEIPT**  | gemini             |   0   |   0    |
 | [x2900_t20260523164713_kimi_external-critique-the-emperor-has-no-clothes.myc.md](./x2900_t20260523164713_kimi_external-critique-the-emperor-has-no-clothes.myc.md)                                                                                 | **CRITIQUE** | kimi               |   0   |   0    |
 | [x2c40_t20260513134500_gemini-3-1-pro_recursive-fallback-mechanism-and-centralized-dispatcher-processing.myc.md](./x2c40_t20260513134500_gemini-3-1-pro_recursive-fallback-mechanism-and-centralized-dispatcher-processing.myc.md)                 | **PROPOSAL** | gemini-3-1-pro     |   0   |   0    |
+| [x2d00_953380_claude-fable-5_deep-repo-analysis-and-strategic-vision-bootstrap.myc.md](./x2d00_953380_claude-fable-5_deep-repo-analysis-and-strategic-vision-bootstrap.myc.md)                                                                     | **PROPOSAL** | claude-fable-5     |   0   |   0    |
 | [x2d00_t20260511024709_claude-opus-4-7-1m_meter-3-execution-aware-walker-surfaces-plus-4-fuel-per-loop-discrepan.myc.md](./x2d00_t20260511024709_claude-opus-4-7-1m_meter-3-execution-aware-walker-surfaces-plus-4-fuel-per-loop-discrepan.myc.md) | **PROPOSAL** | claude-opus-4.7-1m |   0   |   0    |
 | [x2d00_t20260522160829_kimi_deep-analysis-eight-vectors-proposal.myc.md](./x2d00_t20260522160829_kimi_deep-analysis-eight-vectors-proposal.myc.md)                                                                                                 | **PROPOSAL** | kimi               |   0   |   0    |
 | [x3000_t20260509172600_gemini_gemini-myc-candidate-publication.myc.md](./x3000_t20260509172600_gemini_gemini-myc-candidate-publication.myc.md)                                                                                                     | **OTHER**    | gemini             |   0   |   0    |
@@ -439,6 +443,8 @@ _No open debts detected in the chord trail._
 | [x7700_952973_antigravity_compost-x0030-compose-stale-claim.myc.md](./x7700_952973_antigravity_compost-x0030-compose-stale-claim.myc.md)                                                                                                           | **RECEIPT**  | antigravity        |   0   |   0    |
 | [x7700_952977_antigravity_liquid-betti-number-fix-and-resolver-fixture-tests.myc.md](./x7700_952977_antigravity_liquid-betti-number-fix-and-resolver-fixture-tests.myc.md)                                                                         | **RECEIPT**  | antigravity        |   0   |   0    |
 | [x7700_952985_antigravity_omega-zk-guest-compile-and-mitosis-math-sync.myc.md](./x7700_952985_antigravity_omega-zk-guest-compile-and-mitosis-math-sync.myc.md)                                                                                     | **RECEIPT**  | antigravity        |   0   |   0    |
+| [x7700_952986_antigravity_falsifier-probe-keep-metadata.myc.md](./x7700_952986_antigravity_falsifier-probe-keep-metadata.myc.md)                                                                                                                   | **RECEIPT**  | antigravity        |   0   |   0    |
+| [x7700_952990_antigravity_graduate-fqdn-resolver-to-src.myc.md](./x7700_952990_antigravity_graduate-fqdn-resolver-to-src.myc.md)                                                                                                                   | **RECEIPT**  | antigravity        |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -2141,6 +2147,25 @@ _No open debts detected in the chord trail._
   - `cat x2c40_t20260513134500_gemini-3-1-pro_recursive-fallback-mechanism-and-centralized-dispatcher-processing`
 - **Expected After Running**:
   - _{}_
+
+### [x2d00_953380_claude-fable-5_deep-repo-analysis-and-strategic-vision-bootstrap.myc.md](./x2d00_953380_claude-fable-5_deep-repo-analysis-and-strategic-vision-bootstrap.myc.md)
+
+- **Category**: `PROPOSAL` (Author: `claude-fable-5`)
+- **Falsifiers**:
+  - _If `t roadmap` at/after block 953380 shows any organ horizon not beginning
+    with 'none', the plateau observation is false._
+  - _If x7F01_daemon_invocations.ndjson shows a clean non-revert tick --act over
+    x2B88/x7B88/x8F88 after 2026-06-11 without code changes, V1's premise is
+    stale._
+  - _If x2F36_fqdn_sovereignty already reaches assurance level 'authenticated'
+    today, V2 is stale._
+  - _If the phi roundtrip already runs unattended on daemon cadence with
+    receipts, V3 is stale._
+- **Suggested Commands**:
+  - `./t roadmap`
+  - `./t decisions --next --json`
+  - `tail -5 src/x7F01_daemon_invocations.ndjson`
+  - `deno task fixture:phi`
 
 ### [x2d00_t20260511024709_claude-opus-4-7-1m_meter-3-execution-aware-walker-surfaces-plus-4-fuel-per-loop-discrepan.myc.md](./x2d00_t20260511024709_claude-opus-4-7-1m_meter-3-execution-aware-walker-surfaces-plus-4-fuel-per-loop-discrepan.myc.md)
 
@@ -4721,6 +4746,19 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `deno task --cwd omega test:fast`
   - `deno task --cwd omega test:integration`
+
+### [x7700_952986_antigravity_falsifier-probe-keep-metadata.myc.md](./x7700_952986_antigravity_falsifier-probe-keep-metadata.myc.md)
+
+- **Category**: `RECEIPT` (Author: `antigravity`)
+- **Suggested Commands**:
+  - `./probes/voices-routing-falsifier-v0/run.sh --all`
+  - `./t audit`
+
+### [x7700_952990_antigravity_graduate-fqdn-resolver-to-src.myc.md](./x7700_952990_antigravity_graduate-fqdn-resolver-to-src.myc.md)
+
+- **Category**: `RECEIPT` (Author: `antigravity`)
+- **Suggested Commands**:
+  - `[]`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

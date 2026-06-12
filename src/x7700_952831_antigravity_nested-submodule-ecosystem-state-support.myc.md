@@ -22,13 +22,21 @@ expected_after_running:
 
 # Receipt: nested-submodule-ecosystem-state-support
 
-We have implemented nested ecosystem support in the unified federation mirror `src/x2200_ecosystem.ts` to allow submodules to publish their own federated ecosystems (substrate-of-substrates).
+We have implemented nested ecosystem support in the unified federation mirror
+`src/x2200_ecosystem.ts` to allow submodules to publish their own federated
+ecosystems (substrate-of-substrates).
 
 ### Features
-1. **Nested Slot Verification**: Integrated a new optional `ecosystem` slot configuration checking for `src/x2200_ecosystem.ts` or fallback `src/x2288_ecosystem.latest.myc.json` files.
-2. **Direct JSON Extraction**: Added loading and parsing of fallback `.json` files directly without execution depending on file extension.
-3. **Recursive Formatting**: Enriched console print output to indent and render nested sub-substrates with status and coverage.
-4. **State Persistence**: Persisted nested `mirrors` state in the ecosystem latest state envelope.
+
+1. **Nested Slot Verification**: Integrated a new optional `ecosystem` slot
+   configuration checking for `src/x2200_ecosystem.ts` or fallback
+   `src/x2288_ecosystem.latest.myc.json` files.
+2. **Direct JSON Extraction**: Added loading and parsing of fallback `.json`
+   files directly without execution depending on file extension.
+3. **Recursive Formatting**: Enriched console print output to indent and render
+   nested sub-substrates with status and coverage.
+4. **State Persistence**: Persisted nested `mirrors` state in the ecosystem
+   latest state envelope.
 
 This successfully closes the `x2200_ecosystem` horizon.
 

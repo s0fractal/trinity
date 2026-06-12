@@ -27,7 +27,10 @@ Deno.test("apply — case 1 (argc=0) matches canonical record + spore_id", () =>
 });
 
 Deno.test("apply — case 2 (argc=1) matches canonical spore_id", () => {
-  const rec = encodeApplyRecord({ fHash: mh(f32(0x01)), argHashes: [mh(f32(0x02))] });
+  const rec = encodeApplyRecord({
+    fHash: mh(f32(0x01)),
+    argHashes: [mh(f32(0x02))],
+  });
   assertEquals(
     toHex(sporeId(rec)),
     "3a9d95a28c2c6b267461a87c6e7e3ef4cb1e19d09b1423e9a35fbf8913982e41",

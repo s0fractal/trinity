@@ -2,10 +2,7 @@ import {
   assert,
   assertEquals,
 } from "https://deno.land/std@0.224.0/assert/mod.ts";
-import {
-  parseReviewVerdict,
-  adjudicateQuorum,
-} from "./x7C00_author.ts";
+import { adjudicateQuorum, parseReviewVerdict } from "./x7C00_author.ts";
 
 Deno.test("author review parsing — parseReviewVerdict", () => {
   // AYE cases
@@ -23,7 +20,9 @@ Deno.test("author review parsing — parseReviewVerdict", () => {
   assertEquals(reject2.reason, "bug in file.ts");
 
   // Malformed case treated as NAY
-  const malformed = parseReviewVerdict("I am not sure, it looks okay but maybe check later");
+  const malformed = parseReviewVerdict(
+    "I am not sure, it looks okay but maybe check later",
+  );
   assertEquals(malformed.stance, "NAY");
   assert(malformed.reason?.includes("I am not sure"));
 });

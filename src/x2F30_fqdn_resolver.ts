@@ -131,7 +131,9 @@ export async function buildIndex(roots: Root[]): Promise<Index> {
   for (let i = 0; i < roots.length; i++) {
     const r = roots[i];
     const root = typeof r === "string" ? r : r.path;
-    const maxDepth = typeof r === "string" ? Infinity : (r.maxDepth ?? Infinity);
+    const maxDepth = typeof r === "string"
+      ? Infinity
+      : (r.maxDepth ?? Infinity);
     paths.push(root);
     try {
       for await (

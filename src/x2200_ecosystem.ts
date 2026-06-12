@@ -176,7 +176,9 @@ export async function readSlot(
         let summary = "ok";
         if (nestedMirrors && typeof nestedMirrors === "object") {
           const keys = Object.keys(nestedMirrors);
-          summary = `${keys.length} nested substrate${keys.length === 1 ? "" : "s"}: ${keys.join("; ")}`;
+          summary = `${keys.length} nested substrate${
+            keys.length === 1 ? "" : "s"
+          }: ${keys.join("; ")}`;
         }
         return {
           present: true,
@@ -186,12 +188,17 @@ export async function readSlot(
         };
       } else if (slot.kind === "executable") {
         const data = await runExecutable(absPath);
-        const d = data as { summary?: { overall?: string }; mirrors?: Record<string, any> };
+        const d = data as {
+          summary?: { overall?: string };
+          mirrors?: Record<string, any>;
+        };
         const nestedMirrors = d.mirrors;
         let summary = d.summary?.overall ?? "ok";
         if (nestedMirrors && typeof nestedMirrors === "object") {
           const keys = Object.keys(nestedMirrors);
-          summary = `${keys.length} nested substrate${keys.length === 1 ? "" : "s"}: ${keys.join("; ")}`;
+          summary = `${keys.length} nested substrate${
+            keys.length === 1 ? "" : "s"
+          }: ${keys.join("; ")}`;
         }
         return {
           present: true,
@@ -218,7 +225,9 @@ export async function readSlot(
   return { present: false };
 }
 
-export async function readSubstrate(substrate: Substrate): Promise<SubstrateMirror> {
+export async function readSubstrate(
+  substrate: Substrate,
+): Promise<SubstrateMirror> {
   const slots = await parallel({
     status: () =>
       tryOr(() => readSlot(substrate, "status"), { present: false }),
@@ -447,14 +456,21 @@ if (import.meta.main) {
           ? `⚠ error: ${result.error.slice(0, 60)}`
           : `✓ ${result.summary?.slice(0, 70) ?? "ok"}`;
         console.log(`#   ${slotName.padEnd(13)} ${status}`);
-        if (result.present && result.mirrors && typeof result.mirrors === "object") {
+        if (
+          result.present && result.mirrors && typeof result.mirrors === "object"
+        ) {
           for (const [nSub, nMirror] of Object.entries(result.mirrors)) {
-            const nested = nMirror as { abi_coverage?: string; slots?: Record<string, any> };
+            const nested = nMirror as {
+              abi_coverage?: string;
+              slots?: Record<string, any>;
+            };
             const cov = nested.abi_coverage ? ` [${nested.abi_coverage}]` : "";
             let nStatus = "";
             if (nested.slots && nested.slots.status) {
               const sRes = nested.slots.status;
-              nStatus = sRes.error ? ` ⚠ error` : (sRes.summary ? ` (status: ✓ ${sRes.summary})` : "");
+              nStatus = sRes.error
+                ? ` ⚠ error`
+                : (sRes.summary ? ` (status: ✓ ${sRes.summary})` : "");
             }
             console.log(`#     ↳ ${nSub.padEnd(11)}${cov}${nStatus}`);
           }

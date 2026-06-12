@@ -21,7 +21,12 @@
 // append-only log the substrate already lives by.
 
 import { type Resolution } from "./x2F30_fqdn_resolver.ts";
-import { blake3Multihash, encodeApplyRecord, sporeId, toHex } from "./x2F34_fqdn_apply.ts";
+import {
+  blake3Multihash,
+  encodeApplyRecord,
+  sporeId,
+  toHex,
+} from "./x2F34_fqdn_apply.ts";
 
 export interface Receipt {
   fqdn: string; // the role address that was queried

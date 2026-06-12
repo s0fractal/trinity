@@ -102,7 +102,9 @@ Deno.test("ecosystem - diffEcosystem slot added and updated", () => {
   assertEquals(diffs[2].substrate, "myc");
   assert(diffs[2].message.includes("ABI coverage changed"));
   assertEquals(diffs[3].substrate, "myc");
-  assert(diffs[3].message.includes("slot ecosystem: added (2 nested substrates"));
+  assert(
+    diffs[3].message.includes("slot ecosystem: added (2 nested substrates"),
+  );
 });
 
 Deno.test("ecosystem - readSlot fallback JSON direct reading", async () => {

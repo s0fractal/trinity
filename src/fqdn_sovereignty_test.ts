@@ -16,7 +16,11 @@ const aye = (voice: string, content_blake3: string): Attestation => ({
   stance: "AYE",
   content_blake3,
 });
-const nay = (voice: string, content_blake3: string, reason: string): Attestation => ({
+const nay = (
+  voice: string,
+  content_blake3: string,
+  reason: string,
+): Attestation => ({
   voice,
   stance: "NAY",
   content_blake3,
@@ -74,7 +78,11 @@ Deno.test("sovereignty — admission is content-pinned: editing bytes drops it b
 });
 
 Deno.test("sovereignty — keyless AYEs are 'unauthenticated' and barred from strict execution (Sybil boundary)", () => {
-  const v = adjudicate(H, "claude", [aye("codex", H), aye("gemini", H), aye("kimi", H)]);
+  const v = adjudicate(H, "claude", [
+    aye("codex", H),
+    aye("gemini", H),
+    aye("kimi", H),
+  ]);
   assertEquals(v.verdict, "AYE");
   assertEquals(v.assurance, "unauthenticated");
   assert(mayExecute(v)); // PoC default: admitted is enough
@@ -89,7 +97,11 @@ Deno.test("sovereignty — assurance upgrades to 'authenticated' once every AYE 
     content_blake3: H,
     sig: `sig-of-${voice}-over-${H.slice(0, 8)}`, // placeholder; real per-voice sig at key custody
   });
-  const v = adjudicate(H, "claude", [signed("codex"), signed("gemini"), signed("kimi")]);
+  const v = adjudicate(H, "claude", [
+    signed("codex"),
+    signed("gemini"),
+    signed("kimi"),
+  ]);
   assertEquals(v.assurance, "authenticated");
   assert(mayExecute(v, { requireAuthenticated: true }));
 });
@@ -100,7 +112,10 @@ Deno.test("sovereignty — full arc: resolve → witness → attest → admit, t
     const file = join(base, "x9999_organ.myc.md");
     await Deno.writeTextFile(file, "v1\n");
 
-    const w1 = await witness(await resolveFqdn("x9999_organ.myc.md", [base]), 1);
+    const w1 = await witness(
+      await resolveFqdn("x9999_organ.myc.md", [base]),
+      1,
+    );
     const quorum = ["codex", "gemini", "kimi"].map((v) =>
       aye(v, w1.content_blake3!)
     );
@@ -110,7 +125,10 @@ Deno.test("sovereignty — full arc: resolve → witness → attest → admit, t
 
     // same role address, edited bytes → quorum no longer covers it
     await Deno.writeTextFile(file, "v2 — silently changed\n");
-    const w2 = await witness(await resolveFqdn("x9999_organ.myc.md", [base]), 2);
+    const w2 = await witness(
+      await resolveFqdn("x9999_organ.myc.md", [base]),
+      2,
+    );
     assertEquals(w1.fqdn, w2.fqdn); // role stable
     assert(w1.content_blake3 !== w2.content_blake3); // content moved
     const revoked = adjudicate(w2.content_blake3, "claude", quorum);

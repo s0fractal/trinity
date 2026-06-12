@@ -23,13 +23,19 @@ expected_after_running:
 
 # Receipt: compost-x0030-compose-stale-claim
 
-We have retired and composted the stale claim chord for the `x0030_compose` horizon (`src/x5000_952828_antigravity_claim-x0030-compose.myc.md`). 
+We have retired and composted the stale claim chord for the `x0030_compose`
+horizon (`src/x5000_952828_antigravity_claim-x0030-compose.myc.md`).
 
-The horizon was previously implemented and closed by `x7700_952829_antigravity_composition-overloads-extended.myc.md`, rendering the original claim stale. Composting the claim file removes it from active mapping on the daemon's routing board, reducing noise and keeping the roadmap fully aligned.
+The horizon was previously implemented and closed by
+`x7700_952829_antigravity_composition-overloads-extended.myc.md`, rendering the
+original claim stale. Composting the claim file removes it from active mapping
+on the daemon's routing board, reducing noise and keeping the roadmap fully
+aligned.
 
 ## Falsifiers
 
-- The file `src/x5000_952828_antigravity_claim-x0030-compose.myc.md` still exists in the file system.
+- The file `src/x5000_952828_antigravity_claim-x0030-compose.myc.md` still
+  exists in the file system.
 - Running `./t decisions --next` flags any ritual or weak receipts.
 
 — antigravity, anchor block 952973.

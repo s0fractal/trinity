@@ -187,12 +187,15 @@ interface BehaviorAnalysis {
 }
 
 /** Parse organ source with typescript AST and extract relevant API usages. */
-export function analyzeBehaviorWithAST(content: string, filename: string): BehaviorAnalysis {
+export function analyzeBehaviorWithAST(
+  content: string,
+  filename: string,
+): BehaviorAnalysis {
   const sourceFile = ts.createSourceFile(
     filename,
     content,
     ts.ScriptTarget.Latest,
-    true
+    true,
   );
 
   const mutations: string[] = [];
@@ -200,11 +203,32 @@ export function analyzeBehaviorWithAST(content: string, filename: string): Behav
   const fetches: string[] = [];
 
   const mutatingAPIs = new Set([
-    "writeTextFile", "writeTextFileSync", "writeFile", "writeFileSync",
-    "remove", "removeSync", "mkdir", "mkdirSync", "rename", "renameSync",
-    "copyFile", "copyFileSync", "truncate", "truncateSync", "create", "createSync",
-    "chmod", "chmodSync", "chown", "chownSync", "makeTempDir", "makeTempDirSync",
-    "makeTempFile", "makeTempFileSync", "symlink", "symlinkSync"
+    "writeTextFile",
+    "writeTextFileSync",
+    "writeFile",
+    "writeFileSync",
+    "remove",
+    "removeSync",
+    "mkdir",
+    "mkdirSync",
+    "rename",
+    "renameSync",
+    "copyFile",
+    "copyFileSync",
+    "truncate",
+    "truncateSync",
+    "create",
+    "createSync",
+    "chmod",
+    "chmodSync",
+    "chown",
+    "chownSync",
+    "makeTempDir",
+    "makeTempDirSync",
+    "makeTempFile",
+    "makeTempFileSync",
+    "symlink",
+    "symlinkSync",
   ]);
 
   const subprocessAPIs = new Set(["Command", "run"]);
@@ -212,7 +236,9 @@ export function analyzeBehaviorWithAST(content: string, filename: string): Behav
   function isReference(node: ts.Identifier): boolean {
     const parent = node.parent;
     if (!parent) return true;
-    if (ts.isPropertyAccessExpression(parent) && parent.name === node) return false;
+    if (ts.isPropertyAccessExpression(parent) && parent.name === node) {
+      return false;
+    }
     if (ts.isPropertyAssignment(parent) && parent.name === node) return false;
     if (ts.isMethodDeclaration(parent) && parent.name === node) return false;
     if (ts.isMethodSignature(parent) && parent.name === node) return false;
@@ -220,7 +246,10 @@ export function analyzeBehaviorWithAST(content: string, filename: string): Behav
     if (ts.isPropertySignature(parent) && parent.name === node) return false;
     if (ts.isFunctionDeclaration(parent) && parent.name === node) return false;
     if (ts.isVariableDeclaration(parent) && parent.name === node) return false;
-    if (ts.isImportSpecifier(parent) && (parent.name === node || parent.propertyName === node)) return false;
+    if (
+      ts.isImportSpecifier(parent) &&
+      (parent.name === node || parent.propertyName === node)
+    ) return false;
     return true;
   }
 

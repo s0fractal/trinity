@@ -3,10 +3,16 @@ import {
   assertEquals,
 } from "https://deno.land/std@0.224.0/assert/mod.ts";
 import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
-import { buildIndex, resolveFqdn, resolveFromIndex } from "./x2F30_fqdn_resolver.ts";
+import {
+  buildIndex,
+  resolveFqdn,
+  resolveFromIndex,
+} from "./x2F30_fqdn_resolver.ts";
 
 // Build a throwaway federation of roots with known collisions.
-async function fixture(): Promise<{ roots: string[]; cleanup: () => Promise<void> }> {
+async function fixture(): Promise<
+  { roots: string[]; cleanup: () => Promise<void> }
+> {
   const base = await Deno.makeTempDir({ prefix: "fqdn_resolver_" });
   const a = join(base, "rootA");
   const b = join(base, "rootB");
@@ -25,7 +31,10 @@ async function fixture(): Promise<{ roots: string[]; cleanup: () => Promise<void
   await Deno.writeTextFile(join(b, "only_here.ts"), "export const x = 1;\n");
 
   // handle: addressable WITH the coordinate prefix or WITHOUT it
-  await Deno.writeTextFile(join(a, "x5510_myc_proxy.ts"), "export const p = 1;\n");
+  await Deno.writeTextFile(
+    join(a, "x5510_myc_proxy.ts"),
+    "export const p = 1;\n",
+  );
 
   // exact-beats-handle: a bare `hash.ts` and a prefixed `x4010_hash.ts` both
   // answer the query "hash.ts" — the exact (bare) one must win.
@@ -201,7 +210,10 @@ Deno.test("buildIndex — a depth-bounded (cloud) root at lower precedence still
     const index = await buildIndex([...roots, { path: cloud, maxDepth: 1 }]);
     const found = await resolveFromIndex(index, "memory_note.md");
     assertEquals(found.identity, "unique");
-    assert(found.resolved!.path.startsWith(cloud), "should resolve from cloud root");
+    assert(
+      found.resolved!.path.startsWith(cloud),
+      "should resolve from cloud root",
+    );
 
     const buried = await resolveFromIndex(index, "buried.md");
     assertEquals(buried.identity, "absent"); // beyond the depth bound

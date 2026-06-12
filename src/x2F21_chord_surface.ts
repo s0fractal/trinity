@@ -109,8 +109,12 @@ export function getMigrationPlan(): MigrationPlan {
       for (const entry of data.entries) {
         if (entry.source && entry.target) {
           plan.legacyToTopologicalPath.set(entry.source, entry.target);
-          const sourceStem = entry.source.replace(/^jazz\/chords\//, "").replace(/\.md$/, "");
-          const targetStem = entry.target.replace(/^src\//, "").replace(/\.myc\.md$/, "");
+          const sourceStem = entry.source.replace(/^jazz\/chords\//, "")
+            .replace(/\.md$/, "");
+          const targetStem = entry.target.replace(/^src\//, "").replace(
+            /\.myc\.md$/,
+            "",
+          );
           plan.legacyToTopologicalFlatId.set(sourceStem, targetStem);
         }
       }
@@ -153,7 +157,9 @@ export async function listChordSurfaceFiles(options: {
     return true;
   });
 
-  const filtered = tracked ? deduplicated.filter((f) => tracked.has(f.relPath)) : deduplicated;
+  const filtered = tracked
+    ? deduplicated.filter((f) => tracked.has(f.relPath))
+    : deduplicated;
 
   filtered.sort((a, b) => {
     if (a.flatId !== b.flatId) return a.flatId.localeCompare(b.flatId);

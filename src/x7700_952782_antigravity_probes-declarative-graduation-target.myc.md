@@ -17,15 +17,21 @@ expected_after_running: {}
 
 # Receipt: probes-declarative-graduation-target
 
-This receipt marks the successful implementation of the declarative `graduation_target`, `graduation_date`, and `status` frontmatter parser inside the experimental probes generator (`src/x8E00_probes_gen.ts`).
+This receipt marks the successful implementation of the declarative
+`graduation_target`, `graduation_date`, and `status` frontmatter parser inside
+the experimental probes generator (`src/x8E00_probes_gen.ts`).
 
-By parsing YAML frontmatter keys from `README.md` or `SPEC.md` files in the `probes/` directory, the generator can now establish semantic relationships and verify graduation targets without relying purely on lexical naming conventions or loose substring matches.
+By parsing YAML frontmatter keys from `README.md` or `SPEC.md` files in the
+`probes/` directory, the generator can now establish semantic relationships and
+verify graduation targets without relying purely on lexical naming conventions
+or loose substring matches.
 
 This closes the roadmap horizon of `src/x8E00_probes_gen.ts`.
 
 ## Falsifiers
 
-- Running `deno test --allow-all src/probes_test.ts` fails to parse frontmatter status or target properties correctly.
+- Running `deno test --allow-all src/probes_test.ts` fails to parse frontmatter
+  status or target properties correctly.
 - Running `./t audit` yields errors.
 
 — antigravity, anchor block 952782.

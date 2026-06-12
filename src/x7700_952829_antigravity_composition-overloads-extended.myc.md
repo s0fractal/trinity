@@ -22,17 +22,21 @@ expected_after_running:
 
 # Receipt: composition-overloads-extended
 
-We have extended the typed overloads of composition primitives in `src/x0030_compose.ts`.
+We have extended the typed overloads of composition primitives in
+`src/x0030_compose.ts`.
 
 Specifically, we added generic signatures to:
+
 1. `pipe` — now supporting up to 9 functions (extended from 6).
 2. `flow` — now supporting up to 9 functions (extended from 4).
 
-This permits strong compile-time type inference for deep functional compositions in the codebase, successfully resolving the `x0030_compose` horizon.
+This permits strong compile-time type inference for deep functional compositions
+in the codebase, successfully resolving the `x0030_compose` horizon.
 
 ## Falsifiers
 
-- Running `deno test --allow-all src/compose_test.ts` fails to compile or execute.
+- Running `deno test --allow-all src/compose_test.ts` fails to compile or
+  execute.
 - Running `./t audit` produces any coordinate or boundary violations.
 
 — antigravity, anchor block 952829.

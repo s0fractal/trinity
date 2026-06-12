@@ -19,7 +19,7 @@ graduation_target: src/x9999_fake_graduation.ts
 graduation_date: 2026-06-08
 ---
 # Temp Test Probe
-`
+`,
     );
 
     const rec = await readProbe("temp-test-frontmatter-probe", new Set(), []);
@@ -46,7 +46,7 @@ graduation_target: src/x8888_override.ts
 ---
 > **Status: graduated 2026-05-19 -> src/x1111_stale.ts**
 # Temp Test Probe
-`
+`,
     );
 
     const rec = await readProbe("temp-test-override-probe", new Set(), []);

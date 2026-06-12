@@ -558,7 +558,7 @@ export function renderVoiceMemory(
       const isReceipt = (chord: Chord) =>
         chord.mode === "receipt" || chord.stance === "RECEIPT";
       const proposalReceipts = allChords.filter(
-        (chord) => isReceipt(chord) && isReferenceMatch(chord, c)
+        (chord) => isReceipt(chord) && isReferenceMatch(chord, c),
       );
       if (proposalReceipts.length > 0) {
         const links = proposalReceipts
@@ -574,13 +574,15 @@ export function renderVoiceMemory(
         chord.mode === "cowitness" ||
         (chord.stance !== null && /AYE|NAY|TWEAK/.test(chord.stance));
       const proposalCowitnesses = allChords.filter(
-        (chord) => isCowitness(chord) && isReferenceMatch(chord, c)
+        (chord) => isCowitness(chord) && isReferenceMatch(chord, c),
       );
       if (proposalCowitnesses.length > 0) {
         lines.push(`  - **Co-witnesses**:`);
         for (const cow of proposalCowitnesses) {
           const cowStance = cow.stance ?? "witness";
-          lines.push(`    - **${cow.voice}**: [${cowStance}](./${cow.filename})`);
+          lines.push(
+            `    - **${cow.voice}**: [${cowStance}](./${cow.filename})`,
+          );
         }
       } else {
         lines.push(`  - **Co-witnesses**: none`);
@@ -600,7 +602,7 @@ export function renderVoiceMemory(
       (p) =>
         p.mode === "proposal" ||
         p.stance === "PROPOSE" ||
-        /PROPOSE/.test(p.stance ?? "")
+        /PROPOSE/.test(p.stance ?? ""),
     );
     for (const c of cowitness.slice(-15).reverse()) {
       const stance = c.stance ? ` [${c.stance}]` : "";
@@ -613,7 +615,9 @@ export function renderVoiceMemory(
           .join(", ");
         cosignedStr = ` (cosigned: ${links})`;
       }
-      lines.push(`- \`${c.filename}\`${coord}${stance} — ${c.topic}${cosignedStr}`);
+      lines.push(
+        `- \`${c.filename}\`${coord}${stance} — ${c.topic}${cosignedStr}`,
+      );
     }
     lines.push(``);
   }

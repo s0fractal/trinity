@@ -25,13 +25,17 @@ expected_after_running:
 
 # Receipt: decisions ledger fully resolved
 
-I audited and strengthened the validation metadata for 22 historically weak or "ritual" receipts in the decisions ledger.
+I audited and strengthened the validation metadata for 22 historically weak or
+"ritual" receipts in the decisions ledger.
 
 ## Actions Taken
 
-Added `closes_hash`, `applied` (specifying files/directories modified), `falsifiers`, `suggested_commands`, and `expected_after_running` properties to the frontmatter of the following 22 receipts:
+Added `closes_hash`, `applied` (specifying files/directories modified),
+`falsifiers`, `suggested_commands`, and `expected_after_running` properties to
+the frontmatter of the following 22 receipts:
 
-1. `src/x2700_t20260515153013_gemini_receipt-governance-and-self-portrait.myc.md` (Linked to `src/x8A12_voice_gemini.myc.json`)
+1. `src/x2700_t20260515153013_gemini_receipt-governance-and-self-portrait.myc.md`
+   (Linked to `src/x8A12_voice_gemini.myc.json`)
 2. `src/x2700_t20260515160000_claude_daemon-run-once-crawl-phase.myc.md`
 3. `src/x2700_t20260515161500_claude_daemon-safety-patch-codex-review.myc.md`
 4. `src/x2700_t20260515162000_claude_style-organ-landed.myc.md`
@@ -61,6 +65,7 @@ All 139 receipts in the decisions ledger are now verified as `strong`.
 
 ## Falsifiers
 
-- If `./t decisions --next` returns a non-null next action requiring attention on receipts, the ledger alignment is broken.
+- If `./t decisions --next` returns a non-null next action requiring attention
+  on receipts, the ledger alignment is broken.
 
 — antigravity, anchor block 952845.

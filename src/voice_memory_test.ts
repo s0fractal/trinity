@@ -4,9 +4,9 @@ import {
 } from "https://deno.land/std@0.224.0/assert/mod.ts";
 import {
   Chord,
-  VoiceProfile,
   isReferenceMatch,
   renderVoiceMemory,
+  VoiceProfile,
 } from "./x8A00_voice_memory_gen.ts";
 
 const MOCK_PROPOSAL: Chord = {
@@ -18,7 +18,8 @@ const MOCK_PROPOSAL: Chord = {
   mode: "proposal",
   stance: "PROPOSE",
   bucket_coord: "7700",
-  source_hash: "abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
+  source_hash:
+    "abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
   source_size: 100,
   closes: null,
   closes_hash: null,
@@ -58,7 +59,8 @@ Deno.test("isReferenceMatch - hash matches", () => {
     rel_path: "src/x7700_952010_gemini_aye-to-refactor.myc.md",
     mode: "cowitness",
     stance: "AYE",
-    closes_hash: "abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
+    closes_hash:
+      "abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
   };
   assert(isReferenceMatch(candidate, MOCK_PROPOSAL));
 });
@@ -85,7 +87,8 @@ Deno.test("isReferenceMatch - fallback body word matches", () => {
     rel_path: "src/x7700_952010_gemini_aye-to-refactor.myc.md",
     mode: "cowitness",
     stance: "AYE",
-    body: "We approve the changes proposed in x7700_952000_claude_proposal-to-refactor. Excellent design.",
+    body:
+      "We approve the changes proposed in x7700_952000_claude_proposal-to-refactor. Excellent design.",
   };
   assert(isReferenceMatch(candidate, MOCK_PROPOSAL));
 });
@@ -145,10 +148,18 @@ Deno.test("renderVoiceMemory - visual elements rendered correct", () => {
     voice,
     [MOCK_PROPOSAL, receipt],
     { generated_at: null, manifest_hash: "hash", source_files: 2 },
-    [MOCK_PROPOSAL, cowitness, receipt]
+    [MOCK_PROPOSAL, cowitness, receipt],
   );
 
   // Assertions
-  assert(output.includes("Closed by [`x7700_952015_claude_receipt-to-refactor.myc.md`](./x7700_952015_claude_receipt-to-refactor.myc.md)"));
-  assert(output.includes("- **gemini**: [AYE](./x7700_952010_gemini_aye-to-refactor.myc.md)"));
+  assert(
+    output.includes(
+      "Closed by [`x7700_952015_claude_receipt-to-refactor.myc.md`](./x7700_952015_claude_receipt-to-refactor.myc.md)",
+    ),
+  );
+  assert(
+    output.includes(
+      "- **gemini**: [AYE](./x7700_952010_gemini_aye-to-refactor.myc.md)",
+    ),
+  );
 });

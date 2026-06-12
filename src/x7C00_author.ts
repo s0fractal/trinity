@@ -252,7 +252,9 @@ async function successCheck(wt: string, check: string): Promise<Verdict> {
 }
 
 /** Parse single reviewer LLM response into review stance. */
-export function parseReviewVerdict(verdict: string): { stance: "AYE" | "NAY"; reason?: string } {
+export function parseReviewVerdict(
+  verdict: string,
+): { stance: "AYE" | "NAY"; reason?: string } {
   const clean = verdict.trim();
   if (/^APPROVE\b/i.test(clean)) {
     return { stance: "AYE" };
@@ -261,7 +263,10 @@ export function parseReviewVerdict(verdict: string): { stance: "AYE" | "NAY"; re
   if (match) {
     return { stance: "NAY", reason: match[1].trim() };
   }
-  return { stance: "NAY", reason: clean || "reviewer returned malformed verdict" };
+  return {
+    stance: "NAY",
+    reason: clean || "reviewer returned malformed verdict",
+  };
 }
 
 /** Adjudicate a quorum of review stances. Minimum threshold of AYEs and zero NAYs required. */
@@ -385,10 +390,14 @@ async function adversarialQuorumReview(
         if (code !== 0) {
           votes[r.voice] = {
             stance: "NAY",
-            reason: `exited with code ${code}. Output: ${outText.trim().slice(0, 100)}`,
+            reason: `exited with code ${code}. Output: ${
+              outText.trim().slice(0, 100)
+            }`,
           };
         } else {
-          const verdictStr = outText.trim().split("\n").map((l) => l.trim()).filter(Boolean).pop() ?? "";
+          const verdictStr = outText.trim().split("\n").map((l) =>
+            l.trim()
+          ).filter(Boolean).pop() ?? "";
           votes[r.voice] = parseReviewVerdict(verdictStr);
         }
       } catch (err) {
@@ -529,13 +538,11 @@ async function main() {
     const gates = [
       () => scopeCheck(wt),
       () => verifyGates(wt),
-      ...(noReview
-        ? []
-        : [
-          autoMerge
-            ? () => adversarialQuorumReview(wt, `verify-only ${verifyOnly}`)
-            : () => adversarialReview(wt, `verify-only ${verifyOnly}`),
-        ]),
+      ...(noReview ? [] : [
+        autoMerge
+          ? () => adversarialQuorumReview(wt, `verify-only ${verifyOnly}`)
+          : () => adversarialReview(wt, `verify-only ${verifyOnly}`),
+      ]),
     ];
     for (const gate of gates) {
       const v = await gate();

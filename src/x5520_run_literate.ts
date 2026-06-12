@@ -2,6 +2,12 @@
 // position: 5/52
 // maturity: active
 // skill_safe: yes-with-care
+// hex_dipole: "00 00 26 26 00 6C 00 33"
+// placement_policy: axis
+// (character: primary action_decision +0.85 — executes the document;
+//  completion_frontier +0.40 — produces the run result; mirror_apex +0.30 —
+//  doc→code extraction is reflection; triangle_build +0.30 — composes a
+//  runnable module from blocks. Measured by claude-fable-5.)
 
 import { extractCodeBlocks } from "./x0150_literate_parser.ts";
 import { dirname } from "https://deno.land/std@0.224.0/path/mod.ts";

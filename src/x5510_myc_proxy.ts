@@ -4,6 +4,13 @@
 // skill_safe: yes-with-care
 //   (binds a TCP port and, when used as Deno's HTTP_PROXY,
 //   tunnels all other imports through itself — not read-only)
+// hex_dipole: "00 00 40 00 33 6C 00 26"
+// placement_policy: axis
+// (character: primary action_decision +0.85 — it actively serves and routes
+//  every import in flight; mirror_apex +0.50 — name-is-address resolution is
+//  reflection; foundation_container +0.40 — load-bearing transport for all
+//  remote imports; completion_frontier +0.30 — emits the final extracted
+//  module. Measured by claude-fable-5.)
 //
 // Purpose: collapse the difference between a file name and its canonical address.
 // The end-goal is `import "myc.md/src/foo.myc.md"` (and eventually bare

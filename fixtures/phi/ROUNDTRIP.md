@@ -1,12 +1,11 @@
 # Phi Roundtrip Fixture
 
-Generated: 2026-05-09T02:01:31.742Z
+Deterministic projection of the liquid → omega → myc bridge. Regenerate with
+`deno task fixture:phi` (add `:ingest-myc` for the third leg).
 
-Intent: `/Users/s0fractal/trinity/fixtures/phi/phi_intent_fixture.json` Intent
-SHA-256: `f6ad91ee19648111896148725cf4b46d7eeaec0124987ff1e50bacef5d5680e5`
-
-Receipt: `/Users/s0fractal/trinity/fixtures/phi/phi_receipt_fixture.json`
-Receipt SHA-256:
-`a25685156db28c9896b24beb2005fc1f0ffdc6878d6c03855a242d2d97441510`
-
-MYC ingest: no
+```text
+intent:          fixtures/phi/phi_intent_fixture.json
+intent_sha256:   522207afe8e5feb9e0da197a8f09cb7a45b453f7797096a88c73d93068e511eb
+receipt:         fixtures/phi/phi_receipt_fixture.json
+receipt_sha256:  8bb2818dd489316f71d56ddcabeb4bbd118b3c07a6d16fca87d2e0150798f8c9
+```

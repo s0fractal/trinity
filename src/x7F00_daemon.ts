@@ -684,6 +684,58 @@ async function regenerateProjections(): Promise<void> {
   }
 }
 
+/** One heartbeat through the phi bridge: liquid emits PHI_INTENT, omega
+ *  verifies and emits PHI_RECEIPT, myc ingests the descriptor (third leg
+ *  runs only when the migrated myc organ is present). x6420 writes
+ *  deterministic fixtures, so this composes with the commit-if-drifted
+ *  flow: a hash change is REAL substrate-physics change and gets committed
+ *  like any other stable projection; an identical pulse is a no-op.
+ *  Failure reverts fixtures/phi and never blocks projection maintenance. */
+async function phiPulse(): Promise<Record<string, unknown>> {
+  for (const sub of ["liquid", "omega"]) {
+    try {
+      await Deno.stat(join(ROOT, sub, ".git"));
+    } catch {
+      return { status: "skipped", reason: `submodule ${sub} absent` };
+    }
+  }
+  const ingestMyc = await Deno.stat(
+    join(ROOT, "myc", "src", "x5F10_import_substrate_receipt.ts"),
+  ).then(() => true).catch(() => false);
+  const { code, stdout, stderr } = await new Deno.Command("deno", {
+    args: [
+      "run",
+      "-A",
+      "src/x6420_phi_roundtrip.ts",
+      ...(ingestMyc ? ["--ingest-myc"] : []),
+      "--json",
+    ],
+    cwd: ROOT,
+    stdout: "piped",
+    stderr: "piped",
+  }).output();
+  if (code !== 0) {
+    await runGit(["checkout", "--", "fixtures/phi"]);
+    return {
+      status: "failed",
+      detail: new TextDecoder().decode(stderr).trim().split("\n").slice(-3),
+    };
+  }
+  const lastLine = new TextDecoder().decode(stdout).trim().split("\n").pop() ??
+    "";
+  try {
+    const parsed = JSON.parse(lastLine);
+    return {
+      status: "ok",
+      intent_sha256: parsed.intent_sha256,
+      receipt_sha256: parsed.receipt_sha256,
+      myc_ingest: parsed.myc_ingest,
+    };
+  } catch {
+    return { status: "ok", note: "roundtrip green, summary unparsed" };
+  }
+}
+
 /** fmt --check + type-check must pass before the loop commits anything.
  *  Returns the first failing gate's name so the act log can say WHY a tick
  *  reverted/refused — a bare revert masks pre-existing repo debt as "drift"
@@ -767,16 +819,21 @@ async function handleAct(useJson: boolean, push: boolean): Promise<void> {
     return;
   }
 
-  // Safe deterministic action: bring the stable projections current.
+  // Safe deterministic actions: one heartbeat through the phi bridge, then
+  // bring the stable projections current. Both are regen-and-commit-if-
+  // drifted; the pulse result rides along in the log either way.
+  const pulse = await phiPulse();
   await regenerateProjections();
   const status = await runGit(["status", "--short"]);
   const drifted = status.out.trim().split("\n").map((l) => l.trim()).filter(
     Boolean,
   );
   if (drifted.length === 0) {
+    await appendActLog({ action: "idle", pulse });
     report({
       action: "idle",
       note: "projections current — nothing safe to maintain",
+      pulse,
     });
     return;
   }
@@ -785,7 +842,7 @@ async function handleAct(useJson: boolean, push: boolean): Promise<void> {
   const postRegen = await localGatesFailure();
   if (postRegen) {
     await runGit(["checkout", "--", "."]);
-    await appendActLog({ action: "reverted", drifted, gate: postRegen });
+    await appendActLog({ action: "reverted", drifted, gate: postRegen, pulse });
     report({
       action: "reverted",
       reason:
@@ -799,7 +856,12 @@ async function handleAct(useJson: boolean, push: boolean): Promise<void> {
   // Log BEFORE staging so the act record (a tracked file) is committed in the
   // same commit — otherwise the appended line leaves the tree dirty and the
   // next --act refuses.
-  await appendActLog({ action: "committed", files: drifted, pushed: push });
+  await appendActLog({
+    action: "committed",
+    files: drifted,
+    pushed: push,
+    pulse,
+  });
   await runGit(["add", "-A"]);
   const commitMsg =
     "auto(daemon): refresh stable projections [tick --act]\n\n" +
@@ -817,7 +879,7 @@ async function handleAct(useJson: boolean, push: boolean): Promise<void> {
     const p = await runGit(["push", "origin", "main"]);
     pushed = p.ok;
   }
-  report({ action: "committed", commit: head, files: drifted, pushed });
+  report({ action: "committed", commit: head, files: drifted, pushed, pulse });
 }
 
 async function handleTick(useJson: boolean): Promise<void> {

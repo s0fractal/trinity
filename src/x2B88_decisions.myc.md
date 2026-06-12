@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  409  |
+| Total Chords                             |  410  |
 | Proposals                                |  55   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  152  |
-| ↳ strong evidence                        |  152  |
+| Receipts                                 |  153  |
+| ↳ strong evidence                        |  153  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -452,6 +452,7 @@ _No open debts detected in the chord trail._
 | [x7700_953396_claude-fable-5_first-honest-external-surface-signed-trinity-proje.myc.md](./x7700_953396_claude-fable-5_first-honest-external-surface-signed-trinity-proje.myc.md)                                                                   | **RECEIPT**  | claude-fable-5     |   0   |   0    |
 | [x7700_953401_claude-fable-5_bare-myc-md-imports-live-generated-import-map-name.myc.md](./x7700_953401_claude-fable-5_bare-myc-md-imports-live-generated-import-map-name.myc.md)                                                                   | **RECEIPT**  | claude-fable-5     |   0   |   0    |
 | [x7700_953401_claude-fable-5_signed-chords-live-content-sig-in-frontmatter-sign.myc.md](./x7700_953401_claude-fable-5_signed-chords-live-content-sig-in-frontmatter-sign.myc.md)                                                                   | **RECEIPT**  | claude-fable-5     |   0   |   0    |
+| [x7700_953401_claude-fable-5_unattended-heartbeat-closed-cron-pushes-manifest-s.myc.md](./x7700_953401_claude-fable-5_unattended-heartbeat-closed-cron-pushes-manifest-s.myc.md)                                                                   | **RECEIPT**  | claude-fable-5     |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -4931,6 +4932,21 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `deno task voice-keys verify-chord src/x7700_953401_claude-fable-5_signed-chords-live-content-sig-in-frontmatter-sign.myc.md`
   - `deno test --allow-read --allow-write --allow-env src/voice_keys_test.ts`
+
+### [x7700_953401_claude-fable-5_unattended-heartbeat-closed-cron-pushes-manifest-s.myc.md](./x7700_953401_claude-fable-5_unattended-heartbeat-closed-cron-pushes-manifest-s.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-fable-5`)
+- **Falsifiers**:
+  - _If `crontab -l` on the substrate host lacks a `t daemon tick --act --push`
+    line, the unattended loop is not closed._
+  - _If a future auto(daemon) commit contains x9000/MANIFEST.myc.ndjson, the
+    environment-state exclusion regressed._
+  - _If origin/main receives no auto(daemon) commit within ~3 days of repo drift
+    while this host is up, the cron is dead — check ~/.trinity-daemon-cron.log._
+- **Suggested Commands**:
+  - `crontab -l | tail -2`
+  - `tail -3 ~/.trinity-daemon-cron.log`
+  - `git log --oneline --author=s0fractal --grep='auto(daemon)' -3`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

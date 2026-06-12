@@ -824,6 +824,11 @@ async function handleAct(useJson: boolean, push: boolean): Promise<void> {
   // drifted; the pulse result rides along in the log either way.
   const pulse = await phiPulse();
   await regenerateProjections();
+  // x9000/MANIFEST.myc.ndjson is a submodule-shadow side-effect of the
+  // external-surfaces regen: its content depends on whether submodules are
+  // present, so it is environment state, not a stable projection. The loop
+  // must not commit it (per the CI submodule decoupling).
+  await runGit(["checkout", "--", "x9000/MANIFEST.myc.ndjson"]);
   const status = await runGit(["status", "--short"]);
   const drifted = status.out.trim().split("\n").map((l) => l.trim()).filter(
     Boolean,

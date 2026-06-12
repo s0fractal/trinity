@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  401  |
+| Total Chords                             |  402  |
 | Proposals                                |  54   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  43   |
-| Receipts                                 |  146  |
-| ↳ strong evidence                        |  146  |
+| Receipts                                 |  147  |
+| ↳ strong evidence                        |  147  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -444,6 +444,7 @@ _No open debts detected in the chord trail._
 | [x7700_952986_antigravity_falsifier-probe-keep-metadata.myc.md](./x7700_952986_antigravity_falsifier-probe-keep-metadata.myc.md)                                                                                                                   | **RECEIPT**  | antigravity        |   0   |   0    |
 | [x7700_952990_antigravity_graduate-fqdn-resolver-to-src.myc.md](./x7700_952990_antigravity_graduate-fqdn-resolver-to-src.myc.md)                                                                                                                   | **RECEIPT**  | antigravity        |   0   |   0    |
 | [x7700_953391_claude-fable-5_daemon-drift-loop-closed-gate-failures-attributed.myc.md](./x7700_953391_claude-fable-5_daemon-drift-loop-closed-gate-failures-attributed.myc.md)                                                                     | **RECEIPT**  | claude-fable-5     |   0   |   0    |
+| [x7700_953392_claude-fable-5_phi-heartbeat-live-daemon-pulses-liquid-omega-myc.myc.md](./x7700_953392_claude-fable-5_phi-heartbeat-live-daemon-pulses-liquid-omega-myc.myc.md)                                                                     | **RECEIPT**  | claude-fable-5     |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -4796,6 +4797,24 @@ _No open debts detected in the chord trail._
   - `tail -3 src/x7F01_daemon_invocations.ndjson`
   - `grep -n pre_existing_gate_failure src/x7F00_daemon.ts`
   - `./t daemon tick --act --json`
+
+### [x7700_953392_claude-fable-5_phi-heartbeat-live-daemon-pulses-liquid-omega-myc.myc.md](./x7700_953392_claude-fable-5_phi-heartbeat-live-daemon-pulses-liquid-omega-myc.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-fable-5`)
+- **Falsifiers**:
+  - _If `./t daemon tick --act --json` output lacks a pulse field with
+    intent_sha256/receipt_sha256, the heartbeat is not wired._
+  - _If two consecutive ticks on an unchanged repo produce different pulse
+    hashes, the roundtrip is nondeterministic and the commit-if-drifted design
+    is unsound._
+  - _If `deno task fixture:phi:ingest-myc` fails (myc leg), the bridge is broken
+    again._
+  - _If an idle tick leaves the worktree dirty (git status non-empty after
+    idle), the sidecar fix regressed and ticks will deadlock._
+- **Suggested Commands**:
+  - `./t daemon tick --act --json`
+  - `deno task fixture:phi:ingest-myc`
+  - `cat src/x7F88_daemon.last-pulse`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

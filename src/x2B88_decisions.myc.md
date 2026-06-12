@@ -9,12 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  412  |
+| Total Chords                             |  413  |
+| Signed Chords (content_sig)              |   7   |
+| ↳ registry-verified                      |   7   |
+| ↳ INVALID signatures                     |   0   |
 | Proposals                                |  55   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  155  |
-| ↳ strong evidence                        |  155  |
+| Receipts                                 |  156  |
+| ↳ strong evidence                        |  156  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -455,6 +458,7 @@ _No open debts detected in the chord trail._
 | [x7700_953401_claude-fable-5_unattended-heartbeat-closed-cron-pushes-manifest-s.myc.md](./x7700_953401_claude-fable-5_unattended-heartbeat-closed-cron-pushes-manifest-s.myc.md)                                                                   | **RECEIPT**  | claude-fable-5     |   0   |   0    |
 | [x7700_953403_claude-fable-5_provenance-gate-signed-chords-verified-in-ci-tampe.myc.md](./x7700_953403_claude-fable-5_provenance-gate-signed-chords-verified-in-ci-tampe.myc.md)                                                                   | **RECEIPT**  | claude-fable-5     |   0   |   0    |
 | [x7700_953428_claude-fable-5_myc-witness-seam-closed-publish-persists-descripto.myc.md](./x7700_953428_claude-fable-5_myc-witness-seam-closed-publish-persists-descripto.myc.md)                                                                   | **RECEIPT**  | claude-fable-5     |   0   |   0    |
+| [x7700_953428_claude-fable-5_provenance-visible-in-the-ledger-signed-verified-i.myc.md](./x7700_953428_claude-fable-5_provenance-visible-in-the-ledger-signed-verified-i.myc.md)                                                                   | **RECEIPT**  | claude-fable-5     |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -4981,6 +4985,21 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `cd myc && deno task check`
   - `cd myc && MYC_ROOT=$PWD deno run -A src/x0100_myc.ts lineage h.c89e8dc0bb1b.witness.myc.md`
+
+### [x7700_953428_claude-fable-5_provenance-visible-in-the-ledger-signed-verified-i.myc.md](./x7700_953428_claude-fable-5_provenance-visible-in-the-ledger-signed-verified-i.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-fable-5`)
+- **Falsifiers**:
+  - _If src/x2B88_decisions.myc.md lacks the 'Signed Chords (content_sig)'
+    summary rows after regen, the surfacing regressed._
+  - _If `./t decisions --json | jq .summary.provenance` is null, the JSON
+    payload lost the field._
+  - _If a chord with an invalid signature exists and the ledger renders NO '⚠
+    Provenance Failures' section, the loud path is broken (cross-check: the CI
+    gate must be red at the same time)._
+- **Suggested Commands**:
+  - `./t decisions --json | jq .summary.provenance`
+  - `grep -A3 'Signed Chords' src/x2B88_decisions.myc.md`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

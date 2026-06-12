@@ -19,6 +19,7 @@ import {
 import { formatGeneratedFile } from "./x0012_generated_format.ts";
 import { getGitTrackedFiles } from "./x8F10_external_surfaces_core.ts";
 import { listChordSurfaceFiles } from "./x2F21_chord_surface.ts";
+import { verifyAllChords } from "./x2F37_voice_keys.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
@@ -969,6 +970,12 @@ function validateResolvedByEntries(
 export async function collectDecisions(stable: boolean): Promise<{
   summary: {
     total_chords: number;
+    provenance: {
+      signed: number;
+      valid: number;
+      invalid: number;
+      failures: { file: string; reasons: string[] }[];
+    };
     proposals: number;
     unresolved_proposals: number;
     proposal_triage: {
@@ -1177,8 +1184,19 @@ export async function collectDecisions(stable: boolean): Promise<{
   });
 
   const triagedProposals = entries.filter((e) => e.proposal_triage !== null);
+  // Provenance sweep (x2F37): same invariant the CI gate enforces — unsigned
+  // is legal, a carried content_sig must verify. Surfaced here so the
+  // self-description shows the trust state, not only the red/green of CI.
+  const provenance = await verifyAllChords(HERE);
+
   const summary = {
     total_chords: entries.length,
+    provenance: {
+      signed: provenance.signed,
+      valid: provenance.valid,
+      invalid: provenance.invalid,
+      failures: provenance.failures,
+    },
     proposals: entries.filter((e) => e.category === "proposal").length,
     unresolved_proposals: entries.filter(
       (e) => e.category === "proposal" && e.is_unresolved,
@@ -1361,6 +1379,11 @@ async function main() {
   lines.push(`| Metric | Count |`);
   lines.push(`| :--- | :---: |`);
   lines.push(`| Total Chords | ${summary.total_chords} |`);
+  lines.push(
+    `| Signed Chords (content_sig) | ${summary.provenance.signed} |`,
+  );
+  lines.push(`| ↳ registry-verified | ${summary.provenance.valid} |`);
+  lines.push(`| ↳ INVALID signatures | ${summary.provenance.invalid} |`);
   lines.push(`| Proposals | ${summary.proposals} |`);
   lines.push(
     `| Unresolved Proposals (Heuristic) | ${summary.unresolved_proposals} |`,
@@ -1385,6 +1408,19 @@ async function main() {
     `| ↳ recent (last 7d) | ${summary.ritual_receipts_recent_7d} |`,
   );
   lines.push(``);
+
+  if (summary.provenance.invalid > 0) {
+    lines.push(`## ⚠ Provenance Failures`);
+    lines.push(``);
+    lines.push(
+      `*A chord carrying a content_sig failed verification — the body was edited after signing or the signature is forged. CI is red on this; fix by re-signing (\`voice-keys sign-chord\`) or investigating the edit.*`,
+    );
+    lines.push(``);
+    for (const f of summary.provenance.failures) {
+      lines.push(`- \`${f.file}\` — ${f.reasons.join("; ")}`);
+    }
+    lines.push(``);
+  }
 
   lines.push(`## Proposal Triage Queue`);
   lines.push(``);

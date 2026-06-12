@@ -216,6 +216,153 @@ export async function verifyAttestations<T extends SignedAttestation>(
   return { verified, dropped };
 }
 
+// ── chord content signatures ────────────────────────────────────────────────
+// A chord's provenance upgrades from narrative to cryptographic: the authoring
+// voice signs sha256(filename + "\n" + body) — filename binds the role address
+// (fqdn), body is everything after the closing frontmatter fence. The
+// signature block lives IN the frontmatter, so it cannot cover the
+// frontmatter itself; body+name is the canonical claim being signed.
+
+export function chordBody(fullContent: string): string | null {
+  const m = fullContent.match(/^---\n[\s\S]*?\n---\n?/);
+  if (!m) return null;
+  return fullContent.slice(m[0].length);
+}
+
+export async function chordPayloadHash(
+  filename: string,
+  fullContent: string,
+): Promise<string | null> {
+  const body = chordBody(fullContent);
+  if (body === null) return null;
+  const digest = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(`${filename}\n${body}`),
+  );
+  const hex = Array.from(new Uint8Array(digest))
+    .map((b) => b.toString(16).padStart(2, "0")).join("");
+  return `sha256:${hex}`;
+}
+
+/** Voice family key for chord signing (claude-fable-5 → claude). */
+export function voiceFamily(voice: string): string {
+  return voice.split("-")[0].toLowerCase();
+}
+
+/** Try to sign a chord's content with the authoring voice's local key.
+ *  Returns frontmatter lines to insert, or null when no key / no permission —
+ *  unsigned chords stay legal (keyless-mode discipline). */
+export async function signChordContent(
+  voice: string,
+  filename: string,
+  fullContent: string,
+): Promise<string[] | null> {
+  try {
+    const family = voiceFamily(voice);
+    const home = Deno.env.get("HOME") ?? ".";
+    const keyPath = join(home, ".trinity", "keys", `${family}.ed25519.json`);
+    const stored = JSON.parse(await Deno.readTextFile(keyPath));
+    const hash = await chordPayloadHash(filename, fullContent);
+    if (!hash) return null;
+    const sig = await signHash(hash, stored.private_key_pkcs8);
+    return [
+      "content_sig:",
+      `  voice: ${family}`,
+      "  alg: ed25519",
+      `  payload: "${hash}"`,
+      `  sig: "${sig}"`,
+    ];
+  } catch {
+    return null;
+  }
+}
+
+/** Re-sign an existing chord file in place: strip any previous content_sig,
+ *  hash the CURRENT body, sign with the authoring voice's key, insert the
+ *  fresh block. The intended flow is init → edit body → sign-chord → git add
+ *  (a signature made at init dies the moment the body is edited — by design;
+ *  verify reports exactly that). */
+export async function resignChordFile(
+  path: string,
+): Promise<{ ok: boolean; voice: string | null; reason?: string }> {
+  let content = await Deno.readTextFile(path);
+  const fmMatch = content.match(/^---\n([\s\S]*?)\n---\n?/);
+  if (!fmMatch) return { ok: false, voice: null, reason: "no frontmatter" };
+  const voice = fmMatch[1].match(/^voice:\s*(\S+)/m)?.[1] ?? null;
+  if (!voice) return { ok: false, voice: null, reason: "no voice field" };
+
+  // Strip a previous content_sig block (key line + its indented children).
+  const cleanedFm = fmMatch[1]
+    .replace(/\ncontent_sig:(\n {2}.*)*$/m, "")
+    .replace(/^content_sig:(\n {2}.*)*\n/m, "");
+  content = `---\n${cleanedFm}\n---\n` + content.slice(fmMatch[0].length);
+
+  const filename = path.split("/").pop()!;
+  const sigLines = await signChordContent(voice, filename, content);
+  if (!sigLines) {
+    return {
+      ok: false,
+      voice,
+      reason: `no local key for ${voiceFamily(voice)}`,
+    };
+  }
+  const closing = content.indexOf("\n---\n", 4);
+  const updated = content.slice(0, closing + 1) + sigLines.join("\n") +
+    content.slice(closing);
+  await Deno.writeTextFile(path, updated);
+  return { ok: true, voice };
+}
+
+/** Verify a chord file's content_sig against the committed registry. */
+export async function verifyChordFile(
+  path: string,
+  registry?: Registry,
+): Promise<{
+  signed: boolean;
+  valid: boolean;
+  voice: string | null;
+  reasons: string[];
+}> {
+  const reg = registry ?? await loadRegistry();
+  const content = await Deno.readTextFile(path);
+  const fm = content.match(/^---\n([\s\S]*?)\n---/)?.[1] ?? "";
+  const voice = fm.match(/^content_sig:[\s\S]*?\n\s+voice:\s*(\S+)/m)?.[1] ??
+    null;
+  const payload =
+    fm.match(/^content_sig:[\s\S]*?\n\s+payload:\s*"([^"]+)"/m)?.[1] ?? null;
+  const sig = fm.match(/^content_sig:[\s\S]*?\n\s+sig:\s*"([^"]+)"/m)?.[1] ??
+    null;
+  if (!voice || !payload || !sig) {
+    return {
+      signed: false,
+      valid: false,
+      voice: null,
+      reasons: ["no content_sig block"],
+    };
+  }
+  const filename = path.split("/").pop()!;
+  const expected = await chordPayloadHash(filename, content);
+  const reasons: string[] = [];
+  if (expected !== payload) {
+    reasons.push(
+      `payload hash mismatch: frontmatter pins ${payload}, body hashes to ${expected} — body or filename edited after signing`,
+    );
+  }
+  const entry = reg.keys[voice];
+  if (!entry) {
+    reasons.push(`voice ${voice} has no registry pubkey`);
+    return { signed: true, valid: false, voice, reasons };
+  }
+  const ok = await verifySig(payload, sig, entry.pubkey);
+  if (!ok) reasons.push("signature does not verify against registry pubkey");
+  return {
+    signed: true,
+    valid: ok && expected === payload,
+    voice,
+    reasons,
+  };
+}
+
 // ── CLI ─────────────────────────────────────────────────────────────────────
 
 function flagValue(args: string[], name: string): string | undefined {
@@ -307,11 +454,34 @@ async function main() {
       out({ type: "voice_registry", ...await loadRegistry() });
       break;
     }
+    case "sign-chord": {
+      const path = rest.find((a) => !a.startsWith("--"));
+      if (!path) {
+        console.error("usage: sign-chord <path-to-chord.myc.md>");
+        Deno.exit(1);
+      }
+      const result = await resignChordFile(path);
+      out({ type: "chord_sign", path, ...result });
+      Deno.exit(result.ok ? 0 : 1);
+      break;
+    }
+    case "verify-chord": {
+      const path = rest.find((a) => !a.startsWith("--"));
+      if (!path) {
+        console.error("usage: verify-chord <path-to-chord.myc.md>");
+        Deno.exit(1);
+      }
+      const result = await verifyChordFile(path);
+      out({ type: "chord_sig_verify", path, ...result });
+      Deno.exit(result.signed && result.valid ? 0 : 1);
+      break;
+    }
     default:
       console.error(
         "voice-keys — per-voice Ed25519 identity\n\n" +
           "subcommands: keygen --voice=N | sign --voice=N --hash=H | " +
-          "verify --voice=N --hash=H --sig=S | registry",
+          "verify --voice=N --hash=H --sig=S | registry | " +
+          "sign-chord <path> | verify-chord <path>",
       );
       Deno.exit(cmd ? 1 : 0);
   }

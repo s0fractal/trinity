@@ -9,11 +9,14 @@ import {
 import {
   mintKeypair,
   type Registry,
+  resignChordFile,
   signHash,
   verifyAttestations,
+  verifyChordFile,
   verifySig,
 } from "./x2F37_voice_keys.ts";
 import { adjudicate, type Attestation } from "./x2F36_fqdn_sovereignty.ts";
+import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
 
 const H = "blake3:0123456789abcdef0123456789abcdef";
 
@@ -137,4 +140,67 @@ Deno.test("voice-keys — unsigned attestations pass through as unverified (keyl
   const v = adjudicate(H, "claude", [...verified, ...rest]);
   assertEquals(v.verdict, "AYE"); // keyless PoC still admits…
   assertEquals(v.assurance, "unauthenticated"); // …but never claims identity
+});
+
+Deno.test("chord-sig — sign-chord → verify roundtrip; edit after signing is detected", async () => {
+  const dir = await Deno.makeTempDir({ prefix: "chordsig_" });
+  const home = Deno.env.get("HOME");
+  try {
+    // Ephemeral custody: fake HOME so the test never touches real keys.
+    Deno.env.set("HOME", dir);
+    const { entry, privateKeyB64 } = await mintKeypair("test");
+    await Deno.mkdir(join(dir, ".trinity", "keys"), { recursive: true });
+    await Deno.writeTextFile(
+      join(dir, ".trinity", "keys", "testvoice.ed25519.json"),
+      JSON.stringify({
+        voice: "testvoice",
+        alg: "ed25519",
+        private_key_pkcs8: privateKeyB64,
+      }),
+    );
+    const registry: Registry = {
+      schema: "trinity.voice-pubkeys.v0.1",
+      custody_note: "ephemeral",
+      keys: { testvoice: entry },
+    };
+
+    const chordPath = join(dir, "x7700_999999_testvoice_sample.myc.md");
+    await Deno.writeTextFile(
+      chordPath,
+      "---\ntype: chord.receipt\nvoice: testvoice-model-1\nmode: receipt\n---\n\n# Sample\n\nbody text\n",
+    );
+
+    // Sign the edited chord in place.
+    const signed = await resignChordFile(chordPath);
+    assert(signed.ok, signed.reason);
+
+    // Verifies green against the ephemeral registry.
+    const v1 = await verifyChordFile(chordPath, registry);
+    assert(v1.signed);
+    assert(v1.valid, v1.reasons.join("; "));
+    assertEquals(v1.voice, "testvoice");
+
+    // Tamper with the body AFTER signing → detected, with the exact reason.
+    const tampered = (await Deno.readTextFile(chordPath)).replace(
+      "body text",
+      "body text (edited)",
+    );
+    await Deno.writeTextFile(chordPath, tampered);
+    const v2 = await verifyChordFile(chordPath, registry);
+    assert(v2.signed);
+    assert(!v2.valid);
+    assert(v2.reasons.some((r) => r.includes("hash mismatch")));
+
+    // Re-sign after the edit → green again (old sig replaced, not stacked).
+    const resigned = await resignChordFile(chordPath);
+    assert(resigned.ok);
+    const v3 = await verifyChordFile(chordPath, registry);
+    assert(v3.valid, v3.reasons.join("; "));
+    const sigBlocks =
+      (await Deno.readTextFile(chordPath)).match(/content_sig:/g) ?? [];
+    assertEquals(sigBlocks.length, 1);
+  } finally {
+    if (home !== undefined) Deno.env.set("HOME", home);
+    await Deno.remove(dir, { recursive: true });
+  }
 });

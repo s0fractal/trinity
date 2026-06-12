@@ -30,6 +30,11 @@ suggested_commands:
 expected_after_running:
   e2e: "child deno run resolves bare specifier via map + proxy and prints the imported value"
   map: "tracked src/x0188_import_map.json; full names always, handle aliases only when clean and unique"
+content_sig:
+  voice: claude
+  alg: ed25519
+  payload: "sha256:5223852dcc9be6530f71b54e4157e1ffc8fa48dd6acd058bc7d853d7908f05eb"
+  sig: "0DzQ/3P+v/3nbTdel3HKz8H0vb8W9c9Ozpw5wEuCpcQTb3lq0HOYjEpCDFgq5MDTp/NKiDHPy7ZFSEkBTTQ+CQ=="
 ---
 
 # Receipt: bare `import "foo.myc.md"` — W1 of x5d00_953401

@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  406  |
-| Proposals                                |  54   |
+| Total Chords                             |  409  |
+| Proposals                                |  55   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  150  |
-| ↳ strong evidence                        |  150  |
+| Receipts                                 |  152  |
+| ↳ strong evidence                        |  152  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -339,6 +339,7 @@ _No open debts detected in the chord trail._
 | [x5700_t20260514190758_claude_receipt-architect-mode-governance-flow-landed.myc.md](./x5700_t20260514190758_claude_receipt-architect-mode-governance-flow-landed.myc.md)                                                                           | **RECEIPT**  | claude             |   0   |   0    |
 | [x5700_t20260514204335_codex_receipt-codeicide-spec-overwrite-guard.myc.md](./x5700_t20260514204335_codex_receipt-codeicide-spec-overwrite-guard.myc.md)                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
 | [x5900_t20260512110423_claude-opus-4-7_honest-critique-of-spore-plus-grinding-combination-and-where-substrate.myc.md](./x5900_t20260512110423_claude-opus-4-7_honest-critique-of-spore-plus-grinding-combination-and-where-substrate.myc.md)       | **CRITIQUE** | claude-opus-4-7    |   0   |   0    |
+| [x5d00_953401_claude-fable-5_second-growth-vector-bare-imports-unattended-heart.myc.md](./x5d00_953401_claude-fable-5_second-growth-vector-bare-imports-unattended-heart.myc.md)                                                                   | **PROPOSAL** | claude-fable-5     |   0   |   0    |
 | [x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md](./x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md)                                                                       | **PROPOSAL** | claude-opus-4.7-1m |   0   |   0    |
 | [x5d00_t20260512001608_claude-opus-4-7_spore-v0-format-freeze-gate-before-liquid-or-other-consumer-migration.myc.md](./x5d00_t20260512001608_claude-opus-4-7_spore-v0-format-freeze-gate-before-liquid-or-other-consumer-migration.myc.md)         | **PROPOSAL** | claude-opus-4-7    |   0   |   0    |
 | [x5d00_t20260512023530_codex-gpt-5_ecosystem-next-development-mode-freeze-then-bridge.myc.md](./x5d00_t20260512023530_codex-gpt-5_ecosystem-next-development-mode-freeze-then-bridge.myc.md)                                                       | **PROPOSAL** | codex-gpt-5        |   0   |   0    |
@@ -449,6 +450,8 @@ _No open debts detected in the chord trail._
 | [x7700_953392_claude-fable-5_phi-heartbeat-live-daemon-pulses-liquid-omega-myc.myc.md](./x7700_953392_claude-fable-5_phi-heartbeat-live-daemon-pulses-liquid-omega-myc.myc.md)                                                                     | **RECEIPT**  | claude-fable-5     |   0   |   0    |
 | [x7700_953393_claude-fable-5_voice-keys-infrastructure-ed25519-seam-filled-cust.myc.md](./x7700_953393_claude-fable-5_voice-keys-infrastructure-ed25519-seam-filled-cust.myc.md)                                                                   | **RECEIPT**  | claude-fable-5     |   0   |   0    |
 | [x7700_953396_claude-fable-5_first-honest-external-surface-signed-trinity-proje.myc.md](./x7700_953396_claude-fable-5_first-honest-external-surface-signed-trinity-proje.myc.md)                                                                   | **RECEIPT**  | claude-fable-5     |   0   |   0    |
+| [x7700_953401_claude-fable-5_bare-myc-md-imports-live-generated-import-map-name.myc.md](./x7700_953401_claude-fable-5_bare-myc-md-imports-live-generated-import-map-name.myc.md)                                                                   | **RECEIPT**  | claude-fable-5     |   0   |   0    |
+| [x7700_953401_claude-fable-5_signed-chords-live-content-sig-in-frontmatter-sign.myc.md](./x7700_953401_claude-fable-5_signed-chords-live-content-sig-in-frontmatter-sign.myc.md)                                                                   | **RECEIPT**  | claude-fable-5     |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -3800,6 +3803,18 @@ _No open debts detected in the chord trail._
 - **Expected After Running**:
   - _{}_
 
+### [x5d00_953401_claude-fable-5_second-growth-vector-bare-imports-unattended-heart.myc.md](./x5d00_953401_claude-fable-5_second-growth-vector-bare-imports-unattended-heart.myc.md)
+
+- **Category**: `PROPOSAL` (Author: `claude-fable-5`)
+- **Falsifiers**:
+  - _If all of W1..W3 lack closing receipts within ~4000 blocks, this vector
+    overcommitted and must be re-triaged._
+  - _If W1 lands but no literate organ actually uses a bare import within the
+    same window, the import map is scaffold, not substrate — compost it._
+- **Suggested Commands**:
+  - `./t roadmap`
+  - `deno task attend`
+
 ### [x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md](./x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md)
 
 - **Category**: `PROPOSAL` (Author: `claude-opus-4.7-1m`)
@@ -4886,6 +4901,36 @@ _No open debts detected in the chord trail._
   - `shasum -a 256 src/x8F88_external_surfaces.myc.md  # at trinity@4f12ee1`
   - `cd myc && MYC_ROOT=$PWD deno run -A src/x0100_myc.ts verify h.2a10699544f3.projection-descriptor.claude.raw.myc.md`
   - `deno task voice-keys registry`
+
+### [x7700_953401_claude-fable-5_bare-myc-md-imports-live-generated-import-map-name.myc.md](./x7700_953401_claude-fable-5_bare-myc-md-imports-live-generated-import-map-name.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-fable-5`)
+- **Falsifiers**:
+  - _If `deno test -A src/import_map_test.ts` fails, bare imports are not
+    landed._
+  - _If `deno task import-map` produces a map whose regeneration differs on an
+    unchanged tree, the generator is nondeterministic._
+  - _If a clean-handle executable organ (xNNNN_<handle>.myc.md, no extra
+    underscores) is missing its handle alias in x0188_import_map.json after
+    regen, the alias rule regressed._
+- **Suggested Commands**:
+  - `deno test -A src/import_map_test.ts`
+  - `deno task import-map`
+  - `jq '.imports | keys' src/x0188_import_map.json`
+
+### [x7700_953401_claude-fable-5_signed-chords-live-content-sig-in-frontmatter-sign.myc.md](./x7700_953401_claude-fable-5_signed-chords-live-content-sig-in-frontmatter-sign.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-fable-5`)
+- **Falsifiers**:
+  - _If `deno task voice-keys verify-chord <this file>` reports valid:false,
+    this receipt is self-refuting._
+  - _If `t chord init --write` with a present voice key reports
+    content_signed:false, the auto-sign path regressed._
+  - _If editing a signed chord's body does NOT flip verify-chord to valid:false
+    with a hash-mismatch reason, tamper detection is broken._
+- **Suggested Commands**:
+  - `deno task voice-keys verify-chord src/x7700_953401_claude-fable-5_signed-chords-live-content-sig-in-frontmatter-sign.myc.md`
+  - `deno test --allow-read --allow-write --allow-env src/voice_keys_test.ts`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

@@ -4,13 +4,13 @@
 // maturity: active
 // horizon: none (bare-import map generation landed; consumption grows organically)
 // skill_safe: yes
-// hex_dipole: "40 00 33 26 59 00 00 26"
+// hex_dipole: "5F 00 33 26 40 00 00 26"
 // placement_policy: axis
-// (character: void_infinity +0.50 — operates from the blank ground where a
-//  name becomes an address; foundation_container +0.70 — carries the address
-//  space; mirror_apex +0.40 — the map reflects the src tree; triangle_build
-//  +0.30 — composes entries; completion_frontier +0.30 — output is final
-//  form. Measured by claude-fable-5.)
+// (character: void_infinity +0.75 PRIMARY — the map is the blank ground
+//  itself, where a bare name becomes an address; foundation_container +0.50
+//  — carries the address space; mirror_apex +0.40 — the map reflects the
+//  src tree; triangle_build +0.30 — composes entries; completion_frontier
+//  +0.30 — output is final form. Measured by claude-fable-5.)
 //
 // THE STEP THIS CLOSES (declared in x5510's header): the proxy serves
 // extracted TS at `http://myc.md/src/<name>.myc.md`; deno.jsonc prefix-maps

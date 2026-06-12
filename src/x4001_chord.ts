@@ -58,6 +58,7 @@ import {
   fromFileUrl,
   join,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { signChordContent } from "./x2F37_voice_keys.ts";
 
 const BTC_TIP_URL = "https://blockstream.info/api/blocks/tip/height";
 
@@ -344,13 +345,41 @@ expected_after_running: {}
   await emitChord(composed, content, flags, "chord_receipt");
 }
 
+/** If the authoring voice has a local key, insert a content_sig block into
+ *  the frontmatter (W3: provenance upgrades from narrative to cryptographic).
+ *  No key / no permission → unsigned, which stays legal. */
+async function withContentSig(
+  voice: string,
+  composed: FlatSrcName,
+  content: string,
+): Promise<{ content: string; signed: boolean }> {
+  const sigLines = await signChordContent(
+    voice,
+    composed.targetName,
+    content,
+  );
+  if (!sigLines) return { content, signed: false };
+  // Insert just before the closing frontmatter fence.
+  const closing = content.indexOf("\n---\n", 4);
+  if (closing === -1) return { content, signed: false };
+  const updated = content.slice(0, closing + 1) + sigLines.join("\n") +
+    content.slice(closing);
+  return { content: updated, signed: true };
+}
+
 /** Shared --write (land in src/) vs dry (print) path for authored chords. */
 async function emitChord(
   composed: FlatSrcName,
-  content: string,
+  rawContent: string,
   flags: Record<string, string>,
   kind: string,
 ): Promise<void> {
+  const voice = flags.voice ?? flags.author ?? "anonymous";
+  const { content, signed } = await withContentSig(
+    voice,
+    composed,
+    rawContent,
+  );
   const doWrite = "write" in flags && flags.write !== "false";
   if (doWrite) {
     const HERE = dirname(fromFileUrl(import.meta.url));
@@ -372,6 +401,7 @@ async function emitChord(
         coordinate: composed.coordinate,
         block_key: composed.blockKey,
         voice: composed.voice,
+        content_signed: signed,
         warnings: composed.warnings,
         next:
           `git add src/${composed.targetName}  # ledger indexes tracked chords only`,

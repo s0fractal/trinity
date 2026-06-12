@@ -1,5 +1,18 @@
 {
   "schema": "trinity.voice-pubkeys.v0.1",
   "custody_note": "Public keys only. Private keys live outside the repo (~/.trinity/keys). Adding/rotating an entry is a custody ceremony: architect mints via `voice-keys keygen` and commits the entry with a decision chord.",
-  "keys": {}
+  "keys": {
+    "claude": {
+      "alg": "ed25519",
+      "pubkey": "jf1D1bVxC+1GlL8NZ0AnyFlnIjK2n4w/8mxUMN9Qii0=",
+      "minted_at": "2026-06-12T17:07:21.308Z",
+      "minted_by": "s0fractal"
+    },
+    "s0fractal": {
+      "alg": "ed25519",
+      "pubkey": "j+QsSe0gExRd0G12NGfnAeebGBjlrYpglWtJJRcWAlA=",
+      "minted_at": "2026-06-12T17:07:46.466Z",
+      "minted_by": "s0fractal"
+    }
+  }
 }

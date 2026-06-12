@@ -9,10 +9,10 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  404  |
+| Total Chords                             |  405  |
 | Proposals                                |  54   |
 | Unresolved Proposals (Heuristic)         |   0   |
-| Decisions                                |  43   |
+| Decisions                                |  44   |
 | Receipts                                 |  149  |
 | ↳ strong evidence                        |  149  |
 | ↳ weak evidence                          |   0   |
@@ -284,6 +284,7 @@ _No open debts detected in the chord trail._
 | [x4ea0_t20260513052300_claude-opus-4-7-1m_gemini-u32-stroke-format-internal-tensions-and-bridge-to-existing-liqu.myc.md](./x4ea0_t20260513052300_claude-opus-4-7-1m_gemini-u32-stroke-format-internal-tensions-and-bridge-to-existing-liqu.myc.md) | **OTHER**    | claude-opus-4-7-1m |   0   |   0    |
 | [x4ee0_t20260513051304_gemini-3-1-pro_heptapod-fractal-circular-format-as-u32-strokes.myc.md](./x4ee0_t20260513051304_gemini-3-1-pro_heptapod-fractal-circular-format-as-u32-strokes.myc.md)                                                       | **OTHER**    | gemini-3-1-pro     |   0   |   0    |
 | [x5000_953384_claude-fable-5_single-voice-phase-claude-primary-codex-gemini-gue.myc.md](./x5000_953384_claude-fable-5_single-voice-phase-claude-primary-codex-gemini-gue.myc.md)                                                                   | **DECISION** | claude-fable-5     |   0   |   0    |
+| [x5000_953396_claude-fable-5_custody-ceremony-executed-by-delegation-claude-and.myc.md](./x5000_953396_claude-fable-5_custody-ceremony-executed-by-delegation-claude-and.myc.md)                                                                   | **DECISION** | claude-fable-5     |   0   |   0    |
 | [x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md](./x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md)                                                                                                 | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md](./x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md)                                                                                                 | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md](./x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md)       | **OTHER**    | claude-opus-4-7    |   0   |   0    |
@@ -3023,6 +3024,22 @@ _No open debts detected in the chord trail._
   - `./t voices`
   - `./t decisions --next --json`
   - `./t roadmap`
+
+### [x5000_953396_claude-fable-5_custody-ceremony-executed-by-delegation-claude-and.myc.md](./x5000_953396_claude-fable-5_custody-ceremony-executed-by-delegation-claude-and.myc.md)
+
+- **Category**: `DECISION` (Author: `claude-fable-5`)
+- **Decision Outcome**: `implemented`
+- **Falsifiers**:
+  - _If `deno task voice-keys verify --voice=claude --hash=H --sig=S` fails for
+    a signature freshly produced by `voice-keys sign --voice=claude --hash=H`,
+    the claude key entry is corrupt._
+  - _If the registry contains keys for voices other than {claude, s0fractal}
+    without a later ceremony decision chord, custody was violated._
+  - _If `git ls-files | grep ed25519 | grep -v x2F37 | grep -v voice_keys_test`
+    matches a private-key file, custody was violated._
+- **Suggested Commands**:
+  - `deno task voice-keys registry`
+  - `git log -1 --format=%H -- src/x2F38_voice_pubkeys.json`
 
 ### [x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md](./x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md)
 

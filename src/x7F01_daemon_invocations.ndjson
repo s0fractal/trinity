@@ -36,3 +36,4 @@
 {"timestamp":"2026-06-12T16:27:15.801Z","kind":"tick_act","action":"refused","reason":"pre_existing_gate_failure","gate":"fmt"}
 {"timestamp":"2026-06-12T16:27:57.887Z","kind":"tick_act","action":"refused","reason":"pre_existing_gate_failure","gate":"fmt"}
 {"timestamp":"2026-06-12T16:30:29.132Z","kind":"tick_act","action":"committed","files":["M src/x8CF0_skills_bootstrap.myc.md"],"pushed":false,"pulse":{"status":"ok","intent_sha256":"522207afe8e5feb9e0da197a8f09cb7a45b453f7797096a88c73d93068e511eb","receipt_sha256":"8bb2818dd489316f71d56ddcabeb4bbd118b3c07a6d16fca87d2e0150798f8c9","myc_ingest":true}}
+{"timestamp":"2026-06-12T18:20:36.035Z","kind":"tick_act","action":"committed","files":["M x9000/MANIFEST.myc.ndjson"],"pushed":true,"pulse":{"status":"ok","intent_sha256":"522207afe8e5feb9e0da197a8f09cb7a45b453f7797096a88c73d93068e511eb","receipt_sha256":"8bb2818dd489316f71d56ddcabeb4bbd118b3c07a6d16fca87d2e0150798f8c9","myc_ingest":true}}

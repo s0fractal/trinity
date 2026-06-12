@@ -363,6 +363,41 @@ export async function verifyChordFile(
   };
 }
 
+/** Verify every signed chord in a directory against the registry.
+ *  Unsigned chords are counted but never fail — keyless mode stays legal.
+ *  A signed chord that does NOT verify is an integrity failure: either the
+ *  body was edited after signing or the signature is forged. */
+export async function verifyAllChords(
+  srcDir: string,
+  registry?: Registry,
+): Promise<{
+  total: number;
+  signed: number;
+  valid: number;
+  invalid: number;
+  failures: { file: string; reasons: string[] }[];
+}> {
+  const reg = registry ?? await loadRegistry();
+  let total = 0, signed = 0, valid = 0;
+  const failures: { file: string; reasons: string[] }[] = [];
+  const names: string[] = [];
+  for await (const entry of Deno.readDir(srcDir)) {
+    if (entry.isFile && entry.name.endsWith(".myc.md")) names.push(entry.name);
+  }
+  names.sort();
+  for (const name of names) {
+    total++;
+    const path = join(srcDir, name);
+    const content = await Deno.readTextFile(path);
+    if (!/^content_sig:/m.test(content)) continue;
+    signed++;
+    const v = await verifyChordFile(path, reg);
+    if (v.valid) valid++;
+    else failures.push({ file: name, reasons: v.reasons });
+  }
+  return { total, signed, valid, invalid: failures.length, failures };
+}
+
 // ── CLI ─────────────────────────────────────────────────────────────────────
 
 function flagValue(args: string[], name: string): string | undefined {
@@ -463,6 +498,13 @@ async function main() {
       const result = await resignChordFile(path);
       out({ type: "chord_sign", path, ...result });
       Deno.exit(result.ok ? 0 : 1);
+      break;
+    }
+    case "verify-all": {
+      const dir = rest.find((a) => !a.startsWith("--")) ?? HERE;
+      const result = await verifyAllChords(dir);
+      out({ type: "chord_sig_verify_all", dir, ...result });
+      Deno.exit(result.invalid === 0 ? 0 : 1);
       break;
     }
     case "verify-chord": {

@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  410  |
+| Total Chords                             |  411  |
 | Proposals                                |  55   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  153  |
-| ↳ strong evidence                        |  153  |
+| Receipts                                 |  154  |
+| ↳ strong evidence                        |  154  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -453,6 +453,7 @@ _No open debts detected in the chord trail._
 | [x7700_953401_claude-fable-5_bare-myc-md-imports-live-generated-import-map-name.myc.md](./x7700_953401_claude-fable-5_bare-myc-md-imports-live-generated-import-map-name.myc.md)                                                                   | **RECEIPT**  | claude-fable-5     |   0   |   0    |
 | [x7700_953401_claude-fable-5_signed-chords-live-content-sig-in-frontmatter-sign.myc.md](./x7700_953401_claude-fable-5_signed-chords-live-content-sig-in-frontmatter-sign.myc.md)                                                                   | **RECEIPT**  | claude-fable-5     |   0   |   0    |
 | [x7700_953401_claude-fable-5_unattended-heartbeat-closed-cron-pushes-manifest-s.myc.md](./x7700_953401_claude-fable-5_unattended-heartbeat-closed-cron-pushes-manifest-s.myc.md)                                                                   | **RECEIPT**  | claude-fable-5     |   0   |   0    |
+| [x7700_953403_claude-fable-5_provenance-gate-signed-chords-verified-in-ci-tampe.myc.md](./x7700_953403_claude-fable-5_provenance-gate-signed-chords-verified-in-ci-tampe.myc.md)                                                                   | **RECEIPT**  | claude-fable-5     |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -4947,6 +4948,21 @@ _No open debts detected in the chord trail._
   - `crontab -l | tail -2`
   - `tail -3 ~/.trinity-daemon-cron.log`
   - `git log --oneline --author=s0fractal --grep='auto(daemon)' -3`
+
+### [x7700_953403_claude-fable-5_provenance-gate-signed-chords-verified-in-ci-tampe.myc.md](./x7700_953403_claude-fable-5_provenance-gate-signed-chords-verified-in-ci-tampe.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-fable-5`)
+- **Falsifiers**:
+  - _If `deno task voice-keys verify-all | jq -e '.invalid == 0'` passes after
+    deliberately editing the body of any content_sig chord without re-signing,
+    the gate is toothless._
+  - _If the CI workflow lacks the 'Verify chord signatures' step, the gate was
+    removed without a decision chord._
+  - _If an UNSIGNED chord ever fails this gate, the invariant was corrupted into
+    a frozen count — that failure mode trains voices to stop signing._
+- **Suggested Commands**:
+  - `deno task voice-keys verify-all`
+  - `deno test -A src/voice_keys_test.ts`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

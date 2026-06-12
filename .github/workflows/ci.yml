@@ -140,6 +140,13 @@ jobs:
       - name: Audit coordinates
         run: ./t audit --json | jq -e '.summary.mismatch == 0 and .summary.malformed == 0 and .summary.no_dipole_organ_gap == 0 and .summary.orphans_count == 0 and .summary.import_warnings_count == 0 and .summary.registry_warnings_count == 0 and .coordinate_uniqueness.ok == true'
 
+      # Invariant, not a frozen count: unsigned chords always pass (keyless
+      # mode is legal); a chord that CARRIES a content_sig must verify against
+      # the committed pubkey registry — tampering with a signed chord, or
+      # forging a signature, turns main red. Needs no private keys.
+      - name: Verify chord signatures (provenance integrity)
+        run: deno task voice-keys verify-all | jq -e '.type == "chord_sig_verify_all" and .invalid == 0'
+
       - name: Verify lexicon block ordering
         run: ./t lexicon --stable --json | jq -e '.type == "lexicon" and .position == "2/A" and .summary.surfaced_patterns > 0 and ([.entries[] | select(.first_seen_block > 0 and .last_seen_block >= .first_seen_block)] | length) > 0'
 

@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     8      |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    410     |
+| dynamic topology  |    411     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **508**   |
+| **Total**         |  **509**   |
 
 ## Runtime Cache Diagnostics
 
@@ -518,6 +518,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x7700_953401_claude-fable-5_bare-myc-md-imports-live-generated-import-map-name.myc.md](../src/x7700_953401_claude-fable-5_bare-myc-md-imports-live-generated-import-map-name.myc.md)                                                                   | canonical        | src/x7700_953401_claude-fable-5_bare-myc-md-imports-live-generated-import-map-name.myc.md                                  | keep        |                              |
 | dynamic topology  | [src/x7700_953401_claude-fable-5_signed-chords-live-content-sig-in-frontmatter-sign.myc.md](../src/x7700_953401_claude-fable-5_signed-chords-live-content-sig-in-frontmatter-sign.myc.md)                                                                   | canonical        | src/x7700_953401_claude-fable-5_signed-chords-live-content-sig-in-frontmatter-sign.myc.md                                  | keep        |                              |
 | dynamic topology  | [src/x7700_953401_claude-fable-5_unattended-heartbeat-closed-cron-pushes-manifest-s.myc.md](../src/x7700_953401_claude-fable-5_unattended-heartbeat-closed-cron-pushes-manifest-s.myc.md)                                                                   | canonical        | src/x7700_953401_claude-fable-5_unattended-heartbeat-closed-cron-pushes-manifest-s.myc.md                                  | keep        |                              |
+| dynamic topology  | [src/x7700_953403_claude-fable-5_provenance-gate-signed-chords-verified-in-ci-tampe.myc.md](../src/x7700_953403_claude-fable-5_provenance-gate-signed-chords-verified-in-ci-tampe.myc.md)                                                                   | canonical        | src/x7700_953403_claude-fable-5_provenance-gate-signed-chords-verified-in-ci-tampe.myc.md                                  | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](../src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | canonical        | src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](../src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | canonical        | src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md                                                     | keep        |                              |
 | dynamic topology  | [src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](../src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | canonical        | src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md                                                      | keep        |                              |

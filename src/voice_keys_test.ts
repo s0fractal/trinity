@@ -11,6 +11,7 @@ import {
   type Registry,
   resignChordFile,
   signHash,
+  verifyAllChords,
   verifyAttestations,
   verifyChordFile,
   verifySig,
@@ -199,6 +200,62 @@ Deno.test("chord-sig — sign-chord → verify roundtrip; edit after signing is 
     const sigBlocks =
       (await Deno.readTextFile(chordPath)).match(/content_sig:/g) ?? [];
     assertEquals(sigBlocks.length, 1);
+  } finally {
+    if (home !== undefined) Deno.env.set("HOME", home);
+    await Deno.remove(dir, { recursive: true });
+  }
+});
+
+Deno.test("chord-sig — verify-all sweep: unsigned pass, tampered signed chord fails the sweep", async () => {
+  const dir = await Deno.makeTempDir({ prefix: "sweepsig_" });
+  const home = Deno.env.get("HOME");
+  try {
+    Deno.env.set("HOME", dir);
+    const { entry, privateKeyB64 } = await mintKeypair("test");
+    await Deno.mkdir(join(dir, ".trinity", "keys"), { recursive: true });
+    await Deno.writeTextFile(
+      join(dir, ".trinity", "keys", "testvoice.ed25519.json"),
+      JSON.stringify({
+        voice: "testvoice",
+        alg: "ed25519",
+        private_key_pkcs8: privateKeyB64,
+      }),
+    );
+    const registry: Registry = {
+      schema: "trinity.voice-pubkeys.v0.1",
+      custody_note: "ephemeral",
+      keys: { testvoice: entry },
+    };
+
+    // One unsigned chord (legal), one signed-valid, one signed-then-tampered.
+    await Deno.writeTextFile(
+      join(dir, "x1000_1_v_unsigned.myc.md"),
+      "---\ntype: chord.observation\nvoice: other\n---\n\nplain\n",
+    );
+    const okPath = join(dir, "x2000_2_testvoice_ok.myc.md");
+    await Deno.writeTextFile(
+      okPath,
+      "---\ntype: chord.receipt\nvoice: testvoice\n---\n\ngood body\n",
+    );
+    await resignChordFile(okPath);
+    const badPath = join(dir, "x3000_3_testvoice_bad.myc.md");
+    await Deno.writeTextFile(
+      badPath,
+      "---\ntype: chord.receipt\nvoice: testvoice\n---\n\noriginal\n",
+    );
+    await resignChordFile(badPath);
+    await Deno.writeTextFile(
+      badPath,
+      (await Deno.readTextFile(badPath)).replace("original", "tampered"),
+    );
+
+    const sweep = await verifyAllChords(dir, registry);
+    assertEquals(sweep.total, 3);
+    assertEquals(sweep.signed, 2);
+    assertEquals(sweep.valid, 1);
+    assertEquals(sweep.invalid, 1);
+    assertEquals(sweep.failures[0].file, "x3000_3_testvoice_bad.myc.md");
+    assert(sweep.failures[0].reasons.some((r) => r.includes("hash mismatch")));
   } finally {
     if (home !== undefined) Deno.env.set("HOME", home);
     await Deno.remove(dir, { recursive: true });

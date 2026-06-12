@@ -14,6 +14,11 @@ import {
   type ThoughtPhase,
 } from "./x0020_scanner_core.ts";
 import { listChordSurfaceFiles } from "./x2F21_chord_surface.ts";
+import {
+  fieldNow,
+  readChords,
+  readVoiceTunings,
+} from "./x5500_resonance_field.ts";
 type RepoName = typeof REPOS[number];
 
 // Organ-horizon scan, kept local rather than imported from x8D00_roadmap_gen
@@ -106,6 +111,72 @@ function axisOfCoordinate(coord: string): number {
   return parseInt(coord[0], 16) % 8;
 }
 
+// ── resonance sense (x5500) ─────────────────────────────────────────────────
+// The choose-joint reads the field, not just horizon lists: what the chord
+// space is sounding on RIGHT NOW becomes a tiebreaker and a context line.
+// Read-only and optional — if the field cannot be sensed (no chords, no
+// tunings), recommendation degrades to the pre-field behavior.
+
+const AXIS_NAMES = [
+  "void",
+  "first",
+  "mirror",
+  "triangle",
+  "foundation",
+  "action",
+  "harmony",
+  "completion",
+] as const;
+
+interface FieldSense {
+  topAxis: number;
+  topAxisName: string;
+  field: number[]; // 8 axes, raw energies
+  fieldNorm: number[]; // field / max, in [0,1]
+  resonant: Array<{ voice: string; resonance: number }>;
+}
+
+async function senseField(): Promise<FieldSense | null> {
+  try {
+    const [chords, tunings] = await Promise.all([
+      readChords(),
+      readVoiceTunings(),
+    ]);
+    if (chords.length === 0 || tunings.size === 0) return null;
+    const { field, ranked, topAxis } = fieldNow(chords, tunings, {
+      // x5500 --now defaults, homeostatic contrast on.
+      threshold: 0.15,
+      decay: 0.82,
+      diffuse: 0.12,
+      refractory: 3,
+      echo: true,
+      echoGain: 0.45,
+      ringSteps: 40,
+      homeostasis: true,
+      sens: 0.5,
+      hsAlpha: 0.1,
+    });
+    const max = Math.max(...field, 1e-9);
+    return {
+      topAxis,
+      topAxisName: AXIS_NAMES[topAxis] ?? String(topAxis),
+      field: field.map((x) => Number(x.toFixed(3))),
+      fieldNorm: field.map((x) => Number((x / max).toFixed(3))),
+      resonant: ranked.slice(0, 3).map(([voice, r]) => ({
+        voice,
+        resonance: Number(r.toFixed(3)),
+      })),
+    };
+  } catch {
+    return null;
+  }
+}
+
+/** Weight of the live field against a voice's standing comfort: the field is
+ *  a current, comfort is a disposition — the current may tip ties, not
+ *  override identity. */
+const FIELD_WEIGHT = 0.5;
+
 /**
  * Rank open horizons for one voice (the per-voice half of x2A00_lexicon):
  * a voice's own claims first (its turn), others' claims excluded (their turn),
@@ -116,13 +187,17 @@ function rankHorizonsForVoice(
   horizons: OrganHorizon[],
   claims: Map<string, string>,
   comfort: number[] | null,
+  sense: FieldSense | null = null,
 ): OrganHorizon[] {
   const score = (h: OrganHorizon): number => {
     const key = `x${h.coordinate}_${h.handle}`;
     const claimedBy = claims.get(key);
     if (claimedBy && normVoice(claimedBy) === voice) return 1_000_000;
     if (claimedBy) return -1; // someone else's turn — exclude
-    return comfort ? (comfort[axisOfCoordinate(h.coordinate)] ?? 0) : 0;
+    const axis = axisOfCoordinate(h.coordinate);
+    const disposition = comfort ? (comfort[axis] ?? 0) : 0;
+    const current = sense ? FIELD_WEIGHT * (sense.fieldNorm[axis] ?? 0) : 0;
+    return disposition + current;
   };
   return [...horizons]
     .filter((h) => score(h) >= 0)
@@ -258,6 +333,7 @@ function chooseDominantPhase(signal: RepoSignal): ThoughtPhase {
 function buildRecommendations(
   signal: RepoSignal,
   openHorizons: OrganHorizon[],
+  sense: FieldSense | null = null,
 ): Recommendation[] {
   const recs: Omit<Recommendation, "rank">[] = [];
   const rawPressure = ratio(
@@ -281,7 +357,15 @@ function buildRecommendations(
   if (signal.repo === "trinity") {
     // Pull from declared roadmap horizons rather than a hardcoded self-audit:
     // the substrate already states where each organ thinks it should go next.
-    const top = openHorizons[0];
+    // When the resonance field is audible, horizons on the sounding axis come
+    // first — the field is the tiebreaker between equally-open horizons.
+    const ordered = sense
+      ? [...openHorizons].sort((a, b) =>
+        (sense.fieldNorm[axisOfCoordinate(b.coordinate)] ?? 0) -
+        (sense.fieldNorm[axisOfCoordinate(a.coordinate)] ?? 0)
+      )
+      : openHorizons;
+    const top = ordered[0];
     const horizonPressure = Math.min(1, openHorizons.length / 8);
     recs.push({
       repo: signal.repo,
@@ -293,9 +377,13 @@ function buildRecommendations(
         ? `Pursue declared horizon x${top.coordinate}_${top.handle}: ${top.horizon}`
         : "No open organ horizons — survey for the next frontier (t roadmap).",
       rationale: top
-        ? `${openHorizons.length} organ horizon(s) are declared open in the roadmap; the substrate is pulling toward them. Top by coordinate: x${top.coordinate}_${top.handle} (${
-          top.maturity ?? "active"
-        }).`
+        ? `${openHorizons.length} organ horizon(s) are declared open in the roadmap; the substrate is pulling toward them. Top by ${
+          sense
+            ? `field resonance (sounding on ${sense.topAxisName})`
+            : "coordinate"
+        }: x${top.coordinate}_${top.handle} (${top.maturity ?? "active"}).`
+        : sense
+        ? `All declared organ horizons are closed; the field is sounding on ${sense.topAxisName} — survey there first (t roadmap, t resonance --now).`
         : "All declared organ horizons are closed; recommend a survey/expedition to find the next frontier.",
       expected_receipt: top
         ? `A proposal or receipt chord advancing x${top.coordinate}_${top.handle} and refining or closing its horizon field.`
@@ -451,12 +539,20 @@ async function main() {
 
   // Per-voice mode (`--voice=N`): rank horizons for that voice and print only —
   // never clobber the shared global recommendation the daemon tick reads.
+  const sense = await senseField();
+
   const voiceArg = Deno.args.find((a) => a.startsWith("--voice="))?.slice(8);
   if (voiceArg) {
     const v = normVoice(voiceArg);
     const claims = await loadClaims();
     const comfort = await loadComfortField(v, cwd);
-    const ranked = rankHorizonsForVoice(v, openHorizons0, claims, comfort);
+    const ranked = rankHorizonsForVoice(
+      v,
+      openHorizons0,
+      claims,
+      comfort,
+      sense,
+    );
     const myClaims = [...claims]
       .filter(([, cv]) => normVoice(cv) === v)
       .map(([k]) => k);
@@ -467,6 +563,9 @@ async function main() {
         voice: v,
         timestamp,
         comfort_field_resolved: comfort !== null,
+        resonance: sense
+          ? { sounding_on: sense.topAxisName, field_weight: FIELD_WEIGHT }
+          : null,
         my_claims: myClaims,
         next: ranked[0]
           ? {
@@ -491,7 +590,7 @@ async function main() {
 
   const openHorizons = openHorizons0;
   const recommendations = signalList
-    .flatMap((s) => buildRecommendations(s, openHorizons))
+    .flatMap((s) => buildRecommendations(s, openHorizons, sense))
     .sort((a, b) => b.pressure - a.pressure)
     .map((rec, index) => ({ ...rec, rank: index + 1 }));
 
@@ -502,9 +601,11 @@ async function main() {
     basis: {
       scanner: "src/x0020_scanner_core.ts",
       roadmap: "src/x8D00_roadmap_gen.ts (open organ horizons)",
+      resonance: "src/x5500_resonance_field.ts (fieldNow, read-only sense)",
       contract: "contracts/COGNITIVE_RECOMMENDATION.v0.1.md",
       git_status: "observed",
     },
+    resonance: sense,
     open_horizons: openHorizons.map((h) => ({
       coordinate: h.coordinate,
       handle: h.handle,

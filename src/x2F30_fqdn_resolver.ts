@@ -167,6 +167,40 @@ export async function buildIndex(roots: Root[]): Promise<Index> {
   return { roots: paths, byKey, files };
 }
 
+export interface NameEntry {
+  name: string; // canonical (exact-form) address
+  candidates: number; // how many files answer to it exactly
+  roots: string[]; // distinct root names (src, liquid, omega, myc) carrying it
+}
+
+/**
+ * Discovery: enumerate the resolvable namespace from a prebuilt index without
+ * hashing anything (cheap structural view — the complement of resolveFromIndex,
+ * which hashes a single query). Canonical names are the exact-form keys; handle
+ * and slug aliases are folded out so the list is the set of addresses a name
+ * actually IS, not the aliases it also answers to. Optional substring filter,
+ * bounded with an explicit truncation count (no silent caps).
+ */
+export function listNames(
+  index: Index,
+  opts: { substring?: string; limit?: number } = {},
+): { total: number; shown: NameEntry[]; truncated: number } {
+  const sub = opts.substring?.toLowerCase();
+  const limit = opts.limit ?? 50;
+  const entries: NameEntry[] = [];
+  for (const [key, stored] of index.byKey) {
+    const exact = stored.filter((s) => s.matchForm === "exact");
+    if (exact.length === 0) continue; // alias-only key — not a canonical name
+    if (sub && !key.toLowerCase().includes(sub)) continue;
+    const roots = [...new Set(exact.map((s) => basename(s.root)))].sort();
+    entries.push({ name: key, candidates: exact.length, roots });
+  }
+  entries.sort((a, b) => a.name.localeCompare(b.name));
+  const total = entries.length;
+  const shown = entries.slice(0, limit);
+  return { total, shown, truncated: Math.max(0, total - shown.length) };
+}
+
 /** Resolve one query against a prebuilt index, hashing only the files it hits. */
 export async function resolveFromIndex(
   index: Index,
@@ -234,11 +268,6 @@ export function cloudRoots(home: string): string[] {
 if (import.meta.main) {
   const args = [...Deno.args];
   const useCloud = args.includes("--cloud");
-  const fqdn = args.find((a) => !a.startsWith("--"));
-  if (!fqdn) {
-    console.error("usage: resolver.ts [--cloud] <fqdn-or-handle-or-slug>");
-    Deno.exit(1);
-  }
   const roots: Root[] = [...defaultRoots()];
   if (useCloud) {
     const home = Deno.env.get("HOME");
@@ -246,6 +275,39 @@ if (import.meta.main) {
     if (home) {
       for (const c of cloudRoots(home)) roots.push({ path: c, maxDepth: 6 });
     }
+  }
+
+  // `list [substring]` — discover the resolvable namespace (read-only, no hash).
+  if (args[0] === "list") {
+    const positional = args.slice(1).filter((a) => !a.startsWith("--"));
+    const substring = positional[0];
+    const limitArg = args.find((a) => a.startsWith("--limit="));
+    const limit = limitArg ? Number(limitArg.split("=")[1]) : 50;
+    const index = await buildIndex(roots);
+    const { total, shown, truncated } = listNames(index, { substring, limit });
+    console.log(JSON.stringify(
+      {
+        type: "fqdn_namespace",
+        query: substring ?? null,
+        files_indexed: index.files,
+        canonical_names: total,
+        shown: shown.length,
+        truncated,
+        names: shown,
+      },
+      null,
+      2,
+    ));
+    Deno.exit(0);
+  }
+
+  const fqdn = args.find((a) => !a.startsWith("--"));
+  if (!fqdn) {
+    console.error(
+      "usage: resolver.ts [--cloud] <fqdn-or-handle-or-slug>\n" +
+        "       resolver.ts list [substring] [--limit=N]   (discover the namespace)",
+    );
+    Deno.exit(1);
   }
   const res = await resolveFqdn(fqdn, roots);
   console.log(JSON.stringify({ type: "fqdn_resolution", ...res }, null, 2));

@@ -5,6 +5,7 @@ import {
 import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
 import {
   buildIndex,
+  listNames,
   resolveFqdn,
   resolveFromIndex,
 } from "./x2F30_fqdn_resolver.ts";
@@ -220,5 +221,52 @@ Deno.test("buildIndex — a depth-bounded (cloud) root at lower precedence still
   } finally {
     await cleanup();
     await Deno.remove(cloud, { recursive: true });
+  }
+});
+
+Deno.test("listNames — discovery: canonical names only, with roots and candidate counts", async () => {
+  const { roots, cleanup } = await fixture();
+  try {
+    const index = await buildIndex(roots);
+    const { total, shown } = listNames(index);
+    const byName = new Map(shown.map((e) => [e.name, e]));
+
+    // mirrored + conflict each appear in BOTH roots → candidates 2.
+    assertEquals(byName.get("mirror.myc.md")?.candidates, 2);
+    assertEquals(byName.get("mirror.myc.md")?.roots.length, 2);
+    assertEquals(byName.get("conflict.myc.md")?.candidates, 2);
+    // unique appears once.
+    assertEquals(byName.get("only_here.ts")?.candidates, 1);
+    // The prefixed organ is a canonical name; its bare handle "myc_proxy.ts"
+    // is an ALIAS, not a canonical name, so it must NOT appear in the list.
+    assert(byName.has("x5510_myc_proxy.ts"));
+    assert(!byName.has("myc_proxy.ts"));
+    // The chord slug "my-proposal" is an alias too — not listed; the full
+    // filename is.
+    assert(!byName.has("my-proposal"));
+    assert(byName.has("x4700_952699_claude-opus-4-8_my-proposal.myc.md"));
+    // total counts canonical names, not alias keys.
+    assert(total >= 6);
+  } finally {
+    await cleanup();
+  }
+});
+
+Deno.test("listNames — substring filter and bounded truncation are honest", async () => {
+  const { roots, cleanup } = await fixture();
+  try {
+    const index = await buildIndex(roots);
+    const filtered = listNames(index, { substring: "mirror" });
+    assertEquals(filtered.shown.every((e) => e.name.includes("mirror")), true);
+    assertEquals(filtered.shown.length, 1);
+    assertEquals(filtered.truncated, 0);
+
+    // A tight limit must report the dropped remainder, never silently cap.
+    const capped = listNames(index, { limit: 2 });
+    assertEquals(capped.shown.length, 2);
+    assert(capped.truncated > 0);
+    assertEquals(capped.total, capped.shown.length + capped.truncated);
+  } finally {
+    await cleanup();
   }
 });

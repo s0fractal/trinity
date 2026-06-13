@@ -314,6 +314,13 @@ async function cmdReceipt(flags: Record<string, string>): Promise<void> {
     }\n`
     : "";
 
+  // A receipt may declare it satisfies a cognition recommendation signal
+  // (`<repo>/<vector>`, e.g. liquid/identity-resolution). x5200 tier-sorts a
+  // satisfied signal below live work — see contracts/COGNITIVE_RECOMMENDATION §5.
+  const satisfiesBlock = flags["satisfies-signal"]
+    ? `satisfies_signal: ${flags["satisfies-signal"]}\n`
+    : "";
+
   const content = `---
 type: chord.receipt
 voice: ${voice}
@@ -325,7 +332,7 @@ stance: ${stance}
 chord:
   primary: "${primary}"
   secondary: []
-${closesBlock}hears: []
+${closesBlock}${satisfiesBlock}hears: []
 references: []
 suggested_commands: []
 expected_after_running: {}

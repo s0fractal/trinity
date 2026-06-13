@@ -1,9 +1,10 @@
-// src/x5200_cognition_recommend_test.ts — closure-feedback behavior for the
-// cognition recommender. Verifies that a voice-declared `satisfies_signal`
-// tier-sorts the satisfied signal below live work without lying about pressure.
+// src/cognition_recommend_test.ts — closure-feedback behavior for the cognition
+// recommender. Verifies that a voice-declared `satisfies_signal` tier-sorts the
+// satisfied signal below live work without lying about pressure, and that a
+// mistyped/stale satisfier is surfaced as an orphan rather than silently missed.
 
 import { assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
-import { applyClosure } from "./x5200_cognition_recommend.ts";
+import { applyClosure, orphanSatisfiers } from "./x5200_cognition_recommend.ts";
 
 type RecIn = Parameters<typeof applyClosure>[0][number];
 
@@ -75,4 +76,29 @@ Deno.test("applyClosure: among satisfied signals, higher pressure still ranks fi
   // Both satisfied → fall back to pressure ordering.
   assertEquals(out.map((r) => r.repo), ["omega", "liquid"]);
   assertEquals(out.every((r) => r.satisfied), true);
+});
+
+Deno.test("orphanSatisfiers: flags a satisfier matching no known signal_key", () => {
+  const recs = [
+    rec("liquid", "identity-resolution", 0.6),
+    rec("omega", "deterministic-execution", 0.5),
+  ];
+  const satisfied = new Map([
+    ["liquid/identity-resolution", { path: "ok", block: 1 }], // valid → not orphan
+    ["liquid/identity_resolution", { path: "typo", block: 2 }], // underscore typo
+    ["myc/publication", { path: "no-branch", block: 3 }], // no such emitted signal
+  ]);
+
+  assertEquals(orphanSatisfiers(recs, satisfied), [
+    "liquid/identity_resolution",
+    "myc/publication",
+  ]);
+});
+
+Deno.test("orphanSatisfiers: empty when every satisfier matches a signal", () => {
+  const recs = [rec("liquid", "identity-resolution", 0.6)];
+  const satisfied = new Map([
+    ["liquid/identity-resolution", { path: "ok", block: 1 }],
+  ]);
+  assertEquals(orphanSatisfiers(recs, satisfied), []);
 });

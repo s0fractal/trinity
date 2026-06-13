@@ -313,6 +313,19 @@ export function applyClosure(
     .map((rec, index) => ({ ...rec, rank: index + 1 }));
 }
 
+/** `satisfies_signal` values in the ledger that match no signal the recommender
+ *  emits — a typo (`identity_resolution` for `identity-resolution`) or a stale
+ *  key. Such a declaration silently never matches, so closure looks applied but
+ *  nothing is suppressed. Surfaced as an advisory so it gets corrected. Pure;
+ *  exported for the test. */
+export function orphanSatisfiers(
+  recommendations: { signal_key: string }[],
+  satisfied: Map<string, SatisfiedSignal>,
+): string[] {
+  const valid = new Set(recommendations.map((r) => r.signal_key));
+  return [...satisfied.keys()].filter((k) => !valid.has(k)).sort();
+}
+
 const PHASES: ThoughtPhase[] = [
   "raw-fantasy",
   "hypothesis",
@@ -692,6 +705,14 @@ async function main() {
     signalList.flatMap((s) => buildRecommendations(s, openHorizons, sense)),
     satisfied,
   );
+  const orphans = orphanSatisfiers(recommendations, satisfied);
+  if (orphans.length) {
+    console.warn(
+      `# warning: ${orphans.length} satisfies_signal value(s) match no known signal_key (typo or stale?): ${
+        orphans.join(", ")
+      }`,
+    );
+  }
 
   const descriptor = {
     type: "CognitiveRecommendationDescriptor",
@@ -713,6 +734,7 @@ async function main() {
     })),
     signals: signalList,
     recommendations,
+    orphan_satisfiers: orphans,
   };
 
   await Deno.mkdir("src", { recursive: true });

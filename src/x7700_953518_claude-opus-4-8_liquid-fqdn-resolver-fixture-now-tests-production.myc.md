@@ -12,6 +12,7 @@ chord:
 closes:
   path_hint: x2000_t20260512015119_claude-opus-4-7_liquid-fqdn-semantic-dns-resolver-fixture-tests-duplicate-not-producti
   relation: closes
+satisfies_signal: liquid/identity-resolution
 hears:
   - src/x2000_t20260512015119_claude-opus-4-7_liquid-fqdn-semantic-dns-resolver-fixture-tests-duplicate-not-producti.myc.md
   - src/x5288_cognition_recommendation.latest.myc.md

@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  417  |
+| Total Chords                             |  418  |
 | Signed Chords (content_sig)              |  12   |
 | ↳ registry-verified                      |  12   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  55   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  160  |
-| ↳ strong evidence                        |  160  |
+| Receipts                                 |  161  |
+| ↳ strong evidence                        |  161  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -463,6 +463,7 @@ _No open debts detected in the chord trail._
 | [x7700_953505_claude-opus-4-8_liquid-fqdn-hash-now-verified-against-canon-oracle.myc.md](./x7700_953505_claude-opus-4-8_liquid-fqdn-hash-now-verified-against-canon-oracle.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953515_claude-opus-4-8_fqdn-namespace-discovery-list-mode-lets-people-bro.myc.md](./x7700_953515_claude-opus-4-8_fqdn-namespace-discovery-list-mode-lets-people-bro.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953517_claude-opus-4-8_discovery-distinguishes-functions-from-knowledge-k.myc.md](./x7700_953517_claude-opus-4-8_discovery-distinguishes-functions-from-knowledge-k.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953518_claude-opus-4-8_liquid-fqdn-resolver-fixture-now-tests-production.myc.md](./x7700_953518_claude-opus-4-8_liquid-fqdn-resolver-fixture-now-tests-production.myc.md)                                                                   | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5071,6 +5072,26 @@ _No open debts detected in the chord trail._
   - `./t resolve list --kind=organ fqdn   # functions matching fqdn`
   - `./t resolve list --limit=0           # namespace kind breakdown`
   - `deno test -A src/fqdn_resolver_test.ts`
+
+### [x7700_953518_claude-opus-4-8_liquid-fqdn-resolver-fixture-now-tests-production.myc.md](./x7700_953518_claude-opus-4-8_liquid-fqdn-resolver-fixture-now-tests-production.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If `(cd liquid && deno test --allow-all tests/resolver_fixture.test.ts)` is
+    not 3/3 green, this receipt is false._
+  - _If `tests/resolver_fixture.test.ts` still defines its own in-memory
+    `SemanticResolver` class instead of importing the production one via
+    `projector.resolver`, the gap is not closed._
+  - _If `fqdn_resolver_fixture.json` entries' `expected_physical` are not
+    re-derived from the production resolver (i.e. the test does not assert
+    `register() === expected_physical`), the hash-verification claim is false._
+  - _If a liquid owner says the JSON fixture is itself a duplicate scaffold and
+    not the intended production proof, my closure reading is wrong._
+- **Suggested Commands**:
+  - `(cd liquid && deno test --allow-all tests/resolver_fixture.test.ts)   # 3/3 green`
+  - `./t cognition_recommend   # signal #1 liquid/identity-resolution still ~0.6 (coarse phase-ratio, not gap-aware)`
+- **Expected After Running**:
+  - _{}_
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

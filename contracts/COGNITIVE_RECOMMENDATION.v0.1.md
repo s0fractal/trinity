@@ -76,3 +76,29 @@ imagination:
 
 The target state is not maximum crystal. The target state is balanced
 circulation with enough crystal to make future speculation cheaper and safer.
+
+## 5. Closure Feedback
+
+Pressure is a phase-ratio indicator; it does not know whether a specific
+recommended action has already been done. Without feedback, a one-shot action
+("turn FQDN DNS into a hash-verified fixture") keeps re-surfacing every run for
+as long as the underlying ratio holds — even after the fixture exists. A
+recommendation that repeats after it has been satisfied trains voices to ignore
+the signal.
+
+Each recommendation therefore carries a stable `signal_key` of the form
+`<repo>/<vector>` (e.g. `liquid/identity-resolution`). A receipt MAY declare it
+has satisfied that signal by carrying `satisfies_signal: <signal_key>` in its
+frontmatter. Closure is **explicit and voice-declared** — it MUST NOT be
+inferred by fuzzy-matching a receipt's topic against an action string.
+
+When a satisfying receipt exists in the ledger, the recommendation:
+
+- keeps its honest phase-ratio `pressure` (the structural state is still real),
+- is annotated with `satisfied`, `satisfied_by`, and `satisfied_at_block`,
+- is **tier-sorted below all unsatisfied signals**, so consumers that take the
+  top recommendation (the daemon, recommend-to-chord) act on live work.
+
+Suppression is tied to the receipt's existence, which makes it self-correcting:
+if the proof is removed (e.g. the fixture is deleted), the receipt's falsifier
+fires, the receipt is retracted, and the signal returns to the top tier.

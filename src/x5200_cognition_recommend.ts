@@ -3,6 +3,9 @@
 // position: 5/2 → action(5) × mirror(2)
 // maturity: active
 // skill_safe: yes-with-care
+// horizon: none (closure feedback landed 2026-06-13: a receipt declaring
+//   `satisfies_signal: <repo>/<vector>` tier-sorts that signal below live work,
+//   so a satisfied expected_receipt stops the recommendation repeating)
 // hex_dipole: "26 26 59 26 26 6C 26 26"
 // placement_policy: axis
 //
@@ -231,6 +234,83 @@ interface Recommendation {
   rationale: string;
   expected_receipt: string;
   commands: string[];
+  // Closure feedback (W: a satisfied signal stops repeating). `signal_key` is
+  // the stable `${repo}/${vector}` identity a receipt declares it satisfies.
+  // When a receipt in the ledger carries `satisfies_signal: <signal_key>`, the
+  // recommendation keeps its honest phase-ratio pressure but is tier-sorted
+  // below unsatisfied signals so consumers (daemon, recommend-to-chord) act on
+  // live work instead. Suppression is tied to the receipt's existence — delete
+  // the proof, retract the receipt, and the signal returns.
+  signal_key: string;
+  satisfied?: boolean;
+  satisfied_by?: string;
+  satisfied_at_block?: number;
+}
+
+/** Stable identity a receipt targets via `satisfies_signal:`. */
+function signalKey(rec: { repo: string; vector: string }): string {
+  return `${rec.repo}/${rec.vector}`;
+}
+
+interface SatisfiedSignal {
+  path: string;
+  block: number;
+}
+
+/** Scan the chord ledger for receipts that explicitly declare they satisfy a
+ *  recommendation signal (`satisfies_signal: <repo>/<vector>` in frontmatter).
+ *  Closure is voice-declared and explicit — never inferred by fuzzy matching a
+ *  receipt's topic to an action string. Keeps the most recent satisfier per
+ *  key (highest bitcoin_block_height). Local scan, by the same convention that
+ *  keeps loadOrganHorizons local rather than importing uphill. */
+async function loadSatisfiedSignals(): Promise<Map<string, SatisfiedSignal>> {
+  const out = new Map<string, SatisfiedSignal>();
+  for await (const entry of Deno.readDir("src")) {
+    if (!entry.isFile || !entry.name.endsWith(".myc.md")) continue;
+    if (!/^x[0-9a-f]{4}/i.test(entry.name)) continue;
+    const text = await Deno.readTextFile(`src/${entry.name}`);
+    const fm = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+    if (!fm) continue;
+    const f = fm[1];
+    const key = f.match(/^satisfies_signal:\s*["']?([^"'\n]+?)["']?\s*$/m)?.[1]
+      ?.trim();
+    if (!key) continue;
+    const block = Number(
+      f.match(/^bitcoin_block_height:\s*(\d+)/m)?.[1] ?? 0,
+    );
+    const prev = out.get(key);
+    if (!prev || block > prev.block) {
+      out.set(key, { path: `src/${entry.name}`, block });
+    }
+  }
+  return out;
+}
+
+/** Annotate recommendations with closure state and re-rank: unsatisfied signals
+ *  first (by pressure), satisfied ones after (still by pressure, with their
+ *  satisfier surfaced). Pure — true `pressure` is never altered, only ordering.
+ *  Exported for x5200_test. */
+export function applyClosure(
+  recs: Omit<Recommendation, "rank">[],
+  satisfied: Map<string, SatisfiedSignal>,
+): Recommendation[] {
+  return recs
+    .map((rec) => {
+      const hit = satisfied.get(signalKey(rec));
+      return hit
+        ? {
+          ...rec,
+          satisfied: true,
+          satisfied_by: hit.path,
+          satisfied_at_block: hit.block,
+        }
+        : { ...rec, satisfied: false };
+    })
+    .sort((a, b) =>
+      (a.satisfied ? 1 : 0) - (b.satisfied ? 1 : 0) ||
+      b.pressure - a.pressure
+    )
+    .map((rec, index) => ({ ...rec, rank: index + 1 }));
 }
 
 const PHASES: ThoughtPhase[] = [
@@ -370,6 +450,10 @@ function buildRecommendations(
     recs.push({
       repo: signal.repo,
       vector: VECTORS[signal.repo],
+      signal_key: signalKey({
+        repo: signal.repo,
+        vector: VECTORS[signal.repo],
+      }),
       phase_from: chooseDominantPhase(signal),
       phase_to: "proposal",
       pressure: Math.max(rawPressure, hashGap, dirtyPressure, horizonPressure),
@@ -402,6 +486,10 @@ function buildRecommendations(
     recs.push({
       repo: signal.repo,
       vector: VECTORS[signal.repo],
+      signal_key: signalKey({
+        repo: signal.repo,
+        vector: VECTORS[signal.repo],
+      }),
       phase_from: "experiment",
       phase_to: "receipt",
       pressure: Math.max(experimentPressure, hashGap),
@@ -422,6 +510,10 @@ function buildRecommendations(
     recs.push({
       repo: signal.repo,
       vector: VECTORS[signal.repo],
+      signal_key: signalKey({
+        repo: signal.repo,
+        vector: VECTORS[signal.repo],
+      }),
       phase_from: rawPressure > 0.5 ? "hypothesis" : "formula",
       phase_to: "receipt",
       pressure: Math.max(rawPressure, dirtyPressure, receiptPressure),
@@ -480,9 +572,15 @@ function markdownReport(
   lines.push("## Ranked Signal");
   lines.push("");
   for (const rec of recs) {
-    lines.push(`### ${rec.rank}. ${rec.repo} / ${rec.vector}`);
+    const mark = rec.satisfied ? " ✓ satisfied" : "";
+    lines.push(`### ${rec.rank}. ${rec.repo} / ${rec.vector}${mark}`);
     lines.push("");
     lines.push(`- pressure: ${rec.pressure.toFixed(3)}`);
+    if (rec.satisfied) {
+      lines.push(
+        `- satisfied_by: \`${rec.satisfied_by}\` (block ${rec.satisfied_at_block}) — this specific action is done; phase-ratio pressure persists but is ranked below live work`,
+      );
+    }
     lines.push(`- phase: ${rec.phase_from} -> ${rec.phase_to}`);
     lines.push(`- action: ${rec.action}`);
     lines.push(`- rationale: ${rec.rationale}`);
@@ -589,10 +687,11 @@ async function main() {
   }
 
   const openHorizons = openHorizons0;
-  const recommendations = signalList
-    .flatMap((s) => buildRecommendations(s, openHorizons, sense))
-    .sort((a, b) => b.pressure - a.pressure)
-    .map((rec, index) => ({ ...rec, rank: index + 1 }));
+  const satisfied = await loadSatisfiedSignals();
+  const recommendations = applyClosure(
+    signalList.flatMap((s) => buildRecommendations(s, openHorizons, sense)),
+    satisfied,
+  );
 
   const descriptor = {
     type: "CognitiveRecommendationDescriptor",

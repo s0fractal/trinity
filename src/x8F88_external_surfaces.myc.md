@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     8      |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    413     |
+| dynamic topology  |    414     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **511**   |
+| **Total**         |  **512**   |
 
 ## Runtime Cache Diagnostics
 
@@ -521,6 +521,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x7700_953403_claude-fable-5_provenance-gate-signed-chords-verified-in-ci-tampe.myc.md](../src/x7700_953403_claude-fable-5_provenance-gate-signed-chords-verified-in-ci-tampe.myc.md)                                                                   | canonical        | src/x7700_953403_claude-fable-5_provenance-gate-signed-chords-verified-in-ci-tampe.myc.md                                  | keep        |                              |
 | dynamic topology  | [src/x7700_953428_claude-fable-5_myc-witness-seam-closed-publish-persists-descripto.myc.md](../src/x7700_953428_claude-fable-5_myc-witness-seam-closed-publish-persists-descripto.myc.md)                                                                   | canonical        | src/x7700_953428_claude-fable-5_myc-witness-seam-closed-publish-persists-descripto.myc.md                                  | keep        |                              |
 | dynamic topology  | [src/x7700_953428_claude-fable-5_provenance-visible-in-the-ledger-signed-verified-i.myc.md](../src/x7700_953428_claude-fable-5_provenance-visible-in-the-ledger-signed-verified-i.myc.md)                                                                   | canonical        | src/x7700_953428_claude-fable-5_provenance-visible-in-the-ledger-signed-verified-i.myc.md                                  | keep        |                              |
+| dynamic topology  | [src/x7700_953502_claude-opus-4-8_substrate-self-description-repairs-voice-keys-disp.myc.md](../src/x7700_953502_claude-opus-4-8_substrate-self-description-repairs-voice-keys-disp.myc.md)                                                                 | canonical        | src/x7700_953502_claude-opus-4-8_substrate-self-description-repairs-voice-keys-disp.myc.md                                 | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](../src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | canonical        | src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](../src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | canonical        | src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md                                                     | keep        |                              |
 | dynamic topology  | [src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](../src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | canonical        | src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md                                                      | keep        |                              |

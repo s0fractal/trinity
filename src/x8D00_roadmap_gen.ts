@@ -510,7 +510,13 @@ function detectClosures(
         /^jazz\/chords\//,
         "",
       );
-      const pathHintMatches = pathHint.length > 0 && pathHint === p.filename;
+      // `t chord --closes=STEM` records the path_hint WITHOUT the .myc.md
+      // extension, so match the bare stem as well as the full filename —
+      // otherwise every path_hint closure is invisible here while the
+      // decisions ledger (which matches by stem) correctly sees it closed.
+      const bareStem = p.filename.replace(/(?:\.myc)?\.md$/, "");
+      const pathHintMatches = pathHint.length > 0 &&
+        (pathHint === p.filename || pathHint === bareStem);
       if (
         closesBodyHash === target || directClosesHash === target ||
         pathHintMatches

@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  413  |
-| Signed Chords (content_sig)              |   7   |
-| ↳ registry-verified                      |   7   |
+| Total Chords                             |  414  |
+| Signed Chords (content_sig)              |   8   |
+| ↳ registry-verified                      |   8   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  55   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  156  |
-| ↳ strong evidence                        |  156  |
+| Receipts                                 |  157  |
+| ↳ strong evidence                        |  157  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -459,6 +459,7 @@ _No open debts detected in the chord trail._
 | [x7700_953403_claude-fable-5_provenance-gate-signed-chords-verified-in-ci-tampe.myc.md](./x7700_953403_claude-fable-5_provenance-gate-signed-chords-verified-in-ci-tampe.myc.md)                                                                   | **RECEIPT**  | claude-fable-5     |   0   |   0    |
 | [x7700_953428_claude-fable-5_myc-witness-seam-closed-publish-persists-descripto.myc.md](./x7700_953428_claude-fable-5_myc-witness-seam-closed-publish-persists-descripto.myc.md)                                                                   | **RECEIPT**  | claude-fable-5     |   0   |   0    |
 | [x7700_953428_claude-fable-5_provenance-visible-in-the-ledger-signed-verified-i.myc.md](./x7700_953428_claude-fable-5_provenance-visible-in-the-ledger-signed-verified-i.myc.md)                                                                   | **RECEIPT**  | claude-fable-5     |   0   |   0    |
+| [x7700_953502_claude-opus-4-8_substrate-self-description-repairs-voice-keys-disp.myc.md](./x7700_953502_claude-opus-4-8_substrate-self-description-repairs-voice-keys-disp.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5000,6 +5001,24 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `./t decisions --json | jq .summary.provenance`
   - `grep -A3 'Signed Chords' src/x2B88_decisions.myc.md`
+
+### [x7700_953502_claude-opus-4-8_substrate-self-description-repairs-voice-keys-disp.myc.md](./x7700_953502_claude-opus-4-8_substrate-self-description-repairs-voice-keys-disp.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If `./t voice-keys registry` or `./t keys registry` returns 'unknown word',
+    the dispatch registration regressed._
+  - _If `./t skill --stable && grep 'Skill Tag Drift' src/x8D00_roadmap.myc.md`
+    is not 'None.', the tag drift returned._
+  - _If `./t roadmap` Open-commitments shows any path_hint-closed proposal under
+    'Still open', the closure-matching fix regressed._
+  - _If resolveWord('resolve-fqdn') stops returning 2/F3, the new 2/F37 entry
+    shadowed the resolver (collision)._
+- **Suggested Commands**:
+  - `./t voice-keys registry`
+  - `./t keys registry`
+  - `grep -A2 'Skill Tag Drift' src/x8D00_roadmap.myc.md`
+  - `grep -A2 'proposals total' src/x8D00_roadmap.myc.md`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

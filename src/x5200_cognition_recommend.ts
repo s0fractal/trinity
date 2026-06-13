@@ -532,8 +532,12 @@ function buildRecommendations(
       pressure: Math.max(rawPressure, dirtyPressure, receiptPressure),
       action:
         "Convert the next deterministic execution result into a receipt or compost it explicitly.",
-      rationale:
-        "Omega is formula-heavy and currently has uncommitted test output pressure; outputs should become receipts or leave the active graph.",
+      // Rationale tracks the component that actually dominates the pressure — a
+      // static "uncommitted test output" claim is false on a clean worktree
+      // (where the pressure is hypothesis mass, not dirty output).
+      rationale: dirtyPressure >= rawPressure
+        ? "Omega has uncommitted execution output; it should become a verification receipt or be composted, not left dirty in the active graph."
+        : "Omega is hypothesis-heavy (the dominant pressure is unproven-hypothesis mass); maturing the next deterministic execution into a named verification receipt is the gain.",
       expected_receipt:
         "A named verification artifact from cargo/deno tests, or an explicit compost decision for non-canonical output.",
       commands: ["deno task check:omega:rust", "deno task check:omega:deno"],

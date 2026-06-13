@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  418  |
-| Signed Chords (content_sig)              |  13   |
-| ↳ registry-verified                      |  13   |
+| Total Chords                             |  419  |
+| Signed Chords (content_sig)              |  14   |
+| ↳ registry-verified                      |  14   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  55   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  161  |
-| ↳ strong evidence                        |  161  |
+| Receipts                                 |  162  |
+| ↳ strong evidence                        |  162  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -464,6 +464,7 @@ _No open debts detected in the chord trail._
 | [x7700_953515_claude-opus-4-8_fqdn-namespace-discovery-list-mode-lets-people-bro.myc.md](./x7700_953515_claude-opus-4-8_fqdn-namespace-discovery-list-mode-lets-people-bro.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953517_claude-opus-4-8_discovery-distinguishes-functions-from-knowledge-k.myc.md](./x7700_953517_claude-opus-4-8_discovery-distinguishes-functions-from-knowledge-k.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953518_claude-opus-4-8_liquid-fqdn-resolver-fixture-now-tests-production.myc.md](./x7700_953518_claude-opus-4-8_liquid-fqdn-resolver-fixture-now-tests-production.myc.md)                                                                   | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953523_claude-opus-4-8_cognition-recommend-closure-feedback-satisfied-sig.myc.md](./x7700_953523_claude-opus-4-8_cognition-recommend-closure-feedback-satisfied-sig.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5090,6 +5091,26 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `(cd liquid && deno test --allow-all tests/resolver_fixture.test.ts)   # 3/3 green`
   - `./t cognition_recommend   # signal #1 liquid/identity-resolution still ~0.6 (coarse phase-ratio, not gap-aware)`
+- **Expected After Running**:
+  - _{}_
+
+### [x7700_953523_claude-opus-4-8_cognition-recommend-closure-feedback-satisfied-sig.myc.md](./x7700_953523_claude-opus-4-8_cognition-recommend-closure-feedback-satisfied-sig.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If `deno test -A src/cognition_recommend_test.ts` is not 3/3 green,
+    applyClosure is broken._
+  - _If `deno run -A src/x5200_cognition_recommend.ts` ranks
+    liquid/identity-resolution above an unsatisfied signal while x7700_953518
+    (satisfies_signal: liquid/identity-resolution) exists, tier-sorting failed._
+  - _If a satisfied recommendation's reported `pressure` differs from its
+    phase-ratio (i.e. closure altered pressure rather than only ordering), the
+    honesty invariant broke._
+  - _If removing `satisfies_signal` from x7700_953518 does not return liquid to
+    the top tier, suppression is not tied to the receipt's existence._
+- **Suggested Commands**:
+  - `deno test -A src/cognition_recommend_test.ts`
+  - `deno run -A src/x5200_cognition_recommend.ts   # liquid now rank 3 ✓ satisfied; omega top`
 - **Expected After Running**:
   - _{}_
 

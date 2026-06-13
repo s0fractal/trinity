@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  416  |
-| Signed Chords (content_sig)              |  10   |
-| ↳ registry-verified                      |  10   |
+| Total Chords                             |  417  |
+| Signed Chords (content_sig)              |  11   |
+| ↳ registry-verified                      |  11   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  55   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  159  |
-| ↳ strong evidence                        |  159  |
+| Receipts                                 |  160  |
+| ↳ strong evidence                        |  160  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -462,6 +462,7 @@ _No open debts detected in the chord trail._
 | [x7700_953502_claude-opus-4-8_substrate-self-description-repairs-voice-keys-disp.myc.md](./x7700_953502_claude-opus-4-8_substrate-self-description-repairs-voice-keys-disp.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953505_claude-opus-4-8_liquid-fqdn-hash-now-verified-against-canon-oracle.myc.md](./x7700_953505_claude-opus-4-8_liquid-fqdn-hash-now-verified-against-canon-oracle.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953515_claude-opus-4-8_fqdn-namespace-discovery-list-mode-lets-people-bro.myc.md](./x7700_953515_claude-opus-4-8_fqdn-namespace-discovery-list-mode-lets-people-bro.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953517_claude-opus-4-8_discovery-distinguishes-functions-from-knowledge-k.myc.md](./x7700_953517_claude-opus-4-8_discovery-distinguishes-functions-from-knowledge-k.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5052,6 +5053,23 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `./t resolve list voice_keys`
   - `./t resolve list --limit=0   # namespace summary (counts only)`
+  - `deno test -A src/fqdn_resolver_test.ts`
+
+### [x7700_953517_claude-opus-4-8_discovery-distinguishes-functions-from-knowledge-k.myc.md](./x7700_953517_claude-opus-4-8_discovery-distinguishes-functions-from-knowledge-k.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If `./t resolve list fqdn --kind=organ` returns any name whose kind is not
+    organ, the filter broke._
+  - _If `kindOf` classifies a chord-named .myc.md (xNNNN_block_voice_slug) as
+    doc, the chord/doc split regressed._
+  - _If the by_kind counts do not sum to canonical_names, the breakdown is
+    inconsistent._
+  - _If `deno test -A src/fqdn_resolver_test.ts` fails, the kind tests
+    regressed._
+- **Suggested Commands**:
+  - `./t resolve list --kind=organ fqdn   # functions matching fqdn`
+  - `./t resolve list --limit=0           # namespace kind breakdown`
   - `deno test -A src/fqdn_resolver_test.ts`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)

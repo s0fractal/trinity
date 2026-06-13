@@ -167,8 +167,40 @@ export async function buildIndex(roots: Root[]): Promise<Index> {
   return { roots: paths, byKey, files };
 }
 
+// What KIND of thing a name addresses — derived from the name alone (cheap, no
+// file read), so discovery can tell a function from knowledge from a record:
+//   organ  — .ts code (a runnable/importable function)
+//   test   — .ts test
+//   chord  — .myc.md whose name carries a chord body (block_voice_slug): a record
+//   doc    — .myc.md / .md prose (knowledge)
+//   data   — .json
+//   script — .sh   |   rust — .rs   |   other — anything else
+export type NameKind =
+  | "organ"
+  | "test"
+  | "chord"
+  | "doc"
+  | "data"
+  | "script"
+  | "rust"
+  | "other";
+
+export function kindOf(name: string): NameKind {
+  if (name.endsWith("_test.ts")) return "test";
+  if (name.endsWith(".ts")) return "organ";
+  if (name.endsWith(".myc.md") || name.endsWith(".md")) {
+    const handle = name.replace(COORD_PREFIX, "");
+    return CHORD_BODY.test(handle) ? "chord" : "doc";
+  }
+  if (name.endsWith(".json")) return "data";
+  if (name.endsWith(".sh")) return "script";
+  if (name.endsWith(".rs")) return "rust";
+  return "other";
+}
+
 export interface NameEntry {
   name: string; // canonical (exact-form) address
+  kind: NameKind; // function / knowledge / record, from the name alone
   candidates: number; // how many files answer to it exactly
   roots: string[]; // distinct root names (src, liquid, omega, myc) carrying it
 }
@@ -183,22 +215,36 @@ export interface NameEntry {
  */
 export function listNames(
   index: Index,
-  opts: { substring?: string; limit?: number } = {},
-): { total: number; shown: NameEntry[]; truncated: number } {
+  opts: { substring?: string; limit?: number; kind?: NameKind } = {},
+): {
+  total: number;
+  shown: NameEntry[];
+  truncated: number;
+  by_kind: Record<string, number>;
+} {
   const sub = opts.substring?.toLowerCase();
   const limit = opts.limit ?? 50;
   const entries: NameEntry[] = [];
+  const by_kind: Record<string, number> = {};
   for (const [key, stored] of index.byKey) {
     const exact = stored.filter((s) => s.matchForm === "exact");
     if (exact.length === 0) continue; // alias-only key — not a canonical name
     if (sub && !key.toLowerCase().includes(sub)) continue;
+    const kind = kindOf(key);
+    if (opts.kind && kind !== opts.kind) continue;
     const roots = [...new Set(exact.map((s) => basename(s.root)))].sort();
-    entries.push({ name: key, candidates: exact.length, roots });
+    entries.push({ name: key, kind, candidates: exact.length, roots });
+    by_kind[kind] = (by_kind[kind] ?? 0) + 1;
   }
   entries.sort((a, b) => a.name.localeCompare(b.name));
   const total = entries.length;
   const shown = entries.slice(0, limit);
-  return { total, shown, truncated: Math.max(0, total - shown.length) };
+  return {
+    total,
+    shown,
+    truncated: Math.max(0, total - shown.length),
+    by_kind,
+  };
 }
 
 /** Resolve one query against a prebuilt index, hashing only the files it hits. */
@@ -277,20 +323,28 @@ if (import.meta.main) {
     }
   }
 
-  // `list [substring]` — discover the resolvable namespace (read-only, no hash).
+  // `list [substring] [--kind=K]` — discover the resolvable namespace
+  // (read-only, no hash). `--kind=organ` answers "what functions exist?".
   if (args[0] === "list") {
     const positional = args.slice(1).filter((a) => !a.startsWith("--"));
     const substring = positional[0];
     const limitArg = args.find((a) => a.startsWith("--limit="));
     const limit = limitArg ? Number(limitArg.split("=")[1]) : 50;
+    const kindArg = args.find((a) => a.startsWith("--kind="))?.split("=")[1];
     const index = await buildIndex(roots);
-    const { total, shown, truncated } = listNames(index, { substring, limit });
+    const { total, shown, truncated, by_kind } = listNames(index, {
+      substring,
+      limit,
+      kind: kindArg as NameKind | undefined,
+    });
     console.log(JSON.stringify(
       {
         type: "fqdn_namespace",
         query: substring ?? null,
+        kind: kindArg ?? null,
         files_indexed: index.files,
         canonical_names: total,
+        by_kind,
         shown: shown.length,
         truncated,
         names: shown,

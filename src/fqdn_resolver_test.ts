@@ -5,6 +5,7 @@ import {
 import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
 import {
   buildIndex,
+  kindOf,
   listNames,
   resolveFqdn,
   resolveFromIndex,
@@ -266,6 +267,54 @@ Deno.test("listNames — substring filter and bounded truncation are honest", as
     assertEquals(capped.shown.length, 2);
     assert(capped.truncated > 0);
     assertEquals(capped.total, capped.shown.length + capped.truncated);
+  } finally {
+    await cleanup();
+  }
+});
+
+Deno.test("kindOf — names classify into function / knowledge / record by name alone", () => {
+  assertEquals(kindOf("x2F30_fqdn_resolver.ts"), "organ");
+  assertEquals(kindOf("fqdn_resolver_test.ts"), "test");
+  assertEquals(
+    kindOf("x7700_953515_claude-opus-4-8_my-receipt.myc.md"),
+    "chord",
+  );
+  assertEquals(kindOf("x8D00_roadmap.myc.md"), "doc"); // generated doc, not a chord
+  assertEquals(kindOf("README.md"), "doc");
+  assertEquals(kindOf("canon-vectors.json"), "data");
+  assertEquals(kindOf("x0200_shim.sh"), "script");
+  assertEquals(kindOf("lib.rs"), "rust");
+  assertEquals(kindOf("image.png"), "other");
+});
+
+Deno.test("listNames — kind filter and by_kind breakdown", async () => {
+  const { roots, cleanup } = await fixture();
+  try {
+    const index = await buildIndex(roots);
+    const all = listNames(index);
+    // by_kind sums to total.
+    const sum = Object.values(all.by_kind).reduce((a, b) => a + b, 0);
+    assertEquals(sum, all.total);
+
+    // --kind=organ returns only .ts organs (only_here.ts, x5510_myc_proxy.ts,
+    // hash.ts, x4010_hash.ts) — the chord and doc names are excluded.
+    const organs = listNames(index, { kind: "organ" });
+    assertEquals(organs.shown.every((e) => e.kind === "organ"), true);
+    assertEquals(organs.shown.some((e) => e.name === "only_here.ts"), true);
+    assertEquals(
+      organs.shown.some((e) =>
+        e.name === "x4700_952699_claude-opus-4-8_my-proposal.myc.md"
+      ),
+      false,
+    );
+
+    // --kind=chord returns the chord-named .myc.md only.
+    const chords = listNames(index, { kind: "chord" });
+    assertEquals(chords.shown.length, 1);
+    assertEquals(
+      chords.shown[0].name,
+      "x4700_952699_claude-opus-4-8_my-proposal.myc.md",
+    );
   } finally {
     await cleanup();
   }

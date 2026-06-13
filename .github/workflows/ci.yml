@@ -113,6 +113,14 @@ jobs:
           ./t cross-verify trinity | jq -e '.type == "all" and .mode == "only:trinity" and .summary.overall == "passed"'
           ./t cross-verify liquid | jq -e '.type == "all" and .mode == "only:liquid" and .summary.overall == "passed"'
 
+      # The canon-vectors oracle declares the FQDN naming convention all
+      # substrates must reproduce. liquid had no verifier, so its
+      # calculateFqdnHash could drift undetected; this drives liquid's impl
+      # against the oracle so the swarm's name=hash convention stays coherent.
+      - name: Verify liquid FQDN hash agrees with canon oracle
+        if: steps.subm.outputs.present == 'true'
+        run: deno task canon:verify:cross
+
       - name: Verify recipes detail lookup
         run: ./t recipes show recipe.metacognition.field-cycle --json | jq -e '.type == "recipes" and .position == "3/C" and .action == "show" and .recipes[0].id == "recipe.metacognition.field-cycle"'
 

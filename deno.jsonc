@@ -45,6 +45,7 @@
     "import-map": "deno run --allow-read --allow-write src/x0160_import_map_gen.ts",
     "cognition:cycle": "deno task cognition:snapshot && deno task cognition:delta && deno task cognition:recommend && deno task cognition:recommend-receipt && deno task cognition:recommend-to-chord && deno task cognition:field",
     "canon:verify": "deno run -A src/x6410_verify_vectors.ts",
+    "canon:verify:cross": "deno run -A src/x6410_verify_vectors.ts --cross-liquid",
     "chord:play": "deno run -A src/x3500_chord_play.ts",
     "chord:block": "deno run --allow-net src/x4001_chord.ts block",
     "chord:init": "deno run --allow-net src/x4001_chord.ts init",

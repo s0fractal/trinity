@@ -56,4 +56,58 @@ if (fail > 0) {
   Deno.exit(1);
 }
 
-console.log(`canon-vectors: ${pass}/${file.vectors.length} passed`);
+console.log(`canon-vectors: ${pass}/${file.vectors.length} passed (trinity)`);
+
+// --cross-liquid: drive liquid's calculateFqdnHash (via liquid/tools/fqdn_hash.ts)
+// against the SAME oracle, so liquid's FQDN naming cannot silently drift from
+// the swarm convention. The oracle stays single-source here; liquid is treated
+// as the system-under-test (the phi-fixture pattern: liquid exposes a tool,
+// trinity drives it). Skips gracefully when the liquid submodule is absent.
+if (Deno.args.includes("--cross-liquid")) {
+  const liquidTool = new URL(
+    "../liquid/tools/fqdn_hash.ts",
+    import.meta.url,
+  );
+  let present = true;
+  try {
+    await Deno.stat(liquidTool);
+  } catch {
+    present = false;
+  }
+  if (!present) {
+    console.log("canon-vectors: liquid submodule absent — cross-check skipped");
+  } else {
+    let lpass = 0;
+    const lfailures: string[] = [];
+    for (const v of file.vectors) {
+      const b64 = btoa(
+        String.fromCharCode(...new TextEncoder().encode(v.input)),
+      );
+      const { code, stdout, stderr } = await new Deno.Command("deno", {
+        args: ["run", liquidTool.pathname, b64],
+        stdout: "piped",
+        stderr: "piped",
+      }).output();
+      const got = new TextDecoder().decode(stdout).trim();
+      if (code === 0 && got === v.fqdn_prefix) {
+        lpass++;
+      } else {
+        lfailures.push(
+          `  ✗ ${v.name}: liquid got "${got}" (exit ${code}${
+            code !== 0 ? ", " + new TextDecoder().decode(stderr).trim() : ""
+          }); oracle expects ${v.fqdn_prefix}`,
+        );
+      }
+    }
+    if (lfailures.length > 0) {
+      console.error(
+        `canon-vectors: ${lfailures.length} liquid DRIFT, ${lpass} agreed`,
+      );
+      for (const f of lfailures) console.error(f);
+      Deno.exit(1);
+    }
+    console.log(
+      `canon-vectors: ${lpass}/${file.vectors.length} agreed (liquid ↔ oracle)`,
+    );
+  }
+}

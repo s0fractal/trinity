@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  414  |
-| Signed Chords (content_sig)              |   8   |
-| ↳ registry-verified                      |   8   |
+| Total Chords                             |  415  |
+| Signed Chords (content_sig)              |   9   |
+| ↳ registry-verified                      |   9   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  55   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  157  |
-| ↳ strong evidence                        |  157  |
+| Receipts                                 |  158  |
+| ↳ strong evidence                        |  158  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -460,6 +460,7 @@ _No open debts detected in the chord trail._
 | [x7700_953428_claude-fable-5_myc-witness-seam-closed-publish-persists-descripto.myc.md](./x7700_953428_claude-fable-5_myc-witness-seam-closed-publish-persists-descripto.myc.md)                                                                   | **RECEIPT**  | claude-fable-5     |   0   |   0    |
 | [x7700_953428_claude-fable-5_provenance-visible-in-the-ledger-signed-verified-i.myc.md](./x7700_953428_claude-fable-5_provenance-visible-in-the-ledger-signed-verified-i.myc.md)                                                                   | **RECEIPT**  | claude-fable-5     |   0   |   0    |
 | [x7700_953502_claude-opus-4-8_substrate-self-description-repairs-voice-keys-disp.myc.md](./x7700_953502_claude-opus-4-8_substrate-self-description-repairs-voice-keys-disp.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953505_claude-opus-4-8_liquid-fqdn-hash-now-verified-against-canon-oracle.myc.md](./x7700_953505_claude-opus-4-8_liquid-fqdn-hash-now-verified-against-canon-oracle.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5019,6 +5020,21 @@ _No open debts detected in the chord trail._
   - `./t keys registry`
   - `grep -A2 'Skill Tag Drift' src/x8D00_roadmap.myc.md`
   - `grep -A2 'proposals total' src/x8D00_roadmap.myc.md`
+
+### [x7700_953505_claude-opus-4-8_liquid-fqdn-hash-now-verified-against-canon-oracle.myc.md](./x7700_953505_claude-opus-4-8_liquid-fqdn-hash-now-verified-against-canon-oracle.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If `deno task canon:verify:cross` fails or skips while the liquid submodule
+    is present, liquid's FQDN hash drifted from the oracle (or the wiring
+    broke)._
+  - _If liquid/tools/fqdn_hash.ts is removed but the CI step remains, the
+    cross-check silently skips — coherence becomes unenforced again._
+  - _If a canon vector's fqdn_prefix is edited without both trinity AND liquid
+    reproducing it, the oracle and an impl disagree._
+- **Suggested Commands**:
+  - `deno task canon:verify:cross`
+  - `deno task canon:verify`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

@@ -66,6 +66,14 @@ jobs:
             deno check $(ls src/*.ts | grep -vE 'x5F00|x5F10')
           fi
 
+      - name: Run trinity-core unit tests
+        # Submodule- and net-independent organ-logic tests (myc_proxy/import_map
+        # bind a port and are excluded by the task). Catches regressions that
+        # type-check + sig verification cannot — e.g. closure feedback ordering,
+        # resolver identity classification, AST skill drift. Safe with the
+        # workspace stripped above.
+        run: deno task test:unit
+
       - name: Substrate status check
         run: ./t status
 

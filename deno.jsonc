@@ -24,6 +24,11 @@
     "check:liquid:doctor": "cd liquid && deno task ledger:doctor --json",
     "check:liquid:unit": "cd liquid && deno task test:unit",
     "check:hash:unit": "deno test src/hash_test.ts",
+    // trinity-core unit tests, submodule- and net-independent. myc_proxy and
+    // import_map bind a local port, so they are excluded — run them directly
+    // with --allow-net when needed. Safe to run in the workspace-stripped CI
+    // checkout. Gated by ci.yml.
+    "test:unit": "deno test --allow-read --allow-write --allow-env --allow-run $(ls src/*_test.ts | grep -vE 'myc_proxy_test|import_map_test')",
     "ontology:coverage": "deno run -A src/x6300_ontology_coverage.ts",
     "cognition:phase-report": "deno run -A src/x2C00_cognition_phase_report.ts",
     "cognition:snapshot": "deno run -A src/x2400_cognition_snapshot.ts",

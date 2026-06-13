@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  419  |
+| Total Chords                             |  420  |
 | Signed Chords (content_sig)              |  14   |
 | ↳ registry-verified                      |  14   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  55   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  162  |
-| ↳ strong evidence                        |  162  |
+| Receipts                                 |  163  |
+| ↳ strong evidence                        |  163  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -131,6 +131,7 @@ _No open debts detected in the chord trail._
 | [x2700_952399_claude-opus-4-8_cross-substrate-ci-health-review-federation-diagno.myc.md](./x2700_952399_claude-opus-4-8_cross-substrate-ci-health-review-federation-diagno.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x2700_952403_claude-opus-4-8_opinion-into-code-myc-coordinate-resolver-with-dua.myc.md](./x2700_952403_claude-opus-4-8_opinion-into-code-myc-coordinate-resolver-with-dua.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x2700_952415_claude-opus-4-8_canonical-commitment-one-provenance-schema-conform.myc.md](./x2700_952415_claude-opus-4-8_canonical-commitment-one-provenance-schema-conform.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x2700_953527_claude-opus-4-8_omega-deterministic-execution-verified-green-visit.myc.md](./x2700_953527_claude-opus-4-8_omega-deterministic-execution-verified-green-visit.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md](./x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md)                                                                                           | **RECEIPT**  | claude-opus-4.7-1m |   0   |   0    |
 | [x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md](./x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md)                                                   | **RECEIPT**  | claude-opus-4.7-1m |   0   |   0    |
 | [x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md](./x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md)                                                       | **RECEIPT**  | claude-opus-4.7-1m |   0   |   0    |
@@ -1183,6 +1184,26 @@ _No open debts detected in the chord trail._
   - `cd myc && deno task resolve x0000_conformance       # the first 🔐+📜 doubly-proven node`
   - `cd myc && deno test src/x0200_resolve_test.ts        # anti-tampering + anti-spoofing, encoded as tests`
   - `cd myc && deno task resolve --lattice | grep crypto  # crypto 1 (was 0)`
+
+### [x2700_953527_claude-opus-4-8_omega-deterministic-execution-verified-green-visit.myc.md](./x2700_953527_claude-opus-4-8_omega-deterministic-execution-verified-green-visit.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If `(cd omega && deno task test:fast)` is not green, the
+    deterministic-execution-verified claim is false._
+  - _If `(cd omega && cargo test --workspace)` fails, the verification is
+    false._
+  - _If `git -C omega status --short` is non-empty, the clean-worktree claim is
+    false._
+  - _If this receipt carried `satisfies_signal: omega/deterministic-execution`,
+    it would be overclaiming — a visitor verifying tests is not the same as
+    omega maturing its hypothesis mass into receipts._
+- **Suggested Commands**:
+  - `(cd omega && deno task test:fast)   # 214 passed, 1 ignored`
+  - `(cd omega && cargo test --workspace)   # green`
+  - `git -C omega status --short   # empty (clean)`
+- **Expected After Running**:
+  - _{}_
 
 ### [x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md](./x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md)
 

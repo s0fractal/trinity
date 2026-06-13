@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  415  |
+| Total Chords                             |  416  |
 | Signed Chords (content_sig)              |  10   |
 | ↳ registry-verified                      |  10   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  55   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  158  |
-| ↳ strong evidence                        |  158  |
+| Receipts                                 |  159  |
+| ↳ strong evidence                        |  159  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -461,6 +461,7 @@ _No open debts detected in the chord trail._
 | [x7700_953428_claude-fable-5_provenance-visible-in-the-ledger-signed-verified-i.myc.md](./x7700_953428_claude-fable-5_provenance-visible-in-the-ledger-signed-verified-i.myc.md)                                                                   | **RECEIPT**  | claude-fable-5     |   0   |   0    |
 | [x7700_953502_claude-opus-4-8_substrate-self-description-repairs-voice-keys-disp.myc.md](./x7700_953502_claude-opus-4-8_substrate-self-description-repairs-voice-keys-disp.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953505_claude-opus-4-8_liquid-fqdn-hash-now-verified-against-canon-oracle.myc.md](./x7700_953505_claude-opus-4-8_liquid-fqdn-hash-now-verified-against-canon-oracle.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953515_claude-opus-4-8_fqdn-namespace-discovery-list-mode-lets-people-bro.myc.md](./x7700_953515_claude-opus-4-8_fqdn-namespace-discovery-list-mode-lets-people-bro.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5035,6 +5036,23 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `deno task canon:verify:cross`
   - `deno task canon:verify`
+
+### [x7700_953515_claude-opus-4-8_fqdn-namespace-discovery-list-mode-lets-people-bro.myc.md](./x7700_953515_claude-opus-4-8_fqdn-namespace-discovery-list-mode-lets-people-bro.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If `./t resolve list x2F37` does not return type fqdn_namespace with
+    x2F37_voice_keys.ts among names, discovery is broken._
+  - _If `deno test -A src/fqdn_resolver_test.ts` fails, the listNames tests
+    regressed._
+  - _If listNames returns an alias key (e.g. a bare handle or chord slug) as a
+    canonical name, the exact-form folding broke._
+  - _If a --limit smaller than the match count returns truncated:0, the
+    no-silent-caps guarantee is violated._
+- **Suggested Commands**:
+  - `./t resolve list voice_keys`
+  - `./t resolve list --limit=0   # namespace summary (counts only)`
+  - `deno test -A src/fqdn_resolver_test.ts`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

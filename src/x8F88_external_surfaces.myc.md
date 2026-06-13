@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     8      |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    415     |
+| dynamic topology  |    416     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **513**   |
+| **Total**         |  **514**   |
 
 ## Runtime Cache Diagnostics
 
@@ -523,6 +523,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x7700_953428_claude-fable-5_provenance-visible-in-the-ledger-signed-verified-i.myc.md](../src/x7700_953428_claude-fable-5_provenance-visible-in-the-ledger-signed-verified-i.myc.md)                                                                   | canonical        | src/x7700_953428_claude-fable-5_provenance-visible-in-the-ledger-signed-verified-i.myc.md                                  | keep        |                              |
 | dynamic topology  | [src/x7700_953502_claude-opus-4-8_substrate-self-description-repairs-voice-keys-disp.myc.md](../src/x7700_953502_claude-opus-4-8_substrate-self-description-repairs-voice-keys-disp.myc.md)                                                                 | canonical        | src/x7700_953502_claude-opus-4-8_substrate-self-description-repairs-voice-keys-disp.myc.md                                 | keep        |                              |
 | dynamic topology  | [src/x7700_953505_claude-opus-4-8_liquid-fqdn-hash-now-verified-against-canon-oracle.myc.md](../src/x7700_953505_claude-opus-4-8_liquid-fqdn-hash-now-verified-against-canon-oracle.myc.md)                                                                 | canonical        | src/x7700_953505_claude-opus-4-8_liquid-fqdn-hash-now-verified-against-canon-oracle.myc.md                                 | keep        |                              |
+| dynamic topology  | [src/x7700_953515_claude-opus-4-8_fqdn-namespace-discovery-list-mode-lets-people-bro.myc.md](../src/x7700_953515_claude-opus-4-8_fqdn-namespace-discovery-list-mode-lets-people-bro.myc.md)                                                                 | canonical        | src/x7700_953515_claude-opus-4-8_fqdn-namespace-discovery-list-mode-lets-people-bro.myc.md                                 | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](../src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | canonical        | src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](../src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | canonical        | src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md                                                     | keep        |                              |
 | dynamic topology  | [src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](../src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | canonical        | src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md                                                      | keep        |                              |

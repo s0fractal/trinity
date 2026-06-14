@@ -63,6 +63,54 @@ Deno.test("skill_gen AST — ignores matches in comments and string literals", (
   assertEquals(res.fetches, []);
 });
 
+Deno.test("skill_gen AST — detects network server/client (codex F1: proxy)", () => {
+  const content = `
+    export async function proxy() {
+      const ln = Deno.listen({ port: 8080 });
+      for await (const conn of ln) {
+        const up = await Deno.connect({ hostname: "h", port: 80 });
+        void up; void conn;
+      }
+    }
+  `;
+  const res = analyzeBehaviorWithAST(content, "proxy.ts");
+  assertEquals(res.mutations, []);
+  assertEquals(res.subprocesses, []);
+  assertEquals(res.fetches, []);
+  assert(res.network.includes("Deno.listen"));
+  assert(res.network.includes("Deno.connect"));
+});
+
+Deno.test("skill_gen AST — detects privileged effects (env/ffi/wasm/worker)", () => {
+  const content = `
+    export async function p() {
+      Deno.env.set("X", "1");
+      const lib = Deno.dlopen("a.so", {});
+      await WebAssembly.instantiate(new Uint8Array());
+      const w = new Worker("w.ts");
+      void lib; void w;
+    }
+  `;
+  const res = analyzeBehaviorWithAST(content, "priv.ts");
+  assert(res.privileged.includes("Deno.env.set"));
+  assert(res.privileged.includes("Deno.dlopen"));
+  assert(res.privileged.includes("WebAssembly.instantiate"));
+  assert(res.privileged.includes("new Worker"));
+});
+
+Deno.test("skill_gen AST — detects dynamic effects (import / computed Deno)", () => {
+  const dynImport = analyzeBehaviorWithAST(
+    `export async function l() { await import("./x.ts"); }`,
+    "dyn.ts",
+  );
+  assert(dynImport.dynamic.includes("import()"));
+  const computed = analyzeBehaviorWithAST(
+    `export function c(k: string) { return (Deno as any)[k](); }`,
+    "comp.ts",
+  );
+  assert(computed.dynamic.includes("Deno[computed]"));
+});
+
 // --- capability registry (codex Phase E) ---
 
 import {
@@ -71,18 +119,40 @@ import {
   classifyCapability,
 } from "./x8C00_skill_gen.ts";
 
-const empty = { mutations: [], subprocesses: [], fetches: [] };
+const empty = {
+  mutations: [],
+  subprocesses: [],
+  fetches: [],
+  network: [],
+  privileged: [],
+  dynamic: [],
+};
 
 Deno.test("classifyCapability - most-privileged capability wins", () => {
   assertEquals(classifyCapability({ ...empty }), "readonly");
   assertEquals(classifyCapability({ ...empty, fetches: ["fetch"] }), "network");
   assertEquals(
+    classifyCapability({ ...empty, network: ["Deno.listen"] }),
+    "network",
+  );
+  assertEquals(
     classifyCapability({ ...empty, subprocesses: ["Deno.Command"] }),
     "subprocess",
+  );
+  // fail-closed: a recognized-but-unbucketable privileged effect, or a dynamic
+  // effect we can't reason about, is `unknown` — never `readonly` (codex F1).
+  assertEquals(
+    classifyCapability({ ...empty, privileged: ["Deno.dlopen"] }),
+    "unknown",
+  );
+  assertEquals(
+    classifyCapability({ ...empty, dynamic: ["import()"] }),
+    "unknown",
   );
   // mutations dominate even with subprocess/fetch present
   assertEquals(
     classifyCapability({
+      ...empty,
       mutations: ["Deno.writeTextFile"],
       subprocesses: ["Deno.Command"],
       fetches: ["fetch"],

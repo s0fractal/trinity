@@ -627,11 +627,177 @@ async function fn_dispatch_word(word: string, rest: string[]): Promise<number> {
   return await fn_run_at_position(found.position, rest, 0);
 }
 
+// ── JSON-RPC server mode (`t rpc`) — antigravity vision R5 ──────────────────
+// Agents shouldn't have to parse TTY output. `t rpc` speaks newline-delimited
+// JSON-RPC 2.0 over stdio: one request object per line in, one response object
+// per line out. Each request's `method` is any trinity handle (`status`,
+// `resolve`, `roadmap`, …) and `params` are the CLI args; the result is the
+// organ's structured payload, already JSON, with no `#` lines or TTY markup.
+// Same authority as the CLI (no privilege escalation) — just a clean transport.
+
+/** Extract an organ's JSON payload from its captured stdout. Organs emit pure
+ *  JSON, but tolerate stray leading `#` comment lines; non-JSON output (e.g.
+ *  `resolve --show` content) is returned as `{ text }`. Pure. */
+export function extractJsonPayload(raw: string): unknown {
+  const trimmed = raw.trim();
+  if (!trimmed) return null;
+  try {
+    return JSON.parse(trimmed);
+  } catch { /* try stripping comment lines */ }
+  const stripped = trimmed
+    .split("\n")
+    .filter((l) => !l.trimStart().startsWith("#"))
+    .join("\n")
+    .trim();
+  if (stripped) {
+    try {
+      return JSON.parse(stripped);
+    } catch { /* fall through to text */ }
+  }
+  return { text: trimmed };
+}
+
+interface RpcRequest {
+  id: number | string | null;
+  method: string;
+  params: string[];
+  isNotification: boolean;
+}
+
+/** Parse one JSON-RPC request line into a normalized request, or an error code.
+ *  `params` may be a positional array (CLI args verbatim) or an object (mapped
+ *  to `--key=value` flags). Pure. */
+export function parseRpcRequest(
+  line: string,
+): { req: RpcRequest } | { errorCode: number; message: string } {
+  let obj: Record<string, unknown>;
+  try {
+    obj = JSON.parse(line);
+  } catch {
+    return { errorCode: -32700, message: "Parse error" };
+  }
+  if (
+    typeof obj !== "object" || obj === null || typeof obj.method !== "string"
+  ) {
+    return { errorCode: -32600, message: "Invalid Request: missing method" };
+  }
+  let params: string[] = [];
+  if (Array.isArray(obj.params)) {
+    params = obj.params.map((p) => String(p));
+  } else if (obj.params && typeof obj.params === "object") {
+    params = Object.entries(obj.params as Record<string, unknown>).map((
+      [k, v],
+    ) => (v === true ? `--${k}` : `--${k}=${v}`));
+  }
+  const id = (obj.id ?? null) as number | string | null;
+  return {
+    req: { id, method: obj.method, params, isNotification: !("id" in obj) },
+  };
+}
+
+export function rpcResult(id: number | string | null, result: unknown): string {
+  return JSON.stringify({ jsonrpc: "2.0", id, result });
+}
+
+export function rpcError(
+  id: number | string | null,
+  code: number,
+  message: string,
+): string {
+  return JSON.stringify({ jsonrpc: "2.0", id, error: { code, message } });
+}
+
+/** Run an organ at a position and capture its raw stdout (no rendering). */
+async function fn_capture_at_position(
+  pos: string,
+  args: string[],
+): Promise<{ code: number; stdout: string; stderr: string }> {
+  const path = fn_position_to_path(pos);
+  if (!(await fn_exists(path))) {
+    return { code: 2, stdout: "", stderr: `no executable at ${path}` };
+  }
+  const proc = new Deno.Command("deno", {
+    args: ["run", "--allow-all", path, ...args],
+    stdout: "piped",
+    stderr: "piped",
+  });
+  const out = await proc.output();
+  return {
+    code: out.code,
+    stdout: new TextDecoder().decode(out.stdout),
+    stderr: new TextDecoder().decode(out.stderr),
+  };
+}
+
+/** Dispatch one parsed RPC request to its organ; return a response string, or
+ *  null for a notification (no id → no response, per JSON-RPC). */
+async function fn_handle_rpc(
+  req: RpcRequest,
+  records: WordRec[],
+): Promise<string | null> {
+  const found = fn_resolve_word(req.method, records);
+  if (!found) {
+    return req.isNotification
+      ? null
+      : rpcError(req.id, -32601, `Method not found: ${req.method}`);
+  }
+  const { code, stdout, stderr } = await fn_capture_at_position(
+    found.position,
+    req.params,
+  );
+  if (req.isNotification) return null;
+  if (code !== 0) {
+    return rpcError(
+      req.id,
+      -32000,
+      `Organ exited ${code}: ${stderr.trim() || "(no stderr)"}`,
+    );
+  }
+  return rpcResult(req.id, extractJsonPayload(stdout));
+}
+
+/** stdio JSON-RPC loop: read newline-delimited requests, write responses. */
+async function fn_rpc_loop(): Promise<void> {
+  const records = await fn_load_words();
+  const decoder = new TextDecoder();
+  const encoder = new TextEncoder();
+  let buf = "";
+  const flush = async (line: string) => {
+    const parsed = parseRpcRequest(line);
+    let response: string | null;
+    if ("errorCode" in parsed) {
+      response = rpcError(null, parsed.errorCode, parsed.message);
+    } else {
+      response = await fn_handle_rpc(parsed.req, records);
+    }
+    if (response) {
+      await Deno.stdout.write(encoder.encode(response + "\n"));
+    }
+  };
+  for await (const chunk of Deno.stdin.readable) {
+    buf += decoder.decode(chunk);
+    let nl: number;
+    while ((nl = buf.indexOf("\n")) >= 0) {
+      const line = buf.slice(0, nl).trim();
+      buf = buf.slice(nl + 1);
+      if (line) await flush(line);
+    }
+  }
+  const tail = buf.trim();
+  if (tail) await flush(tail);
+}
+
 if (import.meta.main) {
   SCHEMAS = await fn_load_schemas();
   const [word, ...rest] = Deno.args;
   if (!word) {
     await fn_list();
+    Deno.exit(0);
+  }
+  // `t rpc` / `t listen`: dispatcher-level server mode, intercepted before
+  // glossary word resolution (it wraps the dispatcher itself, not an organ).
+  if (word === "rpc" || word === "listen") {
+    await fn_rpc_loop();
     Deno.exit(0);
   }
   Deno.exit(await fn_dispatch_word(word, rest));

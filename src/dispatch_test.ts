@@ -93,3 +93,76 @@ Deno.test("rpcResult / rpcError - shapes are JSON-RPC 2.0", () => {
     },
   );
 });
+
+// --- evalAst: the `t eval` LISP-AST evaluator (T4) ---
+
+import { evalAst, type LeafExec } from "./x0100_dispatch.ts";
+
+/** Mock leaf executor: echoes the call; throws for a handle named "boom". */
+const mockExec: LeafExec = (handle, args) => {
+  if (handle === "boom") return Promise.reject(new Error("boom failed"));
+  return Promise.resolve({ handle, args });
+};
+
+Deno.test("evalAst - literal passes through", async () => {
+  assertEquals(await evalAst("hello", mockExec), "hello");
+  assertEquals(await evalAst(42, mockExec), 42);
+});
+
+Deno.test("evalAst - leaf runs the handle with stringified args", async () => {
+  assertEquals(await evalAst(["status", "--json"], mockExec), {
+    handle: "status",
+    args: ["--json"],
+  });
+});
+
+Deno.test("evalAst - pipe runs in order, returns the last", async () => {
+  assertEquals(await evalAst(["pipe", ["a"], ["b"], ["c"]], mockExec), {
+    handle: "c",
+    args: [],
+  });
+});
+
+Deno.test("evalAst - all/each collects every result", async () => {
+  assertEquals(await evalAst(["all", ["a"], ["b"]], mockExec), [
+    { handle: "a", args: [] },
+    { handle: "b", args: [] },
+  ]);
+});
+
+Deno.test("evalAst - try returns fallback when the first arm throws", async () => {
+  assertEquals(await evalAst(["try", ["boom"], ["ok"]], mockExec), {
+    handle: "ok",
+    args: [],
+  });
+  // no error ⇒ first arm's result, fallback ignored
+  assertEquals(await evalAst(["try", ["ok"], ["other"]], mockExec), {
+    handle: "ok",
+    args: [],
+  });
+  // throwing with no fallback ⇒ null
+  assertEquals(await evalAst(["try", ["boom"]], mockExec), null);
+});
+
+Deno.test("evalAst - cond picks the first truthy arm; lone arm is else", async () => {
+  // truthy test (mock returns an object ⇒ truthy) → its 'then'
+  assertEquals(
+    await evalAst(["cond", [["a"], ["then1"]], [["fallback"]]], mockExec),
+    { handle: "then1", args: [] },
+  );
+  // falsey test (literal false) skips to else arm
+  assertEquals(
+    await evalAst(["cond", [false, ["skip"]], [["elsebranch"]]], mockExec),
+    { handle: "elsebranch", args: [] },
+  );
+});
+
+Deno.test("evalAst - non-string head is an error", async () => {
+  let threw = false;
+  try {
+    await evalAst([42, ["a"]], mockExec);
+  } catch {
+    threw = true;
+  }
+  assertEquals(threw, true);
+});

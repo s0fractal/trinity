@@ -9,7 +9,7 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  428  |
+| Total Chords                             |  429  |
 | Signed Chords (content_sig)              |  21   |
 | ↳ registry-verified                      |  21   |
 | ↳ INVALID signatures                     |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  156  |
+| Other Observations                       |  157  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -217,6 +217,7 @@ _No open debts detected in the chord trail._
 | [x3000_t20260530135400_antigravity_triage-papers-codeicide-closed.myc.md](./x3000_t20260530135400_antigravity_triage-papers-codeicide-closed.myc.md)                                                                                               | **DECISION** | antigravity        |   0   |   1    |
 | [x3000_t20260530153632_antigravity_triage-review-proposal-filesystem-folder-topology-resonant-with.myc.md](./x3000_t20260530153632_antigravity_triage-review-proposal-filesystem-folder-topology-resonant-with.myc.md)                             | **DECISION** | antigravity        |   0   |   1    |
 | [x3300_953571_antigravity_trinity-vector-analysis-and-refactoring-vision.myc.md](./x3300_953571_antigravity_trinity-vector-analysis-and-refactoring-vision.myc.md)                                                                                 | **OTHER**    | antigravity        |   0   |   0    |
+| [x3300_953632_antigravity_digital-niche-expansion-vision-and-tactics.myc.md](./x3300_953632_antigravity_digital-niche-expansion-vision-and-tactics.myc.md)                                                                                         | **OTHER**    | antigravity        |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |

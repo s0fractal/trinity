@@ -787,6 +787,105 @@ async function fn_rpc_loop(): Promise<void> {
   if (tail) await flush(tail);
 }
 
+// ── AST evaluator (`t eval`) — antigravity vision T4 (Sovereign API) ─────────
+// Agents shouldn't hand-write Bash/Deno-task pipelines (syntax-error-prone).
+// `t eval` evaluates a LISP-shaped JSON AST over the trinity command space:
+//   ["pipe", ["status"], ["audit"]]       run in order, return the last result
+//   ["all",  ["status"], ["roadmap"]]     run all, return the array of results
+//   ["try",  ["resolve","x"], ["status"]] try the first; on error, the fallback
+//   ["cond", [test, then], ..., [else]]   first truthy test wins (else = lone arm)
+//   ["status", "--json"]                  a leaf: a handle + its CLI args
+// Pure control flow; leaves carry the same authority as the CLI (no escalation).
+
+/** A leaf executor: run one trinity handle with args, return its JSON payload. */
+export type LeafExec = (handle: string, args: string[]) => Promise<unknown>;
+
+function isTruthy(v: unknown): boolean {
+  if (v === null || v === undefined || v === false) return false;
+  if (Array.isArray(v)) return v.length > 0;
+  if (typeof v === "object") return Object.keys(v).length > 0;
+  return Boolean(v);
+}
+
+/** Evaluate a JSON AST. Pure traversal; all organ I/O goes through `exec`, so
+ *  the combinator logic is unit-testable with a mock. Non-array nodes are
+ *  literals (returned as-is). Exported for the test. */
+export async function evalAst(node: unknown, exec: LeafExec): Promise<unknown> {
+  if (!Array.isArray(node) || node.length === 0) return node; // literal
+  const [op, ...args] = node;
+  if (typeof op !== "string") {
+    throw new Error("eval: AST head must be a string op/handle");
+  }
+  switch (op) {
+    case "pipe": {
+      let result: unknown = null;
+      for (const a of args) result = await evalAst(a, exec);
+      return result;
+    }
+    case "all":
+    case "each":
+      return await Promise.all(args.map((a) => evalAst(a, exec)));
+    case "try": {
+      try {
+        return await evalAst(args[0], exec);
+      } catch {
+        return args.length > 1 ? await evalAst(args[1], exec) : null;
+      }
+    }
+    case "cond": {
+      for (const arm of args) {
+        if (Array.isArray(arm) && arm.length === 1) {
+          return await evalAst(arm[0], exec); // lone arm = else
+        }
+        if (Array.isArray(arm) && arm.length >= 2) {
+          if (isTruthy(await evalAst(arm[0], exec))) {
+            return await evalAst(arm[1], exec);
+          }
+        }
+      }
+      return null;
+    }
+    default:
+      // Leaf: `op` is a trinity handle, the rest are CLI args (stringified).
+      return await exec(op, args.map((a) => String(a)));
+  }
+}
+
+/** Real leaf executor: resolve a handle → run its organ → JSON payload. */
+async function fn_eval_leaf(records: WordRec[]): Promise<LeafExec> {
+  return async (handle: string, args: string[]) => {
+    const found = fn_resolve_word(handle, records);
+    if (!found) throw new Error(`eval: unknown handle '${handle}'`);
+    const { code, stdout, stderr } = await fn_capture_at_position(
+      found.position,
+      args,
+    );
+    if (code !== 0) {
+      throw new Error(`eval: '${handle}' exited ${code}: ${stderr.trim()}`);
+    }
+    return extractJsonPayload(stdout);
+  };
+}
+
+async function fn_eval(astJson: string): Promise<number> {
+  let ast: unknown;
+  try {
+    ast = JSON.parse(astJson);
+  } catch {
+    console.error(`# eval: argument is not valid JSON`);
+    return 1;
+  }
+  const exec = await fn_eval_leaf(await fn_load_words());
+  try {
+    const result = await evalAst(ast, exec);
+    console.log(JSON.stringify(result, null, 2));
+    return 0;
+  } catch (e) {
+    console.error(`# eval error: ${e instanceof Error ? e.message : e}`);
+    return 1;
+  }
+}
+
 if (import.meta.main) {
   SCHEMAS = await fn_load_schemas();
   const [word, ...rest] = Deno.args;
@@ -799,6 +898,11 @@ if (import.meta.main) {
   if (word === "rpc" || word === "listen") {
     await fn_rpc_loop();
     Deno.exit(0);
+  }
+  // `t eval '<json-ast>'`: evaluate a LISP-shaped composition over the command
+  // space (antigravity T4). Dispatcher built-in (wraps the dispatcher itself).
+  if (word === "eval") {
+    Deno.exit(await fn_eval(rest[0] ?? "null"));
   }
   Deno.exit(await fn_dispatch_word(word, rest));
 }

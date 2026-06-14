@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     8      |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    428     |
+| dynamic topology  |    429     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **526**   |
+| **Total**         |  **527**   |
 
 ## Runtime Cache Diagnostics
 
@@ -279,6 +279,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x3000_t20260530135400_antigravity_triage-papers-codeicide-closed.myc.md](../src/x3000_t20260530135400_antigravity_triage-papers-codeicide-closed.myc.md)                                                                                               | canonical        | src/x3000_t20260530135400_antigravity_triage-papers-codeicide-closed.myc.md                                                | keep        |                              |
 | dynamic topology  | [src/x3000_t20260530153632_antigravity_triage-review-proposal-filesystem-folder-topology-resonant-with.myc.md](../src/x3000_t20260530153632_antigravity_triage-review-proposal-filesystem-folder-topology-resonant-with.myc.md)                             | canonical        | src/x3000_t20260530153632_antigravity_triage-review-proposal-filesystem-folder-topology-resonant-with.myc.md               | keep        |                              |
 | dynamic topology  | [src/x3300_953571_antigravity_trinity-vector-analysis-and-refactoring-vision.myc.md](../src/x3300_953571_antigravity_trinity-vector-analysis-and-refactoring-vision.myc.md)                                                                                 | canonical        | src/x3300_953571_antigravity_trinity-vector-analysis-and-refactoring-vision.myc.md                                         | keep        |                              |
+| dynamic topology  | [src/x3300_953632_antigravity_digital-niche-expansion-vision-and-tactics.myc.md](../src/x3300_953632_antigravity_digital-niche-expansion-vision-and-tactics.myc.md)                                                                                         | canonical        | src/x3300_953632_antigravity_digital-niche-expansion-vision-and-tactics.myc.md                                             | keep        |                              |
 | dynamic topology  | [src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](../src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | canonical        | src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](../src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | canonical        | src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md                                              | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](../src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | canonical        | src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md                                                      | keep        |                              |

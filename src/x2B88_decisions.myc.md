@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  425  |
+| Total Chords                             |  426  |
 | Signed Chords (content_sig)              |  19   |
 | ↳ registry-verified                      |  19   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  55   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  167  |
-| ↳ strong evidence                        |  167  |
+| Receipts                                 |  168  |
+| ↳ strong evidence                        |  168  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -471,6 +471,7 @@ _No open debts detected in the chord trail._
 | [x7700_953571_claude-opus-4-8_resolve-show-delivers-content-completing-browse-lo.myc.md](./x7700_953571_claude-opus-4-8_resolve-show-delivers-content-completing-browse-lo.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953571_claude-opus-4-8_response-to-antigravity-vision-r5-t-rpc-landed-r1.myc.md](./x7700_953571_claude-opus-4-8_response-to-antigravity-vision-r5-t-rpc-landed-r1.myc.md)                                                                   | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953573_claude-opus-4-8_law-hash-r3-landed-omega-computes-trinity-witnesse.myc.md](./x7700_953573_claude-opus-4-8_law-hash-r3-landed-omega-computes-trinity-witnesse.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953573_claude-opus-4-8_receipt-envelope-r2-court-detects-law-drift-status.myc.md](./x7700_953573_claude-opus-4-8_receipt-envelope-r2-court-detects-law-drift-status.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5217,6 +5218,25 @@ _No open debts detected in the chord trail._
   - `(cd omega && cargo test -p omega_v2 --lib law_hash)   # 2/2`
   - `(cd omega && deno task test:unit)                      # incl. law_hash parity, 217`
   - `./t status | grep -o 'law_hash[^,]*'                   # 0x30a95260`
+
+### [x7700_953573_claude-opus-4-8_receipt-envelope-r2-court-detects-law-drift-status.myc.md](./x7700_953573_claude-opus-4-8_receipt-envelope-r2-court-detects-law-drift-status.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If `deno task test:unit` does not include the court tests (122 total) and
+    pass, the drift logic is ungated or broken._
+  - _If `judge()` raises law_hash_drift when one witness has a null law_hash,
+    the abstention rule broke._
+  - _If two witnesses with the same body_hash but differing non-null law_hash do
+    not yield agreement=false, drift detection failed._
+  - _If `./t status --envelope` does not stamp the envelope's law_hash with
+    substrate_health.law_hash, the producer side regressed._
+  - _If run.sh scenarios A–C no longer pass, the judge() refactor broke the
+    existing court._
+- **Suggested Commands**:
+  - `deno test --allow-read probes/substrate-court-v0/ts/court_test.ts   # 4/4`
+  - `bash probes/substrate-court-v0/run.sh                               # A-C pass`
+  - `./t status --envelope | grep -o '\"law_hash\":\"[^\"]*\"' | head -1  # 0x30a95260`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

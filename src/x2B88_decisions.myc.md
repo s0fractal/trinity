@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  439  |
-| Signed Chords (content_sig)              |  30   |
-| ↳ registry-verified                      |  30   |
+| Total Chords                             |  440  |
+| Signed Chords (content_sig)              |  31   |
+| ↳ registry-verified                      |  31   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  56   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  179  |
-| ↳ strong evidence                        |  179  |
+| Receipts                                 |  180  |
+| ↳ strong evidence                        |  180  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -485,6 +485,7 @@ _No open debts detected in the chord trail._
 | [x7700_953658_claude-opus-4-8_capability-registry-live-consumer-safe-eval.myc.md](./x7700_953658_claude-opus-4-8_capability-registry-live-consumer-safe-eval.myc.md)                                                                               | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953659_claude-opus-4-8_safe-eval-discovery-list-safe.myc.md](./x7700_953659_claude-opus-4-8_safe-eval-discovery-list-safe.myc.md)                                                                                                           | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953670_claude-opus-4-8_ecosystem-abi-coverage-five-slot-fix.myc.md](./x7700_953670_claude-opus-4-8_ecosystem-abi-coverage-five-slot-fix.myc.md)                                                                                             | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953671_claude-opus-4-8_myc-ci-guards-vendored-encoder-parity.myc.md](./x7700_953671_claude-opus-4-8_myc-ci-guards-vendored-encoder-parity.myc.md)                                                                                           | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5464,6 +5465,20 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `./t ecosystem --json | jq '{abi_coverage: .summary.abi_coverage, per: (.mirrors|map_values(.abi_coverage))}'`
   - `deno test --allow-all src/ecosystem_test.ts   # 2`
+
+### [x7700_953671_claude-opus-4-8_myc-ci-guards-vendored-encoder-parity.myc.md](./x7700_953671_claude-opus-4-8_myc-ci-guards-vendored-encoder-parity.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If myc's `deno task check` (its CI gate) does not execute
+    src/shared/envelope_vendor_test.ts, the parity is still unguarded in CI._
+  - _If a deliberate change to myc/src/shared/envelope.ts that breaks wrap()'s
+    output does NOT turn myc CI red, the guard is not wired._
+  - _If omega or liquid stopped covering their own vendored test (they cover via
+    tests/ globs), the same gap reopened there._
+- **Suggested Commands**:
+  - `cd myc && deno task check   # now includes envelope_vendor_test`
+  - `for s in omega liquid myc; do echo $s; done   # all 3 vendored tests green`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

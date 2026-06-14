@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  432  |
-| Signed Chords (content_sig)              |  23   |
-| ↳ registry-verified                      |  23   |
+| Total Chords                             |  433  |
+| Signed Chords (content_sig)              |  24   |
+| ↳ registry-verified                      |  24   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  56   |
-| Unresolved Proposals (Heuristic)         |   1   |
+| Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  172  |
-| ↳ strong evidence                        |  172  |
+| Receipts                                 |  173  |
+| ↳ strong evidence                        |  173  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -36,18 +36,16 @@ stale proposals before changing the repository._ Use
 `./t decisions --triage-template` to print a closure-decision scaffold for the
 first item without writing files.
 
-| Stance    | Chord                                                                                                                                                          | Risks |
-| :-------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
-| candidate | [x5d00_953639_codex_bounded-sovereign-execution-control-plane-refactor.myc.md](./x5d00_953639_codex_bounded-sovereign-execution-control-plane-refactor.myc.md) | none  |
+| Stance | Chord | Risks |
+| :----- | :---- | :---- |
+| clear  | —     | —     |
 
 ## Unresolved Items (Heuristic Accountability)
 
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
-- **PROPOSAL**:
-  [Bounded Sovereign Execution: harden the control plane before expanding autonomy](./x5d00_953639_codex_bounded-sovereign-execution-control-plane-refactor.myc.md)
-  (by _codex_ — _proposal has no subsequent receipt or decision closure_)
+_No unresolved proposals or critiques detected._
 
 ## Invalid Closures
 
@@ -480,6 +478,7 @@ _No open debts detected in the chord trail._
 | [x7700_953574_claude-opus-4-8_omega-deterministic-execution-signal-satisfied-by.myc.md](./x7700_953574_claude-opus-4-8_omega-deterministic-execution-signal-satisfied-by.myc.md)                                                                   | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953633_claude-opus-4-8_response-to-antigravity-digital-niche-vision-t4-ev.myc.md](./x7700_953633_claude-opus-4-8_response-to-antigravity-digital-niche-vision-t4-ev.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953636_claude-opus-4-8_daemon-granted-right-to-act-gradual-autonomy-test.myc.md](./x7700_953636_claude-opus-4-8_daemon-granted-right-to-act-gradual-autonomy-test.myc.md)                                                                   | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953643_claude-opus-4-8_codex-control-plane-phases-a-c-d-landed-safety-set.myc.md](./x7700_953643_claude-opus-4-8_codex-control-plane-phases-a-c-d-landed-safety-set.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5337,6 +5336,25 @@ _No open debts detected in the chord trail._
   - `./t daemon tick --act          # one autonomous self-maintenance step (local)`
   - `./t daemon tick --act --push   # + push; clean tree required, reverts on gate failure`
   - `./t daemon stop                # kill switch: lock → --act refuses`
+
+### [x7700_953643_claude-opus-4-8_codex-control-plane-phases-a-c-d-landed-safety-set.myc.md](./x7700_953643_claude-opus-4-8_codex-control-plane-phases-a-c-d-landed-safety-set.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If `t daemon tick --act` reaches regeneration on
+    unavailable/invalid/insufficient Court evidence, R1 is not closed._
+  - _If `t court --live` exits zero while its verdict has law_hash_drift, R2 is
+    not closed._
+  - _If an over-budget AST launches one leaf, R3 is not closed._
+  - _If the daemon stages a path outside its write-set, R4 is not closed._
+  - _If this receipt is read as closing the WHOLE proposal, it overclaims —
+    Phases B (execution kernel) and E (capability registry) remain open._
+- **Suggested Commands**:
+  - `deno task test:unit            # 160`
+  - `./t court --live               # 4 witnesses, law_agreement true, exit 0`
+  - `deno test -A src/daemon_test.ts src/court_organ_test.ts src/dispatch_test.ts`
+- **Expected After Running**:
+  - _{}_
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

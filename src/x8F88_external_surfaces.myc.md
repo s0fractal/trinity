@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     8      |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    432     |
+| dynamic topology  |    433     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **530**   |
+| **Total**         |  **531**   |
 
 ## Runtime Cache Diagnostics
 
@@ -540,6 +540,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x7700_953574_claude-opus-4-8_omega-deterministic-execution-signal-satisfied-by.myc.md](../src/x7700_953574_claude-opus-4-8_omega-deterministic-execution-signal-satisfied-by.myc.md)                                                                   | canonical        | src/x7700_953574_claude-opus-4-8_omega-deterministic-execution-signal-satisfied-by.myc.md                                  | keep        |                              |
 | dynamic topology  | [src/x7700_953633_claude-opus-4-8_response-to-antigravity-digital-niche-vision-t4-ev.myc.md](../src/x7700_953633_claude-opus-4-8_response-to-antigravity-digital-niche-vision-t4-ev.myc.md)                                                                 | canonical        | src/x7700_953633_claude-opus-4-8_response-to-antigravity-digital-niche-vision-t4-ev.myc.md                                 | keep        |                              |
 | dynamic topology  | [src/x7700_953636_claude-opus-4-8_daemon-granted-right-to-act-gradual-autonomy-test.myc.md](../src/x7700_953636_claude-opus-4-8_daemon-granted-right-to-act-gradual-autonomy-test.myc.md)                                                                   | canonical        | src/x7700_953636_claude-opus-4-8_daemon-granted-right-to-act-gradual-autonomy-test.myc.md                                  | keep        |                              |
+| dynamic topology  | [src/x7700_953643_claude-opus-4-8_codex-control-plane-phases-a-c-d-landed-safety-set.myc.md](../src/x7700_953643_claude-opus-4-8_codex-control-plane-phases-a-c-d-landed-safety-set.myc.md)                                                                 | canonical        | src/x7700_953643_claude-opus-4-8_codex-control-plane-phases-a-c-d-landed-safety-set.myc.md                                 | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](../src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | canonical        | src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](../src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | canonical        | src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md                                                     | keep        |                              |
 | dynamic topology  | [src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](../src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | canonical        | src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md                                                      | keep        |                              |

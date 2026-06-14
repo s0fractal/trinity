@@ -771,16 +771,44 @@ async function appendActLog(entry: Record<string, unknown>): Promise<void> {
   );
 }
 
+/** Gate-relevant classification of the live Court evidence (codex R1):
+ *  - verified:     ran, parsed, no drift, ≥ MIN_LAW_WITNESSES declared → may mutate
+ *  - drift:        ran, parsed, law_hash_drift or bridge=false → refuse
+ *  - insufficient: ran, parsed, no drift, but < MIN_LAW_WITNESSES → refuse (can't verify)
+ *  - invalid:      ran but verdict unparseable/malformed → refuse
+ *  - unavailable:  court process did not produce output → refuse mutation
+ *  Only `verified` authorizes autonomous mutation; everything else is fail-CLOSED
+ *  for --act, while read-only orientation tolerates all states. */
+type LawState =
+  | "verified"
+  | "drift"
+  | "insufficient"
+  | "invalid"
+  | "unavailable";
+
+/** Minimum independently-declared law witnesses required to call the law
+ *  surface verified for mutation. Two = a real cross-substrate agreement
+ *  (e.g. trinity witnessing + omega native), not a single self-report. */
+const MIN_LAW_WITNESSES = 2;
+
 interface LawWatch {
   ran: boolean;
+  state: LawState;
   law_agreement: boolean | null;
   law_witness_count: number;
   witnesses: string[];
   drift: boolean;
 }
 
+/** Does this watch authorize autonomous mutation? Only verified evidence does —
+ *  absence of drift is NOT enough (codex R1: unavailable ≠ proven-clean). Pure. */
+export function lawPermitsMutation(watch: LawWatch): boolean {
+  return watch.state === "verified";
+}
+
 const INERT_LAW_WATCH: LawWatch = {
   ran: false,
+  state: "unavailable",
   law_agreement: null,
   law_witness_count: 0,
   witnesses: [],
@@ -793,19 +821,34 @@ const INERT_LAW_WATCH: LawWatch = {
  *  law_bridge that is explicitly inconsistent (false; null = unverifiable, not
  *  drift). Exported for daemon_test. */
 export function interpretCourtVerdict(verdict: unknown): LawWatch {
-  if (typeof verdict !== "object" || verdict === null) return INERT_LAW_WATCH;
+  if (verdict === undefined) return INERT_LAW_WATCH; // court produced nothing
+  if (typeof verdict !== "object" || verdict === null) {
+    return { ...INERT_LAW_WATCH, ran: true, state: "invalid" };
+  }
   const v = verdict as Record<string, unknown>;
-  const court = (v.court ?? {}) as Record<string, unknown>;
+  const courtRaw = v.court;
+  // A live verdict with no court object is malformed for gate purposes.
+  if (typeof courtRaw !== "object" || courtRaw === null) {
+    return { ...INERT_LAW_WATCH, ran: true, state: "invalid" };
+  }
+  const court = courtRaw as Record<string, unknown>;
   const conflicts = Array.isArray(court.conflicts) ? court.conflicts : [];
   const bridge = (v.law_bridge ?? {}) as Record<string, unknown>;
   const drift =
     conflicts.some((c) =>
       (c as { kind?: string })?.kind === "law_hash_drift"
     ) || bridge.consistent === false;
+  const law_witness_count = (court.law_witness_count ?? 0) as number;
+  const state: LawState = drift
+    ? "drift"
+    : law_witness_count < MIN_LAW_WITNESSES
+    ? "insufficient"
+    : "verified";
   return {
     ran: true,
+    state,
     law_agreement: (court.law_agreement ?? null) as boolean | null,
-    law_witness_count: (court.law_witness_count ?? 0) as number,
+    law_witness_count,
     witnesses: Array.isArray(v.witnesses) ? v.witnesses as string[] : [],
     drift,
   };
@@ -818,6 +861,7 @@ export function interpretCourtVerdict(verdict: unknown): LawWatch {
  *  contested across layers would commit into an inconsistent state. Best-effort
  *  — if the court can't run, the watch is inert (never a false alarm). */
 async function lawWatch(): Promise<LawWatch> {
+  let text = "";
   try {
     const { stdout } = await new Deno.Command(join(ROOT, "t"), {
       args: ["court", "--live"],
@@ -825,14 +869,20 @@ async function lawWatch(): Promise<LawWatch> {
       stdout: "piped",
       stderr: "null",
     }).output();
-    const text = new TextDecoder().decode(stdout)
+    text = new TextDecoder().decode(stdout)
       .split("\n").filter((l) => !l.trimStart().startsWith("#")).join("\n")
       .trim();
-    if (!text) return INERT_LAW_WATCH;
-    return interpretCourtVerdict(JSON.parse(text));
   } catch {
-    return INERT_LAW_WATCH;
+    return INERT_LAW_WATCH; // process could not run → unavailable
   }
+  if (!text) return INERT_LAW_WATCH; // no output → unavailable
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    return { ...INERT_LAW_WATCH, ran: true, state: "invalid" };
+  }
+  return interpretCourtVerdict(parsed);
 }
 
 async function handleAct(useJson: boolean, push: boolean): Promise<void> {
@@ -883,17 +933,26 @@ async function handleAct(useJson: boolean, push: boolean): Promise<void> {
     return;
   }
 
-  // Law-drift gate (antigravity T3): never self-maintain a substrate whose
-  // physical law is contested across layers. Read-only; inert if the court
-  // can't run (e.g. submodules absent), so it never false-blocks.
+  // Law gate (antigravity T3, hardened per codex R1): mutation requires
+  // VERIFIED Court evidence — never merely the absence of drift. Unavailable,
+  // invalid, drifting, or insufficient-witness evidence all fail CLOSED. (The
+  // read-only tick, by contrast, tolerates every state — see handleTick.)
   const law = await lawWatch();
-  if (law.drift) {
-    await appendActLog({ action: "refused", reason: "law_hash_drift", law });
+  if (!lawPermitsMutation(law)) {
+    const reason: Record<LawState, string> = {
+      verified: "",
+      drift:
+        "law drift across substrates — refusing to publish onto a contested law surface",
+      insufficient:
+        `only ${law.law_witness_count} declared law witness(es) (need ${MIN_LAW_WITNESSES}) — cannot verify the law surface`,
+      invalid: "Court verdict malformed — cannot verify the law surface",
+      unavailable:
+        "Court did not run (e.g. submodules absent) — refusing to mutate without verified law evidence",
+    };
+    await appendActLog({ action: "refused", reason: law.state, law });
     report({
       action: "refused",
-      reason:
-        "law drift across substrates — refusing to publish onto a contested " +
-        "law surface; inspect with `t court --live`",
+      reason: `${reason[law.state]}; inspect with \`t court --live\``,
       law_watch: law,
     });
     return;
@@ -1055,6 +1114,7 @@ async function handleTick(useJson: boolean): Promise<void> {
       attention_level: attention.level ?? null,
       attention_score: attention.score ?? null,
       worktree_clean: clean,
+      law_state: law.state,
       law_agreement: law.law_agreement,
       law_witnesses: law.witnesses,
       law_drift: law.drift,
@@ -1096,7 +1156,7 @@ async function handleTick(useJson: boolean): Promise<void> {
     }`,
   );
   console.log(
-    `# law:     ${
+    `# law:     ${tick.oriented.law_state} — ${
       tick.oriented.law_drift
         ? "⚠ DRIFT across substrates"
         : `agreement=${tick.oriented.law_agreement} (${

@@ -38,6 +38,7 @@ import {
   join,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { listChordSurfaceFiles } from "./x2F21_chord_surface.ts";
+import { extractOrganJson, runOrgan } from "./x0010_dispatch_runner.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
@@ -547,25 +548,12 @@ async function handleRun(
 async function runTJson(
   args: string[],
 ): Promise<Record<string, unknown> | null> {
-  const tShim = join(ROOT, "t");
-  const { stdout } = await new Deno.Command(tShim, {
-    args: [...args, "--json"],
-    stdout: "piped",
-    stderr: "piped",
-  }).output();
-  const text = new TextDecoder().decode(stdout);
-  // Dispatcher prepends `# <action> → <pos>` header lines; drop them and parse.
-  const jsonText = text
-    .split("\n")
-    .filter((l) => !l.trimStart().startsWith("#"))
-    .join("\n")
-    .trim();
-  if (!jsonText) return null;
-  try {
-    return JSON.parse(jsonText) as Record<string, unknown>;
-  } catch {
-    return null;
-  }
+  // Through the shared kernel (x0010): a hung organ can't stall the daemon tick.
+  const r = await runOrgan(join(ROOT, "t"), [...args, "--json"], { cwd: ROOT });
+  const payload = extractOrganJson(r.stdout);
+  return (payload && typeof payload === "object" && !("text" in payload))
+    ? payload as Record<string, unknown>
+    : null;
 }
 
 async function readLatestRecommendation(): Promise<
@@ -915,28 +903,12 @@ export function interpretCourtVerdict(verdict: unknown): LawWatch {
  *  contested across layers would commit into an inconsistent state. Best-effort
  *  — if the court can't run, the watch is inert (never a false alarm). */
 async function lawWatch(): Promise<LawWatch> {
-  let text = "";
-  try {
-    const { stdout } = await new Deno.Command(join(ROOT, "t"), {
-      args: ["court", "--live"],
-      cwd: ROOT,
-      stdout: "piped",
-      stderr: "null",
-    }).output();
-    text = new TextDecoder().decode(stdout)
-      .split("\n").filter((l) => !l.trimStart().startsWith("#")).join("\n")
-      .trim();
-  } catch {
-    return INERT_LAW_WATCH; // process could not run → unavailable
-  }
-  if (!text) return INERT_LAW_WATCH; // no output → unavailable
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(text);
-  } catch {
-    return { ...INERT_LAW_WATCH, ran: true, state: "invalid" };
-  }
-  return interpretCourtVerdict(parsed);
+  // Through the shared kernel (x0010): a hung court can't stall the autonomous
+  // daemon — a timeout yields empty output → undefined → "unavailable" →
+  // mutation refused (fail-closed). extractOrganJson handles empty/non-JSON;
+  // interpretCourtVerdict classifies the verdict into the gate state.
+  const r = await runOrgan(join(ROOT, "t"), ["court", "--live"], { cwd: ROOT });
+  return interpretCourtVerdict(extractOrganJson(r.stdout));
 }
 
 async function handleAct(useJson: boolean, push: boolean): Promise<void> {

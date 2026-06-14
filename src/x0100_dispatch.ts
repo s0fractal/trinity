@@ -1067,29 +1067,40 @@ export function safeHandleList(
   return { combinators: [...COMBINATORS].sort(), handles };
 }
 
+/** A memoized file reader for transitive analysis — returns null when a path
+ *  can't be read (so an unresolved import fails closed). */
+function fn_make_reader(): (path: string) => Promise<string | null> {
+  const cache = new Map<string, string | null>();
+  return async (path: string) => {
+    if (!cache.has(path)) {
+      try {
+        cache.set(path, await Deno.readTextFile(path));
+      } catch {
+        cache.set(path, null);
+      }
+    }
+    return cache.get(path)!;
+  };
+}
+
 /** The real --safe budget: classify each of the AST's distinct handles via the
- *  Phase E registry and admit only the readonly ones. The classifier (and its
- *  npm:typescript dependency) is dynamically imported here so the cost is paid
- *  only when --safe is actually used, never on the normal dispatch path. */
+ *  Phase E registry — now the TRANSITIVE closure (Phase B), so an organ that
+ *  re-exports a privileged implementation is not admitted. The classifier (and
+ *  its npm:typescript dependency) is dynamically imported here so the cost is
+ *  paid only when --safe is actually used, never on the normal dispatch path. */
 async function fn_safe_budget(
   ast: unknown,
   records: WordRec[],
 ): Promise<ExecutionBudget> {
-  const { analyzeBehaviorWithAST, classifyCapability } = await import(
-    "./x0013_capability.ts"
-  );
+  const { analyzeTransitive } = await import("./x0013_capability.ts");
+  const read = fn_make_reader();
   const cache = new Map<string, Capability | null>();
   const classify = async (handle: string): Promise<Capability | null> => {
     const found = fn_resolve_word(handle, records);
     if (!found) return null; // unresolved handle ⇒ inadmissible (fail-closed)
     const path = fn_position_to_path(found.position);
     if (!(await fn_exists(path))) return null;
-    const content = await Deno.readTextFile(path);
-    const filename = path.split("/").pop() ?? path;
-    return classifyCapability(
-      analyzeBehaviorWithAST(content, filename),
-      content,
-    );
+    return (await analyzeTransitive(path, read)).capability;
   };
   for (const h of new Set(planStats(ast).handles)) {
     if (!cache.has(h)) cache.set(h, await classify(h));
@@ -1103,9 +1114,8 @@ async function fn_safe_budget(
  *  budget path. */
 async function fn_eval_list_safe(): Promise<number> {
   const records = await fn_load_words();
-  const { analyzeBehaviorWithAST, classifyCapability } = await import(
-    "./x0013_capability.ts"
-  );
+  const { analyzeTransitive } = await import("./x0013_capability.ts");
+  const read = fn_make_reader();
   const byPos = new Map<string, Capability | null>();
   const entries: { handle: string; capability: Capability | null }[] = [];
   for (const rec of records) {
@@ -1113,12 +1123,7 @@ async function fn_eval_list_safe(): Promise<number> {
       let cap: Capability | null = null;
       const path = fn_position_to_path(rec.position);
       if (await fn_exists(path)) {
-        const content = await Deno.readTextFile(path);
-        const filename = path.split("/").pop() ?? path;
-        cap = classifyCapability(
-          analyzeBehaviorWithAST(content, filename),
-          content,
-        );
+        cap = (await analyzeTransitive(path, read)).capability;
       }
       byPos.set(rec.position, cap);
     }

@@ -10,6 +10,11 @@
 // for "what can this organ do" — consumers must import it, never re-derive it.
 
 import ts from "npm:typescript";
+import {
+  dirname,
+  join,
+  normalize,
+} from "https://deno.land/std@0.224.0/path/mod.ts";
 
 export interface BehaviorAnalysis {
   mutations: string[];
@@ -236,4 +241,105 @@ export function analyzeBehaviorWithAST(
     privileged: [...new Set(privileged)],
     dynamic: [...new Set(dynamic)],
   };
+}
+
+// ── transitive effect closure (codex x5d00_953682 Phase B / F2) ─────────────
+// Direct AST analysis misses effects reached THROUGH imports: `x5F00_apply`
+// re-exports `x5F10` which re-exports liquid `xA507` (WebAssembly + readDir), so
+// its own file looks readonly. A wrapper could therefore launder a privileged
+// implementation into the safe set. The closure follows RELATIVE imports/
+// re-exports (local + cross-substrate `../`), unions their effects, and is
+// fail-closed: an unresolved relative edge (typo, absent submodule, unreadable)
+// forces `unknown`. Remote (`https:`)/`npm:` imports are NOT followed — they are
+// trusted infrastructure, and Phase C's runtime profile confines them anyway
+// (static predicts, runtime enforces).
+
+const EFFECT_KEYS = [
+  "mutations",
+  "subprocesses",
+  "fetches",
+  "network",
+  "privileged",
+  "dynamic",
+] as const;
+
+/** Relative (`./` or `../`) module specifiers from static imports/re-exports. */
+export function extractRelativeImports(
+  content: string,
+  filename: string,
+): string[] {
+  const sf = ts.createSourceFile(
+    filename,
+    content,
+    ts.ScriptTarget.Latest,
+    true,
+  );
+  const specs: string[] = [];
+  function visit(node: ts.Node) {
+    if (
+      (ts.isImportDeclaration(node) || ts.isExportDeclaration(node)) &&
+      node.moduleSpecifier && ts.isStringLiteral(node.moduleSpecifier)
+    ) {
+      const s = node.moduleSpecifier.text;
+      if (s.startsWith("./") || s.startsWith("../")) specs.push(s);
+    }
+    ts.forEachChild(node, visit);
+  }
+  visit(sf);
+  return [...new Set(specs)];
+}
+
+export interface TransitiveVerdict {
+  capability: Capability;
+  analysis: BehaviorAnalysis;
+  /** Resolved paths actually analyzed (entry first). */
+  visited: string[];
+  /** Resolved relative-import paths that could not be read — force `unknown`. */
+  unresolved: string[];
+}
+
+/** Compute an organ's TRANSITIVE capability by following relative imports. The
+ *  file reader is injected (`read` returns `null` when a path can't be read), so
+ *  the closure is testable without disk and the caller controls FS access.
+ *  Fail-closed: an unreadable entry or any unresolved relative edge ⇒ `unknown`. */
+export async function analyzeTransitive(
+  entryPath: string,
+  read: (path: string) => Promise<string | null>,
+): Promise<TransitiveVerdict> {
+  const visited = new Set<string>();
+  const unresolved: string[] = [];
+  const contents: string[] = [];
+  const union: BehaviorAnalysis = {
+    mutations: [],
+    subprocesses: [],
+    fetches: [],
+    network: [],
+    privileged: [],
+    dynamic: [],
+  };
+  const queue: string[] = [normalize(entryPath)];
+  while (queue.length > 0) {
+    const path = queue.shift()!;
+    if (visited.has(path)) continue;
+    visited.add(path);
+    const content = await read(path);
+    if (content === null) {
+      unresolved.push(path);
+      continue;
+    }
+    contents.push(content);
+    const a = analyzeBehaviorWithAST(content, path);
+    for (const k of EFFECT_KEYS) union[k].push(...a[k]);
+    for (const spec of extractRelativeImports(content, path)) {
+      const resolved = normalize(join(dirname(path), spec));
+      if (!visited.has(resolved)) queue.push(resolved);
+    }
+  }
+  for (const k of EFFECT_KEYS) union[k] = [...new Set(union[k])];
+  // Fail-closed: a relative edge we couldn't read is an effect we can't rule
+  // out — never let an unanalyzable graph read as readonly.
+  const capability = unresolved.length > 0
+    ? "unknown"
+    : classifyCapability(union, contents.join("\n"));
+  return { capability, analysis: union, visited: [...visited], unresolved };
 }

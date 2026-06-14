@@ -190,3 +190,54 @@ Deno.test("admissibleForAutonomousMutation - only unknown is categorically inadm
   for (const c of cats) assertEquals(admissibleForAutonomousMutation(c), true);
   assertEquals(admissibleForAutonomousMutation("unknown"), false);
 });
+
+// --- transitive effect closure (codex x5d00_953682 Phase B / F2) ---
+
+import {
+  analyzeTransitive,
+  extractRelativeImports,
+} from "./x0013_capability.ts";
+
+Deno.test("extractRelativeImports - import + re-export specifiers, relative only", () => {
+  const content = `
+    import { a } from "./local.ts";
+    export { b } from "../sib/mod.ts";
+    import x from "https://deno.land/std/x.ts";
+    import y from "npm:typescript";
+  `;
+  const specs = extractRelativeImports(content, "f.ts");
+  assertEquals(specs.sort(), ["../sib/mod.ts", "./local.ts"]);
+});
+
+Deno.test("analyzeTransitive - effect through a re-export chain propagates (F2)", async () => {
+  // entry re-exports mid, which re-exports leaf, which executes WebAssembly.
+  const files: Record<string, string> = {
+    "/r/entry.ts": `export { X } from "./mid.ts";`,
+    "/r/mid.ts": `export { X } from "../sub/leaf.ts";`,
+    "/r/../sub/leaf.ts":
+      `export async function X(){ await WebAssembly.instantiate(new Uint8Array()); }`,
+  };
+  // normalize collapses /r/../sub → /sub
+  files["/sub/leaf.ts"] = files["/r/../sub/leaf.ts"];
+  const read = (p: string) => Promise.resolve(files[p] ?? null);
+  const v = await analyzeTransitive("/r/entry.ts", read);
+  assertEquals(v.unresolved, []);
+  assert(v.analysis.privileged.includes("WebAssembly.instantiate"));
+  assertEquals(v.capability, "unknown"); // privileged transitively ⇒ not readonly
+});
+
+Deno.test("analyzeTransitive - an unresolved relative edge is fail-closed (unknown)", async () => {
+  const read = (p: string) =>
+    Promise.resolve(p.endsWith("entry.ts") ? `import "./missing.ts";` : null);
+  const v = await analyzeTransitive("/r/entry.ts", read);
+  assert(v.unresolved.length > 0);
+  assertEquals(v.capability, "unknown");
+});
+
+Deno.test("analyzeTransitive - pure leaf with no imports stays readonly", async () => {
+  const read = (p: string) =>
+    Promise.resolve(p.endsWith("entry.ts") ? `export const z = 1;` : null);
+  const v = await analyzeTransitive("/r/entry.ts", read);
+  assertEquals(v.unresolved, []);
+  assertEquals(v.capability, "readonly");
+});

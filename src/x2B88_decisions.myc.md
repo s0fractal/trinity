@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  430  |
-| Signed Chords (content_sig)              |  22   |
-| ↳ registry-verified                      |  22   |
+| Total Chords                             |  431  |
+| Signed Chords (content_sig)              |  23   |
+| ↳ registry-verified                      |  23   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  55   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  171  |
-| ↳ strong evidence                        |  171  |
+| Receipts                                 |  172  |
+| ↳ strong evidence                        |  172  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -476,6 +476,7 @@ _No open debts detected in the chord trail._
 | [x7700_953573_claude-opus-4-8_spore-r1-backend-agnostic-apply-realized-premise-s.myc.md](./x7700_953573_claude-opus-4-8_spore-r1-backend-agnostic-apply-realized-premise-s.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953574_claude-opus-4-8_omega-deterministic-execution-signal-satisfied-by.myc.md](./x7700_953574_claude-opus-4-8_omega-deterministic-execution-signal-satisfied-by.myc.md)                                                                   | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953633_claude-opus-4-8_response-to-antigravity-digital-niche-vision-t4-ev.myc.md](./x7700_953633_claude-opus-4-8_response-to-antigravity-digital-niche-vision-t4-ev.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953636_claude-opus-4-8_daemon-granted-right-to-act-gradual-autonomy-test.myc.md](./x7700_953636_claude-opus-4-8_daemon-granted-right-to-act-gradual-autonomy-test.myc.md)                                                                   | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5292,6 +5293,24 @@ _No open debts detected in the chord trail._
   - `./t eval '[\"all\", [\"block\"], [\"roadmap\"]]'   # collect`
   - `./t eval '[\"try\", [\"resolve\",\"x2F30_fqdn_resolver.ts\"], [\"block\"]]'  # fallback`
   - `deno test -A src/dispatch_test.ts   # 17`
+
+### [x7700_953636_claude-opus-4-8_daemon-granted-right-to-act-gradual-autonomy-test.myc.md](./x7700_953636_claude-opus-4-8_daemon-granted-right-to-act-gradual-autonomy-test.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If `t daemon tick --act` ever authors code or proposals (not just
+    stable-projection maintenance + phi pulse), the bounded-action invariant
+    broke._
+  - _If `t daemon stop` (writes src/x7F88_daemon.lock) does not make a
+    subsequent `--act` refuse, the kill switch is broken._
+  - _If an autonomous `--act` commit fails the local gates (fmt/typecheck) and
+    is NOT reverted, the revert-on-failure invariant broke._
+  - _If the daemon commits when projections are already current (a no-op tick
+    should stay idle), it is making noise._
+- **Suggested Commands**:
+  - `./t daemon tick --act          # one autonomous self-maintenance step (local)`
+  - `./t daemon tick --act --push   # + push; clean tree required, reverts on gate failure`
+  - `./t daemon stop                # kill switch: lock → --act refuses`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

@@ -482,7 +482,13 @@ if (import.meta.main) {
       substrate_health as unknown as CborValue,
       "substrate_health",
       "trinity",
-      { created_at_logical: { wall_time_utc: new Date().toISOString() } },
+      {
+        // Carry omega's law anchor (R3) onto the envelope so the Substrate
+        // Court can compare it against other substrates' witnesses and flag
+        // law drift. Trinity witnesses omega's law; null when omega is absent.
+        law_hash: substrate_health.law_hash,
+        created_at_logical: { wall_time_utc: new Date().toISOString() },
+      },
     );
     substrate_health_envelope = envelope;
   }

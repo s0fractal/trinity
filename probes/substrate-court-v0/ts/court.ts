@@ -12,7 +12,7 @@ import {
 } from "../../receipt-envelope-encoder-v0/ts/canonical_cbor.ts";
 import { ENVELOPE_SCHEMA } from "../../receipt-envelope-encoder-v0/ts/envelope.ts";
 
-type Envelope = {
+export type Envelope = {
   schema: string;
   envelope_id: string;
   body_hash: string;
@@ -23,7 +23,7 @@ type Envelope = {
   witness_chain?: unknown[];
 };
 
-type Conflict =
+export type Conflict =
   | {
     kind: "body_hash_divergence";
     between: [string, string];
@@ -37,9 +37,17 @@ type Conflict =
     claimed: string;
     recomputed: string;
   }
-  | { kind: "duplicate_substrate_tag"; tag: string };
+  | { kind: "duplicate_substrate_tag"; tag: string }
+  // Two substrates witnessing the same morphism under DIFFERING law hashes:
+  // frozen-surface drift. Per RECEIPT_ENVELOPE.v1.0 § Substrate Court, this is
+  // a codeicide candidate — only raised when both report a non-null law_hash.
+  | {
+    kind: "law_hash_drift";
+    between: [string, string];
+    values: [string, string];
+  };
 
-type Verdict = {
+export type Verdict = {
   type: "SubstrateCourtVerdict";
   schema: "trinity.substrate-court.v0.1";
   witnesses_count: number;
@@ -73,8 +81,11 @@ async function readEnvelopes(args: string[]): Promise<Envelope[]> {
   );
 }
 
-if (import.meta.main) {
-  const envelopes = await readEnvelopes(Deno.args);
+/** Adjudicate a set of witness envelopes into a verdict. Pure (modulo hashing);
+ *  exported for court_test.ts. Detects: schema mismatch, duplicate tags,
+ *  self-inconsistent body_hash, cross-witness body_hash divergence, envelope_id
+ *  collision, and — once both witnesses carry a non-null law_hash — law drift. */
+export async function judge(envelopes: Envelope[]): Promise<Verdict> {
   const conflicts: Conflict[] = [];
 
   const body_hashes: Record<string, string> = {};
@@ -114,8 +125,9 @@ if (import.meta.main) {
     }
   }
 
-  // (2) body_hash agreement across witnesses
   const tags = Object.keys(body_hashes);
+
+  // (2) body_hash agreement across witnesses
   for (let i = 0; i < tags.length; i++) {
     for (let j = i + 1; j < tags.length; j++) {
       const ti = tags[i];
@@ -125,6 +137,22 @@ if (import.meta.main) {
           kind: "body_hash_divergence",
           between: [ti, tj],
           values: [body_hashes[ti], body_hashes[tj]],
+        });
+      }
+    }
+  }
+
+  // (2b) law_hash drift — only between witnesses that BOTH declare a law_hash.
+  // A null (absent) law_hash is an abstention, not a disagreement.
+  for (let i = 0; i < tags.length; i++) {
+    for (let j = i + 1; j < tags.length; j++) {
+      const li = law_hashes[tags[i]];
+      const lj = law_hashes[tags[j]];
+      if (li !== null && lj !== null && li !== lj) {
+        conflicts.push({
+          kind: "law_hash_drift",
+          between: [tags[i], tags[j]],
+          values: [li, lj],
         });
       }
     }
@@ -143,7 +171,7 @@ if (import.meta.main) {
     }
   }
 
-  const verdict: Verdict = {
+  return {
     type: "SubstrateCourtVerdict",
     schema: "trinity.substrate-court.v0.1",
     witnesses_count: envelopes.length,
@@ -153,7 +181,11 @@ if (import.meta.main) {
     law_hashes,
     conflicts,
   };
+}
 
+if (import.meta.main) {
+  const envelopes = await readEnvelopes(Deno.args);
+  const verdict = await judge(envelopes);
   console.log(JSON.stringify(verdict, null, 2));
   Deno.exit(verdict.agreement ? 0 : 1);
 }

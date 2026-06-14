@@ -11,9 +11,13 @@ import {
 } from "./x2200_ecosystem.ts";
 
 Deno.test("ecosystem - diffEcosystem slot added and updated", () => {
+  // Coverage is measured over the five conformance slots (ABI_SLOTS); the
+  // optional `ecosystem` slot (nested federation) is never counted — so a
+  // substrate that GAINS ecosystem shows a slot-added diff but no coverage
+  // change.
   const prev: SavedEcosystemState = {
     omega: {
-      abi_coverage: "5/6",
+      abi_coverage: "5/5",
       slots: {
         status: { present: true, summary: "healthy" },
         capabilities: { present: true, summary: "active" },
@@ -24,7 +28,7 @@ Deno.test("ecosystem - diffEcosystem slot added and updated", () => {
       },
     },
     liquid: {
-      abi_coverage: "4/6",
+      abi_coverage: "4/5",
       slots: {
         status: { present: true, summary: "healthy" },
         capabilities: { present: true, summary: "active" },
@@ -35,7 +39,7 @@ Deno.test("ecosystem - diffEcosystem slot added and updated", () => {
       },
     },
     myc: {
-      abi_coverage: "5/6",
+      abi_coverage: "5/5",
       slots: {
         status: { present: true, summary: "healthy" },
         capabilities: { present: true, summary: "active" },
@@ -50,7 +54,7 @@ Deno.test("ecosystem - diffEcosystem slot added and updated", () => {
   const current: Record<string, SubstrateMirror> = {
     omega: {
       substrate: "omega",
-      abi_coverage: "5/6",
+      abi_coverage: "5/5",
       slots: {
         status: { present: true, summary: "healthy" },
         capabilities: { present: true, summary: "active" },
@@ -62,7 +66,7 @@ Deno.test("ecosystem - diffEcosystem slot added and updated", () => {
     },
     liquid: {
       substrate: "liquid",
-      abi_coverage: "5/6",
+      abi_coverage: "5/5",
       slots: {
         status: { present: true, summary: "healthy" },
         capabilities: { present: true, summary: "active" },
@@ -74,7 +78,9 @@ Deno.test("ecosystem - diffEcosystem slot added and updated", () => {
     },
     myc: {
       substrate: "myc",
-      abi_coverage: "6/6",
+      // ecosystem gained (nested federation) — coverage stays 5/5 (ecosystem
+      // is not a conformance slot).
+      abi_coverage: "5/5",
       slots: {
         status: { present: true, summary: "healthy" },
         capabilities: { present: true, summary: "active" },
@@ -85,8 +91,8 @@ Deno.test("ecosystem - diffEcosystem slot added and updated", () => {
           present: true,
           summary: "2 nested substrates: sub-1; sub-2",
           mirrors: {
-            "sub-1": { abi_coverage: "5/6" },
-            "sub-2": { abi_coverage: "6/6" },
+            "sub-1": { abi_coverage: "5/5" },
+            "sub-2": { abi_coverage: "5/5" },
           },
         },
       },
@@ -94,16 +100,16 @@ Deno.test("ecosystem - diffEcosystem slot added and updated", () => {
   };
 
   const diffs = diffEcosystem(prev, current);
-  assertEquals(diffs.length, 4);
+  // liquid: coverage change (4/5→5/5) + audit added = 2; myc: ecosystem added
+  // (no coverage change) = 1. Total 3.
+  assertEquals(diffs.length, 3);
   assertEquals(diffs[0].substrate, "liquid");
   assert(diffs[0].message.includes("ABI coverage changed"));
   assertEquals(diffs[1].substrate, "liquid");
   assert(diffs[1].message.includes("slot audit: added"));
   assertEquals(diffs[2].substrate, "myc");
-  assert(diffs[2].message.includes("ABI coverage changed"));
-  assertEquals(diffs[3].substrate, "myc");
   assert(
-    diffs[3].message.includes("slot ecosystem: added (2 nested substrates"),
+    diffs[2].message.includes("slot ecosystem: added (2 nested substrates"),
   );
 });
 

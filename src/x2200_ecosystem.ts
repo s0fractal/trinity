@@ -92,6 +92,20 @@ export const SLOTS = {
   },
 };
 
+// SUBSTRATE_SELF_ABI.v0.1 declares exactly FIVE conformance slots. `ecosystem`
+// is NOT among them: it is trinity's federation reader (this organ), and is only
+// meaningful for a substrate that itself federates sub-substrates (nested
+// federation). So ABI coverage is measured against these five — a member that
+// implements all five is at full coverage (5/5); the `ecosystem` slot is probed
+// and displayed as an optional capability but never counted toward conformance.
+export const ABI_SLOTS = [
+  "status",
+  "capabilities",
+  "audit",
+  "roadmap",
+  "probes",
+] as const satisfies readonly (keyof typeof SLOTS)[];
+
 export interface SlotResult {
   present: boolean;
   data?: unknown;
@@ -241,11 +255,13 @@ export async function readSubstrate(
     ecosystem: () =>
       tryOr(() => readSlot(substrate, "ecosystem"), { present: false }),
   });
-  const presentCount = Object.values(slots).filter((s) => s.present).length;
+  // Coverage counts only the five conformance slots (ABI_SLOTS); `ecosystem`
+  // is an optional nested-federation capability, not a conformance slot.
+  const presentCount = ABI_SLOTS.filter((n) => slots[n].present).length;
   return {
     substrate,
     slots,
-    abi_coverage: `${presentCount}/6`,
+    abi_coverage: `${presentCount}/${ABI_SLOTS.length}`,
   };
 }
 
@@ -396,9 +412,9 @@ if (import.meta.main) {
     mirrors.liquid,
     mirrors.myc,
   ];
-  const totalSlots = ordered.length * 6;
+  const totalSlots = ordered.length * ABI_SLOTS.length;
   const presentSlots = ordered.reduce(
-    (sum, m) => sum + Object.values(m.slots).filter((s) => s.present).length,
+    (sum, m) => sum + ABI_SLOTS.filter((n) => m.slots[n].present).length,
     0,
   );
 

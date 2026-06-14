@@ -33,7 +33,8 @@ import {
 } from "./x0010_dispatch_runner.ts";
 // Type-only: the runtime classifier (which pulls npm:typescript) is dynamically
 // imported inside the --safe path so it never loads on the dispatch hot path.
-import type { Capability } from "./x8C00_skill_gen.ts";
+// x0013 is a library helper (no main) — gravity-law exempt for any bucket.
+import type { Capability } from "./x0013_capability.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const SUBSTRATE_ROOT = dirname(HERE);
@@ -1047,7 +1048,7 @@ async function fn_safe_budget(
   records: WordRec[],
 ): Promise<ExecutionBudget> {
   const { analyzeBehaviorWithAST, classifyCapability } = await import(
-    "./x8C00_skill_gen.ts"
+    "./x0013_capability.ts"
   );
   const cache = new Map<string, Capability | null>();
   const classify = async (handle: string): Promise<Capability | null> => {

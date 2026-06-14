@@ -187,7 +187,7 @@ import {
   planStats,
   safeBudgetFor,
 } from "./x0100_dispatch.ts";
-import type { Capability } from "./x8C00_skill_gen.ts";
+import type { Capability } from "./x0013_capability.ts";
 
 Deno.test("planStats - counts depth, nodes, leaves, parallel width, handles", () => {
   // ["pipe", ["all", ["a"], ["b"], ["c"]], ["d"]]

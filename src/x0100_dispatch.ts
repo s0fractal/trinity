@@ -27,7 +27,10 @@ import {
   fromFileUrl,
   join,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
-import { positionToPath as libPositionToPath } from "./x0010_dispatch_runner.ts";
+import {
+  positionToPath as libPositionToPath,
+  runOrgan,
+} from "./x0010_dispatch_runner.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const SUBSTRATE_ROOT = dirname(HERE);
@@ -716,7 +719,9 @@ export function rpcError(
   return JSON.stringify({ jsonrpc: "2.0", id, error: { code, message } });
 }
 
-/** Run an organ at a position and capture its raw stdout (no rendering). */
+/** Run an organ at a position and capture its raw stdout (no rendering).
+ *  Goes through the shared execution kernel (x0010) so rpc/eval leaves inherit
+ *  the per-process deadline + output byte cap (codex Phase B / deferred R3). */
 async function fn_capture_at_position(
   pos: string,
   args: string[],
@@ -725,17 +730,8 @@ async function fn_capture_at_position(
   if (!(await fn_exists(path))) {
     return { code: 2, stdout: "", stderr: `no executable at ${path}` };
   }
-  const proc = new Deno.Command("deno", {
-    args: ["run", "--allow-all", path, ...args],
-    stdout: "piped",
-    stderr: "piped",
-  });
-  const out = await proc.output();
-  return {
-    code: out.code,
-    stdout: new TextDecoder().decode(out.stdout),
-    stderr: new TextDecoder().decode(out.stderr),
-  };
+  const r = await runOrgan("deno", ["run", "--allow-all", path, ...args]);
+  return { code: r.code, stdout: r.stdout, stderr: r.stderr };
 }
 
 /** Dispatch one parsed RPC request to its organ; return a response string, or

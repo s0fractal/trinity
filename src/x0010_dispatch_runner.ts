@@ -147,6 +147,109 @@ export async function exists(path: string): Promise<boolean> {
   }
 }
 
+// ── execution kernel (codex Phase B) ────────────────────────────────────────
+// One narrow boundary for "run an organ and receive a bounded, structured
+// result" — shared by the dispatcher capture, the court witnesses, and the
+// daemon law-watch, which each used to construct Deno.Command independently
+// (codex R5). It adds the per-process budgets deferred from R3: a deadline
+// (organ can't hang the caller) and an output byte cap (organ can't flood it).
+// NOT for git/phi-specific subprocesses — only the organ→payload boundary.
+
+export interface OrganRunResult {
+  code: number;
+  stdout: string;
+  stderr: string;
+  timed_out: boolean;
+  truncated: boolean;
+}
+
+export interface OrganRunOptions {
+  cwd?: string;
+  timeout_ms?: number;
+  max_output_bytes?: number;
+}
+
+const ORGAN_DEFAULT_TIMEOUT_MS = 60_000;
+const ORGAN_DEFAULT_MAX_BYTES = 2_000_000;
+
+/** Run a command with a deadline + output byte cap; never throws. A timeout
+ *  aborts the process and returns code 124 (conventional). */
+export async function runOrgan(
+  cmd: string,
+  args: string[],
+  opts: OrganRunOptions = {},
+): Promise<OrganRunResult> {
+  const timeoutMs = opts.timeout_ms ?? ORGAN_DEFAULT_TIMEOUT_MS;
+  const maxBytes = opts.max_output_bytes ?? ORGAN_DEFAULT_MAX_BYTES;
+  const abort = new AbortController();
+  // Track abort explicitly: aborting a Deno.Command may make `.output()` RESOLVE
+  // (with a killed result) rather than reject, so we can't rely on AbortError.
+  let aborted = false;
+  const timer = setTimeout(() => {
+    aborted = true;
+    abort.abort();
+  }, timeoutMs);
+  const timedOut = (): OrganRunResult => ({
+    code: 124,
+    stdout: "",
+    stderr: `timeout after ${timeoutMs}ms`,
+    timed_out: true,
+    truncated: false,
+  });
+  try {
+    const out = await new Deno.Command(cmd, {
+      args,
+      cwd: opts.cwd,
+      stdout: "piped",
+      stderr: "piped",
+      signal: abort.signal,
+    }).output();
+    clearTimeout(timer);
+    if (aborted) return timedOut();
+    const rawOut = new TextDecoder().decode(out.stdout);
+    const rawErr = new TextDecoder().decode(out.stderr);
+    return {
+      code: out.code,
+      stdout: rawOut.slice(0, maxBytes),
+      stderr: rawErr.slice(0, maxBytes),
+      timed_out: false,
+      truncated: rawOut.length > maxBytes || rawErr.length > maxBytes,
+    };
+  } catch (e) {
+    clearTimeout(timer);
+    if (aborted) return timedOut();
+    return {
+      code: 1,
+      stdout: "",
+      stderr: e instanceof Error ? e.message : String(e),
+      timed_out: false,
+      truncated: false,
+    };
+  }
+}
+
+/** Extract one JSON payload from dispatcher-style organ stdout (drops leading
+ *  `#` comment lines). `undefined` = empty/no output; `{ text }` = non-JSON.
+ *  Pure — the canonical extractor the kernel callers share (codex R5). */
+export function extractOrganJson(stdout: string): unknown {
+  const trimmed = stdout.trim();
+  if (!trimmed) return undefined;
+  try {
+    return JSON.parse(trimmed);
+  } catch { /* tolerate stray # comment lines */ }
+  const stripped = trimmed
+    .split("\n")
+    .filter((l) => !l.trimStart().startsWith("#"))
+    .join("\n")
+    .trim();
+  if (stripped) {
+    try {
+      return JSON.parse(stripped);
+    } catch { /* fall through */ }
+  }
+  return { text: trimmed };
+}
+
 /** Run a single hex executable and capture its JSON stdout.
  * Returns structured receipt or raw fallback.
  */

@@ -288,6 +288,15 @@ export async function resolveFqdn(
  *  pointer to the path (no silent truncation of what people see). */
 const MAX_SHOW_BYTES = 1_000_000;
 
+/** A content-addressed name: basename of the form `h.<hex>.….myc.md`, where the
+ *  `h.<hex>` segment is the owning substrate's content-address. The resolver
+ *  locates these but does not (and should not) re-derive that address — regimes
+ *  are substrate-specific. Used only to caption `--show` honestly. */
+export function isContentAddressed(relOrName: string): boolean {
+  const base = relOrName.split("/").pop() ?? relOrName;
+  return /^h\.[0-9a-f]{6,}\./i.test(base);
+}
+
 /** Pure provenance header for `--show`: the #-comment lines printed above the
  *  content. Empty array means absent (nothing to show). Surfaces mirrored copies
  *  and — for conflict — warns the winner is one of several differing things and
@@ -300,6 +309,15 @@ export function showHeader(res: Resolution): string[] {
     `# resolved: ${r.rel} @ ${r.root}  (${r.matchForm}, identity=${res.identity})`,
     `# hash: blake3:${r.hash}  size: ${r.size}B`,
   ];
+  // A content-addressed name (h.<hash>.…) embeds the OWNING SUBSTRATE's
+  // content-address, computed in that substrate's regime — not the resolver's
+  // blake3. Say so, so the blake3 above is never mistaken for a check of the
+  // name's hash. Verifying name == content is the substrate resolver's job.
+  if (isContentAddressed(r.rel)) {
+    lines.push(
+      `# note: this name is content-addressed; the blake3 above is the resolver's federation-identity hash, NOT a check of the name's embedded address — verify that with the owning substrate's resolver.`,
+    );
+  }
   if (res.identity === "mirrored") {
     lines.push(
       `# mirrored: ${res.candidates.length} identical copies — showing the precedence winner.`,

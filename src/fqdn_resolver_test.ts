@@ -7,6 +7,7 @@ import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
 import {
   buildIndex,
   type Candidate,
+  isContentAddressed,
   kindOf,
   listNames,
   type Resolution,
@@ -392,4 +393,27 @@ Deno.test("showHeader - mirrored notes identical copies, no conflict warning", (
   const h = showHeader(res).join("\n");
   assertStringIncludes(h, "mirrored: 2 identical copies");
   assertEquals(h.includes("CONFLICT"), false);
+});
+
+Deno.test("isContentAddressed - h.<hex>. names are content-addressed; others are not", () => {
+  assert(
+    isContentAddressed("h.849874aa8a18.myc-fqdn-naming-policy.function.myc.md"),
+  );
+  assert(isContentAddressed("public/functions/h.abc123.foo.myc.md"));
+  assertEquals(isContentAddressed("x2F30_fqdn_resolver.ts"), false);
+  assertEquals(isContentAddressed("README.md"), false);
+  assertEquals(isContentAddressed("h.ts"), false); // no hex segment after h.
+});
+
+Deno.test("showHeader - content-addressed name carries the federation-hash caveat", () => {
+  const c = cand("h.abc123.foo.myc.md", "/r/myc", "blakehex");
+  const res: Resolution = {
+    fqdn: "h.abc123.foo.myc.md",
+    resolved: c,
+    identity: "unique",
+    candidates: [c],
+  };
+  const h = showHeader(res).join("\n");
+  assertStringIncludes(h, "content-addressed");
+  assertStringIncludes(h, "federation-identity hash");
 });

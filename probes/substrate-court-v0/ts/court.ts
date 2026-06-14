@@ -55,6 +55,13 @@ export type Verdict = {
   body_hashes: Record<string, string>;
   envelope_ids: Record<string, string>;
   law_hashes: Record<string, string | null>;
+  // Do the substrates that declared a law_hash agree on it? The Substrate
+  // Court's headline question (RECEIPT_ENVELOPE.v1.0 § Substrate Court),
+  // decoupled from body agreement: substrates can witness different bodies
+  // (their own health) yet must share a law surface. null when fewer than two
+  // substrates declared a non-null law_hash (not enough to compare).
+  law_agreement: boolean | null;
+  law_witness_count: number;
   conflicts: Conflict[];
 };
 
@@ -171,6 +178,15 @@ export async function judge(envelopes: Envelope[]): Promise<Verdict> {
     }
   }
 
+  // Headline law question, decoupled from body agreement.
+  const declaredLaws = tags
+    .map((t) => law_hashes[t])
+    .filter((l): l is string => l !== null);
+  const law_witness_count = declaredLaws.length;
+  const law_agreement = law_witness_count < 2
+    ? null
+    : declaredLaws.every((l) => l === declaredLaws[0]);
+
   return {
     type: "SubstrateCourtVerdict",
     schema: "trinity.substrate-court.v0.1",
@@ -179,6 +195,8 @@ export async function judge(envelopes: Envelope[]): Promise<Verdict> {
     body_hashes,
     envelope_ids,
     law_hashes,
+    law_agreement,
+    law_witness_count,
     conflicts,
   };
 }

@@ -80,3 +80,33 @@ Deno.test("judge — body divergence AND law drift both reported", async () => {
   const kinds = v.conflicts.map((c) => c.kind).sort();
   assertEquals(kinds, ["body_hash_divergence", "law_hash_drift"]);
 });
+
+Deno.test("law_agreement — different bodies but same law ⇒ law_agreement true", async () => {
+  // The core substrate-court case: substrates witness their OWN health bodies
+  // (so body agreement is false) but share the same law surface.
+  const v = await judge([
+    env("trinity", "Htrinity", "0x30a95260"),
+    env("omega", "Homega", "0x30a95260"),
+  ]);
+  assertEquals(v.agreement, false); // bodies differ
+  assertEquals(v.law_agreement, true); // but the law agrees
+  assertEquals(v.law_witness_count, 2);
+});
+
+Deno.test("law_agreement — fewer than two declared laws ⇒ null (cannot compare)", async () => {
+  const v = await judge([
+    env("trinity", "H", "0x30a95260"),
+    env("liquid", "H", null),
+  ]);
+  assertEquals(v.law_agreement, null);
+  assertEquals(v.law_witness_count, 1);
+});
+
+Deno.test("law_agreement — drift makes it false", async () => {
+  const v = await judge([
+    env("omega", "H", "0x30a95260"),
+    env("liquid", "H", "0xdeadbeef"),
+  ]);
+  assertEquals(v.law_agreement, false);
+  assertEquals(v.law_witness_count, 2);
+});

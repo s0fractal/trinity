@@ -18,17 +18,23 @@ Boundary reference: `contracts/SPORE_VS_OMEGA_SPORE_BOUNDARY.v0.1.md`.
 
 ## Status
 
-**SKELETON.** Wire format inherited from `spore-apply-v0/SPEC.md`. Execution
-semantics inherited from `spore-execute-v0/SPEC.md`. This probe adds:
+**ACTIVE (2026-06-14).** Wire format inherited from `spore-apply-v0/SPEC.md`.
+Execution semantics inherited from `spore-execute-v0/SPEC.md`. Landed in
+`ts/backends.ts` + `ts/adapter.ts`, exercised by `ts/adapter_test.ts` (gated via
+trinity `deno task test:unit`):
 
-1. A receipt shape that separates `protocol` from `backend_kind`.
-2. A fixture that runs the same mutator+state+inputs through at least two
-   backends and asserts identical `output_hash`.
-3. A failure mode where a backend that cannot honor canonical semantics returns
-   `backend_compatible: false` instead of producing a bogus hash.
+1. A receipt shape (`BackendReceipt`) separating `protocol` from `backend_kind`.
+2. `runMutator()` runs the same mutator+input through two independent backends —
+   the host WASM engine and a from-scratch TS reference — and asserts identical
+   `output_hash`. Verified for `identity`, `xor_5c`, `nop`; `identity` vs
+   `xor_5c` differ on the same input (proves real semantics, not a constant).
+3. A backend that cannot honor a mutator's semantics returns
+   `backend_compatible: false` (and `output_hash: null`) instead of a bogus hash.
 
-The skeleton lists fixtures and adapter interface only; implementations land in
-subsequent commits.
+This makes the backend-agnosticism claim concrete: a WASM engine and a
+non-WASM reference agree byte-for-byte, so no substrate (including Omega) owns
+the SPORE.v0 apply protocol. A third slot (omega-zk) can join the same
+`runMutator` shape later.
 
 ---
 

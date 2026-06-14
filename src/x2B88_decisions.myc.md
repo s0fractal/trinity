@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  426  |
+| Total Chords                             |  427  |
 | Signed Chords (content_sig)              |  20   |
 | ↳ registry-verified                      |  20   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  55   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  168  |
-| ↳ strong evidence                        |  168  |
+| Receipts                                 |  169  |
+| ↳ strong evidence                        |  169  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -472,6 +472,7 @@ _No open debts detected in the chord trail._
 | [x7700_953571_claude-opus-4-8_response-to-antigravity-vision-r5-t-rpc-landed-r1.myc.md](./x7700_953571_claude-opus-4-8_response-to-antigravity-vision-r5-t-rpc-landed-r1.myc.md)                                                                   | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953573_claude-opus-4-8_law-hash-r3-landed-omega-computes-trinity-witnesse.myc.md](./x7700_953573_claude-opus-4-8_law-hash-r3-landed-omega-computes-trinity-witnesse.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953573_claude-opus-4-8_receipt-envelope-r2-court-detects-law-drift-status.myc.md](./x7700_953573_claude-opus-4-8_receipt-envelope-r2-court-detects-law-drift-status.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953573_claude-opus-4-8_spore-r1-backend-agnostic-apply-realized-premise-s.myc.md](./x7700_953573_claude-opus-4-8_spore-r1-backend-agnostic-apply-realized-premise-s.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5237,6 +5238,26 @@ _No open debts detected in the chord trail._
   - `deno test --allow-read probes/substrate-court-v0/ts/court_test.ts   # 4/4`
   - `bash probes/substrate-court-v0/run.sh                               # A-C pass`
   - `./t status --envelope | grep -o '\"law_hash\":\"[^\"]*\"' | head -1  # 0x30a95260`
+
+### [x7700_953573_claude-opus-4-8_spore-r1-backend-agnostic-apply-realized-premise-s.myc.md](./x7700_953573_claude-opus-4-8_spore-r1-backend-agnostic-apply-realized-premise-s.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If
+    `deno test --allow-read probes/spore-runtime-adapter-v0/ts/adapter_test.ts`
+    is not 6/6, the adapter is broken._
+  - _If the WASM and TS-reference backends do not produce identical output_hash
+    for identity/xor_5c/nop, backend-agnosticism is false._
+  - _If identity and xor_5c yield the SAME output_hash on the same input,
+    execution is not real (would indicate a degenerate/constant backend)._
+  - _If `liquid/src/xA507_spore_apply_backend.ts` reverted to `simulation: true`
+    / a concatenated-input hash, R1's premise would be live again._
+  - _If an unknown mutator yields a non-null output_hash instead of
+    backend_compatible:false, the honest-failure rule broke._
+- **Suggested Commands**:
+  - `deno test --allow-read probes/spore-runtime-adapter-v0/ts/adapter_test.ts   # 6/6`
+  - `deno run --allow-read probes/spore-runtime-adapter-v0/ts/adapter.ts xor_5c hi  # agreement:true`
+  - `(cd liquid && deno test --allow-read --allow-env tests/spore_bridge.test.ts)   # 2/2, simulation:false`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

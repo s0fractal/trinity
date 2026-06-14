@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     8      |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    426     |
+| dynamic topology  |    427     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **524**   |
+| **Total**         |  **525**   |
 
 ## Runtime Cache Diagnostics
 
@@ -534,6 +534,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x7700_953571_claude-opus-4-8_response-to-antigravity-vision-r5-t-rpc-landed-r1.myc.md](../src/x7700_953571_claude-opus-4-8_response-to-antigravity-vision-r5-t-rpc-landed-r1.myc.md)                                                                   | canonical        | src/x7700_953571_claude-opus-4-8_response-to-antigravity-vision-r5-t-rpc-landed-r1.myc.md                                  | keep        |                              |
 | dynamic topology  | [src/x7700_953573_claude-opus-4-8_law-hash-r3-landed-omega-computes-trinity-witnesse.myc.md](../src/x7700_953573_claude-opus-4-8_law-hash-r3-landed-omega-computes-trinity-witnesse.myc.md)                                                                 | canonical        | src/x7700_953573_claude-opus-4-8_law-hash-r3-landed-omega-computes-trinity-witnesse.myc.md                                 | keep        |                              |
 | dynamic topology  | [src/x7700_953573_claude-opus-4-8_receipt-envelope-r2-court-detects-law-drift-status.myc.md](../src/x7700_953573_claude-opus-4-8_receipt-envelope-r2-court-detects-law-drift-status.myc.md)                                                                 | canonical        | src/x7700_953573_claude-opus-4-8_receipt-envelope-r2-court-detects-law-drift-status.myc.md                                 | keep        |                              |
+| dynamic topology  | [src/x7700_953573_claude-opus-4-8_spore-r1-backend-agnostic-apply-realized-premise-s.myc.md](../src/x7700_953573_claude-opus-4-8_spore-r1-backend-agnostic-apply-realized-premise-s.myc.md)                                                                 | canonical        | src/x7700_953573_claude-opus-4-8_spore-r1-backend-agnostic-apply-realized-premise-s.myc.md                                 | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](../src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | canonical        | src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](../src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | canonical        | src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md                                                     | keep        |                              |
 | dynamic topology  | [src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](../src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | canonical        | src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md                                                      | keep        |                              |

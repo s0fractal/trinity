@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  441  |
-| Signed Chords (content_sig)              |  31   |
-| ↳ registry-verified                      |  31   |
+| Total Chords                             |  442  |
+| Signed Chords (content_sig)              |  32   |
+| ↳ registry-verified                      |  32   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  57   |
-| Unresolved Proposals (Heuristic)         |   1   |
+| Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  180  |
-| ↳ strong evidence                        |  180  |
+| Receipts                                 |  181  |
+| ↳ strong evidence                        |  181  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -36,18 +36,16 @@ stale proposals before changing the repository._ Use
 `./t decisions --triage-template` to print a closure-decision scaffold for the
 first item without writing files.
 
-| Stance    | Chord                                                                                                                                                          | Risks |
-| :-------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
-| candidate | [x5d00_953682_codex_effect-capability-court-runtime-enforcement-and-tr.myc.md](./x5d00_953682_codex_effect-capability-court-runtime-enforcement-and-tr.myc.md) | none  |
+| Stance | Chord | Risks |
+| :----- | :---- | :---- |
+| clear  | —     | —     |
 
 ## Unresolved Items (Heuristic Accountability)
 
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
-- **PROPOSAL**:
-  [Effect Capability Court: make `safe` a physical property](./x5d00_953682_codex_effect-capability-court-runtime-enforcement-and-tr.myc.md)
-  (by _codex_ — _proposal has no subsequent receipt or decision closure_)
+_No unresolved proposals or critiques detected._
 
 ## Invalid Closures
 
@@ -489,6 +487,7 @@ _No open debts detected in the chord trail._
 | [x7700_953659_claude-opus-4-8_safe-eval-discovery-list-safe.myc.md](./x7700_953659_claude-opus-4-8_safe-eval-discovery-list-safe.myc.md)                                                                                                           | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953670_claude-opus-4-8_ecosystem-abi-coverage-five-slot-fix.myc.md](./x7700_953670_claude-opus-4-8_ecosystem-abi-coverage-five-slot-fix.myc.md)                                                                                             | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953671_claude-opus-4-8_myc-ci-guards-vendored-encoder-parity.myc.md](./x7700_953671_claude-opus-4-8_myc-ci-guards-vendored-encoder-parity.myc.md)                                                                                           | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953684_claude-opus-4-8_effect-court-phase-a-fail-closed-detection.myc.md](./x7700_953684_claude-opus-4-8_effect-court-phase-a-fail-closed-detection.myc.md)                                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5508,6 +5507,25 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `cd myc && deno task check   # now includes envelope_vendor_test`
   - `for s in omega liquid myc; do echo $s; done   # all 3 vendored tests green`
+
+### [x7700_953684_claude-opus-4-8_effect-court-phase-a-fail-closed-detection.myc.md](./x7700_953684_claude-opus-4-8_effect-court-phase-a-fail-closed-detection.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If `t eval --list-safe` still lists `proxy`, F1 is not closed._
+  - _If `t eval --safe '[\"proxy\"]'` binds a port instead of being rejected
+    pre-launch, the network effect is not detected._
+  - _If an organ using only `Deno.env.set` / `Deno.dlopen` /
+    `WebAssembly.instantiate` / `new Worker` / `import()` / `Deno[expr]`
+    classifies `readonly`, fail-closed detection regressed._
+  - _If this is read as closing x5d00_953682, it overclaims — only Phase A
+    (direct fail-closed detection) landed; B (transitive), C (runtime profiles),
+    D (adversarial integration), E (streaming), F (generator registry) remain
+    open._
+- **Suggested Commands**:
+  - `./t eval --list-safe                 # 24 handles, no`proxy``
+  - `./t eval --safe '[\"proxy\"]'          # rejected pre-launch; no port bound`
+  - `deno test --allow-read --allow-env src/skill_gen_test.ts   # 10`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

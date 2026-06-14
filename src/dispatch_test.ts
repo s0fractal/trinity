@@ -186,6 +186,7 @@ import {
   type ExecutionBudget,
   planStats,
   safeBudgetFor,
+  safeHandleList,
 } from "./x0100_dispatch.ts";
 import type { Capability } from "./x0013_capability.ts";
 
@@ -304,4 +305,27 @@ Deno.test("safeBudgetFor - all-readonly composition is admitted", () => {
   const budget = safeBudgetFor(ast, () => "readonly");
   const adm = analyzeExecutionPlan(ast, budget);
   assertEquals(adm.ok, true);
+});
+
+// --- safeHandleList: the discovery half of --safe (t eval --list-safe) ---
+
+Deno.test("safeHandleList - lists readonly handles, excludes others, sorted", () => {
+  const entries: { handle: string; capability: Capability | null }[] = [
+    { handle: "health", capability: "readonly" },
+    { handle: "apply", capability: "writes" },
+    { handle: "capabilities", capability: "readonly" },
+    { handle: "status", capability: "git" },
+    { handle: "block", capability: "network" },
+    { handle: "mystery", capability: null },
+  ];
+  const r = safeHandleList(entries);
+  assertEquals(r.handles, ["capabilities", "health"]); // sorted, readonly only
+  // combinators are always available control flow
+  assertEquals(r.combinators.includes("pipe"), true);
+  assertEquals(r.combinators.includes("cond"), true);
+});
+
+Deno.test("safeHandleList - empty when nothing is readonly", () => {
+  const r = safeHandleList([{ handle: "apply", capability: "writes" }]);
+  assertEquals(r.handles, []);
 });

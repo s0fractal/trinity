@@ -1039,6 +1039,23 @@ export function safeBudgetFor(
   return { ...DEFAULT_BUDGET, allowed_handles: allowed };
 }
 
+/** Project a classified registry into the discoverable safe surface for
+ *  `t eval --list-safe`: the readonly leaf handles a `--safe` composition may
+ *  call, plus the combinators (control flow) which are always available and
+ *  never capability-checked. PURE (entries injected), so it is unit-testable
+ *  alongside `safeBudgetFor`. The discovery half of `--safe`'s enforcement:
+ *  models query the safe surface instead of learning it by trial and rejection
+ *  (antigravity's Sovereign API axis). */
+export function safeHandleList(
+  entries: { handle: string; capability: Capability | null }[],
+): { combinators: string[]; handles: string[] } {
+  const handles = entries
+    .filter((e) => e.capability === "readonly")
+    .map((e) => e.handle)
+    .sort();
+  return { combinators: [...COMBINATORS].sort(), handles };
+}
+
 /** The real --safe budget: classify each of the AST's distinct handles via the
  *  Phase E registry and admit only the readonly ones. The classifier (and its
  *  npm:typescript dependency) is dynamically imported here so the cost is paid
@@ -1067,6 +1084,50 @@ async function fn_safe_budget(
     if (!cache.has(h)) cache.set(h, await classify(h));
   }
   return safeBudgetFor(ast, (h) => cache.get(h) ?? null);
+}
+
+/** `t eval --list-safe`: enumerate the readonly handles a `--safe` composition
+ *  may call. Classifies every glossary handle's organ once (cached per position)
+ *  via the Phase E registry — classifier dynamically imported, same as the
+ *  budget path. */
+async function fn_eval_list_safe(): Promise<number> {
+  const records = await fn_load_words();
+  const { analyzeBehaviorWithAST, classifyCapability } = await import(
+    "./x0013_capability.ts"
+  );
+  const byPos = new Map<string, Capability | null>();
+  const entries: { handle: string; capability: Capability | null }[] = [];
+  for (const rec of records) {
+    if (!byPos.has(rec.position)) {
+      let cap: Capability | null = null;
+      const path = fn_position_to_path(rec.position);
+      if (await fn_exists(path)) {
+        const content = await Deno.readTextFile(path);
+        const filename = path.split("/").pop() ?? path;
+        cap = classifyCapability(
+          analyzeBehaviorWithAST(content, filename),
+          content,
+        );
+      }
+      byPos.set(rec.position, cap);
+    }
+    entries.push({ handle: rec.primary, capability: byPos.get(rec.position)! });
+  }
+  const { combinators, handles } = safeHandleList(entries);
+  console.log(JSON.stringify(
+    {
+      type: "eval_safe_handles",
+      position: "0/01",
+      note:
+        "readonly handles admissible under `t eval --safe`; combinators are control flow and always available",
+      combinators,
+      count: handles.length,
+      handles,
+    },
+    null,
+    2,
+  ));
+  return 0;
 }
 
 /** Real leaf executor: resolve a handle → run its organ → JSON payload. */
@@ -1122,6 +1183,11 @@ if (import.meta.main) {
   // `t eval '<json-ast>'`: evaluate a LISP-shaped composition over the command
   // space (antigravity T4). Dispatcher built-in (wraps the dispatcher itself).
   if (word === "eval") {
+    // `--list-safe`: enumerate the readonly handles `--safe` would admit
+    // (discovery surface; pairs with the --safe enforcement gate).
+    if (rest.includes("--list-safe")) {
+      Deno.exit(await fn_eval_list_safe());
+    }
     // `--safe`: admit only readonly-classified handles (Phase E registry gate).
     const safe = rest.includes("--safe");
     const astArg = rest.find((a) => !a.startsWith("--")) ?? "null";

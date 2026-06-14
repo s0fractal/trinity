@@ -86,32 +86,41 @@ async function live() {
     ((trinityStatus?.substrate_health as Record<string, unknown> | undefined)
       ?.law_hash as string | null | undefined) ?? null;
 
-  // omega's NATIVE law_hash, from omega's own status organ (null when the
-  // submodule is absent — graceful, not fatal).
+  // omega's OWN signed witness + native law_hash, from omega's own status organ
+  // (null when the submodule is absent — graceful, not fatal).
   let omegaNative: string | null = null;
+  let omegaEnvelope: unknown = null;
   try {
     const omegaStatus = await runJson([
       join(ROOT, "omega", "src", "x2E00_status.ts"),
+      "--envelope",
     ]) as Record<string, unknown> | null;
     omegaNative = (omegaStatus?.law_hash as string | undefined) ?? null;
-  } catch { /* omega absent — omegaNative stays null */ }
+    omegaEnvelope = omegaStatus?.substrate_health_envelope ?? null;
+  } catch { /* omega absent — omegaNative/omegaEnvelope stay null */ }
 
-  // Adjudicate the real envelope(s) via the probe court.
-  const envelopes = trinityEnvelope ? [trinityEnvelope] : [];
+  // Adjudicate the real, independently-signed envelopes via the probe court.
+  const envelopes = [trinityEnvelope, omegaEnvelope].filter(Boolean);
   let court: unknown = null;
   if (envelopes.length > 0) {
-    const tmp = await Deno.makeTempFile({ suffix: ".json" });
+    const tmps: string[] = [];
     try {
-      await Deno.writeTextFile(tmp, JSON.stringify(trinityEnvelope));
+      const courtArgs: string[] = ["run", "--allow-read", COURT];
+      for (const e of envelopes) {
+        const tmp = await Deno.makeTempFile({ suffix: ".json" });
+        tmps.push(tmp);
+        await Deno.writeTextFile(tmp, JSON.stringify(e));
+        courtArgs.push("--envelope", tmp);
+      }
       const proc = new Deno.Command("deno", {
-        args: ["run", "--allow-read", COURT, "--envelope", tmp],
+        args: courtArgs,
         stdout: "piped",
         stderr: "null",
       });
       const out = await proc.output();
       court = JSON.parse(new TextDecoder().decode(out.stdout).trim());
     } finally {
-      await Deno.remove(tmp).catch(() => {});
+      for (const t of tmps) await Deno.remove(t).catch(() => {});
     }
   }
 

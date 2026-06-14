@@ -9,20 +9,20 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  421  |
-| Signed Chords (content_sig)              |  16   |
-| ↳ registry-verified                      |  16   |
+| Total Chords                             |  423  |
+| Signed Chords (content_sig)              |  17   |
+| ↳ registry-verified                      |  17   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  55   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  164  |
-| ↳ strong evidence                        |  164  |
+| Receipts                                 |  165  |
+| ↳ strong evidence                        |  165  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  155  |
+| Other Observations                       |  156  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -216,6 +216,7 @@ _No open debts detected in the chord trail._
 | [x3000_t20260530134900_antigravity_triage-spore-wasm-implemented.myc.md](./x3000_t20260530134900_antigravity_triage-spore-wasm-implemented.myc.md)                                                                                                 | **DECISION** | antigravity        |   0   |   1    |
 | [x3000_t20260530135400_antigravity_triage-papers-codeicide-closed.myc.md](./x3000_t20260530135400_antigravity_triage-papers-codeicide-closed.myc.md)                                                                                               | **DECISION** | antigravity        |   0   |   1    |
 | [x3000_t20260530153632_antigravity_triage-review-proposal-filesystem-folder-topology-resonant-with.myc.md](./x3000_t20260530153632_antigravity_triage-review-proposal-filesystem-folder-topology-resonant-with.myc.md)                             | **DECISION** | antigravity        |   0   |   1    |
+| [x3300_953571_antigravity_trinity-vector-analysis-and-refactoring-vision.myc.md](./x3300_953571_antigravity_trinity-vector-analysis-and-refactoring-vision.myc.md)                                                                                 | **OTHER**    | antigravity        |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -467,6 +468,7 @@ _No open debts detected in the chord trail._
 | [x7700_953518_claude-opus-4-8_liquid-fqdn-resolver-fixture-now-tests-production.myc.md](./x7700_953518_claude-opus-4-8_liquid-fqdn-resolver-fixture-now-tests-production.myc.md)                                                                   | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953523_claude-opus-4-8_cognition-recommend-closure-feedback-satisfied-sig.myc.md](./x7700_953523_claude-opus-4-8_cognition-recommend-closure-feedback-satisfied-sig.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953565_claude-opus-4-8_trinity-core-unit-tests-now-gated-in-ci-previously.myc.md](./x7700_953565_claude-opus-4-8_trinity-core-unit-tests-now-gated-in-ci-previously.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953571_claude-opus-4-8_resolve-show-delivers-content-completing-browse-lo.myc.md](./x7700_953571_claude-opus-4-8_resolve-show-delivers-content-completing-browse-lo.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5151,6 +5153,27 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `deno task test:unit   # 74 passed, 0 failed (net-free subset)`
   - `deno test --allow-all src/*_test.ts   # full 77 incl. the 2 port-binding tests`
+- **Expected After Running**:
+  - _{}_
+
+### [x7700_953571_claude-opus-4-8_resolve-show-delivers-content-completing-browse-lo.myc.md](./x7700_953571_claude-opus-4-8_resolve-show-delivers-content-completing-browse-lo.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If `./t resolve --show fqdn_resolver_test.ts` does not print a provenance
+    header followed by the file's content, the verb is broken._
+  - _If `./t resolve --show README.md` (a conflict) does not warn CONFLICT and
+    list the other differing candidates, conflict honesty is broken._
+  - _If `./t resolve --show <absent>` prints content or exits 0, the absent
+    guard is broken._
+  - _If `deno test -A src/fqdn_resolver_test.ts` is not 20/20, the showHeader
+    cases regressed._
+  - _If the default `./t resolve <name>` (no --show) stopped emitting JSON, the
+    additive flag broke the existing contract._
+- **Suggested Commands**:
+  - `./t resolve --show fqdn_resolver_test.ts   # header + content`
+  - `./t resolve --show README.md               # conflict: winner + others listed`
+  - `deno test -A src/fqdn_resolver_test.ts      # 20/20`
 - **Expected After Running**:
   - _{}_
 

@@ -779,6 +779,38 @@ interface LawWatch {
   drift: boolean;
 }
 
+const INERT_LAW_WATCH: LawWatch = {
+  ran: false,
+  law_agreement: null,
+  law_witness_count: 0,
+  witnesses: [],
+  drift: false,
+};
+
+/** Interpret a SubstrateCourtLiveVerdict into a LawWatch — PURE, so the
+ *  safety-critical drift decision (which gates autonomous --act) is unit-tested
+ *  and cannot silently regress. Drift = any law_hash_drift conflict OR a
+ *  law_bridge that is explicitly inconsistent (false; null = unverifiable, not
+ *  drift). Exported for daemon_test. */
+export function interpretCourtVerdict(verdict: unknown): LawWatch {
+  if (typeof verdict !== "object" || verdict === null) return INERT_LAW_WATCH;
+  const v = verdict as Record<string, unknown>;
+  const court = (v.court ?? {}) as Record<string, unknown>;
+  const conflicts = Array.isArray(court.conflicts) ? court.conflicts : [];
+  const bridge = (v.law_bridge ?? {}) as Record<string, unknown>;
+  const drift =
+    conflicts.some((c) =>
+      (c as { kind?: string })?.kind === "law_hash_drift"
+    ) || bridge.consistent === false;
+  return {
+    ran: true,
+    law_agreement: (court.law_agreement ?? null) as boolean | null,
+    law_witness_count: (court.law_witness_count ?? 0) as number,
+    witnesses: Array.isArray(v.witnesses) ? v.witnesses as string[] : [],
+    drift,
+  };
+}
+
 /** Read-only law-agreement watch: run the live Substrate Court and report
  *  whether the substrates that declare a law_hash agree (antigravity T3, the
  *  "court daemon"). The daemon will not --act while the law surface is drifting:
@@ -786,13 +818,6 @@ interface LawWatch {
  *  contested across layers would commit into an inconsistent state. Best-effort
  *  — if the court can't run, the watch is inert (never a false alarm). */
 async function lawWatch(): Promise<LawWatch> {
-  const inert: LawWatch = {
-    ran: false,
-    law_agreement: null,
-    law_witness_count: 0,
-    witnesses: [],
-    drift: false,
-  };
   try {
     const { stdout } = await new Deno.Command(join(ROOT, "t"), {
       args: ["court", "--live"],
@@ -803,22 +828,10 @@ async function lawWatch(): Promise<LawWatch> {
     const text = new TextDecoder().decode(stdout)
       .split("\n").filter((l) => !l.trimStart().startsWith("#")).join("\n")
       .trim();
-    if (!text) return inert;
-    // deno-lint-ignore no-explicit-any
-    const v = JSON.parse(text) as any;
-    const court = v.court ?? {};
-    const drift = (court.conflicts ?? []).some((c: { kind?: string }) =>
-      c.kind === "law_hash_drift"
-    ) || v.law_bridge?.consistent === false;
-    return {
-      ran: true,
-      law_agreement: court.law_agreement ?? null,
-      law_witness_count: court.law_witness_count ?? 0,
-      witnesses: v.witnesses ?? [],
-      drift,
-    };
+    if (!text) return INERT_LAW_WATCH;
+    return interpretCourtVerdict(JSON.parse(text));
   } catch {
-    return inert;
+    return INERT_LAW_WATCH;
   }
 }
 

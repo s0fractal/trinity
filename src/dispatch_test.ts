@@ -185,7 +185,9 @@ import {
   evalAstBounded,
   type ExecutionBudget,
   planStats,
+  safeBudgetFor,
 } from "./x0100_dispatch.ts";
+import type { Capability } from "./x8C00_skill_gen.ts";
 
 Deno.test("planStats - counts depth, nodes, leaves, parallel width, handles", () => {
   // ["pipe", ["all", ["a"], ["b"], ["c"]], ["d"]]
@@ -254,4 +256,52 @@ Deno.test("evalAstBounded - admitted plan runs normally", async () => {
   const exec: LeafExec = (h, args) => Promise.resolve({ h, args });
   const r = await evalAstBounded(["all", ["a"], ["b"]], exec, DEFAULT_BUDGET);
   assertEquals(r, [{ h: "a", args: [] }, { h: "b", args: [] }]);
+});
+
+// --- safeBudgetFor: capability-gated --safe eval (Phase E live consumer) ---
+
+Deno.test("safeBudgetFor - admits only readonly-classified handles", () => {
+  const cap: Record<string, Capability> = {
+    status: "readonly",
+    roadmap: "readonly",
+    apply: "writes",
+    court: "subprocess",
+  };
+  const ast = ["all", ["status"], ["roadmap"], ["apply"], ["court"]];
+  const budget = safeBudgetFor(ast, (h) => cap[h] ?? null);
+  assertEquals(budget.allowed_handles, ["status", "roadmap"]);
+  // Inherits the resource bounds of DEFAULT_BUDGET.
+  assertEquals(budget.max_leaves, DEFAULT_BUDGET.max_leaves);
+});
+
+Deno.test("safeBudgetFor + admission - non-readonly handle is rejected pre-exec", () => {
+  const ast = ["pipe", ["status"], ["apply"]];
+  const budget = safeBudgetFor(
+    ast,
+    (h) => (h === "status" ? "readonly" : "writes"),
+  );
+  const adm = analyzeExecutionPlan(ast, budget);
+  assertEquals(adm.ok, false);
+  if (!adm.ok) {
+    assertEquals(
+      adm.violations.some((v) => v.includes("apply")),
+      true,
+    );
+  }
+});
+
+Deno.test("safeBudgetFor - unknown/unresolved handle is inadmissible (fail-closed)", () => {
+  // lookup returns null for every handle (unresolved / unknown capability).
+  const ast = ["status"];
+  const budget = safeBudgetFor(ast, () => null);
+  assertEquals(budget.allowed_handles, []);
+  const adm = analyzeExecutionPlan(ast, budget);
+  assertEquals(adm.ok, false);
+});
+
+Deno.test("safeBudgetFor - all-readonly composition is admitted", () => {
+  const ast = ["pipe", ["status"], ["roadmap"]];
+  const budget = safeBudgetFor(ast, () => "readonly");
+  const adm = analyzeExecutionPlan(ast, budget);
+  assertEquals(adm.ok, true);
 });

@@ -31,6 +31,9 @@ import {
   positionToPath as libPositionToPath,
   runOrgan,
 } from "./x0010_dispatch_runner.ts";
+// Type-only: the runtime classifier (which pulls npm:typescript) is dynamically
+// imported inside the --safe path so it never loads on the dispatch hot path.
+import type { Capability } from "./x8C00_skill_gen.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const SUBSTRATE_ROOT = dirname(HERE);
@@ -744,9 +747,22 @@ async function fn_handle_rpc(
   // over the command space (T4 over the sovereign channel). Lets an agent submit
   // a whole composition, not just single calls.
   if (req.method === "eval") {
-    const ast = Array.isArray(req.rawParams) ? req.rawParams[0] : req.rawParams;
+    const params = Array.isArray(req.rawParams)
+      ? req.rawParams
+      : [req.rawParams];
+    const ast = params[0];
+    // Optional second param `{ "safe": true }` gates the composition to the
+    // readonly capability slice (Phase E). Absent ⇒ DEFAULT_BUDGET, unchanged.
+    const opt = params[1];
+    const safe = !!(opt && typeof opt === "object" &&
+      (opt as Record<string, unknown>).safe === true);
     try {
-      const result = await evalAstBounded(ast, await fn_eval_leaf(records));
+      const budget = safe ? await fn_safe_budget(ast, records) : DEFAULT_BUDGET;
+      const result = await evalAstBounded(
+        ast,
+        await fn_eval_leaf(records),
+        budget,
+      );
       return req.isNotification ? null : rpcResult(req.id, result);
     } catch (e) {
       return req.isNotification ? null : rpcError(
@@ -998,6 +1014,60 @@ export async function evalAstBounded(
   return await evalAst(ast, exec);
 }
 
+// ── capability-gated --safe eval (codex Phase E: the registry's live consumer) ─
+// The Phase E capability registry classifies each organ (readonly|network|
+// subprocess|git|writes|unknown). `t eval --safe` is its first consumer: it
+// admits ONLY handles whose organ is `readonly`, so a composition physically
+// cannot mutate / spawn a subprocess / fetch / run git. The allow-list flows
+// into the existing R3 `allowed_handles` budget seam; analyzeExecutionPlan then
+// rejects any non-readonly handle BEFORE the first leaf runs.
+
+/** Build a --safe budget from a capability lookup. PURE (the classifier is
+ *  injected, mirroring evalAst's LeafExec), so it is unit-testable without
+ *  touching the filesystem or loading the TS classifier. A handle that does not
+ *  classify `readonly` — including unresolved/unknown ones (lookup ⇒ null) — is
+ *  omitted from the allow-list and therefore rejected by admission. Exported
+ *  for the test. */
+export function safeBudgetFor(
+  ast: unknown,
+  capability: (handle: string) => Capability | null,
+): ExecutionBudget {
+  const allowed = [...new Set(planStats(ast).handles)].filter(
+    (h) => capability(h) === "readonly",
+  );
+  return { ...DEFAULT_BUDGET, allowed_handles: allowed };
+}
+
+/** The real --safe budget: classify each of the AST's distinct handles via the
+ *  Phase E registry and admit only the readonly ones. The classifier (and its
+ *  npm:typescript dependency) is dynamically imported here so the cost is paid
+ *  only when --safe is actually used, never on the normal dispatch path. */
+async function fn_safe_budget(
+  ast: unknown,
+  records: WordRec[],
+): Promise<ExecutionBudget> {
+  const { analyzeBehaviorWithAST, classifyCapability } = await import(
+    "./x8C00_skill_gen.ts"
+  );
+  const cache = new Map<string, Capability | null>();
+  const classify = async (handle: string): Promise<Capability | null> => {
+    const found = fn_resolve_word(handle, records);
+    if (!found) return null; // unresolved handle ⇒ inadmissible (fail-closed)
+    const path = fn_position_to_path(found.position);
+    if (!(await fn_exists(path))) return null;
+    const content = await Deno.readTextFile(path);
+    const filename = path.split("/").pop() ?? path;
+    return classifyCapability(
+      analyzeBehaviorWithAST(content, filename),
+      content,
+    );
+  };
+  for (const h of new Set(planStats(ast).handles)) {
+    if (!cache.has(h)) cache.set(h, await classify(h));
+  }
+  return safeBudgetFor(ast, (h) => cache.get(h) ?? null);
+}
+
 /** Real leaf executor: resolve a handle → run its organ → JSON payload. */
 async function fn_eval_leaf(records: WordRec[]): Promise<LeafExec> {
   return async (handle: string, args: string[]) => {
@@ -1014,7 +1084,7 @@ async function fn_eval_leaf(records: WordRec[]): Promise<LeafExec> {
   };
 }
 
-async function fn_eval(astJson: string): Promise<number> {
+async function fn_eval(astJson: string, safe = false): Promise<number> {
   let ast: unknown;
   try {
     ast = JSON.parse(astJson);
@@ -1022,9 +1092,11 @@ async function fn_eval(astJson: string): Promise<number> {
     console.error(`# eval: argument is not valid JSON`);
     return 1;
   }
-  const exec = await fn_eval_leaf(await fn_load_words());
+  const records = await fn_load_words();
+  const exec = await fn_eval_leaf(records);
+  const budget = safe ? await fn_safe_budget(ast, records) : DEFAULT_BUDGET;
   try {
-    const result = await evalAstBounded(ast, exec);
+    const result = await evalAstBounded(ast, exec, budget);
     console.log(JSON.stringify(result, null, 2));
     return 0;
   } catch (e) {
@@ -1049,7 +1121,10 @@ if (import.meta.main) {
   // `t eval '<json-ast>'`: evaluate a LISP-shaped composition over the command
   // space (antigravity T4). Dispatcher built-in (wraps the dispatcher itself).
   if (word === "eval") {
-    Deno.exit(await fn_eval(rest[0] ?? "null"));
+    // `--safe`: admit only readonly-classified handles (Phase E registry gate).
+    const safe = rest.includes("--safe");
+    const astArg = rest.find((a) => !a.startsWith("--")) ?? "null";
+    Deno.exit(await fn_eval(astArg, safe));
   }
   Deno.exit(await fn_dispatch_word(word, rest));
 }

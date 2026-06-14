@@ -237,7 +237,7 @@ function flatSrcName(opts: {
 
 async function cmdBlock(): Promise<void> {
   const h = await fetchBtcBlock();
-  console.log(h);
+  console.log(JSON.stringify({ type: "block", value: h }));
 }
 
 async function cmdInit(flags: Record<string, string>): Promise<void> {

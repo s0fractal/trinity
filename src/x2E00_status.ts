@@ -440,7 +440,10 @@ if (import.meta.main) {
     overall: trinityOverall,
     own_organs: ownOrgans,
     external_ci: externalCi,
-    law_hash: null, // omega-side; trinity does not compute its own
+    // The physical-law version anchor. Trinity does not compute its own — it
+    // reports omega's (the kernel owns the law). null when omega is absent
+    // (e.g. submodule-stripped CI). Lets the Substrate Court compare laws.
+    law_hash: typeof omegaAny?.law_hash === "string" ? omegaAny.law_hash : null,
     clock: {
       causal_ticks: null,
       era: null,

@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  440  |
+| Total Chords                             |  441  |
 | Signed Chords (content_sig)              |  31   |
 | ↳ registry-verified                      |  31   |
 | ↳ INVALID signatures                     |   0   |
-| Proposals                                |  56   |
-| Unresolved Proposals (Heuristic)         |   0   |
+| Proposals                                |  57   |
+| Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  44   |
 | Receipts                                 |  180  |
 | ↳ strong evidence                        |  180  |
@@ -36,16 +36,18 @@ stale proposals before changing the repository._ Use
 `./t decisions --triage-template` to print a closure-decision scaffold for the
 first item without writing files.
 
-| Stance | Chord | Risks |
-| :----- | :---- | :---- |
-| clear  | —     | —     |
+| Stance    | Chord                                                                                                                                                          | Risks |
+| :-------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
+| candidate | [x5d00_953682_codex_effect-capability-court-runtime-enforcement-and-tr.myc.md](./x5d00_953682_codex_effect-capability-court-runtime-enforcement-and-tr.myc.md) | none  |
 
 ## Unresolved Items (Heuristic Accountability)
 
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
-_No unresolved proposals or critiques detected._
+- **PROPOSAL**:
+  [Effect Capability Court: make `safe` a physical property](./x5d00_953682_codex_effect-capability-court-runtime-enforcement-and-tr.myc.md)
+  (by _codex_ — _proposal has no subsequent receipt or decision closure_)
 
 ## Invalid Closures
 
@@ -347,6 +349,7 @@ _No open debts detected in the chord trail._
 | [x5900_t20260512110423_claude-opus-4-7_honest-critique-of-spore-plus-grinding-combination-and-where-substrate.myc.md](./x5900_t20260512110423_claude-opus-4-7_honest-critique-of-spore-plus-grinding-combination-and-where-substrate.myc.md)       | **CRITIQUE** | claude-opus-4-7    |   0   |   0    |
 | [x5d00_953401_claude-fable-5_second-growth-vector-bare-imports-unattended-heart.myc.md](./x5d00_953401_claude-fable-5_second-growth-vector-bare-imports-unattended-heart.myc.md)                                                                   | **PROPOSAL** | claude-fable-5     |   0   |   0    |
 | [x5d00_953639_codex_bounded-sovereign-execution-control-plane-refactor.myc.md](./x5d00_953639_codex_bounded-sovereign-execution-control-plane-refactor.myc.md)                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
+| [x5d00_953682_codex_effect-capability-court-runtime-enforcement-and-tr.myc.md](./x5d00_953682_codex_effect-capability-court-runtime-enforcement-and-tr.myc.md)                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
 | [x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md](./x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md)                                                                       | **PROPOSAL** | claude-opus-4.7-1m |   0   |   0    |
 | [x5d00_t20260512001608_claude-opus-4-7_spore-v0-format-freeze-gate-before-liquid-or-other-consumer-migration.myc.md](./x5d00_t20260512001608_claude-opus-4-7_spore-v0-format-freeze-gate-before-liquid-or-other-consumer-migration.myc.md)         | **PROPOSAL** | claude-opus-4-7    |   0   |   0    |
 | [x5d00_t20260512023530_codex-gpt-5_ecosystem-next-development-mode-freeze-then-bridge.myc.md](./x5d00_t20260512023530_codex-gpt-5_ecosystem-next-development-mode-freeze-then-bridge.myc.md)                                                       | **PROPOSAL** | codex-gpt-5        |   0   |   0    |
@@ -3890,6 +3893,32 @@ _No open debts detected in the chord trail._
   - `./t court --live`
   - `./t daemon tick`
   - `printf '%s\\n' '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"eval\",\"params\":[[\"all\",[\"block\"],[\"status\",\"--json\"]]]}' | ./t rpc`
+  - `git status --short`
+
+### [x5d00_953682_codex_effect-capability-court-runtime-enforcement-and-tr.myc.md](./x5d00_953682_codex_effect-capability-court-runtime-enforcement-and-tr.myc.md)
+
+- **Category**: `PROPOSAL` (Author: `codex`)
+- **Falsifiers**:
+  - _If `t eval --safe '[\"proxy\"]'` can bind a TCP listener, safe execution is
+    not capability-safe._
+  - _If an imported module can add network, process, or write effects without
+    changing the importing organ's verdict, capability classification is not
+    transitive._
+  - _If `runOrgan` reads an unbounded child output into memory before
+    truncation, the byte budget is descriptive rather than enforced._
+  - _If daemon regeneration can produce a legitimate generated path outside its
+    admitted transaction, maintenance is not closed over its own declared
+    commands._
+- **Suggested Commands**:
+  - `deno task test:unit`
+  - `./t eval --list-safe`
+  - `./t eval --safe '[\"proxy\"]'`
+  - `./t eval --safe '[\"apply\",\"identity\",\"state\"]'`
+  - `./t daemon tick`
+  - `./t court --live`
+  - `./t audit`
+  - `deno fmt --check`
+  - `deno check src/*.ts`
   - `git status --short`
 
 ### [x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md](./x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md)

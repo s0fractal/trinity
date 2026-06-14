@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     8      |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    440     |
+| dynamic topology  |    441     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **538**   |
+| **Total**         |  **539**   |
 
 ## Runtime Cache Diagnostics
 
@@ -409,6 +409,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x5900_t20260512110423_claude-opus-4-7_honest-critique-of-spore-plus-grinding-combination-and-where-substrate.myc.md](../src/x5900_t20260512110423_claude-opus-4-7_honest-critique-of-spore-plus-grinding-combination-and-where-substrate.myc.md)       | canonical        | src/x5900_t20260512110423_claude-opus-4-7_honest-critique-of-spore-plus-grinding-combination-and-where-substrate.myc.md    | keep        |                              |
 | dynamic topology  | [src/x5d00_953401_claude-fable-5_second-growth-vector-bare-imports-unattended-heart.myc.md](../src/x5d00_953401_claude-fable-5_second-growth-vector-bare-imports-unattended-heart.myc.md)                                                                   | canonical        | src/x5d00_953401_claude-fable-5_second-growth-vector-bare-imports-unattended-heart.myc.md                                  | keep        |                              |
 | dynamic topology  | [src/x5d00_953639_codex_bounded-sovereign-execution-control-plane-refactor.myc.md](../src/x5d00_953639_codex_bounded-sovereign-execution-control-plane-refactor.myc.md)                                                                                     | canonical        | src/x5d00_953639_codex_bounded-sovereign-execution-control-plane-refactor.myc.md                                           | keep        |                              |
+| dynamic topology  | [src/x5d00_953682_codex_effect-capability-court-runtime-enforcement-and-tr.myc.md](../src/x5d00_953682_codex_effect-capability-court-runtime-enforcement-and-tr.myc.md)                                                                                     | canonical        | src/x5d00_953682_codex_effect-capability-court-runtime-enforcement-and-tr.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md](../src/x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md)                                                                       | canonical        | src/x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md                                    | keep        |                              |
 | dynamic topology  | [src/x5d00_t20260512001608_claude-opus-4-7_spore-v0-format-freeze-gate-before-liquid-or-other-consumer-migration.myc.md](../src/x5d00_t20260512001608_claude-opus-4-7_spore-v0-format-freeze-gate-before-liquid-or-other-consumer-migration.myc.md)         | canonical        | src/x5d00_t20260512001608_claude-opus-4-7_spore-v0-format-freeze-gate-before-liquid-or-other-consumer-migration.myc.md     | keep        |                              |
 | dynamic topology  | [src/x5d00_t20260512023530_codex-gpt-5_ecosystem-next-development-mode-freeze-then-bridge.myc.md](../src/x5d00_t20260512023530_codex-gpt-5_ecosystem-next-development-mode-freeze-then-bridge.myc.md)                                                       | canonical        | src/x5d00_t20260512023530_codex-gpt-5_ecosystem-next-development-mode-freeze-then-bridge.myc.md                            | keep        |                              |

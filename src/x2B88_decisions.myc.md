@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  437  |
-| Signed Chords (content_sig)              |  28   |
-| ↳ registry-verified                      |  28   |
+| Total Chords                             |  438  |
+| Signed Chords (content_sig)              |  29   |
+| ↳ registry-verified                      |  29   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  56   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  177  |
-| ↳ strong evidence                        |  177  |
+| Receipts                                 |  178  |
+| ↳ strong evidence                        |  178  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -483,6 +483,7 @@ _No open debts detected in the chord trail._
 | [x7700_953645_claude-opus-4-8_codex-bounded-sovereign-execution-fully-closed-all.myc.md](./x7700_953645_claude-opus-4-8_codex-bounded-sovereign-execution-fully-closed-all.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953646_claude-opus-4-8_court-law-drift-ci-gate-antigravity-t3-partial.myc.md](./x7700_953646_claude-opus-4-8_court-law-drift-ci-gate-antigravity-t3-partial.myc.md)                                                                         | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953658_claude-opus-4-8_capability-registry-live-consumer-safe-eval.myc.md](./x7700_953658_claude-opus-4-8_capability-registry-live-consumer-safe-eval.myc.md)                                                                               | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953659_claude-opus-4-8_safe-eval-discovery-list-safe.myc.md](./x7700_953659_claude-opus-4-8_safe-eval-discovery-list-safe.myc.md)                                                                                                           | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5428,6 +5429,22 @@ _No open debts detected in the chord trail._
   - `./t eval --safe '[\"all\", [\"health\"], [\"capabilities\"]]'   # admitted`
   - `./t eval --safe '[\"all\", [\"health\"], [\"decisions\"]]'      # rejected (decisions=writes)`
   - `deno test --allow-read --allow-env src/dispatch_test.ts   # 28`
+
+### [x7700_953659_claude-opus-4-8_safe-eval-discovery-list-safe.myc.md](./x7700_953659_claude-opus-4-8_safe-eval-discovery-list-safe.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If a handle in `t eval --list-safe` output is rejected by `t eval --safe`,
+    discovery and enforcement disagree (they must derive from the same
+    classifier)._
+  - _If `t eval --list-safe` omits a handle that `--safe` admits, the list is
+    incomplete._
+  - _If `safeHandleList` returns a handle whose capability is not exactly
+    `readonly`, the discovery filter regressed._
+- **Suggested Commands**:
+  - `./t eval --list-safe                      # discover the safe surface`
+  - `./t eval --safe '[\"all\", [\"health\"], [\"capabilities\"]]'   # compose within it`
+  - `deno test --allow-read --allow-env src/dispatch_test.ts   # 30`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

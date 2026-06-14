@@ -284,6 +284,66 @@ export async function resolveFqdn(
   return await resolveFromIndex(await buildIndex(roots), fqdn);
 }
 
+/** Largest content `--show` will dump inline; above this, header-only with a
+ *  pointer to the path (no silent truncation of what people see). */
+const MAX_SHOW_BYTES = 1_000_000;
+
+/** Pure provenance header for `--show`: the #-comment lines printed above the
+ *  content. Empty array means absent (nothing to show). Surfaces mirrored copies
+ *  and — for conflict — warns the winner is one of several differing things and
+ *  lists the others. Pure so it can be tested without stdout/fs. */
+export function showHeader(res: Resolution): string[] {
+  if (!res.resolved) return [];
+  const r = res.resolved;
+  const lines = [
+    `# resolve --show: ${res.fqdn}`,
+    `# resolved: ${r.rel} @ ${r.root}  (${r.matchForm}, identity=${res.identity})`,
+    `# hash: blake3:${r.hash}  size: ${r.size}B`,
+  ];
+  if (res.identity === "mirrored") {
+    lines.push(
+      `# mirrored: ${res.candidates.length} identical copies — showing the precedence winner.`,
+    );
+  }
+  if (res.identity === "conflict") {
+    lines.push(
+      `# CONFLICT: ${res.candidates.length} files share this name with DIFFERING content.`,
+    );
+    lines.push(`# showing the precedence winner above; others:`);
+    for (const c of res.candidates.slice(1)) {
+      lines.push(`#   - ${c.rel} @ ${c.root}  blake3:${c.hash.slice(0, 12)}`);
+    }
+  }
+  lines.push("# ──────");
+  return lines;
+}
+
+/** `--show`: deliver the addressed content, not just its location — the last
+ *  verb of the read side ("resolve one to its content"). Prints the provenance
+ *  header then the raw bytes, so it stays pipeable. Returns the exit code. */
+export async function renderShow(res: Resolution): Promise<number> {
+  if (!res.resolved) {
+    console.error(
+      `# resolve --show: '${res.fqdn}' is absent — nothing to show. Try 't resolve list ${res.fqdn}'.`,
+    );
+    return 1;
+  }
+  const r = res.resolved;
+  console.log(showHeader(res).join("\n"));
+  if (r.size > MAX_SHOW_BYTES) {
+    console.log(
+      `# (content omitted: ${r.size}B exceeds the ${MAX_SHOW_BYTES}B show limit — open ${r.path})`,
+    );
+    return 0;
+  }
+  try {
+    console.log(await Deno.readTextFile(r.path));
+  } catch {
+    console.log(`# (non-text or unreadable content — open ${r.path})`);
+  }
+  return 0;
+}
+
 /** Default trinity roots, precedence order: own substrate first, then federated submodules. */
 export function defaultRoots(): string[] {
   // resolver.ts lives at <trinity>/src/x2F30_fqdn_resolver.ts
@@ -359,10 +419,14 @@ if (import.meta.main) {
   if (!fqdn) {
     console.error(
       "usage: resolver.ts [--cloud] <fqdn-or-handle-or-slug>\n" +
+        "       resolver.ts --show <fqdn>                   (resolve AND print its content)\n" +
         "       resolver.ts list [substring] [--limit=N]   (discover the namespace)",
     );
     Deno.exit(1);
   }
   const res = await resolveFqdn(fqdn, roots);
+  if (args.includes("--show")) {
+    Deno.exit(await renderShow(res));
+  }
   console.log(JSON.stringify({ type: "fqdn_resolution", ...res }, null, 2));
 }

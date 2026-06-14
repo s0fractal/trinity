@@ -1,14 +1,18 @@
 import {
   assert,
   assertEquals,
+  assertStringIncludes,
 } from "https://deno.land/std@0.224.0/assert/mod.ts";
 import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
 import {
   buildIndex,
+  type Candidate,
   kindOf,
   listNames,
+  type Resolution,
   resolveFqdn,
   resolveFromIndex,
+  showHeader,
 } from "./x2F30_fqdn_resolver.ts";
 
 // Build a throwaway federation of roots with known collisions.
@@ -318,4 +322,74 @@ Deno.test("listNames — kind filter and by_kind breakdown", async () => {
   } finally {
     await cleanup();
   }
+});
+
+// --- showHeader: the provenance header for `resolve --show` ---
+
+function cand(rel: string, root: string, hash: string): Candidate {
+  return {
+    root,
+    rootIndex: 0,
+    path: `${root}/${rel}`,
+    rel,
+    depth: 1,
+    size: 42,
+    hash,
+    matchForm: "exact",
+  };
+}
+
+Deno.test("showHeader - absent resolution yields no header", () => {
+  const res: Resolution = {
+    fqdn: "ghost",
+    resolved: null,
+    identity: "absent",
+    candidates: [],
+  };
+  assertEquals(showHeader(res), []);
+});
+
+Deno.test("showHeader - unique surfaces path, hash, identity; no conflict noise", () => {
+  const c = cand("x.ts", "/r/src", "abc123");
+  const res: Resolution = {
+    fqdn: "x.ts",
+    resolved: c,
+    identity: "unique",
+    candidates: [c],
+  };
+  const h = showHeader(res).join("\n");
+  assertStringIncludes(h, "identity=unique");
+  assertStringIncludes(h, "blake3:abc123");
+  assertEquals(h.includes("CONFLICT"), false);
+  assertEquals(h.includes("mirrored:"), false);
+});
+
+Deno.test("showHeader - conflict warns and lists the other differing candidates", () => {
+  const winner = cand("README.md", "/r/a", "aaaa1111bbbb");
+  const other = cand("README.md", "/r/b", "cccc2222dddd");
+  const res: Resolution = {
+    fqdn: "README.md",
+    resolved: winner,
+    identity: "conflict",
+    candidates: [winner, other],
+  };
+  const h = showHeader(res).join("\n");
+  assertStringIncludes(h, "CONFLICT: 2 files");
+  // the OTHER candidate is listed (winner is shown as content, not re-listed)
+  assertStringIncludes(h, "@ /r/b  blake3:cccc2222dddd");
+  assertEquals(h.includes("blake3:aaaa1111bbbb\n#   -"), false);
+});
+
+Deno.test("showHeader - mirrored notes identical copies, no conflict warning", () => {
+  const a = cand("d.myc.md", "/r/a", "same");
+  const b = cand("d.myc.md", "/r/b", "same");
+  const res: Resolution = {
+    fqdn: "d.myc.md",
+    resolved: a,
+    identity: "mirrored",
+    candidates: [a, b],
+  };
+  const h = showHeader(res).join("\n");
+  assertStringIncludes(h, "mirrored: 2 identical copies");
+  assertEquals(h.includes("CONFLICT"), false);
 });

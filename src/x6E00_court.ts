@@ -75,32 +75,45 @@ async function runJson(args: string[]): Promise<unknown> {
   return text ? JSON.parse(text) : null;
 }
 
-async function live() {
-  // trinity's own signed substrate_health envelope + the law it witnessed.
-  const trinityStatus = await runJson([
-    join(HERE, "x2E00_status.ts"),
-    "--envelope",
-  ]) as Record<string, unknown> | null;
-  const trinityEnvelope = trinityStatus?.substrate_health_envelope;
-  const trinityWitnessed =
-    ((trinityStatus?.substrate_health as Record<string, unknown> | undefined)
-      ?.law_hash as string | null | undefined) ?? null;
-
-  // omega's OWN signed witness + native law_hash, from omega's own status organ
-  // (null when the submodule is absent — graceful, not fatal).
-  let omegaNative: string | null = null;
-  let omegaEnvelope: unknown = null;
+/** A substrate's own status organ + the law_hash it reported. */
+async function statusWitness(
+  path: string,
+): Promise<{ envelope: unknown; law_hash: string | null } | null> {
   try {
-    const omegaStatus = await runJson([
-      join(ROOT, "omega", "src", "x2E00_status.ts"),
-      "--envelope",
-    ]) as Record<string, unknown> | null;
-    omegaNative = (omegaStatus?.law_hash as string | undefined) ?? null;
-    omegaEnvelope = omegaStatus?.substrate_health_envelope ?? null;
-  } catch { /* omega absent — omegaNative/omegaEnvelope stay null */ }
+    const s = await runJson([path, "--envelope"]) as
+      | Record<string, unknown>
+      | null;
+    if (!s || !s.substrate_health_envelope) return null;
+    const law_hash =
+      ((s.substrate_health as Record<string, unknown> | undefined)
+        ?.law_hash as string | null | undefined) ?? null;
+    return { envelope: s.substrate_health_envelope, law_hash };
+  } catch {
+    return null; // substrate absent / no --envelope support
+  }
+}
 
-  // Adjudicate the real, independently-signed envelopes via the probe court.
-  const envelopes = [trinityEnvelope, omegaEnvelope].filter(Boolean);
+async function live() {
+  // Every substrate that emits a signed substrate_health envelope is a witness.
+  // trinity is always present; the submodules join when checked out (graceful
+  // when absent). The court is N-ary, not a trinity+omega special case.
+  const sources = [
+    { tag: "trinity", path: join(HERE, "x2E00_status.ts") },
+    { tag: "omega", path: join(ROOT, "omega", "src", "x2E00_status.ts") },
+    { tag: "liquid", path: join(ROOT, "liquid", "src", "x2E00_status.ts") },
+    { tag: "myc", path: join(ROOT, "myc", "src", "x2E00_status.ts") },
+  ];
+
+  const envelopes: unknown[] = [];
+  let omegaNative: string | null = null;
+  let trinityWitnessed: string | null = null;
+  for (const s of sources) {
+    const w = await statusWitness(s.path);
+    if (!w) continue;
+    envelopes.push(w.envelope);
+    if (s.tag === "omega") omegaNative = w.law_hash;
+    if (s.tag === "trinity") trinityWitnessed = w.law_hash;
+  }
   let court: unknown = null;
   if (envelopes.length > 0) {
     const tmps: string[] = [];

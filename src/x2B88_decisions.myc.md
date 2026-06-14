@@ -10,8 +10,8 @@ tasks extracted from dynamic chord surfaces._
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
 | Total Chords                             |  420  |
-| Signed Chords (content_sig)              |  14   |
-| ↳ registry-verified                      |  14   |
+| Signed Chords (content_sig)              |  15   |
+| ↳ registry-verified                      |  15   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  55   |
 | Unresolved Proposals (Heuristic)         |   0   |

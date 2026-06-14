@@ -155,6 +155,32 @@ export async function exists(path: string): Promise<boolean> {
 // (organ can't hang the caller) and an output byte cap (organ can't flood it).
 // NOT for git/phi-specific subprocesses — only the organ→payload boundary.
 
+// ── runtime permission profiles (codex x5d00_953682 Phase C / F3) ───────────
+// Static effect classification PREDICTS what an organ can do; a Deno permission
+// profile CONFINES what it may actually do. The safe eval path must launch
+// leaves with a restricted profile, never `--allow-all`, so a missed effect or
+// a wrong static verdict is still denied by the runtime. `t eval --safe` uses
+// `read-local`; the human CLI and unrestricted eval keep `privileged` for
+// backward compatibility.
+
+export type PermissionProfile = "pure" | "read-local" | "privileged";
+
+/** The exact `deno run` permission flags for a profile. Pure; exported for the
+ *  test and for capability receipts (the precise flags are part of the record).
+ *  `read-local` reads are scoped to the substrate root (covers trinity + the
+ *  submodules nested under it) and allows env reads (benign without net, which
+ *  is denied); no write, net, run, or ffi under either confined profile. */
+export function permissionFlags(profile: PermissionProfile): string[] {
+  switch (profile) {
+    case "pure":
+      return ["--no-prompt"];
+    case "read-local":
+      return ["--no-prompt", `--allow-read=${SUBSTRATE_ROOT}`, "--allow-env"];
+    case "privileged":
+      return ["--allow-all"];
+  }
+}
+
 export interface OrganRunResult {
   code: number;
   stdout: string;

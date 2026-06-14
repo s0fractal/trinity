@@ -28,6 +28,8 @@ import {
   join,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
 import {
+  permissionFlags,
+  type PermissionProfile,
   positionToPath as libPositionToPath,
   runOrgan,
 } from "./x0010_dispatch_runner.ts";
@@ -725,16 +727,25 @@ export function rpcError(
 
 /** Run an organ at a position and capture its raw stdout (no rendering).
  *  Goes through the shared execution kernel (x0010) so rpc/eval leaves inherit
- *  the per-process deadline + output byte cap (codex Phase B / deferred R3). */
+ *  the per-process deadline + output byte cap (codex Phase B / deferred R3). The
+ *  `profile` selects the Deno permission set (codex Phase C): the safe eval path
+ *  passes `read-local` so the leaf physically cannot write/spawn/net even if the
+ *  static verdict is wrong; everything else stays `privileged` (--allow-all). */
 async function fn_capture_at_position(
   pos: string,
   args: string[],
+  profile: PermissionProfile = "privileged",
 ): Promise<{ code: number; stdout: string; stderr: string }> {
   const path = fn_position_to_path(pos);
   if (!(await fn_exists(path))) {
     return { code: 2, stdout: "", stderr: `no executable at ${path}` };
   }
-  const r = await runOrgan("deno", ["run", "--allow-all", path, ...args]);
+  const r = await runOrgan("deno", [
+    "run",
+    ...permissionFlags(profile),
+    path,
+    ...args,
+  ]);
   return { code: r.code, stdout: r.stdout, stderr: r.stderr };
 }
 
@@ -761,7 +772,7 @@ async function fn_handle_rpc(
       const budget = safe ? await fn_safe_budget(ast, records) : DEFAULT_BUDGET;
       const result = await evalAstBounded(
         ast,
-        await fn_eval_leaf(records),
+        await fn_eval_leaf(records, safe ? "read-local" : "privileged"),
         budget,
       );
       return req.isNotification ? null : rpcResult(req.id, result);
@@ -1130,14 +1141,20 @@ async function fn_eval_list_safe(): Promise<number> {
   return 0;
 }
 
-/** Real leaf executor: resolve a handle → run its organ → JSON payload. */
-async function fn_eval_leaf(records: WordRec[]): Promise<LeafExec> {
+/** Real leaf executor: resolve a handle → run its organ → JSON payload. The
+ *  `profile` confines the leaf's Deno permissions (codex Phase C); the safe path
+ *  passes `read-local`. */
+async function fn_eval_leaf(
+  records: WordRec[],
+  profile: PermissionProfile = "privileged",
+): Promise<LeafExec> {
   return async (handle: string, args: string[]) => {
     const found = fn_resolve_word(handle, records);
     if (!found) throw new Error(`eval: unknown handle '${handle}'`);
     const { code, stdout, stderr } = await fn_capture_at_position(
       found.position,
       args,
+      profile,
     );
     if (code !== 0) {
       throw new Error(`eval: '${handle}' exited ${code}: ${stderr.trim()}`);
@@ -1155,7 +1172,8 @@ async function fn_eval(astJson: string, safe = false): Promise<number> {
     return 1;
   }
   const records = await fn_load_words();
-  const exec = await fn_eval_leaf(records);
+  // Safe leaves run confined (read-local); unrestricted eval keeps privileged.
+  const exec = await fn_eval_leaf(records, safe ? "read-local" : "privileged");
   const budget = safe ? await fn_safe_budget(ast, records) : DEFAULT_BUDGET;
   try {
     const result = await evalAstBounded(ast, exec, budget);

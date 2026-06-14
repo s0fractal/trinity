@@ -771,6 +771,57 @@ async function appendActLog(entry: Record<string, unknown>): Promise<void> {
   );
 }
 
+interface LawWatch {
+  ran: boolean;
+  law_agreement: boolean | null;
+  law_witness_count: number;
+  witnesses: string[];
+  drift: boolean;
+}
+
+/** Read-only law-agreement watch: run the live Substrate Court and report
+ *  whether the substrates that declare a law_hash agree (antigravity T3, the
+ *  "court daemon"). The daemon will not --act while the law surface is drifting:
+ *  self-maintaining and publishing onto a substrate whose physical law is
+ *  contested across layers would commit into an inconsistent state. Best-effort
+ *  — if the court can't run, the watch is inert (never a false alarm). */
+async function lawWatch(): Promise<LawWatch> {
+  const inert: LawWatch = {
+    ran: false,
+    law_agreement: null,
+    law_witness_count: 0,
+    witnesses: [],
+    drift: false,
+  };
+  try {
+    const { stdout } = await new Deno.Command(join(ROOT, "t"), {
+      args: ["court", "--live"],
+      cwd: ROOT,
+      stdout: "piped",
+      stderr: "null",
+    }).output();
+    const text = new TextDecoder().decode(stdout)
+      .split("\n").filter((l) => !l.trimStart().startsWith("#")).join("\n")
+      .trim();
+    if (!text) return inert;
+    // deno-lint-ignore no-explicit-any
+    const v = JSON.parse(text) as any;
+    const court = v.court ?? {};
+    const drift = (court.conflicts ?? []).some((c: { kind?: string }) =>
+      c.kind === "law_hash_drift"
+    ) || v.law_bridge?.consistent === false;
+    return {
+      ran: true,
+      law_agreement: court.law_agreement ?? null,
+      law_witness_count: court.law_witness_count ?? 0,
+      witnesses: v.witnesses ?? [],
+      drift,
+    };
+  } catch {
+    return inert;
+  }
+}
+
 async function handleAct(useJson: boolean, push: boolean): Promise<void> {
   const report = (o: Record<string, unknown>) => {
     if (useJson) {
@@ -819,6 +870,22 @@ async function handleAct(useJson: boolean, push: boolean): Promise<void> {
     return;
   }
 
+  // Law-drift gate (antigravity T3): never self-maintain a substrate whose
+  // physical law is contested across layers. Read-only; inert if the court
+  // can't run (e.g. submodules absent), so it never false-blocks.
+  const law = await lawWatch();
+  if (law.drift) {
+    await appendActLog({ action: "refused", reason: "law_hash_drift", law });
+    report({
+      action: "refused",
+      reason:
+        "law drift across substrates — refusing to publish onto a contested " +
+        "law surface; inspect with `t court --live`",
+      law_watch: law,
+    });
+    return;
+  }
+
   // Safe deterministic actions: one heartbeat through the phi bridge, then
   // bring the stable projections current. Both are regen-and-commit-if-
   // drifted; the pulse result rides along in the log either way.
@@ -844,6 +911,7 @@ async function handleAct(useJson: boolean, push: boolean): Promise<void> {
       action: "idle",
       note: "projections current — nothing safe to maintain",
       pulse,
+      law_watch: law,
     });
     return;
   }
@@ -889,7 +957,14 @@ async function handleAct(useJson: boolean, push: boolean): Promise<void> {
     const p = await runGit(["push", "origin", "main"]);
     pushed = p.ok;
   }
-  report({ action: "committed", commit: head, files: drifted, pushed, pulse });
+  report({
+    action: "committed",
+    commit: head,
+    files: drifted,
+    pushed,
+    pulse,
+    law_watch: law,
+  });
 }
 
 async function handleTick(useJson: boolean): Promise<void> {
@@ -908,6 +983,7 @@ async function handleTick(useJson: boolean): Promise<void> {
     score?: number;
   };
   const clean = await worktreeClean();
+  const law = await lawWatch();
 
   const rec = await readLatestRecommendation();
   const recs = (rec?.recommendations ?? []) as Array<Record<string, unknown>>;
@@ -966,6 +1042,9 @@ async function handleTick(useJson: boolean): Promise<void> {
       attention_level: attention.level ?? null,
       attention_score: attention.score ?? null,
       worktree_clean: clean,
+      law_agreement: law.law_agreement,
+      law_witnesses: law.witnesses,
+      law_drift: law.drift,
     },
     chosen: top
       ? {
@@ -1001,6 +1080,15 @@ async function handleTick(useJson: boolean): Promise<void> {
   console.log(
     `# orient:  attention ${tick.oriented.attention_level}(${tick.oriented.attention_score})  worktree ${
       clean ? "clean" : "DIRTY"
+    }`,
+  );
+  console.log(
+    `# law:     ${
+      tick.oriented.law_drift
+        ? "⚠ DRIFT across substrates"
+        : `agreement=${tick.oriented.law_agreement} (${
+          (tick.oriented.law_witnesses ?? []).length
+        } witnesses)`
     }`,
   );
   if (top) {

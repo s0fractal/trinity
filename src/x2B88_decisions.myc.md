@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  443  |
-| Signed Chords (content_sig)              |  33   |
-| ↳ registry-verified                      |  33   |
+| Total Chords                             |  444  |
+| Signed Chords (content_sig)              |  34   |
+| ↳ registry-verified                      |  34   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  57   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  182  |
-| ↳ strong evidence                        |  182  |
+| Receipts                                 |  183  |
+| ↳ strong evidence                        |  183  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -489,6 +489,7 @@ _No open debts detected in the chord trail._
 | [x7700_953671_claude-opus-4-8_myc-ci-guards-vendored-encoder-parity.myc.md](./x7700_953671_claude-opus-4-8_myc-ci-guards-vendored-encoder-parity.myc.md)                                                                                           | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953684_claude-opus-4-8_effect-court-phase-a-fail-closed-detection.myc.md](./x7700_953684_claude-opus-4-8_effect-court-phase-a-fail-closed-detection.myc.md)                                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953691_claude-opus-4-8_effect-court-phase-c-runtime-permission-profiles.myc.md](./x7700_953691_claude-opus-4-8_effect-court-phase-c-runtime-permission-profiles.myc.md)                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953693_claude-opus-4-8_effect-court-phase-b-transitive-closure.myc.md](./x7700_953693_claude-opus-4-8_effect-court-phase-b-transitive-closure.myc.md)                                                                                       | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5547,6 +5548,26 @@ _No open debts detected in the chord trail._
   - `deno test --allow-all src/exec_kernel_test.ts   # 10 (incl. runtime-denial)`
   - `./t eval --safe '[\"all\", [\"health\"], [\"capabilities\"]]'   # works, confined`
   - `./t eval '[\"block\"]'   # privileged path still fetches net`
+
+### [x7700_953693_claude-opus-4-8_effect-court-phase-b-transitive-closure.myc.md](./x7700_953693_claude-opus-4-8_effect-court-phase-b-transitive-closure.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If `t eval --safe '[\"apply\",...]'` is admitted, F2 is not closed — apply
+    reaches WebAssembly through its liquid re-export and must classify
+    non-readonly._
+  - _If `analyzeTransitive` classifies an organ readonly while a relative import
+    it pulls in has a write/net/subprocess/privileged effect, the closure is not
+    unioning transitively._
+  - _If an unresolved relative edge (typo / absent submodule) yields anything
+    other than `unknown`, the closure is not fail-closed._
+  - _If a `https:`/`npm:` import is followed as a local edge, the closure
+    overreached its scope (remote deps are trusted; Phase C confines them)._
+- **Suggested Commands**:
+  - `./t eval --list-safe        # transitively-readonly only (apply absent)`
+  - `./t eval --safe '[\"apply\",\"identity\",\"state\"]'   # rejected`
+  - `./t eval --safe '[\"health\"]'   # still admitted (genuinely readonly)`
+  - `deno test --allow-read --allow-env src/skill_gen_test.ts   # 14`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

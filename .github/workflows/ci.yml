@@ -129,6 +129,27 @@ jobs:
         if: steps.subm.outputs.present == 'true'
         run: deno task canon:verify:cross
 
+      # Substrate Court law-agreement invariant (codex R2 / antigravity T3). The
+      # court's single authoritative `law_drift` signal must be false: no
+      # law_hash_drift among witnesses and no omega/trinity bridge inconsistency.
+      # This is the legitimate CI-gate form of "block merges on law drift" — an
+      # invariant assertion, not autonomous governance. Runs ALWAYS: with
+      # submodules absent it reflects trinity's self-witness (bridge null,
+      # drift false — graceful); with them present it cross-checks all witnesses
+      # and reds main on real drift. Asserts `law_drift`, NOT `court.agreement`
+      # (which is legitimately false: distinct substrates have divergent body
+      # hashes — that is body_hash_divergence, not law drift).
+      - name: Verify Substrate Court law agreement (no law drift)
+        run: ./t court --live | jq -e '.type == "SubstrateCourtLiveVerdict" and .position == "6/E" and .law_drift == false and (.witnesses | type) == "array" and (.witnesses | length) >= 1'
+
+      # When submodules are present the cross-substrate law bridge must actually
+      # be exercised (omega's native law_hash present and equal to trinity's
+      # witnessed value) — guards against the gate above passing vacuously
+      # because the court silently stopped seeing omega.
+      - name: Verify Substrate Court cross-substrate bridge exercised
+        if: steps.subm.outputs.present == 'true'
+        run: ./t court --live | jq -e '.law_bridge.omega_native != null and .law_bridge.trinity_witnessed != null and .law_bridge.consistent == true'
+
       - name: Verify recipes detail lookup
         run: ./t recipes show recipe.metacognition.field-cycle --json | jq -e '.type == "recipes" and .position == "3/C" and .action == "show" and .recipes[0].id == "recipe.metacognition.field-cycle"'
 

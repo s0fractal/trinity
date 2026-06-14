@@ -166,3 +166,13 @@ Deno.test("evalAst - non-string head is an error", async () => {
   }
   assertEquals(threw, true);
 });
+
+Deno.test("parseRpcRequest - preserves rawParams (nested AST survives for eval)", () => {
+  const ast = ["all", ["block"], ["resolve", "x"]];
+  const r = parseRpcRequest(
+    JSON.stringify({ jsonrpc: "2.0", id: 1, method: "eval", params: [ast] }),
+  );
+  if (!("req" in r)) throw new Error("expected a parsed request");
+  // params stringify (lossy) but rawParams keeps the AST intact for eval.
+  assertEquals(r.req.rawParams, [ast]);
+});

@@ -661,6 +661,9 @@ interface RpcRequest {
   id: number | string | null;
   method: string;
   params: string[];
+  /** Original params value, un-stringified — used by `eval`, whose first param
+   *  is a nested AST that must survive intact. */
+  rawParams: unknown;
   isNotification: boolean;
 }
 
@@ -691,7 +694,13 @@ export function parseRpcRequest(
   }
   const id = (obj.id ?? null) as number | string | null;
   return {
-    req: { id, method: obj.method, params, isNotification: !("id" in obj) },
+    req: {
+      id,
+      method: obj.method,
+      params,
+      rawParams: obj.params,
+      isNotification: !("id" in obj),
+    },
   };
 }
 
@@ -735,6 +744,22 @@ async function fn_handle_rpc(
   req: RpcRequest,
   records: WordRec[],
 ): Promise<string | null> {
+  // `eval` is the composition method: params[0] is a LISP-shaped AST evaluated
+  // over the command space (T4 over the sovereign channel). Lets an agent submit
+  // a whole composition, not just single calls.
+  if (req.method === "eval") {
+    const ast = Array.isArray(req.rawParams) ? req.rawParams[0] : req.rawParams;
+    try {
+      const result = await evalAst(ast, await fn_eval_leaf(records));
+      return req.isNotification ? null : rpcResult(req.id, result);
+    } catch (e) {
+      return req.isNotification ? null : rpcError(
+        req.id,
+        -32000,
+        `eval: ${e instanceof Error ? e.message : e}`,
+      );
+    }
+  }
   const found = fn_resolve_word(req.method, records);
   if (!found) {
     return req.isNotification

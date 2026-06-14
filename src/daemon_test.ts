@@ -87,3 +87,54 @@ Deno.test("law gate - body divergence alone (law agrees) → verified (only LAW 
   assertEquals(w.drift, false);
   assertEquals(lawPermitsMutation(w), true);
 });
+
+// --- daemon write-set admission (codex R4 / Phase D) ---
+
+import { driftedPathOf, pathsOutsideWriteSet } from "./x7F00_daemon.ts";
+
+Deno.test("driftedPathOf - parses trimmed git status --short lines", () => {
+  assertEquals(
+    driftedPathOf("M src/x2B88_decisions.myc.md"),
+    "src/x2B88_decisions.myc.md",
+  );
+  assertEquals(driftedPathOf("?? src/new.ts"), "src/new.ts");
+  assertEquals(driftedPathOf("R old.ts -> new.ts"), "new.ts");
+});
+
+Deno.test("pathsOutsideWriteSet - admits projections/fixtures/log, rejects foreign", () => {
+  const ws = {
+    exact: new Set([
+      "src/x2B88_decisions.myc.md",
+      "src/x7F01_daemon_invocations.ndjson",
+    ]),
+    prefixes: ["fixtures/phi/"],
+  };
+  // all admitted
+  assertEquals(
+    pathsOutsideWriteSet([
+      "src/x2B88_decisions.myc.md",
+      "fixtures/phi/intent.json",
+      "src/x7F01_daemon_invocations.ndjson",
+    ], ws),
+    [],
+  );
+  // a foreign path is rejected
+  assertEquals(
+    pathsOutsideWriteSet([
+      "src/x2B88_decisions.myc.md",
+      "src/x0100_dispatch.ts",
+    ], ws),
+    ["src/x0100_dispatch.ts"],
+  );
+});
+
+Deno.test("pathsOutsideWriteSet - default write-set covers the daemon's own outputs", () => {
+  assertEquals(
+    pathsOutsideWriteSet([
+      "src/x2B88_decisions.myc.md",
+      "src/x88F0_agents_bootstrap.myc.md",
+      "src/x8F88_external_surfaces.myc.md",
+    ]),
+    [],
+  );
+});

@@ -758,6 +758,23 @@ async function localGatesFailure(): Promise<"fmt" | "typecheck" | null> {
   return chk.code === 0 ? null : "typecheck";
 }
 
+/** Run the full unit-test gate before an autonomous commit (codex R4 D5): a
+ *  deterministic regen that somehow breaks behavior must not be published.
+ *  Only invoked on the commit path (when drift exists), so idle ticks stay fast. */
+async function testUnitFails(): Promise<boolean> {
+  try {
+    const { code } = await new Deno.Command("deno", {
+      args: ["task", "test:unit"],
+      cwd: ROOT,
+      stdout: "null",
+      stderr: "null",
+    }).output();
+    return code !== 0;
+  } catch {
+    return true; // can't run the gate → fail closed, don't commit
+  }
+}
+
 async function appendActLog(entry: Record<string, unknown>): Promise<void> {
   await Deno.mkdir(dirname(LOG_FILE), { recursive: true });
   await Deno.writeTextFile(
@@ -804,6 +821,43 @@ interface LawWatch {
  *  absence of drift is NOT enough (codex R1: unavailable ≠ proven-clean). Pure. */
 export function lawPermitsMutation(watch: LawWatch): boolean {
   return watch.state === "verified";
+}
+
+/** Paths the autonomous daemon is permitted to write (codex R4): the tracked
+ *  outputs of its own stable-projection regen + phi pulse + its act log. If
+ *  anything else drifts, something unexpected changed — the daemon reverts and
+ *  refuses rather than `git add -A` it into an autonomous commit. Explicit by
+ *  design; extend deliberately when a new daemon-maintained projection lands. */
+const DAEMON_WRITE_SET = {
+  exact: new Set([
+    "src/x2B88_decisions.myc.md",
+    "src/x7B88_evidence_report.myc.md",
+    "src/x8F88_external_surfaces.myc.md",
+    "src/x88F0_agents_bootstrap.myc.md",
+    "src/x8CF0_skills_bootstrap.myc.md",
+    "src/x7F01_daemon_invocations.ndjson",
+  ]),
+  prefixes: ["fixtures/phi/"],
+};
+
+/** Extract the file path from a trimmed `git status --short` line
+ *  ("M src/x.ts" → "src/x.ts"; "R old -> new" → "new"). Pure; exported. */
+export function driftedPathOf(trimmedStatusLine: string): string {
+  const p = trimmedStatusLine.replace(/^\S+\s+/, "").trim();
+  const arrow = p.indexOf(" -> ");
+  return (arrow >= 0 ? p.slice(arrow + 4) : p).replace(/^"|"$/g, "");
+}
+
+/** Drifted paths NOT in the daemon's declared write-set. Empty = all admitted.
+ *  Pure; exported for daemon_test. */
+export function pathsOutsideWriteSet(
+  paths: string[],
+  writeSet: { exact: Set<string>; prefixes: string[] } = DAEMON_WRITE_SET,
+): string[] {
+  return paths.filter((p) =>
+    !writeSet.exact.has(p) &&
+    !writeSet.prefixes.some((pre) => p.startsWith(pre))
+  );
 }
 
 const INERT_LAW_WATCH: LawWatch = {
@@ -1003,16 +1057,59 @@ async function handleAct(useJson: boolean, push: boolean): Promise<void> {
     return;
   }
 
+  // Write-set admission (codex R4): the daemon stages only the paths it is
+  // declared to maintain. Anything else drifting → revert + refuse, never an
+  // autonomous `git add -A` of unexpected changes.
+  const driftedPaths = drifted.map(driftedPathOf);
+  const outside = pathsOutsideWriteSet(driftedPaths);
+  if (outside.length > 0) {
+    await runGit(["checkout", "--", "."]);
+    await appendActLog({
+      action: "refused",
+      reason: "write_set_violation",
+      outside,
+    });
+    report({
+      action: "refused",
+      reason:
+        `drift outside daemon write-set: ${outside.join(", ")} — reverted; ` +
+        "the daemon will not autonomously commit unexpected paths",
+      outside,
+    });
+    return;
+  }
+
+  // Full unit-test gate before publishing (codex R4 D5) — fmt+typecheck already
+  // passed; tests catch behavioral breakage a deterministic regen could induce.
+  if (await testUnitFails()) {
+    await runGit(["checkout", "--", "."]);
+    await appendActLog({
+      action: "reverted",
+      drifted,
+      gate: "test:unit",
+      pulse,
+    });
+    report({
+      action: "reverted",
+      reason: "test:unit failed after regen — left tree clean",
+      drifted,
+      gate: "test:unit",
+    });
+    return;
+  }
+
   // Log BEFORE staging so the act record (a tracked file) is committed in the
   // same commit — otherwise the appended line leaves the tree dirty and the
   // next --act refuses.
   await appendActLog({
     action: "committed",
     files: drifted,
+    paths: driftedPaths,
     pushed: push,
     pulse,
+    law: law.state,
   });
-  await runGit(["add", "-A"]);
+  await runGit(["add", ...driftedPaths, LOG_FILE]);
   const commitMsg =
     "auto(daemon): refresh stable projections [tick --act]\n\n" +
     "The self-driving loop regenerated drifted stable projections to keep CI\n" +

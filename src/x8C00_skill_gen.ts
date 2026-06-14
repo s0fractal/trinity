@@ -130,6 +130,7 @@ interface OrganMeta {
   invalid_skill_safe?: string;
   skill_tag_drift?: string;
   behavior_drift?: string;
+  capability: Capability;
   is_dispatchable: boolean;
   source_hash: string;
   source_size: number;
@@ -184,6 +185,46 @@ interface BehaviorAnalysis {
   mutations: string[];
   subprocesses: string[];
   fetches: string[];
+}
+
+// ── capability registry (codex Phase E) ─────────────────────────────────────
+// Projects the AST behavior analysis into one capability per organ, so rpc/eval/
+// daemon can share an authority model: `unknown` is inadmissible for autonomous
+// mutation, while every classification stays callable from the human CLI.
+
+export type Capability =
+  | "readonly"
+  | "network"
+  | "subprocess"
+  | "git"
+  | "writes"
+  | "unknown";
+
+/** Classify an organ's most-privileged capability from its AST analysis (and
+ *  source, to spot a `git` subprocess). Ordered most→least privileged so the
+ *  reported capability is the strongest the organ can exercise. Pure. */
+export function classifyCapability(
+  analysis: BehaviorAnalysis,
+  content?: string,
+): Capability {
+  if (analysis.mutations.length > 0) return "writes";
+  if (analysis.subprocesses.length > 0) {
+    const runsGit = content !== undefined &&
+      /(?:Command|run)\(\s*["'`]git["'`]|args:\s*\[\s*["'`]git["'`]/.test(
+        content,
+      );
+    return runsGit ? "git" : "subprocess";
+  }
+  if (analysis.fetches.length > 0) return "network";
+  return "readonly";
+}
+
+/** Codex Phase E rule: only an UNKNOWN capability is categorically inadmissible
+ *  for autonomous mutation (it can't be reasoned about). Finer policy — e.g. an
+ *  autonomous evaluator restricting to readonly — layers on top via the eval
+ *  budget's allow-list. Pure. */
+export function admissibleForAutonomousMutation(cap: Capability): boolean {
+  return cap !== "unknown";
 }
 
 /** Parse organ source with typescript AST and extract relevant API usages. */
@@ -348,6 +389,7 @@ async function scanOrgans(): Promise<OrganMeta[]> {
       skill_safe,
       invalid_skill_safe,
       behavior_drift,
+      capability: classifyCapability(analysis, content),
       is_dispatchable,
       source_hash: await sha256Hex(bytes),
       source_size: bytes.length,
@@ -824,6 +866,36 @@ function renderSubstrateSkill(
     lines.push(baseNote + driftNote);
     lines.push(``);
   }
+
+  // Capability registry (codex Phase E): the AST-derived authority of each
+  // organ, the machine-readable basis for a shared rpc/eval/daemon authority
+  // model. `unknown` is inadmissible for autonomous mutation.
+  lines.push(`## Capability registry`);
+  lines.push(``);
+  lines.push(
+    `AST-derived capability per organ (most-privileged wins). \`unknown\` is ` +
+      `inadmissible for autonomous mutation; all are callable from the human CLI.`,
+  );
+  lines.push(``);
+  const capOrder: Capability[] = [
+    "writes",
+    "git",
+    "subprocess",
+    "network",
+    "readonly",
+    "unknown",
+  ];
+  const capCounts = new Map<Capability, number>();
+  for (const o of allOrgans) {
+    capCounts.set(o.capability, (capCounts.get(o.capability) ?? 0) + 1);
+  }
+  lines.push(`| capability | organs |`);
+  lines.push(`|------------|-------:|`);
+  for (const cap of capOrder) {
+    const n = capCounts.get(cap) ?? 0;
+    if (n > 0) lines.push(`| ${cap} | ${n} |`);
+  }
+  lines.push(``);
 
   lines.push(`## Bucket overview`);
   lines.push(``);

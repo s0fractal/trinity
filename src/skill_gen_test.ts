@@ -62,3 +62,61 @@ Deno.test("skill_gen AST — ignores matches in comments and string literals", (
   assertEquals(res.subprocesses, []);
   assertEquals(res.fetches, []);
 });
+
+// --- capability registry (codex Phase E) ---
+
+import {
+  admissibleForAutonomousMutation,
+  type Capability,
+  classifyCapability,
+} from "./x8C00_skill_gen.ts";
+
+const empty = { mutations: [], subprocesses: [], fetches: [] };
+
+Deno.test("classifyCapability - most-privileged capability wins", () => {
+  assertEquals(classifyCapability({ ...empty }), "readonly");
+  assertEquals(classifyCapability({ ...empty, fetches: ["fetch"] }), "network");
+  assertEquals(
+    classifyCapability({ ...empty, subprocesses: ["Deno.Command"] }),
+    "subprocess",
+  );
+  // mutations dominate even with subprocess/fetch present
+  assertEquals(
+    classifyCapability({
+      mutations: ["Deno.writeTextFile"],
+      subprocesses: ["Deno.Command"],
+      fetches: ["fetch"],
+    }),
+    "writes",
+  );
+});
+
+Deno.test("classifyCapability - a git subprocess classifies as git", () => {
+  assertEquals(
+    classifyCapability(
+      { ...empty, subprocesses: ["Deno.Command"] },
+      'new Deno.Command("git", { args: ["status"] })',
+    ),
+    "git",
+  );
+  // a non-git subprocess stays subprocess
+  assertEquals(
+    classifyCapability(
+      { ...empty, subprocesses: ["Deno.Command"] },
+      'new Deno.Command("deno", { args: ["run"] })',
+    ),
+    "subprocess",
+  );
+});
+
+Deno.test("admissibleForAutonomousMutation - only unknown is categorically inadmissible", () => {
+  const cats: Capability[] = [
+    "readonly",
+    "network",
+    "subprocess",
+    "git",
+    "writes",
+  ];
+  for (const c of cats) assertEquals(admissibleForAutonomousMutation(c), true);
+  assertEquals(admissibleForAutonomousMutation("unknown"), false);
+});

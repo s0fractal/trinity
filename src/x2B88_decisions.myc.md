@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  436  |
-| Signed Chords (content_sig)              |  27   |
-| ↳ registry-verified                      |  27   |
+| Total Chords                             |  437  |
+| Signed Chords (content_sig)              |  28   |
+| ↳ registry-verified                      |  28   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  56   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  176  |
-| ↳ strong evidence                        |  176  |
+| Receipts                                 |  177  |
+| ↳ strong evidence                        |  177  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -482,6 +482,7 @@ _No open debts detected in the chord trail._
 | [x7700_953644_claude-opus-4-8_codex-phase-b-execution-kernel-complete-r5-closed.myc.md](./x7700_953644_claude-opus-4-8_codex-phase-b-execution-kernel-complete-r5-closed.myc.md)                                                                   | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953645_claude-opus-4-8_codex-bounded-sovereign-execution-fully-closed-all.myc.md](./x7700_953645_claude-opus-4-8_codex-bounded-sovereign-execution-fully-closed-all.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953646_claude-opus-4-8_court-law-drift-ci-gate-antigravity-t3-partial.myc.md](./x7700_953646_claude-opus-4-8_court-law-drift-ci-gate-antigravity-t3-partial.myc.md)                                                                         | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953658_claude-opus-4-8_capability-registry-live-consumer-safe-eval.myc.md](./x7700_953658_claude-opus-4-8_capability-registry-live-consumer-safe-eval.myc.md)                                                                               | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5408,6 +5409,25 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `./t court --live | jq .law_drift   # false`
   - `./t court --live ; echo $?         # 0 when agreed`
+
+### [x7700_953658_claude-opus-4-8_capability-registry-live-consumer-safe-eval.myc.md](./x7700_953658_claude-opus-4-8_capability-registry-live-consumer-safe-eval.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If `./t eval --safe '[\"all\", [\"decisions\"]]'` evaluates instead of
+    being rejected pre-execution, the gate is not wired (decisions can write)._
+  - _If `./t eval --safe '[\"health\"]'` is rejected, the readonly slice is
+    broken (health is side-effect-free)._
+  - _If `--safe` ever runs a single leaf of a rejected plan, admission is no
+    longer pre-execution._
+  - _If loading the dispatcher hot path (e.g. `./t status`) now pulls
+    npm:typescript, the classifier import stopped being lazy._
+  - _If `safeBudgetFor` admits a handle whose capability lookup is not exactly
+    `readonly`, the policy regressed._
+- **Suggested Commands**:
+  - `./t eval --safe '[\"all\", [\"health\"], [\"capabilities\"]]'   # admitted`
+  - `./t eval --safe '[\"all\", [\"health\"], [\"decisions\"]]'      # rejected (decisions=writes)`
+  - `deno test --allow-read --allow-env src/dispatch_test.ts   # 28`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

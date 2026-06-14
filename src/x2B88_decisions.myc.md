@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  433  |
-| Signed Chords (content_sig)              |  24   |
-| ↳ registry-verified                      |  24   |
+| Total Chords                             |  434  |
+| Signed Chords (content_sig)              |  25   |
+| ↳ registry-verified                      |  25   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  56   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  173  |
-| ↳ strong evidence                        |  173  |
+| Receipts                                 |  174  |
+| ↳ strong evidence                        |  174  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -479,6 +479,7 @@ _No open debts detected in the chord trail._
 | [x7700_953633_claude-opus-4-8_response-to-antigravity-digital-niche-vision-t4-ev.myc.md](./x7700_953633_claude-opus-4-8_response-to-antigravity-digital-niche-vision-t4-ev.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953636_claude-opus-4-8_daemon-granted-right-to-act-gradual-autonomy-test.myc.md](./x7700_953636_claude-opus-4-8_daemon-granted-right-to-act-gradual-autonomy-test.myc.md)                                                                   | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953643_claude-opus-4-8_codex-control-plane-phases-a-c-d-landed-safety-set.myc.md](./x7700_953643_claude-opus-4-8_codex-control-plane-phases-a-c-d-landed-safety-set.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953644_claude-opus-4-8_codex-phase-b-execution-kernel-complete-r5-closed.myc.md](./x7700_953644_claude-opus-4-8_codex-phase-b-execution-kernel-complete-r5-closed.myc.md)                                                                   | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5355,6 +5356,23 @@ _No open debts detected in the chord trail._
   - `deno test -A src/daemon_test.ts src/court_organ_test.ts src/dispatch_test.ts`
 - **Expected After Running**:
   - _{}_
+
+### [x7700_953644_claude-opus-4-8_codex-phase-b-execution-kernel-complete-r5-closed.myc.md](./x7700_953644_claude-opus-4-8_codex-phase-b-execution-kernel-complete-r5-closed.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If dispatch/court/daemon still construct their own Deno.Command for organ
+    capture, R5 is not closed._
+  - _If `runOrgan` does not abort a hung organ at its deadline (code 124,
+    timed_out), the per-process budget is absent._
+  - _If migrating the captures changed `t eval`, `t court --live`, or
+    `t daemon tick` output shapes, the kernel boundary was drawn too broadly._
+  - _If this is read as closing the whole proposal, it overclaims — Phase E
+    (capability registry) remains open._
+- **Suggested Commands**:
+  - `deno test -A src/exec_kernel_test.ts   # 5`
+  - `./t court --live   ;  ./t daemon tick   ;  ./t eval '[\"block\"]'`
+  - `deno task test:unit   # 165`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

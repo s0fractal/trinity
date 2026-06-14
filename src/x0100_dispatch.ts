@@ -750,7 +750,7 @@ async function fn_handle_rpc(
   if (req.method === "eval") {
     const ast = Array.isArray(req.rawParams) ? req.rawParams[0] : req.rawParams;
     try {
-      const result = await evalAst(ast, await fn_eval_leaf(records));
+      const result = await evalAstBounded(ast, await fn_eval_leaf(records));
       return req.isNotification ? null : rpcResult(req.id, result);
     } catch (e) {
       return req.isNotification ? null : rpcError(
@@ -876,6 +876,132 @@ export async function evalAst(node: unknown, exec: LeafExec): Promise<unknown> {
   }
 }
 
+// ── execution-plan budgets (codex R3 / Phase C) ─────────────────────────────
+// An AST is an execution plan. Before any leaf subprocess runs, the plan is
+// admitted against a budget — depth, node count, leaf count, and max parallel
+// width — so a cheaply-composable channel can't become an unbounded resource
+// bomb. Admission is PURE and pre-execution: a rejected plan launches zero
+// leaves. (Per-process timeout/byte limits live in the execution kernel,
+// Phase B; capability allow-lists arrive with the registry, Phase E — the
+// optional `allowed_handles` here is the seam.)
+
+export interface ExecutionBudget {
+  max_depth: number;
+  max_nodes: number;
+  max_leaves: number;
+  max_parallel: number;
+  /** When set, every referenced handle must be in this allow-list. */
+  allowed_handles?: string[];
+}
+
+/** Conservative default for direct `t eval` / RPC without an explicit envelope. */
+export const DEFAULT_BUDGET: ExecutionBudget = {
+  max_depth: 8,
+  max_nodes: 256,
+  max_leaves: 64,
+  max_parallel: 16,
+};
+
+const COMBINATORS = new Set(["pipe", "all", "each", "try", "cond"]);
+
+interface PlanStats {
+  depth: number;
+  nodes: number;
+  leaves: number;
+  max_parallel: number;
+  handles: string[];
+}
+
+/** Pure static analysis of an AST — no execution. */
+export function planStats(node: unknown): PlanStats {
+  const zero: PlanStats = {
+    depth: 0,
+    nodes: 0,
+    leaves: 0,
+    max_parallel: 0,
+    handles: [],
+  };
+  if (!Array.isArray(node) || node.length === 0) return zero; // literal
+  const [op, ...args] = node;
+  if (typeof op !== "string") return zero;
+  if (!COMBINATORS.has(op)) {
+    return { depth: 1, nodes: 1, leaves: 1, max_parallel: 1, handles: [op] };
+  }
+  // Combinator: its sub-ASTs are the args (for cond, the arms' elements).
+  const children = op === "cond"
+    ? args.flatMap((arm) => (Array.isArray(arm) ? arm : []))
+    : args;
+  const sub = children.map(planStats);
+  const childDepth = sub.reduce((m, s) => Math.max(m, s.depth), 0);
+  let max_parallel = sub.reduce((m, s) => Math.max(m, s.max_parallel), 1);
+  if (op === "all" || op === "each") {
+    max_parallel = Math.max(max_parallel, args.length);
+  }
+  return {
+    depth: 1 + childDepth,
+    nodes: 1 + sub.reduce((a, s) => a + s.nodes, 0),
+    leaves: sub.reduce((a, s) => a + s.leaves, 0),
+    max_parallel,
+    handles: sub.flatMap((s) => s.handles),
+  };
+}
+
+export type PlanAdmission =
+  | { ok: true; stats: PlanStats }
+  | { ok: false; violations: string[]; stats: PlanStats };
+
+/** Admit an AST against a budget BEFORE execution. Pure. */
+export function analyzeExecutionPlan(
+  ast: unknown,
+  budget: ExecutionBudget,
+): PlanAdmission {
+  const stats = planStats(ast);
+  const violations: string[] = [];
+  if (stats.depth > budget.max_depth) {
+    violations.push(`depth ${stats.depth} > max_depth ${budget.max_depth}`);
+  }
+  if (stats.nodes > budget.max_nodes) {
+    violations.push(`nodes ${stats.nodes} > max_nodes ${budget.max_nodes}`);
+  }
+  if (stats.leaves > budget.max_leaves) {
+    violations.push(`leaves ${stats.leaves} > max_leaves ${budget.max_leaves}`);
+  }
+  if (stats.max_parallel > budget.max_parallel) {
+    violations.push(
+      `parallel width ${stats.max_parallel} > max_parallel ${budget.max_parallel}`,
+    );
+  }
+  if (budget.allowed_handles) {
+    const allow = new Set(budget.allowed_handles);
+    for (const h of new Set(stats.handles)) {
+      if (!allow.has(h)) {
+        violations.push(`handle '${h}' not in capability allow-list`);
+      }
+    }
+  }
+  return violations.length === 0
+    ? { ok: true, stats }
+    : { ok: false, violations, stats };
+}
+
+/** Admit-then-evaluate: reject an over-budget plan with a structured error
+ *  BEFORE the first leaf runs; otherwise evaluate normally. Admitted plans have
+ *  parallel width ≤ budget.max_parallel, so the unbounded Promise.all in `all`
+ *  is already bounded by admission — no separate worker pool needed. */
+export async function evalAstBounded(
+  ast: unknown,
+  exec: LeafExec,
+  budget: ExecutionBudget = DEFAULT_BUDGET,
+): Promise<unknown> {
+  const admission = analyzeExecutionPlan(ast, budget);
+  if (!admission.ok) {
+    throw new Error(
+      `execution plan rejected: ${admission.violations.join("; ")}`,
+    );
+  }
+  return await evalAst(ast, exec);
+}
+
 /** Real leaf executor: resolve a handle → run its organ → JSON payload. */
 async function fn_eval_leaf(records: WordRec[]): Promise<LeafExec> {
   return async (handle: string, args: string[]) => {
@@ -902,7 +1028,7 @@ async function fn_eval(astJson: string): Promise<number> {
   }
   const exec = await fn_eval_leaf(await fn_load_words());
   try {
-    const result = await evalAst(ast, exec);
+    const result = await evalAstBounded(ast, exec);
     console.log(JSON.stringify(result, null, 2));
     return 0;
   } catch (e) {

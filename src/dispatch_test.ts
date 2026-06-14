@@ -176,3 +176,82 @@ Deno.test("parseRpcRequest - preserves rawParams (nested AST survives for eval)"
   // params stringify (lossy) but rawParams keeps the AST intact for eval.
   assertEquals(r.req.rawParams, [ast]);
 });
+
+// --- execution-plan budgets (codex R3 / Phase C) ---
+
+import {
+  analyzeExecutionPlan,
+  DEFAULT_BUDGET,
+  evalAstBounded,
+  type ExecutionBudget,
+  planStats,
+} from "./x0100_dispatch.ts";
+
+Deno.test("planStats - counts depth, nodes, leaves, parallel width, handles", () => {
+  // ["pipe", ["all", ["a"], ["b"], ["c"]], ["d"]]
+  const s = planStats(["pipe", ["all", ["a"], ["b"], ["c"]], ["d"]]);
+  assertEquals(s.leaves, 4); // a,b,c,d
+  assertEquals(s.max_parallel, 3); // all of 3
+  assertEquals(s.depth, 3); // pipe → all → leaf
+  assertEquals(s.handles.sort(), ["a", "b", "c", "d"]);
+});
+
+Deno.test("analyzeExecutionPlan - within budget is admitted", () => {
+  const a = analyzeExecutionPlan(
+    ["all", ["block"], ["status"]],
+    DEFAULT_BUDGET,
+  );
+  assertEquals(a.ok, true);
+});
+
+Deno.test("analyzeExecutionPlan - over max_parallel is rejected", () => {
+  const tiny: ExecutionBudget = {
+    max_depth: 8,
+    max_nodes: 256,
+    max_leaves: 64,
+    max_parallel: 2,
+  };
+  const a = analyzeExecutionPlan(["all", ["x"], ["y"], ["z"]], tiny);
+  assertEquals(a.ok, false);
+  if (!a.ok) {
+    assertEquals(a.violations.some((v) => v.includes("parallel")), true);
+  }
+});
+
+Deno.test("analyzeExecutionPlan - capability allow-list rejects unknown handle", () => {
+  const b: ExecutionBudget = {
+    ...DEFAULT_BUDGET,
+    allowed_handles: ["block"],
+  };
+  const a = analyzeExecutionPlan(["all", ["block"], ["status"]], b);
+  assertEquals(a.ok, false);
+  if (!a.ok) assertEquals(a.violations.some((v) => v.includes("status")), true);
+});
+
+Deno.test("evalAstBounded - a rejected plan executes ZERO leaves (admission is pre-execution)", async () => {
+  let leafCalls = 0;
+  const counting: LeafExec = (h) => {
+    leafCalls++;
+    return Promise.resolve({ h });
+  };
+  const tiny: ExecutionBudget = {
+    max_depth: 1,
+    max_nodes: 1,
+    max_leaves: 1,
+    max_parallel: 1,
+  };
+  let threw = false;
+  try {
+    await evalAstBounded(["all", ["a"], ["b"], ["c"]], counting, tiny);
+  } catch {
+    threw = true;
+  }
+  assertEquals(threw, true);
+  assertEquals(leafCalls, 0); // codex R3 falsifier: not one leaf launched
+});
+
+Deno.test("evalAstBounded - admitted plan runs normally", async () => {
+  const exec: LeafExec = (h, args) => Promise.resolve({ h, args });
+  const r = await evalAstBounded(["all", ["a"], ["b"]], exec, DEFAULT_BUDGET);
+  assertEquals(r, [{ h: "a", args: [] }, { h: "b", args: [] }]);
+});

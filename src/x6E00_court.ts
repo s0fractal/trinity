@@ -22,6 +22,8 @@
 //
 // Usage:
 //   t court <env1.json> <env2.json> [<env3.json> ...]
+//   t court --live    # adjudicate trinity's real status --envelope + the
+//                     # live R3 law bridge (omega-native vs trinity-witnessed)
 //
 // Exit code 0 if agreement, non-zero if any conflict detected.
 //
@@ -30,14 +32,116 @@
 import {
   dirname,
   fromFileUrl,
+  join,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
 const COURT = `${ROOT}/probes/substrate-court-v0/ts/court.ts`;
 
+/** The R3 law bridge: does trinity's WITNESSED law_hash match omega's NATIVE
+ *  one? `consistent` is only true when both are present and equal; absent
+ *  (e.g. omega submodule stripped) is `null`, never a false positive. Pure;
+ *  exported for the test. */
+export function lawBridge(
+  omegaNative: string | null,
+  trinityWitnessed: string | null,
+): {
+  omega_native: string | null;
+  trinity_witnessed: string | null;
+  consistent: boolean | null;
+} {
+  const consistent = omegaNative === null || trinityWitnessed === null
+    ? null
+    : omegaNative === trinityWitnessed;
+  return {
+    omega_native: omegaNative,
+    trinity_witnessed: trinityWitnessed,
+    consistent,
+  };
+}
+
+/** Run a deno organ and parse its JSON stdout (dropping `#` comment lines). */
+async function runJson(args: string[]): Promise<unknown> {
+  const proc = new Deno.Command("deno", {
+    args: ["run", "--allow-all", ...args],
+    stdout: "piped",
+    stderr: "null",
+  });
+  const out = await proc.output();
+  const text = new TextDecoder().decode(out.stdout)
+    .split("\n").filter((l) => !l.trimStart().startsWith("#")).join("\n")
+    .trim();
+  return text ? JSON.parse(text) : null;
+}
+
+async function live() {
+  // trinity's own signed substrate_health envelope + the law it witnessed.
+  const trinityStatus = await runJson([
+    join(HERE, "x2E00_status.ts"),
+    "--envelope",
+  ]) as Record<string, unknown> | null;
+  const trinityEnvelope = trinityStatus?.substrate_health_envelope;
+  const trinityWitnessed =
+    ((trinityStatus?.substrate_health as Record<string, unknown> | undefined)
+      ?.law_hash as string | null | undefined) ?? null;
+
+  // omega's NATIVE law_hash, from omega's own status organ (null when the
+  // submodule is absent — graceful, not fatal).
+  let omegaNative: string | null = null;
+  try {
+    const omegaStatus = await runJson([
+      join(ROOT, "omega", "src", "x2E00_status.ts"),
+    ]) as Record<string, unknown> | null;
+    omegaNative = (omegaStatus?.law_hash as string | undefined) ?? null;
+  } catch { /* omega absent — omegaNative stays null */ }
+
+  // Adjudicate the real envelope(s) via the probe court.
+  const envelopes = trinityEnvelope ? [trinityEnvelope] : [];
+  let court: unknown = null;
+  if (envelopes.length > 0) {
+    const tmp = await Deno.makeTempFile({ suffix: ".json" });
+    try {
+      await Deno.writeTextFile(tmp, JSON.stringify(trinityEnvelope));
+      const proc = new Deno.Command("deno", {
+        args: ["run", "--allow-read", COURT, "--envelope", tmp],
+        stdout: "piped",
+        stderr: "null",
+      });
+      const out = await proc.output();
+      court = JSON.parse(new TextDecoder().decode(out.stdout).trim());
+    } finally {
+      await Deno.remove(tmp).catch(() => {});
+    }
+  }
+
+  const bridge = lawBridge(omegaNative, trinityWitnessed);
+  console.log(JSON.stringify(
+    {
+      type: "SubstrateCourtLiveVerdict",
+      position: "6/E",
+      witnesses: envelopes.map((e) =>
+        (e as Record<string, unknown>).substrate_tag
+      ),
+      law_bridge: bridge,
+      court,
+      note: omegaNative === null
+        ? "omega absent — law bridge unverifiable; court reflects trinity's self-witness only"
+        : "live: trinity's witnessed law_hash cross-checked against omega's native value",
+    },
+    null,
+    2,
+  ));
+  Deno.exit(bridge.consistent === false ? 1 : 0);
+}
+
 async function main() {
   const args = Deno.args;
+
+  if (args.includes("--live")) {
+    await live();
+    return;
+  }
 
   if (args.length === 0) {
     console.log(JSON.stringify({

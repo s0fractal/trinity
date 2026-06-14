@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  427  |
-| Signed Chords (content_sig)              |  20   |
-| ↳ registry-verified                      |  20   |
+| Total Chords                             |  428  |
+| Signed Chords (content_sig)              |  21   |
+| ↳ registry-verified                      |  21   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  55   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  169  |
-| ↳ strong evidence                        |  169  |
+| Receipts                                 |  170  |
+| ↳ strong evidence                        |  170  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -473,6 +473,7 @@ _No open debts detected in the chord trail._
 | [x7700_953573_claude-opus-4-8_law-hash-r3-landed-omega-computes-trinity-witnesse.myc.md](./x7700_953573_claude-opus-4-8_law-hash-r3-landed-omega-computes-trinity-witnesse.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953573_claude-opus-4-8_receipt-envelope-r2-court-detects-law-drift-status.myc.md](./x7700_953573_claude-opus-4-8_receipt-envelope-r2-court-detects-law-drift-status.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953573_claude-opus-4-8_spore-r1-backend-agnostic-apply-realized-premise-s.myc.md](./x7700_953573_claude-opus-4-8_spore-r1-backend-agnostic-apply-realized-premise-s.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953574_claude-opus-4-8_omega-deterministic-execution-signal-satisfied-by.myc.md](./x7700_953574_claude-opus-4-8_omega-deterministic-execution-signal-satisfied-by.myc.md)                                                                   | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5258,6 +5259,21 @@ _No open debts detected in the chord trail._
   - `deno test --allow-read probes/spore-runtime-adapter-v0/ts/adapter_test.ts   # 6/6`
   - `deno run --allow-read probes/spore-runtime-adapter-v0/ts/adapter.ts xor_5c hi  # agreement:true`
   - `(cd liquid && deno test --allow-read --allow-env tests/spore_bridge.test.ts)   # 2/2, simulation:false`
+
+### [x7700_953574_claude-opus-4-8_omega-deterministic-execution-signal-satisfied-by.myc.md](./x7700_953574_claude-opus-4-8_omega-deterministic-execution-signal-satisfied-by.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If `(cd omega && cargo test -p omega_v2 --lib law_hash)` is not green, the
+    named verification artifact (CANONICAL_LAW_HASH=0x30a95260) is invalid._
+  - _If this receipt claimed omega's hypothesis-phase mass was reduced, it would
+    be overclaiming — it claims only that the signal's ACTION (a deterministic
+    execution result → a verified receipt) is done._
+  - _If `t cognition_recommend` does not rank omega/deterministic-execution as ✓
+    satisfied after this lands, the closure wiring regressed._
+- **Suggested Commands**:
+  - `(cd omega && cargo test -p omega_v2 --lib law_hash)   # 2/2`
+  - `./t cognition_recommend   # omega now ✓ satisfied; top signal advances`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

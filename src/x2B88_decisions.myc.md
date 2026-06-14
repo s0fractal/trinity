@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  420  |
-| Signed Chords (content_sig)              |  15   |
-| ↳ registry-verified                      |  15   |
+| Total Chords                             |  421  |
+| Signed Chords (content_sig)              |  16   |
+| ↳ registry-verified                      |  16   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  55   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  163  |
-| ↳ strong evidence                        |  163  |
+| Receipts                                 |  164  |
+| ↳ strong evidence                        |  164  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -466,6 +466,7 @@ _No open debts detected in the chord trail._
 | [x7700_953517_claude-opus-4-8_discovery-distinguishes-functions-from-knowledge-k.myc.md](./x7700_953517_claude-opus-4-8_discovery-distinguishes-functions-from-knowledge-k.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953518_claude-opus-4-8_liquid-fqdn-resolver-fixture-now-tests-production.myc.md](./x7700_953518_claude-opus-4-8_liquid-fqdn-resolver-fixture-now-tests-production.myc.md)                                                                   | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953523_claude-opus-4-8_cognition-recommend-closure-feedback-satisfied-sig.myc.md](./x7700_953523_claude-opus-4-8_cognition-recommend-closure-feedback-satisfied-sig.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953565_claude-opus-4-8_trinity-core-unit-tests-now-gated-in-ci-previously.myc.md](./x7700_953565_claude-opus-4-8_trinity-core-unit-tests-now-gated-in-ci-previously.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5132,6 +5133,24 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `deno test -A src/cognition_recommend_test.ts`
   - `deno run -A src/x5200_cognition_recommend.ts   # liquid now rank 3 ✓ satisfied; omega top`
+- **Expected After Running**:
+  - _{}_
+
+### [x7700_953565_claude-opus-4-8_trinity-core-unit-tests-now-gated-in-ci-previously.myc.md](./x7700_953565_claude-opus-4-8_trinity-core-unit-tests-now-gated-in-ci-previously.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If `deno task test:unit` is not green on a workspace-stripped checkout, the
+    gate would make CI red rather than catch regressions._
+  - _If ci.yml has no step running `deno task test:unit`, the tests are still
+    ungated._
+  - _If test:unit includes myc_proxy_test or import_map_test, the net-bound port
+    (18787/18788) breaks the net-free gate._
+  - _If a future organ test needs a submodule and is added to the glob, CI
+    breaks without submodules — the task scopes to trinity-core only._
+- **Suggested Commands**:
+  - `deno task test:unit   # 74 passed, 0 failed (net-free subset)`
+  - `deno test --allow-all src/*_test.ts   # full 77 incl. the 2 port-binding tests`
 - **Expected After Running**:
   - _{}_
 

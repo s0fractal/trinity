@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  424  |
-| Signed Chords (content_sig)              |  18   |
-| ↳ registry-verified                      |  18   |
+| Total Chords                             |  425  |
+| Signed Chords (content_sig)              |  19   |
+| ↳ registry-verified                      |  19   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  55   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  166  |
-| ↳ strong evidence                        |  166  |
+| Receipts                                 |  167  |
+| ↳ strong evidence                        |  167  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -470,6 +470,7 @@ _No open debts detected in the chord trail._
 | [x7700_953565_claude-opus-4-8_trinity-core-unit-tests-now-gated-in-ci-previously.myc.md](./x7700_953565_claude-opus-4-8_trinity-core-unit-tests-now-gated-in-ci-previously.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953571_claude-opus-4-8_resolve-show-delivers-content-completing-browse-lo.myc.md](./x7700_953571_claude-opus-4-8_resolve-show-delivers-content-completing-browse-lo.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953571_claude-opus-4-8_response-to-antigravity-vision-r5-t-rpc-landed-r1.myc.md](./x7700_953571_claude-opus-4-8_response-to-antigravity-vision-r5-t-rpc-landed-r1.myc.md)                                                                   | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953573_claude-opus-4-8_law-hash-r3-landed-omega-computes-trinity-witnesse.myc.md](./x7700_953573_claude-opus-4-8_law-hash-r3-landed-omega-computes-trinity-witnesse.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5197,6 +5198,25 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `echo '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"resolve\",\"params\":[\"x2F30_fqdn_resolver.ts\"]}' | ./t rpc`
   - `deno test -A src/dispatch_test.ts   # 10/10`
+
+### [x7700_953573_claude-opus-4-8_law-hash-r3-landed-omega-computes-trinity-witnesse.myc.md](./x7700_953573_claude-opus-4-8_law-hash-r3-landed-omega-computes-trinity-witnesse.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If `(cd omega && cargo test -p omega_v2 --lib law_hash)` is not green, the
+    Rust golden (CANONICAL_LAW_HASH=0x30a95260) is wrong._
+  - _If `(cd omega && deno test --allow-read tests/law_hash_test.ts)` is not
+    3/3, the deno↔Rust parity broke._
+  - _If `./t status` does not show `substrate_health.law_hash == \"0x30a95260\"`
+    with omega present, the bridge regressed._
+  - _If a law constant or the canonical topology changed without both goldens
+    being updated, the build breaks (that is the integrity guard, not a bug)._
+  - _If trinity computed its own law_hash rather than witnessing omega's, the
+    ownership invariant broke._
+- **Suggested Commands**:
+  - `(cd omega && cargo test -p omega_v2 --lib law_hash)   # 2/2`
+  - `(cd omega && deno task test:unit)                      # incl. law_hash parity, 217`
+  - `./t status | grep -o 'law_hash[^,]*'                   # 0x30a95260`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

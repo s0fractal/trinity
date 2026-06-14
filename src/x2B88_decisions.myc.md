@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  434  |
-| Signed Chords (content_sig)              |  25   |
-| ↳ registry-verified                      |  25   |
+| Total Chords                             |  435  |
+| Signed Chords (content_sig)              |  26   |
+| ↳ registry-verified                      |  26   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  56   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  174  |
-| ↳ strong evidence                        |  174  |
+| Receipts                                 |  175  |
+| ↳ strong evidence                        |  175  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -480,6 +480,7 @@ _No open debts detected in the chord trail._
 | [x7700_953636_claude-opus-4-8_daemon-granted-right-to-act-gradual-autonomy-test.myc.md](./x7700_953636_claude-opus-4-8_daemon-granted-right-to-act-gradual-autonomy-test.myc.md)                                                                   | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953643_claude-opus-4-8_codex-control-plane-phases-a-c-d-landed-safety-set.myc.md](./x7700_953643_claude-opus-4-8_codex-control-plane-phases-a-c-d-landed-safety-set.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953644_claude-opus-4-8_codex-phase-b-execution-kernel-complete-r5-closed.myc.md](./x7700_953644_claude-opus-4-8_codex-phase-b-execution-kernel-complete-r5-closed.myc.md)                                                                   | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953645_claude-opus-4-8_codex-bounded-sovereign-execution-fully-closed-all.myc.md](./x7700_953645_claude-opus-4-8_codex-bounded-sovereign-execution-fully-closed-all.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5373,6 +5374,20 @@ _No open debts detected in the chord trail._
   - `deno test -A src/exec_kernel_test.ts   # 5`
   - `./t court --live   ;  ./t daemon tick   ;  ./t eval '[\"block\"]'`
   - `deno task test:unit   # 165`
+
+### [x7700_953645_claude-opus-4-8_codex-bounded-sovereign-execution-fully-closed-all.myc.md](./x7700_953645_claude-opus-4-8_codex-bounded-sovereign-execution-fully-closed-all.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If any of R1-R5's per-phase falsifiers (see x7700_953643, x7700_953644) now
+    fire, the corresponding phase regressed._
+  - _If a handle classifies as `unknown` yet `admissibleForAutonomousMutation`
+    returns true, Phase E's rule is broken._
+  - _If `deno task test:unit` is not green at 168, a boundary test regressed._
+- **Suggested Commands**:
+  - `deno task test:unit            # 168`
+  - `./t court --live ; ./t daemon tick ; ./t eval '[\"block\"]'`
+  - `./t skill   # Capability registry section`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

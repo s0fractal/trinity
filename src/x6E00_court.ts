@@ -34,6 +34,7 @@ import {
   fromFileUrl,
   join,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { extractOrganJson, runOrgan } from "./x0010_dispatch_runner.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
@@ -78,18 +79,17 @@ export function liveLawDrift(
   return courtDrift || bridgeConsistent === false;
 }
 
-/** Run a deno organ and parse its JSON stdout (dropping `#` comment lines). */
+/** Run a deno organ and parse its JSON stdout — through the shared execution
+ *  kernel (x0010), so each substrate witness call is timeout- and byte-bounded
+ *  (codex Phase B); a hung substrate status organ can't stall the court. */
 async function runJson(args: string[]): Promise<unknown> {
-  const proc = new Deno.Command("deno", {
-    args: ["run", "--allow-all", ...args],
-    stdout: "piped",
-    stderr: "null",
-  });
-  const out = await proc.output();
-  const text = new TextDecoder().decode(out.stdout)
-    .split("\n").filter((l) => !l.trimStart().startsWith("#")).join("\n")
-    .trim();
-  return text ? JSON.parse(text) : null;
+  const r = await runOrgan("deno", ["run", "--allow-all", ...args]);
+  const payload = extractOrganJson(r.stdout);
+  // extractOrganJson returns {text} for non-JSON; the court's callers expect a
+  // parsed object or null, matching the prior `text ? JSON.parse : null`.
+  return (payload && typeof payload === "object" && "text" in payload)
+    ? null
+    : payload ?? null;
 }
 
 /** A substrate's own status organ + the law_hash it reported. */

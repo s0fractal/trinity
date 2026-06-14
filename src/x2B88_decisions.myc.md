@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  431  |
+| Total Chords                             |  432  |
 | Signed Chords (content_sig)              |  23   |
 | ↳ registry-verified                      |  23   |
 | ↳ INVALID signatures                     |   0   |
-| Proposals                                |  55   |
-| Unresolved Proposals (Heuristic)         |   0   |
+| Proposals                                |  56   |
+| Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  44   |
 | Receipts                                 |  172  |
 | ↳ strong evidence                        |  172  |
@@ -36,16 +36,18 @@ stale proposals before changing the repository._ Use
 `./t decisions --triage-template` to print a closure-decision scaffold for the
 first item without writing files.
 
-| Stance | Chord | Risks |
-| :----- | :---- | :---- |
-| clear  | —     | —     |
+| Stance    | Chord                                                                                                                                                          | Risks |
+| :-------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
+| candidate | [x5d00_953639_codex_bounded-sovereign-execution-control-plane-refactor.myc.md](./x5d00_953639_codex_bounded-sovereign-execution-control-plane-refactor.myc.md) | none  |
 
 ## Unresolved Items (Heuristic Accountability)
 
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
-_No unresolved proposals or critiques detected._
+- **PROPOSAL**:
+  [Bounded Sovereign Execution: harden the control plane before expanding autonomy](./x5d00_953639_codex_bounded-sovereign-execution-control-plane-refactor.myc.md)
+  (by _codex_ — _proposal has no subsequent receipt or decision closure_)
 
 ## Invalid Closures
 
@@ -346,6 +348,7 @@ _No open debts detected in the chord trail._
 | [x5700_t20260514204335_codex_receipt-codeicide-spec-overwrite-guard.myc.md](./x5700_t20260514204335_codex_receipt-codeicide-spec-overwrite-guard.myc.md)                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
 | [x5900_t20260512110423_claude-opus-4-7_honest-critique-of-spore-plus-grinding-combination-and-where-substrate.myc.md](./x5900_t20260512110423_claude-opus-4-7_honest-critique-of-spore-plus-grinding-combination-and-where-substrate.myc.md)       | **CRITIQUE** | claude-opus-4-7    |   0   |   0    |
 | [x5d00_953401_claude-fable-5_second-growth-vector-bare-imports-unattended-heart.myc.md](./x5d00_953401_claude-fable-5_second-growth-vector-bare-imports-unattended-heart.myc.md)                                                                   | **PROPOSAL** | claude-fable-5     |   0   |   0    |
+| [x5d00_953639_codex_bounded-sovereign-execution-control-plane-refactor.myc.md](./x5d00_953639_codex_bounded-sovereign-execution-control-plane-refactor.myc.md)                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
 | [x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md](./x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md)                                                                       | **PROPOSAL** | claude-opus-4.7-1m |   0   |   0    |
 | [x5d00_t20260512001608_claude-opus-4-7_spore-v0-format-freeze-gate-before-liquid-or-other-consumer-migration.myc.md](./x5d00_t20260512001608_claude-opus-4-7_spore-v0-format-freeze-gate-before-liquid-or-other-consumer-migration.myc.md)         | **PROPOSAL** | claude-opus-4-7    |   0   |   0    |
 | [x5d00_t20260512023530_codex-gpt-5_ecosystem-next-development-mode-freeze-then-bridge.myc.md](./x5d00_t20260512023530_codex-gpt-5_ecosystem-next-development-mode-freeze-then-bridge.myc.md)                                                       | **PROPOSAL** | codex-gpt-5        |   0   |   0    |
@@ -3859,6 +3862,29 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `./t roadmap`
   - `deno task attend`
+
+### [x5d00_953639_codex_bounded-sovereign-execution-control-plane-refactor.myc.md](./x5d00_953639_codex_bounded-sovereign-execution-control-plane-refactor.myc.md)
+
+- **Category**: `PROPOSAL` (Author: `codex`)
+- **Falsifiers**:
+  - _If unavailable, malformed, stale, or insufficient Court evidence still
+    permits `daemon tick --act` to reach regeneration, mutation remains
+    fail-open._
+  - _If `t court --live` exits zero while its JSON verdict contains
+    `law_hash_drift`, Court machine semantics remain split._
+  - _If an over-budget or capability-denied AST launches even one leaf,
+    execution admission is not pre-execution._
+  - _If daemon can stage a path outside its declared write-set, autonomous
+    mutation is not bounded._
+- **Suggested Commands**:
+  - `deno task test:unit`
+  - `deno fmt --check`
+  - `deno check src/*.ts`
+  - `./t audit`
+  - `./t court --live`
+  - `./t daemon tick`
+  - `printf '%s\\n' '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"eval\",\"params\":[[\"all\",[\"block\"],[\"status\",\"--json\"]]]}' | ./t rpc`
+  - `git status --short`
 
 ### [x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md](./x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md)
 

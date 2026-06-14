@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  442  |
-| Signed Chords (content_sig)              |  32   |
-| ↳ registry-verified                      |  32   |
+| Total Chords                             |  443  |
+| Signed Chords (content_sig)              |  33   |
+| ↳ registry-verified                      |  33   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  57   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  181  |
-| ↳ strong evidence                        |  181  |
+| Receipts                                 |  182  |
+| ↳ strong evidence                        |  182  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -488,6 +488,7 @@ _No open debts detected in the chord trail._
 | [x7700_953670_claude-opus-4-8_ecosystem-abi-coverage-five-slot-fix.myc.md](./x7700_953670_claude-opus-4-8_ecosystem-abi-coverage-five-slot-fix.myc.md)                                                                                             | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953671_claude-opus-4-8_myc-ci-guards-vendored-encoder-parity.myc.md](./x7700_953671_claude-opus-4-8_myc-ci-guards-vendored-encoder-parity.myc.md)                                                                                           | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953684_claude-opus-4-8_effect-court-phase-a-fail-closed-detection.myc.md](./x7700_953684_claude-opus-4-8_effect-court-phase-a-fail-closed-detection.myc.md)                                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953691_claude-opus-4-8_effect-court-phase-c-runtime-permission-profiles.myc.md](./x7700_953691_claude-opus-4-8_effect-court-phase-c-runtime-permission-profiles.myc.md)                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5526,6 +5527,26 @@ _No open debts detected in the chord trail._
   - `./t eval --list-safe                 # 24 handles, no`proxy``
   - `./t eval --safe '[\"proxy\"]'          # rejected pre-launch; no port bound`
   - `deno test --allow-read --allow-env src/skill_gen_test.ts   # 10`
+
+### [x7700_953691_claude-opus-4-8_effect-court-phase-c-runtime-permission-profiles.myc.md](./x7700_953691_claude-opus-4-8_effect-court-phase-c-runtime-permission-profiles.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If a `t eval --safe` leaf is launched with `--allow-all`, Phase C did not
+    take — every safe leaf must run under `read-local`._
+  - _If a fixture that writes / listens / spawns a subprocess succeeds under
+    `permissionFlags('read-local')`, the runtime is not confining (acceptance
+    #6)._
+  - _If `permissionFlags('read-local')` contains --allow-write / --allow-net /
+    --allow-run / --allow-ffi / --allow-all, the profile leaks authority._
+  - _If a legitimate readonly handle (health, capabilities, resolve-fqdn) fails
+    under --safe, read-local is too tight._
+  - _If normal `t eval` (no --safe) or the human CLI stops running under
+    --allow-all, backward compatibility broke._
+- **Suggested Commands**:
+  - `deno test --allow-all src/exec_kernel_test.ts   # 10 (incl. runtime-denial)`
+  - `./t eval --safe '[\"all\", [\"health\"], [\"capabilities\"]]'   # works, confined`
+  - `./t eval '[\"block\"]'   # privileged path still fetches net`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

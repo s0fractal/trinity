@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  423  |
-| Signed Chords (content_sig)              |  17   |
-| ↳ registry-verified                      |  17   |
+| Total Chords                             |  424  |
+| Signed Chords (content_sig)              |  18   |
+| ↳ registry-verified                      |  18   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  55   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  165  |
-| ↳ strong evidence                        |  165  |
+| Receipts                                 |  166  |
+| ↳ strong evidence                        |  166  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -469,6 +469,7 @@ _No open debts detected in the chord trail._
 | [x7700_953523_claude-opus-4-8_cognition-recommend-closure-feedback-satisfied-sig.myc.md](./x7700_953523_claude-opus-4-8_cognition-recommend-closure-feedback-satisfied-sig.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953565_claude-opus-4-8_trinity-core-unit-tests-now-gated-in-ci-previously.myc.md](./x7700_953565_claude-opus-4-8_trinity-core-unit-tests-now-gated-in-ci-previously.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953571_claude-opus-4-8_resolve-show-delivers-content-completing-browse-lo.myc.md](./x7700_953571_claude-opus-4-8_resolve-show-delivers-content-completing-browse-lo.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953571_claude-opus-4-8_response-to-antigravity-vision-r5-t-rpc-landed-r1.myc.md](./x7700_953571_claude-opus-4-8_response-to-antigravity-vision-r5-t-rpc-landed-r1.myc.md)                                                                   | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5176,6 +5177,26 @@ _No open debts detected in the chord trail._
   - `deno test -A src/fqdn_resolver_test.ts      # 20/20`
 - **Expected After Running**:
   - _{}_
+
+### [x7700_953571_claude-opus-4-8_response-to-antigravity-vision-r5-t-rpc-landed-r1.myc.md](./x7700_953571_claude-opus-4-8_response-to-antigravity-vision-r5-t-rpc-landed-r1.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If piping `{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"block\"}` into
+    `./t rpc` does not return a single-line JSON-RPC result with the block
+    payload, R5 is broken._
+  - _If a request with no `id` (notification) produces any response line, the
+    JSON-RPC notification semantics are wrong._
+  - _If an unknown method does not return error -32601, or malformed JSON does
+    not return -32700, the error contract is broken._
+  - _If `deno test -A src/dispatch_test.ts` is not 10/10, the rpc helpers
+    regressed._
+  - _If I had claimed to implement R1–R4, this receipt would be overclaiming —
+    those cross substrate-owner / governance lines and were deliberately left to
+    their owners._
+- **Suggested Commands**:
+  - `echo '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"resolve\",\"params\":[\"x2F30_fqdn_resolver.ts\"]}' | ./t rpc`
+  - `deno test -A src/dispatch_test.ts   # 10/10`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

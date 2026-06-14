@@ -61,6 +61,23 @@ export function lawBridge(
   };
 }
 
+/** The single law-drift signal for `--live` (codex R2): true if the N-ary court
+ *  reports any `law_hash_drift` conflict OR the omega/trinity bridge is
+ *  explicitly inconsistent (false). A null/absent bridge is unverifiable, not
+ *  drift. Process exit and the `law_drift` verdict field both derive from this,
+ *  so they never disagree. Pure; exported for the test. */
+export function liveLawDrift(
+  court: unknown,
+  bridgeConsistent: boolean | null | undefined,
+): boolean {
+  const c = (court ?? {}) as Record<string, unknown>;
+  const conflicts = Array.isArray(c.conflicts) ? c.conflicts : [];
+  const courtDrift = conflicts.some((x) =>
+    (x as { kind?: string })?.kind === "law_hash_drift"
+  );
+  return courtDrift || bridgeConsistent === false;
+}
+
 /** Run a deno organ and parse its JSON stdout (dropping `#` comment lines). */
 async function runJson(args: string[]): Promise<unknown> {
   const proc = new Deno.Command("deno", {
@@ -138,6 +155,7 @@ async function live() {
   }
 
   const bridge = lawBridge(omegaNative, trinityWitnessed);
+  const law_drift = liveLawDrift(court, bridge.consistent);
   console.log(JSON.stringify(
     {
       type: "SubstrateCourtLiveVerdict",
@@ -146,6 +164,10 @@ async function live() {
         (e as Record<string, unknown>).substrate_tag
       ),
       law_bridge: bridge,
+      // Single authoritative law-drift signal (codex R2): the process exit and
+      // this field agree, so machine callers don't need to know which of
+      // law_bridge vs court.conflicts is decisive.
+      law_drift,
       court,
       note: omegaNative === null
         ? "omega absent — law bridge unverifiable; court reflects trinity's self-witness only"
@@ -154,7 +176,7 @@ async function live() {
     null,
     2,
   ));
-  Deno.exit(bridge.consistent === false ? 1 : 0);
+  Deno.exit(law_drift ? 1 : 0);
 }
 
 async function main() {

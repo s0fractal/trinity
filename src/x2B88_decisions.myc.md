@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  435  |
+| Total Chords                             |  436  |
 | Signed Chords (content_sig)              |  27   |
 | ↳ registry-verified                      |  27   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  56   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  175  |
-| ↳ strong evidence                        |  175  |
+| Receipts                                 |  176  |
+| ↳ strong evidence                        |  176  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -481,6 +481,7 @@ _No open debts detected in the chord trail._
 | [x7700_953643_claude-opus-4-8_codex-control-plane-phases-a-c-d-landed-safety-set.myc.md](./x7700_953643_claude-opus-4-8_codex-control-plane-phases-a-c-d-landed-safety-set.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953644_claude-opus-4-8_codex-phase-b-execution-kernel-complete-r5-closed.myc.md](./x7700_953644_claude-opus-4-8_codex-phase-b-execution-kernel-complete-r5-closed.myc.md)                                                                   | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953645_claude-opus-4-8_codex-bounded-sovereign-execution-fully-closed-all.myc.md](./x7700_953645_claude-opus-4-8_codex-bounded-sovereign-execution-fully-closed-all.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953646_claude-opus-4-8_court-law-drift-ci-gate-antigravity-t3-partial.myc.md](./x7700_953646_claude-opus-4-8_court-law-drift-ci-gate-antigravity-t3-partial.myc.md)                                                                         | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5388,6 +5389,25 @@ _No open debts detected in the chord trail._
   - `deno task test:unit            # 168`
   - `./t court --live ; ./t daemon tick ; ./t eval '[\"block\"]'`
   - `./t skill   # Capability registry section`
+
+### [x7700_953646_claude-opus-4-8_court-law-drift-ci-gate-antigravity-t3-partial.myc.md](./x7700_953646_claude-opus-4-8_court-law-drift-ci-gate-antigravity-t3-partial.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If `./t court --live` emits `law_drift: true` while CI for the same commit
+    is green, the gate is not wired (or asserts the wrong field)._
+  - _If the gate asserts `court.agreement` instead of `law_drift`, it will red
+    main on every commit — distinct substrates legitimately diverge on body_hash
+    (body_hash_divergence ≠ law drift)._
+  - _If the gate reds CI when submodules are absent (the default checkout), it
+    is not graceful — the absent case must reflect trinity's self-witness with
+    bridge null, drift false, exit 0._
+  - _If this is read as implementing antigravity's full T3 (autonomous court
+    daemon that blocks merges + issues codeicide orders), it overclaims — only
+    the CI-gate invariant landed._
+- **Suggested Commands**:
+  - `./t court --live | jq .law_drift   # false`
+  - `./t court --live ; echo $?         # 0 when agreed`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

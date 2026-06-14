@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     8      |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    435     |
+| dynamic topology  |    436     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **533**   |
+| **Total**         |  **534**   |
 
 ## Runtime Cache Diagnostics
 
@@ -543,6 +543,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x7700_953643_claude-opus-4-8_codex-control-plane-phases-a-c-d-landed-safety-set.myc.md](../src/x7700_953643_claude-opus-4-8_codex-control-plane-phases-a-c-d-landed-safety-set.myc.md)                                                                 | canonical        | src/x7700_953643_claude-opus-4-8_codex-control-plane-phases-a-c-d-landed-safety-set.myc.md                                 | keep        |                              |
 | dynamic topology  | [src/x7700_953644_claude-opus-4-8_codex-phase-b-execution-kernel-complete-r5-closed.myc.md](../src/x7700_953644_claude-opus-4-8_codex-phase-b-execution-kernel-complete-r5-closed.myc.md)                                                                   | canonical        | src/x7700_953644_claude-opus-4-8_codex-phase-b-execution-kernel-complete-r5-closed.myc.md                                  | keep        |                              |
 | dynamic topology  | [src/x7700_953645_claude-opus-4-8_codex-bounded-sovereign-execution-fully-closed-all.myc.md](../src/x7700_953645_claude-opus-4-8_codex-bounded-sovereign-execution-fully-closed-all.myc.md)                                                                 | canonical        | src/x7700_953645_claude-opus-4-8_codex-bounded-sovereign-execution-fully-closed-all.myc.md                                 | keep        |                              |
+| dynamic topology  | [src/x7700_953646_claude-opus-4-8_court-law-drift-ci-gate-antigravity-t3-partial.myc.md](../src/x7700_953646_claude-opus-4-8_court-law-drift-ci-gate-antigravity-t3-partial.myc.md)                                                                         | canonical        | src/x7700_953646_claude-opus-4-8_court-law-drift-ci-gate-antigravity-t3-partial.myc.md                                     | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](../src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | canonical        | src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](../src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | canonical        | src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md                                                     | keep        |                              |
 | dynamic topology  | [src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](../src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | canonical        | src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md                                                      | keep        |                              |

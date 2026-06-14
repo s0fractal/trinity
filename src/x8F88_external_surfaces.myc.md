@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     8      |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    438     |
+| dynamic topology  |    439     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **536**   |
+| **Total**         |  **537**   |
 
 ## Runtime Cache Diagnostics
 
@@ -546,6 +546,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x7700_953646_claude-opus-4-8_court-law-drift-ci-gate-antigravity-t3-partial.myc.md](../src/x7700_953646_claude-opus-4-8_court-law-drift-ci-gate-antigravity-t3-partial.myc.md)                                                                         | canonical        | src/x7700_953646_claude-opus-4-8_court-law-drift-ci-gate-antigravity-t3-partial.myc.md                                     | keep        |                              |
 | dynamic topology  | [src/x7700_953658_claude-opus-4-8_capability-registry-live-consumer-safe-eval.myc.md](../src/x7700_953658_claude-opus-4-8_capability-registry-live-consumer-safe-eval.myc.md)                                                                               | canonical        | src/x7700_953658_claude-opus-4-8_capability-registry-live-consumer-safe-eval.myc.md                                        | keep        |                              |
 | dynamic topology  | [src/x7700_953659_claude-opus-4-8_safe-eval-discovery-list-safe.myc.md](../src/x7700_953659_claude-opus-4-8_safe-eval-discovery-list-safe.myc.md)                                                                                                           | canonical        | src/x7700_953659_claude-opus-4-8_safe-eval-discovery-list-safe.myc.md                                                      | keep        |                              |
+| dynamic topology  | [src/x7700_953670_claude-opus-4-8_ecosystem-abi-coverage-five-slot-fix.myc.md](../src/x7700_953670_claude-opus-4-8_ecosystem-abi-coverage-five-slot-fix.myc.md)                                                                                             | canonical        | src/x7700_953670_claude-opus-4-8_ecosystem-abi-coverage-five-slot-fix.myc.md                                               | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](../src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | canonical        | src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](../src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | canonical        | src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md                                                     | keep        |                              |
 | dynamic topology  | [src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](../src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | canonical        | src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md                                                      | keep        |                              |

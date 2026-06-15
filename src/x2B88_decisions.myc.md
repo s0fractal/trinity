@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  447  |
-| Signed Chords (content_sig)              |  37   |
-| ↳ registry-verified                      |  37   |
+| Total Chords                             |  448  |
+| Signed Chords (content_sig)              |  38   |
+| ↳ registry-verified                      |  38   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  57   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  186  |
-| ↳ strong evidence                        |  186  |
+| Receipts                                 |  187  |
+| ↳ strong evidence                        |  187  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -493,6 +493,7 @@ _No open debts detected in the chord trail._
 | [x7700_953773_claude-opus-4-8_effect-court-phase-f-generator-registry.myc.md](./x7700_953773_claude-opus-4-8_effect-court-phase-f-generator-registry.myc.md)                                                                                       | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953774_claude-opus-4-8_effect-court-phase-e-streaming-output-cap.myc.md](./x7700_953774_claude-opus-4-8_effect-court-phase-e-streaming-output-cap.myc.md)                                                                                   | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953791_claude-opus-4-8_effect-court-capability-receipt-criterion-8.myc.md](./x7700_953791_claude-opus-4-8_effect-court-capability-receipt-criterion-8.myc.md)                                                                               | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953798_claude-opus-4-8_effect-court-criterion-11-untracked-rollback.myc.md](./x7700_953798_claude-opus-4-8_effect-court-criterion-11-untracked-rollback.myc.md)                                                                             | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5623,6 +5624,20 @@ _No open debts detected in the chord trail._
   - `./t eval --explain health   # admitted: read-local, hashes, verdict_hash`
   - `./t eval --explain apply    # rejected: unknown (WebAssembly via liquid)`
   - `deno test --allow-read --allow-env src/skill_gen_test.ts   # 17`
+
+### [x7700_953798_claude-opus-4-8_effect-court-criterion-11-untracked-rollback.myc.md](./x7700_953798_claude-opus-4-8_effect-court-criterion-11-untracked-rollback.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If a daemon rollback leaves an untracked foreign output on disk (git
+    checkout -- . only restores tracked files), criterion 11 is unmet._
+  - _If `untrackedDriftPaths` returns a path for a non-`??` status line, it
+    would delete a tracked file on rollback._
+  - _If `revertWorktree` removes a path outside the drifted set, rollback is
+    over-broad._
+- **Suggested Commands**:
+  - `deno test --allow-all src/daemon_test.ts   # 14`
+  - `./t daemon tick   # idles clean`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

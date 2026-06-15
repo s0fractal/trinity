@@ -8,6 +8,7 @@ import {
   buildIndex,
   type Candidate,
   isContentAddressed,
+  isSkippedPath,
   kindOf,
   listNames,
   type Resolution,
@@ -416,4 +417,16 @@ Deno.test("showHeader - content-addressed name carries the federation-hash cavea
   const h = showHeader(res).join("\n");
   assertStringIncludes(h, "content-addressed");
   assertStringIncludes(h, "federation-identity hash");
+});
+
+Deno.test("isSkippedPath - excludes build/dep dirs, keeps content (FQDN namespace hygiene)", () => {
+  // Build/dependency output that pollutes the namespace is skipped.
+  assert(isSkippedPath("omega/omega_zk_host/target/release/foo.o"));
+  assert(isSkippedPath("target/x.rlib"));
+  assert(isSkippedPath("x/node_modules/pkg/index.js"));
+  assert(isSkippedPath("a/.git/config"));
+  // Real content is kept — `target` only matches as a path component.
+  assert(!isSkippedPath("src/x2F30_fqdn_resolver.ts"));
+  assert(!isSkippedPath("docs/target.md"));
+  assert(!isSkippedPath("src/targeting.ts"));
 });

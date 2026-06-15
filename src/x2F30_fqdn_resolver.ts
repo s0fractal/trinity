@@ -63,7 +63,18 @@ export interface Resolution {
   candidates: Candidate[]; // all hits, in precedence order
 }
 
-const SKIP = /(^|\/)(node_modules|\.git)(\/|$)/;
+// Skip dependency / build-output directories: they are gitignored, hold no
+// meaningful FQDN content, and otherwise drown the namespace (omega's Rust
+// `target/` alone adds ~19k `.o`/artifact files). Matched as full path
+// components, so a file literally named `target.md` is unaffected.
+const SKIP = /(^|\/)(node_modules|\.git|target)(\/|$)/;
+
+/** True if a path lies in a dependency/build-output directory the index skips.
+ *  Matches only full path components — `target.md` is content, `target/x.o` is
+ *  not. Exported for the test. */
+export function isSkippedPath(path: string): boolean {
+  return SKIP.test(path);
+}
 
 // The coordinate prefix `x<hex>_` that names an organ/doc by its hex position.
 const COORD_PREFIX = /^x[0-9A-Fa-f]+_/;

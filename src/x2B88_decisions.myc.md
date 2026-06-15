@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  445  |
-| Signed Chords (content_sig)              |  35   |
-| ↳ registry-verified                      |  35   |
+| Total Chords                             |  446  |
+| Signed Chords (content_sig)              |  36   |
+| ↳ registry-verified                      |  36   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  57   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  184  |
-| ↳ strong evidence                        |  184  |
+| Receipts                                 |  185  |
+| ↳ strong evidence                        |  185  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -491,6 +491,7 @@ _No open debts detected in the chord trail._
 | [x7700_953691_claude-opus-4-8_effect-court-phase-c-runtime-permission-profiles.myc.md](./x7700_953691_claude-opus-4-8_effect-court-phase-c-runtime-permission-profiles.myc.md)                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953693_claude-opus-4-8_effect-court-phase-b-transitive-closure.myc.md](./x7700_953693_claude-opus-4-8_effect-court-phase-b-transitive-closure.myc.md)                                                                                       | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953773_claude-opus-4-8_effect-court-phase-f-generator-registry.myc.md](./x7700_953773_claude-opus-4-8_effect-court-phase-f-generator-registry.myc.md)                                                                                       | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953774_claude-opus-4-8_effect-court-phase-e-streaming-output-cap.myc.md](./x7700_953774_claude-opus-4-8_effect-court-phase-e-streaming-output-cap.myc.md)                                                                                   | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5586,6 +5587,23 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `deno test --allow-all src/daemon_test.ts   # 13`
   - `./t daemon tick   # idles clean; regen (incl. roadmap) leaves no drift`
+
+### [x7700_953774_claude-opus-4-8_effect-court-phase-e-streaming-output-cap.myc.md](./x7700_953774_claude-opus-4-8_effect-court-phase-e-streaming-output-cap.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If `runOrgan` against an infinite-output child does not return (hangs),
+    streaming termination is broken._
+  - _If the byte cap is applied as `String.slice` on UTF-16 units rather than
+    counting bytes, multi-byte output is mis-capped._
+  - _If a flooding child is not killed once output passes the cap (only
+    truncated post-hoc), the parent can still be flooded._
+  - _If the timeout path no longer returns code 124 / timed_out, or
+    court/eval/daemon (runOrgan consumers) regress, the kernel rewrite broke a
+    boundary._
+- **Suggested Commands**:
+  - `deno test --allow-all src/exec_kernel_test.ts   # 12 (incl. streaming)`
+  - `./t court --live ; ./t eval '[\"block\"]' ; ./t daemon tick`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

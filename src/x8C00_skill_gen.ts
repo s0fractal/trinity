@@ -51,6 +51,7 @@ import { formatGeneratedFile } from "./x0012_generated_format.ts";
 import {
   admissibleForAutonomousMutation,
   analyzeBehaviorWithAST,
+  analyzeTransitive,
   type Capability,
   classifyCapability,
 } from "./x0013_capability.ts";
@@ -203,6 +204,21 @@ function parseHeader(content: string): Map<string, string> {
 
 async function scanOrgans(): Promise<OrganMeta[]> {
   const out: OrganMeta[] = [];
+  // Memoized reader shared across the whole scan so the transitive capability
+  // closure (codex Phase B) reads each file at most once — every organ's
+  // `capability` is its EFFECTIVE (transitive) capability, matching what
+  // `t eval --safe` admits, not just its own file's direct effects.
+  const readCache = new Map<string, string | null>();
+  const read = async (p: string): Promise<string | null> => {
+    if (!readCache.has(p)) {
+      try {
+        readCache.set(p, await Deno.readTextFile(p));
+      } catch {
+        readCache.set(p, null);
+      }
+    }
+    return readCache.get(p)!;
+  };
   for await (const entry of Deno.readDir(SRC)) {
     if (entry.name === "x8C00_skill_gen.ts") continue; // skip self
     if (!entry.isFile) continue;
@@ -265,7 +281,7 @@ async function scanOrgans(): Promise<OrganMeta[]> {
       skill_safe,
       invalid_skill_safe,
       behavior_drift,
-      capability: classifyCapability(analysis, content),
+      capability: (await analyzeTransitive(path, read)).capability,
       is_dispatchable,
       source_hash: await sha256Hex(bytes),
       source_size: bytes.length,

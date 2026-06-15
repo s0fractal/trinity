@@ -90,7 +90,12 @@ Deno.test("law gate - body divergence alone (law agrees) → verified (only LAW 
 
 // --- daemon write-set admission (codex R4 / Phase D) ---
 
-import { driftedPathOf, pathsOutsideWriteSet } from "./x7F00_daemon.ts";
+import {
+  driftedPathOf,
+  generatorOutputOverlaps,
+  pathsOutsideWriteSet,
+  STABLE_GENERATORS,
+} from "./x7F00_daemon.ts";
 
 Deno.test("driftedPathOf - parses trimmed git status --short lines", () => {
   assertEquals(
@@ -137,4 +142,32 @@ Deno.test("pathsOutsideWriteSet - default write-set covers the daemon's own outp
     ]),
     [],
   );
+});
+
+Deno.test("pathsOutsideWriteSet - admits the F5-missing memory/roadmap/probes outputs", () => {
+  // The F5 bug: regen produced these but the write-set omitted them, so a
+  // legitimate regen tripped a write_set_violation. Now derived from the
+  // registry, they are admitted.
+  assertEquals(
+    pathsOutsideWriteSet([
+      "src/x2888_voices_state.myc.md",
+      "src/x8888_claude_memory.myc.md",
+      "src/x8888_s0fractal_memory.myc.md",
+      "src/x8D00_roadmap.myc.md",
+      "src/x8D00_codex_roadmap.myc.md",
+      "src/x8E00_probes.myc.md",
+    ]),
+    [],
+  );
+});
+
+Deno.test("STABLE_GENERATORS - no overlapping output ownership (codex Phase F)", () => {
+  assertEquals(generatorOutputOverlaps(), []);
+});
+
+Deno.test("STABLE_GENERATORS - every generator output is in the daemon write-set", () => {
+  // The action list (regen) and the permitted-output list cannot drift: every
+  // declared generator output must be admissible.
+  const all = STABLE_GENERATORS.flatMap((g) => g.outputs);
+  assertEquals(pathsOutsideWriteSet(all), []);
 });

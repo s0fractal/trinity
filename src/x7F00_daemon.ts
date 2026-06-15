@@ -652,19 +652,11 @@ async function runGit(
 
 async function regenerateProjections(): Promise<void> {
   const tShim = join(ROOT, "t");
-  for (
-    const gen of [
-      "agents",
-      "skill",
-      "memory",
-      "probes",
-      "decisions",
-      "evidence",
-      "external-surfaces",
-    ]
-  ) {
+  // Drive every generator from the ONE registry the write-set also derives from
+  // (codex Phase F): the action list and the permitted-output list cannot drift.
+  for (const gen of STABLE_GENERATORS) {
     await new Deno.Command(tShim, {
-      args: [gen, "--stable"],
+      args: [gen.handle, "--stable"],
       cwd: ROOT,
       stdout: "null",
       stderr: "null",
@@ -811,21 +803,88 @@ export function lawPermitsMutation(watch: LawWatch): boolean {
   return watch.state === "verified";
 }
 
-/** Paths the autonomous daemon is permitted to write (codex R4): the tracked
- *  outputs of its own stable-projection regen + phi pulse + its act log. If
- *  anything else drifts, something unexpected changed — the daemon reverts and
- *  refuses rather than `git add -A` it into an autonomous commit. Explicit by
- *  design; extend deliberately when a new daemon-maintained projection lands. */
+/** The voices whose per-voice memory + roadmap projections are tracked. */
+const PROJECTION_VOICES = [
+  "antigravity",
+  "claude",
+  "codex",
+  "gemini",
+  "hermes",
+  "kimi",
+  "s0fractal",
+];
+
+export interface StableGenerator {
+  /** The `t <handle> --stable` command. */
+  handle: string;
+  /** Exact repo-relative paths this generator owns (and may rewrite). */
+  outputs: string[];
+}
+
+/** The ONE registry describing every stable generator the daemon maintains
+ *  (codex x5d00_953682 Phase F / F5). Both `regenerateProjections()` and the
+ *  daemon write-set derive from it, so the action list and the permitted-output
+ *  list can no longer drift apart — the F5 bug was that regen ran memory/probes
+ *  but the write-set omitted their outputs (and roadmap wasn't regenerated at
+ *  all), so a legitimate regen could trip a write-set violation. Ownership is
+ *  specific (no `src/` prefix). Mirrors the CI generator-idempotence gate. */
+export const STABLE_GENERATORS: StableGenerator[] = [
+  { handle: "agents", outputs: ["src/x88F0_agents_bootstrap.myc.md"] },
+  { handle: "skill", outputs: ["src/x8CF0_skills_bootstrap.myc.md"] },
+  {
+    handle: "memory",
+    outputs: [
+      "src/x2888_voices_state.myc.md",
+      ...PROJECTION_VOICES.map((v) => `src/x8888_${v}_memory.myc.md`),
+    ],
+  },
+  {
+    handle: "roadmap",
+    outputs: [
+      "src/x8D00_roadmap.myc.md",
+      ...PROJECTION_VOICES.map((v) => `src/x8D00_${v}_roadmap.myc.md`),
+    ],
+  },
+  { handle: "probes", outputs: ["src/x8E00_probes.myc.md"] },
+  { handle: "decisions", outputs: ["src/x2B88_decisions.myc.md"] },
+  { handle: "evidence", outputs: ["src/x7B88_evidence_report.myc.md"] },
+  {
+    handle: "external-surfaces",
+    outputs: ["src/x8F88_external_surfaces.myc.md"],
+  },
+];
+
+/** Daemon-owned writes that are NOT generator projections: the act log and the
+ *  phi-pulse fixtures (deterministic substrate-physics output). */
+const DAEMON_EXTRA_EXACT = ["src/x7F01_daemon_invocations.ndjson"];
+const DAEMON_EXTRA_PREFIXES = ["fixtures/phi/"];
+
+/** Paths owned by more than one generator — overlapping ownership the registry
+ *  must not contain (codex Phase F). Pure; exported for the test. */
+export function generatorOutputOverlaps(
+  generators: StableGenerator[] = STABLE_GENERATORS,
+): string[] {
+  const seen = new Set<string>();
+  const dup = new Set<string>();
+  for (const g of generators) {
+    for (const p of g.outputs) {
+      if (seen.has(p)) dup.add(p);
+      seen.add(p);
+    }
+  }
+  return [...dup];
+}
+
+/** Paths the autonomous daemon is permitted to write (codex R4 / Phase F):
+ *  every stable generator's declared outputs (from the ONE registry) + phi
+ *  fixtures + its act log. If anything else drifts, the daemon reverts and
+ *  refuses rather than `git add -A` it into an autonomous commit. */
 const DAEMON_WRITE_SET = {
   exact: new Set([
-    "src/x2B88_decisions.myc.md",
-    "src/x7B88_evidence_report.myc.md",
-    "src/x8F88_external_surfaces.myc.md",
-    "src/x88F0_agents_bootstrap.myc.md",
-    "src/x8CF0_skills_bootstrap.myc.md",
-    "src/x7F01_daemon_invocations.ndjson",
+    ...STABLE_GENERATORS.flatMap((g) => g.outputs),
+    ...DAEMON_EXTRA_EXACT,
   ]),
-  prefixes: ["fixtures/phi/"],
+  prefixes: DAEMON_EXTRA_PREFIXES,
 };
 
 /** Extract the file path from a trimmed `git status --short` line

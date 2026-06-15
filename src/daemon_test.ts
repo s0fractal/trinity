@@ -95,6 +95,7 @@ import {
   generatorOutputOverlaps,
   pathsOutsideWriteSet,
   STABLE_GENERATORS,
+  untrackedDriftPaths,
 } from "./x7F00_daemon.ts";
 
 Deno.test("driftedPathOf - parses trimmed git status --short lines", () => {
@@ -170,4 +171,24 @@ Deno.test("STABLE_GENERATORS - every generator output is in the daemon write-set
   // declared generator output must be admissible.
   const all = STABLE_GENERATORS.flatMap((g) => g.outputs);
   assertEquals(pathsOutsideWriteSet(all), []);
+});
+
+Deno.test("untrackedDriftPaths - selects only `??` lines (codex criterion 11)", () => {
+  assertEquals(
+    untrackedDriftPaths([
+      "M src/x2B88_decisions.myc.md",
+      "?? src/foreign.ts",
+      "?? newdir/leaked.json",
+      "R old.ts -> new.ts",
+    ]),
+    ["src/foreign.ts", "newdir/leaked.json"],
+  );
+  // tracked-only drift ⇒ nothing to remove on rollback
+  assertEquals(
+    untrackedDriftPaths([
+      "M src/x2B88_decisions.myc.md",
+      " M src/x8F88.myc.md",
+    ]),
+    [],
+  );
 });

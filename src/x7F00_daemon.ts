@@ -907,6 +907,26 @@ export function pathsOutsideWriteSet(
   );
 }
 
+/** The untracked paths among drifted `git status --short` lines (marked `??`).
+ *  `git checkout -- .` restores tracked modifications but cannot remove these,
+ *  so rollback must delete them explicitly — a foreign untracked output is never
+ *  left to dirty the next tick or be staged (codex Phase F / criterion 11).
+ *  Pure; exported for the test. */
+export function untrackedDriftPaths(drifted: string[]): string[] {
+  return drifted.filter((l) => l.startsWith("??")).map(driftedPathOf);
+}
+
+/** Restore the worktree to a clean HEAD on rollback: revert tracked
+ *  modifications AND remove the untracked files that drifted this tick (codex
+ *  criterion 11). Removal is scoped to repo-relative drifted paths, so it
+ *  cannot touch anything git did not just report as newly untracked. */
+async function revertWorktree(drifted: string[]): Promise<void> {
+  await runGit(["checkout", "--", "."]);
+  for (const p of untrackedDriftPaths(drifted)) {
+    await Deno.remove(join(ROOT, p), { recursive: true }).catch(() => {});
+  }
+}
+
 const INERT_LAW_WATCH: LawWatch = {
   ran: false,
   state: "unavailable",
@@ -1076,7 +1096,7 @@ async function handleAct(useJson: boolean, push: boolean): Promise<void> {
   // Verify before committing; revert if the regenerated state is unsound.
   const postRegen = await localGatesFailure();
   if (postRegen) {
-    await runGit(["checkout", "--", "."]);
+    await revertWorktree(drifted);
     await appendActLog({ action: "reverted", drifted, gate: postRegen, pulse });
     report({
       action: "reverted",
@@ -1094,7 +1114,7 @@ async function handleAct(useJson: boolean, push: boolean): Promise<void> {
   const driftedPaths = drifted.map(driftedPathOf);
   const outside = pathsOutsideWriteSet(driftedPaths);
   if (outside.length > 0) {
-    await runGit(["checkout", "--", "."]);
+    await revertWorktree(drifted);
     await appendActLog({
       action: "refused",
       reason: "write_set_violation",
@@ -1113,7 +1133,7 @@ async function handleAct(useJson: boolean, push: boolean): Promise<void> {
   // Full unit-test gate before publishing (codex R4 D5) — fmt+typecheck already
   // passed; tests catch behavioral breakage a deterministic regen could induce.
   if (await testUnitFails()) {
-    await runGit(["checkout", "--", "."]);
+    await revertWorktree(drifted);
     await appendActLog({
       action: "reverted",
       drifted,

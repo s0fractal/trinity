@@ -198,8 +198,60 @@ export interface OrganRunOptions {
 const ORGAN_DEFAULT_TIMEOUT_MS = 60_000;
 const ORGAN_DEFAULT_MAX_BYTES = 2_000_000;
 
-/** Run a command with a deadline + output byte cap; never throws. A timeout
- *  aborts the process and returns code 124 (conventional). */
+/** Read a child stream incrementally, capping at `maxBytes` counted in BYTES
+ *  (not UTF-16 units). On overflow it keeps only up to the cap, flags
+ *  truncation, and invokes `onOverflow` (the caller kills the child) — so a
+ *  flooding organ cannot buffer unbounded memory in the parent (codex Phase E /
+ *  F4). Never throws: a stream error (e.g. the process was killed) returns what
+ *  was read so far. */
+async function readCapped(
+  stream: ReadableStream<Uint8Array> | null,
+  maxBytes: number,
+  onOverflow: () => void,
+): Promise<{ bytes: Uint8Array; truncated: boolean }> {
+  if (!stream) return { bytes: new Uint8Array(0), truncated: false };
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  let truncated = false;
+  const reader = stream.getReader();
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      if (!value) continue;
+      if (total + value.byteLength > maxBytes) {
+        const room = Math.max(0, maxBytes - total);
+        if (room > 0) chunks.push(value.subarray(0, room));
+        total = maxBytes;
+        truncated = true;
+        onOverflow();
+        break;
+      }
+      chunks.push(value);
+      total += value.byteLength;
+    }
+  } catch {
+    /* stream errored (process killed) — keep what we have */
+  } finally {
+    try {
+      await reader.cancel();
+    } catch { /* ignore */ }
+  }
+  const bytes = new Uint8Array(total);
+  let off = 0;
+  for (const c of chunks) {
+    bytes.set(c, off);
+    off += c.byteLength;
+  }
+  return { bytes, truncated };
+}
+
+/** Run a command with a deadline + output byte cap; never throws. The child is
+ *  spawned and its streams are read incrementally (codex Phase E): a hung organ
+ *  is killed at the deadline (code 124, timed_out), and a flooding organ is
+ *  killed once its output passes the byte cap (truncated) — the cap bounds memory
+ *  consumed WHILE the process runs, not just the returned string, and counts
+ *  bytes (not UTF-16 length). */
 export async function runOrgan(
   cmd: string,
   args: string[],
@@ -207,15 +259,34 @@ export async function runOrgan(
 ): Promise<OrganRunResult> {
   const timeoutMs = opts.timeout_ms ?? ORGAN_DEFAULT_TIMEOUT_MS;
   const maxBytes = opts.max_output_bytes ?? ORGAN_DEFAULT_MAX_BYTES;
-  const abort = new AbortController();
-  // Track abort explicitly: aborting a Deno.Command may make `.output()` RESOLVE
-  // (with a killed result) rather than reject, so we can't rely on AbortError.
-  let aborted = false;
+  let timedOut = false;
+  let child: Deno.ChildProcess;
+  try {
+    child = new Deno.Command(cmd, {
+      args,
+      cwd: opts.cwd,
+      stdout: "piped",
+      stderr: "piped",
+    }).spawn();
+  } catch (e) {
+    return {
+      code: 1,
+      stdout: "",
+      stderr: e instanceof Error ? e.message : String(e),
+      timed_out: false,
+      truncated: false,
+    };
+  }
+  const kill = () => {
+    try {
+      child.kill("SIGKILL");
+    } catch { /* already exited */ }
+  };
   const timer = setTimeout(() => {
-    aborted = true;
-    abort.abort();
+    timedOut = true;
+    kill();
   }, timeoutMs);
-  const timedOut = (): OrganRunResult => ({
+  const timedOutResult = (): OrganRunResult => ({
     code: 124,
     stdout: "",
     stderr: `timeout after ${timeoutMs}ms`,
@@ -223,27 +294,26 @@ export async function runOrgan(
     truncated: false,
   });
   try {
-    const out = await new Deno.Command(cmd, {
-      args,
-      cwd: opts.cwd,
-      stdout: "piped",
-      stderr: "piped",
-      signal: abort.signal,
-    }).output();
+    // Read both streams concurrently (avoids the pipe-buffer deadlock), each
+    // capped; overflow on either kills the child.
+    const [out, err] = await Promise.all([
+      readCapped(child.stdout, maxBytes, kill),
+      readCapped(child.stderr, maxBytes, kill),
+    ]);
+    const status = await child.status;
     clearTimeout(timer);
-    if (aborted) return timedOut();
-    const rawOut = new TextDecoder().decode(out.stdout);
-    const rawErr = new TextDecoder().decode(out.stderr);
+    if (timedOut) return timedOutResult();
+    const dec = new TextDecoder();
     return {
-      code: out.code,
-      stdout: rawOut.slice(0, maxBytes),
-      stderr: rawErr.slice(0, maxBytes),
+      code: status.code,
+      stdout: dec.decode(out.bytes),
+      stderr: dec.decode(err.bytes),
       timed_out: false,
-      truncated: rawOut.length > maxBytes || rawErr.length > maxBytes,
+      truncated: out.truncated || err.truncated,
     };
   } catch (e) {
     clearTimeout(timer);
-    if (aborted) return timedOut();
+    if (timedOut) return timedOutResult();
     return {
       code: 1,
       stdout: "",

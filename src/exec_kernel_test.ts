@@ -130,3 +130,38 @@ Deno.test("read-local still allows a repo-local read", async () => {
   assertEquals(r.code, 0);
   assert(r.stdout.includes("read-ok"));
 });
+
+// ── Phase E: streaming output cap (codex x5d00_953682 F4) ───────────────────
+
+Deno.test("runOrgan - byte cap counts BYTES not UTF-16 units (multi-byte UTF-8)", async () => {
+  // "✓" (U+2713) is 3 bytes. 200 of them = 600 bytes (UTF-16 length 200). A
+  // 10-BYTE cap keeps only ~3 chars. The old `String.slice(0, maxBytes)` counted
+  // UTF-16 units and would have kept 10 whole "✓" — so a tiny char count here
+  // proves the cap is byte-based.
+  const r = await runOrgan(
+    "deno",
+    ["eval", `console.log("✓".repeat(200))`],
+    { max_output_bytes: 10 },
+  );
+  assertEquals(r.truncated, true);
+  // ~10 bytes / 3-bytes-per-char ≈ 3 chars (+ maybe one U+FFFD for a partial
+  // trailing sequence) — far below the 10-char UTF-16 slice the old code gave.
+  assert(
+    r.stdout.length <= 5,
+    `stdout was ${r.stdout.length} chars, expected <= 5 (byte-capped)`,
+  );
+});
+
+Deno.test("runOrgan - an infinite-output child is killed near the limit (does not hang/OOM)", async () => {
+  // If runOrgan buffered the whole stream this would never return. The cap must
+  // terminate the child shortly after the byte limit.
+  const r = await runOrgan(
+    "deno",
+    ["eval", `while (true) { console.log("x".repeat(1000)); }`],
+    { max_output_bytes: 5000, timeout_ms: 15000 },
+  );
+  assertEquals(r.truncated, true);
+  assertEquals(r.timed_out, false); // killed by the byte cap, not the deadline
+  const outBytes = new TextEncoder().encode(r.stdout).byteLength;
+  assert(outBytes <= 5000, `stdout was ${outBytes} bytes, expected <= 5000`);
+});

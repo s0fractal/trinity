@@ -241,3 +241,58 @@ Deno.test("analyzeTransitive - pure leaf with no imports stays readonly", async 
   assertEquals(v.unresolved, []);
   assertEquals(v.capability, "readonly");
 });
+
+// --- capability receipt binding (codex x5d00_953682 criterion 8) ---
+
+import { effectVerdictHash, sha256Hex } from "./x0013_capability.ts";
+
+Deno.test("analyzeTransitive - dependencies carry content hashes (entry first)", async () => {
+  const files: Record<string, string> = {
+    "/r/entry.ts": `import "./dep.ts"; export const a = 1;`,
+    "/r/dep.ts": `export const b = 2;`,
+  };
+  const read = (p: string) => Promise.resolve(files[p] ?? null);
+  const v = await analyzeTransitive("/r/entry.ts", read);
+  assertEquals(v.dependencies.length, 2);
+  assertEquals(v.dependencies[0].path, "/r/entry.ts"); // entry first
+  assertEquals(v.dependencies[0].hash, await sha256Hex(files["/r/entry.ts"]));
+  assertEquals(v.dependencies[1].hash, await sha256Hex(files["/r/dep.ts"]));
+});
+
+Deno.test("effectVerdictHash - stable for the same verdict, changes when code changes", async () => {
+  const mk = (body: string) => ({
+    "/r/e.ts": body,
+  });
+  const read = (f: Record<string, string>) => (p: string) =>
+    Promise.resolve(f[p] ?? null);
+  const v1 = await analyzeTransitive(
+    "/r/e.ts",
+    read(mk(`export const a = 1;`)),
+  );
+  const v1again = await analyzeTransitive(
+    "/r/e.ts",
+    read(mk(`export const a = 1;`)),
+  );
+  assertEquals(await effectVerdictHash(v1), await effectVerdictHash(v1again));
+  // a dependency content change flips the bound hash (even with same capability)
+  const v2 = await analyzeTransitive(
+    "/r/e.ts",
+    read(mk(`export const a = 2;`)),
+  );
+  assert((await effectVerdictHash(v1)) !== (await effectVerdictHash(v2)));
+});
+
+Deno.test("effectVerdictHash - differs by capability (readonly vs privileged)", async () => {
+  const read = (body: string) => (p: string) =>
+    Promise.resolve(p.endsWith("e.ts") ? body : null);
+  const ro = await analyzeTransitive("/r/e.ts", read(`export const a = 1;`));
+  const wasm = await analyzeTransitive(
+    "/r/e.ts",
+    read(
+      `export async function f(){ await WebAssembly.instantiate(new Uint8Array()); }`,
+    ),
+  );
+  assertEquals(ro.capability, "readonly");
+  assertEquals(wasm.capability, "unknown");
+  assert((await effectVerdictHash(ro)) !== (await effectVerdictHash(wasm)));
+});

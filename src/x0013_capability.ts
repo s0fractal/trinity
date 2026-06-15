@@ -289,11 +289,25 @@ export function extractRelativeImports(
   return [...new Set(specs)];
 }
 
+/** sha256 of a UTF-8 string, hex. */
+export async function sha256Hex(text: string): Promise<string> {
+  const buf = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(text),
+  );
+  return Array.from(new Uint8Array(buf))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
 export interface TransitiveVerdict {
   capability: Capability;
   analysis: BehaviorAnalysis;
   /** Resolved paths actually analyzed (entry first). */
   visited: string[];
+  /** Each analyzed file with its content hash (entry first) — the dependency
+   *  set a capability receipt binds. */
+  dependencies: { path: string; hash: string }[];
   /** Resolved relative-import paths that could not be read — force `unknown`. */
   unresolved: string[];
 }
@@ -309,6 +323,7 @@ export async function analyzeTransitive(
   const visited = new Set<string>();
   const unresolved: string[] = [];
   const contents: string[] = [];
+  const dependencies: { path: string; hash: string }[] = [];
   const union: BehaviorAnalysis = {
     mutations: [],
     subprocesses: [],
@@ -328,6 +343,7 @@ export async function analyzeTransitive(
       continue;
     }
     contents.push(content);
+    dependencies.push({ path, hash: await sha256Hex(content) });
     const a = analyzeBehaviorWithAST(content, path);
     for (const k of EFFECT_KEYS) union[k].push(...a[k]);
     for (const spec of extractRelativeImports(content, path)) {
@@ -341,5 +357,30 @@ export async function analyzeTransitive(
   const capability = unresolved.length > 0
     ? "unknown"
     : classifyCapability(union, contents.join("\n"));
-  return { capability, analysis: union, visited: [...visited], unresolved };
+  return {
+    capability,
+    analysis: union,
+    visited: [...visited],
+    dependencies,
+    unresolved,
+  };
+}
+
+/** A content-binding hash over a transitive verdict (codex Phase C/F2 receipt):
+ *  the capability, the sorted effect set, and the sorted dependency hashes. Two
+ *  organs with the same hash have the same effect surface over the same code —
+ *  so a receipt that pins this hash is invalidated by any effch-relevant edit
+ *  anywhere in the import graph. */
+export async function effectVerdictHash(
+  verdict: TransitiveVerdict,
+): Promise<string> {
+  const canon = JSON.stringify({
+    capability: verdict.capability,
+    effects: Object.fromEntries(
+      EFFECT_KEYS.map((k) => [k, [...verdict.analysis[k]].sort()]),
+    ),
+    deps: verdict.dependencies.map((d) => d.hash).sort(),
+    unresolved: [...verdict.unresolved].sort(),
+  });
+  return await sha256Hex(canon);
 }

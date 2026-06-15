@@ -1146,6 +1146,58 @@ async function fn_eval_list_safe(): Promise<number> {
   return 0;
 }
 
+/** `t eval --explain <handle>`: the capability receipt for an organ (codex
+ *  Phase C/F2 criterion 8). Binds the transitive effect verdict + a content
+ *  hash over it, the profile `--safe` would assign, the exact deno permission
+ *  args, the organ's own content hash, and every transitive dependency's hash —
+ *  so a safe-admission decision is auditable and pinned to the exact code. */
+async function fn_eval_explain(handle: string): Promise<number> {
+  const records = await fn_load_words();
+  const found = fn_resolve_word(handle, records);
+  if (!found) {
+    console.error(`# eval: unknown handle '${handle}'`);
+    return 1;
+  }
+  const path = fn_position_to_path(found.position);
+  if (!(await fn_exists(path))) {
+    console.error(`# eval: no organ at ${path}`);
+    return 1;
+  }
+  const { analyzeTransitive, effectVerdictHash } = await import(
+    "./x0013_capability.ts"
+  );
+  const verdict = await analyzeTransitive(path, fn_make_reader());
+  const admitted = verdict.capability === "readonly";
+  const rel = (p: string) =>
+    p.startsWith(SUBSTRATE_ROOT + "/") ? p.slice(SUBSTRATE_ROOT.length + 1) : p;
+  console.log(JSON.stringify(
+    {
+      type: "capability_receipt",
+      position: "0/01",
+      handle: found.primary,
+      organ: rel(path),
+      capability: verdict.capability,
+      effects: verdict.analysis,
+      admitted_by_safe: admitted,
+      profile: admitted ? "read-local" : null,
+      deno_args: admitted ? permissionFlags("read-local") : null,
+      organ_hash: verdict.dependencies[0]?.hash ?? null,
+      dependencies: verdict.dependencies.map((d) => ({
+        path: rel(d.path),
+        hash: d.hash,
+      })),
+      unresolved: verdict.unresolved.map(rel),
+      verdict_hash: await effectVerdictHash(verdict),
+      note: admitted
+        ? "admitted by `t eval --safe`; confined to read-local at runtime"
+        : `NOT admitted by --safe (capability: ${verdict.capability}); runnable only via the privileged human CLI`,
+    },
+    null,
+    2,
+  ));
+  return 0;
+}
+
 /** Real leaf executor: resolve a handle → run its organ → JSON payload. The
  *  `profile` confines the leaf's Deno permissions (codex Phase C); the safe path
  *  passes `read-local`. */
@@ -1210,6 +1262,12 @@ if (import.meta.main) {
     // (discovery surface; pairs with the --safe enforcement gate).
     if (rest.includes("--list-safe")) {
       Deno.exit(await fn_eval_list_safe());
+    }
+    // `--explain <handle>`: the capability receipt for one organ (verdict +
+    // hashes + profile + deno args) — auditable safe-admission decision.
+    if (rest.includes("--explain")) {
+      const h = rest.find((a) => !a.startsWith("--")) ?? "";
+      Deno.exit(await fn_eval_explain(h));
     }
     // `--safe`: admit only readonly-classified handles (Phase E registry gate).
     const safe = rest.includes("--safe");

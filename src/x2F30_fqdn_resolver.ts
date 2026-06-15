@@ -63,15 +63,22 @@ export interface Resolution {
   candidates: Candidate[]; // all hits, in precedence order
 }
 
-// Skip dependency / build-output directories: they are gitignored, hold no
-// meaningful FQDN content, and otherwise drown the namespace (omega's Rust
-// `target/` alone adds ~19k `.o`/artifact files). Matched as full path
-// components, so a file literally named `target.md` is unaffected.
-const SKIP = /(^|\/)(node_modules|\.git|target)(\/|$)/;
+// Skip dependency/build-output dirs and any HIDDEN directory: they are
+// gitignored or infra, hold no meaningful FQDN content, and otherwise drown the
+// namespace — omega's Rust `target/` alone adds ~19k `.o` artifacts, and
+// liquid's `.liquid/` runtime dir adds ~59 `.sqlite`/`.bin` state files. The
+// hidden-dir clause (`/.<name>/`) generalizes the old `.git` skip to `.liquid`,
+// `.github`, `.vscode`, `.cargo`, etc. Matched as full path components, so a
+// file named `target.md` — and a hidden FILE like `.gitignore` — are kept.
+// IMPORTANT: callers test the path RELATIVE to the root, never the absolute
+// path, so a root that itself lives under a hidden dir (e.g. the cloud memory
+// root `~/.claude/.../memory`) is not wrongly skipped.
+const SKIP = /(^|\/)(node_modules|target)(\/|$)|(^|\/)\.[^/]+\//;
 
-/** True if a path lies in a dependency/build-output directory the index skips.
- *  Matches only full path components — `target.md` is content, `target/x.o` is
- *  not. Exported for the test. */
+/** True if a (root-relative) path lies in a dependency/build/hidden directory
+ *  the index skips. Matches only full path components — `target.md` and the
+ *  hidden file `.gitignore` are content; `target/x.o` and `.liquid/db.sqlite`
+ *  are not. Exported for the test. */
 export function isSkippedPath(path: string): boolean {
   return SKIP.test(path);
 }
@@ -154,8 +161,10 @@ export async function buildIndex(roots: Root[]): Promise<Index> {
           maxDepth,
         })
       ) {
-        if (SKIP.test(e.path)) continue;
         const rel = relative(root, e.path);
+        // Test the ROOT-RELATIVE path: a root under a hidden dir (e.g. the
+        // cloud memory root) must not be skipped wholesale.
+        if (isSkippedPath(rel)) continue;
         files++;
         const base = basename(e.path);
         for (const { key, form } of formsOf(base)) {

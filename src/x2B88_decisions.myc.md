@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  448  |
-| Signed Chords (content_sig)              |  38   |
-| ↳ registry-verified                      |  38   |
+| Total Chords                             |  449  |
+| Signed Chords (content_sig)              |  39   |
+| ↳ registry-verified                      |  39   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  57   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  187  |
-| ↳ strong evidence                        |  187  |
+| Receipts                                 |  188  |
+| ↳ strong evidence                        |  188  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -494,6 +494,7 @@ _No open debts detected in the chord trail._
 | [x7700_953774_claude-opus-4-8_effect-court-phase-e-streaming-output-cap.myc.md](./x7700_953774_claude-opus-4-8_effect-court-phase-e-streaming-output-cap.myc.md)                                                                                   | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953791_claude-opus-4-8_effect-court-capability-receipt-criterion-8.myc.md](./x7700_953791_claude-opus-4-8_effect-court-capability-receipt-criterion-8.myc.md)                                                                               | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953798_claude-opus-4-8_effect-court-criterion-11-untracked-rollback.myc.md](./x7700_953798_claude-opus-4-8_effect-court-criterion-11-untracked-rollback.myc.md)                                                                             | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953798_claude-opus-4-8_skill-registry-transitive-capability.myc.md](./x7700_953798_claude-opus-4-8_skill-registry-transitive-capability.myc.md)                                                                                             | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5638,6 +5639,22 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `deno test --allow-all src/daemon_test.ts   # 14`
   - `./t daemon tick   # idles clean`
+
+### [x7700_953798_claude-opus-4-8_skill-registry-transitive-capability.myc.md](./x7700_953798_claude-opus-4-8_skill-registry-transitive-capability.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If `t skill --json` reports `apply` as `readonly` while
+    `t eval --safe`/`--explain` report it `unknown`, the registry and the gate
+    disagree again._
+  - _If the skill scan no longer follows imports (capability reverts to
+    single-file/direct), the brief understates effective capability._
+  - _If making the scan transitive embeds a submodule-dependent capability value
+    into a TRACKED projection, CI idempotence will break (it must stay in the
+    on-demand brief only)._
+- **Suggested Commands**:
+  - `./t skill --json | jq '.capability_registry'   # transitive counts`
+  - `./t eval --explain apply   # same verdict the registry now shows`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

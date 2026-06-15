@@ -11,9 +11,11 @@ import {
   isSkippedPath,
   kindOf,
   listNames,
+  matchSnippet,
   type Resolution,
   resolveFqdn,
   resolveFromIndex,
+  searchContent,
   showHeader,
 } from "./x2F30_fqdn_resolver.ts";
 
@@ -441,4 +443,58 @@ Deno.test("isSkippedPath - excludes build/dep/hidden dirs, keeps content (FQDN n
   assert(!isSkippedPath(".gitignore"));
   assert(!isSkippedPath("MEMORY.md"));
   assert(!isSkippedPath("project_substrate_facts.md"));
+});
+
+Deno.test("matchSnippet - returns whitespace-collapsed context around the first match", () => {
+  const s = matchSnippet("the quick\n  brown   FOX jumps", "fox");
+  assert(s !== null);
+  assert(s!.toLowerCase().includes("fox"));
+  assert(!s!.includes("\n")); // collapsed
+  assertEquals(matchSnippet("nothing here", "absent"), null);
+});
+
+Deno.test("searchContent - matches name and content; name-matches rank first", async () => {
+  const { roots, cleanup } = await fixture();
+  try {
+    const index = await buildIndex(roots);
+    // Inject a reader so content is deterministic regardless of fixture bodies.
+    const read = (p: string) =>
+      Promise.resolve(
+        p.includes("only_here") ? "contains the WORD beacon inside" : "nope",
+      );
+    const r = await searchContent(index, "beacon", { read, limit: 10 });
+    const names = r.matches.map((m) => m.name);
+    assert(names.includes("only_here.ts"), "content match found");
+    const hit = r.matches.find((m) => m.name === "only_here.ts")!;
+    assertEquals(hit.in_name, false);
+    assert(hit.snippet?.toLowerCase().includes("beacon"));
+
+    // A name-substring match is found even when content does not match.
+    const byName = await searchContent(index, "only_here", { read, limit: 10 });
+    const nh = byName.matches.find((m) => m.name === "only_here.ts")!;
+    assertEquals(nh.in_name, true);
+  } finally {
+    await cleanup();
+  }
+});
+
+Deno.test("searchContent - kind filter + truncation are honest", async () => {
+  const { roots, cleanup } = await fixture();
+  try {
+    const index = await buildIndex(roots);
+    const read = () => Promise.resolve("ubiquitous token everywhere");
+    const all = await searchContent(index, "ubiquitous", { read, limit: 1 });
+    assert(all.total >= 2, "multiple files contain the token");
+    assertEquals(all.matches.length, 1); // limit honored
+    assertEquals(all.truncated, all.total - 1); // explicit, no silent cap
+    // kind filter narrows the scan to one kind.
+    const organs = await searchContent(index, "ubiquitous", {
+      read,
+      kind: "organ",
+      limit: 50,
+    });
+    assert(organs.matches.every((m) => m.kind === "organ"));
+  } finally {
+    await cleanup();
+  }
 });

@@ -270,6 +270,112 @@ export function listNames(
   };
 }
 
+export interface SearchHit {
+  name: string; // canonical address that matched
+  kind: NameKind;
+  rel: string; // winning candidate's path relative to its root
+  root: string; // root basename the winner lives in
+  in_name: boolean; // the query matched the name itself
+  snippet: string | null; // one-line context around the first content match
+}
+
+/** A one-line snippet around the first case-insensitive match of `q` in `text`,
+ *  whitespace-collapsed and bounded. Pure; exported for the test. */
+export function matchSnippet(
+  text: string,
+  q: string,
+  ctx = 48,
+): string | null {
+  const i = text.toLowerCase().indexOf(q.toLowerCase());
+  if (i < 0) return null;
+  const start = Math.max(0, i - ctx);
+  const end = Math.min(text.length, i + q.length + ctx);
+  const slice = (start > 0 ? "…" : "") + text.slice(start, end) +
+    (end < text.length ? "…" : "");
+  return slice.replace(/\s+/g, " ").trim();
+}
+
+/**
+ * Content search across the resolvable namespace (the discovery complement of
+ * `list`, which only sees names): for each canonical name, read its
+ * precedence-winning file and match `query` against the name and the content.
+ * "FQDN network for people" — find a chord/organ/doc by what it SAYS, not only
+ * by a name you already know. Read is injected (testable, bounded); files over
+ * `maxBytes` are name-matched only. Bounded with an explicit truncation count.
+ */
+export async function searchContent(
+  index: Index,
+  query: string,
+  opts: {
+    kind?: NameKind;
+    limit?: number;
+    maxBytes?: number;
+    read?: (path: string) => Promise<string | null>;
+  } = {},
+): Promise<
+  {
+    query: string;
+    scanned: number;
+    total: number;
+    matches: SearchHit[];
+    truncated: number;
+  }
+> {
+  const limit = opts.limit ?? 25;
+  const maxBytes = opts.maxBytes ?? 262_144;
+  const q = query.toLowerCase();
+  const read = opts.read ??
+    (async (p: string) => {
+      try {
+        const info = await Deno.stat(p);
+        if (info.size > maxBytes) return null; // too big — name-match only
+        return await Deno.readTextFile(p);
+      } catch {
+        return null;
+      }
+    });
+  const hits: SearchHit[] = [];
+  let scanned = 0;
+  for (const [key, stored] of index.byKey) {
+    const exact = stored.filter((s) => s.matchForm === "exact");
+    if (exact.length === 0) continue; // alias-only key, not a canonical name
+    const kind = kindOf(key);
+    if (opts.kind && kind !== opts.kind) continue;
+    // Precedence winner: lowest root index, then shallowest path.
+    const winner = [...exact].sort((a, b) =>
+      a.rootIndex - b.rootIndex || a.depth - b.depth
+    )[0];
+    const inName = key.toLowerCase().includes(q);
+    scanned++;
+    const content = await read(winner.path);
+    const snippet = content ? matchSnippet(content, query) : null;
+    if (inName || snippet) {
+      hits.push({
+        name: key,
+        kind,
+        rel: winner.rel,
+        root: basename(winner.root),
+        in_name: inName,
+        snippet,
+      });
+    }
+  }
+  // Name matches first (most likely intent), then by name; bounded.
+  hits.sort((a, b) =>
+    (a.in_name === b.in_name ? 0 : a.in_name ? -1 : 1) ||
+    a.name.localeCompare(b.name)
+  );
+  const total = hits.length;
+  const matches = hits.slice(0, limit);
+  return {
+    query,
+    scanned,
+    total,
+    matches,
+    truncated: Math.max(0, total - matches.length),
+  };
+}
+
 /** Resolve one query against a prebuilt index, hashing only the files it hits. */
 export async function resolveFromIndex(
   index: Index,
@@ -456,12 +562,44 @@ if (import.meta.main) {
     Deno.exit(0);
   }
 
+  // `search <query> [--kind=K] [--limit=N]` — find content by keyword across
+  // the namespace (read-only). The complement of `list` (names) and resolve
+  // (a known address): discover what the network SAYS.
+  if (args[0] === "search") {
+    const positional = args.slice(1).filter((a) => !a.startsWith("--"));
+    const query = positional.join(" ").trim();
+    if (!query) {
+      console.error("usage: resolver.ts search <query> [--kind=K] [--limit=N]");
+      Deno.exit(1);
+    }
+    const limitArg = args.find((a) => a.startsWith("--limit="));
+    const limit = limitArg ? Number(limitArg.split("=")[1]) : 25;
+    const kindArg = args.find((a) => a.startsWith("--kind="))?.split("=")[1];
+    const index = await buildIndex(roots);
+    const result = await searchContent(index, query, {
+      kind: kindArg as NameKind | undefined,
+      limit,
+    });
+    console.log(JSON.stringify(
+      {
+        type: "fqdn_search",
+        kind: kindArg ?? null,
+        files_indexed: index.files,
+        ...result,
+      },
+      null,
+      2,
+    ));
+    Deno.exit(0);
+  }
+
   const fqdn = args.find((a) => !a.startsWith("--"));
   if (!fqdn) {
     console.error(
       "usage: resolver.ts [--cloud] <fqdn-or-handle-or-slug>\n" +
         "       resolver.ts --show <fqdn>                   (resolve AND print its content)\n" +
-        "       resolver.ts list [substring] [--limit=N]   (discover the namespace)",
+        "       resolver.ts list [substring] [--limit=N]   (discover the namespace)\n" +
+        "       resolver.ts search <query> [--kind=K]      (find content by keyword)",
     );
     Deno.exit(1);
   }

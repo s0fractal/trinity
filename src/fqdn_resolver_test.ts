@@ -288,6 +288,8 @@ Deno.test("kindOf — names classify into function / knowledge / record by name 
   assertEquals(kindOf("x8D00_roadmap.myc.md"), "doc"); // generated doc, not a chord
   assertEquals(kindOf("README.md"), "doc");
   assertEquals(kindOf("canon-vectors.json"), "data");
+  assertEquals(kindOf("x0001_glossary.ndjson"), "data"); // line-delimited JSON
+  assertEquals(kindOf("index.jsonl"), "data");
   assertEquals(kindOf("x0200_shim.sh"), "script");
   assertEquals(kindOf("lib.rs"), "rust");
   assertEquals(kindOf("image.png"), "other");

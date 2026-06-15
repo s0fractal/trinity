@@ -193,7 +193,7 @@ export async function buildIndex(roots: Root[]): Promise<Index> {
 //   test   — .ts test
 //   chord  — .myc.md whose name carries a chord body (block_voice_slug): a record
 //   doc    — .myc.md / .md prose (knowledge)
-//   data   — .json
+//   data   — .json / .ndjson / .jsonl (incl. the glossary, index, graph)
 //   script — .sh   |   rust — .rs   |   other — anything else
 export type NameKind =
   | "organ"
@@ -212,7 +212,10 @@ export function kindOf(name: string): NameKind {
     const handle = name.replace(COORD_PREFIX, "");
     return CHORD_BODY.test(handle) ? "chord" : "doc";
   }
-  if (name.endsWith(".json")) return "data";
+  if (
+    name.endsWith(".json") || name.endsWith(".ndjson") ||
+    name.endsWith(".jsonl")
+  ) return "data";
   if (name.endsWith(".sh")) return "script";
   if (name.endsWith(".rs")) return "rust";
   return "other";

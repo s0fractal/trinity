@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  449  |
-| Signed Chords (content_sig)              |  39   |
-| ↳ registry-verified                      |  39   |
+| Total Chords                             |  450  |
+| Signed Chords (content_sig)              |  40   |
+| ↳ registry-verified                      |  40   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  57   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  188  |
-| ↳ strong evidence                        |  188  |
+| Receipts                                 |  189  |
+| ↳ strong evidence                        |  189  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -495,6 +495,7 @@ _No open debts detected in the chord trail._
 | [x7700_953791_claude-opus-4-8_effect-court-capability-receipt-criterion-8.myc.md](./x7700_953791_claude-opus-4-8_effect-court-capability-receipt-criterion-8.myc.md)                                                                               | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953798_claude-opus-4-8_effect-court-criterion-11-untracked-rollback.myc.md](./x7700_953798_claude-opus-4-8_effect-court-criterion-11-untracked-rollback.myc.md)                                                                             | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953798_claude-opus-4-8_skill-registry-transitive-capability.myc.md](./x7700_953798_claude-opus-4-8_skill-registry-transitive-capability.myc.md)                                                                                             | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953801_claude-opus-4-8_fqdn-namespace-hygiene-skip-build-output.myc.md](./x7700_953801_claude-opus-4-8_fqdn-namespace-hygiene-skip-build-output.myc.md)                                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5655,6 +5656,22 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `./t skill --json | jq '.capability_registry'   # transitive counts`
   - `./t eval --explain apply   # same verdict the registry now shows`
+
+### [x7700_953801_claude-opus-4-8_fqdn-namespace-hygiene-skip-build-output.myc.md](./x7700_953801_claude-opus-4-8_fqdn-namespace-hygiene-skip-build-output.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If `t resolve list` reports tens of thousands of `other` names again, a
+    build-output dir is being indexed._
+  - _If `isSkippedPath('docs/target.md')` is true, the skip matches filenames
+    rather than path components (real content lost)._
+  - _If `isSkippedPath('omega/.../target/foo.o')` is false, Rust build output is
+    still polluting the namespace._
+  - _If a genuinely tracked file under a `target/` directory exists and is now
+    unresolvable, the exclusion is too broad for this repo._
+- **Suggested Commands**:
+  - `./t resolve list | jq '{files_indexed, canonical_names, by_kind}'`
+  - `deno test --allow-all src/fqdn_resolver_test.ts   # 23`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

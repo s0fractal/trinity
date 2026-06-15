@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  444  |
-| Signed Chords (content_sig)              |  34   |
-| ↳ registry-verified                      |  34   |
+| Total Chords                             |  445  |
+| Signed Chords (content_sig)              |  35   |
+| ↳ registry-verified                      |  35   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  57   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  183  |
-| ↳ strong evidence                        |  183  |
+| Receipts                                 |  184  |
+| ↳ strong evidence                        |  184  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -490,6 +490,7 @@ _No open debts detected in the chord trail._
 | [x7700_953684_claude-opus-4-8_effect-court-phase-a-fail-closed-detection.myc.md](./x7700_953684_claude-opus-4-8_effect-court-phase-a-fail-closed-detection.myc.md)                                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953691_claude-opus-4-8_effect-court-phase-c-runtime-permission-profiles.myc.md](./x7700_953691_claude-opus-4-8_effect-court-phase-c-runtime-permission-profiles.myc.md)                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953693_claude-opus-4-8_effect-court-phase-b-transitive-closure.myc.md](./x7700_953693_claude-opus-4-8_effect-court-phase-b-transitive-closure.myc.md)                                                                                       | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953773_claude-opus-4-8_effect-court-phase-f-generator-registry.myc.md](./x7700_953773_claude-opus-4-8_effect-court-phase-f-generator-registry.myc.md)                                                                                       | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5568,6 +5569,23 @@ _No open debts detected in the chord trail._
   - `./t eval --safe '[\"apply\",\"identity\",\"state\"]'   # rejected`
   - `./t eval --safe '[\"health\"]'   # still admitted (genuinely readonly)`
   - `deno test --allow-read --allow-env src/skill_gen_test.ts   # 14`
+
+### [x7700_953773_claude-opus-4-8_effect-court-phase-f-generator-registry.myc.md](./x7700_953773_claude-opus-4-8_effect-court-phase-f-generator-registry.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If `regenerateProjections()` and `DAEMON_WRITE_SET` are sourced from two
+    different lists again, the F5 drift reopened._
+  - _If a daemon `memory`/`probes`/`roadmap` regen output is flagged by
+    `pathsOutsideWriteSet`, the write-set still omits a legitimate generator
+    output._
+  - _If `generatorOutputOverlaps()` is non-empty, two generators claim the same
+    path (ownership is not exclusive)._
+  - _If the daemon stops regenerating roadmap, the stable self-description is no
+    longer fully maintained._
+- **Suggested Commands**:
+  - `deno test --allow-all src/daemon_test.ts   # 13`
+  - `./t daemon tick   # idles clean; regen (incl. roadmap) leaves no drift`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

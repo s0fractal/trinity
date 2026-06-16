@@ -727,7 +727,7 @@ export interface ResolverIndexArtifact {
  *  rel+size+mtime — no content read, so freshness checks stay fast. */
 async function indexFingerprint(index: Index): Promise<string> {
   const rows: string[] = [];
-  for (const [key, stored] of index.byKey) {
+  for (const [, stored] of index.byKey) {
     const exact = stored.filter((s) => s.matchForm === "exact");
     if (exact.length === 0) continue;
     const w = [...exact].sort((a, b) =>
@@ -740,10 +740,12 @@ async function indexFingerprint(index: Index): Promise<string> {
       rows.push(`${w.rel}|?`);
     }
   }
-  return await blake3HexStr(rows.sort().join("\n"));
+  return blake3HexStr(rows.sort().join("\n"));
 }
 
-async function blake3HexStr(s: string): Promise<string> {
+// Hash a string with the same BLAKE3 regime as content hashing. Sync — blake3
+// is synchronous, so this carries no Promise (callers need not await).
+function blake3HexStr(s: string): string {
   return blake3Hex(new TextEncoder().encode(s));
 }
 
@@ -788,7 +790,7 @@ export async function buildResolverIndex(
     });
   }
   entries.sort((a, b) => a.name.localeCompare(b.name));
-  const source_hash = await blake3HexStr(
+  const source_hash = blake3HexStr(
     entries.map((e) => `${e.name}|${e.content_hash}`).join("\n"),
   );
   return {

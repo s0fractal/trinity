@@ -58,7 +58,8 @@
     "chord:translate": "deno run --allow-net src/x4001_chord.ts translate",
     "chord:parse": "deno run --allow-net src/x4001_chord.ts parse",
     "chord:migrate": "deno run --allow-read --allow-write src/x8F20_chord_migrate.ts",
-    "coordinates": "deno run --allow-read --allow-write --allow-run src/x8900_coordinate_guide_gen.ts"
+    "coordinates": "deno run --allow-read --allow-write --allow-run src/x8900_coordinate_guide_gen.ts",
+    "coherence": "deno run --allow-read src/x6600_coherence.ts"
   },
   // Canonical-address bridge: `import "myc.md/src/foo.myc.md"` resolves to the
   // virtual host served by x5510_myc_proxy.ts (run `deno task proxy`, then point

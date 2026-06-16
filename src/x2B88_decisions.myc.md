@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  464  |
-| Signed Chords (content_sig)              |  52   |
-| ↳ registry-verified                      |  52   |
+| Total Chords                             |  465  |
+| Signed Chords (content_sig)              |  53   |
+| ↳ registry-verified                      |  53   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  58   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  200  |
-| ↳ strong evidence                        |  200  |
+| Receipts                                 |  201  |
+| ↳ strong evidence                        |  201  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -510,6 +510,7 @@ _No open debts detected in the chord trail._
 | [x7700_953950_claude-opus-4-8_hears-link-validation-diagnostic.myc.md](./x7700_953950_claude-opus-4-8_hears-link-validation-diagnostic.myc.md)                                                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953952_claude-opus-4-8_fqdn-network-overview-front-door.myc.md](./x7700_953952_claude-opus-4-8_fqdn-network-overview-front-door.myc.md)                                                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953989_claude-opus-4-8_research-priorities-executed.myc.md](./x7700_953989_claude-opus-4-8_research-priorities-executed.myc.md)                                                                                                             | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953993_claude-opus-4-8_phase-coherence-grounded.myc.md](./x7700_953993_claude-opus-4-8_phase-coherence-grounded.myc.md)                                                                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5915,6 +5916,21 @@ _No open debts detected in the chord trail._
   - `gh run list --branch main --limit 1   # cross-substrate + verify both green`
   - `deno task coordinates && deno task test:unit   # onboarding gen + 245 tests`
   - `./t resolve overview --pretty          # the people-facing front door`
+
+### [x7700_953993_claude-opus-4-8_phase-coherence-grounded.myc.md](./x7700_953993_claude-opus-4-8_phase-coherence-grounded.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If `t coherence` reports r outside [0,1], the order-parameter math is
+    wrong._
+  - _If r ≠ 1 for an all-aligned phase set or ≠ 0 for an antipodal/uniform set,
+    the Kuramoto formula is broken (pinned by coherence_test)._
+  - _If this is presented anywhere as the full Free Energy Principle /
+    variational free energy rather than a v0 structural coherence measure, it is
+    overclaiming._
+- **Suggested Commands**:
+  - `deno task coherence --pretty   # r over the organ dipole field`
+  - `deno test --allow-all src/coherence_test.ts   # 4`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

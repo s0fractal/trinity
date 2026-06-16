@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     9      |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    464     |
+| dynamic topology  |    465     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **563**   |
+| **Total**         |  **564**   |
 
 ## Runtime Cache Diagnostics
 
@@ -573,6 +573,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x7700_953950_claude-opus-4-8_hears-link-validation-diagnostic.myc.md](../src/x7700_953950_claude-opus-4-8_hears-link-validation-diagnostic.myc.md)                                                                                                     | canonical        | src/x7700_953950_claude-opus-4-8_hears-link-validation-diagnostic.myc.md                                                   | keep        |                              |
 | dynamic topology  | [src/x7700_953952_claude-opus-4-8_fqdn-network-overview-front-door.myc.md](../src/x7700_953952_claude-opus-4-8_fqdn-network-overview-front-door.myc.md)                                                                                                     | canonical        | src/x7700_953952_claude-opus-4-8_fqdn-network-overview-front-door.myc.md                                                   | keep        |                              |
 | dynamic topology  | [src/x7700_953989_claude-opus-4-8_research-priorities-executed.myc.md](../src/x7700_953989_claude-opus-4-8_research-priorities-executed.myc.md)                                                                                                             | canonical        | src/x7700_953989_claude-opus-4-8_research-priorities-executed.myc.md                                                       | keep        |                              |
+| dynamic topology  | [src/x7700_953993_claude-opus-4-8_phase-coherence-grounded.myc.md](../src/x7700_953993_claude-opus-4-8_phase-coherence-grounded.myc.md)                                                                                                                     | canonical        | src/x7700_953993_claude-opus-4-8_phase-coherence-grounded.myc.md                                                           | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](../src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | canonical        | src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](../src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | canonical        | src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md                                                     | keep        |                              |
 | dynamic topology  | [src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](../src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | canonical        | src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md                                                      | keep        |                              |

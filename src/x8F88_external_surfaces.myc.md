@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     8      |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    462     |
+| dynamic topology  |    463     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **560**   |
+| **Total**         |  **561**   |
 
 ## Runtime Cache Diagnostics
 
@@ -282,6 +282,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x3300_953571_antigravity_trinity-vector-analysis-and-refactoring-vision.myc.md](../src/x3300_953571_antigravity_trinity-vector-analysis-and-refactoring-vision.myc.md)                                                                                 | canonical        | src/x3300_953571_antigravity_trinity-vector-analysis-and-refactoring-vision.myc.md                                         | keep        |                              |
 | dynamic topology  | [src/x3300_953632_antigravity_digital-niche-expansion-vision-and-tactics.myc.md](../src/x3300_953632_antigravity_digital-niche-expansion-vision-and-tactics.myc.md)                                                                                         | canonical        | src/x3300_953632_antigravity_digital-niche-expansion-vision-and-tactics.myc.md                                             | keep        |                              |
 | dynamic topology  | [src/x3300_953947_antigravity_super-deep-ecosystem-analysis-and-digital-life-ref.myc.md](../src/x3300_953947_antigravity_super-deep-ecosystem-analysis-and-digital-life-ref.myc.md)                                                                         | canonical        | src/x3300_953947_antigravity_super-deep-ecosystem-analysis-and-digital-life-ref.myc.md                                     | keep        |                              |
+| dynamic topology  | [src/x3300_953965_claude-opus-4-8_global-research-priority-directions.myc.md](../src/x3300_953965_claude-opus-4-8_global-research-priority-directions.myc.md)                                                                                               | canonical        | src/x3300_953965_claude-opus-4-8_global-research-priority-directions.myc.md                                                | keep        |                              |
 | dynamic topology  | [src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](../src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | canonical        | src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](../src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | canonical        | src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md                                              | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](../src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | canonical        | src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md                                                      | keep        |                              |

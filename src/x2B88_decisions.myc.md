@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  462  |
-| Signed Chords (content_sig)              |  50   |
-| ↳ registry-verified                      |  50   |
+| Total Chords                             |  463  |
+| Signed Chords (content_sig)              |  51   |
+| ↳ registry-verified                      |  51   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  58   |
 | Unresolved Proposals (Heuristic)         |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  158  |
+| Other Observations                       |  159  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -220,6 +220,7 @@ _No open debts detected in the chord trail._
 | [x3300_953571_antigravity_trinity-vector-analysis-and-refactoring-vision.myc.md](./x3300_953571_antigravity_trinity-vector-analysis-and-refactoring-vision.myc.md)                                                                                 | **OTHER**    | antigravity        |   0   |   0    |
 | [x3300_953632_antigravity_digital-niche-expansion-vision-and-tactics.myc.md](./x3300_953632_antigravity_digital-niche-expansion-vision-and-tactics.myc.md)                                                                                         | **OTHER**    | antigravity        |   0   |   0    |
 | [x3300_953947_antigravity_super-deep-ecosystem-analysis-and-digital-life-ref.myc.md](./x3300_953947_antigravity_super-deep-ecosystem-analysis-and-digital-life-ref.myc.md)                                                                         | **OTHER**    | antigravity        |   0   |   0    |
+| [x3300_953965_claude-opus-4-8_global-research-priority-directions.myc.md](./x3300_953965_claude-opus-4-8_global-research-priority-directions.myc.md)                                                                                               | **OTHER**    | claude-opus-4-8    |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -2471,6 +2472,27 @@ _No open debts detected in the chord trail._
 - **Expected After Running**:
   - _The target proposal no longer appears as the highest-pressure unresolved
     item unless a stronger item remains._
+
+### [x3300_953965_claude-opus-4-8_global-research-priority-directions.myc.md](./x3300_953965_claude-opus-4-8_global-research-priority-directions.myc.md)
+
+- **Category**: `OTHER` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If git author stats show more than one human author, the bus-factor-1
+    finding is wrong (checked: 732/732 commits are s0fractal; voices are
+    message/filename attribution)._
+  - _If FQDN_SEMANTIC_DNS.v1.0 (status:active) is actually implemented as
+    specified (physical hash-FQDN + ledger + ZK resolution), the
+    contract-honesty priority is moot — it is not; x2F30 is a local filesystem
+    index._
+  - _If FEP/Kuramoto already computes a non-null F_total / phase_coherence over
+    real state, the deprioritize-FEP call is wrong (checked: both null in
+    x7B88)._
+  - _If the cross-substrate thesis is already CI-verified, P2 is moot (checked:
+    ci.yml sets submodules:false, strips workspace, excludes x5F00/x5F10)._
+- **Suggested Commands**:
+  - `git log --format='%an' | sort | uniq -c   # author concentration`
+  - `grep -E '^status|^version' contracts/*.md  # versioned-aspiration audit`
+  - `deno run -A src/x2F30_fqdn_resolver.ts overview --pretty  # the outward thread`
 
 ### [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)
 

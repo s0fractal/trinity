@@ -278,6 +278,20 @@ Until then, this contract serves as **scientific scaffolding** for chord
 proposals that reference Friston-aligned mechanics. References to F, ∂F/∂s, q,
 p, etc. in chords should resolve to definitions here.
 
+### 10b. First real measurement (2026-06-16)
+
+The Kuramoto coherence `r` used above (`global_field_term(r)`, §10.3) was purely
+theoretical until now. `src/x6600_coherence.ts` (`t coherence`) computes a
+**real** `r` over the organ dipole field: each organ's `hex_dipole` is read as a
+vector in the octet plane, its angle taken as the organ's phase, and
+`r = |(1/N) Σ e^{iθ_j}| ∈ [0,1]`. First value: **r = 0.477** over 83
+dipole-bearing organs (receipt `x7700_953993`).
+
+This is a **v0 structural coherence measure, not `F_total`** (per §11
+anti-overreach) — but the open `global_field_term(r)` derivation can now be
+exercised against a real, falsifiable number instead of `null`. It is the first
+operational foothold under this otherwise-aspirational contract.
+
 ## 11. Anti-overreach
 
 This framework is offered as one **formal lens**, not the only truth about

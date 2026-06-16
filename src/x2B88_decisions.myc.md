@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  452  |
-| Signed Chords (content_sig)              |  42   |
-| ↳ registry-verified                      |  42   |
+| Total Chords                             |  453  |
+| Signed Chords (content_sig)              |  43   |
+| ↳ registry-verified                      |  43   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  57   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  191  |
-| ↳ strong evidence                        |  191  |
+| Receipts                                 |  192  |
+| ↳ strong evidence                        |  192  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -498,6 +498,7 @@ _No open debts detected in the chord trail._
 | [x7700_953801_claude-opus-4-8_fqdn-namespace-hygiene-skip-build-output.myc.md](./x7700_953801_claude-opus-4-8_fqdn-namespace-hygiene-skip-build-output.myc.md)                                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953803_claude-opus-4-8_fqdn-skip-hidden-dirs-cloud-safe.myc.md](./x7700_953803_claude-opus-4-8_fqdn-skip-hidden-dirs-cloud-safe.myc.md)                                                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953846_claude-opus-4-8_fqdn-content-search-for-people.myc.md](./x7700_953846_claude-opus-4-8_fqdn-content-search-for-people.myc.md)                                                                                                         | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953911_claude-opus-4-8_fqdn-citation-graph-navigation.myc.md](./x7700_953911_claude-opus-4-8_fqdn-citation-graph-navigation.myc.md)                                                                                                         | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5707,6 +5708,23 @@ _No open debts detected in the chord trail._
   - `./t resolve search \"capability registry\" --kind=chord`
   - `./t resolve search \"permission profile\" --kind=organ`
   - `deno test --allow-all src/fqdn_resolver_test.ts   # 26`
+
+### [x7700_953911_claude-opus-4-8_fqdn-citation-graph-navigation.myc.md](./x7700_953911_claude-opus-4-8_fqdn-citation-graph-navigation.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If `t resolve refs <chord>` reports an incoming edge from a chord whose
+    hears/closes does not name the target, the reverse index is wrong._
+  - _If a chord that hears/closes the target is MISSING from incoming, the scan
+    or stem-normalization is broken._
+  - _If `parseChordEdges` returns a hears/closes entry with a `src/` prefix or
+    `.myc.md` suffix (not stem-normalized), edge matching will silently miss._
+  - _If refs duplicates the organ-import graph (`gravity`) or proposal-closure
+    tracking (`decisions`) rather than the chord citation graph, it is
+    redundant._
+- **Suggested Commands**:
+  - `./t resolve refs x5d00_953682_codex_effect-capability-court-runtime-enforcement-and-tr`
+  - `deno test --allow-all src/fqdn_resolver_test.ts   # 28`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

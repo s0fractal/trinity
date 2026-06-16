@@ -50,14 +50,21 @@ function numericArg(args: string[], name: string, fallback: number): number {
   return Number.isFinite(n) && n >= 0 ? n : fallback;
 }
 
-function ageDays(mtime: string | undefined, nowMs: number): number | null {
+export function ageDays(
+  mtime: string | undefined,
+  nowMs: number,
+): number | null {
   if (!mtime || mtime === "unknown") return null;
   const parsed = new Date(mtime).getTime();
   if (Number.isNaN(parsed)) return null;
   return Math.max(0, Math.floor((nowMs - parsed) / 86_400_000));
 }
 
-function isRuntimeCachePruneCandidate(
+// Exported for the unit test: this is the safety gate for the destructive
+// `--prune-stale-runtime --apply` path. Each guard prevents a class of wrongful
+// deletion (git-tracked, out-of-tree/traversal, non-runtime-cache, too-fresh),
+// so a silent regression here risks data loss; the test pins every guard.
+export function isRuntimeCachePruneCandidate(
   entry: SurfaceEntry,
   tracked: Set<string>,
   minAgeDays: number,

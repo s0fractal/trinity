@@ -138,7 +138,11 @@ function i8HexToSigned(hex: string): number {
   return u8 >= 128 ? u8 - 256 : u8;
 }
 
-function parseHexDipole(
+// The functions below are the audit's match-decision core (parse the dipole
+// header → find the strongest axis → compare to the filename bucket). Exported
+// for the unit test: the CI gate asserts `mismatch == 0`, so a bug in any of
+// them would silently miscolor the gate.
+export function parseHexDipole(
   text: string,
 ): { values: number[] | null; raw: string | null } {
   const match = text.match(/hex_dipole:\s*"([^"]+)"/);
@@ -155,7 +159,9 @@ function parseHexDipole(
   return { values, raw };
 }
 
-function strongestAxes(values: number[]): { axes: number[]; mag: number } {
+export function strongestAxes(
+  values: number[],
+): { axes: number[]; mag: number } {
   let bestMag = -1;
   for (let i = 0; i < values.length; i++) {
     const mag = Math.abs(values[i]);
@@ -168,7 +174,7 @@ function strongestAxes(values: number[]): { axes: number[]; mag: number } {
   return { axes, mag: bestMag };
 }
 
-function bucketOf(
+export function bucketOf(
   relPath: string,
 ): { bucket: string; bucketInt: number | null } {
   // After flat-src: bucket is the first hex digit in the filename (x<bucket>...).
@@ -193,7 +199,7 @@ async function scanHexFiles(root: string): Promise<string[]> {
   return out.sort();
 }
 
-function coordinateHexOf(relPath: string): string | null {
+export function coordinateHexOf(relPath: string): string | null {
   const name = relPath.split("/").pop() ?? "";
   const m = name.match(/^x([0-9A-Fa-f]{4})_/);
   return m ? m[1].toUpperCase() : null;

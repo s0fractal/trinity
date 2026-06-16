@@ -87,6 +87,14 @@ deno task fixture:phi
 `audit:green` runs the currently stable gates. `audit:strict` also runs known
 unstable gates and is expected to surface active work.
 
+The substrate also measures **itself** — read-only introspection lenses over its
+own structure:
+
+```bash
+deno task gravity              # import-edge tension (coordinate Δ between organs)
+deno task coherence --pretty  # Kuramoto order parameter r over the dipole field
+```
+
 ## Explore the FQDN network
 
 The substrate is a content/coordinate-addressed network of organs, chords, and

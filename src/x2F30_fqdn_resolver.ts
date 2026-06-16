@@ -430,8 +430,15 @@ export interface RefsNode {
 
 export interface ChordRefs {
   node: RefsNode;
-  outgoing: { hears: string[]; closes: string[]; references: string[] };
-  incoming: { name: string; via: string[] }[]; // chords that cite the node
+  // `imports` is populated only for organ nodes (what this organ imports);
+  // empty for chords/docs. The others are chord-frontmatter citation edges.
+  outgoing: {
+    hears: string[];
+    closes: string[];
+    references: string[];
+    imports: string[];
+  };
+  incoming: { name: string; via: string[] }[]; // nodes that cite/import the node
 }
 
 /** Build the identity record for a resolved node (shared by refs + graph). */
@@ -494,10 +501,11 @@ export async function chordRefs(
   const node = buildRefsNode(res, target);
   const nodeStem = winner ? node.stem! : refStem(target);
 
-  let outgoing = { hears: [], closes: [], references: [] } as {
+  let outgoing = { hears: [], closes: [], references: [], imports: [] } as {
     hears: string[];
     closes: string[];
     references: string[];
+    imports: string[];
   };
   const incoming: { name: string; via: string[] }[] = [];
 
@@ -507,12 +515,22 @@ export async function chordRefs(
   }
 
   const nodeContent = await read(winner.path);
-  if (nodeContent !== null) outgoing = parseChordEdges(nodeContent);
+  if (nodeContent !== null) {
+    outgoing = {
+      ...parseChordEdges(nodeContent),
+      // imports are organ-only; a chord/doc never declares them.
+      imports: node.kind === "organ" ? parseOrganImports(nodeContent) : [],
+    };
+  }
 
   for (const [key, stored] of index.byKey) {
     const exact = stored.filter((s) => s.matchForm === "exact");
-    if (exact.length === 0 || kindOf(key) !== "chord") continue;
-    if (refStem(key) === nodeStem) continue; // skip the node itself
+    if (exact.length === 0) continue;
+    const keyKind = kindOf(key);
+    // Citation edges come from chords; import edges from organs. Skip anything
+    // that can carry neither, and skip the node itself.
+    if (keyKind !== "chord" && keyKind !== "organ") continue;
+    if (refStem(key) === nodeStem) continue;
     const w = [...exact].sort((a, b) =>
       a.rootIndex - b.rootIndex || a.depth - b.depth
     )[0];
@@ -520,22 +538,27 @@ export async function chordRefs(
     if (content === null) {
       continue;
     }
-    const edges = parseChordEdges(content);
     const via: string[] = [];
-    if (edges.hears.includes(nodeStem)) {
-      via.push("hears");
-    }
-    if (edges.closes.includes(nodeStem)) {
-      via.push("closes");
-    }
-    // Phase C: reverse references — a chord that names this node's stem in
-    // `references:` (those cite organs/files by path; stem-normalize to match).
-    if (
-      edges.references.some((r) =>
-        refStem(r) === nodeStem
-      )
-    ) {
-      via.push("references");
+    if (keyKind === "chord") {
+      const edges = parseChordEdges(content);
+      if (edges.hears.includes(nodeStem)) {
+        via.push("hears");
+      }
+      if (edges.closes.includes(nodeStem)) {
+        via.push("closes");
+      }
+      // Phase C: reverse references — a chord that names this node's stem in
+      // `references:` (those cite organs/files by path; stem-normalize to match).
+      if (
+        edges.references.some((r) =>
+          refStem(r) === nodeStem
+        )
+      ) {
+        via.push("references");
+      }
+    } else {
+      // reverse imports — an organ whose `from "...xNNNN_*.ts"` names this node.
+      if (parseOrganImports(content).includes(nodeStem)) via.push("imports");
     }
     if (via.length > 0) incoming.push({ name: key, via });
   }
@@ -543,16 +566,22 @@ export async function chordRefs(
   return { node, outgoing, incoming };
 }
 
-export type EdgeKind = "hears" | "closes" | "references";
+// `hears`/`closes`/`references` are chord-frontmatter citation edges; `imports`
+// is the codex Graph-v2 "future bridge to gravity" — an organ→organ code
+// dependency, extracted by reusing gravity's import regex over already-read
+// content (NOT a `deno info` subprocess, NOT a replacement for x6020_gravity's
+// tension report — just the same edges surfaced in the unified resolve graph).
+export type EdgeKind = "hears" | "closes" | "references" | "imports";
 
 /** A typed citation edge (codex Graph-v2 B). `source`/`target` are node stems
  *  (resolve them against `nodes`); `parser` records what extracted it, so an
- *  edge stays auditable as the extractor evolves. */
+ *  edge stays auditable as the extractor evolves. `imports` edges carry
+ *  `import-regex-v0`; the frontmatter citation edges carry `frontmatter-v0`. */
 export interface FqdnEdge {
   source: string;
   target: string;
   kind: EdgeKind;
-  parser: "frontmatter-v0";
+  parser: "frontmatter-v0" | "import-regex-v0";
 }
 
 export interface FqdnGraph {
@@ -593,14 +622,16 @@ export async function chordGraph(
 
   if (root.found && root.stem) {
     if (wantOut) {
-      for (const kind of ["hears", "closes", "references"] as EdgeKind[]) {
+      for (
+        const kind of ["hears", "closes", "references", "imports"] as EdgeKind[]
+      ) {
         for (const raw of refs.outgoing[kind]) {
           const target = refStem(raw);
           edges.push({
             source: root.stem,
             target,
             kind,
-            parser: "frontmatter-v0",
+            parser: kind === "imports" ? "import-regex-v0" : "frontmatter-v0",
           });
           neighborStems.add(target);
         }
@@ -614,7 +645,7 @@ export async function chordGraph(
             source,
             target: root.stem,
             kind,
-            parser: "frontmatter-v0",
+            parser: kind === "imports" ? "import-regex-v0" : "frontmatter-v0",
           });
         }
         neighborStems.add(source);
@@ -663,7 +694,7 @@ export async function chordGraph(
 // (gitignored `*.latest.myc.json`), never a tracked projection — it spans the
 // submodule/cloud roots and would otherwise be submodule-idempotence-unstable.
 
-export const RESOLVER_INDEX_VERSION = "graph-v2.0";
+export const RESOLVER_INDEX_VERSION = "graph-v2.1";
 const INDEX_TEXT_CAP = 4096; // bytes of lowercased searchable text per entry
 
 export interface IndexEntry {
@@ -672,7 +703,14 @@ export interface IndexEntry {
   root: string; // root basename
   rel: string;
   content_hash: string;
-  edges: { hears: string[]; closes: string[]; references: string[] };
+  // `imports` populated for organ entries only (codex Graph-v2 bridge); the
+  // others are chord-frontmatter citation edges.
+  edges: {
+    hears: string[];
+    closes: string[];
+    references: string[];
+    imports: string[];
+  };
   text: string; // lowercased, capped — what `search` matches against
 }
 
@@ -735,13 +773,17 @@ export async function buildResolverIndex(
       continue;
     }
     const content = new TextDecoder().decode(bytes);
+    const kind = kindOf(key);
     entries.push({
       name: key,
-      kind: kindOf(key),
+      kind,
       root: basename(w.root),
       rel: w.rel,
       content_hash: blake3Hex(bytes),
-      edges: parseChordEdges(content),
+      edges: {
+        ...parseChordEdges(content),
+        imports: kind === "organ" ? parseOrganImports(content) : [],
+      },
       text: content.slice(0, INDEX_TEXT_CAP).toLowerCase(),
     });
   }
@@ -898,6 +940,27 @@ export function parseChordEdges(
     closes: [...new Set(closes)],
     references,
   };
+}
+
+// Import-edge extraction, reusing x6020_gravity's regex (the cheap path — no
+// `deno info` subprocess). IMPORT_RE finds every `from "..."` specifier;
+// ORGAN_TARGET_RE keeps only those resolving to a local organ file (xNNNN_*.ts),
+// dropping std/url/relative-non-organ imports. Kept in lock-step with gravity's
+// IMPORT_RE / TARGET_RE — if that extractor changes, change this too.
+const IMPORT_SPEC_RE = /from\s+["']([^"']+)["']/g;
+const ORGAN_TARGET_RE = /x([0-9A-Fa-f]{4})_[^"'/]+\.ts$/;
+
+/** The organ→organ import edges a `.ts` file declares, as target stems (e.g.
+ *  `x6020_gravity`). Returns [] for non-organ content. Pure; exported for the
+ *  test. The codex Graph-v2 `imports` edge, surfaced over already-read content
+ *  rather than a `deno info` pass. */
+export function parseOrganImports(content: string): string[] {
+  const out = new Set<string>();
+  for (const m of content.matchAll(IMPORT_SPEC_RE)) {
+    const spec = m[1];
+    if (ORGAN_TARGET_RE.test(spec)) out.add(refStem(spec));
+  }
+  return [...out].sort();
 }
 
 /** Resolve one query against a prebuilt index, hashing only the files it hits. */

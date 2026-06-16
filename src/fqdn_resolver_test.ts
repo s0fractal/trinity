@@ -18,6 +18,7 @@ import {
   listNames,
   matchSnippet,
   parseChordEdges,
+  parseOrganImports,
   type Resolution,
   resolveFqdn,
   resolveFromIndex,
@@ -667,6 +668,89 @@ Deno.test("chordGraph - --outgoing narrows to edges sourced from the root", asyn
   }
 });
 
+Deno.test("parseOrganImports - keeps local organ imports, drops std/url/non-organ", () => {
+  const src = [
+    `import { foo } from "./x6020_gravity.ts";`,
+    `import { bar } from "https://deno.land/std@0.224.0/path/mod.ts";`,
+    `import { baz } from "../sub/x0030_compose.ts";`,
+    `import nope from "./helper.ts";`,
+    `import { qux } from "./x0030_compose.ts";`, // dup target stem
+  ].join("\n");
+  // sorted, deduped, only the xNNNN_*.ts targets
+  assertEquals(parseOrganImports(src), ["x0030_compose", "x6020_gravity"]);
+  assertEquals(parseOrganImports("no imports here"), []);
+});
+
+Deno.test("chordGraph - imports edges bridge organ→organ (codex Graph-v2 future bridge)", async () => {
+  const base = await Deno.makeTempDir({ prefix: "fqdn_imports_" });
+  const w = (n: string, c: string) => Deno.writeTextFile(join(base, n), c);
+  try {
+    // x2222 imports x1111; x3333 also imports x1111. So x1111 has 2 incoming
+    // import edges, x2222 has 1 outgoing.
+    await w("x1111_lib.ts", "export const lib = 1;\n");
+    await w("x2222_user.ts", `import { lib } from "./x1111_lib.ts";\n`);
+    await w("x3333_other.ts", `import { lib } from "./x1111_lib.ts";\n`);
+    const index = await buildIndex([base]);
+
+    // outgoing: x2222 imports x1111
+    const out = await chordGraph(index, "x2222_user", {
+      outgoing: true,
+      incoming: false,
+    });
+    const outImports = out.edges.filter((e) => e.kind === "imports");
+    assertEquals(outImports.length, 1);
+    assertEquals(outImports[0].source, "x2222_user");
+    assertEquals(outImports[0].target, "x1111_lib");
+    assertEquals(outImports[0].parser, "import-regex-v0");
+
+    // incoming: x1111 is imported by x2222 and x3333
+    const inc = await chordGraph(index, "x1111_lib", {
+      outgoing: false,
+      incoming: true,
+    });
+    const incImports = inc.edges.filter((e) => e.kind === "imports");
+    assertEquals(incImports.length, 2);
+    assert(incImports.every((e) => e.target === "x1111_lib"));
+    assertEquals(
+      incImports.map((e) => e.source).sort(),
+      ["x2222_user", "x3333_other"],
+    );
+  } finally {
+    await Deno.remove(base, { recursive: true });
+  }
+});
+
+Deno.test("chordRefs - a chord declares no imports; only organs do", async () => {
+  const base = await Deno.makeTempDir({ prefix: "fqdn_imports_chord_" });
+  const w = (n: string, c: string) => Deno.writeTextFile(join(base, n), c);
+  try {
+    await w("x7700_1_v_c.myc.md", "---\ntype: chord\n---\nbody");
+    const index = await buildIndex([base]);
+    const r = await chordRefs(index, "x7700_1_v_c");
+    assertEquals(r.outgoing.imports, []);
+  } finally {
+    await Deno.remove(base, { recursive: true });
+  }
+});
+
+Deno.test("buildResolverIndex - organ entries carry imports edges, chords don't", async () => {
+  const base = await Deno.makeTempDir({ prefix: "fqdn_idx_imports_" });
+  const w = (n: string, c: string) => Deno.writeTextFile(join(base, n), c);
+  try {
+    await w("x1111_lib.ts", "export const lib = 1;\n");
+    await w("x2222_user.ts", `import { lib } from "./x1111_lib.ts";\n`);
+    await w("x7700_1_v_c.myc.md", "---\ntype: chord\n---\nbody");
+    const index = await buildIndex([base]);
+    const art = await buildResolverIndex(index);
+    const organ = art.entries.find((e) => e.name === "x2222_user.ts")!;
+    assertEquals(organ.edges.imports, ["x1111_lib"]);
+    const chord = art.entries.find((e) => e.name === "x7700_1_v_c.myc.md")!;
+    assertEquals(chord.edges.imports, []);
+  } finally {
+    await Deno.remove(base, { recursive: true });
+  }
+});
+
 Deno.test("searchCache - matches name + bounded text over a cached artifact", () => {
   const artifact = {
     type: "resolver_index" as const,
@@ -681,7 +765,7 @@ Deno.test("searchCache - matches name + bounded text over a cached artifact", ()
         root: "src",
         rel: "src/x7700_1_v_alpha.myc.md",
         content_hash: "h1",
-        edges: { hears: [], closes: [], references: [] },
+        edges: { hears: [], closes: [], references: [], imports: [] },
         text: "this entry contains the beacon token",
       },
       {
@@ -690,7 +774,7 @@ Deno.test("searchCache - matches name + bounded text over a cached artifact", ()
         root: "src",
         rel: "src/x7700_2_v_beta.myc.md",
         content_hash: "h2",
-        edges: { hears: [], closes: [], references: [] },
+        edges: { hears: [], closes: [], references: [], imports: [] },
         text: "unrelated body",
       },
     ],
@@ -716,7 +800,7 @@ Deno.test("buildResolverIndex + indexIsFresh - deterministic, fingerprint detect
     const a1 = await buildResolverIndex(index);
     const a2 = await buildResolverIndex(index);
     assertEquals(a1.source_hash, a2.source_hash); // deterministic content id
-    assertEquals(a1.generator_version, "graph-v2.0");
+    assertEquals(a1.generator_version, "graph-v2.1");
     // entries carry hash + edges (auditable)
     const node = a1.entries.find((e) => e.name === "x7700_1_v_a.myc.md")!;
     assert(node.content_hash.length > 0);

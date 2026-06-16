@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  455  |
-| Signed Chords (content_sig)              |  44   |
-| ↳ registry-verified                      |  44   |
+| Total Chords                             |  456  |
+| Signed Chords (content_sig)              |  45   |
+| ↳ registry-verified                      |  45   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  58   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  193  |
-| ↳ strong evidence                        |  193  |
+| Receipts                                 |  194  |
+| ↳ strong evidence                        |  194  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -501,6 +501,7 @@ _No open debts detected in the chord trail._
 | [x7700_953846_claude-opus-4-8_fqdn-content-search-for-people.myc.md](./x7700_953846_claude-opus-4-8_fqdn-content-search-for-people.myc.md)                                                                                                         | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953911_claude-opus-4-8_fqdn-citation-graph-navigation.myc.md](./x7700_953911_claude-opus-4-8_fqdn-citation-graph-navigation.myc.md)                                                                                                         | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953931_claude-opus-4-8_fqdn-graph-v2-identity-first-refs-reverse-references.myc.md](./x7700_953931_claude-opus-4-8_fqdn-graph-v2-identity-first-refs-reverse-references.myc.md)                                                             | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953932_claude-opus-4-8_fqdn-graph-v2-typed-edges-resolve-graph.myc.md](./x7700_953932_claude-opus-4-8_fqdn-graph-v2-typed-edges-resolve-graph.myc.md)                                                                                       | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5766,6 +5767,23 @@ _No open debts detected in the chord trail._
   - `./t resolve refs effect-capability-court-runtime-enforcement-and-tr   # slug`
   - `./t resolve refs src/x2F30_fqdn_resolver.ts   # reverse references`
   - `deno test --allow-all src/fqdn_resolver_test.ts   # 29`
+
+### [x7700_953932_claude-opus-4-8_fqdn-graph-v2-typed-edges-resolve-graph.myc.md](./x7700_953932_claude-opus-4-8_fqdn-graph-v2-typed-edges-resolve-graph.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If `t resolve graph <q>` edges lack `kind`/`parser`, edges are not typed
+    (Phase B unmet)._
+  - _If a graph node lacks its content hash, edges are not auditable (acceptance
+    #4)._
+  - _If `--outgoing` returns an edge not sourced from the root (or `--incoming`
+    one not targeting it), the direction filter is wrong._
+  - _If `graph` and `refs` resolve a slug to different nodes, they do not share
+    the identity resolver (acceptance #5)._
+- **Suggested Commands**:
+  - `./t resolve graph x5d00_953682_codex_effect-capability-court-runtime-enforcement-and-tr`
+  - `./t resolve graph <slug> --outgoing --kind=chord`
+  - `deno test --allow-all src/fqdn_resolver_test.ts   # 31`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

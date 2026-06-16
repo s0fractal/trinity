@@ -347,12 +347,13 @@ jobs:
       - name: Verify cross-substrate phi roundtrip
         run: deno task fixture:phi
 
-      # myc's own descriptor/witness/audit self-check (CI-verified green).
-      # NOT gated here:
-      #   - omega:deno — has a WebGPU atan2 parity test; GitHub runners are
-      #     headless (no GPU adapter), so it fails for an environment reason, not
-      #     a real one. Needs a GPU runner or owner-side headless test filtering.
-      #   - liquid:audit — its 129-item namespace-drift "degraded" state is
-      #     expected/owner-territory/live-ledger (memory liquid-degraded-is-expected).
+      # myc's descriptor/witness/audit self-check + omega's deterministic-kernel
+      # deno tests. omega's atan2 WGSL parity test now skips cleanly on headless
+      # runners (owner-side fix: it probes for a real GPU adapter, omega a1a82df).
+      # NOT gated: liquid:audit — its 129-item namespace-drift "degraded" state is
+      # expected/owner-territory/live-ledger (memory liquid-degraded-is-expected).
       - name: Verify myc substrate self-check
         run: deno task check:myc
+
+      - name: Verify omega deterministic-kernel deno tests
+        run: deno task check:omega:deno

@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  454  |
-| Signed Chords (content_sig)              |  43   |
-| ↳ registry-verified                      |  43   |
+| Total Chords                             |  455  |
+| Signed Chords (content_sig)              |  44   |
+| ↳ registry-verified                      |  44   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  58   |
-| Unresolved Proposals (Heuristic)         |   1   |
+| Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  192  |
-| ↳ strong evidence                        |  192  |
+| Receipts                                 |  193  |
+| ↳ strong evidence                        |  193  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -36,18 +36,16 @@ stale proposals before changing the repository._ Use
 `./t decisions --triage-template` to print a closure-decision scaffold for the
 first item without writing files.
 
-| Stance    | Chord                                                                                                                                                          | Risks |
-| :-------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
-| candidate | [x2d00_953926_codex_fqdn-graph-v2-identity-typed-edges-and-search-inde.myc.md](./x2d00_953926_codex_fqdn-graph-v2-identity-typed-edges-and-search-inde.myc.md) | none  |
+| Stance | Chord | Risks |
+| :----- | :---- | :---- |
+| clear  | —     | —     |
 
 ## Unresolved Items (Heuristic Accountability)
 
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
-- **PROPOSAL**:
-  [FQDN Graph v2: identity-first refs, typed edges, indexed search](./x2d00_953926_codex_fqdn-graph-v2-identity-typed-edges-and-search-inde.myc.md)
-  (by _codex_ — _proposal has no subsequent receipt or decision closure_)
+_No unresolved proposals or critiques detected._
 
 ## Invalid Closures
 
@@ -502,6 +500,7 @@ _No open debts detected in the chord trail._
 | [x7700_953803_claude-opus-4-8_fqdn-skip-hidden-dirs-cloud-safe.myc.md](./x7700_953803_claude-opus-4-8_fqdn-skip-hidden-dirs-cloud-safe.myc.md)                                                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953846_claude-opus-4-8_fqdn-content-search-for-people.myc.md](./x7700_953846_claude-opus-4-8_fqdn-content-search-for-people.myc.md)                                                                                                         | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953911_claude-opus-4-8_fqdn-citation-graph-navigation.myc.md](./x7700_953911_claude-opus-4-8_fqdn-citation-graph-navigation.myc.md)                                                                                                         | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953931_claude-opus-4-8_fqdn-graph-v2-identity-first-refs-reverse-references.myc.md](./x7700_953931_claude-opus-4-8_fqdn-graph-v2-identity-first-refs-reverse-references.myc.md)                                                             | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5750,6 +5749,23 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `./t resolve refs x5d00_953682_codex_effect-capability-court-runtime-enforcement-and-tr`
   - `deno test --allow-all src/fqdn_resolver_test.ts   # 28`
+
+### [x7700_953931_claude-opus-4-8_fqdn-graph-v2-identity-first-refs-reverse-references.myc.md](./x7700_953931_claude-opus-4-8_fqdn-graph-v2-identity-first-refs-reverse-references.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If `t resolve refs <slug>` and `t resolve refs <canonical-stem>` resolve to
+    different nodes (or one is found:false), Phase A is not identity-first._
+  - _If `t resolve refs src/x2F30_fqdn_resolver.ts` does not list the chords
+    whose `references:` name it, Phase C reverse-references is missing._
+  - _If an ambiguous query (identity=conflict) returns an empty graph instead of
+    found:false + candidates, acceptance #2 is unmet._
+  - _If a refs node omits its content hash / identity, the node is not auditable
+    (F5)._
+- **Suggested Commands**:
+  - `./t resolve refs effect-capability-court-runtime-enforcement-and-tr   # slug`
+  - `./t resolve refs src/x2F30_fqdn_resolver.ts   # reverse references`
+  - `deno test --allow-all src/fqdn_resolver_test.ts   # 29`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

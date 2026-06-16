@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  457  |
+| Total Chords                             |  458  |
 | Signed Chords (content_sig)              |  47   |
 | ↳ registry-verified                      |  47   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  58   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  195  |
-| ↳ strong evidence                        |  195  |
+| Receipts                                 |  196  |
+| ↳ strong evidence                        |  196  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -503,6 +503,7 @@ _No open debts detected in the chord trail._
 | [x7700_953931_claude-opus-4-8_fqdn-graph-v2-identity-first-refs-reverse-references.myc.md](./x7700_953931_claude-opus-4-8_fqdn-graph-v2-identity-first-refs-reverse-references.myc.md)                                                             | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953932_claude-opus-4-8_fqdn-graph-v2-typed-edges-resolve-graph.myc.md](./x7700_953932_claude-opus-4-8_fqdn-graph-v2-typed-edges-resolve-graph.myc.md)                                                                                       | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953935_claude-opus-4-8_fqdn-graph-v2-reproducible-index-fully-closed.myc.md](./x7700_953935_claude-opus-4-8_fqdn-graph-v2-reproducible-index-fully-closed.myc.md)                                                                           | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953939_claude-opus-4-8_fqdn-graph-imports-edge-bridge-to-gravity.myc.md](./x7700_953939_claude-opus-4-8_fqdn-graph-imports-edge-bridge-to-gravity.myc.md)                                                                                   | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5802,6 +5803,26 @@ _No open debts detected in the chord trail._
   - `./t resolve index            # build the cache; deterministic source_hash`
   - `./t resolve search \"capability registry\" --kind=chord   # index.used=cache when fresh`
   - `deno test --allow-all src/fqdn_resolver_test.ts   # 33`
+
+### [x7700_953939_claude-opus-4-8_fqdn-graph-imports-edge-bridge-to-gravity.myc.md](./x7700_953939_claude-opus-4-8_fqdn-graph-imports-edge-bridge-to-gravity.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If `t resolve graph <organ>` does not surface an `imports` edge for an
+    organ that imports another organ, the bridge is not wired._
+  - _If incoming `imports` edges for a library disagree with
+    `grep -rl 'from \"...xNNNN_*.ts\"'` ground truth, the extractor is wrong._
+  - _If `imports` extraction spawns `deno info` per query, the codex
+    precondition (`trivial to reuse gravity`, index-backed, no subprocess) is
+    violated._
+  - _If a chord or doc node ever reports a non-empty `outgoing.imports`, the
+    organ-only invariant is broken._
+  - _If x2F30's import regex drifts from x6020_gravity's IMPORT_RE/TARGET_RE
+    without both being updated, the two surfaces will disagree._
+- **Suggested Commands**:
+  - `./t resolve graph x0030_compose    # incoming imports = its real importers`
+  - `./t resolve graph x2200_ecosystem  # outgoing import edge -> x0030_compose`
+  - `deno test --allow-all src/fqdn_resolver_test.ts   # 37`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

@@ -344,6 +344,11 @@ jobs:
         with:
           deno-version: v2.x
 
+      - name: Setup Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+
       - name: Verify cross-substrate phi roundtrip
         run: deno task fixture:phi
 
@@ -357,3 +362,9 @@ jobs:
 
       - name: Verify omega deterministic-kernel deno tests
         run: deno task check:omega:deno
+
+      # omega's Rust kernel — the deterministic physics "law" the meta-repo's
+      # thesis rests on. CPU-only (no GPU dependency; verified 283+ tests pass
+      # headless locally). The heaviest gate (cold cargo build), so it runs last.
+      - name: Verify omega deterministic-kernel Rust tests
+        run: deno task check:omega:rust

@@ -6,10 +6,12 @@ import {
 import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
 import {
   buildIndex,
+  buildResolverIndex,
   type Candidate,
   chordGraph,
   chordRefs,
   graphQueryForms,
+  indexIsFresh,
   isContentAddressed,
   isSkippedPath,
   kindOf,
@@ -19,6 +21,7 @@ import {
   type Resolution,
   resolveFqdn,
   resolveFromIndex,
+  searchCache,
   searchContent,
   showHeader,
 } from "./x2F30_fqdn_resolver.ts";
@@ -659,6 +662,73 @@ Deno.test("chordGraph - --outgoing narrows to edges sourced from the root", asyn
       g.edges.every((e) => e.source === "x7700_001_v_node"),
       "outgoing-only: every edge sourced from the root",
     );
+  } finally {
+    await Deno.remove(base, { recursive: true });
+  }
+});
+
+Deno.test("searchCache - matches name + bounded text over a cached artifact", () => {
+  const artifact = {
+    type: "resolver_index" as const,
+    generator_version: "test",
+    files_indexed: 2,
+    fingerprint: "f",
+    source_hash: "s",
+    entries: [
+      {
+        name: "x7700_1_v_alpha.myc.md",
+        kind: "chord" as const,
+        root: "src",
+        rel: "src/x7700_1_v_alpha.myc.md",
+        content_hash: "h1",
+        edges: { hears: [], closes: [], references: [] },
+        text: "this entry contains the beacon token",
+      },
+      {
+        name: "x7700_2_v_beta.myc.md",
+        kind: "chord" as const,
+        root: "src",
+        rel: "src/x7700_2_v_beta.myc.md",
+        content_hash: "h2",
+        edges: { hears: [], closes: [], references: [] },
+        text: "unrelated body",
+      },
+    ],
+  };
+  const byContent = searchCache(artifact, "beacon");
+  assertEquals(byContent.matches.map((m) => m.name), [
+    "x7700_1_v_alpha.myc.md",
+  ]);
+  assert(byContent.matches[0].snippet?.includes("beacon"));
+  const byName = searchCache(artifact, "v_beta");
+  assert(byName.matches.some((m) => m.in_name));
+});
+
+Deno.test("buildResolverIndex + indexIsFresh - deterministic, fingerprint detects change", async () => {
+  const base = await Deno.makeTempDir({ prefix: "fqdn_index_" });
+  try {
+    await Deno.writeTextFile(
+      join(base, "x7700_1_v_a.myc.md"),
+      "---\nhears:\n  - x7700_9_v_dep\n---\nalpha content",
+    );
+    await Deno.writeTextFile(join(base, "x7700_2_v_b.myc.md"), "beta content");
+    const index = await buildIndex([base]);
+    const a1 = await buildResolverIndex(index);
+    const a2 = await buildResolverIndex(index);
+    assertEquals(a1.source_hash, a2.source_hash); // deterministic content id
+    assertEquals(a1.generator_version, "graph-v2.0");
+    // entries carry hash + edges (auditable)
+    const node = a1.entries.find((e) => e.name === "x7700_1_v_a.myc.md")!;
+    assert(node.content_hash.length > 0);
+    assertEquals(node.edges.hears, ["x7700_9_v_dep"]);
+    // fresh against its own index; a content change (different size) breaks it.
+    assert(await indexIsFresh(index, a1));
+    await Deno.writeTextFile(
+      join(base, "x7700_2_v_b.myc.md"),
+      "beta content much longer now so size/mtime differ",
+    );
+    const index2 = await buildIndex([base]);
+    assertEquals(await indexIsFresh(index2, a1), false);
   } finally {
     await Deno.remove(base, { recursive: true });
   }

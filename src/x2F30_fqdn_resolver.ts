@@ -75,12 +75,19 @@ export interface Resolution {
 // root `~/.claude/.../memory`) is not wrongly skipped.
 const SKIP = /(^|\/)(node_modules|target)(\/|$)|(^|\/)\.[^/]+\//;
 
-/** True if a (root-relative) path lies in a dependency/build/hidden directory
- *  the index skips. Matches only full path components — `target.md` and the
- *  hidden file `.gitignore` are content; `target/x.o` and `.liquid/db.sqlite`
+// Generated runtime sidecars (gitignored `*.latest.myc.*`) — including this
+// resolver's own index cache. They are regenerated, not authored content, and
+// indexing them would (a) pollute the namespace and (b) make the index include
+// its OWN cache file, so its freshness fingerprint could never stabilize.
+const SKIP_FILE = /\.latest\.myc\.(json|md)$/;
+
+/** True if a (root-relative) path lies in a dependency/build/hidden directory,
+ *  or is a generated runtime sidecar, that the index skips. Matches only full
+ *  path components — `target.md` and the hidden file `.gitignore` are content;
+ *  `target/x.o`, `.liquid/db.sqlite`, and `x2F88_resolver_index.latest.myc.json`
  *  are not. Exported for the test. */
 export function isSkippedPath(path: string): boolean {
-  return SKIP.test(path);
+  return SKIP.test(path) || SKIP_FILE.test(path);
 }
 
 // The coordinate prefix `x<hex>_` that names an organ/doc by its hex position.
@@ -648,6 +655,197 @@ export async function chordGraph(
   };
 }
 
+// ── reproducible search/graph index (codex Graph-v2 E) ──────────────────────
+// An auditable index artifact so search/graph results can become decision
+// evidence: each entry binds content hash + frontmatter edges + a bounded
+// searchable text, and the artifact carries provenance (generator version,
+// content source_hash, cheap mtime fingerprint). It is a RUNTIME CACHE
+// (gitignored `*.latest.myc.json`), never a tracked projection — it spans the
+// submodule/cloud roots and would otherwise be submodule-idempotence-unstable.
+
+export const RESOLVER_INDEX_VERSION = "graph-v2.0";
+const INDEX_TEXT_CAP = 4096; // bytes of lowercased searchable text per entry
+
+export interface IndexEntry {
+  name: string; // canonical
+  kind: NameKind;
+  root: string; // root basename
+  rel: string;
+  content_hash: string;
+  edges: { hears: string[]; closes: string[]; references: string[] };
+  text: string; // lowercased, capped — what `search` matches against
+}
+
+export interface ResolverIndexArtifact {
+  type: "resolver_index";
+  generator_version: string;
+  files_indexed: number;
+  fingerprint: string; // cheap freshness key: hash of rel+size+mtime
+  source_hash: string; // content identity: hash of rel+content_hash (deterministic)
+  entries: IndexEntry[];
+}
+
+/** Cheap freshness fingerprint: a stable hash over each canonical file's
+ *  rel+size+mtime — no content read, so freshness checks stay fast. */
+async function indexFingerprint(index: Index): Promise<string> {
+  const rows: string[] = [];
+  for (const [key, stored] of index.byKey) {
+    const exact = stored.filter((s) => s.matchForm === "exact");
+    if (exact.length === 0) continue;
+    const w = [...exact].sort((a, b) =>
+      a.rootIndex - b.rootIndex || a.depth - b.depth
+    )[0];
+    try {
+      const st = await Deno.stat(w.path);
+      rows.push(`${w.rel}|${st.size}|${st.mtime?.getTime() ?? 0}`);
+    } catch {
+      rows.push(`${w.rel}|?`);
+    }
+  }
+  return await blake3HexStr(rows.sort().join("\n"));
+}
+
+async function blake3HexStr(s: string): Promise<string> {
+  return blake3Hex(new TextEncoder().encode(s));
+}
+
+/** Build the auditable index over the precedence-winning file of each canonical
+ *  name. Deterministic given content (the `source_hash`). Read is injected. */
+export async function buildResolverIndex(
+  index: Index,
+  opts: { read?: (path: string) => Promise<Uint8Array | null> } = {},
+): Promise<ResolverIndexArtifact> {
+  const read = opts.read ??
+    (async (p: string) => {
+      try {
+        return await Deno.readFile(p);
+      } catch {
+        return null;
+      }
+    });
+  const entries: IndexEntry[] = [];
+  for (const [key, stored] of index.byKey) {
+    const exact = stored.filter((s) => s.matchForm === "exact");
+    if (exact.length === 0) continue;
+    const w = [...exact].sort((a, b) =>
+      a.rootIndex - b.rootIndex || a.depth - b.depth
+    )[0];
+    const bytes = await read(w.path);
+    if (bytes === null) {
+      continue;
+    }
+    const content = new TextDecoder().decode(bytes);
+    entries.push({
+      name: key,
+      kind: kindOf(key),
+      root: basename(w.root),
+      rel: w.rel,
+      content_hash: blake3Hex(bytes),
+      edges: parseChordEdges(content),
+      text: content.slice(0, INDEX_TEXT_CAP).toLowerCase(),
+    });
+  }
+  entries.sort((a, b) => a.name.localeCompare(b.name));
+  const source_hash = await blake3HexStr(
+    entries.map((e) => `${e.name}|${e.content_hash}`).join("\n"),
+  );
+  return {
+    type: "resolver_index",
+    generator_version: RESOLVER_INDEX_VERSION,
+    files_indexed: index.files,
+    fingerprint: await indexFingerprint(index),
+    source_hash,
+    entries,
+  };
+}
+
+/** Is a cached artifact still fresh for this index? Compares the cheap mtime
+ *  fingerprint and the generator version. */
+export async function indexIsFresh(
+  index: Index,
+  cache: ResolverIndexArtifact | null,
+): Promise<boolean> {
+  if (!cache || cache.generator_version !== RESOLVER_INDEX_VERSION) {
+    return false;
+  }
+  return (await indexFingerprint(index)) === cache.fingerprint;
+}
+
+const INDEX_CACHE_REL = "src/x2F88_resolver_index.latest.myc.json";
+
+function indexCachePath(): string {
+  return join(dirname(dirname(fromFileUrl(import.meta.url))), INDEX_CACHE_REL);
+}
+
+export async function loadIndexCache(): Promise<ResolverIndexArtifact | null> {
+  try {
+    const txt = await Deno.readTextFile(indexCachePath());
+    const a = JSON.parse(txt);
+    return a?.type === "resolver_index" ? a as ResolverIndexArtifact : null;
+  } catch {
+    return null;
+  }
+}
+
+export async function writeIndexCache(
+  artifact: ResolverIndexArtifact,
+): Promise<string> {
+  const path = indexCachePath();
+  await Deno.writeTextFile(path, JSON.stringify(artifact, null, 2) + "\n");
+  return INDEX_CACHE_REL;
+}
+
+/** Search the cached index instead of live files (codex F4): matches name + the
+ *  entry's bounded `text` (first INDEX_TEXT_CAP bytes), no disk reads. Same
+ *  result shape as `searchContent`. Pure over the artifact; exported for the
+ *  test. A content match past the text cap is not found here — that is the
+ *  bounded-text trade-off the cache makes explicit. */
+export function searchCache(
+  cache: ResolverIndexArtifact,
+  query: string,
+  opts: { kind?: NameKind; limit?: number } = {},
+): {
+  query: string;
+  scanned: number;
+  total: number;
+  matches: SearchHit[];
+  truncated: number;
+} {
+  const limit = opts.limit ?? 25;
+  const q = query.toLowerCase();
+  const hits: SearchHit[] = [];
+  let scanned = 0;
+  for (const e of cache.entries) {
+    if (opts.kind && e.kind !== opts.kind) continue;
+    scanned++;
+    const inName = e.name.toLowerCase().includes(q);
+    const snippet = matchSnippet(e.text, query);
+    if (inName || snippet) {
+      hits.push({
+        name: e.name,
+        kind: e.kind,
+        rel: e.rel,
+        root: e.root,
+        in_name: inName,
+        snippet,
+      });
+    }
+  }
+  hits.sort((a, b) =>
+    (a.in_name === b.in_name ? 0 : a.in_name ? -1 : 1) ||
+    a.name.localeCompare(b.name)
+  );
+  const total = hits.length;
+  const matches = hits.slice(0, limit);
+  return {
+    query,
+    scanned,
+    total,
+    matches,
+    truncated: Math.max(0, total - matches.length),
+  };
+}
+
 // ── chord citation graph (navigate the FQDN network's edges) ────────────────
 // A chord declares OUTGOING edges in frontmatter: `hears:` and `closes.path_hint`
 // name other chords; `references:` name organs/files. There is no reverse view —
@@ -902,16 +1100,61 @@ if (import.meta.main) {
     const limit = limitArg ? Number(limitArg.split("=")[1]) : 25;
     const kindArg = args.find((a) => a.startsWith("--kind="))?.split("=")[1];
     const index = await buildIndex(roots);
-    const result = await searchContent(index, query, {
-      kind: kindArg as NameKind | undefined,
-      limit,
-    });
+    // Use the cached index when fresh (codex E) — bounded-text, fast; else live
+    // scan the full content. Either way report which (acceptance #6).
+    const cache = await loadIndexCache();
+    const fresh = await indexIsFresh(index, cache);
+    const result = fresh && cache
+      ? searchCache(cache, query, {
+        kind: kindArg as NameKind | undefined,
+        limit,
+      })
+      : await searchContent(index, query, {
+        kind: kindArg as NameKind | undefined,
+        limit,
+      });
     console.log(JSON.stringify(
       {
         type: "fqdn_search",
         kind: kindArg ?? null,
         files_indexed: index.files,
+        index: {
+          used: fresh && cache ? "cache" : "live",
+          fresh,
+          source_hash: fresh && cache ? cache.source_hash : null,
+          note: fresh && cache
+            ? "matched the cached index (first 8KB of each file)"
+            : "live full-content scan; run `t resolve index` to build the cache",
+        },
         ...result,
+      },
+      null,
+      2,
+    ));
+    Deno.exit(0);
+  }
+
+  // `index [--rebuild]` — build the auditable search/graph index cache (codex E).
+  if (args[0] === "index") {
+    const index = await buildIndex(roots);
+    const existing = await loadIndexCache();
+    const fresh = await indexIsFresh(index, existing);
+    let wrote: string | null = null;
+    let artifact = existing;
+    if (!fresh || args.includes("--rebuild")) {
+      artifact = await buildResolverIndex(index);
+      wrote = await writeIndexCache(artifact);
+    }
+    console.log(JSON.stringify(
+      {
+        type: "resolver_index_built",
+        generator_version: RESOLVER_INDEX_VERSION,
+        was_fresh: fresh,
+        rebuilt: wrote !== null,
+        cache_path: wrote,
+        files_indexed: index.files,
+        entries: artifact?.entries.length ?? 0,
+        source_hash: artifact?.source_hash ?? null,
       },
       null,
       2,

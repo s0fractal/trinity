@@ -20,6 +20,12 @@ import { parse as parseYaml } from "jsr:@std/yaml@1.0.5";
 import { parseArgs } from "jsr:@std/cli@1.0.13/parse-args";
 import Ajv2020Module from "npm:ajv@8.17.1/dist/2020.js";
 import { listChordSurfaceFiles } from "./x2F21_chord_surface.ts";
+import {
+  buildIndex,
+  chordRefs,
+  defaultRoots,
+  type Index,
+} from "./x2F30_fqdn_resolver.ts";
 
 const ROOT = new URL("..", import.meta.url).pathname;
 const DEFAULT_GRANDFATHER_BEFORE = "2026-05-12T130546Z";
@@ -215,6 +221,103 @@ async function validateRecommendation(
   }
 }
 
+async function fileExists(absPath: string): Promise<boolean> {
+  try {
+    await Deno.stat(absPath);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// Roots a path-form `hears:` ref may live under. A ref whose first segment is
+// none of these (legacy `0x0/…`, `ref:lambda-foundation/…`) is NOT validated —
+// it is an old/external scheme, not a live content path.
+const KNOWN_PATH_ROOTS = new Set([
+  "src",
+  "contracts",
+  "probes",
+  "papers",
+  "jazz",
+  "omega",
+  "liquid",
+  "myc",
+]);
+
+/** Classify a single `hears:` reference and, ONLY when it is unambiguously a
+ *  citation, test that it points at something real. `hears:` is empirically a
+ *  free-form "what this chord responds to" log — it holds architect utterances
+ *  (`architect: …`), prompt/command quotes, prose, and `free:`/`ref:` notes as
+ *  well as real citations. So we validate just the two unambiguous citation
+ *  forms and skip everything else (anything with whitespace, a free-form prefix,
+ *  or an unknown path root):
+ *    - coordinate stem `xNNNN_…` (no slash) → resolve via the FQDN resolver;
+ *    - path under a known live root          → check file existence under ROOT.
+ *  Returns a reason string only for a genuine dangling citation, else null. */
+export async function checkHearsRef(
+  ref: string,
+  index: Index,
+): Promise<string | null> {
+  const r = ref.trim();
+  // Free-form context, not a citation: prefixes, URLs, or any whitespace
+  // (paths and stems are single tokens; prompts/commands/prose are not).
+  if (
+    r === "" || /\s/.test(r) || /^(free:|ref:)/.test(r) ||
+    /^https?:\/\//.test(r)
+  ) return null;
+  if (r.includes("/")) {
+    const root = r.split("/")[0];
+    if (!KNOWN_PATH_ROOTS.has(root)) return null; // legacy/external scheme
+    return (await fileExists(`${ROOT}${r}`)) ? null : `missing path: ${r}`;
+  }
+  if (!/^x[0-9A-Fa-f]{4}_/.test(r)) return null; // bare non-coordinate token
+  const refs = await chordRefs(index, r);
+  return refs.node.found ? null : `unresolvable stem: ${r}`;
+}
+
+/** Verify every chord's `hears:` edges point at a reachable node (codex Graph-v2
+ *  edges that dangle = a broken knowledge graph). Read-only. Reuses the chord
+ *  grandfather cutoff, so pre-cutoff chords with stale links are debt, not active
+ *  failures. The empirical trap this avoids: a naive existence check floods false
+ *  positives on `free:` notes and refs into non-src roots — `checkHearsRef`
+ *  classifies first. */
+async function validateHearsLinks(
+  grandfatherBefore: Date | null,
+  trackedOnly: boolean,
+): Promise<ValidationResult> {
+  const index = await buildIndex(defaultRoots());
+  const result = emptyResult();
+  for (const entry of await listChordFiles(trackedOnly)) {
+    let hears: unknown;
+    try {
+      const fm = extractFrontmatter(await Deno.readTextFile(entry.path));
+      hears = (fm as { hears?: unknown })?.hears;
+    } catch {
+      continue; // malformed frontmatter is the schema pass's concern, not ours
+    }
+    if (!Array.isArray(hears) || hears.length === 0) continue;
+    result.total++;
+    const grandfathered = isGrandfathered(entry.path, grandfatherBefore);
+    const bad: string[] = [];
+    for (const h of hears) {
+      if (typeof h !== "string") continue;
+      const reason = await checkHearsRef(h, index);
+      if (reason) bad.push(reason);
+    }
+    if (bad.length === 0) {
+      result.passed++;
+    } else {
+      recordFailure(
+        result,
+        entry.relPath,
+        `hears ${bad.join("; ")}`,
+        grandfathered,
+      );
+    }
+  }
+  return result;
+}
+
 function printResult(label: string, r: ValidationResult): void {
   const pct = r.total === 0 ? 0 : ((r.passed / r.total) * 100).toFixed(1);
   const debt = r.grandfathered > 0 ? `, ${r.grandfathered} grandfathered` : "";
@@ -243,17 +346,21 @@ function printResult(label: string, r: ValidationResult): void {
 function printResultJson(
   chordResult: ValidationResult,
   recResult: ValidationResult | null,
+  hearsResult: ValidationResult,
   options: {
     grandfatherBefore: string | null;
     trackedOnly: boolean;
     strict: boolean;
   },
 ): void {
-  const total = chordResult.total + (recResult?.total ?? 0);
-  const passed = chordResult.passed + (recResult?.passed ?? 0);
-  const failed = chordResult.failed + (recResult?.failed ?? 0);
+  const total = chordResult.total + (recResult?.total ?? 0) +
+    hearsResult.total;
+  const passed = chordResult.passed + (recResult?.passed ?? 0) +
+    hearsResult.passed;
+  const failed = chordResult.failed + (recResult?.failed ?? 0) +
+    hearsResult.failed;
   const activeFailures = chordResult.enforceFailed +
-    (recResult?.enforceFailed ?? 0);
+    (recResult?.enforceFailed ?? 0) + hearsResult.enforceFailed;
   console.log(JSON.stringify(
     {
       type: "schema_validation",
@@ -263,10 +370,12 @@ function printResultJson(
         passed,
         failed,
         active_failures: activeFailures,
-        grandfathered_failures: chordResult.grandfathered,
+        grandfathered_failures: chordResult.grandfathered +
+          hearsResult.grandfathered,
       },
       chords: chordResult,
       recommendation: recResult,
+      hears_links: hearsResult,
     },
     null,
     2,
@@ -298,8 +407,13 @@ if (import.meta.main) {
 
   const recResult = await validateRecommendation(ajv);
 
+  const hearsResult = await validateHearsLinks(
+    grandfatherBefore,
+    Boolean(flags["tracked-only"]),
+  );
+
   if (flags.json) {
-    printResultJson(chordResult, recResult, {
+    printResultJson(chordResult, recResult, hearsResult, {
       grandfatherBefore: flags["grandfather-before"]
         ? String(flags["grandfather-before"])
         : null,
@@ -319,17 +433,33 @@ if (import.meta.main) {
     chordResult.errors = originalActive;
     chordResult.grandfatheredErrors = originalGrandfathered;
     if (recResult) printResult("recommendation", recResult);
+    const hearsActive = hearsResult.errors;
+    const hearsGrandfathered = hearsResult.grandfatheredErrors;
+    hearsResult.errors = hearsActive.slice(0, maxErrors);
+    hearsResult.grandfatheredErrors = hearsGrandfathered.slice(
+      0,
+      Math.min(3, maxErrors),
+    );
+    printResult("hears-links", hearsResult);
+    hearsResult.errors = hearsActive;
+    hearsResult.grandfatheredErrors = hearsGrandfathered;
   }
 
-  const total = chordResult.total + (recResult?.total ?? 0);
-  const passed = chordResult.passed + (recResult?.passed ?? 0);
-  const failed = chordResult.failed + (recResult?.failed ?? 0);
-  const enforceFailed = chordResult.enforceFailed +
+  const total = chordResult.total + (recResult?.total ?? 0) + hearsResult.total;
+  const passed = chordResult.passed + (recResult?.passed ?? 0) +
+    hearsResult.passed;
+  const failed = chordResult.failed + (recResult?.failed ?? 0) +
+    hearsResult.failed;
+  // Only SCHEMA validity gates strict mode. `hears:` link-rot is a read-only
+  // diagnostic — a citation valid when authored breaks when its target is later
+  // renamed/versioned (e.g. RECEIPT_ENVELOPE v0.1→v1.0), which is real but
+  // historical, not an authoring error to block on.
+  const schemaEnforceFailed = chordResult.enforceFailed +
     (recResult?.enforceFailed ?? 0);
   if (!flags.json) {
     console.log(
-      `\noverall: ${passed}/${total} passed, ${failed} failed, ${enforceFailed} active failures`,
+      `\noverall: ${passed}/${total} passed, ${failed} failed, ${schemaEnforceFailed} active schema failures; ${hearsResult.enforceFailed} dangling hears (diagnostic, non-gating)`,
     );
   }
-  Deno.exit(flags.strict && enforceFailed > 0 ? 1 : 0);
+  Deno.exit(flags.strict && schemaEnforceFailed > 0 ? 1 : 0);
 }

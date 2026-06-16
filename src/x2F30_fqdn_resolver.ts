@@ -942,11 +942,13 @@ export function parseChordEdges(
   };
 }
 
-// Import-edge extraction, reusing x6020_gravity's regex (the cheap path — no
-// `deno info` subprocess). IMPORT_RE finds every `from "..."` specifier;
+// Import-edge extraction — the cheap, index-friendly path (no `deno info`
+// subprocess). IMPORT_SPEC_RE finds every `from "..."` specifier;
 // ORGAN_TARGET_RE keeps only those resolving to a local organ file (xNNNN_*.ts),
-// dropping std/url/relative-non-organ imports. Kept in lock-step with gravity's
-// IMPORT_RE / TARGET_RE — if that extractor changes, change this too.
+// dropping std/url/relative-non-organ imports. x6020_gravity resolves the SAME
+// edges via `deno info` AST (more complete: it also sees dynamic imports); this
+// regex is the resolve-graph's light approximation for the static `from "..."`
+// case. They are independent extractors by design — not a shared definition.
 const IMPORT_SPEC_RE = /from\s+["']([^"']+)["']/g;
 const ORGAN_TARGET_RE = /x([0-9A-Fa-f]{4})_[^"'/]+\.ts$/;
 

@@ -45,8 +45,10 @@ const HERE = dirname(fromFileUrl(import.meta.url));
 const SRC = HERE;
 
 const FILE_RE = /^x([0-9A-Fa-f]{4})_[^.]+\.ts$/;
-const IMPORT_RE = /from\s+["']([^"']+)["']/g;
-const TARGET_RE = /x([0-9A-Fa-f]{4})_[^"'/]+\.ts$/;
+// Import edges here are resolved by `deno info` AST (see getDependenciesOfFile),
+// not by regex — the old IMPORT_RE/TARGET_RE consts were orphaned by that
+// migration and removed. The light regex form lives in x2F30's parseOrganImports
+// (resolve-graph `imports` edge) and probes/morphology-v0.
 
 export interface Edge {
   source: string;

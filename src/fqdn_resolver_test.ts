@@ -7,6 +7,7 @@ import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
 import {
   buildIndex,
   type Candidate,
+  chordGraph,
   chordRefs,
   graphQueryForms,
   isContentAddressed,
@@ -590,4 +591,75 @@ Deno.test("graphQueryForms - completes a bare stem/slug/path to addressable form
   // a full name is returned unchanged (and not double-suffixed)
   assert(graphQueryForms("a.myc.md").includes("a.myc.md"));
   assert(!graphQueryForms("a.myc.md").includes("a.myc.md.myc.md"));
+});
+
+Deno.test("chordGraph - typed edges + resolved node identities (depth 1)", async () => {
+  const base = await Deno.makeTempDir({ prefix: "fqdn_graph_" });
+  const w = (n: string, c: string) => Deno.writeTextFile(join(base, n), c);
+  try {
+    await w(
+      "x7700_001_v_node.myc.md",
+      "---\nhears:\n  - x7700_009_v_dep\n---\nbody",
+    );
+    await w(
+      "x7700_009_v_dep.myc.md",
+      "---\ntype: chord.receipt\n---\ndep body",
+    );
+    await w(
+      "x7700_002_v_hearer.myc.md",
+      "---\nhears:\n  - x7700_001_v_node\n---\nbody",
+    );
+    const { buildIndex: _bi } = await import("./x2F30_fqdn_resolver.ts");
+    const index = await _bi([base]);
+    const g = await chordGraph(index, "node"); // identity-first by slug
+    assertEquals(g.root.found, true);
+    assert(g.index.files_indexed >= 3);
+    // typed edges: outgoing hears→dep, incoming hears←hearer
+    const out = g.edges.find((e) =>
+      e.source === "x7700_001_v_node" && e.target === "x7700_009_v_dep"
+    );
+    assertEquals(out?.kind, "hears");
+    assertEquals(out?.parser, "frontmatter-v0");
+    const inc = g.edges.find((e) =>
+      e.target === "x7700_001_v_node" && e.source === "x7700_002_v_hearer"
+    );
+    assertEquals(inc?.kind, "hears");
+    // resolved node identities carry content hashes (auditable)
+    const dep = g.nodes.find((n) => n.stem === "x7700_009_v_dep");
+    assert(
+      dep !== undefined && dep.hash !== null,
+      "neighbor resolved with hash",
+    );
+  } finally {
+    await Deno.remove(base, { recursive: true });
+  }
+});
+
+Deno.test("chordGraph - --outgoing narrows to edges sourced from the root", async () => {
+  const base = await Deno.makeTempDir({ prefix: "fqdn_graph_dir_" });
+  const w = (n: string, c: string) => Deno.writeTextFile(join(base, n), c);
+  try {
+    await w(
+      "x7700_001_v_node.myc.md",
+      "---\nhears:\n  - x7700_009_v_dep\n---\nb",
+    );
+    await w("x7700_009_v_dep.myc.md", "---\ntype: chord\n---\nb");
+    await w(
+      "x7700_002_v_hearer.myc.md",
+      "---\nhears:\n  - x7700_001_v_node\n---\nb",
+    );
+    const { buildIndex: _bi } = await import("./x2F30_fqdn_resolver.ts");
+    const index = await _bi([base]);
+    const g = await chordGraph(index, "node", {
+      outgoing: true,
+      incoming: false,
+    });
+    assert(g.edges.length > 0);
+    assert(
+      g.edges.every((e) => e.source === "x7700_001_v_node"),
+      "outgoing-only: every edge sourced from the root",
+    );
+  } finally {
+    await Deno.remove(base, { recursive: true });
+  }
 });

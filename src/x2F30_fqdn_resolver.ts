@@ -427,6 +427,32 @@ export interface ChordRefs {
   incoming: { name: string; via: string[] }[]; // chords that cite the node
 }
 
+/** Build the identity record for a resolved node (shared by refs + graph). */
+function buildRefsNode(res: Resolution, query: string): RefsNode {
+  const winner = res.resolved;
+  const unambiguous = res.identity === "unique" || res.identity === "mirrored";
+  const nodeName = winner ? basename(winner.rel) : null;
+  const node: RefsNode = {
+    query,
+    found: winner !== null && unambiguous,
+    identity: res.identity,
+    name: nodeName,
+    stem: winner ? refStem(nodeName!) : null,
+    kind: nodeName ? kindOf(nodeName) : null,
+    root: winner ? basename(winner.root) : null,
+    rel: winner ? winner.rel : null,
+    hash: winner ? winner.hash : null,
+  };
+  if (res.identity === "conflict") {
+    node.candidates = res.candidates.map((c) => ({
+      rel: c.rel,
+      root: basename(c.root),
+      hash: c.hash,
+    }));
+  }
+  return node;
+}
+
 /**
  * The citation edges of a node, IDENTITY-FIRST (codex Graph-v2 A): the query
  * (slug / handle / canonical stem / organ path) is resolved through the index
@@ -458,26 +484,8 @@ export async function chordRefs(
   const res = await resolveGraphNode(index, target);
   const winner = res.resolved;
   const unambiguous = res.identity === "unique" || res.identity === "mirrored";
-  const nodeName = winner ? basename(winner.rel) : null;
-  const nodeStem = winner ? refStem(nodeName!) : refStem(target);
-  const node: RefsNode = {
-    query: target,
-    found: winner !== null && unambiguous,
-    identity: res.identity,
-    name: nodeName,
-    stem: winner ? nodeStem : null,
-    kind: nodeName ? kindOf(nodeName) : null,
-    root: winner ? basename(winner.root) : null,
-    rel: winner ? winner.rel : null,
-    hash: winner ? winner.hash : null,
-  };
-  if (res.identity === "conflict") {
-    node.candidates = res.candidates.map((c) => ({
-      rel: c.rel,
-      root: basename(c.root),
-      hash: c.hash,
-    }));
-  }
+  const node = buildRefsNode(res, target);
+  const nodeStem = winner ? node.stem! : refStem(target);
 
   let outgoing = { hears: [], closes: [], references: [] } as {
     hears: string[];
@@ -526,6 +534,118 @@ export async function chordRefs(
   }
   incoming.sort((a, b) => a.name.localeCompare(b.name));
   return { node, outgoing, incoming };
+}
+
+export type EdgeKind = "hears" | "closes" | "references";
+
+/** A typed citation edge (codex Graph-v2 B). `source`/`target` are node stems
+ *  (resolve them against `nodes`); `parser` records what extracted it, so an
+ *  edge stays auditable as the extractor evolves. */
+export interface FqdnEdge {
+  source: string;
+  target: string;
+  kind: EdgeKind;
+  parser: "frontmatter-v0";
+}
+
+export interface FqdnGraph {
+  query: string;
+  root: RefsNode;
+  nodes: RefsNode[]; // resolved identities: root + depth-1 neighbors
+  edges: FqdnEdge[];
+  truncated: number;
+  index: { files_indexed: number };
+}
+
+/**
+ * Depth-1 typed citation graph around a node (codex Graph-v2 D): typed edges
+ * (hears/closes/references) for what the node cites (outgoing) and what cites it
+ * (incoming), plus the resolved IDENTITY of every node touched (so each edge can
+ * be audited by content hash). A thin layer over `chordRefs` — same identity
+ * resolver (acceptance #5). `--incoming`/`--outgoing` select direction;
+ * `--kind` filters neighbor node kinds. Read is injected.
+ */
+export async function chordGraph(
+  index: Index,
+  query: string,
+  opts: {
+    incoming?: boolean;
+    outgoing?: boolean;
+    kind?: NameKind;
+    limit?: number;
+    read?: (path: string) => Promise<string | null>;
+  } = {},
+): Promise<FqdnGraph> {
+  const wantOut = opts.outgoing ?? true;
+  const wantIn = opts.incoming ?? true;
+  const limit = opts.limit ?? 200;
+  const refs = await chordRefs(index, query, { read: opts.read });
+  const root = refs.node;
+  const edges: FqdnEdge[] = [];
+  const neighborStems = new Set<string>();
+
+  if (root.found && root.stem) {
+    if (wantOut) {
+      for (const kind of ["hears", "closes", "references"] as EdgeKind[]) {
+        for (const raw of refs.outgoing[kind]) {
+          const target = refStem(raw);
+          edges.push({
+            source: root.stem,
+            target,
+            kind,
+            parser: "frontmatter-v0",
+          });
+          neighborStems.add(target);
+        }
+      }
+    }
+    if (wantIn) {
+      for (const inc of refs.incoming) {
+        const source = refStem(inc.name);
+        for (const kind of inc.via as EdgeKind[]) {
+          edges.push({
+            source,
+            target: root.stem,
+            kind,
+            parser: "frontmatter-v0",
+          });
+        }
+        neighborStems.add(source);
+      }
+    }
+  }
+
+  // Resolve every touched neighbor to a node identity (depth-1; bounded).
+  neighborStems.delete(root.stem ?? "");
+  const nodes: RefsNode[] = root.found ? [root] : [];
+  let truncated = 0;
+  for (const stem of [...neighborStems].sort()) {
+    if (nodes.length - (root.found ? 1 : 0) >= limit) {
+      truncated++;
+      continue;
+    }
+    const nres = await resolveGraphNode(index, stem);
+    const n = buildRefsNode(nres, stem);
+    if (opts.kind && n.kind !== opts.kind) continue;
+    nodes.push(n);
+  }
+  // If filtering by kind, drop edges that no longer touch a kept node.
+  const kept = new Set(nodes.map((n) => n.stem));
+  const finalEdges = opts.kind
+    ? edges.filter((e) =>
+      (e.source === root.stem || kept.has(e.source)) &&
+      (e.target === root.stem || kept.has(e.target))
+    )
+    : edges;
+
+  return {
+    query,
+    root,
+    nodes,
+    edges: finalEdges,
+    truncated,
+    index: { files_indexed: index.files },
+  };
 }
 
 // ── chord citation graph (navigate the FQDN network's edges) ────────────────
@@ -796,6 +916,30 @@ if (import.meta.main) {
       null,
       2,
     ));
+    Deno.exit(0);
+  }
+
+  // `graph <query> [--incoming] [--outgoing] [--kind=K]` — depth-1 typed
+  // citation graph: resolved node identities + typed edges (codex Graph-v2 D).
+  if (args[0] === "graph") {
+    const name = args.slice(1).find((a) => !a.startsWith("--"));
+    if (!name) {
+      console.error(
+        "usage: resolver.ts graph <query> [--incoming] [--outgoing] [--kind=K]",
+      );
+      Deno.exit(1);
+    }
+    // Default is both directions; a lone --incoming/--outgoing narrows.
+    const onlyIn = args.includes("--incoming") && !args.includes("--outgoing");
+    const onlyOut = args.includes("--outgoing") && !args.includes("--incoming");
+    const kindArg = args.find((a) => a.startsWith("--kind="))?.split("=")[1];
+    const index = await buildIndex(roots);
+    const g = await chordGraph(index, name, {
+      incoming: !onlyOut,
+      outgoing: !onlyIn,
+      kind: kindArg as NameKind | undefined,
+    });
+    console.log(JSON.stringify({ type: "fqdn_graph", ...g }, null, 2));
     Deno.exit(0);
   }
 

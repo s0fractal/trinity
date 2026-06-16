@@ -8,6 +8,7 @@ import {
   buildIndex,
   type Candidate,
   chordRefs,
+  graphQueryForms,
   isContentAddressed,
   isSkippedPath,
   kindOf,
@@ -538,24 +539,55 @@ Deno.test("chordRefs - incoming edges: who hears/closes the node", async () => {
       "---\ncloses:\n  path_hint: x7700_001_v_node\n---\nbody",
     );
     await w(
-      "x7700_004_v_unrelated.myc.md",
+      "x7700_004_v_referencer.myc.md",
+      "---\nreferences:\n  - src/x7700_001_v_node.myc.md\n---\nbody",
+    );
+    await w(
+      "x7700_005_v_unrelated.myc.md",
       "---\nhears:\n  - x7700_999_v_other\n---\nbody",
     );
     const { buildIndex: _bi } = await import("./x2F30_fqdn_resolver.ts");
     const index = await _bi([base]);
-    const r = await chordRefs(index, "x7700_001_v_node");
-    assert(r.node !== null, "node found");
+    // Identity-first (Phase A): resolve by the SLUG, not the full stem.
+    const r = await chordRefs(index, "node");
+    assertEquals(r.node.found, true);
+    assertEquals(r.node.kind, "chord");
+    assert(r.node.hash !== null, "node carries a content hash (F5)");
     assertEquals(r.outgoing.hears, ["x7700_009_v_dep"]); // its own edge
     const names = r.incoming.map((i) => i.name).sort();
     assertEquals(names, [
       "x7700_002_v_hearer.myc.md",
       "x7700_003_v_closer.myc.md",
+      "x7700_004_v_referencer.myc.md",
     ]);
-    const hearer = r.incoming.find((i) => i.name.includes("hearer"))!;
-    assertEquals(hearer.via, ["hears"]);
-    const closer = r.incoming.find((i) => i.name.includes("closer"))!;
-    assertEquals(closer.via, ["closes"]);
+    assertEquals(
+      r.incoming.find((i) => i.name.includes("hearer"))!.via,
+      ["hears"],
+    );
+    assertEquals(
+      r.incoming.find((i) => i.name.includes("closer"))!.via,
+      ["closes"],
+    );
+    // Phase C: reverse `references` edge is visible.
+    assertEquals(
+      r.incoming.find((i) => i.name.includes("referencer"))!.via,
+      ["references"],
+    );
+    // The full stem resolves to the SAME node as the slug (F1).
+    const byStem = await chordRefs(index, "x7700_001_v_node");
+    assertEquals(byStem.node.name, r.node.name);
   } finally {
     await Deno.remove(base, { recursive: true });
   }
+});
+
+Deno.test("graphQueryForms - completes a bare stem/slug/path to addressable forms", () => {
+  const f = graphQueryForms("src/x2F30_fqdn_resolver");
+  assert(f.includes("src/x2F30_fqdn_resolver")); // as given
+  assert(f.includes("x2F30_fqdn_resolver")); // basename (strips src/)
+  assert(f.includes("x2F30_fqdn_resolver.ts")); // completed
+  assert(f.includes("x2F30_fqdn_resolver.myc.md"));
+  // a full name is returned unchanged (and not double-suffixed)
+  assert(graphQueryForms("a.myc.md").includes("a.myc.md"));
+  assert(!graphQueryForms("a.myc.md").includes("a.myc.md.myc.md"));
 });

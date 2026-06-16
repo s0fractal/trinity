@@ -376,17 +376,66 @@ export async function searchContent(
   };
 }
 
+/** The addressable forms of a graph query, in resolution-preference order: the
+ *  query as given, its basename (strips a `src/...` path), then those completed
+ *  with the substrate's content extensions (so a bare stem/slug reaches the
+ *  extension-bearing byKey forms). Pure; exported for the test. */
+export function graphQueryForms(query: string): string[] {
+  const base = basename(query);
+  const forms = [query];
+  if (base !== query) forms.push(base);
+  for (const ext of [".myc.md", ".md", ".ts", ".json", ".ndjson"]) {
+    if (!base.endsWith(ext)) forms.push(base + ext);
+  }
+  return [...new Set(forms)];
+}
+
+/** Resolve a graph query to a node, form-tolerantly (codex Graph-v2 A): try each
+ *  addressable form against the index, first non-absent wins. */
+export async function resolveGraphNode(
+  index: Index,
+  query: string,
+): Promise<Resolution> {
+  let last: Resolution | null = null;
+  for (const form of graphQueryForms(query)) {
+    const res = await resolveFromIndex(index, form);
+    if (res.resolved) return { ...res, fqdn: query };
+    last = res;
+  }
+  return last ??
+    { fqdn: query, resolved: null, identity: "absent", candidates: [] };
+}
+
+/** The identity of the node a refs/graph query resolved to — carries enough to
+ *  audit an edge after a file changes (codex Graph-v2 F5: identity-first). */
+export interface RefsNode {
+  query: string;
+  found: boolean; // true only for an unambiguous (unique|mirrored) node
+  identity: Identity;
+  name: string | null; // canonical basename
+  stem: string | null;
+  kind: NameKind | null;
+  root: string | null;
+  rel: string | null;
+  hash: string | null;
+  candidates?: { rel: string; root: string; hash: string }[]; // when conflict
+}
+
 export interface ChordRefs {
-  node: string | null; // resolved chord stem, or null if not found
+  node: RefsNode;
   outgoing: { hears: string[]; closes: string[]; references: string[] };
   incoming: { name: string; via: string[] }[]; // chords that cite the node
 }
 
 /**
- * The citation edges of a chord: its declared OUTGOING edges (hears/closes/
- * references) plus the INCOMING edges — chords elsewhere whose hears/closes name
- * it. Lets a person navigate the knowledge graph ("what cites this?"), not just
- * resolve a single node. Read is injected (testable, bounded).
+ * The citation edges of a node, IDENTITY-FIRST (codex Graph-v2 A): the query
+ * (slug / handle / canonical stem / organ path) is resolved through the index
+ * before traversal, so any address form reaches the same node. Returns the
+ * node's OUTGOING edges (hears/closes/references — empty for a non-chord like an
+ * organ) and its INCOMING edges: every chord whose `hears`/`closes`/`references`
+ * names it (Phase C adds reverse `references`, so "what cites this organ?" works
+ * too). An ambiguous query (identity=conflict) returns found:false with the
+ * candidate list rather than silently picking one. Read is injected.
  */
 export async function chordRefs(
   index: Index,
@@ -401,43 +450,79 @@ export async function chordRefs(
         return null;
       }
     });
-  const targetStem = refStem(target);
 
-  // Outgoing: read the node itself (the precedence-winning chord with this stem).
-  let outgoing: { hears: string[]; closes: string[]; references: string[] } = {
-    hears: [],
-    closes: [],
-    references: [],
+  // Phase A: resolve the query to a node through the index (handles slug/handle/
+  // stem/path uniformly) before any graph traversal. byKey forms carry the
+  // extension, so a bare stem/slug or a `src/...` path must be completed to its
+  // addressable forms; the first that resolves wins.
+  const res = await resolveGraphNode(index, target);
+  const winner = res.resolved;
+  const unambiguous = res.identity === "unique" || res.identity === "mirrored";
+  const nodeName = winner ? basename(winner.rel) : null;
+  const nodeStem = winner ? refStem(nodeName!) : refStem(target);
+  const node: RefsNode = {
+    query: target,
+    found: winner !== null && unambiguous,
+    identity: res.identity,
+    name: nodeName,
+    stem: winner ? nodeStem : null,
+    kind: nodeName ? kindOf(nodeName) : null,
+    root: winner ? basename(winner.root) : null,
+    rel: winner ? winner.rel : null,
+    hash: winner ? winner.hash : null,
   };
-  let node: string | null = null;
+  if (res.identity === "conflict") {
+    node.candidates = res.candidates.map((c) => ({
+      rel: c.rel,
+      root: basename(c.root),
+      hash: c.hash,
+    }));
+  }
+
+  let outgoing = { hears: [], closes: [], references: [] } as {
+    hears: string[];
+    closes: string[];
+    references: string[];
+  };
   const incoming: { name: string; via: string[] }[] = [];
+
+  // Don't traverse an absent or ambiguous node — return identity + candidates.
+  if (!winner || !unambiguous) {
+    return { node, outgoing, incoming };
+  }
+
+  const nodeContent = await read(winner.path);
+  if (nodeContent !== null) outgoing = parseChordEdges(nodeContent);
 
   for (const [key, stored] of index.byKey) {
     const exact = stored.filter((s) => s.matchForm === "exact");
     if (exact.length === 0 || kindOf(key) !== "chord") continue;
-    const winner = [...exact].sort((a, b) =>
+    if (refStem(key) === nodeStem) continue; // skip the node itself
+    const w = [...exact].sort((a, b) =>
       a.rootIndex - b.rootIndex || a.depth - b.depth
     )[0];
-    const content = await read(winner.path);
+    const content = await read(w.path);
     if (content === null) {
       continue;
     }
     const edges = parseChordEdges(content);
-    if (refStem(key) === targetStem) {
-      node = refStem(key);
-      outgoing = edges;
-      continue;
-    }
     const via: string[] = [];
-    if (edges.hears.includes(targetStem)) {
+    if (edges.hears.includes(nodeStem)) {
       via.push("hears");
     }
-    if (edges.closes.includes(targetStem)) {
+    if (edges.closes.includes(nodeStem)) {
       via.push("closes");
     }
-    if (via.length > 0) {
-      incoming.push({ name: key, via });
+    // Phase C: reverse references — a chord that names this node's stem in
+    // `references:` (those cite organs/files by path; stem-normalize to match).
+    if (
+      edges.references.some((r) =>
+        refStem(r) === nodeStem
+      )
+    ) {
+      via.push("references");
     }
+    if (via.length > 0) incoming.push({ name: key, via });
   }
   incoming.sort((a, b) => a.name.localeCompare(b.name));
   return { node, outgoing, incoming };
@@ -727,7 +812,8 @@ if (import.meta.main) {
       {
         type: "fqdn_refs",
         query: name,
-        found: refs.node !== null,
+        found: refs.node.found,
+        files_indexed: index.files,
         incoming_count: refs.incoming.length,
         ...refs,
       },

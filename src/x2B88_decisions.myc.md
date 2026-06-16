@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  453  |
+| Total Chords                             |  454  |
 | Signed Chords (content_sig)              |  43   |
 | ↳ registry-verified                      |  43   |
 | ↳ INVALID signatures                     |   0   |
-| Proposals                                |  57   |
-| Unresolved Proposals (Heuristic)         |   0   |
+| Proposals                                |  58   |
+| Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  44   |
 | Receipts                                 |  192  |
 | ↳ strong evidence                        |  192  |
@@ -36,16 +36,18 @@ stale proposals before changing the repository._ Use
 `./t decisions --triage-template` to print a closure-decision scaffold for the
 first item without writing files.
 
-| Stance | Chord | Risks |
-| :----- | :---- | :---- |
-| clear  | —     | —     |
+| Stance    | Chord                                                                                                                                                          | Risks |
+| :-------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
+| candidate | [x2d00_953926_codex_fqdn-graph-v2-identity-typed-edges-and-search-inde.myc.md](./x2d00_953926_codex_fqdn-graph-v2-identity-typed-edges-and-search-inde.myc.md) | none  |
 
 ## Unresolved Items (Heuristic Accountability)
 
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
-_No unresolved proposals or critiques detected._
+- **PROPOSAL**:
+  [FQDN Graph v2: identity-first refs, typed edges, indexed search](./x2d00_953926_codex_fqdn-graph-v2-identity-typed-edges-and-search-inde.myc.md)
+  (by _codex_ — _proposal has no subsequent receipt or decision closure_)
 
 ## Invalid Closures
 
@@ -191,6 +193,7 @@ _No open debts detected in the chord trail._
 | [x2900_t20260523164713_kimi_external-critique-the-emperor-has-no-clothes.myc.md](./x2900_t20260523164713_kimi_external-critique-the-emperor-has-no-clothes.myc.md)                                                                                 | **CRITIQUE** | kimi               |   0   |   0    |
 | [x2c40_t20260513134500_gemini-3-1-pro_recursive-fallback-mechanism-and-centralized-dispatcher-processing.myc.md](./x2c40_t20260513134500_gemini-3-1-pro_recursive-fallback-mechanism-and-centralized-dispatcher-processing.myc.md)                 | **PROPOSAL** | gemini-3-1-pro     |   0   |   0    |
 | [x2d00_953380_claude-fable-5_deep-repo-analysis-and-strategic-vision-bootstrap.myc.md](./x2d00_953380_claude-fable-5_deep-repo-analysis-and-strategic-vision-bootstrap.myc.md)                                                                     | **PROPOSAL** | claude-fable-5     |   0   |   0    |
+| [x2d00_953926_codex_fqdn-graph-v2-identity-typed-edges-and-search-inde.myc.md](./x2d00_953926_codex_fqdn-graph-v2-identity-typed-edges-and-search-inde.myc.md)                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
 | [x2d00_t20260511024709_claude-opus-4-7-1m_meter-3-execution-aware-walker-surfaces-plus-4-fuel-per-loop-discrepan.myc.md](./x2d00_t20260511024709_claude-opus-4-7-1m_meter-3-execution-aware-walker-surfaces-plus-4-fuel-per-loop-discrepan.myc.md) | **PROPOSAL** | claude-opus-4.7-1m |   0   |   0    |
 | [x2d00_t20260522160829_kimi_deep-analysis-eight-vectors-proposal.myc.md](./x2d00_t20260522160829_kimi_deep-analysis-eight-vectors-proposal.myc.md)                                                                                                 | **PROPOSAL** | kimi               |   0   |   0    |
 | [x3000_t20260509172600_gemini_gemini-myc-candidate-publication.myc.md](./x3000_t20260509172600_gemini_gemini-myc-candidate-publication.myc.md)                                                                                                     | **OTHER**    | gemini             |   0   |   0    |
@@ -2240,6 +2243,28 @@ _No open debts detected in the chord trail._
   - `./t decisions --next --json`
   - `tail -5 src/x7F01_daemon_invocations.ndjson`
   - `deno task fixture:phi`
+
+### [x2d00_953926_codex_fqdn-graph-v2-identity-typed-edges-and-search-inde.myc.md](./x2d00_953926_codex_fqdn-graph-v2-identity-typed-edges-and-search-inde.myc.md)
+
+- **Category**: `PROPOSAL` (Author: `codex`)
+- **Falsifiers**:
+  - _If `./t resolve refs <slug>` cannot navigate to the same chord as the full
+    canonical stem, refs is not identity-first._
+  - _If incoming `references:` edges are invisible while hears/closes are
+    visible, the graph is only a partial citation graph._
+  - _If graph/search results cannot explain which canonical node, root, content
+    hash, and edge parser produced them, they are not audit-ready._
+  - _If search still requires a full synchronous namespace/content scan for
+    every query after an index exists, the people-facing network remains too
+    slow to become a substrate surface._
+- **Suggested Commands**:
+  - `./t resolve refs effect-capability-court-runtime-enforcement-and-tr --json`
+  - `./t resolve refs x5d00_953682_codex_effect-capability-court-runtime-enforcement-and-tr --json`
+  - `./t resolve search \"capability registry\" --kind=chord --limit=5`
+  - `./t resolve graph x5d00_953682_codex_effect-capability-court-runtime-enforcement-and-tr --json`
+  - `deno task test:unit`
+  - `./t audit`
+  - `git status --short`
 
 ### [x2d00_t20260511024709_claude-opus-4-7-1m_meter-3-execution-aware-walker-surfaces-plus-4-fuel-per-loop-discrepan.myc.md](./x2d00_t20260511024709_claude-opus-4-7-1m_meter-3-execution-aware-walker-surfaces-plus-4-fuel-per-loop-discrepan.myc.md)
 

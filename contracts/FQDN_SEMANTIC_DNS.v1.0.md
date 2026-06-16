@@ -15,6 +15,34 @@ hears:
 This contract formally defines the boundary between physical immutable identity
 and semantic mutable intent within the OMEGA-64 Swarm (Trinity, Liquid, MYC).
 
+## 0. Implementation status (added 2026-06-16)
+
+> **This document is a SPEC, not a description of what is built.** The
+> frontmatter `status: "active"` marks the contract as live/non-draft, NOT that
+> the system below is implemented. Read this section first.
+>
+> **Implemented today** (`src/x2F30_fqdn_resolver.ts`, the `t resolve` family):
+> local-first resolution of a name across the four roots (exact / handle /
+> slug), identity as `unique | mirrored | conflict | absent` by BLAKE3 content
+> hash, precedence ordering, and a typed citation+import graph (`refs`/`graph`/
+> `overview`).
+>
+> **Specified here but NOT built:** the physical content-addressed FQDN filename
+> scheme `h.<12-hex>.name.kind.namespace.myc.md`, resolution of a semantic alias
+> to "the latest valid Physical FQDN in the active trust ledger," PN-CAD
+> ledger-backed resolution, and ZK-proof verifiers. `isContentAddressed()` in
+> the resolver recognizes the `h.<hex>.` form as a concept; no such names are in
+> use.
+>
+> **Partly superseded, not merely pending:** trinity's actual addressing is
+> _role/coordinate_ (`xNNNN_<handle>`, where editing a file keeps its identity)
+> — a deliberate divergence from this contract's _content_-addressed physical
+> FQDN (see the role-vs-content-addressing invariant and the global research
+> chord `x3300_953965`). The dotted `name.kind.namespace` semantic form is
+> likewise not the convention in use. Treat §1–§3 below as a design study to
+> reconcile with the role-addressed reality, not as a description of running
+> code.
+
 ## 1. Topologies of Identity
 
 The swarm recognizes two distinct topologies of identity:

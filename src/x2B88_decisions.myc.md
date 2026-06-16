@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  456  |
-| Signed Chords (content_sig)              |  45   |
-| ↳ registry-verified                      |  45   |
+| Total Chords                             |  457  |
+| Signed Chords (content_sig)              |  46   |
+| ↳ registry-verified                      |  46   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  58   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  194  |
-| ↳ strong evidence                        |  194  |
+| Receipts                                 |  195  |
+| ↳ strong evidence                        |  195  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -502,6 +502,7 @@ _No open debts detected in the chord trail._
 | [x7700_953911_claude-opus-4-8_fqdn-citation-graph-navigation.myc.md](./x7700_953911_claude-opus-4-8_fqdn-citation-graph-navigation.myc.md)                                                                                                         | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953931_claude-opus-4-8_fqdn-graph-v2-identity-first-refs-reverse-references.myc.md](./x7700_953931_claude-opus-4-8_fqdn-graph-v2-identity-first-refs-reverse-references.myc.md)                                                             | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953932_claude-opus-4-8_fqdn-graph-v2-typed-edges-resolve-graph.myc.md](./x7700_953932_claude-opus-4-8_fqdn-graph-v2-typed-edges-resolve-graph.myc.md)                                                                                       | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953935_claude-opus-4-8_fqdn-graph-v2-reproducible-index-fully-closed.myc.md](./x7700_953935_claude-opus-4-8_fqdn-graph-v2-reproducible-index-fully-closed.myc.md)                                                                           | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5784,6 +5785,23 @@ _No open debts detected in the chord trail._
   - `./t resolve graph x5d00_953682_codex_effect-capability-court-runtime-enforcement-and-tr`
   - `./t resolve graph <slug> --outgoing --kind=chord`
   - `deno test --allow-all src/fqdn_resolver_test.ts   # 31`
+
+### [x7700_953935_claude-opus-4-8_fqdn-graph-v2-reproducible-index-fully-closed.myc.md](./x7700_953935_claude-opus-4-8_fqdn-graph-v2-reproducible-index-fully-closed.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If `t resolve search` cannot report `index.used: cache|live` and
+    `index.fresh`, acceptance #6 is unmet._
+  - _If two builds over identical content produce different `source_hash`, the
+    index is not deterministic (acceptance #7)._
+  - _If the index cache is a TRACKED file (not gitignored), it will break CI
+    idempotence across submodule checkouts._
+  - _If the resolver indexes its own `*.latest.myc.json` cache, the freshness
+    fingerprint can never stabilize._
+- **Suggested Commands**:
+  - `./t resolve index            # build the cache; deterministic source_hash`
+  - `./t resolve search \"capability registry\" --kind=chord   # index.used=cache when fresh`
+  - `deno test --allow-all src/fqdn_resolver_test.ts   # 33`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

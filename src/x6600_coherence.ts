@@ -68,7 +68,7 @@ export function phaseToAxis(theta: number): number {
   return Math.round(norm / (TAU / 8)) % 8;
 }
 
-export interface Coherence {
+interface Coherence {
   type: "coherence";
   position: "6/6";
   order_parameter: number; // r ∈ [0,1]
@@ -80,7 +80,7 @@ export interface Coherence {
   note: string;
 }
 
-export async function computeCoherence(): Promise<Coherence> {
+async function computeCoherence(): Promise<Coherence> {
   const phases: number[] = [];
   const byAxis: Record<number, number> = {};
   let withoutDipole = 0;

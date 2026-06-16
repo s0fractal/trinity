@@ -40,7 +40,6 @@ import {
   join,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { parallel, tryOr } from "./x0030_compose.ts";
-import { type Coherence, computeCoherence } from "./x6600_coherence.ts";
 import { listChordSurfaceFiles } from "./x2F21_chord_surface.ts";
 import {
   chooseNextMigration,
@@ -474,7 +473,6 @@ if (import.meta.main) {
     voices: scanVoices,
     chords: scanChords,
     probes: scanProbes,
-    coherence: () => tryOr(() => computeCoherence(), null),
     registry: scanRegistry,
     liquidOrgans: () => countSubmoduleOrgans("liquid"),
     omegaOrgans: () => countSubmoduleOrgans("omega"),
@@ -489,7 +487,6 @@ if (import.meta.main) {
   const inbox = data.inbox as InboxShape | null;
   const heartbeat = data.heartbeat as HeartbeatShape | null;
   const decisions = data.decisions as DecisionsShape | null;
-  const coherence = data.coherence as Coherence | null;
 
   const composite = status?.substrate_health?.overall ?? "unknown";
   const audit = status?.summary?.audit
@@ -525,13 +522,6 @@ if (import.meta.main) {
     voices: { count: data.voices.total, identities: data.voices.identities },
     chords: data.chords,
     probes: data.probes,
-    coherence: coherence
-      ? {
-        order_parameter: coherence.order_parameter,
-        mean_phase_axis: coherence.mean_phase_axis,
-        organs_measured: coherence.organs_measured,
-      }
-      : null,
     contracts: contracts?.summary ?? null,
     capabilities_validation: capabilitiesValidation?.summary ?? null,
     capabilities_schema_classes: capabilitiesValidation?.schema_classes ??
@@ -584,11 +574,6 @@ if (import.meta.main) {
       `# chords:      ${data.chords.tracked} tracked, ${data.chords.local} local, ${data.chords.newForm} flat-src form`,
     );
     console.log(`# probes:      ${data.probes.total} experimental dirs`);
-    if (coherence) {
-      console.log(
-        `# coherence:   r=${coherence.order_parameter} (dipole field, mean axis ${coherence.mean_phase_axis}, ${coherence.organs_measured} organs)`,
-      );
-    }
     console.log(
       `# attention:   ${attention.level} (score:${attention.score})`,
     );

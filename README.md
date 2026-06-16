@@ -46,6 +46,11 @@ trinity/
   docs/         # operator/model guidance
 ```
 
+Files in `src/` are named `x<NNNN>_<handle>` where the first hex digit is a
+semantic **bucket**. New here? [docs/COORDINATES.md](docs/COORDINATES.md)
+decodes the scheme in English — generated from the glossary via
+`deno task coordinates`.
+
 ## Bootstrap
 
 ```bash

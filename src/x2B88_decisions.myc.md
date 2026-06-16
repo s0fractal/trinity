@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  461  |
-| Signed Chords (content_sig)              |  49   |
-| ↳ registry-verified                      |  49   |
+| Total Chords                             |  462  |
+| Signed Chords (content_sig)              |  50   |
+| ↳ registry-verified                      |  50   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  58   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  198  |
-| ↳ strong evidence                        |  198  |
+| Receipts                                 |  199  |
+| ↳ strong evidence                        |  199  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -507,6 +507,7 @@ _No open debts detected in the chord trail._
 | [x7700_953939_claude-opus-4-8_fqdn-graph-imports-edge-bridge-to-gravity.myc.md](./x7700_953939_claude-opus-4-8_fqdn-graph-imports-edge-bridge-to-gravity.myc.md)                                                                                   | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953947_claude-opus-4-8_fqdn-imports-edge-ast-parity-verified.myc.md](./x7700_953947_claude-opus-4-8_fqdn-imports-edge-ast-parity-verified.myc.md)                                                                                           | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953950_claude-opus-4-8_hears-link-validation-diagnostic.myc.md](./x7700_953950_claude-opus-4-8_hears-link-validation-diagnostic.myc.md)                                                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953952_claude-opus-4-8_fqdn-network-overview-front-door.myc.md](./x7700_953952_claude-opus-4-8_fqdn-network-overview-front-door.myc.md)                                                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5859,6 +5860,21 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `deno run -A src/x5400_validate_schemas.ts          # see the 'hears-links' diagnostic line`
   - `deno test --allow-all src/validate_schemas_test.ts # 3`
+
+### [x7700_953952_claude-opus-4-8_fqdn-network-overview-front-door.myc.md](./x7700_953952_claude-opus-4-8_fqdn-network-overview-front-door.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If `t resolve overview` requires multi-hop traversal, embeddings, or
+    clustering, it has left codex's depth-1 resolver scope._
+  - _If in-degree counts disagree with summing every node's outgoing edges by
+    target, the aggregation is wrong._
+  - _If `t resolve search`/`graph` change behavior, the overview addition was
+    not additive._
+- **Suggested Commands**:
+  - `./t resolve overview --pretty            # the network front door`
+  - `./t resolve overview --json --top=20     # machine-readable hubs`
+  - `deno test --allow-all src/fqdn_resolver_test.ts   # 41`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

@@ -17,6 +17,7 @@ import {
   kindOf,
   listNames,
   matchSnippet,
+  networkOverview,
   parseChordEdges,
   parseOrganImports,
   renderGraph,
@@ -878,6 +879,68 @@ Deno.test("renderGraph - absent and conflict nodes render honestly, no edge sect
     "CONFLICT: 'dup' names several differing files",
   );
   assertStringIncludes(conflict.join("\n"), "a/dup.myc.md @ src");
+});
+
+Deno.test("networkOverview - aggregates by_kind, edge totals, and in-degree hubs", () => {
+  const entry = (
+    name: string,
+    kind: "organ" | "chord",
+    edges: Partial<
+      {
+        hears: string[];
+        closes: string[];
+        references: string[];
+        imports: string[];
+      }
+    >,
+  ) => ({
+    name,
+    kind,
+    root: "src",
+    rel: `src/${name}`,
+    content_hash: "h",
+    edges: {
+      hears: edges.hears ?? [],
+      closes: edges.closes ?? [],
+      references: edges.references ?? [],
+      imports: edges.imports ?? [],
+    },
+    text: "",
+  });
+  const artifact = {
+    type: "resolver_index" as const,
+    generator_version: "test",
+    files_indexed: 4,
+    fingerprint: "f",
+    source_hash: "s",
+    entries: [
+      entry("x2200_a.ts", "organ", { imports: ["x0030_compose"] }),
+      entry("x2300_b.ts", "organ", { imports: ["x0030_compose"] }),
+      entry("x7700_1_v_c.myc.md", "chord", {
+        hears: ["x7700_9_v_hub"],
+        references: ["src/x0030_compose.ts"],
+      }),
+      entry("x7700_2_v_d.myc.md", "chord", { hears: ["x7700_9_v_hub"] }),
+    ],
+    text: "",
+  };
+  const o = networkOverview(artifact, { top: 5 });
+  assertEquals(o.total_nodes, 4);
+  assertEquals(o.by_kind, { organ: 2, chord: 2 });
+  assertEquals(o.edge_totals, {
+    hears: 2,
+    closes: 0,
+    references: 1,
+    imports: 2,
+  });
+  // x7700_9_v_hub: cited twice (hears); x0030_compose: cited once (references)
+  assertEquals(o.top_cited[0], { stem: "x7700_9_v_hub", in: 2 });
+  assertEquals(
+    o.top_cited.some((h) => h.stem === "x0030_compose" && h.in === 1),
+    true,
+  );
+  // x0030_compose: imported twice — the import hub
+  assertEquals(o.top_imported[0], { stem: "x0030_compose", in: 2 });
 });
 
 Deno.test("searchCache - matches name + bounded text over a cached artifact", () => {

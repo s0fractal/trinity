@@ -1111,6 +1111,102 @@ export function renderGraph(g: FqdnGraph): string[] {
   return lines;
 }
 
+export interface NetworkHub {
+  stem: string;
+  in: number; // incoming-edge count of the relevant kind(s)
+}
+
+/** A depth-0 aggregate "front door" to the FQDN network: counts by kind, the
+ *  most-cited knowledge nodes (hubs), and the most-imported organs. The single
+ *  most useful view for a person facing a 1700-node namespace — where to start.
+ *  Distinct from `graph` (one node's neighborhood) and `search` (by keyword):
+ *  this is the shape of the whole network. NOT multi-hop / clustering / ranking
+ *  by embeddings (those stay out of scope) — just aggregated depth-1 edges. */
+export interface NetworkOverview {
+  total_nodes: number;
+  by_kind: Record<string, number>;
+  edge_totals: Record<EdgeKind, number>;
+  top_cited: NetworkHub[]; // most incoming hears+closes+references
+  top_imported: NetworkHub[]; // most incoming imports (organ dependency hubs)
+}
+
+/** Aggregate the index artifact into a network overview. Pure. In-degree is
+ *  computed over every entry's outgoing edges (citation kinds collapse the
+ *  target to a stem; `references` raw paths are stem-normalized to match). */
+export function networkOverview(
+  artifact: ResolverIndexArtifact,
+  opts: { top?: number } = {},
+): NetworkOverview {
+  const top = opts.top ?? 12;
+  const by_kind: Record<string, number> = {};
+  const edge_totals: Record<EdgeKind, number> = {
+    hears: 0,
+    closes: 0,
+    references: 0,
+    imports: 0,
+  };
+  const cited = new Map<string, number>(); // hears+closes+references in-degree
+  const imported = new Map<string, number>(); // imports in-degree
+  for (const e of artifact.entries) {
+    by_kind[e.kind] = (by_kind[e.kind] ?? 0) + 1;
+    const bump = (map: Map<string, number>, raw: string) => {
+      const t = refStem(raw);
+      if (t) map.set(t, (map.get(t) ?? 0) + 1);
+    };
+    for (const t of e.edges.hears) {
+      edge_totals.hears++;
+      bump(cited, t);
+    }
+    for (const t of e.edges.closes) {
+      edge_totals.closes++;
+      bump(cited, t);
+    }
+    for (const t of e.edges.references) {
+      edge_totals.references++;
+      bump(cited, t);
+    }
+    for (const t of e.edges.imports) {
+      edge_totals.imports++;
+      bump(imported, t);
+    }
+  }
+  const rank = (map: Map<string, number>): NetworkHub[] =>
+    [...map.entries()]
+      .map(([stem, n]) => ({ stem, in: n }))
+      .sort((a, b) => b.in - a.in || a.stem.localeCompare(b.stem))
+      .slice(0, top);
+  return {
+    total_nodes: artifact.entries.length,
+    by_kind,
+    edge_totals,
+    top_cited: rank(cited),
+    top_imported: rank(imported),
+  };
+}
+
+/** Human-readable network overview (`overview --pretty`). */
+export function renderOverview(o: NetworkOverview): string[] {
+  const lines = [`# FQDN network overview — ${o.total_nodes} nodes`];
+  const kinds = Object.entries(o.by_kind).sort((a, b) => b[1] - a[1]);
+  lines.push(`# by kind: ${kinds.map(([k, n]) => `${k}=${n}`).join("  ")}`);
+  lines.push(
+    `# edges: ${
+      (Object.entries(o.edge_totals) as [EdgeKind, number][])
+        .map(([k, n]) => `${k}=${n}`).join("  ")
+    }`,
+  );
+  lines.push(`# ── most-cited nodes (hears+closes+references in) ──`);
+  for (const h of o.top_cited) {
+    lines.push(`#   ${String(h.in).padStart(4)}  ◀── ${h.stem}`);
+  }
+  lines.push(`# ── most-imported organs (code dependency hubs) ──`);
+  if (o.top_imported.length === 0) lines.push("#   (none)");
+  for (const h of o.top_imported) {
+    lines.push(`#   ${String(h.in).padStart(4)}  ◀── ${h.stem}`);
+  }
+  return lines;
+}
+
 /** `--show`: deliver the addressed content, not just its location — the last
  *  verb of the read side ("resolve one to its content"). Prints the provenance
  *  header then the raw bytes, so it stays pipeable. Returns the exit code. */
@@ -1253,6 +1349,33 @@ if (import.meta.main) {
       null,
       2,
     ));
+    Deno.exit(0);
+  }
+
+  // `overview [--pretty] [--top=N]` — the network front door: counts by kind,
+  // most-cited nodes, most-imported organs. Aggregates the index artifact.
+  if (args[0] === "overview") {
+    const topArg = args.find((a) => a.startsWith("--top="))?.split("=")[1];
+    const top = topArg ? Number(topArg) : 12;
+    const index = await buildIndex(roots);
+    const cache = await loadIndexCache();
+    const fresh = await indexIsFresh(index, cache);
+    const artifact = fresh && cache ? cache : await buildResolverIndex(index);
+    const o = networkOverview(artifact, { top });
+    if (args.includes("--pretty")) {
+      console.log(renderOverview(o).join("\n"));
+    } else {
+      console.log(JSON.stringify(
+        {
+          type: "fqdn_overview",
+          files_indexed: index.files,
+          index: { used: fresh && cache ? "cache" : "live", fresh },
+          ...o,
+        },
+        null,
+        2,
+      ));
+    }
     Deno.exit(0);
   }
 

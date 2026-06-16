@@ -682,6 +682,27 @@ Deno.test("parseOrganImports - keeps local organ imports, drops std/url/non-orga
   assertEquals(parseOrganImports("no imports here"), []);
 });
 
+Deno.test("parseOrganImports - catches literal dynamic import() and cross-substrate, ignores import.meta", () => {
+  const src = [
+    `const { a } = await import("./x0013_capability.ts");`, // dynamic, literal
+    `const m = await import(resolverPath);`, // dynamic, computed — unknowable, skip
+    `if (import.meta.main) run();`, // must NOT match
+    `import x from "../liquid/src/xA507_spore_apply_backend.ts";`, // cross-substrate KEPT
+    `export { y } from "./x0030_compose.ts";`, // export-from also caught
+  ].join("\n");
+  assertEquals(parseOrganImports(src), [
+    "x0013_capability",
+    "x0030_compose",
+    "xA507_spore_apply_backend",
+  ]);
+  // the parity-verified pair: regex now agrees with gravity's AST on dynamic
+  // literal imports (was the sole AST-only divergence, x7B00→x0012).
+  assertEquals(
+    parseOrganImports(`await import("./x0012_generated_format.ts")`),
+    ["x0012_generated_format"],
+  );
+});
+
 Deno.test("chordGraph - imports edges bridge organ→organ (codex Graph-v2 future bridge)", async () => {
   const base = await Deno.makeTempDir({ prefix: "fqdn_imports_" });
   const w = (n: string, c: string) => Deno.writeTextFile(join(base, n), c);

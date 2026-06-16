@@ -943,19 +943,22 @@ export function parseChordEdges(
 }
 
 // Import-edge extraction — the cheap, index-friendly path (no `deno info`
-// subprocess). IMPORT_SPEC_RE finds every `from "..."` specifier;
-// ORGAN_TARGET_RE keeps only those resolving to a local organ file (xNNNN_*.ts),
-// dropping std/url/relative-non-organ imports. x6020_gravity resolves the SAME
-// edges via `deno info` AST (more complete: it also sees dynamic imports); this
-// regex is the resolve-graph's light approximation for the static `from "..."`
-// case. They are independent extractors by design — not a shared definition.
-const IMPORT_SPEC_RE = /from\s+["']([^"']+)["']/g;
+// subprocess). Two specifier forms are matched: static `… from "…"` (covers
+// `import … from` and `export … from`) and dynamic `import("…")` with a LITERAL
+// path. ORGAN_TARGET_RE keeps only specifiers resolving to an organ file
+// (xNNNN_*.ts), dropping std/url/non-organ imports. x6020_gravity resolves the
+// same edges via `deno info` AST; they are independent extractors by design, and
+// a corpus parity check (see fqdn_resolver_test) confirms they agree EXCEPT:
+//   • computed dynamic specifiers (`import(varPath)`) — unknowable to either;
+//   • cross-substrate edges (`../liquid/src/xA507_*.ts`) — this regex KEEPS them
+//     (the FQDN network spans substrates); gravity scopes to trinity `src/`.
+const IMPORT_SPEC_RE = /(?:\bfrom\s+|\bimport\s*\(\s*)["']([^"']+)["']/g;
 const ORGAN_TARGET_RE = /x([0-9A-Fa-f]{4})_[^"'/]+\.ts$/;
 
 /** The organ→organ import edges a `.ts` file declares, as target stems (e.g.
- *  `x6020_gravity`). Returns [] for non-organ content. Pure; exported for the
- *  test. The codex Graph-v2 `imports` edge, surfaced over already-read content
- *  rather than a `deno info` pass. */
+ *  `x6020_gravity`). Catches static `from "…"` and literal `import("…")`.
+ *  Returns [] for non-organ content. Pure; exported for the test. The codex
+ *  Graph-v2 `imports` edge, surfaced over already-read content, not `deno info`. */
 export function parseOrganImports(content: string): string[] {
   const out = new Set<string>();
   for (const m of content.matchAll(IMPORT_SPEC_RE)) {

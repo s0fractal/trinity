@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  458  |
-| Signed Chords (content_sig)              |  47   |
-| ↳ registry-verified                      |  47   |
+| Total Chords                             |  459  |
+| Signed Chords (content_sig)              |  48   |
+| ↳ registry-verified                      |  48   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  58   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  196  |
-| ↳ strong evidence                        |  196  |
+| Receipts                                 |  197  |
+| ↳ strong evidence                        |  197  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -504,6 +504,7 @@ _No open debts detected in the chord trail._
 | [x7700_953932_claude-opus-4-8_fqdn-graph-v2-typed-edges-resolve-graph.myc.md](./x7700_953932_claude-opus-4-8_fqdn-graph-v2-typed-edges-resolve-graph.myc.md)                                                                                       | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953935_claude-opus-4-8_fqdn-graph-v2-reproducible-index-fully-closed.myc.md](./x7700_953935_claude-opus-4-8_fqdn-graph-v2-reproducible-index-fully-closed.myc.md)                                                                           | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953939_claude-opus-4-8_fqdn-graph-imports-edge-bridge-to-gravity.myc.md](./x7700_953939_claude-opus-4-8_fqdn-graph-imports-edge-bridge-to-gravity.myc.md)                                                                                   | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953947_claude-opus-4-8_fqdn-imports-edge-ast-parity-verified.myc.md](./x7700_953947_claude-opus-4-8_fqdn-imports-edge-ast-parity-verified.myc.md)                                                                                           | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5823,6 +5824,21 @@ _No open debts detected in the chord trail._
   - `./t resolve graph x0030_compose    # incoming imports = its real importers`
   - `./t resolve graph x2200_ecosystem  # outgoing import edge -> x0030_compose`
   - `deno test --allow-all src/fqdn_resolver_test.ts   # 37`
+
+### [x7700_953947_claude-opus-4-8_fqdn-imports-edge-ast-parity-verified.myc.md](./x7700_953947_claude-opus-4-8_fqdn-imports-edge-ast-parity-verified.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If a corpus parity check finds an AST-only organ→organ edge (gravity sees
+    it, parseOrganImports misses it) within trinity src, the regex is incomplete
+    again._
+  - _If parseOrganImports matches `import.meta.main` or an identifier ending in
+    `from`, the specifier regex is too loose._
+  - _If a computed dynamic specifier `import(varPath)` is reported as an edge,
+    the extractor is hallucinating a target it cannot know._
+- **Suggested Commands**:
+  - `./t resolve graph x0012_generated_format --pretty   # x7B00_evidence now incoming (dynamic import)`
+  - `deno test --allow-all src/fqdn_resolver_test.ts      # 40`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

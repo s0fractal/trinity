@@ -469,6 +469,9 @@ if (import.meta.main) {
     inbox: () => tryOr(() => callT("inbox", ["--json"]), null),
     heartbeat: () => tryOr(() => callT("heartbeat", ["--json"]), null),
     decisions: () => tryOr(() => callT("decisions", ["--json"]), null),
+    // composed via callT (shell out), NOT a direct import — x6600 is a higher
+    // bucket and a static import would violate the coordinate gravity law.
+    coherence: () => tryOr(() => callT("coherence", []), null),
     organs: scanOrgans,
     voices: scanVoices,
     chords: scanChords,
@@ -487,6 +490,13 @@ if (import.meta.main) {
   const inbox = data.inbox as InboxShape | null;
   const heartbeat = data.heartbeat as HeartbeatShape | null;
   const decisions = data.decisions as DecisionsShape | null;
+  const coherence = data.coherence as
+    | {
+      order_parameter?: number;
+      mean_phase_axis?: number;
+      organs_measured?: number;
+    }
+    | null;
 
   const composite = status?.substrate_health?.overall ?? "unknown";
   const audit = status?.summary?.audit
@@ -522,6 +532,13 @@ if (import.meta.main) {
     voices: { count: data.voices.total, identities: data.voices.identities },
     chords: data.chords,
     probes: data.probes,
+    coherence: coherence
+      ? {
+        order_parameter: coherence.order_parameter ?? null,
+        mean_phase_axis: coherence.mean_phase_axis ?? null,
+        organs_measured: coherence.organs_measured ?? null,
+      }
+      : null,
     contracts: contracts?.summary ?? null,
     capabilities_validation: capabilitiesValidation?.summary ?? null,
     capabilities_schema_classes: capabilitiesValidation?.schema_classes ??
@@ -574,6 +591,11 @@ if (import.meta.main) {
       `# chords:      ${data.chords.tracked} tracked, ${data.chords.local} local, ${data.chords.newForm} flat-src form`,
     );
     console.log(`# probes:      ${data.probes.total} experimental dirs`);
+    if (coherence?.order_parameter != null) {
+      console.log(
+        `# coherence:   r=${coherence.order_parameter} (dipole field, mean axis ${coherence.mean_phase_axis}, ${coherence.organs_measured} organs)`,
+      );
+    }
     console.log(
       `# attention:   ${attention.level} (score:${attention.score})`,
     );

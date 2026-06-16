@@ -74,6 +74,7 @@ const POSITION_TO_FILE: Record<string, string> = {
   "5/F": "x5F00_apply.ts",
   "6/02": "x6020_gravity.ts",
   "6/3": "x6300_ontology_coverage.ts",
+  "6/6": "x6600_coherence.ts",
   "6/A": "x6A00_health.ts",
   "6/C": "x6C00_audit.ts",
   "6/D": "x6D00_cowitness.ts",

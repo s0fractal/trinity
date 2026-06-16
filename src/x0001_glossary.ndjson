@@ -206,3 +206,5 @@
 {"11":"40 00 00 00 00 6C 33 00","00":"5","02":["metabolism","метаболізм","upkeep","утримання","keep","feasibility"],"04":"5/6","09":"action × harmony = metabolic feasibility model"}
 {"11":"00 00 00 00 00 00 00 00","00":"5","02":["proxy","serve-proxy","проксі"],"04":"5/51","09":"action = local HTTP/TCP proxy for virtual myc.md resolution"}
 {"11":"00 00 00 00 00 00 00 00","00":"5","02":["run-literate","run-lit","виконати-літературно"],"04":"5/52","09":"action = parse and run typescript blocks directly from markdown"}
+{"00":"5","02":["coherence","order-parameter","когерентність","узгодженість"],"04":"6/6","09":"harmony+harmony = Kuramoto order parameter r over the organ dipole field","11":"00 00 33 00 00 00 5F 26"}
+{"00":"07","01":"coherence","02":"type,position,order_parameter,mean_phase_rad,mean_phase_axis,organs_measured,organs_without_dipole,by_dominant_axis,note","04":"coherence receipt from x6600_coherence.ts; v0 Kuramoto order parameter r over the organ dipole field"}

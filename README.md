@@ -91,8 +91,8 @@ The substrate also measures **itself** — read-only introspection lenses over i
 own structure:
 
 ```bash
-deno task gravity              # import-edge tension (coordinate Δ between organs)
-deno task coherence --pretty  # Kuramoto order parameter r over the dipole field
+./t gravity                  # import-edge tension (coordinate Δ between organs)
+./t coherence --pretty       # Kuramoto order parameter r over the dipole field
 ```
 
 ## Explore the FQDN network

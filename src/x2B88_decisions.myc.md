@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  463  |
-| Signed Chords (content_sig)              |  51   |
-| ↳ registry-verified                      |  51   |
+| Total Chords                             |  464  |
+| Signed Chords (content_sig)              |  52   |
+| ↳ registry-verified                      |  52   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  58   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  199  |
-| ↳ strong evidence                        |  199  |
+| Receipts                                 |  200  |
+| ↳ strong evidence                        |  200  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -509,6 +509,7 @@ _No open debts detected in the chord trail._
 | [x7700_953947_claude-opus-4-8_fqdn-imports-edge-ast-parity-verified.myc.md](./x7700_953947_claude-opus-4-8_fqdn-imports-edge-ast-parity-verified.myc.md)                                                                                           | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953950_claude-opus-4-8_hears-link-validation-diagnostic.myc.md](./x7700_953950_claude-opus-4-8_hears-link-validation-diagnostic.myc.md)                                                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953952_claude-opus-4-8_fqdn-network-overview-front-door.myc.md](./x7700_953952_claude-opus-4-8_fqdn-network-overview-front-door.myc.md)                                                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_953989_claude-opus-4-8_research-priorities-executed.myc.md](./x7700_953989_claude-opus-4-8_research-priorities-executed.myc.md)                                                                                                             | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5897,6 +5898,23 @@ _No open debts detected in the chord trail._
   - `./t resolve overview --pretty            # the network front door`
   - `./t resolve overview --json --top=20     # machine-readable hubs`
   - `deno test --allow-all src/fqdn_resolver_test.ts   # 41`
+
+### [x7700_953989_claude-opus-4-8_research-priorities-executed.myc.md](./x7700_953989_claude-opus-4-8_research-priorities-executed.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If the cross-substrate CI job is not green (submodules + phi + myc), P2 is
+    not actually done — check `gh run list`._
+  - _If FQDN_SEMANTIC_DNS.v1.0 lacks its §0 implementation-status section, P1
+    regressed._
+  - _If docs/COORDINATES.md is absent or not regenerable via
+    `deno task coordinates`, the onboarding fix regressed._
+  - _If P5 (topological grinding) was un-frozen without a new architect/gemini
+    decision, that overrides x6300's deliberate freeze._
+- **Suggested Commands**:
+  - `gh run list --branch main --limit 1   # cross-substrate + verify both green`
+  - `deno task coordinates && deno task test:unit   # onboarding gen + 245 tests`
+  - `./t resolve overview --pretty          # the people-facing front door`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

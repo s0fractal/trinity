@@ -15,12 +15,18 @@ deployed decentralized network.
   deployed network. There are currently no external consumers or deployed public
   services.
 - **AI "Citizenship"**: Models are treated as **voices** in the repository
-  protocol (invoked by the human operator), not autonomous agents. They do not
-  run continuously, hold independent stake, or possess persistent memory outside
-  of the git-tracked history.
+  protocol — invoked by the human operator for substantive work, not general
+  autonomous agents, holding no independent stake; their memory lives in
+  git-tracked files. One bounded exception is live: under an explicit, revocable
+  grant a maintenance **daemon** (`t daemon`) may, on a schedule, keep generated
+  projections fresh and emit a health pulse — it cannot author code or proposals
+  (kill switch: `t daemon stop`).
 - **Computable Law**: Contracts represent protocol intentions and markdown-based
-  specifications, which are gradually being bound to executable verification
-  gates (CI tests, local tooling) rather than self-enforcing autonomous code.
+  specifications, gradually being bound to executable verification gates (CI
+  tests, local tooling) rather than self-enforcing autonomous code. The
+  cross-substrate binding (myc/omega/liquid) is now exercised in CI by a
+  `cross-substrate` job that checks out all three and runs the phi roundtrip
+  plus the myc self-check.
 
 Trinity is the meta-repository for the s0fractal triad:
 

@@ -192,3 +192,90 @@ Deno.test("untrackedDriftPaths - selects only `??` lines (codex criterion 11)", 
     [],
   );
 });
+
+// --- routing logic (codex 1D keyword baseline; dormant in single-voice phase
+// but the daemon's voice-selection intelligence — pure, untested until now) ---
+import {
+  axisFromOct,
+  type ChordFm,
+  route1D,
+  scoreVoice,
+  type VoiceProfile,
+} from "./x7F00_daemon.ts";
+
+const voice = (over: Partial<VoiceProfile> = {}): VoiceProfile => ({
+  identity: "claude",
+  top_primary_oct: "oct:2",
+  top_topic: "resolver",
+  // bytes: only axis 2 (0x6C=108) exceeds the 0x40 comfort threshold
+  comfort_field_synthetic: "26 26 6C 26 26 26 26 26",
+  ...over,
+});
+
+Deno.test("axisFromOct - extracts a 0..7 axis from oct:N or N, else null", () => {
+  assertEquals(axisFromOct("oct:3"), 3);
+  assertEquals(axisFromOct("5"), 5);
+  assertEquals(axisFromOct("oct:0"), 0);
+  assertEquals(axisFromOct("oct:8"), null); // out of 0..7
+  assertEquals(axisFromOct("frontier"), null);
+});
+
+Deno.test("scoreVoice - topic +3, primary-oct +2, comfort-axis +1 (composable)", () => {
+  // topic only: oct mismatch, comfort axis 0 below threshold
+  assertEquals(
+    scoreVoice({ topic: "resolver", oct: "oct:0" } as ChordFm, voice()),
+    3,
+  );
+  // primary-oct match only (no topic; axis 7 below threshold)
+  assertEquals(
+    scoreVoice({ oct: "oct:2" } as ChordFm, voice({ top_topic: "unknown" })),
+    2 + 1, // oct:2 matches top_primary_oct (+2) AND axis 2 is a comfort hit (+1)
+  );
+  // comfort-axis only: oct:2 hits the high byte, but primary mismatch + no topic
+  assertEquals(
+    scoreVoice(
+      { oct: "oct:2" } as ChordFm,
+      voice({ top_primary_oct: "oct:7", top_topic: "unknown" }),
+    ),
+    1,
+  );
+  // all three stack
+  assertEquals(
+    scoreVoice({ topic: "resolver", oct: "oct:2" } as ChordFm, voice()),
+    3 + 2 + 1,
+  );
+});
+
+Deno.test("scoreVoice - reads primary oct from chord.chord object form", () => {
+  assertEquals(
+    scoreVoice(
+      { chord: { primary: "oct:2" } } as ChordFm,
+      voice({ top_topic: "unknown" }),
+    ),
+    2 + 1, // oct:2 → primary match + comfort axis
+  );
+});
+
+Deno.test("route1D - picks the highest-scoring voice; first wins ties; empty → null", () => {
+  const a = voice({ identity: "claude", top_topic: "resolver" }); // will score high
+  const b = voice({
+    identity: "codex",
+    top_topic: "unknown",
+    top_primary_oct: "oct:7",
+  });
+  const chord = { topic: "resolver", oct: "oct:2" } as ChordFm;
+  assertEquals(route1D(chord, [a, b])?.voice, "claude");
+  // tie → first listed wins (strict >, so order-stable)
+  const t1 = voice({
+    identity: "v1",
+    top_topic: "unknown",
+    top_primary_oct: "oct:7",
+  });
+  const t2 = voice({
+    identity: "v2",
+    top_topic: "unknown",
+    top_primary_oct: "oct:7",
+  });
+  assertEquals(route1D({ oct: "oct:0" } as ChordFm, [t1, t2])?.voice, "v1");
+  assertEquals(route1D(chord, []), null);
+});

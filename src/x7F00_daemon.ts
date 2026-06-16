@@ -171,7 +171,7 @@ function renderJson(status: DaemonStatus): string {
 
 // ── run --once (crawl phase chord watcher) ─────────────────────────────────
 
-interface ChordFm {
+export interface ChordFm {
   id?: string;
   speaker?: string;
   created?: string;
@@ -186,7 +186,7 @@ interface ChordFm {
   [key: string]: unknown;
 }
 
-interface VoiceProfile {
+export interface VoiceProfile {
   identity: string;
   top_primary_oct: string;
   top_topic: string;
@@ -329,14 +329,14 @@ async function loadVoiceStanding(identity: string): Promise<string | null> {
   }
 }
 
-function axisFromOct(tag: string): number | null {
+export function axisFromOct(tag: string): number | null {
   const m = tag.match(/(?:oct:)?(\d)/);
   if (!m) return null;
   const n = parseInt(m[1], 10);
   return n >= 0 && n <= 7 ? n : null;
 }
 
-function scoreVoice(chord: ChordFm, voice: VoiceProfile): number {
+export function scoreVoice(chord: ChordFm, voice: VoiceProfile): number {
   let score = 0;
 
   // Topic match (+3)
@@ -376,7 +376,7 @@ function scoreVoice(chord: ChordFm, voice: VoiceProfile): number {
   return score;
 }
 
-function route1D(
+export function route1D(
   chord: ChordFm,
   voices: VoiceProfile[],
 ): { voice: string; score: number } | null {

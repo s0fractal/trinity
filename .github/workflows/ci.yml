@@ -346,3 +346,13 @@ jobs:
 
       - name: Verify cross-substrate phi roundtrip
         run: deno task fixture:phi
+
+      # myc's own descriptor/witness/audit check and omega's deterministic-kernel
+      # deno tests — verified green locally before wiring. (liquid:audit is
+      # deliberately NOT gated: its "degraded" namespace-drift is expected,
+      # owner-territory, live-ledger state — see memory liquid-degraded-is-expected.)
+      - name: Verify myc substrate self-check
+        run: deno task check:myc
+
+      - name: Verify omega deterministic-kernel deno tests
+        run: deno task check:omega:deno

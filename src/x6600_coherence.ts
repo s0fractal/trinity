@@ -135,6 +135,8 @@ function render(c: Coherence): string {
 
 if (import.meta.main) {
   const c = await computeCoherence();
-  if (Deno.args.includes("--pretty")) console.log(render(c));
-  else console.log(JSON.stringify(c, null, 2));
+  // Default to the human view (consistent with peer measurement verbs like
+  // `t gravity`/`t audit`); `--json` for the machine-readable receipt.
+  if (Deno.args.includes("--json")) console.log(JSON.stringify(c, null, 2));
+  else console.log(render(c));
 }

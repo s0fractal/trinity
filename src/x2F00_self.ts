@@ -471,7 +471,7 @@ if (import.meta.main) {
     decisions: () => tryOr(() => callT("decisions", ["--json"]), null),
     // composed via callT (shell out), NOT a direct import — x6600 is a higher
     // bucket and a static import would violate the coordinate gravity law.
-    coherence: () => tryOr(() => callT("coherence", []), null),
+    coherence: () => tryOr(() => callT("coherence", ["--json"]), null),
     organs: scanOrgans,
     voices: scanVoices,
     chords: scanChords,

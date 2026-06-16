@@ -1054,6 +1054,60 @@ export function showHeader(res: Resolution): string[] {
   return lines;
 }
 
+/** Human-readable rendering of a depth-1 graph (`--pretty`) — the FQDN network
+ *  made browsable for a person, not just a JSON blob. Groups a node's edges by
+ *  direction (outgoing = what it cites/imports; incoming = what cites/imports
+ *  it) and by kind, so "what is this node connected to?" reads at a glance.
+ *  Pure (returns string[]) so it can be tested without stdout. */
+export function renderGraph(g: FqdnGraph): string[] {
+  const r = g.root;
+  const lines: string[] = [`# graph: ${g.query}`];
+  if (!r.found) {
+    if (r.identity === "conflict" && r.candidates?.length) {
+      lines.push(`# CONFLICT: '${g.query}' names several differing files:`);
+      for (const c of r.candidates) {
+        lines.push(`#   - ${c.rel} @ ${c.root}  blake3:${c.hash.slice(0, 12)}`);
+      }
+    } else {
+      lines.push(
+        `# absent: '${g.query}' resolves to no node. Try 't resolve list ${g.query}'.`,
+      );
+    }
+    return lines;
+  }
+  lines.push(
+    `# ${r.rel} @ ${r.root}  (${r.kind}, identity=${r.identity})  blake3:${
+      (r.hash ?? "").slice(0, 12)
+    }`,
+  );
+  const out = g.edges.filter((e) => e.source === r.stem);
+  const inc = g.edges.filter((e) => e.target === r.stem);
+  // Stable, readable ordering: kind, then the other node's stem.
+  const byKindThenNode = (a: FqdnEdge, b: FqdnEdge) =>
+    a.kind.localeCompare(b.kind) || a.target.localeCompare(b.target) ||
+    a.source.localeCompare(b.source);
+  const pad = (s: string) => s.padEnd(10);
+  // Arrow direction encodes the edge: outgoing `this ──kind──▶ target`,
+  // incoming `this ◀──kind── source` (the source points AT this node).
+  lines.push(`# ── outgoing (what this cites/imports) ── ${out.length}`);
+  if (out.length === 0) lines.push("#   (none)");
+  for (const e of [...out].sort(byKindThenNode)) {
+    lines.push(`#   ${pad(e.kind)} ──▶ ${e.target}`);
+  }
+  lines.push(`# ── incoming (what cites/imports this) ── ${inc.length}`);
+  if (inc.length === 0) lines.push("#   (none)");
+  for (const e of [...inc].sort(byKindThenNode)) {
+    lines.push(`#   ${pad(e.kind)} ◀── ${e.source}`);
+  }
+  if (g.truncated > 0) {
+    lines.push(
+      `# (+${g.truncated} neighbor(s) truncated; raise --limit or use --json)`,
+    );
+  }
+  lines.push(`# ── indexed ${g.index.files_indexed} files ──`);
+  return lines;
+}
+
 /** `--show`: deliver the addressed content, not just its location — the last
  *  verb of the read side ("resolve one to its content"). Prints the provenance
  *  header then the raw bytes, so it stays pipeable. Returns the exit code. */
@@ -1233,7 +1287,7 @@ if (import.meta.main) {
     const name = args.slice(1).find((a) => !a.startsWith("--"));
     if (!name) {
       console.error(
-        "usage: resolver.ts graph <query> [--incoming] [--outgoing] [--kind=K]",
+        "usage: resolver.ts graph <query> [--incoming] [--outgoing] [--kind=K] [--pretty]",
       );
       Deno.exit(1);
     }
@@ -1247,7 +1301,11 @@ if (import.meta.main) {
       outgoing: !onlyIn,
       kind: kindArg as NameKind | undefined,
     });
-    console.log(JSON.stringify({ type: "fqdn_graph", ...g }, null, 2));
+    if (args.includes("--pretty")) {
+      console.log(renderGraph(g).join("\n"));
+    } else {
+      console.log(JSON.stringify({ type: "fqdn_graph", ...g }, null, 2));
+    }
     Deno.exit(0);
   }
 
@@ -1255,10 +1313,15 @@ if (import.meta.main) {
   if (args[0] === "refs") {
     const name = args.slice(1).find((a) => !a.startsWith("--"));
     if (!name) {
-      console.error("usage: resolver.ts refs <chord-name-or-slug>");
+      console.error("usage: resolver.ts refs <chord-name-or-slug> [--pretty]");
       Deno.exit(1);
     }
     const index = await buildIndex(roots);
+    if (args.includes("--pretty")) {
+      // refs is the compact projection of graph; the readable view is the graph.
+      console.log(renderGraph(await chordGraph(index, name)).join("\n"));
+      Deno.exit(0);
+    }
     const refs = await chordRefs(index, name);
     console.log(JSON.stringify(
       {

@@ -19,6 +19,7 @@ import {
   matchSnippet,
   parseChordEdges,
   parseOrganImports,
+  renderGraph,
   type Resolution,
   resolveFqdn,
   resolveFromIndex,
@@ -749,6 +750,113 @@ Deno.test("buildResolverIndex - organ entries carry imports edges, chords don't"
   } finally {
     await Deno.remove(base, { recursive: true });
   }
+});
+
+Deno.test("renderGraph - found node: groups outgoing ──▶ and incoming ◀── by kind", () => {
+  const g = {
+    query: "x0030_compose",
+    root: {
+      query: "x0030_compose",
+      found: true,
+      identity: "unique" as const,
+      name: "x0030_compose.ts",
+      stem: "x0030_compose",
+      kind: "organ" as const,
+      root: "src",
+      rel: "src/x0030_compose.ts",
+      hash: "abcdef0123456789",
+    },
+    nodes: [],
+    edges: [
+      {
+        source: "x2200_ecosystem",
+        target: "x0030_compose",
+        kind: "imports" as const,
+        parser: "import-regex-v0" as const,
+      },
+      {
+        source: "x7700_1_v_r",
+        target: "x0030_compose",
+        kind: "hears" as const,
+        parser: "frontmatter-v0" as const,
+      },
+      {
+        source: "x0030_compose",
+        target: "x0020_scanner",
+        kind: "imports" as const,
+        parser: "import-regex-v0" as const,
+      },
+    ],
+    truncated: 0,
+    index: { files_indexed: 1772 },
+  };
+  const lines = renderGraph(g);
+  const text = lines.join("\n");
+  // header carries identity + truncated blake3
+  assertStringIncludes(text, "# graph: x0030_compose");
+  assertStringIncludes(text, "(organ, identity=unique)  blake3:abcdef012345");
+  // outgoing: this ──▶ target
+  assertStringIncludes(text, "── outgoing (what this cites/imports) ── 1");
+  assertStringIncludes(text, "──▶ x0020_scanner");
+  // incoming: this ◀── source, both kinds present
+  assertStringIncludes(text, "── incoming (what cites/imports this) ── 2");
+  assertStringIncludes(text, "◀── x2200_ecosystem");
+  assertStringIncludes(text, "◀── x7700_1_v_r");
+  // imports sorts before hears? no — kind asc: hears < imports
+  const inHears = text.indexOf("hears      ◀──");
+  const inImports = text.indexOf("imports    ◀──");
+  assert(inHears < inImports, "incoming edges sorted by kind");
+});
+
+Deno.test("renderGraph - absent and conflict nodes render honestly, no edge section", () => {
+  const absent = renderGraph({
+    query: "nope",
+    root: {
+      query: "nope",
+      found: false,
+      identity: "absent" as const,
+      name: null,
+      stem: null,
+      kind: null,
+      root: null,
+      rel: null,
+      hash: null,
+    },
+    nodes: [],
+    edges: [],
+    truncated: 0,
+    index: { files_indexed: 10 },
+  });
+  assertStringIncludes(absent.join("\n"), "absent: 'nope' resolves to no node");
+  assert(!absent.join("\n").includes("outgoing"), "absent: no edge section");
+
+  const conflict = renderGraph({
+    query: "dup",
+    root: {
+      query: "dup",
+      found: false,
+      identity: "conflict" as const,
+      name: null,
+      stem: null,
+      kind: null,
+      root: null,
+      rel: null,
+      hash: null,
+      candidates: [
+        { rel: "a/dup.myc.md", root: "src", hash: "1111111111111111" },
+        { rel: "b/dup.myc.md", root: "omega", hash: "2222222222222222" },
+      ],
+    },
+    nodes: [],
+    edges: [],
+    truncated: 0,
+    index: { files_indexed: 10 },
+  });
+  assertStringIncludes(
+    conflict.join("\n"),
+    "CONFLICT: 'dup' names several differing files",
+  );
+  assertStringIncludes(conflict.join("\n"), "a/dup.myc.md @ src");
 });
 
 Deno.test("searchCache - matches name + bounded text over a cached artifact", () => {

@@ -127,7 +127,7 @@ const BTC_ANCHOR_BLOCK = 950000;
 const BTC_ANCHOR_EPOCH = 1779148800;
 const BTC_SEC_PER_BLOCK = 600;
 
-function blockHeightToISO(block: number): string {
+export function blockHeightToISO(block: number): string {
   return new Date(
     (BTC_ANCHOR_EPOCH + (block - BTC_ANCHOR_BLOCK) * BTC_SEC_PER_BLOCK) * 1000,
   ).toISOString();
@@ -136,7 +136,7 @@ function blockHeightToISO(block: number): string {
 // Resolve a chord's authoritative timestamp from its filename. Prefers
 // embedded ISO/compact timestamps, falls back to block-height conversion
 // for hex-block names. Returns null when no time signal exists in filename.
-function timestampFromFilename(filename: string): string | null {
+export function timestampFromFilename(filename: string): string | null {
   const isoMatch = filename.match(
     /^(\d{4})-(\d{2})-(\d{2})T(\d{2})(\d{2})(\d{2})Z/,
   );
@@ -168,7 +168,7 @@ function timestampFromFilename(filename: string): string | null {
   return null;
 }
 
-function daysSinceTimestamp(
+export function daysSinceTimestamp(
   timestamp: string,
   nowMs = Date.now(),
 ): number | null {
@@ -177,7 +177,10 @@ function daysSinceTimestamp(
   return Math.max(0, Math.floor((nowMs - t) / 86_400_000));
 }
 
-function triageProposal(entry: {
+// Exported for the unit test: the risk→stance classifier + timestamp helpers
+// drive the decisions ledger's `next action` governance signal (consumed by
+// roadmap/recommend). The CI diff-gate catches drift, not a wrong classifier.
+export function triageProposal(entry: {
   category: DecisionEntry["category"];
   is_unresolved: boolean;
   filename: string;

@@ -837,6 +837,20 @@ export async function writeIndexCache(
   return INDEX_CACHE_REL;
 }
 
+/** Load the index cache and test its freshness against `index` — the shared
+ *  preamble of the `search`, `overview`, and `index` CLI handlers. */
+async function freshCache(
+  index: Index,
+): Promise<{ cache: ResolverIndexArtifact | null; fresh: boolean }> {
+  const cache = await loadIndexCache();
+  return { cache, fresh: await indexIsFresh(index, cache) };
+}
+
+/** Value of a `--name=value` CLI flag, or undefined if absent. */
+function flagArg(args: string[], name: string): string | undefined {
+  return args.find((a) => a.startsWith(`--${name}=`))?.slice(name.length + 3);
+}
+
 /** Search the cached index instead of live files (codex F4): matches name + the
  *  entry's bounded `text` (first INDEX_TEXT_CAP bytes), no disk reads. Same
  *  result shape as `searchContent`. Pure over the artifact; exported for the
@@ -1277,9 +1291,9 @@ if (import.meta.main) {
   if (args[0] === "list") {
     const positional = args.slice(1).filter((a) => !a.startsWith("--"));
     const substring = positional[0];
-    const limitArg = args.find((a) => a.startsWith("--limit="));
-    const limit = limitArg ? Number(limitArg.split("=")[1]) : 50;
-    const kindArg = args.find((a) => a.startsWith("--kind="))?.split("=")[1];
+    const limitArg = flagArg(args, "limit");
+    const limit = limitArg !== undefined ? Number(limitArg) : 50;
+    const kindArg = flagArg(args, "kind");
     const index = await buildIndex(roots);
     const { total, shown, truncated, by_kind } = listNames(index, {
       substring,
@@ -1314,14 +1328,13 @@ if (import.meta.main) {
       console.error("usage: resolver.ts search <query> [--kind=K] [--limit=N]");
       Deno.exit(1);
     }
-    const limitArg = args.find((a) => a.startsWith("--limit="));
-    const limit = limitArg ? Number(limitArg.split("=")[1]) : 25;
-    const kindArg = args.find((a) => a.startsWith("--kind="))?.split("=")[1];
+    const limitArg = flagArg(args, "limit");
+    const limit = limitArg !== undefined ? Number(limitArg) : 25;
+    const kindArg = flagArg(args, "kind");
     const index = await buildIndex(roots);
     // Use the cached index when fresh (codex E) — bounded-text, fast; else live
     // scan the full content. Either way report which (acceptance #6).
-    const cache = await loadIndexCache();
-    const fresh = await indexIsFresh(index, cache);
+    const { cache, fresh } = await freshCache(index);
     const result = fresh && cache
       ? searchCache(cache, query, {
         kind: kindArg as NameKind | undefined,
@@ -1355,11 +1368,10 @@ if (import.meta.main) {
   // `overview [--pretty] [--top=N]` — the network front door: counts by kind,
   // most-cited nodes, most-imported organs. Aggregates the index artifact.
   if (args[0] === "overview") {
-    const topArg = args.find((a) => a.startsWith("--top="))?.split("=")[1];
+    const topArg = flagArg(args, "top");
     const top = topArg ? Number(topArg) : 12;
     const index = await buildIndex(roots);
-    const cache = await loadIndexCache();
-    const fresh = await indexIsFresh(index, cache);
+    const { cache, fresh } = await freshCache(index);
     const artifact = fresh && cache ? cache : await buildResolverIndex(index);
     const o = networkOverview(artifact, { top });
     if (args.includes("--pretty")) {
@@ -1382,8 +1394,7 @@ if (import.meta.main) {
   // `index [--rebuild]` — build the auditable search/graph index cache (codex E).
   if (args[0] === "index") {
     const index = await buildIndex(roots);
-    const existing = await loadIndexCache();
-    const fresh = await indexIsFresh(index, existing);
+    const { cache: existing, fresh } = await freshCache(index);
     let wrote: string | null = null;
     let artifact = existing;
     if (!fresh || args.includes("--rebuild")) {
@@ -1420,7 +1431,7 @@ if (import.meta.main) {
     // Default is both directions; a lone --incoming/--outgoing narrows.
     const onlyIn = args.includes("--incoming") && !args.includes("--outgoing");
     const onlyOut = args.includes("--outgoing") && !args.includes("--incoming");
-    const kindArg = args.find((a) => a.startsWith("--kind="))?.split("=")[1];
+    const kindArg = flagArg(args, "kind");
     const index = await buildIndex(roots);
     const g = await chordGraph(index, name, {
       incoming: !onlyOut,

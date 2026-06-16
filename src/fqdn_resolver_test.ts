@@ -7,11 +7,13 @@ import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
 import {
   buildIndex,
   type Candidate,
+  chordRefs,
   isContentAddressed,
   isSkippedPath,
   kindOf,
   listNames,
   matchSnippet,
+  parseChordEdges,
   type Resolution,
   resolveFqdn,
   resolveFromIndex,
@@ -496,5 +498,64 @@ Deno.test("searchContent - kind filter + truncation are honest", async () => {
     assert(organs.matches.every((m) => m.kind === "organ"));
   } finally {
     await cleanup();
+  }
+});
+
+Deno.test("parseChordEdges - hears/closes stem-normalized, references kept raw", () => {
+  const c = [
+    "---",
+    "hears:",
+    "  - src/x7700_111_a_foo.myc.md",
+    "  - x7700_222_b_bar",
+    "references:",
+    "  - src/x0010_dispatch_runner.ts",
+    "closes:",
+    "  path_hint: x5d00_333_c_baz",
+    "  relation: closes",
+    "---",
+    "body",
+  ].join("\n");
+  const e = parseChordEdges(c);
+  assertEquals(e.hears.sort(), ["x7700_111_a_foo", "x7700_222_b_bar"]);
+  assertEquals(e.closes, ["x5d00_333_c_baz"]);
+  assertEquals(e.references, ["src/x0010_dispatch_runner.ts"]);
+});
+
+Deno.test("chordRefs - incoming edges: who hears/closes the node", async () => {
+  const base = await Deno.makeTempDir({ prefix: "fqdn_refs_" });
+  const w = (n: string, c: string) => Deno.writeTextFile(join(base, n), c);
+  try {
+    await w(
+      "x7700_001_v_node.myc.md",
+      "---\nhears:\n  - x7700_009_v_dep\n---\nbody",
+    );
+    await w(
+      "x7700_002_v_hearer.myc.md",
+      "---\nhears:\n  - x7700_001_v_node\n---\nbody",
+    );
+    await w(
+      "x7700_003_v_closer.myc.md",
+      "---\ncloses:\n  path_hint: x7700_001_v_node\n---\nbody",
+    );
+    await w(
+      "x7700_004_v_unrelated.myc.md",
+      "---\nhears:\n  - x7700_999_v_other\n---\nbody",
+    );
+    const { buildIndex: _bi } = await import("./x2F30_fqdn_resolver.ts");
+    const index = await _bi([base]);
+    const r = await chordRefs(index, "x7700_001_v_node");
+    assert(r.node !== null, "node found");
+    assertEquals(r.outgoing.hears, ["x7700_009_v_dep"]); // its own edge
+    const names = r.incoming.map((i) => i.name).sort();
+    assertEquals(names, [
+      "x7700_002_v_hearer.myc.md",
+      "x7700_003_v_closer.myc.md",
+    ]);
+    const hearer = r.incoming.find((i) => i.name.includes("hearer"))!;
+    assertEquals(hearer.via, ["hears"]);
+    const closer = r.incoming.find((i) => i.name.includes("closer"))!;
+    assertEquals(closer.via, ["closes"]);
+  } finally {
+    await Deno.remove(base, { recursive: true });
   }
 });

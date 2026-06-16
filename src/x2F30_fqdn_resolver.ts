@@ -376,6 +376,127 @@ export async function searchContent(
   };
 }
 
+export interface ChordRefs {
+  node: string | null; // resolved chord stem, or null if not found
+  outgoing: { hears: string[]; closes: string[]; references: string[] };
+  incoming: { name: string; via: string[] }[]; // chords that cite the node
+}
+
+/**
+ * The citation edges of a chord: its declared OUTGOING edges (hears/closes/
+ * references) plus the INCOMING edges — chords elsewhere whose hears/closes name
+ * it. Lets a person navigate the knowledge graph ("what cites this?"), not just
+ * resolve a single node. Read is injected (testable, bounded).
+ */
+export async function chordRefs(
+  index: Index,
+  target: string,
+  opts: { read?: (path: string) => Promise<string | null> } = {},
+): Promise<ChordRefs> {
+  const read = opts.read ??
+    (async (p: string) => {
+      try {
+        return await Deno.readTextFile(p);
+      } catch {
+        return null;
+      }
+    });
+  const targetStem = refStem(target);
+
+  // Outgoing: read the node itself (the precedence-winning chord with this stem).
+  let outgoing: { hears: string[]; closes: string[]; references: string[] } = {
+    hears: [],
+    closes: [],
+    references: [],
+  };
+  let node: string | null = null;
+  const incoming: { name: string; via: string[] }[] = [];
+
+  for (const [key, stored] of index.byKey) {
+    const exact = stored.filter((s) => s.matchForm === "exact");
+    if (exact.length === 0 || kindOf(key) !== "chord") continue;
+    const winner = [...exact].sort((a, b) =>
+      a.rootIndex - b.rootIndex || a.depth - b.depth
+    )[0];
+    const content = await read(winner.path);
+    if (content === null) {
+      continue;
+    }
+    const edges = parseChordEdges(content);
+    if (refStem(key) === targetStem) {
+      node = refStem(key);
+      outgoing = edges;
+      continue;
+    }
+    const via: string[] = [];
+    if (edges.hears.includes(targetStem)) {
+      via.push("hears");
+    }
+    if (edges.closes.includes(targetStem)) {
+      via.push("closes");
+    }
+    if (via.length > 0) {
+      incoming.push({ name: key, via });
+    }
+  }
+  incoming.sort((a, b) => a.name.localeCompare(b.name));
+  return { node, outgoing, incoming };
+}
+
+// ── chord citation graph (navigate the FQDN network's edges) ────────────────
+// A chord declares OUTGOING edges in frontmatter: `hears:` and `closes.path_hint`
+// name other chords; `references:` name organs/files. There is no reverse view —
+// "what chords hear/close THIS one?" — so the knowledge graph is unnavigable.
+// `t resolve refs` adds it: outgoing edges of a node + the incoming edges that
+// cite it. Distinct from `gravity` (organ imports) and `decisions` (proposal
+// closure only).
+
+/** Strip directory and the chord/doc/organ extension → a comparable stem. */
+function refStem(s: string): string {
+  return (s.split("/").pop() ?? s).replace(
+    /\.(myc\.md|md|ts|json|ndjson)$/i,
+    "",
+  )
+    .trim();
+}
+
+function frontmatterOf(content: string): string {
+  const m = /^---\r?\n([\s\S]*?)\r?\n---/.exec(content);
+  return m ? m[1] : "";
+}
+
+function fmListField(fm: string, field: string): string[] {
+  const block = new RegExp(
+    `^${field}:[ \\t]*\\n((?:[ \\t]+-[ \\t]+.+\\n?)+)`,
+    "m",
+  ).exec(fm);
+  if (!block) return [];
+  return [...block[1].matchAll(/^[ \t]+-[ \t]+(.+?)[ \t]*$/gm)]
+    .map((x) => x[1].replace(/^["']|["']$/g, "").trim());
+}
+
+/** The outgoing edges a chord declares. `hears`/`closes` are stem-normalized
+ *  (they cite other chords); `references` keep their raw path (they cite
+ *  organs/files). Pure; exported for the test. */
+export function parseChordEdges(
+  content: string,
+): { hears: string[]; closes: string[]; references: string[] } {
+  const fm = frontmatterOf(content);
+  const hears = fmListField(fm, "hears").map(refStem);
+  const references = fmListField(fm, "references");
+  const closes: string[] = [];
+  // `closes:` may be a mapping (path_hint:) or carry closes_hash; collect any
+  // stem it names.
+  const pathHint = /^closes:[\s\S]*?\n[ \t]+path_hint:[ \t]*(.+?)[ \t]*$/m
+    .exec(fm);
+  if (pathHint) closes.push(refStem(pathHint[1].replace(/^["']|["']$/g, "")));
+  return {
+    hears: [...new Set(hears)],
+    closes: [...new Set(closes)],
+    references,
+  };
+}
+
 /** Resolve one query against a prebuilt index, hashing only the files it hits. */
 export async function resolveFromIndex(
   index: Index,
@@ -593,13 +714,37 @@ if (import.meta.main) {
     Deno.exit(0);
   }
 
+  // `refs <name>` — navigate a chord's citation edges (outgoing + incoming).
+  if (args[0] === "refs") {
+    const name = args.slice(1).find((a) => !a.startsWith("--"));
+    if (!name) {
+      console.error("usage: resolver.ts refs <chord-name-or-slug>");
+      Deno.exit(1);
+    }
+    const index = await buildIndex(roots);
+    const refs = await chordRefs(index, name);
+    console.log(JSON.stringify(
+      {
+        type: "fqdn_refs",
+        query: name,
+        found: refs.node !== null,
+        incoming_count: refs.incoming.length,
+        ...refs,
+      },
+      null,
+      2,
+    ));
+    Deno.exit(0);
+  }
+
   const fqdn = args.find((a) => !a.startsWith("--"));
   if (!fqdn) {
     console.error(
       "usage: resolver.ts [--cloud] <fqdn-or-handle-or-slug>\n" +
         "       resolver.ts --show <fqdn>                   (resolve AND print its content)\n" +
         "       resolver.ts list [substring] [--limit=N]   (discover the namespace)\n" +
-        "       resolver.ts search <query> [--kind=K]      (find content by keyword)",
+        "       resolver.ts search <query> [--kind=K]      (find content by keyword)\n" +
+        "       resolver.ts refs <chord>                   (navigate citation edges)",
     );
     Deno.exit(1);
   }

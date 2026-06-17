@@ -3,7 +3,8 @@
 // position: 0/160 → void(0) — foundation tooling beside the literate parser
 // maturity: active
 // horizon: none (bare-import map generation landed; consumption grows organically)
-// skill_safe: yes
+// skill_safe: yes-with-care
+//   writes the generated import map to disk
 // hex_dipole: "5F 00 33 26 40 00 00 26"
 // placement_policy: axis
 // (character: void_infinity +0.75 PRIMARY — the map is the blank ground

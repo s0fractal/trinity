@@ -9,7 +9,7 @@
 // maturity: active
 // horizon: none (English projection of the glossary's bucket archetypes)
 // skill_tag: coordinates
-// skill_safe: yes
+// skill_safe: yes-with-care
 // intent: project the glossary's kind:03 bucket archetypes into an ENGLISH
 //   coordinate reference, so a newcomer / new voice can decode xNNNN_ names
 //   without HUMAN.md (which is the original, informal, Ukrainian key).

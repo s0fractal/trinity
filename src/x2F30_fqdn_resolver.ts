@@ -6,7 +6,9 @@
 // maturity: active
 // horizon: none (graduation completed)
 // skill_tag: resolve-fqdn
-// skill_safe: yes
+// skill_safe: yes-with-care
+//   read-only by default; the `index` subcommand writes the gitignored
+//   resolver index cache to disk
 // intent: resolve an FQDN to candidate paths, check uniqueness/mirrors/conflicts
 //
 // Given an FQDN, report every place it lives across an ORDERED set of roots, and

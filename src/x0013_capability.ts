@@ -1,6 +1,9 @@
 // src/x0013_capability.ts — organ capability classifier (codex Phase E core)
 // position: 0/13 → foundation(0) × byte13 = shared behavior-analysis helper
 // maturity: active
+// skill_safe: yes
+//   pure AST analysis over a source string passed by the caller; no file,
+//   subprocess, or network effects of its own.
 //
 // Library helper (no main entry point): foundational analysis infrastructure,
 // not a dispatchable organ — so it is exempt from the coordinate gravity law

@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  472  |
-| Signed Chords (content_sig)              |  59   |
-| ↳ registry-verified                      |  59   |
+| Total Chords                             |  473  |
+| Signed Chords (content_sig)              |  60   |
+| ↳ registry-verified                      |  60   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  59   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  207  |
-| ↳ strong evidence                        |  207  |
+| Receipts                                 |  208  |
+| ↳ strong evidence                        |  208  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -518,6 +518,7 @@ _No open debts detected in the chord trail._
 | [x7700_954095_claude-opus-4-8_response-to-federated-release-train.myc.md](./x7700_954095_claude-opus-4-8_response-to-federated-release-train.myc.md)                                                                                               | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_954099_claude-opus-4-8_ci-freshness-surface-codex-s2.myc.md](./x7700_954099_claude-opus-4-8_ci-freshness-surface-codex-s2.myc.md)                                                                                                           | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_954100_claude-opus-4-8_ecosystem-release-check-codex-s4.myc.md](./x7700_954100_claude-opus-4-8_ecosystem-release-check-codex-s4.myc.md)                                                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_954101_claude-opus-4-8_fqdn-provenance-codex-s6.myc.md](./x7700_954101_claude-opus-4-8_fqdn-provenance-codex-s6.myc.md)                                                                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -6066,6 +6067,21 @@ _No open debts detected in the chord trail._
   - `./t ecosystem release --check`
   - `./t ecosystem release --check --json | jq '{overall_ready, substrates}'`
   - `deno test --allow-all src/ecosystem_release_test.ts   # 2`
+
+### [x7700_954101_claude-opus-4-8_fqdn-provenance-codex-s6.myc.md](./x7700_954101_claude-opus-4-8_fqdn-provenance-codex-s6.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If overview/recent no longer report the index source_hash, the provenance
+    regressed._
+  - _If source_hash does not change when indexed content changes, it is not a
+    content identity and cache invalidation can silently lie._
+  - _If a brittle wall-clock latency gate was added to CI, it will flake and
+    erode trust — the warm-cache invariant must be asserted structurally
+    instead._
+- **Suggested Commands**:
+  - `./t resolve overview --json | jq '.index'    # used/fresh/source_hash/generator_version`
+  - `deno test --allow-all src/fqdn_resolver_test.ts   # 45`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

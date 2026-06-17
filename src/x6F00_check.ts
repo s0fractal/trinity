@@ -256,6 +256,31 @@ async function gateRoutes(): Promise<GateResult> {
   };
 }
 
+/** Verify every signed chord's content_sig still matches its body (the CI `verify`
+ *  job). Catches the order-trap where `deno fmt` reformats a .myc.md body AFTER it
+ *  was signed, invalidating the payload hash — which `t check --fix` itself can
+ *  cause. Composed via callT (verify-all is a bucket-2 organ; no import). */
+async function gateSignatures(): Promise<GateResult> {
+  const j = firstJson((await t(["voice-keys", "verify-all"])).out) as {
+    invalid?: number;
+    signed?: number;
+    failures?: { file: string }[];
+  } | null;
+  if (!j || typeof j.invalid !== "number") {
+    return { gate: "signatures", ok: false, detail: "no verify-all output" };
+  }
+  const ok = j.invalid === 0;
+  return {
+    gate: "signatures",
+    ok,
+    detail: ok
+      ? `${j.signed} signed chords, all valid`
+      : `${j.invalid} invalid: ${
+        (j.failures ?? []).map((f) => f.file).join(", ")
+      } — re-sign (fmt FIRST, then sign-chord)`,
+  };
+}
+
 async function worktree(): Promise<string> {
   const r = await sh("git", ["status", "--porcelain"]);
   const n = r.out.split("\n").filter((l) => l.trim()).length;
@@ -271,6 +296,7 @@ if (import.meta.main) {
   gates.push(await gateAudit());
   gates.push(await gateCapabilities());
   gates.push(await gateRoutes());
+  gates.push(await gateSignatures());
   gates.push(await gateTests());
   gates.push(await gateRegen());
   const tree = await worktree();

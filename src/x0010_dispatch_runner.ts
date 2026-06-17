@@ -39,6 +39,7 @@ export const POSITION_TO_FILE: Record<string, string> = {
   "2/5": "x2500_cognition_field.ts",
   "2/6": "x2600_cognition_delta.ts",
   "2/7": "x2700_heartbeat.ts",
+  "2/8": "x2800_ask.ts",
   "2/A": "x2A00_lexicon.ts",
   "2/C": "x2C00_cognition_phase_report.ts",
   "2/D": "x2D00_inbox.ts",

@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  470  |
-| Signed Chords (content_sig)              |  57   |
-| ↳ registry-verified                      |  57   |
+| Total Chords                             |  471  |
+| Signed Chords (content_sig)              |  58   |
+| ↳ registry-verified                      |  58   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  59   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  205  |
-| ↳ strong evidence                        |  205  |
+| Receipts                                 |  206  |
+| ↳ strong evidence                        |  206  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -516,6 +516,7 @@ _No open debts detected in the chord trail._
 | [x7700_954030_claude-opus-4-8_blocktime-canonical-anchor-consolidation.myc.md](./x7700_954030_claude-opus-4-8_blocktime-canonical-anchor-consolidation.myc.md)                                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_954033_claude-opus-4-8_fqdn-federation-root-scoping.myc.md](./x7700_954033_claude-opus-4-8_fqdn-federation-root-scoping.myc.md)                                                                                                             | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_954095_claude-opus-4-8_response-to-federated-release-train.myc.md](./x7700_954095_claude-opus-4-8_response-to-federated-release-train.myc.md)                                                                                               | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_954099_claude-opus-4-8_ci-freshness-surface-codex-s2.myc.md](./x7700_954099_claude-opus-4-8_ci-freshness-surface-codex-s2.myc.md)                                                                                                           | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -6032,6 +6033,23 @@ _No open debts detected in the chord trail._
   - `./t self                 # no longer emits the liquid workspace warning`
   - `./t cross-verify liquid   # overall: passed`
   - `git -C liquid grep -c unstable.*workspace deno.jsonc   # 0 (config field removed)`
+
+### [x7700_954099_claude-opus-4-8_ci-freshness-surface-codex-s2.myc.md](./x7700_954099_claude-opus-4-8_ci-freshness-surface-codex-s2.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If a substrate's admitted commit differs from the commit a green run
+    executed and `t evidence ci` still reports it green, the freshness model is
+    broken._
+  - _If `t evidence ci --live` does not refresh the cache, or the default mode
+    does not read it, the source/freshness contract is violated._
+  - _If this changed substrate_health.external_ci's shape, it risked the signed
+    court envelope — it must stay a separate additive surface._
+- **Suggested Commands**:
+  - `./t evidence ci --live    # fetch + classify all 4 substrates`
+  - `./t evidence ci           # read the cache`
+  - `./t evidence ci --json | jq '.summary'`
+  - `deno test --allow-all src/evidence_ci_test.ts   # 3`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

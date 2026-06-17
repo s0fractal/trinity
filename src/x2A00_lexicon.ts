@@ -41,6 +41,7 @@ import {
   fromFileUrl,
   join,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { blockOfEpochSec } from "./x0014_blocktime.ts";
 import { listChordSurfaceFiles } from "./x2F21_chord_surface.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
@@ -143,7 +144,7 @@ function blockHeight(filename: string): number {
     if (!t) return 0;
     const [, y, mo, d, h, mi, s] = t;
     const epoch = epochFromCompactUtc(y, mo, d, h, mi, s);
-    return 950000 + Math.floor((epoch - 1779148800) / 600);
+    return blockOfEpochSec(epoch);
   }
   const o = OLD_FORM.exec(filename);
   if (o) {
@@ -153,13 +154,13 @@ function blockHeight(filename: string): number {
     if (!compact) return 0;
     const [, y, mo, d, h, mi, s] = compact;
     const epoch = epochFromCompactUtc(y, mo, d, h, mi, s);
-    return 950000 + Math.floor((epoch - 1779148800) / 600);
+    return blockOfEpochSec(epoch);
   }
   const p = PROTO_FORM.exec(filename);
   if (p) {
     const [, y, mo, d, h, mi, s] = p;
     const epoch = epochFromCompactUtc(y, mo, d, h, mi, s);
-    return 950000 + Math.floor((epoch - 1779148800) / 600);
+    return blockOfEpochSec(epoch);
   }
   return 0;
 }

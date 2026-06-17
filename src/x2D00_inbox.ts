@@ -39,6 +39,7 @@ import {
   fromFileUrl,
   join,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { epochSecOfBlock } from "./x0014_blocktime.ts";
 import { listChordSurfaceFiles } from "./x2F21_chord_surface.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
@@ -291,14 +292,12 @@ function listAllVoices(chords: ChordRecord[]): string[] {
 // Compute approximate days-ago from a chord_id string. Handles new-form
 // (x<NNNN>_<block>_...), old-form (YYYY-MM-DDTHHMMSSZ-...), and proto-form
 // (YYYYMMDD-HHMMSSZ?-...). Returns null if no time signal extractable.
-const BTC_BLOCK_SEC = 600;
-const BTC_REF_BLOCK = 950000;
-const BTC_REF_EPOCH = 1779148800; // 2026-05-19T00:00:00Z
+// Bitcoin anchor lives in the canonical bucket-0 library x0014_blocktime.
 function chordDaysAgo(chord_id: string, nowMs = Date.now()): number | null {
   const newM = /^x[0-9A-Fa-f]{4}_(\d+)_/.exec(chord_id);
   if (newM) {
     const block = parseInt(newM[1], 10);
-    const epoch = BTC_REF_EPOCH + (block - BTC_REF_BLOCK) * BTC_BLOCK_SEC;
+    const epoch = epochSecOfBlock(block);
     return Math.floor((nowMs / 1000 - epoch) / 86400);
   }
   const oldM = /^(\d{4})-(\d{2})-(\d{2})T(\d{2})(\d{2})(\d{2})Z/.exec(chord_id);

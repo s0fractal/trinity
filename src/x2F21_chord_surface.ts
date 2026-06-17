@@ -17,6 +17,7 @@ import {
   fromFileUrl,
   join,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { blockOfEpochSec, epochMsOfBlock } from "./x0014_blocktime.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 export const ROOT = dirname(HERE);
@@ -31,9 +32,7 @@ export interface ChordSurfaceFile {
   surface: "legacy" | "topological";
 }
 
-const CHORD_BLOCK_REF = 950000;
-const CHORD_EPOCH_REF = 1779148800; // 2026-05-19T00:00:00Z
-
+// Bitcoin anchor lives in the canonical bucket-0 library x0014_blocktime.
 export async function gitTrackedSet(pathspec?: string): Promise<Set<string>> {
   const args = ["-C", ROOT, "ls-files"];
   if (pathspec) args.push(pathspec);
@@ -192,8 +191,7 @@ export function chordDateFromName(name: string): Date | null {
   const blockM = /^x[0-9A-Fa-f]{4}_(\d+)_/.exec(name);
   if (blockM) {
     const block = parseInt(blockM[1], 10);
-    const epoch = CHORD_EPOCH_REF + (block - CHORD_BLOCK_REF) * 600;
-    return new Date(epoch * 1000);
+    return new Date(epochMsOfBlock(block));
   }
 
   const oldM = /^(\d{4})-(\d{2})-(\d{2})T(\d{2})(\d{2})(\d{2})Z/.exec(name);
@@ -216,6 +214,5 @@ export function chordBlockHeightFromName(name: string): number {
   if (blockM) return parseInt(blockM[1], 10);
   const date = chordDateFromName(name);
   if (!date) return 0;
-  return CHORD_BLOCK_REF +
-    Math.floor((Math.floor(date.getTime() / 1000) - CHORD_EPOCH_REF) / 600);
+  return blockOfEpochSec(Math.floor(date.getTime() / 1000));
 }

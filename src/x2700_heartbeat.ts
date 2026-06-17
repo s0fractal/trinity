@@ -35,6 +35,7 @@ import {
   fromFileUrl,
   join,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { epochMsOfBlock } from "./x0014_blocktime.ts";
 import { listChordSurfaceFiles } from "./x2F21_chord_surface.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
@@ -48,16 +49,9 @@ function daysBetween(a: Date, b: Date): number {
   return Math.floor((b.getTime() - a.getTime()) / 86400000);
 }
 
-// Bitcoin anchor: block 950000 ≈ epoch 1779148800 (used by x5910 compost
-// watchdog). Avg block interval = 600 seconds.
-const BTC_ANCHOR_BLOCK = 950000;
-const BTC_ANCHOR_EPOCH = 1779148800;
-const BTC_SEC_PER_BLOCK = 600;
-
+// Bitcoin anchor lives in the canonical bucket-0 library x0014_blocktime.
 function blockHeightToDate(block: number): Date {
-  return new Date(
-    (BTC_ANCHOR_EPOCH + (block - BTC_ANCHOR_BLOCK) * BTC_SEC_PER_BLOCK) * 1000,
-  );
+  return new Date(epochMsOfBlock(block));
 }
 
 async function readBlockHeightFromFrontmatter(

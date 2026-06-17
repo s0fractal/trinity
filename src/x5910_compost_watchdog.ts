@@ -24,6 +24,7 @@ import {
   fromFileUrl,
   join,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { blockOfEpochSec } from "./x0014_blocktime.ts";
 import { listContracts } from "./x4F00_contracts.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
@@ -54,8 +55,7 @@ async function findUniqueCompostPath(filename: string): Promise<string> {
 }
 
 function getBlockHeight(): number {
-  const epoch = Math.floor(Date.now() / 1000);
-  return 950000 + Math.floor((epoch - 1779148800) / 600);
+  return blockOfEpochSec(Math.floor(Date.now() / 1000));
 }
 
 async function runCommand(args: string[]): Promise<boolean> {

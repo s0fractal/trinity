@@ -8,8 +8,22 @@ import {
   BTC_ANCHOR_EPOCH_SEC,
   BTC_SEC_PER_BLOCK,
   epochMsOfBlock,
+  epochSecOfBlock,
   isoOfBlock,
 } from "./x0014_blocktime.ts";
+
+Deno.test("epochSecOfBlock - base primitive: anchor maps to its epoch in seconds", () => {
+  assertEquals(epochSecOfBlock(BTC_ANCHOR_BLOCK), BTC_ANCHOR_EPOCH_SEC);
+  assertEquals(
+    epochSecOfBlock(BTC_ANCHOR_BLOCK + 1) - epochSecOfBlock(BTC_ANCHOR_BLOCK),
+    BTC_SEC_PER_BLOCK,
+  );
+  // epochMsOfBlock is exactly epochSecOfBlock × 1000
+  assertEquals(
+    epochMsOfBlock(BTC_ANCHOR_BLOCK + 7),
+    epochSecOfBlock(BTC_ANCHOR_BLOCK + 7) * 1000,
+  );
+});
 
 Deno.test("epochMsOfBlock - anchor block maps to its epoch; advances 600s/block", () => {
   assertEquals(epochMsOfBlock(BTC_ANCHOR_BLOCK), BTC_ANCHOR_EPOCH_SEC * 1000);

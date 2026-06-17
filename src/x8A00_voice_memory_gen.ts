@@ -48,6 +48,7 @@ import {
 } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { parse as parseYaml } from "https://deno.land/std@0.224.0/yaml/mod.ts";
 import { formatGeneratedFile } from "./x0012_generated_format.ts";
+import { epochSecOfBlock } from "./x0014_blocktime.ts";
 import { listChordSurfaceFiles } from "./x2F21_chord_surface.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
@@ -68,10 +69,9 @@ const TOPIC_RE = /^topic:\s*(.+?)\s*$/m;
 const STANCE_RE = /^stance:\s*([A-Z_]+)/m;
 const FRONTMATTER_RE = /^---\r?\n([\s\S]*?)\r?\n---/;
 
-const REFERENCE_BLOCK = 950000;
-const REFERENCE_EPOCH_SEC = 1779148800; // 2026-05-19T00:00:00Z
+// Bitcoin anchor lives in the canonical bucket-0 library x0014_blocktime.
 function blockHeightToEpoch(b: number): number {
-  return REFERENCE_EPOCH_SEC + (b - REFERENCE_BLOCK) * 600;
+  return epochSecOfBlock(b);
 }
 function wallclockToEpoch(ts: string): number {
   const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2})(\d{2})(\d{2})Z$/.exec(ts);

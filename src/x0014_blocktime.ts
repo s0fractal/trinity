@@ -27,11 +27,15 @@ export const BTC_ANCHOR_BLOCK = 950000;
 export const BTC_ANCHOR_EPOCH_SEC = 1779148800;
 export const BTC_SEC_PER_BLOCK = 600;
 
+/** Approximate UNIX epoch (seconds) for a bitcoin block height. The base
+ *  primitive — most organs reason in seconds. */
+export function epochSecOfBlock(block: number): number {
+  return BTC_ANCHOR_EPOCH_SEC + (block - BTC_ANCHOR_BLOCK) * BTC_SEC_PER_BLOCK;
+}
+
 /** Approximate UNIX epoch (milliseconds) for a bitcoin block height. */
 export function epochMsOfBlock(block: number): number {
-  return (BTC_ANCHOR_EPOCH_SEC +
-    (block - BTC_ANCHOR_BLOCK) * BTC_SEC_PER_BLOCK) *
-    1000;
+  return epochSecOfBlock(block) * 1000;
 }
 
 /** Approximate ISO-8601 (UTC) wall time for a bitcoin block height. */

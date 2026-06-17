@@ -28,6 +28,8 @@
 //   t scaffold organ <coord> <handle>     dry preview (organ + test + wiring)
 //   t scaffold organ <coord> <handle> --write   write the 2 new files
 //   t scaffold organ <coord> <handle> --json    machine-readable plan
+//   t scaffold playbook                    the grow-loop guide (review A6:
+//     the one place an organism reads to learn how to add a capability)
 //   (coord = 4 hex, e.g. 4300; handle = snake_case, e.g. my_organ)
 
 import {
@@ -137,6 +139,50 @@ Deno.test("${handle} - TODO replace with a real assertion", () => {
 `;
 }
 
+/** The grow-loop playbook (review A6): the one place an organism reads to learn
+ *  HOW to add a capability to this substrate. Generated on demand — it states the
+ *  live route count and points at the tools that do each step, so it can't drift
+ *  from a hand-written doc. Not a tracked file; `t scaffold playbook` prints it. */
+function playbook(): string {
+  const routes = Object.keys(POSITION_TO_FILE).length;
+  return `# grow-loop playbook — how to add a capability to this substrate
+# (generated; ${routes} organs currently routed)
+#
+# the substrate is role/coordinate-addressed: every organ lives at a hex
+# coordinate xNNNN whose first digit is its bucket (archetype 0–F). adding a
+# capability means birthing an organ at the right coordinate and wiring it in.
+#
+# 1. PLACE it — pick a bucket by archetype (\`t coordinates\`), then a free
+#    coordinate in that bucket (\`t gravity\` heatmap / grep POSITION_TO_FILE).
+#    the gravity LAW (\`t gravity --laws\`): an organ must NOT import a
+#    HIGHER-bucket organ — compose higher peers via callT, import only
+#    equal/lower buckets and bucket-0 libraries.
+#
+# 2. BIRTH it — \`t scaffold organ <coord> <handle>\` generates the organ + test
+#    skeleton with a correct header (incl. a dipole whose strongest axis matches
+#    the bucket, so the audit passes) and emits the exact 3 wiring lines.
+#
+# 3. WIRE it — apply the 3 emitted lines:
+#      • src/x0001_glossary.ndjson   (the word → position entry)
+#      • src/x0010_dispatch_runner.ts (the POSITION_TO_FILE route)
+#      • deno.jsonc                   (the task alias)
+#
+# 4. GROW it — replace the TODOs: real intent, real dipole (\`t chord translate\`),
+#    pure functions in the organ + assertions in the test.
+#
+# 5. VERIFY it — \`t check\` runs the canonical gate sequence locally (fmt, audit
+#    invariants, capabilities, the route gate that confirms your new word
+#    resolves, unit tests, projection-drift). \`t check --fix\` formats + regens.
+#    green here ⇒ CI green.
+#
+# 6. RECORD it — for anything beyond a small organ, draft a chord
+#    (\`t chord init\` / \`t chord receipt\`) so the act is provenance-signed and
+#    closes its proposal.
+#
+# the loop is self-correcting: scaffold proposes a route key, the check route
+# gate confirms it. you learn mistakes at the keyboard, not from a red CI.`;
+}
+
 interface Plan {
   type: "scaffold";
   kind: "organ";
@@ -163,9 +209,18 @@ if (import.meta.main) {
   const write = args.includes("--write");
   const positional = args.filter((a) => !a.startsWith("--"));
 
+  if (sub === "playbook") {
+    console.log(playbook());
+    Deno.exit(0);
+  }
+
   if (sub !== "organ") {
     console.log("# scaffold @ 4/3");
-    console.log("usage: t scaffold organ <coord> <handle> [--write] [--json]");
+    console.log("usage:");
+    console.log("  t scaffold organ <coord> <handle> [--write] [--json]");
+    console.log(
+      "  t scaffold playbook        the grow-loop guide (how to add a capability)",
+    );
     console.log(
       "  (chord scaffolding lives in `t chord init` / `t chord receipt`)",
     );

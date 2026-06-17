@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  465  |
-| Signed Chords (content_sig)              |  53   |
-| ↳ registry-verified                      |  53   |
+| Total Chords                             |  466  |
+| Signed Chords (content_sig)              |  54   |
+| ↳ registry-verified                      |  54   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  58   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  201  |
-| ↳ strong evidence                        |  201  |
+| Receipts                                 |  202  |
+| ↳ strong evidence                        |  202  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -511,6 +511,7 @@ _No open debts detected in the chord trail._
 | [x7700_953952_claude-opus-4-8_fqdn-network-overview-front-door.myc.md](./x7700_953952_claude-opus-4-8_fqdn-network-overview-front-door.myc.md)                                                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953989_claude-opus-4-8_research-priorities-executed.myc.md](./x7700_953989_claude-opus-4-8_research-priorities-executed.myc.md)                                                                                                             | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953993_claude-opus-4-8_phase-coherence-grounded.myc.md](./x7700_953993_claude-opus-4-8_phase-coherence-grounded.myc.md)                                                                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_954029_claude-opus-4-8_fqdn-recent-temporal-lens.myc.md](./x7700_954029_claude-opus-4-8_fqdn-recent-temporal-lens.myc.md)                                                                                                                   | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5931,6 +5932,26 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `deno task coherence --pretty   # r over the organ dipole field`
   - `deno test --allow-all src/coherence_test.ts   # 4`
+
+### [x7700_954029_claude-opus-4-8_fqdn-recent-temporal-lens.myc.md](./x7700_954029_claude-opus-4-8_fqdn-recent-temporal-lens.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If `t resolve recent` orders by anything other than the block height /
+    legacy timestamp carried in each name, the temporal claim is false._
+  - _If `chordStamp` returns a stamp for an organ/doc name (no chord body), the
+    chord-only scope leaked._
+  - _If `recent` reads file contents or mtime rather than the index + name, it
+    is not the cheap structural lens it claims to be._
+  - _If `t resolve overview`/`graph`/`search`/`refs` change behavior, the
+    addition was not additive._
+  - _If the bitcoin→epoch mapping is presented as a precise timestamp rather
+    than an ordering approximation, the receipt over-claims._
+- **Suggested Commands**:
+  - `./t resolve recent --pretty                 # the network's recent story`
+  - `./t resolve recent --limit=15 --voice=codex # one author's recent chords`
+  - `./t resolve recent --json | jq '.entries[0]' # machine-readable newest node`
+  - `deno test --allow-all src/fqdn_resolver_test.ts   # 43`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

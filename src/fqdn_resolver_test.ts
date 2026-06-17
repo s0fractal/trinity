@@ -10,6 +10,7 @@ import {
   type Candidate,
   chordGraph,
   chordRefs,
+  chordStamp,
   graphQueryForms,
   indexIsFresh,
   isContentAddressed,
@@ -20,7 +21,9 @@ import {
   networkOverview,
   parseChordEdges,
   parseOrganImports,
+  recentActivity,
   renderGraph,
+  renderRecent,
   type Resolution,
   resolveFqdn,
   resolveFromIndex,
@@ -941,6 +944,68 @@ Deno.test("networkOverview - aggregates by_kind, edge totals, and in-degree hubs
   );
   // x0030_compose: imported twice — the import hub
   assertEquals(o.top_imported[0], { stem: "x0030_compose", in: 2 });
+});
+
+Deno.test("chordStamp - parses bitcoin height, legacy timestamp; null for non-chords", () => {
+  const bh = chordStamp("x7700_953935_claude-opus-4-8_some-slug.myc.md")!;
+  assertEquals(bh.block, "953935");
+  assertEquals(bh.voice, "claude-opus-4-8");
+  assertEquals(bh.slug, "some-slug");
+  const legacy = chordStamp("x7700_t20260514105846_codex_legacy-slug.myc.md")!;
+  assertEquals(legacy.voice, "codex");
+  assertEquals(legacy.slug, "legacy-slug");
+  // 2026-05-14 predates block 953935 (≈ 2026-05-21), so it sorts older
+  assert(legacy.epoch_ms < bh.epoch_ms);
+  // organs/docs carry no stamp
+  assertEquals(chordStamp("x2F30_fqdn_resolver.ts"), null);
+  assertEquals(chordStamp("README.md"), null);
+});
+
+Deno.test("recentActivity + renderRecent - newest-first, voice filter, closes signal", () => {
+  const chord = (name: string, closes: string[] = []) => ({
+    name,
+    kind: "chord" as const,
+    root: "src",
+    rel: `src/${name}`,
+    content_hash: "h",
+    edges: { hears: [], closes, references: [], imports: [] },
+    text: "",
+  });
+  const artifact = {
+    type: "resolver_index" as const,
+    generator_version: "test",
+    files_indexed: 4,
+    fingerprint: "f",
+    source_hash: "s",
+    entries: [
+      chord("x7700_953930_claude_older.myc.md"),
+      chord("x7700_953940_codex_newer.myc.md", [
+        "src/x2d00_953926_codex_proposal.myc.md",
+      ]),
+      chord("x2F30_fqdn_resolver.ts"), // organ name → no stamp → excluded
+      chord("x7700_953935_claude_mid.myc.md"),
+    ],
+    text: "",
+  };
+  const r = recentActivity(artifact, { limit: 2 });
+  assertEquals(r.count, 3); // 3 stamped chords; the organ-named entry is dropped
+  assertEquals(r.entries.length, 2); // honoured --limit
+  assertEquals(r.entries[0].slug, "newer"); // newest block first
+  assertEquals(r.entries[1].slug, "mid");
+  // closes is stem-normalized (path + extension stripped)
+  assertEquals(r.entries[0].closes, ["x2d00_953926_codex_proposal"]);
+  // window spans oldest-shown → newest-shown
+  assert(r.window.from! < r.window.to!);
+
+  // voice filter narrows to one author
+  const cx = recentActivity(artifact, { voice: "codex" });
+  assertEquals(cx.entries.length, 1);
+  assertEquals(cx.entries[0].voice, "codex");
+
+  // pretty render names the count and the newest slug
+  const pretty = renderRecent(r).join("\n");
+  assertStringIncludes(pretty, "2 most recent of 3");
+  assertStringIncludes(pretty, "newer");
 });
 
 Deno.test("searchCache - matches name + bounded text over a cached artifact", () => {

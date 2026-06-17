@@ -1225,6 +1225,137 @@ export function renderOverview(o: NetworkOverview): string[] {
   return lines;
 }
 
+// ── temporal lens: the network's recent activity ────────────────────────────
+// Bitcoin-height anchor for chord stamps. The SAME constants as
+// x8B00_decisions_gen.blockHeightToISO — replicated, NOT imported: x8B00 is a
+// bucket-8 organ and importing it into this bucket-2 organ would break the
+// coordinate gravity law (raises import_warnings → fails the CI self gate). The
+// anchor is a value, not behaviour: block 950000 ≈ epoch 1779148800, 600 s/block.
+const BTC_ANCHOR_BLOCK = 950000;
+const BTC_ANCHOR_EPOCH = 1779148800;
+const BTC_SEC_PER_BLOCK = 600;
+
+/** A chord name's temporal stamp + authorship, parsed from the filename alone
+ *  (no file read). A chord is named `x<hex>_<block>_<voice>_<slug>`, where
+ *  <block> is a bitcoin height (digits) or legacy `t<YYYYMMDDHHMMSS>`. Returns
+ *  null for names with no chord body (organs, docs, data carry no embedded
+ *  time). The bitcoin→epoch mapping is approximate (fixed 600 s/block), enough
+ *  to order recent activity; it is not a precise timestamp. */
+export interface ChordStamp {
+  block: string;
+  epoch_ms: number;
+  voice: string;
+  slug: string;
+}
+export function chordStamp(name: string): ChordStamp | null {
+  const stripped = name.replace(COORD_PREFIX, "");
+  if (stripped === name) return null; // no coordinate prefix → not a chord
+  const handle = stripped.replace(/\.myc\.md$/, "");
+  const m = handle.match(/^(t?\d+)_([a-z0-9.-]+)_(.+)$/);
+  if (!m) return null;
+  const [, block, voice, slug] = m;
+  let epoch_ms: number;
+  if (block[0] === "t") {
+    const d = block.slice(1);
+    if (d.length < 14) return null;
+    const t = Date.parse(
+      `${d.slice(0, 4)}-${d.slice(4, 6)}-${d.slice(6, 8)}T` +
+        `${d.slice(8, 10)}:${d.slice(10, 12)}:${d.slice(12, 14)}Z`,
+    );
+    if (Number.isNaN(t)) return null;
+    epoch_ms = t;
+  } else {
+    const n = Number(block);
+    if (!Number.isFinite(n)) return null;
+    epoch_ms = (BTC_ANCHOR_EPOCH + (n - BTC_ANCHOR_BLOCK) * BTC_SEC_PER_BLOCK) *
+      1000;
+  }
+  return { block, epoch_ms, voice, slug };
+}
+
+export interface RecentEntry {
+  name: string;
+  root: string;
+  kind: NameKind;
+  block: string;
+  when: string; // ISO 8601 (UTC), derived from block height / legacy timestamp
+  voice: string;
+  slug: string;
+  closes: string[]; // stems this chord closes — its receipt/closure signal
+}
+
+/** The network's temporal lens: the most recently stamped chords, newest first.
+ *  Peer to `networkOverview` (the network's shape) and `chordGraph` (one node's
+ *  neighbourhood) — this answers "what has been happening here lately?", the one
+ *  primary browsing question the resolver could not previously answer. Pure;
+ *  reads only the index. Scoped to chords (the substrate's event log) since other
+ *  kinds carry no embedded time; NOT a full commit/CI history (that is
+ *  `t heartbeat` / `t evidence`). */
+export interface RecentActivity {
+  count: number; // total timestamped (chord) nodes available before --limit
+  window: { from: string | null; to: string | null };
+  entries: RecentEntry[];
+}
+export function recentActivity(
+  artifact: ResolverIndexArtifact,
+  opts: { limit?: number; voice?: string } = {},
+): RecentActivity {
+  const limit = opts.limit ?? 20;
+  const stamped = artifact.entries
+    .map((e) => ({ e, s: chordStamp(e.name) }))
+    .filter((r): r is { e: IndexEntry; s: ChordStamp } => r.s !== null)
+    .filter((r) => !opts.voice || r.s.voice === opts.voice)
+    .sort((a, b) => b.s.epoch_ms - a.s.epoch_ms);
+  const entries: RecentEntry[] = stamped
+    .slice(0, Math.max(0, limit))
+    .map(({ e, s }) => ({
+      name: e.name,
+      root: e.root,
+      kind: e.kind,
+      block: s.block,
+      when: new Date(s.epoch_ms).toISOString(),
+      voice: s.voice,
+      slug: s.slug,
+      closes: e.edges.closes
+        .map((c) => refStem(c))
+        .filter((x): x is string => !!x),
+    }));
+  return {
+    count: stamped.length,
+    window: {
+      from: entries.length ? entries[entries.length - 1].when : null,
+      to: entries.length ? entries[0].when : null,
+    },
+    entries,
+  };
+}
+
+/** Human-readable recent-activity timeline (`recent --pretty`). */
+export function renderRecent(r: RecentActivity): string[] {
+  const lines = [
+    `# FQDN network — ${r.entries.length} most recent of ${r.count} timestamped nodes`,
+  ];
+  if (r.window.from && r.window.to) {
+    lines.push(
+      `# window: ${r.window.from.slice(0, 10)} → ${r.window.to.slice(0, 10)}`,
+    );
+  }
+  if (r.entries.length === 0) lines.push("#   (none)");
+  for (const e of r.entries) {
+    const extra = e.closes.length
+      ? `  → closes ${e.closes[0]}${
+        e.closes.length > 1 ? ` (+${e.closes.length - 1})` : ""
+      }`
+      : "";
+    lines.push(
+      `#   ${e.when.slice(0, 10)}  ${e.block.padStart(7)}  ${
+        e.voice.padEnd(20).slice(0, 20)
+      }  ${e.slug}${extra}`,
+    );
+  }
+  return lines;
+}
+
 /** `--show`: deliver the addressed content, not just its location — the last
  *  verb of the read side ("resolve one to its content"). Prints the provenance
  *  header then the raw bytes, so it stays pipeable. Returns the exit code. */
@@ -1395,6 +1526,34 @@ if (import.meta.main) {
     Deno.exit(0);
   }
 
+  // `recent [--limit=N] [--voice=V] [--pretty]` — the network's temporal lens:
+  // the most recently stamped chords (proposals/receipts) newest-first, by the
+  // block height / legacy timestamp carried in each name. Completes the browse
+  // loop find→view→navigate→WHEN; peer to overview (shape) / graph (neighbourhood).
+  if (args[0] === "recent") {
+    const limitArg = flagArg(args, "limit");
+    const limit = limitArg ? Number(limitArg) : 20;
+    const voice = flagArg(args, "voice");
+    const index = await buildIndex(roots);
+    const { cache, fresh } = await freshCache(index);
+    const artifact = fresh && cache ? cache : await buildResolverIndex(index);
+    const r = recentActivity(artifact, { limit, voice });
+    if (args.includes("--pretty")) {
+      console.log(renderRecent(r).join("\n"));
+    } else {
+      console.log(JSON.stringify(
+        {
+          type: "fqdn_recent",
+          index: { used: fresh && cache ? "cache" : "live", fresh },
+          ...r,
+        },
+        null,
+        2,
+      ));
+    }
+    Deno.exit(0);
+  }
+
   // `index [--rebuild]` — build the auditable search/graph index cache (codex E).
   if (args[0] === "index") {
     const index = await buildIndex(roots);
@@ -1486,7 +1645,10 @@ if (import.meta.main) {
         "       resolver.ts --show <fqdn>                   (resolve AND print its content)\n" +
         "       resolver.ts list [substring] [--limit=N]   (discover the namespace)\n" +
         "       resolver.ts search <query> [--kind=K]      (find content by keyword)\n" +
-        "       resolver.ts refs <chord>                   (navigate citation edges)",
+        "       resolver.ts refs <chord>                   (navigate citation edges)\n" +
+        "       resolver.ts graph <query> [--pretty]       (one node's typed neighbourhood)\n" +
+        "       resolver.ts recent [--limit=N] [--voice=V] (most recent chords, newest first)\n" +
+        "       resolver.ts overview [--pretty]            (the whole network's shape)",
     );
     Deno.exit(1);
   }

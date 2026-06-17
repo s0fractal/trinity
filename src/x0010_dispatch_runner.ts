@@ -51,6 +51,7 @@ export const POSITION_TO_FILE: Record<string, string> = {
   "3/C": "x3C00_recipes.ts",
   "4/0": "x4001_chord.ts",
   "4/1": "x4100_style.ts",
+  "4/3": "x4300_scaffold.ts",
   "4/A": "x4A00_capabilities.ts",
   "4/D": "x4D00_propose.ts",
   "4/E": "x4E00_snapshot.ts",

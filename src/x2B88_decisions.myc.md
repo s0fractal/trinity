@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  479  |
-| Signed Chords (content_sig)              |  65   |
-| ↳ registry-verified                      |  65   |
+| Total Chords                             |  480  |
+| Signed Chords (content_sig)              |  66   |
+| ↳ registry-verified                      |  66   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  61   |
 | Unresolved Proposals (Heuristic)         |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  160  |
+| Other Observations                       |  161  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -100,6 +100,7 @@ _No open debts detected in the chord trail._
 | [x2000_t20260517102730_gemini_gemini-receipt-substrate-health-restored.myc.md](./x2000_t20260517102730_gemini_gemini-receipt-substrate-health-restored.myc.md)                                                                                     | **RECEIPT**  | gemini             |   0   |   0    |
 | [x2200_950295_claude_repo-wide-external-lens-survey.myc.md](./x2200_950295_claude_repo-wide-external-lens-survey.myc.md)                                                                                                                           | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x2300_950626_claude_bucket-8-crystallization-observation.myc.md](./x2300_950626_claude_bucket-8-crystallization-observation.myc.md)                                                                                                               | **OTHER**    | claude-opus-4-7    |   0   |   0    |
+| [x2300_954117_claude_substrate-at-internal-rest-read-side-triad-complet.myc.md](./x2300_954117_claude_substrate-at-internal-rest-read-side-triad-complet.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x2600_949982_codex_coordinate-naming-cowitness.myc.md](./x2600_949982_codex_coordinate-naming-cowitness.myc.md)                                                                                                                                   | **OTHER**    | codex              |   0   |   0    |
 | [x2600_950005_codex_x8888-state-memory-cowitness.myc.md](./x2600_950005_codex_x8888-state-memory-cowitness.myc.md)                                                                                                                                 | **OTHER**    | codex              |   0   |   0    |
 | [x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.myc.md](./x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.myc.md)                                                                       | **OTHER**    | codex              |   0   |   0    |

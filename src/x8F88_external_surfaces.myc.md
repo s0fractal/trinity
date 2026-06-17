@@ -9,14 +9,14 @@ documents, and local caches outside the core Deno flat-src code base._
 
 | Category          | File Count |
 | :---------------- | :--------: |
-| compatibility     |     9      |
+| compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
 | dynamic topology  |    475     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **574**   |
+| **Total**         |  **575**   |
 
 ## Runtime Cache Diagnostics
 
@@ -82,6 +82,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | compatibility abi | [deno.jsonc](../deno.jsonc)                                                                                                                                                                                                                                 | compatibility    |                                                                                                                            | keep        | toolchain config             |
 | compatibility abi | [deno.lock](../deno.lock)                                                                                                                                                                                                                                   | compatibility    |                                                                                                                            | keep        | toolchain lockfile           |
 | compatibility     | [docs/AUDIT_MODEL.md](../docs/AUDIT_MODEL.md)                                                                                                                                                                                                               | compatibility    | src/x6C10_audit_model.myc.md                                                                                               | keep        | symlink shim                 |
+| compatibility     | [docs/AUTONOMY.md](../docs/AUTONOMY.md)                                                                                                                                                                                                                     | migration_input  |                                                                                                                            | keep        |                              |
 | compatibility     | [docs/COGNITIVE_THERMODYNAMICS.md](../docs/COGNITIVE_THERMODYNAMICS.md)                                                                                                                                                                                     | compatibility    | src/x2C10_cognitive_thermodynamics.myc.md                                                                                  | keep        | symlink shim                 |
 | compatibility     | [docs/COORDINATES.md](../docs/COORDINATES.md)                                                                                                                                                                                                               | migration_input  |                                                                                                                            | keep        |                              |
 | compatibility     | [docs/PROOF_CARRYING_RAW.md](../docs/PROOF_CARRYING_RAW.md)                                                                                                                                                                                                 | compatibility    | src/x5A10_proof_carrying_raw.myc.md                                                                                        | keep        | symlink shim                 |

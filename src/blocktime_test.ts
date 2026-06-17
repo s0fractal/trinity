@@ -6,11 +6,45 @@ import {
   blockOfEpochSec,
   BTC_ANCHOR_BLOCK,
   BTC_ANCHOR_EPOCH_SEC,
+  BTC_LIVE_ANCHOR_BLOCK,
+  BTC_LIVE_ANCHOR_EPOCH_SEC,
   BTC_SEC_PER_BLOCK,
+  describeLens,
   epochMsOfBlock,
   epochSecOfBlock,
   isoOfBlock,
 } from "./x0014_blocktime.ts";
+
+Deno.test("dual-lens - lens defaults to compat; live anchor is exact at its block", () => {
+  // default == compat == the stable historical anchor (no date shift)
+  assertEquals(epochSecOfBlock(BTC_ANCHOR_BLOCK), BTC_ANCHOR_EPOCH_SEC);
+  assertEquals(
+    epochSecOfBlock(BTC_ANCHOR_BLOCK),
+    epochSecOfBlock(BTC_ANCHOR_BLOCK, "compat"),
+  );
+  // live anchor maps its own block to its observed epoch exactly
+  assertEquals(
+    epochSecOfBlock(BTC_LIVE_ANCHOR_BLOCK, "live"),
+    BTC_LIVE_ANCHOR_EPOCH_SEC,
+  );
+  // at the live anchor height, compat reads earlier than live (the ~25.6h skew)
+  assert(
+    epochSecOfBlock(BTC_LIVE_ANCHOR_BLOCK, "compat") <
+      epochSecOfBlock(BTC_LIVE_ANCHOR_BLOCK, "live"),
+  );
+  // both lenses round-trip through blockOfEpochSec
+  assertEquals(
+    blockOfEpochSec(BTC_LIVE_ANCHOR_EPOCH_SEC, "live"),
+    BTC_LIVE_ANCHOR_BLOCK,
+  );
+  assertEquals(
+    Date.parse(isoOfBlock(BTC_LIVE_ANCHOR_BLOCK, "live")),
+    BTC_LIVE_ANCHOR_EPOCH_SEC * 1000,
+  );
+  // labels distinguish the lenses
+  assert(describeLens("compat").includes("compat"));
+  assert(describeLens("live").includes("live"));
+});
 
 Deno.test("epochSecOfBlock - base primitive: anchor maps to its epoch in seconds", () => {
   assertEquals(epochSecOfBlock(BTC_ANCHOR_BLOCK), BTC_ANCHOR_EPOCH_SEC);

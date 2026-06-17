@@ -1312,6 +1312,10 @@ export interface RecentEntry {
  *  `t heartbeat` / `t evidence`). */
 export interface RecentActivity {
   root: string | null; // substrate scope, or null for the whole federation
+  // dual-lens label (x0014): chord dates are HISTORICAL, so recent uses the
+  // stable "compat" anchor (reproducible; ~1d early near the present) — never
+  // the live anchor, which is for current-distance, not stamping a chord's date.
+  lens: "compat";
   count: number; // total timestamped (chord) nodes available before --limit
   window: { from: string | null; to: string | null };
   entries: RecentEntry[];
@@ -1345,6 +1349,7 @@ export function recentActivity(
     }));
   return {
     root: opts.root ? federationMember(opts.root) : null,
+    lens: "compat",
     count: stamped.length,
     window: {
       from: entries.length ? entries[entries.length - 1].when : null,
@@ -1362,7 +1367,9 @@ export function renderRecent(r: RecentActivity): string[] {
   ];
   if (r.window.from && r.window.to) {
     lines.push(
-      `# window: ${r.window.from.slice(0, 10)} → ${r.window.to.slice(0, 10)}`,
+      `# window: ${r.window.from.slice(0, 10)} → ${
+        r.window.to.slice(0, 10)
+      }  (lens: ${r.lens} — stable historical dates)`,
     );
   }
   if (r.entries.length === 0) lines.push("#   (none)");

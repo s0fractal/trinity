@@ -1388,6 +1388,118 @@ export function renderRecent(r: RecentActivity): string[] {
   return lines;
 }
 
+// ── the atlas: one human-readable "you are here" ─────────────────────────────
+// overview answers SHAPE, recent answers WHEN — each alone, as JSON, for a voice.
+// A person arriving at the network needs all of it woven into one read: what this
+// is (federated substrates, role-addressed organs, signed chords), how big each
+// member is, what is alive right now, and where to step next. The atlas composes
+// the existing pure aggregates (networkOverview + recentActivity) — it invents no
+// new measure, it narrates the ones the network already keeps. This is the "for
+// people" front step under the living-README pressure: a read-only projection of
+// ledger state, never an editable artifact.
+
+export interface AtlasMember {
+  member: string;
+  nodes: number;
+  chords: number;
+}
+export interface NetworkAtlas {
+  total_nodes: number;
+  members: AtlasMember[];
+  by_kind: Record<string, number>;
+  top_cited: NetworkHub[];
+  recent: RecentEntry[];
+  recent_window: { from: string | null; to: string | null };
+  recent_total: number;
+}
+
+/** Compose the network's shape + pulse into a person-facing atlas. Pure; reads
+ *  only the index. Federation members are ranked by node count (the substrates a
+ *  person would recognize); recent + top_cited reuse the canonical aggregates. */
+export function networkAtlas(artifact: ResolverIndexArtifact): NetworkAtlas {
+  const o = networkOverview(artifact, { top: 5 });
+  const r = recentActivity(artifact, { limit: 5 });
+  const memberMap = new Map<string, { nodes: number; chords: number }>();
+  for (const e of artifact.entries) {
+    const m = federationMember(e.root);
+    const cur = memberMap.get(m) ?? { nodes: 0, chords: 0 };
+    cur.nodes++;
+    if (e.kind === "chord") cur.chords++;
+    memberMap.set(m, cur);
+  }
+  const members = [...memberMap.entries()]
+    .map(([member, v]) => ({ member, ...v }))
+    .sort((a, b) => b.nodes - a.nodes || a.member.localeCompare(b.member));
+  return {
+    total_nodes: o.total_nodes,
+    members,
+    by_kind: o.by_kind,
+    top_cited: o.top_cited,
+    recent: r.entries,
+    recent_window: r.window,
+    recent_total: r.count,
+  };
+}
+
+/** Human-readable atlas (`atlas`, the default-pretty front door for people). */
+export function renderAtlas(a: NetworkAtlas): string[] {
+  const lines = [
+    "# ─────────────────────────────────────────────────────────────",
+    `#  The FQDN network — ${a.total_nodes} nodes across ${a.members.length} substrates`,
+    "# ─────────────────────────────────────────────────────────────",
+    "#",
+    "#  A federation of living substrates. Every organ has a fixed",
+    "#  coordinate (xNNNN, by role — not by content), every chord is a",
+    "#  signed provenance event, every edge (hears/closes/references/",
+    "#  imports) is git- and crypto-checkable. Nothing here is authored",
+    "#  by hand into place; it is grown, signed, and projected.",
+    "#",
+    "#  Substrates (by size):",
+  ];
+  for (const m of a.members) {
+    lines.push(
+      `#    ${m.member.padEnd(10)} ${String(m.nodes).padStart(5)} nodes` +
+        `   ${String(m.chords).padStart(4)} chords`,
+    );
+  }
+  const kinds = Object.entries(a.by_kind).sort((x, y) => y[1] - x[1]);
+  lines.push("#");
+  lines.push(`#  Made of: ${kinds.map(([k, n]) => `${n} ${k}`).join(", ")}`);
+  lines.push("#");
+  lines.push("#  Most-cited (what the network leans on):");
+  for (const h of a.top_cited) {
+    lines.push(`#    ${String(h.in).padStart(3)} ◀── ${h.stem}`);
+  }
+  lines.push("#");
+  if (a.recent.length && a.recent_window.to) {
+    lines.push(
+      `#  Alive lately (${a.recent_total} timestamped, newest of them):`,
+    );
+    for (const e of a.recent) {
+      const closes = e.closes.length ? `  → closes ${e.closes[0]}` : "";
+      lines.push(
+        `#    ${e.when.slice(0, 10)}  ${
+          e.voice.padEnd(16).slice(0, 16)
+        }  ${e.slug}${closes}`,
+      );
+    }
+  } else {
+    lines.push("#  (no timestamped activity in the index)");
+  }
+  lines.push("#");
+  lines.push("#  Step in:");
+  lines.push("#    t resolve-fqdn overview --pretty     the full shape + hubs");
+  lines.push("#    t resolve-fqdn recent --pretty       the full timeline");
+  lines.push("#    t resolve-fqdn search <term>         find a node by name");
+  lines.push(
+    "#    t resolve-fqdn show <name>           read one node's content",
+  );
+  lines.push(
+    "#    t roadmap                            where the network is going",
+  );
+  return lines;
+}
+
 /** `--show`: deliver the addressed content, not just its location — the last
  *  verb of the read side ("resolve one to its content"). Prints the provenance
  *  header then the raw bytes, so it stays pipeable. Returns the exit code. */
@@ -1566,6 +1678,35 @@ if (import.meta.main) {
     Deno.exit(0);
   }
 
+  // `atlas [--json]` — the network for a person: one woven read of identity +
+  // shape + pulse + doorways. Default output is the human rendering (this is the
+  // "for people" front door); --json exposes the same composed aggregate.
+  if (args[0] === "atlas") {
+    const index = await buildIndex(roots);
+    const { cache, fresh } = await freshCache(index);
+    const artifact = fresh && cache ? cache : await buildResolverIndex(index);
+    const a = networkAtlas(artifact);
+    if (args.includes("--json")) {
+      console.log(JSON.stringify(
+        {
+          type: "fqdn_atlas",
+          index: {
+            used: fresh && cache ? "cache" : "live",
+            fresh,
+            source_hash: artifact.source_hash,
+            generator_version: artifact.generator_version,
+          },
+          ...a,
+        },
+        null,
+        2,
+      ));
+    } else {
+      console.log(renderAtlas(a).join("\n"));
+    }
+    Deno.exit(0);
+  }
+
   // `recent [--limit=N] [--voice=V] [--root=S] [--pretty]` — the network's
   // temporal lens: the most recently stamped chords (proposals/receipts)
   // newest-first, by the block height / legacy timestamp carried in each name.
@@ -1695,7 +1836,8 @@ if (import.meta.main) {
         "       resolver.ts refs <chord>                   (navigate citation edges)\n" +
         "       resolver.ts graph <query> [--pretty]       (one node's typed neighbourhood)\n" +
         "       resolver.ts recent [--limit=N] [--voice=V] [--root=S]  (recent chords, newest first)\n" +
-        "       resolver.ts overview [--pretty] [--root=S]  (network shape; --root scopes to a substrate)",
+        "       resolver.ts overview [--pretty] [--root=S]  (network shape; --root scopes to a substrate)\n" +
+        "       resolver.ts atlas [--json]                  (the network for a person: identity + shape + pulse + doorways)",
     );
     Deno.exit(1);
   }

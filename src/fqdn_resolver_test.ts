@@ -19,10 +19,12 @@ import {
   kindOf,
   listNames,
   matchSnippet,
+  networkAtlas,
   networkOverview,
   parseChordEdges,
   parseOrganImports,
   recentActivity,
+  renderAtlas,
   renderGraph,
   renderRecent,
   type Resolution,
@@ -1011,6 +1013,65 @@ Deno.test("networkOverview/recentActivity --root - scopes to one federation memb
   assertEquals(recentActivity(artifact, { root: "src" }).count, 1);
   // liquid has no chord-stamped names → empty recent
   assertEquals(recentActivity(artifact, { root: "liquid" }).count, 0);
+});
+
+Deno.test("networkAtlas + renderAtlas - composes members, shape, and pulse for a person", () => {
+  const e = (
+    name: string,
+    kind: "organ" | "chord",
+    root: string,
+    edges: Partial<
+      { hears: string[]; closes: string[]; references: string[] }
+    > = {},
+  ) => ({
+    name,
+    kind,
+    root,
+    rel: `${root}/${name}`,
+    content_hash: "h",
+    edges: {
+      hears: edges.hears ?? [],
+      closes: edges.closes ?? [],
+      references: edges.references ?? [],
+      imports: [],
+    },
+    text: "",
+  });
+  const artifact = {
+    type: "resolver_index" as const,
+    generator_version: "test",
+    files_indexed: 4,
+    fingerprint: "f",
+    source_hash: "s",
+    entries: [
+      e("xA027_hydrate.ts", "organ", "liquid"),
+      e("x2F30_resolver.ts", "organ", "src", { references: ["AGENTS"] }),
+      e("x7700_953935_claude_first-chord.myc.md", "chord", "src", {
+        references: ["AGENTS"],
+      }),
+      e("x7700_953936_codex_second-chord.myc.md", "chord", "src", {
+        closes: ["x7700_953935_claude_first-chord"],
+      }),
+    ],
+    text: "",
+  };
+  const a = networkAtlas(artifact);
+  assertEquals(a.total_nodes, 4);
+  // members ranked by node count; trinity(src→trinity) has 3, liquid 1
+  assertEquals(a.members[0].member, "trinity");
+  assertEquals(a.members[0].nodes, 3);
+  assertEquals(a.members[0].chords, 2);
+  assertEquals(a.members[1], { member: "liquid", nodes: 1, chords: 0 });
+  // AGENTS cited twice → leads top_cited
+  assertEquals(a.top_cited[0], { stem: "AGENTS", in: 2 });
+  // pulse: 2 timestamped chords, newest first
+  assertEquals(a.recent_total, 2);
+  assertEquals(a.recent[0].slug, "second-chord");
+  // render mentions the headline, a substrate, and a doorway
+  const txt = renderAtlas(a).join("\n");
+  assert(txt.includes("The FQDN network — 4 nodes across 2 substrates"));
+  assert(txt.includes("trinity"));
+  assert(txt.includes("t resolve-fqdn overview --pretty"));
 });
 
 Deno.test("chordStamp - parses bitcoin height, legacy timestamp; null for non-chords", () => {

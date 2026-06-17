@@ -79,6 +79,7 @@ const POSITION_TO_FILE: Record<string, string> = {
   "6/C": "x6C00_audit.ts",
   "6/D": "x6D00_cowitness.ts",
   "6/E": "x6E00_court.ts",
+  "6/F": "x6F00_check.ts",
   "7/0": "x7001_grind.ts",
   "7/4": "x7400_export_clean.ts",
   "7/B": "x7B00_evidence.ts",

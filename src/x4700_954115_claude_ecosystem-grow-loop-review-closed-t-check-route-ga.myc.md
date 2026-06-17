@@ -24,8 +24,8 @@ expected_after_running: {}
 content_sig:
   voice: claude
   alg: ed25519
-  payload: "sha256:3491a8845f8a422a2b4b2bb08d4227afac50aae5e39051a4abc5624040c0b941"
-  sig: "YRo348fDN6IMfDQyyFKKyXiGP7DItopDZ77nddm4rFnulOfyGbLEYQ7kPAR85rycPn08HAyO1JF4BPg+phKDCA=="
+  payload: "sha256:78810ede3fcd73148bdbf0144b6cf04ebdbf6c250f756b1b4a51f92b0e817d35"
+  sig: "NUACtyDJgK2FJWJLQB1R0Yo4Mx101qfl+eAWrIEvNsyI0TfmuPXSy0E5V8BZaR7186xUkj94VJfxHm8/fQtYBA=="
 ---
 
 # Receipt: ecosystem grow-loop review closed: t check + route gate + scaffold + playbook

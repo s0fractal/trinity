@@ -11,8 +11,8 @@ tasks extracted from dynamic chord surfaces._
 | :--------------------------------------- | :---: |
 | Total Chords                             |  479  |
 | Signed Chords (content_sig)              |  65   |
-| ↳ registry-verified                      |  64   |
-| ↳ INVALID signatures                     |   1   |
+| ↳ registry-verified                      |  65   |
+| ↳ INVALID signatures                     |   0   |
 | Proposals                                |  61   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
@@ -28,19 +28,6 @@ tasks extracted from dynamic chord surfaces._
 | Invalid Closures                         |   0   |
 | Ritual Receipts (no verifiable artifact) |   0   |
 | ↳ recent (last 7d)                       |   0   |
-
-## ⚠ Provenance Failures
-
-_A chord carrying a content_sig failed verification — the body was edited after
-signing or the signature is forged. CI is red on this; fix by re-signing
-(`voice-keys sign-chord`) or investigating the edit._
-
-- `x4700_954115_claude_ecosystem-grow-loop-review-closed-t-check-route-ga.myc.md`
-  — payload hash mismatch: frontmatter pins
-  sha256:3491a8845f8a422a2b4b2bb08d4227afac50aae5e39051a4abc5624040c0b941, body
-  hashes to
-  sha256:78810ede3fcd73148bdbf0144b6cf04ebdbf6c250f756b1b4a51f92b0e817d35 — body
-  or filename edited after signing
 
 ## Proposal Triage Queue
 

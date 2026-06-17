@@ -382,7 +382,152 @@ export function diffEcosystem(
   return diffs;
 }
 
+// ── ecosystem release preflight (`t ecosystem release --check`) ─────────────
+// codex x6d00_954095 §4: a READ-ONLY preflight before a pointer bump or an
+// "ecosystem green" claim. Composes existing signals via subprocess (no
+// import-up across the gravity law): §2 CI freshness per admitted commit
+// (`t evidence ci --live`), per-substrate worktree cleanliness, the warnings a
+// standard command emits, and the root law hash.
+const RELEASE_SUBSTRATES = ["trinity", "liquid", "myc", "omega"];
+
+interface ReleaseRow {
+  substrate: string;
+  ci: string; // green | red | stale | pending | unknown
+  worktree: "clean" | "dirty";
+  ready: boolean;
+}
+interface ReleaseCheck {
+  type: "ecosystem_release_check";
+  action: "release_check";
+  overall_ready: boolean;
+  law_hash: string | null;
+  warnings: string[];
+  substrates: ReleaseRow[];
+}
+
+async function runDispatch(
+  args: string[],
+): Promise<{ json: unknown; stderr: string }> {
+  try {
+    const proc = new Deno.Command("deno", {
+      args: [
+        "run",
+        "--allow-all",
+        join(TRINITY_ROOT, "src", "x0100_dispatch.ts"),
+        ...args,
+      ],
+      stdout: "piped",
+      stderr: "piped",
+    });
+    const out = await proc.output();
+    const so = new TextDecoder().decode(out.stdout).split("\n");
+    const se = new TextDecoder().decode(out.stderr);
+    const i = so.findIndex((l) =>
+      l.trimStart().startsWith("{") || l.trimStart().startsWith("[")
+    );
+    let json: unknown = null;
+    if (i !== -1) {
+      try {
+        json = JSON.parse(so.slice(i).join("\n"));
+      } catch { /* leave null */ }
+    }
+    return { json, stderr: se };
+  } catch {
+    return { json: null, stderr: "" };
+  }
+}
+
+async function gitDirty(path: string): Promise<boolean> {
+  try {
+    const p = new Deno.Command("git", {
+      args: ["-C", path, "status", "--porcelain"],
+      stdout: "piped",
+      stderr: "null",
+    });
+    const o = await p.output();
+    return new TextDecoder().decode(o.stdout).trim().length > 0;
+  } catch {
+    return true; // can't tell → treat as not-ready
+  }
+}
+
+export function renderReleaseCheck(r: ReleaseCheck): string[] {
+  const lines = [
+    `# ecosystem release preflight — ${
+      r.overall_ready ? "✅ READY" : "⛔ NOT READY"
+    }  (law ${r.law_hash ?? "?"})`,
+  ];
+  for (const s of r.substrates) {
+    const glyph = s.ready ? "✅" : "⛔";
+    lines.push(
+      `#   ${glyph} ${s.substrate.padEnd(8)} ci=${
+        s.ci.padEnd(7)
+      } worktree=${s.worktree}`,
+    );
+  }
+  if (r.warnings.length > 0) {
+    lines.push(`# ⚠️  ${r.warnings.length} warning(s) from standard commands:`);
+    for (const w of r.warnings.slice(0, 5)) lines.push(`#     ${w}`);
+  } else {
+    lines.push("# warnings: none");
+  }
+  return lines;
+}
+
+async function runReleaseCheck(wantJson: boolean): Promise<void> {
+  // §2 CI freshness (fresh, per admitted commit) + warnings from a standard
+  // command + the root law hash, gathered in parallel.
+  const [ci, self, status] = await Promise.all([
+    runDispatch(["evidence", "ci", "--live", "--json"]),
+    runDispatch(["self", "--json"]),
+    runDispatch(["status", "--json"]),
+  ]);
+  const ciBySub: Record<string, string> = {};
+  for (
+    const s of (ci.json as { substrates?: Array<Record<string, string>> })
+      ?.substrates ?? []
+  ) ciBySub[s.substrate] = s.state;
+  const warnings = self.stderr.split("\n")
+    .filter((l) => /warning/i.test(l))
+    .map((l) => l.replace(/\x1b\[[0-9;]*m/g, "").trim())
+    .filter((l) => l.length > 0);
+  const law_hash = (status.json as { substrate_health?: { law_hash?: string } })
+    ?.substrate_health?.law_hash ?? null;
+
+  const substrates: ReleaseRow[] = await Promise.all(
+    RELEASE_SUBSTRATES.map(async (sub) => {
+      const path = sub === "trinity" ? TRINITY_ROOT : join(TRINITY_ROOT, sub);
+      const dirty = await gitDirty(path);
+      const ciState = ciBySub[sub] ?? "unknown";
+      return {
+        substrate: sub,
+        ci: ciState,
+        worktree: dirty ? "dirty" as const : "clean" as const,
+        ready: ciState === "green" && !dirty,
+      };
+    }),
+  );
+  const result: ReleaseCheck = {
+    type: "ecosystem_release_check",
+    action: "release_check",
+    overall_ready: substrates.every((s) => s.ready) && warnings.length === 0,
+    law_hash,
+    warnings,
+    substrates,
+  };
+  console.log(
+    wantJson
+      ? JSON.stringify(result, null, 2)
+      : renderReleaseCheck(result).join("\n"),
+  );
+}
+
 if (import.meta.main) {
+  // `t ecosystem release [--check] [--json]` — read-only release preflight.
+  if (Deno.args[0] === "release") {
+    await runReleaseCheck(Deno.args.includes("--json"));
+    Deno.exit(0);
+  }
   const wantJson = Deno.args.includes("--json");
   const wantSave = Deno.args.includes("--save");
 

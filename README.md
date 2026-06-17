@@ -98,22 +98,28 @@ own structure:
 ## Explore the FQDN network
 
 The substrate is a content/coordinate-addressed network of organs, chords, and
-docs spanning the four roots (`src`, `liquid`, `omega`, `myc`). `./t resolve`
-browses it; add `--pretty` for a human view, `--json` is the default.
+docs federating four substrates (`trinity`, `liquid`, `omega`, `myc`).
+`./t resolve` browses it; add `--pretty` for a human view, `--json` is the
+default.
 
 ```bash
-./t resolve overview --pretty        # front door: node counts, citation + import hubs
-./t resolve list [substring]         # enumerate the namespace
-./t resolve search "<query>"         # find content by keyword
-./t resolve <name-or-slug>           # resolve an address (unique/mirrored/conflict)
-./t resolve --show <name>            # resolve AND print the content
-./t resolve graph <node> --pretty    # one node's typed edges (hears/closes/references/imports)
-./t resolve refs <node>              # compact citation view (incoming + outgoing)
+./t resolve overview --pretty         # front door: node counts, citation + import hubs
+./t resolve overview --root=omega     # scope the shape to one federation member
+./t resolve recent --pretty           # temporal lens: most recent chords, newest first
+./t resolve recent --root=trinity     # ...scoped to one substrate (or --voice=N)
+./t resolve list [substring]          # enumerate the namespace
+./t resolve search "<query>"          # find content by keyword
+./t resolve <name-or-slug>            # resolve an address (unique/mirrored/conflict)
+./t resolve --show <name>             # resolve AND print the content
+./t resolve graph <node> --pretty     # one node's typed edges (hears/closes/references/imports)
+./t resolve refs <node>               # compact citation view (incoming + outgoing)
 ```
 
 A `<name>` is addressable three ways: exact filename, coordinate handle
 (`myc_proxy.ts`), or a chord's slug. Edges are typed: `hears`/`closes`/
 `references` are chord citations; `imports` are organ→organ code dependencies.
+The aggregate views (`overview`, `recent`) take `--root=<substrate>` to scope to
+one federation member — otherwise liquid's large import core dominates the view.
 
 ## Design Rule
 

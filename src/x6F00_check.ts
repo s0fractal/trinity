@@ -17,8 +17,10 @@
 // intent: collapse the scattered, CI-time-enforced pre-push checks into ONE
 //   author-time command, so an AI voice / digital organism learns its mistakes
 //   at the keyboard, not from a red CI surprise. Closes review x6d00_954112 A1
-//   (preflight) + A2 (one-command regen). Read of gates + a regen of the tracked
-//   projections (catching the most common footgun: forgot to regenerate).
+//   (preflight) + A2 (one-command regen) + A3 (route-consistency: dispatch table
+//   ↔ glossary ↔ filesystem agree, so a new word never silently routes nowhere).
+//   Read of gates + a regen of the tracked projections (catching the most common
+//   footgun: forgot to regenerate).
 //
 // Usage:
 //   t check          run the gates + regenerate projections; report readiness
@@ -30,10 +32,14 @@ import {
   fromFileUrl,
   join,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
+// bucket-0 library — universally importable; gives the canonical route table so
+// the route gate checks the SAME map the dispatcher resolves through (no drift).
+import { exists, POSITION_TO_FILE } from "./x0010_dispatch_runner.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
 const DISPATCH = join(HERE, "x0100_dispatch.ts");
+const GLOSSARY = join(HERE, "x0001_glossary.ndjson");
 
 // The tracked generated projections the CI regen-idempotence gate diffs.
 const TRACKED_PROJECTIONS = [
@@ -182,6 +188,74 @@ async function gateRegen(): Promise<GateResult> {
   };
 }
 
+/** Glossary positions referenced by a dispatchable word (kind:5, field "04") or a
+ *  substrate command (kind:6, field "03"). Pure — exported for the test. */
+export function glossaryPositions(ndjson: string): string[] {
+  const out = new Set<string>();
+  for (const line of ndjson.split("\n")) {
+    const tline = line.trim();
+    if (!tline) continue;
+    let o: Record<string, unknown>;
+    try {
+      o = JSON.parse(tline);
+    } catch {
+      continue;
+    }
+    const kind = o["00"];
+    const pos = kind === "5" ? o["04"] : kind === "6" ? o["03"] : undefined;
+    if (typeof pos === "string" && pos) out.add(pos);
+  }
+  return [...out];
+}
+
+export interface RouteReport {
+  routes: number;
+  glossary_positions: number;
+  dangling: string[];
+  unrouted: string[];
+}
+
+/** Route-consistency check (review A3): the dispatch table, the glossary, and the
+ *  filesystem must agree, so a newly-added word never silently routes to nowhere.
+ *   - dangling: a POSITION_TO_FILE entry whose target file is gone (renamed/deleted
+ *     organ left a stale route).
+ *   - unrouted: a glossary position with NO POSITION_TO_FILE entry → resolves to
+ *     unregistered_*.ts at runtime (the silent-no-route footgun the review names).
+ *  Takes the glossary text + an existence probe + src dir so it's unit-testable. */
+export async function routeReport(
+  ndjson: string,
+  existsFn: (path: string) => Promise<boolean>,
+  srcDir: string,
+): Promise<RouteReport> {
+  const dangling: string[] = [];
+  for (const [pos, file] of Object.entries(POSITION_TO_FILE)) {
+    if (!(await existsFn(join(srcDir, file)))) dangling.push(`${pos}→${file}`);
+  }
+  const positions = glossaryPositions(ndjson);
+  const unrouted = positions.filter((p) => !(p in POSITION_TO_FILE));
+  return {
+    routes: Object.keys(POSITION_TO_FILE).length,
+    glossary_positions: positions.length,
+    dangling,
+    unrouted,
+  };
+}
+
+async function gateRoutes(): Promise<GateResult> {
+  const ndjson = await Deno.readTextFile(GLOSSARY);
+  const r = await routeReport(ndjson, exists, join(ROOT, "src"));
+  const ok = r.dangling.length === 0 && r.unrouted.length === 0;
+  return {
+    gate: "routes",
+    ok,
+    detail: ok
+      ? `${r.routes} routes, ${r.glossary_positions} glossary positions — all resolve`
+      : `dangling [${r.dangling.join(", ")}] unrouted [${
+        r.unrouted.join(", ")
+      }]`,
+  };
+}
+
 async function worktree(): Promise<string> {
   const r = await sh("git", ["status", "--porcelain"]);
   const n = r.out.split("\n").filter((l) => l.trim()).length;
@@ -196,6 +270,7 @@ if (import.meta.main) {
   gates.push(await gateFmt(fix));
   gates.push(await gateAudit());
   gates.push(await gateCapabilities());
+  gates.push(await gateRoutes());
   gates.push(await gateTests());
   gates.push(await gateRegen());
   const tree = await worktree();

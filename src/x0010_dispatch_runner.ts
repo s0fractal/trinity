@@ -19,7 +19,7 @@ const TIMEOUT_MS = 60000;
  *  After 2026-05-18 flat-src migration, files live in src/ with x<coord>_<handle>.ts names.
  *  Position "N/0" historically meant "void of archetype N" — now lives at xN001 (X000 reserved for aggregator).
  */
-const POSITION_TO_FILE: Record<string, string> = {
+export const POSITION_TO_FILE: Record<string, string> = {
   "0/01": "x0100_dispatch.ts",
   "0/03": "x0300_all.ts",
   "0/04": "x0400_each.ts",

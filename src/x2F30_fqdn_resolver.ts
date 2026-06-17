@@ -1142,6 +1142,7 @@ export interface NetworkHub {
  *  this is the shape of the whole network. NOT multi-hop / clustering / ranking
  *  by embeddings (those stay out of scope) — just aggregated depth-1 edges. */
 export interface NetworkOverview {
+  root: string | null; // substrate scope, or null for the whole federation
   total_nodes: number;
   by_kind: Record<string, number>;
   edge_totals: Record<EdgeKind, number>;
@@ -1149,14 +1150,33 @@ export interface NetworkOverview {
   top_imported: NetworkHub[]; // most incoming imports (organ dependency hubs)
 }
 
+/** Friendly federation-member name for a stored root basename. Trinity's own
+ *  substrate is indexed at `<trinity>/src` so its root basename is `src`; the
+ *  federated submodules already use their substrate name. Presenting the members
+ *  consistently as {trinity, liquid, omega, myc} lets a person scope by the name
+ *  they know. Matching folds both tokens, so `--root=trinity` and `--root=src`
+ *  are equivalent. */
+export function federationMember(root: string): string {
+  return root === "src" ? "trinity" : root;
+}
+
 /** Aggregate the index artifact into a network overview. Pure. In-degree is
  *  computed over every entry's outgoing edges (citation kinds collapse the
  *  target to a stem; `references` raw paths are stem-normalized to match). */
 export function networkOverview(
   artifact: ResolverIndexArtifact,
-  opts: { top?: number } = {},
+  opts: { top?: number; root?: string } = {},
 ): NetworkOverview {
   const top = opts.top ?? 12;
+  // Scope to one federation member (substrate root) when asked — otherwise one
+  // substrate's hubs (e.g. liquid's import core) drown the others in the
+  // aggregate. The filter is on the SOURCE node, so a root view is "this
+  // substrate's own shape": what its nodes cite/import and its internal hubs.
+  const entries = opts.root
+    ? artifact.entries.filter((e) =>
+      federationMember(e.root) === federationMember(opts.root!)
+    )
+    : artifact.entries;
   const by_kind: Record<string, number> = {};
   const edge_totals: Record<EdgeKind, number> = {
     hears: 0,
@@ -1166,7 +1186,7 @@ export function networkOverview(
   };
   const cited = new Map<string, number>(); // hears+closes+references in-degree
   const imported = new Map<string, number>(); // imports in-degree
-  for (const e of artifact.entries) {
+  for (const e of entries) {
     by_kind[e.kind] = (by_kind[e.kind] ?? 0) + 1;
     const bump = (map: Map<string, number>, raw: string) => {
       const t = refStem(raw);
@@ -1195,7 +1215,8 @@ export function networkOverview(
       .sort((a, b) => b.in - a.in || a.stem.localeCompare(b.stem))
       .slice(0, top);
   return {
-    total_nodes: artifact.entries.length,
+    root: opts.root ? federationMember(opts.root) : null,
+    total_nodes: entries.length,
     by_kind,
     edge_totals,
     top_cited: rank(cited),
@@ -1205,7 +1226,8 @@ export function networkOverview(
 
 /** Human-readable network overview (`overview --pretty`). */
 export function renderOverview(o: NetworkOverview): string[] {
-  const lines = [`# FQDN network overview — ${o.total_nodes} nodes`];
+  const scope = o.root ? ` [${o.root}]` : "";
+  const lines = [`# FQDN network overview${scope} — ${o.total_nodes} nodes`];
   const kinds = Object.entries(o.by_kind).sort((a, b) => b[1] - a[1]);
   lines.push(`# by kind: ${kinds.map(([k, n]) => `${k}=${n}`).join("  ")}`);
   lines.push(
@@ -1289,16 +1311,20 @@ export interface RecentEntry {
  *  kinds carry no embedded time; NOT a full commit/CI history (that is
  *  `t heartbeat` / `t evidence`). */
 export interface RecentActivity {
+  root: string | null; // substrate scope, or null for the whole federation
   count: number; // total timestamped (chord) nodes available before --limit
   window: { from: string | null; to: string | null };
   entries: RecentEntry[];
 }
 export function recentActivity(
   artifact: ResolverIndexArtifact,
-  opts: { limit?: number; voice?: string } = {},
+  opts: { limit?: number; voice?: string; root?: string } = {},
 ): RecentActivity {
   const limit = opts.limit ?? 20;
   const stamped = artifact.entries
+    .filter((e) =>
+      !opts.root || federationMember(e.root) === federationMember(opts.root)
+    )
     .map((e) => ({ e, s: chordStamp(e.name) }))
     .filter((r): r is { e: IndexEntry; s: ChordStamp } => r.s !== null)
     .filter((r) => !opts.voice || r.s.voice === opts.voice)
@@ -1318,6 +1344,7 @@ export function recentActivity(
         .filter((x): x is string => !!x),
     }));
   return {
+    root: opts.root ? federationMember(opts.root) : null,
     count: stamped.length,
     window: {
       from: entries.length ? entries[entries.length - 1].when : null,
@@ -1329,8 +1356,9 @@ export function recentActivity(
 
 /** Human-readable recent-activity timeline (`recent --pretty`). */
 export function renderRecent(r: RecentActivity): string[] {
+  const scope = r.root ? ` [${r.root}]` : "";
   const lines = [
-    `# FQDN network — ${r.entries.length} most recent of ${r.count} timestamped nodes`,
+    `# FQDN network${scope} — ${r.entries.length} most recent of ${r.count} timestamped nodes`,
   ];
   if (r.window.from && r.window.to) {
     lines.push(
@@ -1497,15 +1525,18 @@ if (import.meta.main) {
     Deno.exit(0);
   }
 
-  // `overview [--pretty] [--top=N]` — the network front door: counts by kind,
-  // most-cited nodes, most-imported organs. Aggregates the index artifact.
+  // `overview [--pretty] [--top=N] [--root=S]` — the network front door: counts
+  // by kind, most-cited nodes, most-imported organs. Aggregates the index
+  // artifact; `--root` scopes to one federation member (else liquid's hubs
+  // dominate the whole-federation view).
   if (args[0] === "overview") {
     const topArg = flagArg(args, "top");
     const top = topArg ? Number(topArg) : 12;
+    const root = flagArg(args, "root");
     const index = await buildIndex(roots);
     const { cache, fresh } = await freshCache(index);
     const artifact = fresh && cache ? cache : await buildResolverIndex(index);
-    const o = networkOverview(artifact, { top });
+    const o = networkOverview(artifact, { top, root });
     if (args.includes("--pretty")) {
       console.log(renderOverview(o).join("\n"));
     } else {
@@ -1523,18 +1554,20 @@ if (import.meta.main) {
     Deno.exit(0);
   }
 
-  // `recent [--limit=N] [--voice=V] [--pretty]` — the network's temporal lens:
-  // the most recently stamped chords (proposals/receipts) newest-first, by the
-  // block height / legacy timestamp carried in each name. Completes the browse
-  // loop find→view→navigate→WHEN; peer to overview (shape) / graph (neighbourhood).
+  // `recent [--limit=N] [--voice=V] [--root=S] [--pretty]` — the network's
+  // temporal lens: the most recently stamped chords (proposals/receipts)
+  // newest-first, by the block height / legacy timestamp carried in each name.
+  // `--root` scopes to one federation member. Completes the browse loop
+  // find→view→navigate→WHEN; peer to overview (shape) / graph (neighbourhood).
   if (args[0] === "recent") {
     const limitArg = flagArg(args, "limit");
     const limit = limitArg ? Number(limitArg) : 20;
     const voice = flagArg(args, "voice");
+    const root = flagArg(args, "root");
     const index = await buildIndex(roots);
     const { cache, fresh } = await freshCache(index);
     const artifact = fresh && cache ? cache : await buildResolverIndex(index);
-    const r = recentActivity(artifact, { limit, voice });
+    const r = recentActivity(artifact, { limit, voice, root });
     if (args.includes("--pretty")) {
       console.log(renderRecent(r).join("\n"));
     } else {
@@ -1644,8 +1677,8 @@ if (import.meta.main) {
         "       resolver.ts search <query> [--kind=K]      (find content by keyword)\n" +
         "       resolver.ts refs <chord>                   (navigate citation edges)\n" +
         "       resolver.ts graph <query> [--pretty]       (one node's typed neighbourhood)\n" +
-        "       resolver.ts recent [--limit=N] [--voice=V] (most recent chords, newest first)\n" +
-        "       resolver.ts overview [--pretty]            (the whole network's shape)",
+        "       resolver.ts recent [--limit=N] [--voice=V] [--root=S]  (recent chords, newest first)\n" +
+        "       resolver.ts overview [--pretty] [--root=S]  (network shape; --root scopes to a substrate)",
     );
     Deno.exit(1);
   }

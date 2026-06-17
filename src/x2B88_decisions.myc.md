@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  467  |
-| Signed Chords (content_sig)              |  55   |
-| ↳ registry-verified                      |  55   |
+| Total Chords                             |  468  |
+| Signed Chords (content_sig)              |  56   |
+| ↳ registry-verified                      |  56   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  58   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  203  |
-| ↳ strong evidence                        |  203  |
+| Receipts                                 |  204  |
+| ↳ strong evidence                        |  204  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -513,6 +513,7 @@ _No open debts detected in the chord trail._
 | [x7700_953993_claude-opus-4-8_phase-coherence-grounded.myc.md](./x7700_953993_claude-opus-4-8_phase-coherence-grounded.myc.md)                                                                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_954029_claude-opus-4-8_fqdn-recent-temporal-lens.myc.md](./x7700_954029_claude-opus-4-8_fqdn-recent-temporal-lens.myc.md)                                                                                                                   | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_954030_claude-opus-4-8_blocktime-canonical-anchor-consolidation.myc.md](./x7700_954030_claude-opus-4-8_blocktime-canonical-anchor-consolidation.myc.md)                                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_954033_claude-opus-4-8_fqdn-federation-root-scoping.myc.md](./x7700_954033_claude-opus-4-8_fqdn-federation-root-scoping.myc.md)                                                                                                             | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5971,6 +5972,24 @@ _No open debts detected in the chord trail._
   - `deno test --allow-all src/blocktime_test.ts          # 3`
   - `./t resolve recent --pretty                          # uses x0014 via epochMsOfBlock`
   - `./t audit --json | jq '.summary.import_warnings_count'  # 0`
+
+### [x7700_954033_claude-opus-4-8_fqdn-federation-root-scoping.myc.md](./x7700_954033_claude-opus-4-8_fqdn-federation-root-scoping.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If `overview`/`recent` without `--root` change their output, the scoping
+    was not additive._
+  - _If `--root=omega` includes any node whose root is not omega, the
+    source-side filter leaked._
+  - _If `--root=trinity` and `--root=src` return different results, the
+    federation-member alias broke._
+  - _If a real person cannot see omega's/myc's network shape because liquid's
+    hubs dominate, the federated view is still not navigable per-substrate._
+- **Suggested Commands**:
+  - `./t resolve overview --root=omega --pretty    # omega's shape, finally visible`
+  - `./t resolve overview --root=liquid --pretty   # liquid's import core`
+  - `./t resolve recent --root=trinity --pretty    # trinity's recent chords`
+  - `deno test --allow-all src/fqdn_resolver_test.ts   # 44`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

@@ -11,6 +11,7 @@ import {
   chordGraph,
   chordRefs,
   chordStamp,
+  federationMember,
   graphQueryForms,
   indexIsFresh,
   isContentAddressed,
@@ -944,6 +945,72 @@ Deno.test("networkOverview - aggregates by_kind, edge totals, and in-degree hubs
   );
   // x0030_compose: imported twice — the import hub
   assertEquals(o.top_imported[0], { stem: "x0030_compose", in: 2 });
+  // whole-federation view: root is null
+  assertEquals(o.root, null);
+});
+
+Deno.test("networkOverview/recentActivity --root - scopes to one federation member", () => {
+  const e = (
+    name: string,
+    kind: "organ" | "chord",
+    root: string,
+    edges: Partial<
+      {
+        hears: string[];
+        closes: string[];
+        references: string[];
+        imports: string[];
+      }
+    > = {},
+  ) => ({
+    name,
+    kind,
+    root,
+    rel: `${root}/${name}`,
+    content_hash: "h",
+    edges: {
+      hears: edges.hears ?? [],
+      closes: edges.closes ?? [],
+      references: edges.references ?? [],
+      imports: edges.imports ?? [],
+    },
+    text: "",
+  });
+  const artifact = {
+    type: "resolver_index" as const,
+    generator_version: "test",
+    files_indexed: 4,
+    fingerprint: "f",
+    source_hash: "s",
+    entries: [
+      e("xA027_hydrate.ts", "organ", "liquid", { imports: ["xA031_pipe"] }),
+      e("xA031_pipe.ts", "organ", "liquid", { imports: ["xA031_pipe"] }),
+      // trinity's own substrate is indexed at root basename "src"
+      e("x2F30_resolver.ts", "organ", "src", { imports: ["x0014_blocktime"] }),
+      e("x7700_5_claude_trinity-chord.myc.md", "chord", "src", {
+        hears: ["x7700_9_v_hub"],
+      }),
+    ],
+    text: "",
+  };
+  // whole federation: all 4
+  assertEquals(networkOverview(artifact).total_nodes, 4);
+  // scoped to liquid: only its 2 nodes + its own import hub
+  const liq = networkOverview(artifact, { root: "liquid" });
+  assertEquals(liq.root, "liquid");
+  assertEquals(liq.total_nodes, 2);
+  assertEquals(liq.edge_totals.imports, 2);
+  assertEquals(liq.top_imported[0], { stem: "xA031_pipe", in: 2 });
+  // `src` presents as `trinity`; --root=trinity matches the src-rooted nodes
+  assertEquals(federationMember("src"), "trinity");
+  const tr = recentActivity(artifact, { root: "trinity" });
+  assertEquals(tr.root, "trinity");
+  assertEquals(tr.count, 1);
+  assertEquals(tr.entries[0].slug, "trinity-chord");
+  // --root=src is equivalent to --root=trinity
+  assertEquals(recentActivity(artifact, { root: "src" }).count, 1);
+  // liquid has no chord-stamped names → empty recent
+  assertEquals(recentActivity(artifact, { root: "liquid" }).count, 0);
 });
 
 Deno.test("chordStamp - parses bitcoin height, legacy timestamp; null for non-chords", () => {

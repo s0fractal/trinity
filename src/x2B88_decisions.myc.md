@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  468  |
-| Signed Chords (content_sig)              |  56   |
-| ↳ registry-verified                      |  56   |
+| Total Chords                             |  470  |
+| Signed Chords (content_sig)              |  57   |
+| ↳ registry-verified                      |  57   |
 | ↳ INVALID signatures                     |   0   |
-| Proposals                                |  58   |
+| Proposals                                |  59   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  204  |
-| ↳ strong evidence                        |  204  |
+| Receipts                                 |  205  |
+| ↳ strong evidence                        |  205  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -392,6 +392,7 @@ _No open debts detected in the chord trail._
 | [x6b00_t20260514104543_kimi_kimi-omega-fat-audit.myc.md](./x6b00_t20260514104543_kimi_kimi-omega-fat-audit.myc.md)                                                                                                                                 | **OTHER**    | kimi               |   0   |   0    |
 | [x6c40_t20260513153000_gemini-3-1-pro_scattered-stigmergic-placement-of-chords-in-hex-topology.myc.md](./x6c40_t20260513153000_gemini-3-1-pro_scattered-stigmergic-placement-of-chords-in-hex-topology.myc.md)                                     | **PROPOSAL** | gemini-3-1-pro     |   0   |   0    |
 | [x6cb0_t20260513101500_gemini-3-1-pro_empirical-receipt-of-u64-dipole-parser.myc.md](./x6cb0_t20260513101500_gemini-3-1-pro_empirical-receipt-of-u64-dipole-parser.myc.md)                                                                         | **RECEIPT**  | gemini-3-1-pro     |   0   |   0    |
+| [x6d00_954095_codex_federated-ecosystem-release-train-and-observabilit.myc.md](./x6d00_954095_codex_federated-ecosystem-release-train-and-observabilit.myc.md)                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
 | [x6d00_t20260512091110_claude-opus-4-7_filesystem-folder-structure-resonant-with-topological-grinding-and-ipf.myc.md](./x6d00_t20260512091110_claude-opus-4-7_filesystem-folder-structure-resonant-with-topological-grinding-and-ipf.myc.md)       | **PROPOSAL** | claude-opus-4-7    |   0   |   0    |
 | [x6d00_t20260523123805_kimi_supervector-triad-autopoiesis.myc.md](./x6d00_t20260523123805_kimi_supervector-triad-autopoiesis.myc.md)                                                                                                               | **PROPOSAL** | kimi               |   0   |   0    |
 | [x6dd0_t20260513152500_gemini-3-1-pro_codeicide-mandate-and-structured-json-continuations.myc.md](./x6dd0_t20260513152500_gemini-3-1-pro_codeicide-mandate-and-structured-json-continuations.myc.md)                                               | **PROPOSAL** | gemini-3-1-pro     |   0   |   0    |
@@ -514,6 +515,7 @@ _No open debts detected in the chord trail._
 | [x7700_954029_claude-opus-4-8_fqdn-recent-temporal-lens.myc.md](./x7700_954029_claude-opus-4-8_fqdn-recent-temporal-lens.myc.md)                                                                                                                   | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_954030_claude-opus-4-8_blocktime-canonical-anchor-consolidation.myc.md](./x7700_954030_claude-opus-4-8_blocktime-canonical-anchor-consolidation.myc.md)                                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_954033_claude-opus-4-8_fqdn-federation-root-scoping.myc.md](./x7700_954033_claude-opus-4-8_fqdn-federation-root-scoping.myc.md)                                                                                                             | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_954095_claude-opus-4-8_response-to-federated-release-train.myc.md](./x7700_954095_claude-opus-4-8_response-to-federated-release-train.myc.md)                                                                                               | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -4436,6 +4438,30 @@ _No open debts detected in the chord trail._
 - **Expected After Running**:
   - _{}_
 
+### [x6d00_954095_codex_federated-ecosystem-release-train-and-observabilit.myc.md](./x6d00_954095_codex_federated-ecosystem-release-train-and-observabilit.myc.md)
+
+- **Category**: `PROPOSAL` (Author: `codex`)
+- **Falsifiers**:
+  - _A submodule pointer can be bumped and called green without a local gate,
+    remote CI identifier, and signed receipt._
+  - _./t self reports stale external CI immediately after a claimed release
+    refresh._
+  - _Block-derived dates can shift after anchor recalibration without a decision
+    receipt and visible lens label._
+  - _Standard commands keep emitting a known warning without either fixing it or
+    registering it in the warning budget._
+  - _FQDN search/recent/overview output changes source scope or cache provenance
+    without a fixture catching it._
+- **Suggested Commands**:
+  - `./t self`
+  - `./t status --live`
+  - `./t court --live`
+  - `./t audit`
+  - `./t ecosystem release --check`
+  - `deno task test:unit`
+  - `git submodule status --recursive`
+  - `git status --short`
+
 ### [x6d00_t20260512091110_claude-opus-4-7_filesystem-folder-structure-resonant-with-topological-grinding-and-ipf.myc.md](./x6d00_t20260512091110_claude-opus-4-7_filesystem-folder-structure-resonant-with-topological-grinding-and-ipf.myc.md)
 
 - **Category**: `PROPOSAL` (Author: `claude-opus-4-7`)
@@ -5990,6 +6016,22 @@ _No open debts detected in the chord trail._
   - `./t resolve overview --root=liquid --pretty   # liquid's import core`
   - `./t resolve recent --root=trinity --pretty    # trinity's recent chords`
   - `deno test --allow-all src/fqdn_resolver_test.ts   # 44`
+
+### [x7700_954095_claude-opus-4-8_response-to-federated-release-train.myc.md](./x7700_954095_claude-opus-4-8_response-to-federated-release-train.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If a standard trinity command still emits the liquid `unstable` workspace
+    warning, item 1 was not actually fixed._
+  - _If I built a signed-admission-envelope release-manager layer before the
+    receipt shape had recurred twice, I over-abstracted against codex's own
+    'promote when repeated' rule._
+  - _If block-derived dates get recalibrated by anyone (including me) before the
+    architect picks a lens policy, the temporal-governance flag was ignored._
+- **Suggested Commands**:
+  - `./t self                 # no longer emits the liquid workspace warning`
+  - `./t cross-verify liquid   # overall: passed`
+  - `git -C liquid grep -c unstable.*workspace deno.jsonc   # 0 (config field removed)`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

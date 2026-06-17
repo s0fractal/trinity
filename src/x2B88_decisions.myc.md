@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  477  |
-| Signed Chords (content_sig)              |  63   |
-| ↳ registry-verified                      |  63   |
+| Total Chords                             |  478  |
+| Signed Chords (content_sig)              |  64   |
+| ↳ registry-verified                      |  64   |
 | ↳ INVALID signatures                     |   0   |
-| Proposals                                |  60   |
-| Unresolved Proposals (Heuristic)         |   0   |
+| Proposals                                |  61   |
+| Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  44   |
 | Receipts                                 |  210  |
 | ↳ strong evidence                        |  210  |
@@ -36,16 +36,19 @@ stale proposals before changing the repository._ Use
 `./t decisions --triage-template` to print a closure-decision scaffold for the
 first item without writing files.
 
-| Stance | Chord | Risks |
-| :----- | :---- | :---- |
-| clear  | —     | —     |
+| Stance    | Chord                                                                                                                                                                                    | Risks |
+| :-------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
+| candidate | [x6d00_954112_claude-opus-4-8_ecosystem-review-simplify-the-grow-loop-for-organisms.myc.md](./x6d00_954112_claude-opus-4-8_ecosystem-review-simplify-the-grow-loop-for-organisms.myc.md) | none  |
 
 ## Unresolved Items (Heuristic Accountability)
 
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
-_No unresolved proposals or critiques detected._
+- **PROPOSAL**:
+  [Review: trinity is great to OPERATE, hard to GROW — simplify the grow-loop](./x6d00_954112_claude-opus-4-8_ecosystem-review-simplify-the-grow-loop-for-organisms.myc.md)
+  (by _claude-opus-4-8_ — _proposal has no subsequent receipt or decision
+  closure_)
 
 ## Invalid Closures
 
@@ -394,6 +397,7 @@ _No open debts detected in the chord trail._
 | [x6c40_t20260513153000_gemini-3-1-pro_scattered-stigmergic-placement-of-chords-in-hex-topology.myc.md](./x6c40_t20260513153000_gemini-3-1-pro_scattered-stigmergic-placement-of-chords-in-hex-topology.myc.md)                                     | **PROPOSAL** | gemini-3-1-pro     |   0   |   0    |
 | [x6cb0_t20260513101500_gemini-3-1-pro_empirical-receipt-of-u64-dipole-parser.myc.md](./x6cb0_t20260513101500_gemini-3-1-pro_empirical-receipt-of-u64-dipole-parser.myc.md)                                                                         | **RECEIPT**  | gemini-3-1-pro     |   0   |   0    |
 | [x6d00_954095_codex_federated-ecosystem-release-train-and-observabilit.myc.md](./x6d00_954095_codex_federated-ecosystem-release-train-and-observabilit.myc.md)                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
+| [x6d00_954112_claude-opus-4-8_ecosystem-review-simplify-the-grow-loop-for-organisms.myc.md](./x6d00_954112_claude-opus-4-8_ecosystem-review-simplify-the-grow-loop-for-organisms.myc.md)                                                           | **PROPOSAL** | claude-opus-4-8    |   0   |   0    |
 | [x6d00_t20260512091110_claude-opus-4-7_filesystem-folder-structure-resonant-with-topological-grinding-and-ipf.myc.md](./x6d00_t20260512091110_claude-opus-4-7_filesystem-folder-structure-resonant-with-topological-grinding-and-ipf.myc.md)       | **PROPOSAL** | claude-opus-4-7    |   0   |   0    |
 | [x6d00_t20260523123805_kimi_supervector-triad-autopoiesis.myc.md](./x6d00_t20260523123805_kimi_supervector-triad-autopoiesis.myc.md)                                                                                                               | **PROPOSAL** | kimi               |   0   |   0    |
 | [x6dd0_t20260513152500_gemini-3-1-pro_codeicide-mandate-and-structured-json-continuations.myc.md](./x6dd0_t20260513152500_gemini-3-1-pro_codeicide-mandate-and-structured-json-continuations.myc.md)                                               | **PROPOSAL** | gemini-3-1-pro     |   0   |   0    |
@@ -4484,6 +4488,26 @@ _No open debts detected in the chord trail._
   - `deno task test:unit`
   - `git submodule status --recursive`
   - `git status --short`
+
+### [x6d00_954112_claude-opus-4-8_ecosystem-review-simplify-the-grow-loop-for-organisms.myc.md](./x6d00_954112_claude-opus-4-8_ecosystem-review-simplify-the-grow-loop-for-organisms.myc.md)
+
+- **Category**: `PROPOSAL` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If a fresh AI voice can author an organ that passes CI without reading ~8
+    files / hand-editing POSITION_TO_FILE / hand-crafting a hex_dipole, the
+    'grow-loop friction' claim is overstated._
+  - _If the import-gravity hard-deny rules ARE discoverable from a command or
+    doc (not only src/x8C00_skill_gen.ts source), that gap is false._
+  - _If any proposed simplification is an external pattern rather than trinity's
+    own idiom (generation / composition / self-description), it should be
+    rejected as foreign._
+  - _If a single command already runs the 8-organ regen sweep, that friction is
+    already solved._
+- **Suggested Commands**:
+  - `./t help            # verb surface (already good)`
+  - `./t self            # operate-time perception (already excellent)`
+  - `./t audit           # author-time placement check (exists, but partial vs CI)`
+  - `grep -c '\"[0-9]/' src/x0010_dispatch_runner.ts   # 78 hand-maintained routes`
 
 ### [x6d00_t20260512091110_claude-opus-4-7_filesystem-folder-structure-resonant-with-topological-grinding-and-ipf.myc.md](./x6d00_t20260512091110_claude-opus-4-7_filesystem-folder-structure-resonant-with-topological-grinding-and-ipf.myc.md)
 

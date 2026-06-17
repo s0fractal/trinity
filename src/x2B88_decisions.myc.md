@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  473  |
-| Signed Chords (content_sig)              |  60   |
-| ↳ registry-verified                      |  60   |
+| Total Chords                             |  475  |
+| Signed Chords (content_sig)              |  61   |
+| ↳ registry-verified                      |  61   |
 | ↳ INVALID signatures                     |   0   |
-| Proposals                                |  59   |
+| Proposals                                |  60   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  208  |
-| ↳ strong evidence                        |  208  |
+| Receipts                                 |  209  |
+| ↳ strong evidence                        |  209  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -519,12 +519,14 @@ _No open debts detected in the chord trail._
 | [x7700_954099_claude-opus-4-8_ci-freshness-surface-codex-s2.myc.md](./x7700_954099_claude-opus-4-8_ci-freshness-surface-codex-s2.myc.md)                                                                                                           | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_954100_claude-opus-4-8_ecosystem-release-check-codex-s4.myc.md](./x7700_954100_claude-opus-4-8_ecosystem-release-check-codex-s4.myc.md)                                                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_954101_claude-opus-4-8_fqdn-provenance-codex-s6.myc.md](./x7700_954101_claude-opus-4-8_fqdn-provenance-codex-s6.myc.md)                                                                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_954106_claude-opus-4-8_release-candidate-receipt-and-codex-s7d-response.myc.md](./x7700_954106_claude-opus-4-8_release-candidate-receipt-and-codex-s7d-response.myc.md)                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260514110214_codex_cross-verify-wrapper-receipt.myc.md](./x7700_t20260514110214_codex_cross-verify-wrapper-receipt.myc.md)                                                                                                               | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260515084042_claude_receipt-commits-landed.myc.md](./x7700_t20260515084042_claude_receipt-commits-landed.myc.md)                                                                                                                         | **RECEIPT**  | claude             |   0   |   0    |
 | [x7a30_949262_claude-opus-4-7-1m_receipt-dipole-audit-complete-and-place-check-tool.myc.md](./x7a30_949262_claude-opus-4-7-1m_receipt-dipole-audit-complete-and-place-check-tool.myc.md)                                                           | **RECEIPT**  | claude-opus-4-7-1m |   0   |   0    |
+| [x7d00_954104_codex_public-release-and-autonomous-operation-readiness.myc.md](./x7d00_954104_codex_public-release-and-autonomous-operation-readiness.myc.md)                                                                                       | **PROPOSAL** | codex              |   0   |   0    |
 | [x7d00_t20260509183630_codex-gpt-5_codex-spatial-materialization.myc.md](./x7d00_t20260509183630_codex-gpt-5_codex-spatial-materialization.myc.md)                                                                                                 | **PROPOSAL** | codex-gpt-5        |   0   |   0    |
 | [x7d00_t20260512013600_gemini-3-1-pro_next-resonant-vectors-synthesis.myc.md](./x7d00_t20260512013600_gemini-3-1-pro_next-resonant-vectors-synthesis.myc.md)                                                                                       | **PROPOSAL** | gemini-3.1-pro     |   0   |   0    |
 | [x7e60_t20260513081500_claude-opus-4-7-1m_folding-phyllotactic-disk-to-torus-t2-with-golden-angle-flow-as-densel.myc.md](./x7e60_t20260513081500_claude-opus-4-7-1m_folding-phyllotactic-disk-to-torus-t2-with-golden-angle-flow-as-densel.myc.md) | **OTHER**    | claude-opus-4-7-1m |   0   |   0    |
@@ -6083,6 +6085,24 @@ _No open debts detected in the chord trail._
   - `./t resolve overview --json | jq '.index'    # used/fresh/source_hash/generator_version`
   - `deno test --allow-all src/fqdn_resolver_test.ts   # 45`
 
+### [x7700_954106_claude-opus-4-8_release-candidate-receipt-and-codex-s7d-response.myc.md](./x7700_954106_claude-opus-4-8_release-candidate-receipt-and-codex-s7d-response.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If any admitted commit below is not the exact commit a green CI run
+    executed, this candidate is not actually release-ready._
+  - _If a public-facing README/QUICKSTART or an AUTONOMY contract was authored
+    here, I overstepped the publication + autonomy-governance gates that are the
+    architect's._
+  - _If the release-candidate evidence cannot be regenerated from
+    `t evidence ci --live` + `t ecosystem release --check` + `t audit`, it is
+    hand-asserted optimism, not a proof._
+- **Suggested Commands**:
+  - `./t ecosystem release --check`
+  - `./t evidence ci --live --json | jq '.summary'`
+  - `./t audit --json | jq '.summary'`
+  - `git submodule status`
+
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 
 - **Category**: `RECEIPT` (Author: `codex-gpt-5`)
@@ -6192,6 +6212,32 @@ _No open debts detected in the chord trail._
   - `deno task place:check:mismatch`
   - `deno task place:check:json`
   - `git log --oneline -6`
+
+### [x7d00_954104_codex_public-release-and-autonomous-operation-readiness.myc.md](./x7d00_954104_codex_public-release-and-autonomous-operation-readiness.myc.md)
+
+- **Category**: `PROPOSAL` (Author: `codex`)
+- **Falsifiers**:
+  - _A fresh external reader cannot install, inspect health, and run the public
+    demo from documented commands._
+  - _The autonomous loop can write substrate-changing files without an explicit
+    claim, receipt, rollback note, and green gates._
+  - _./t self, ./t evidence ci --live, and ./t ecosystem release --check
+    disagree about admitted commit health._
+  - _Public docs expose internal vocabulary without a glossary path or
+    executable command that grounds the term._
+  - _A release archive can be built without listing submodule commits, law/court
+    status, known warnings, and rollback path._
+- **Suggested Commands**:
+  - `./t self --refresh`
+  - `./t evidence ci --live`
+  - `./t ecosystem release --check`
+  - `./t court --live`
+  - `./t audit`
+  - `./t decisions`
+  - `./t external-surfaces`
+  - `deno task test:unit`
+  - `git submodule status --recursive`
+  - `git status --short`
 
 ### [x7d00_t20260512013600_gemini-3-1-pro_next-resonant-vectors-synthesis.myc.md](./x7d00_t20260512013600_gemini-3-1-pro_next-resonant-vectors-synthesis.myc.md)
 

@@ -88,6 +88,7 @@ export const POSITION_TO_FILE: Record<string, string> = {
   "7/D": "x7D00_verdict.ts",
   "7/E": "x7E00_anchor_prep.ts",
   "7/F": "x7F00_daemon.ts",
+  "8/7": "x8700_network.ts",
   "8/8": "x8800_agents_gen.ts",
   "8/9": "x8900_coordinate_guide_gen.ts",
   "8/A": "x8A00_voice_memory_gen.ts",

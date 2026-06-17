@@ -48,6 +48,7 @@ const TRACKED_PROJECTIONS = [
   "src/x2B88_decisions.myc.md",
   "src/x7B88_evidence_report.myc.md",
   "src/x8F88_external_surfaces.myc.md",
+  "src/x8788_network.myc.md",
 ];
 // The full regen sweep (order as the CI job runs it).
 const GENS = [
@@ -59,6 +60,7 @@ const GENS = [
   "decisions",
   "evidence",
   "external-surfaces",
+  "network",
 ];
 
 interface GateResult {

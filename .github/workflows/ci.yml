@@ -277,6 +277,7 @@ jobs:
           ./t decisions --stable
           ./t evidence --stable
           ./t external-surfaces --stable
+          ./t network --stable
           # Diff only the TRACKED generated artifacts. `git diff --exit-code` on a
           # gitignored path is a silent no-op (always exits 0), so listing the
           # regenerable projections above here would assert nothing — their
@@ -286,7 +287,8 @@ jobs:
             src/x8CF0_skills_bootstrap.myc.md \
             src/x2B88_decisions.myc.md \
             src/x7B88_evidence_report.myc.md \
-            src/x8F88_external_surfaces.myc.md
+            src/x8F88_external_surfaces.myc.md \
+            src/x8788_network.myc.md
 
   # Verifies the meta-repo's core thesis: that the three private substrates
   # (myc / omega=genesis / liquid) actually check out and a cross-substrate

@@ -852,6 +852,7 @@ export const STABLE_GENERATORS: StableGenerator[] = [
     handle: "external-surfaces",
     outputs: ["src/x8F88_external_surfaces.myc.md"],
   },
+  { handle: "network", outputs: ["src/x8788_network.myc.md"] },
 ];
 
 /** Daemon-owned writes that are NOT generator projections: the act log and the

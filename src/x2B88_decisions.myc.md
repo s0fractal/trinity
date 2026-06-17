@@ -9,13 +9,13 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  481  |
-| Signed Chords (content_sig)              |  67   |
-| ↳ registry-verified                      |  67   |
+| Total Chords                             |  482  |
+| Signed Chords (content_sig)              |  68   |
+| ↳ registry-verified                      |  68   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  61   |
 | Unresolved Proposals (Heuristic)         |   0   |
-| Decisions                                |  44   |
+| Decisions                                |  45   |
 | Receipts                                 |  211  |
 | ↳ strong evidence                        |  211  |
 | ↳ weak evidence                          |   0   |
@@ -402,6 +402,7 @@ _No open debts detected in the chord trail._
 | [x6d00_t20260523123805_kimi_supervector-triad-autopoiesis.myc.md](./x6d00_t20260523123805_kimi_supervector-triad-autopoiesis.myc.md)                                                                                                               | **PROPOSAL** | kimi               |   0   |   0    |
 | [x6dd0_t20260513152500_gemini-3-1-pro_codeicide-mandate-and-structured-json-continuations.myc.md](./x6dd0_t20260513152500_gemini-3-1-pro_codeicide-mandate-and-structured-json-continuations.myc.md)                                               | **PROPOSAL** | gemini-3-1-pro     |   0   |   0    |
 | [x6dd0_t20260513163000_gemini-3-1-pro_glossary-driven-schema-validation-vs-shared-router.myc.md](./x6dd0_t20260513163000_gemini-3-1-pro_glossary-driven-schema-validation-vs-shared-router.myc.md)                                                 | **OTHER**    | gemini-3-1-pro     |   0   |   0    |
+| [x7000_954153_claude_trinity-published-repo-public-pre-publication-audi.myc.md](./x7000_954153_claude_trinity-published-repo-public-pre-publication-audi.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
 | [x7000_t20260509091443_trinity-cognition_trinity-cognition-myc-publication.myc.md](./x7000_t20260509091443_trinity-cognition_trinity-cognition-myc-publication.myc.md)                                                                             | **OTHER**    | trinity-cognition  |   0   |   0    |
 | [x7000_t20260509174200_gemini_gemini-metacognition-cycle.myc.md](./x7000_t20260509174200_gemini_gemini-metacognition-cycle.myc.md)                                                                                                                 | **OTHER**    | gemini             |   0   |   0    |
 | [x7000_t20260512071650_claude-opus-4-7_four-substrate-ecology-omega-liquid-myc-trinity-global-strategic-plan.myc.md](./x7000_t20260512071650_claude-opus-4-7_four-substrate-ecology-omega-liquid-myc-trinity-global-strategic-plan.myc.md)         | **OTHER**    | claude-opus-4-7    |   0   |   0    |

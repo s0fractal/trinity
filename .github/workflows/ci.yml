@@ -344,6 +344,11 @@ jobs:
         with:
           deno-version: v2.x
 
+      - name: Setup Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+
       - name: Verify cross-substrate phi roundtrip
         run: deno task fixture:phi
 
@@ -358,10 +363,11 @@ jobs:
       - name: Verify omega deterministic-kernel deno tests
         run: deno task check:omega:deno
 
-      # NOT gated: omega:rust (cargo test --workspace). Attempting to gate it
-      # (5b742ff) surfaced a real LINUX-ONLY heap-corruption bug — the omega_v2
-      # lib test binary aborts with `tcache_thread_shutdown(): unaligned tcache
-      # chunk detected` (SIGABRT) on the glibc runner; macOS's allocator hides it.
-      # Compile is now -D-warnings-clean (omega 29be347 dead-code fix), but the
-      # heap bug is deep memory-safety debugging in the kernel — left for a focused
-      # omega session, not gated here meanwhile.
+      # omega's Rust kernel — the deterministic physics "law". CPU-only.
+      # Re-enabled after fixing the heap-use-after-free this gate originally
+      # surfaced (omega e820563: a test discarded the snapshot/delta buffers the
+      # lattice held raw pointers into; glibc aborted with "unaligned tcache
+      # chunk", macOS hid it). Now ASAN- and -D-warnings-clean. Heaviest gate
+      # (cold cargo build), runs last.
+      - name: Verify omega deterministic-kernel Rust tests
+        run: deno task check:omega:rust

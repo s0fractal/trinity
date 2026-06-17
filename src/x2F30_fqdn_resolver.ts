@@ -1544,7 +1544,12 @@ if (import.meta.main) {
         {
           type: "fqdn_overview",
           files_indexed: index.files,
-          index: { used: fresh && cache ? "cache" : "live", fresh },
+          index: {
+            used: fresh && cache ? "cache" : "live",
+            fresh,
+            source_hash: artifact.source_hash,
+            generator_version: artifact.generator_version,
+          },
           ...o,
         },
         null,
@@ -1574,7 +1579,12 @@ if (import.meta.main) {
       console.log(JSON.stringify(
         {
           type: "fqdn_recent",
-          index: { used: fresh && cache ? "cache" : "live", fresh },
+          index: {
+            used: fresh && cache ? "cache" : "live",
+            fresh,
+            source_hash: artifact.source_hash,
+            generator_version: artifact.generator_version,
+          },
           ...r,
         },
         null,

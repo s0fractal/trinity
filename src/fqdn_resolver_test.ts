@@ -1141,3 +1141,25 @@ Deno.test("buildResolverIndex + indexIsFresh - deterministic, fingerprint detect
     await Deno.remove(base, { recursive: true });
   }
 });
+
+Deno.test("buildResolverIndex - source_hash is a CONTENT identity (codex §6 provenance)", async () => {
+  // Distinct from the cheap mtime fingerprint: source_hash must track content,
+  // so a stale cache is detectable by identity even if mtime/size were spoofed.
+  const base = await Deno.makeTempDir({ prefix: "fqdn_srchash_" });
+  try {
+    await Deno.writeTextFile(join(base, "x7700_1_v_a.myc.md"), "alpha");
+    const before = (await buildResolverIndex(await buildIndex([base])))
+      .source_hash;
+    // same content → same identity (deterministic, reproducible from sources)
+    const again = (await buildResolverIndex(await buildIndex([base])))
+      .source_hash;
+    assertEquals(before, again);
+    // content change → different identity (invalidation tied to content)
+    await Deno.writeTextFile(join(base, "x7700_1_v_a.myc.md"), "alpha CHANGED");
+    const after = (await buildResolverIndex(await buildIndex([base])))
+      .source_hash;
+    assert(before !== after, "source_hash must change when content changes");
+  } finally {
+    await Deno.remove(base, { recursive: true });
+  }
+});

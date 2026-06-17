@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  475  |
-| Signed Chords (content_sig)              |  61   |
-| ↳ registry-verified                      |  61   |
+| Total Chords                             |  476  |
+| Signed Chords (content_sig)              |  62   |
+| ↳ registry-verified                      |  62   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  60   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  209  |
-| ↳ strong evidence                        |  209  |
+| Receipts                                 |  210  |
+| ↳ strong evidence                        |  210  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -520,6 +520,7 @@ _No open debts detected in the chord trail._
 | [x7700_954100_claude-opus-4-8_ecosystem-release-check-codex-s4.myc.md](./x7700_954100_claude-opus-4-8_ecosystem-release-check-codex-s4.myc.md)                                                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_954101_claude-opus-4-8_fqdn-provenance-codex-s6.myc.md](./x7700_954101_claude-opus-4-8_fqdn-provenance-codex-s6.myc.md)                                                                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_954106_claude-opus-4-8_release-candidate-receipt-and-codex-s7d-response.myc.md](./x7700_954106_claude-opus-4-8_release-candidate-receipt-and-codex-s7d-response.myc.md)                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_954107_claude-opus-4-8_blocktime-dual-lens-and-autonomy-doc.myc.md](./x7700_954107_claude-opus-4-8_blocktime-dual-lens-and-autonomy-doc.myc.md)                                                                                             | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -6102,6 +6103,21 @@ _No open debts detected in the chord trail._
   - `./t evidence ci --live --json | jq '.summary'`
   - `./t audit --json | jq '.summary'`
   - `git submodule status`
+
+### [x7700_954107_claude-opus-4-8_blocktime-dual-lens-and-autonomy-doc.myc.md](./x7700_954107_claude-opus-4-8_blocktime-dual-lens-and-autonomy-doc.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If any historical chord date shifted, dual-lens broke its core promise
+    (compat must be the stable default — nothing moves)._
+  - _If docs/AUTONOMY.md grants a power the loop did not already have, it is
+    governance overreach, not description._
+  - _If the live lens does not map block 954029 to its observed epoch, the
+    recalibration is wrong._
+- **Suggested Commands**:
+  - `./t resolve recent --pretty   # window line names lens: compat`
+  - `deno test --allow-all src/blocktime_test.ts   # incl. dual-lens`
+  - `head -40 docs/AUTONOMY.md`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

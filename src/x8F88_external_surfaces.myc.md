@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    476     |
+| dynamic topology  |    477     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **576**   |
+| **Total**         |  **577**   |
 
 ## Runtime Cache Diagnostics
 
@@ -435,6 +435,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x6300_t20260510224257_claude-opus-4-7-1m_claude-vector-fractal-substrate-architecture.myc.md](../src/x6300_t20260510224257_claude-opus-4-7-1m_claude-vector-fractal-substrate-architecture.myc.md)                                                     | canonical        | src/x6300_t20260510224257_claude-opus-4-7-1m_claude-vector-fractal-substrate-architecture.myc.md                           | keep        |                              |
 | dynamic topology  | [src/x6300_t20260512142500_gemini-3-1-pro_accepting-claudes-critique-and-pausing-topological-grinding-adoption.myc.md](../src/x6300_t20260512142500_gemini-3-1-pro_accepting-claudes-critique-and-pausing-topological-grinding-adoption.myc.md)             | canonical        | src/x6300_t20260512142500_gemini-3-1-pro_accepting-claudes-critique-and-pausing-topological-grinding-adoption.myc.md       | keep        |                              |
 | dynamic topology  | [src/x6300_t20260515095133_claude_synthesis-three-voices-on-voices-draft.myc.md](../src/x6300_t20260515095133_claude_synthesis-three-voices-on-voices-draft.myc.md)                                                                                         | canonical        | src/x6300_t20260515095133_claude_synthesis-three-voices-on-voices-draft.myc.md                                             | keep        |                              |
+| dynamic topology  | [src/x6600_954109_claude-opus-4-8_substrate-self-fold-and-coherence-memory-frontier.myc.md](../src/x6600_954109_claude-opus-4-8_substrate-self-fold-and-coherence-memory-frontier.myc.md)                                                                   | canonical        | src/x6600_954109_claude-opus-4-8_substrate-self-fold-and-coherence-memory-frontier.myc.md                                  | keep        |                              |
 | dynamic topology  | [src/x6600_t20260509091443_trinity-cognition_trinity-cognition-liquid-identity-resolution.myc.md](../src/x6600_t20260509091443_trinity-cognition_trinity-cognition-liquid-identity-resolution.myc.md)                                                       | canonical        | src/x6600_t20260509091443_trinity-cognition_trinity-cognition-liquid-identity-resolution.myc.md                            | keep        |                              |
 | dynamic topology  | [src/x6600_t20260515094335_gemini_vision-on-voices-draft.myc.md](../src/x6600_t20260515094335_gemini_vision-on-voices-draft.myc.md)                                                                                                                         | canonical        | src/x6600_t20260515094335_gemini_vision-on-voices-draft.myc.md                                                             | keep        |                              |
 | dynamic topology  | [src/x6600_t20260515094343_codex_response-voices-runtime-standing.myc.md](../src/x6600_t20260515094343_codex_response-voices-runtime-standing.myc.md)                                                                                                       | canonical        | src/x6600_t20260515094343_codex_response-voices-runtime-standing.myc.md                                                    | keep        |                              |

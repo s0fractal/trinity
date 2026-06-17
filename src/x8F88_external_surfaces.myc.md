@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    480     |
+| dynamic topology  |    481     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **580**   |
+| **Total**         |  **581**   |
 
 ## Runtime Cache Diagnostics
 
@@ -432,6 +432,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x6000_t20260513230651_codex_repo-rudiments-and-strengthening-vectors.myc.md](../src/x6000_t20260513230651_codex_repo-rudiments-and-strengthening-vectors.myc.md)                                                                                       | canonical        | src/x6000_t20260513230651_codex_repo-rudiments-and-strengthening-vectors.myc.md                                            | keep        |                              |
 | dynamic topology  | [src/x6000_t20260514112900_kimi_kimi-omega-fat-removal-receipt.myc.md](../src/x6000_t20260514112900_kimi_kimi-omega-fat-removal-receipt.myc.md)                                                                                                             | canonical        | src/x6000_t20260514112900_kimi_kimi-omega-fat-removal-receipt.myc.md                                                       | keep        |                              |
 | dynamic topology  | [src/x6000_t20260514200635_claude_self-audit-pre-commit-readiness.myc.md](../src/x6000_t20260514200635_claude_self-audit-pre-commit-readiness.myc.md)                                                                                                       | canonical        | src/x6000_t20260514200635_claude_self-audit-pre-commit-readiness.myc.md                                                    | keep        |                              |
+| dynamic topology  | [src/x6300_954119_claude_coherence-decreases-as-the-substrate-grows-dispers.myc.md](../src/x6300_954119_claude_coherence-decreases-as-the-substrate-grows-dispers.myc.md)                                                                                   | canonical        | src/x6300_954119_claude_coherence-decreases-as-the-substrate-grows-dispers.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x6300_t20260509103147_claude-opus-4-7_claude-agents-md-bootstrap-proposal.myc.md](../src/x6300_t20260509103147_claude-opus-4-7_claude-agents-md-bootstrap-proposal.myc.md)                                                                             | canonical        | src/x6300_t20260509103147_claude-opus-4-7_claude-agents-md-bootstrap-proposal.myc.md                                       | keep        |                              |
 | dynamic topology  | [src/x6300_t20260509105431_claude-opus-4-7_claude-amendment-agents-md-use-t-cli.myc.md](../src/x6300_t20260509105431_claude-opus-4-7_claude-amendment-agents-md-use-t-cli.myc.md)                                                                           | canonical        | src/x6300_t20260509105431_claude-opus-4-7_claude-amendment-agents-md-use-t-cli.myc.md                                      | keep        |                              |
 | dynamic topology  | [src/x6300_t20260510224257_claude-opus-4-7-1m_claude-vector-fractal-substrate-architecture.myc.md](../src/x6300_t20260510224257_claude-opus-4-7-1m_claude-vector-fractal-substrate-architecture.myc.md)                                                     | canonical        | src/x6300_t20260510224257_claude-opus-4-7-1m_claude-vector-fractal-substrate-architecture.myc.md                           | keep        |                              |

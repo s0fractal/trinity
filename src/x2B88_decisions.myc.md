@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  480  |
-| Signed Chords (content_sig)              |  66   |
-| ↳ registry-verified                      |  66   |
+| Total Chords                             |  481  |
+| Signed Chords (content_sig)              |  67   |
+| ↳ registry-verified                      |  67   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  61   |
 | Unresolved Proposals (Heuristic)         |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  161  |
+| Other Observations                       |  162  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -368,6 +368,7 @@ _No open debts detected in the chord trail._
 | [x6000_t20260513230651_codex_repo-rudiments-and-strengthening-vectors.myc.md](./x6000_t20260513230651_codex_repo-rudiments-and-strengthening-vectors.myc.md)                                                                                       | **OTHER**    | codex              |   0   |   0    |
 | [x6000_t20260514112900_kimi_kimi-omega-fat-removal-receipt.myc.md](./x6000_t20260514112900_kimi_kimi-omega-fat-removal-receipt.myc.md)                                                                                                             | **RECEIPT**  | kimi               |   0   |   0    |
 | [x6000_t20260514200635_claude_self-audit-pre-commit-readiness.myc.md](./x6000_t20260514200635_claude_self-audit-pre-commit-readiness.myc.md)                                                                                                       | **OTHER**    | claude             |   0   |   0    |
+| [x6300_954119_claude_coherence-decreases-as-the-substrate-grows-dispers.myc.md](./x6300_954119_claude_coherence-decreases-as-the-substrate-grows-dispers.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x6300_t20260509103147_claude-opus-4-7_claude-agents-md-bootstrap-proposal.myc.md](./x6300_t20260509103147_claude-opus-4-7_claude-agents-md-bootstrap-proposal.myc.md)                                                                             | **PROPOSAL** | claude-opus-4-7    |   0   |   0    |
 | [x6300_t20260509105431_claude-opus-4-7_claude-amendment-agents-md-use-t-cli.myc.md](./x6300_t20260509105431_claude-opus-4-7_claude-amendment-agents-md-use-t-cli.myc.md)                                                                           | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x6300_t20260510224257_claude-opus-4-7-1m_claude-vector-fractal-substrate-architecture.myc.md](./x6300_t20260510224257_claude-opus-4-7-1m_claude-vector-fractal-substrate-architecture.myc.md)                                                     | **OTHER**    | claude-opus-4.7-1m |   0   |   0    |

@@ -15,6 +15,7 @@
 // Usage:
 //   t evidence
 //   t evidence --json
+//   t evidence ci [--live] [--json]   federation CI freshness per admitted commit
 //
 // Glossary words: evidence, ci-status, claims-evidence, докази, ci-статус
 
@@ -262,7 +263,245 @@ function parseAspirationalAgeArg(args: string[]): number | null {
   return null;
 }
 
+// ── federation CI freshness (`t evidence ci [--live]`) ──────────────────────
+// codex x6d00_954095 §2: answer "is each substrate's ADMITTED commit green on
+// remote CI?" without trusting a stale local baseline. Read-only; `--live`
+// fetches via gh and rewrites the cache, default reads the cache sidecar. This
+// is a SEPARATE surface from substrate_health.external_ci (a signed contract the
+// court depends on) — purely additive observability, no contract change.
+const CI_CACHE = join(ROOT, "src", "x7B10_ci_freshness.latest.myc.json");
+const CI_SUBMODULES = ["liquid", "myc", "omega"];
+
+export type CiState = "green" | "red" | "stale" | "pending" | "unknown";
+export interface CiRun {
+  id: number | null;
+  conclusion: string | null;
+  status: string;
+  head_sha: string;
+  created_at: string | null;
+  url: string;
+}
+export interface SubstrateCi {
+  substrate: string;
+  repo: string | null;
+  admitted_commit: string | null;
+  run: CiRun | null;
+  age_seconds: number | null;
+  state: CiState;
+}
+
+/** Pure state rule: a substrate is green ONLY when its admitted commit is the
+ *  exact commit a successful run executed. A run on a different commit is stale
+ *  (the admitted commit is unverified), not green. */
+export function ciState(
+  admitted: string | null,
+  run: { conclusion: string | null; status: string; head_sha: string } | null,
+): CiState {
+  if (!admitted || !run) return "unknown";
+  if (run.head_sha !== admitted) return "stale";
+  if (run.conclusion === "success") return "green";
+  if (run.conclusion === null || run.status !== "completed") return "pending";
+  return "red";
+}
+
+/** owner/name from a git remote url (ssh or https form). */
+export function repoFromRemote(url: string): string | null {
+  const m = url.trim().match(/[:/]([^/:]+\/[^/]+?)(?:\.git)?$/);
+  return m ? m[1] : null;
+}
+
+async function sh(
+  cmd: string,
+  args: string[],
+): Promise<{ ok: boolean; out: string }> {
+  try {
+    const p = new Deno.Command(cmd, {
+      args,
+      stdout: "piped",
+      stderr: "null",
+    });
+    const o = await p.output();
+    return { ok: o.code === 0, out: new TextDecoder().decode(o.stdout).trim() };
+  } catch {
+    return { ok: false, out: "" };
+  }
+}
+
+async function fetchSubstrateCi(
+  substrate: string,
+  path: string,
+  admitted: string | null,
+): Promise<SubstrateCi> {
+  const remote = await sh("git", ["-C", path, "remote", "get-url", "origin"]);
+  const repo = remote.ok ? repoFromRemote(remote.out) : null;
+  const base: SubstrateCi = {
+    substrate,
+    repo,
+    admitted_commit: admitted,
+    run: null,
+    age_seconds: null,
+    state: "unknown",
+  };
+  if (!repo || !admitted) return base;
+  const r = await sh("gh", [
+    "run",
+    "list",
+    "--repo",
+    repo,
+    "--branch",
+    "main",
+    "--limit",
+    "1",
+    "--json",
+    "databaseId,headSha,conclusion,status,createdAt,url",
+  ]);
+  if (!r.ok || !r.out) return base;
+  let arr: Array<Record<string, unknown>>;
+  try {
+    arr = JSON.parse(r.out);
+  } catch {
+    return base;
+  }
+  if (!arr.length) return base;
+  const raw = arr[0];
+  const head_sha = String(raw.headSha ?? "");
+  const created_at = (raw.createdAt as string) ?? null;
+  const run: CiRun = {
+    id: (raw.databaseId as number) ?? null,
+    conclusion: (raw.conclusion as string) || null,
+    status: String(raw.status ?? ""),
+    head_sha,
+    created_at,
+    url: String(raw.url ?? ""),
+  };
+  const age_seconds = created_at
+    ? Math.floor((Date.now() - new Date(created_at).getTime()) / 1000)
+    : null;
+  return { ...base, run, age_seconds, state: ciState(admitted, run) };
+}
+
+/** The commit trinity's HEAD records for a submodule (the ADMITTED pointer). */
+async function admittedSubmoduleCommit(sub: string): Promise<string | null> {
+  const r = await sh("git", ["-C", ROOT, "ls-tree", "HEAD", sub]);
+  const m = r.out.match(/^\d+ commit ([0-9a-f]{40})\t/);
+  return m ? m[1] : null;
+}
+
+function summarizeCi(subs: SubstrateCi[]) {
+  const by_state: Record<CiState, number> = {
+    green: 0,
+    red: 0,
+    stale: 0,
+    pending: 0,
+    unknown: 0,
+  };
+  for (const s of subs) by_state[s.state]++;
+  const overall: CiState = by_state.red > 0
+    ? "red"
+    : (by_state.unknown > 0 || by_state.stale > 0)
+    ? (by_state.stale > 0 ? "stale" : "unknown")
+    : by_state.pending > 0
+    ? "pending"
+    : "green";
+  return { total: subs.length, by_state, overall };
+}
+
+export function renderCi(result: {
+  source: string;
+  generated_at: string | null;
+  substrates: SubstrateCi[];
+  summary: ReturnType<typeof summarizeCi>;
+}): string[] {
+  const glyph: Record<CiState, string> = {
+    green: "✅",
+    red: "❌",
+    stale: "⏳",
+    pending: "…",
+    unknown: "❔",
+  };
+  const lines = [
+    `# federation CI freshness — overall ${
+      glyph[result.summary.overall]
+    } ${result.summary.overall}  (source: ${result.source}${
+      result.generated_at ? `, ${result.generated_at.slice(0, 19)}Z` : ""
+    })`,
+  ];
+  for (const s of result.substrates) {
+    const age = s.age_seconds === null
+      ? "—"
+      : s.age_seconds < 3600
+      ? `${Math.floor(s.age_seconds / 60)}m`
+      : `${Math.floor(s.age_seconds / 3600)}h`;
+    const sha = s.admitted_commit ? s.admitted_commit.slice(0, 7) : "???????";
+    const runSha = s.run ? s.run.head_sha.slice(0, 7) : "—";
+    const concl = s.run?.conclusion ?? s.run?.status ?? "—";
+    const note = s.state === "stale" && s.run
+      ? `  (CI ran ${runSha}, not admitted ${sha})`
+      : "";
+    lines.push(
+      `#   ${glyph[s.state]} ${s.substrate.padEnd(8)} ${
+        s.state.padEnd(7)
+      } admitted ${sha}  run ${concl} ${age}${note}`,
+    );
+  }
+  if (result.substrates.length === 0) {
+    lines.push("#   (no data — run `t evidence ci --live`)");
+  }
+  return lines;
+}
+
+interface CiResult {
+  type: "evidence_ci";
+  source: "live" | "cache";
+  generated_at: string | null;
+  substrates: SubstrateCi[];
+  summary: ReturnType<typeof summarizeCi>;
+}
+
+async function runCiMode(wantJson: boolean, wantLive: boolean): Promise<void> {
+  let result: CiResult;
+  if (wantLive) {
+    const trinityHead =
+      (await sh("git", ["-C", ROOT, "rev-parse", "HEAD"])).out;
+    const subs = await Promise.all([
+      fetchSubstrateCi("trinity", ROOT, trinityHead || null),
+      ...CI_SUBMODULES.map(async (s) =>
+        fetchSubstrateCi(s, join(ROOT, s), await admittedSubmoduleCommit(s))
+      ),
+    ]);
+    result = {
+      type: "evidence_ci",
+      source: "live",
+      generated_at: new Date().toISOString(),
+      substrates: subs,
+      summary: summarizeCi(subs),
+    };
+    await Deno.writeTextFile(CI_CACHE, JSON.stringify(result, null, 2) + "\n")
+      .catch(() => {});
+  } else {
+    try {
+      const cached = JSON.parse(await Deno.readTextFile(CI_CACHE));
+      result = { ...cached, source: "cache" };
+    } catch {
+      result = {
+        type: "evidence_ci",
+        source: "cache",
+        generated_at: null,
+        substrates: [],
+        summary: summarizeCi([]),
+      };
+    }
+  }
+  if (wantJson) console.log(JSON.stringify(result, null, 2));
+  else console.log(renderCi(result).join("\n"));
+}
+
 async function main() {
+  // `t evidence ci [--live] [--json]` — federation CI freshness (codex §2).
+  if (Deno.args[0] === "ci") {
+    await runCiMode(Deno.args.includes("--json"), Deno.args.includes("--live"));
+    return;
+  }
   const wantJson = Deno.args.includes("--json");
   const wantStrict = Deno.args.includes("--strict");
   const aspirationalAgeThreshold = parseAspirationalAgeArg(Deno.args);

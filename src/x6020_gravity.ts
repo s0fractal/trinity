@@ -326,9 +326,61 @@ export function buildReport(edges: Edge[]): Report {
   };
 }
 
+// The coordinate gravity LAW (this organ measures tension; the audit enforces
+// the law). Stated here so it is queryable (`t gravity --laws`) instead of
+// tribal source-knowledge — closes review x6d00_954112 A4. Pure.
+export interface GravityLaw {
+  law: string;
+  rules: string[];
+  enforced_by: string;
+  archetypes: string;
+  hard_denies: string;
+}
+export function gravityLaw(): GravityLaw {
+  return {
+    law:
+      "An organ at bucket B must NOT import an organ at a HIGHER bucket (first hex digit of the xNNNN coordinate).",
+    rules: [
+      "Equal or lower target bucket: allowed.",
+      "Libraries (any file with no `import.meta.main`, esp. bucket-0 like x0013_capability / x0014_blocktime) are universally importable — the canonical-helper pattern.",
+      "To use a HIGHER-bucket peer's behaviour, compose via callT (run `t <verb>` as a subprocess), never a static import.",
+    ],
+    enforced_by:
+      "`t audit` (summary.import_warnings_count must be 0; `t check` runs it)",
+    archetypes:
+      "`t coordinates` / docs/COORDINATES.md (bucket 0–F archetype names)",
+    hard_denies:
+      "`t skill` (additional semantic hard-denies, e.g. foundation⊁action, + pattern warns)",
+  };
+}
+
+function renderLaws(l: GravityLaw): string {
+  const lines = [
+    "# coordinate gravity law — the rule the substrate folds by",
+    "# ───────────────────────────────────────────────────────────────",
+    `# LAW: ${l.law}`,
+    "#",
+  ];
+  for (const r of l.rules) lines.push(`#   • ${r}`);
+  lines.push(
+    "#",
+    `# enforced by: ${l.enforced_by}`,
+    `# archetypes:  ${l.archetypes}`,
+    `# hard-denies: ${l.hard_denies}`,
+    `# tension (not law) is measured by this organ — run \`t gravity\`.`,
+  );
+  return lines.join("\n");
+}
+
 if (import.meta.main) {
   const args = Deno.args;
   const isJson = args.includes("--json");
+  // `t gravity --laws` — print the gravity LAW (queryable, not tribal). A4.
+  if (args.includes("--laws")) {
+    const l = gravityLaw();
+    console.log(isJson ? JSON.stringify(l, null, 2) : renderLaws(l));
+    Deno.exit(0);
+  }
   let threshold = 2;
   let top = 30;
   for (const a of args) {

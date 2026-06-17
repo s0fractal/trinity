@@ -2,7 +2,22 @@ import {
   assert,
   assertEquals,
 } from "https://deno.land/std@0.224.0/assert/mod.ts";
-import { buildReport, coordOf, type Edge } from "./x6020_gravity.ts";
+import {
+  buildReport,
+  coordOf,
+  type Edge,
+  gravityLaw,
+} from "./x6020_gravity.ts";
+
+Deno.test("gravityLaw - states the law and points to where archetypes/denies/enforcement live", () => {
+  const l = gravityLaw();
+  assert(l.law.includes("HIGHER bucket"));
+  assert(l.rules.some((r) => r.includes("callT"))); // the composition escape hatch
+  assert(l.rules.some((r) => r.toLowerCase().includes("librar"))); // the lib exemption
+  assert(l.enforced_by.includes("audit"));
+  assert(l.archetypes.includes("coordinates"));
+  assert(l.hard_denies.includes("skill"));
+});
 
 // Pure-function coverage for x6020_gravity (the edge-tension / AST-import report
 // the resolver's imports-edge parity check depends on). buildEdges itself spawns

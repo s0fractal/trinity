@@ -17,6 +17,7 @@ import {
   join,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { formatGeneratedFile } from "./x0012_generated_format.ts";
+import { isoOfBlock } from "./x0014_blocktime.ts";
 import { getGitTrackedFiles } from "./x8F10_external_surfaces_core.ts";
 import { listChordSurfaceFiles } from "./x2F21_chord_surface.ts";
 import { verifyAllChords } from "./x2F37_voice_keys.ts";
@@ -121,16 +122,11 @@ function parseFrontmatter(text: string): Record<string, any> {
   return out;
 }
 
-// Bitcoin anchor for hex-block chord dates (matches x2700_heartbeat and
-// x5910_compost_watchdog): block 950000 ≈ epoch 1779148800, 600s/block.
-const BTC_ANCHOR_BLOCK = 950000;
-const BTC_ANCHOR_EPOCH = 1779148800;
-const BTC_SEC_PER_BLOCK = 600;
-
+// Bitcoin anchor for hex-block chord dates now lives in the canonical bucket-0
+// library x0014_blocktime (was duplicated across ~9 organs). Kept as a thin
+// re-export so existing callers + the decisions_gen test are unaffected.
 export function blockHeightToISO(block: number): string {
-  return new Date(
-    (BTC_ANCHOR_EPOCH + (block - BTC_ANCHOR_BLOCK) * BTC_SEC_PER_BLOCK) * 1000,
-  ).toISOString();
+  return isoOfBlock(block);
 }
 
 // Resolve a chord's authoritative timestamp from its filename. Prefers

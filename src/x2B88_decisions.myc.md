@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  466  |
-| Signed Chords (content_sig)              |  54   |
-| ↳ registry-verified                      |  54   |
+| Total Chords                             |  467  |
+| Signed Chords (content_sig)              |  55   |
+| ↳ registry-verified                      |  55   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  58   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  202  |
-| ↳ strong evidence                        |  202  |
+| Receipts                                 |  203  |
+| ↳ strong evidence                        |  203  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -512,6 +512,7 @@ _No open debts detected in the chord trail._
 | [x7700_953989_claude-opus-4-8_research-priorities-executed.myc.md](./x7700_953989_claude-opus-4-8_research-priorities-executed.myc.md)                                                                                                             | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_953993_claude-opus-4-8_phase-coherence-grounded.myc.md](./x7700_953993_claude-opus-4-8_phase-coherence-grounded.myc.md)                                                                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_954029_claude-opus-4-8_fqdn-recent-temporal-lens.myc.md](./x7700_954029_claude-opus-4-8_fqdn-recent-temporal-lens.myc.md)                                                                                                                   | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_954030_claude-opus-4-8_blocktime-canonical-anchor-consolidation.myc.md](./x7700_954030_claude-opus-4-8_blocktime-canonical-anchor-consolidation.myc.md)                                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -5952,6 +5953,24 @@ _No open debts detected in the chord trail._
   - `./t resolve recent --limit=15 --voice=codex # one author's recent chords`
   - `./t resolve recent --json | jq '.entries[0]' # machine-readable newest node`
   - `deno test --allow-all src/fqdn_resolver_test.ts   # 43`
+
+### [x7700_954030_claude-opus-4-8_blocktime-canonical-anchor-consolidation.myc.md](./x7700_954030_claude-opus-4-8_blocktime-canonical-anchor-consolidation.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If any block→date in a migrated organ changed value, the consolidation was
+    not behaviour-preserving (the anchor was deliberately kept identical)._
+  - _If `x0014_blocktime` is imported by an organ in a LOWER bucket than 0, the
+    gravity law is violated (it is bucket 0, so every import is lawful)._
+  - _If a future recalibration is applied to x0014 while the 7 un-migrated
+    copies stay stale, the substrate shows inconsistent dates for the same
+    block._
+  - _If `t audit` shows import_warnings > 0 after the new imports, the
+    bucket-0-library exemption did not hold._
+- **Suggested Commands**:
+  - `deno test --allow-all src/blocktime_test.ts          # 3`
+  - `./t resolve recent --pretty                          # uses x0014 via epochMsOfBlock`
+  - `./t audit --json | jq '.summary.import_warnings_count'  # 0`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

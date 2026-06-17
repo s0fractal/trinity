@@ -42,6 +42,7 @@ import {
   relative,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { blake3 } from "npm:@noble/hashes@1.4.0/blake3";
+import { epochMsOfBlock } from "./x0014_blocktime.ts";
 
 export type MatchForm = "exact" | "handle" | "slug";
 
@@ -1226,14 +1227,11 @@ export function renderOverview(o: NetworkOverview): string[] {
 }
 
 // ── temporal lens: the network's recent activity ────────────────────────────
-// Bitcoin-height anchor for chord stamps. The SAME constants as
-// x8B00_decisions_gen.blockHeightToISO — replicated, NOT imported: x8B00 is a
-// bucket-8 organ and importing it into this bucket-2 organ would break the
-// coordinate gravity law (raises import_warnings → fails the CI self gate). The
-// anchor is a value, not behaviour: block 950000 ≈ epoch 1779148800, 600 s/block.
-const BTC_ANCHOR_BLOCK = 950000;
-const BTC_ANCHOR_EPOCH = 1779148800;
-const BTC_SEC_PER_BLOCK = 600;
+// The bitcoin-height→epoch conversion comes from the canonical bucket-0 library
+// x0014_blocktime (`epochMsOfBlock`) — importing DOWN to bucket 0 is lawful under
+// the coordinate gravity law, and it is the single source of truth for the anchor
+// (no longer copied per-organ). The mapping is an ordering approximation, not a
+// precise clock.
 
 /** A chord name's temporal stamp + authorship, parsed from the filename alone
  *  (no file read). A chord is named `x<hex>_<block>_<voice>_<slug>`, where
@@ -1267,8 +1265,7 @@ export function chordStamp(name: string): ChordStamp | null {
   } else {
     const n = Number(block);
     if (!Number.isFinite(n)) return null;
-    epoch_ms = (BTC_ANCHOR_EPOCH + (n - BTC_ANCHOR_BLOCK) * BTC_SEC_PER_BLOCK) *
-      1000;
+    epoch_ms = epochMsOfBlock(n);
   }
   return { block, epoch_ms, voice, slug };
 }

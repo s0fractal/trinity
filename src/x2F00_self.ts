@@ -293,6 +293,12 @@ interface DecisionsShape {
   } | null;
 }
 
+interface FederationCiShape {
+  generated_at?: string | null;
+  summary?: { overall?: string };
+  substrates?: Array<{ substrate: string; state: string }>;
+}
+
 function buildAttention(args: {
   status: StatusShape | null;
   capabilitiesValidation: CapabilitiesValidationShape | null;
@@ -300,6 +306,7 @@ function buildAttention(args: {
   heartbeat: HeartbeatShape | null;
   decisions: DecisionsShape | null;
   runtimeCacheSummary: ReturnType<typeof summarizeRuntimeCaches>;
+  federationCi?: FederationCiShape | null;
 }): {
   level: "clear" | "watch" | "act";
   score: number;
@@ -438,6 +445,46 @@ function buildAttention(args: {
     }
   }
 
+  // Federation CI per ADMITTED commit (codex §2) — from the cached `t evidence
+  // ci` read. Honestly stale-labelled by the cache's own generated_at; absent
+  // cache = silent (the standalone command/preflight still cover it).
+  const fed = args.federationCi;
+  if (fed?.substrates?.length) {
+    const reds = fed.substrates.filter((s) => s.state === "red").map((s) =>
+      s.substrate
+    );
+    const stale = fed.substrates.filter((s) => s.state === "stale").map((s) =>
+      s.substrate
+    );
+    if (reds.length > 0) {
+      score += 4;
+      reasons.push(
+        `federation CI RED — admitted commit failed: ${reds.join(", ")}`,
+      );
+      nextActions.push(
+        "Run `t ecosystem release --check`; fix the red substrate before bumping its pointer.",
+      );
+    } else if (stale.length > 0) {
+      score += 1;
+      reasons.push(
+        `federation CI STALE — admitted commit unverified by a run: ${
+          stale.join(", ")
+        }`,
+      );
+      nextActions.push(
+        "Run `t evidence ci --live` to verify the admitted commits.",
+      );
+    }
+    const ageMin = fed.generated_at
+      ? Math.round((Date.now() - new Date(fed.generated_at).getTime()) / 60000)
+      : null;
+    if (ageMin !== null && ageMin > 60) {
+      reasons.push(
+        `federation CI cache is ${ageMin}m old — \`t evidence ci --live\` to refresh`,
+      );
+    }
+  }
+
   const level = score >= 4 ? "act" : score > 0 ? "watch" : "clear";
   return { level, score, reasons, next_actions: nextActions };
 }
@@ -472,6 +519,9 @@ if (import.meta.main) {
     // composed via callT (shell out), NOT a direct import — x6600 is a higher
     // bucket and a static import would violate the coordinate gravity law.
     coherence: () => tryOr(() => callT("coherence", ["--json"]), null),
+    // codex §2: federation CI per admitted commit, from the cached evidence-ci
+    // read (callT — shell out, not import-up). Cheap (cache); --live refreshes.
+    federationCi: () => tryOr(() => callT("evidence", ["ci", "--json"]), null),
     organs: scanOrgans,
     voices: scanVoices,
     chords: scanChords,
@@ -498,6 +548,8 @@ if (import.meta.main) {
     }
     | null;
 
+  const federationCi = data.federationCi as FederationCiShape | null;
+
   const composite = status?.substrate_health?.overall ?? "unknown";
   const audit = status?.summary?.audit
     ? `${status.summary.audit.match}/${status.summary.audit.total}`
@@ -517,6 +569,7 @@ if (import.meta.main) {
     heartbeat,
     decisions,
     runtimeCacheSummary: data.registry.runtimeCacheSummary,
+    federationCi,
   });
 
   const receipt = {
@@ -537,6 +590,16 @@ if (import.meta.main) {
         order_parameter: coherence.order_parameter ?? null,
         mean_phase_axis: coherence.mean_phase_axis ?? null,
         organs_measured: coherence.organs_measured ?? null,
+      }
+      : null,
+    federation_ci: federationCi
+      ? {
+        overall: federationCi.summary?.overall ?? null,
+        generated_at: federationCi.generated_at ?? null,
+        substrates: (federationCi.substrates ?? []).map((s) => ({
+          substrate: s.substrate,
+          state: s.state,
+        })),
       }
       : null,
     contracts: contracts?.summary ?? null,

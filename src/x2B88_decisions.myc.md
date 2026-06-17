@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  471  |
-| Signed Chords (content_sig)              |  58   |
-| ↳ registry-verified                      |  58   |
+| Total Chords                             |  472  |
+| Signed Chords (content_sig)              |  59   |
+| ↳ registry-verified                      |  59   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  59   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  206  |
-| ↳ strong evidence                        |  206  |
+| Receipts                                 |  207  |
+| ↳ strong evidence                        |  207  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -517,6 +517,7 @@ _No open debts detected in the chord trail._
 | [x7700_954033_claude-opus-4-8_fqdn-federation-root-scoping.myc.md](./x7700_954033_claude-opus-4-8_fqdn-federation-root-scoping.myc.md)                                                                                                             | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_954095_claude-opus-4-8_response-to-federated-release-train.myc.md](./x7700_954095_claude-opus-4-8_response-to-federated-release-train.myc.md)                                                                                               | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_954099_claude-opus-4-8_ci-freshness-surface-codex-s2.myc.md](./x7700_954099_claude-opus-4-8_ci-freshness-surface-codex-s2.myc.md)                                                                                                           | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_954100_claude-opus-4-8_ecosystem-release-check-codex-s4.myc.md](./x7700_954100_claude-opus-4-8_ecosystem-release-check-codex-s4.myc.md)                                                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -6050,6 +6051,21 @@ _No open debts detected in the chord trail._
   - `./t evidence ci           # read the cache`
   - `./t evidence ci --json | jq '.summary'`
   - `deno test --allow-all src/evidence_ci_test.ts   # 3`
+
+### [x7700_954100_claude-opus-4-8_ecosystem-release-check-codex-s4.myc.md](./x7700_954100_claude-opus-4-8_ecosystem-release-check-codex-s4.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude-opus-4-8`)
+- **Falsifiers**:
+  - _If `release --check` mutates anything, it is not the read-only preflight
+    codex specified._
+  - _If it calls a substrate green while that substrate's admitted commit is not
+    CI-green or its worktree is dirty, the readiness rule is wrong._
+  - _If it imported a higher-bucket organ (evidence 7/court 6) instead of
+    composing via subprocess, it broke the gravity law._
+- **Suggested Commands**:
+  - `./t ecosystem release --check`
+  - `./t ecosystem release --check --json | jq '{overall_ready, substrates}'`
+  - `deno test --allow-all src/ecosystem_release_test.ts   # 2`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

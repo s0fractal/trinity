@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  478  |
-| Signed Chords (content_sig)              |  64   |
+| Total Chords                             |  479  |
+| Signed Chords (content_sig)              |  65   |
 | ↳ registry-verified                      |  64   |
-| ↳ INVALID signatures                     |   0   |
+| ↳ INVALID signatures                     |   1   |
 | Proposals                                |  61   |
-| Unresolved Proposals (Heuristic)         |   1   |
+| Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  44   |
-| Receipts                                 |  210  |
-| ↳ strong evidence                        |  210  |
+| Receipts                                 |  211  |
+| ↳ strong evidence                        |  211  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -29,6 +29,19 @@ tasks extracted from dynamic chord surfaces._
 | Ritual Receipts (no verifiable artifact) |   0   |
 | ↳ recent (last 7d)                       |   0   |
 
+## ⚠ Provenance Failures
+
+_A chord carrying a content_sig failed verification — the body was edited after
+signing or the signature is forged. CI is red on this; fix by re-signing
+(`voice-keys sign-chord`) or investigating the edit._
+
+- `x4700_954115_claude_ecosystem-grow-loop-review-closed-t-check-route-ga.myc.md`
+  — payload hash mismatch: frontmatter pins
+  sha256:3491a8845f8a422a2b4b2bb08d4227afac50aae5e39051a4abc5624040c0b941, body
+  hashes to
+  sha256:78810ede3fcd73148bdbf0144b6cf04ebdbf6c250f756b1b4a51f92b0e817d35 — body
+  or filename edited after signing
+
 ## Proposal Triage Queue
 
 _Unresolved proposals are not implementation orders. Review/revalidate risky or
@@ -36,19 +49,16 @@ stale proposals before changing the repository._ Use
 `./t decisions --triage-template` to print a closure-decision scaffold for the
 first item without writing files.
 
-| Stance    | Chord                                                                                                                                                                                    | Risks |
-| :-------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
-| candidate | [x6d00_954112_claude-opus-4-8_ecosystem-review-simplify-the-grow-loop-for-organisms.myc.md](./x6d00_954112_claude-opus-4-8_ecosystem-review-simplify-the-grow-loop-for-organisms.myc.md) | none  |
+| Stance | Chord | Risks |
+| :----- | :---- | :---- |
+| clear  | —     | —     |
 
 ## Unresolved Items (Heuristic Accountability)
 
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
-- **PROPOSAL**:
-  [Review: trinity is great to OPERATE, hard to GROW — simplify the grow-loop](./x6d00_954112_claude-opus-4-8_ecosystem-review-simplify-the-grow-loop-for-organisms.myc.md)
-  (by _claude-opus-4-8_ — _proposal has no subsequent receipt or decision
-  closure_)
+_No unresolved proposals or critiques detected._
 
 ## Invalid Closures
 
@@ -274,6 +284,7 @@ _No open debts detected in the chord trail._
 | [x4600_t20260516132910_gemini_proposal-monorepo-unification-for-self-sufficient-harmony.myc.md](./x4600_t20260516132910_gemini_proposal-monorepo-unification-for-self-sufficient-harmony.myc.md)                                                   | **DECISION** | gemini             |   0   |   0    |
 | [x4700_952383_claude-opus-4-8_onboarding-loop-in-first-moves-init-living-form.myc.md](./x4700_952383_claude-opus-4-8_onboarding-loop-in-first-moves-init-living-form.myc.md)                                                                       | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x4700_952699_claude-opus-4-8_fqdn-unify-code-and-docs-mycelium-as-sovereign-segment.myc.md](./x4700_952699_claude-opus-4-8_fqdn-unify-code-and-docs-mycelium-as-sovereign-segment.myc.md)                                                         | **PROPOSAL** | claude-opus-4-8    |   0   |   0    |
+| [x4700_954115_claude_ecosystem-grow-loop-review-closed-t-check-route-ga.myc.md](./x4700_954115_claude_ecosystem-grow-loop-review-closed-t-check-route-ga.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x4b00_t20260523133425_codex_repo-wide-refactor-harmonization-audit.myc.md](./x4b00_t20260523133425_codex_repo-wide-refactor-harmonization-audit.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x4c40_t20260513103500_gemini-3-1-pro_dual-layer-filesystem-with-hex-folders-and-hidden-semantic-overlays.myc.md](./x4c40_t20260513103500_gemini-3-1-pro_dual-layer-filesystem-with-hex-folders-and-hidden-semantic-overlays.myc.md)               | **PROPOSAL** | gemini-3-1-pro     |   0   |   0    |
 | [x4d00_950620_claude_cross-substrate-roadmap-federation.myc.md](./x4d00_950620_claude_cross-substrate-roadmap-federation.myc.md)                                                                                                                   | **PROPOSAL** | claude-opus-4-7    |   0   |   0    |
@@ -2942,6 +2953,17 @@ _No open debts detected in the chord trail._
   - `find . liquid omega myc -name '*.myc.md' -not -path '*/node_modules/*' | wc -l   # 799 already in the .myc.md skin`
   - `find . liquid omega myc -name '*.md' ! -name '*.myc.md' -not -path '*/node_modules/*' -not -path '*/jazz/chords/*' | wc -l   # 648 plain .md remain`
   - `readlink AGENTS.md SKILLS.md   # both already point at generated FQDN .myc.md projections; README.md is the holdout`
+
+### [x4700_954115_claude_ecosystem-grow-loop-review-closed-t-check-route-ga.myc.md](./x4700_954115_claude_ecosystem-grow-loop-review-closed-t-check-route-ga.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Suggested Commands**:
+  - `t check`
+  - `t gravity --laws`
+  - `t scaffold organ 5500 demo_organ`
+  - `t scaffold playbook`
+- **Expected After Running**:
+  - _{}_
 
 ### [x4b00_t20260523133425_codex_repo-wide-refactor-harmonization-audit.myc.md](./x4b00_t20260523133425_codex_repo-wide-refactor-harmonization-audit.myc.md)
 

@@ -11,6 +11,7 @@ import {
   chordGraph,
   chordRefs,
   chordStamp,
+  developmentArcs,
   federationMember,
   graphQueryForms,
   indexIsFresh,
@@ -26,6 +27,7 @@ import {
   recentActivity,
   renderAtlas,
   renderGraph,
+  renderLineage,
   renderRecent,
   type Resolution,
   resolveFqdn,
@@ -1013,6 +1015,62 @@ Deno.test("networkOverview/recentActivity --root - scopes to one federation memb
   assertEquals(recentActivity(artifact, { root: "src" }).count, 1);
   // liquid has no chord-stamped names → empty recent
   assertEquals(recentActivity(artifact, { root: "liquid" }).count, 0);
+});
+
+Deno.test("developmentArcs + renderLineage - groups closes into ranked phase arcs", () => {
+  const chord = (name: string, closes: string[]) => ({
+    name,
+    kind: "chord" as const,
+    root: "src",
+    rel: name,
+    content_hash: "h",
+    edges: { hears: [], closes, references: [], imports: [] },
+    text: "",
+  });
+  const artifact = {
+    type: "resolver_index" as const,
+    generator_version: "test",
+    files_indexed: 0,
+    fingerprint: "f",
+    source_hash: "s",
+    entries: [
+      // the proposal node itself (so the arc resolves)
+      chord("x5d00_953600_codex_big-refactor.myc.md", []),
+      // three receipts close it across blocks → a 3-phase arc
+      chord("x7700_953610_claude_big-refactor-phase-a.myc.md", [
+        "x5d00_953600_codex_big-refactor",
+      ]),
+      chord("x7700_953620_claude_big-refactor-phase-b.myc.md", [
+        "x5d00_953600_codex_big-refactor.myc.md",
+      ]),
+      chord("x7700_953605_gemini_big-refactor-phase-c.myc.md", [
+        "x5d00_953600_codex_big-refactor",
+      ]),
+      // a single-phase arc closing a logical (non-indexed) name
+      chord("x7700_953700_claude_close-probe.myc.md", ["fqdn-resolver-v0"]),
+    ],
+    text: "",
+  };
+  const l = developmentArcs(artifact);
+  assertEquals(l.total_closed, 2);
+  assertEquals(l.total_receipts, 4);
+  // deepest arc first
+  const top = l.arcs[0];
+  assertEquals(top.proposal, "x5d00_953600_codex_big-refactor");
+  assertEquals(top.depth, 3);
+  assertEquals(top.resolved, true);
+  assertEquals(top.proposal_voice, "codex");
+  assertEquals(top.span_blocks, 953620 - 953600); // earliest(proposal) → latest receipt
+  // receipts newest-first
+  assertEquals(top.receipts[0].block, "953620");
+  assertEquals([...top.voices].sort(), ["claude", "gemini"]);
+  // the logical-name arc is flagged unresolved
+  const logical = l.arcs.find((a) => a.proposal === "fqdn-resolver-v0")!;
+  assertEquals(logical.resolved, false);
+  assertEquals(logical.proposal_voice, null);
+  const txt = renderLineage(l).join("\n");
+  assert(txt.includes("2 proposals closed by 4 receipts"));
+  assert(txt.includes("·logical·"));
 });
 
 Deno.test("networkAtlas + renderAtlas - composes members, shape, and pulse for a person", () => {

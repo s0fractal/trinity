@@ -1500,6 +1500,135 @@ export function renderAtlas(a: NetworkAtlas): string[] {
   return lines;
 }
 
+// ── lineage: the network's becoming ──────────────────────────────────────────
+// atlas answers WHERE-AM-I (the now-snapshot); recent answers WHEN (a flat 14-day
+// timeline). Neither shows the CAUSAL DEPTH of how the network was built. The
+// `closes` edges are the substrate's record of completed effort: each receipt
+// chord names the proposal it closes, so a proposal closed by 7 receipts is a
+// 7-phase arc. Grouping receipts by the proposal they close, ranked by that depth,
+// renders the network's development as the major efforts that shaped it — "how did
+// this come to be". Pure; reads only the index; reuses chordStamp for the dates.
+
+export interface LineageReceipt {
+  name: string;
+  block: string;
+  epoch_ms: number;
+  voice: string;
+  slug: string;
+}
+export interface DevelopmentArc {
+  proposal: string; // the closed target's stem (a node, or a logical name)
+  resolved: boolean; // does the proposal exist as an indexed node?
+  proposal_voice: string | null;
+  proposal_block: string | null;
+  depth: number; // how many receipts closed it (effort depth)
+  span_blocks: number | null; // block span from first to last activity
+  voices: string[]; // distinct closing voices
+  receipts: LineageReceipt[]; // the closing chords, newest first
+}
+export interface NetworkLineage {
+  total_closed: number; // distinct proposals closed
+  total_receipts: number; // total closing chords
+  arcs: DevelopmentArc[]; // ranked by depth desc, then most-recent receipt
+}
+
+/** Aggregate the closes-graph into the network's development arcs. Pure. */
+export function developmentArcs(
+  artifact: ResolverIndexArtifact,
+  opts: { limit?: number } = {},
+): NetworkLineage {
+  const limit = opts.limit ?? 12;
+  const resolvable = new Set(artifact.entries.map((e) => refStem(e.name)));
+  const byTarget = new Map<string, LineageReceipt[]>();
+  let total_receipts = 0;
+  for (const e of artifact.entries) {
+    const s = chordStamp(e.name);
+    if (!s) continue; // only chords carry a closure act
+    const targets = e.edges.closes
+      .map((c) => refStem(c))
+      .filter((t): t is string => !!t);
+    for (const t of targets) {
+      total_receipts++;
+      const receipt: LineageReceipt = {
+        name: e.name,
+        block: s.block,
+        epoch_ms: s.epoch_ms,
+        voice: s.voice,
+        slug: s.slug,
+      };
+      const arr = byTarget.get(t) ?? [];
+      arr.push(receipt);
+      byTarget.set(t, arr);
+    }
+  }
+  const numericBlock = (b: string | null): number | null => {
+    if (!b || b[0] === "t") return null; // legacy timestamps aren't block heights
+    const n = Number(b);
+    return Number.isFinite(n) ? n : null;
+  };
+  const arcs: DevelopmentArc[] = [...byTarget.entries()].map(
+    ([proposal, receipts]) => {
+      receipts.sort((a, b) => b.epoch_ms - a.epoch_ms);
+      const pStamp = chordStamp(proposal);
+      const blocks = [
+        numericBlock(pStamp?.block ?? null),
+        ...receipts.map((r) => numericBlock(r.block)),
+      ].filter((n): n is number => n !== null);
+      const span = blocks.length > 1
+        ? Math.max(...blocks) - Math.min(...blocks)
+        : null;
+      return {
+        proposal,
+        resolved: resolvable.has(proposal),
+        proposal_voice: pStamp?.voice ?? null,
+        proposal_block: pStamp?.block ?? null,
+        depth: receipts.length,
+        span_blocks: span,
+        voices: [...new Set(receipts.map((r) => r.voice))],
+        receipts,
+      };
+    },
+  );
+  arcs.sort((a, b) =>
+    b.depth - a.depth || b.receipts[0].epoch_ms - a.receipts[0].epoch_ms
+  );
+  return {
+    total_closed: byTarget.size,
+    total_receipts,
+    arcs: arcs.slice(0, Math.max(0, limit)),
+  };
+}
+
+/** Human-readable lineage (`lineage`): the network's major development arcs. */
+export function renderLineage(l: NetworkLineage): string[] {
+  const lines = [
+    "# ─────────────────────────────────────────────────────────────",
+    `#  The network's becoming — ${l.total_closed} proposals closed by ${l.total_receipts} receipts`,
+    "# ─────────────────────────────────────────────────────────────",
+    "#",
+    "#  Each arc is a proposal and the receipt-chords that closed it; depth is",
+    "#  how many phases it took. Derived from the signed `closes` edges.",
+    "#",
+  ];
+  let rank = 0;
+  for (const a of l.arcs) {
+    rank++;
+    const phases = a.depth === 1 ? "1 phase" : `${a.depth} phases`;
+    const span = a.span_blocks !== null ? `, ~${a.span_blocks} blocks` : "";
+    const by = a.proposal_voice ? ` (proposed by ${a.proposal_voice})` : "";
+    const tag = a.resolved ? "" : " ·logical·";
+    lines.push(`#  ${String(rank).padStart(2)}. ${a.proposal}${tag}`);
+    lines.push(`#      ${phases}${span} · voices: ${a.voices.join(", ")}${by}`);
+    for (const r of a.receipts.slice(0, 4)) {
+      lines.push(`#        ← ${r.block.padStart(7)} ${r.voice}: ${r.slug}`);
+    }
+    if (a.receipts.length > 4) {
+      lines.push(`#        … +${a.receipts.length - 4} more`);
+    }
+  }
+  return lines;
+}
+
 /** `--show`: deliver the addressed content, not just its location — the last
  *  verb of the read side ("resolve one to its content"). Prints the provenance
  *  header then the raw bytes, so it stays pipeable. Returns the exit code. */
@@ -1707,6 +1836,38 @@ if (import.meta.main) {
     Deno.exit(0);
   }
 
+  // `lineage [--limit=N] [--json]` — the network's becoming: development arcs
+  // grouped from the `closes` graph (a proposal closed by N receipts is an
+  // N-phase arc), ranked by depth. The causal-depth complement to recent's flat
+  // timeline and atlas's now-snapshot.
+  if (args[0] === "lineage") {
+    const limitArg = flagArg(args, "limit");
+    const limit = limitArg ? Number(limitArg) : 12;
+    const index = await buildIndex(roots);
+    const { cache, fresh } = await freshCache(index);
+    const artifact = fresh && cache ? cache : await buildResolverIndex(index);
+    const l = developmentArcs(artifact, { limit });
+    if (args.includes("--json")) {
+      console.log(JSON.stringify(
+        {
+          type: "fqdn_lineage",
+          index: {
+            used: fresh && cache ? "cache" : "live",
+            fresh,
+            source_hash: artifact.source_hash,
+            generator_version: artifact.generator_version,
+          },
+          ...l,
+        },
+        null,
+        2,
+      ));
+    } else {
+      console.log(renderLineage(l).join("\n"));
+    }
+    Deno.exit(0);
+  }
+
   // `recent [--limit=N] [--voice=V] [--root=S] [--pretty]` — the network's
   // temporal lens: the most recently stamped chords (proposals/receipts)
   // newest-first, by the block height / legacy timestamp carried in each name.
@@ -1837,7 +1998,8 @@ if (import.meta.main) {
         "       resolver.ts graph <query> [--pretty]       (one node's typed neighbourhood)\n" +
         "       resolver.ts recent [--limit=N] [--voice=V] [--root=S]  (recent chords, newest first)\n" +
         "       resolver.ts overview [--pretty] [--root=S]  (network shape; --root scopes to a substrate)\n" +
-        "       resolver.ts atlas [--json]                  (the network for a person: identity + shape + pulse + doorways)",
+        "       resolver.ts atlas [--json]                  (the network for a person: identity + shape + pulse + doorways)\n" +
+        "       resolver.ts lineage [--limit=N] [--json]    (the network's becoming: development arcs from the closes-graph)",
     );
     Deno.exit(1);
   }

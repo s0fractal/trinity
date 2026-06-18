@@ -94,7 +94,12 @@ export function isSkippedPath(path: string): boolean {
 }
 
 // The coordinate prefix `x<hex>_` that names an organ/doc by its hex position.
-const COORD_PREFIX = /^x[0-9A-Fa-f]+_/;
+// Canonically exactly 4 hex (the x0000..xFFFF octet address space) — matches
+// this file's own ORGAN_TARGET_RE and is the parity peer of myc's
+// x0200_resolve.ts COORD_RE. Verified 2026-06-18: every `x<hex>_` filename across
+// all substrates has a 4-hex run, so `{4}` is behaviour-identical to the prior
+// `+` while making the canonical width explicit and cross-substrate consistent.
+const COORD_PREFIX = /^x[0-9A-Fa-f]{4}_/;
 
 // Chord filenames carry `x<hex>_<block>_<voice>_<slug>`, where <block> is a
 // bitcoin height (digits) or legacy `t<timestamp>`, and <voice> is a model

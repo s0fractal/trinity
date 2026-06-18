@@ -1292,5 +1292,42 @@ if (import.meta.main) {
     const astArg = rest.find((a) => !a.startsWith("--")) ?? "null";
     Deno.exit(await fn_eval(astArg, safe));
   }
+  // `t myc <subcommand> [args...]`: passthrough to the myc substrate CLI
+  // (myc/src/x0100_myc.ts). myc is a peer substrate with its own dispatch and
+  // its own provenance schema; this makes its capture/resolve/verify/graph/serve
+  // surface reachable from `t` without trinity reinterpreting myc's output.
+  // Stdio is inherited (no capture) so long-running subcommands like `serve` and
+  // myc's own JSON/human rendering pass through untouched. cwd is the submodule
+  // so myc's defaultRoot() resolves there; the permission set is the union of
+  // myc's own `myc` + `resolve` deno tasks (read/write/env/net for x0100, +run
+  // for the x0200 coordinate resolver it dispatches).
+  if (word === "myc") {
+    const mycEntry = join(SUBSTRATE_ROOT, "myc", "src", "x0100_myc.ts");
+    if (!(await fn_exists(mycEntry))) {
+      console.error(`# myc substrate not present at ${mycEntry}`);
+      console.error(
+        "# (it is a git submodule — run: git submodule update --init myc)",
+      );
+      Deno.exit(2);
+    }
+    const proc = new Deno.Command("deno", {
+      args: [
+        "run",
+        "--allow-read",
+        "--allow-write",
+        "--allow-env",
+        "--allow-net",
+        "--allow-run",
+        mycEntry,
+        ...rest,
+      ],
+      cwd: join(SUBSTRATE_ROOT, "myc"),
+      stdin: "inherit",
+      stdout: "inherit",
+      stderr: "inherit",
+    });
+    const { code } = await proc.output();
+    Deno.exit(code);
+  }
   Deno.exit(await fn_dispatch_word(word, rest));
 }

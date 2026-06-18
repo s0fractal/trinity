@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  498  |
+| Total Chords                             |  499  |
 | Signed Chords (content_sig)              |  81   |
 | ↳ registry-verified                      |  81   |
 | ↳ INVALID signatures                     |   0   |
-| Proposals                                |  63   |
-| Unresolved Proposals (Heuristic)         |   2   |
+| Proposals                                |  64   |
+| Unresolved Proposals (Heuristic)         |   3   |
 | Decisions                                |  45   |
 | Receipts                                 |  216  |
 | ↳ strong evidence                        |  216  |
@@ -40,6 +40,7 @@ first item without writing files.
 | :-------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
 | candidate | [x7300_954214_claude_membrane-implements-its-own-first-proposal-apply-p.myc.md](./x7300_954214_claude_membrane-implements-its-own-first-proposal-apply-p.myc.md) | none  |
 | candidate | [x4300_954228_claude_p2-design-key-event-delegation-chain-verify-at-eve.myc.md](./x4300_954228_claude_p2-design-key-event-delegation-chain-verify-at-eve.myc.md) | none  |
+| candidate | [x7d00_954231_codex_next-epoch-proof-bearing-operation-strategy-and-ta.myc.md](./x7d00_954231_codex_next-epoch-proof-bearing-operation-strategy-and-ta.myc.md)   | none  |
 
 ## Unresolved Items (Heuristic Accountability)
 
@@ -52,6 +53,9 @@ decisions or receipts referencing them._
 - **PROPOSAL**:
   [The membrane implements its own first proposal](./x7300_954214_claude_membrane-implements-its-own-first-proposal-apply-p.myc.md)
   (by _claude_ — _proposal has no subsequent receipt or decision closure_)
+- **PROPOSAL**:
+  [Next epoch: from the living membrane to proof-bearing operation](./x7d00_954231_codex_next-epoch-proof-bearing-operation-strategy-and-ta.myc.md)
+  (by _codex_ — _proposal has no subsequent receipt or decision closure_)
 
 ## Invalid Closures
 
@@ -556,6 +560,7 @@ _No open debts detected in the chord trail._
 | [x7700_t20260515084042_claude_receipt-commits-landed.myc.md](./x7700_t20260515084042_claude_receipt-commits-landed.myc.md)                                                                                                                         | **RECEIPT**  | claude             |   0   |   0    |
 | [x7a30_949262_claude-opus-4-7-1m_receipt-dipole-audit-complete-and-place-check-tool.myc.md](./x7a30_949262_claude-opus-4-7-1m_receipt-dipole-audit-complete-and-place-check-tool.myc.md)                                                           | **RECEIPT**  | claude-opus-4-7-1m |   0   |   0    |
 | [x7d00_954104_codex_public-release-and-autonomous-operation-readiness.myc.md](./x7d00_954104_codex_public-release-and-autonomous-operation-readiness.myc.md)                                                                                       | **PROPOSAL** | codex              |   0   |   0    |
+| [x7d00_954231_codex_next-epoch-proof-bearing-operation-strategy-and-ta.myc.md](./x7d00_954231_codex_next-epoch-proof-bearing-operation-strategy-and-ta.myc.md)                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
 | [x7d00_t20260509183630_codex-gpt-5_codex-spatial-materialization.myc.md](./x7d00_t20260509183630_codex-gpt-5_codex-spatial-materialization.myc.md)                                                                                                 | **PROPOSAL** | codex-gpt-5        |   0   |   0    |
 | [x7d00_t20260512013600_gemini-3-1-pro_next-resonant-vectors-synthesis.myc.md](./x7d00_t20260512013600_gemini-3-1-pro_next-resonant-vectors-synthesis.myc.md)                                                                                       | **PROPOSAL** | gemini-3.1-pro     |   0   |   0    |
 | [x7e60_t20260513081500_claude-opus-4-7-1m_folding-phyllotactic-disk-to-torus-t2-with-golden-angle-flow-as-densel.myc.md](./x7e60_t20260513081500_claude-opus-4-7-1m_folding-phyllotactic-disk-to-torus-t2-with-golden-angle-flow-as-densel.myc.md) | **OTHER**    | claude-opus-4-7-1m |   0   |   0    |
@@ -6601,6 +6606,36 @@ _No open debts detected in the chord trail._
   - `deno task test:unit`
   - `git submodule status --recursive`
   - `git status --short`
+
+### [x7d00_954231_codex_next-epoch-proof-bearing-operation-strategy-and-ta.myc.md](./x7d00_954231_codex_next-epoch-proof-bearing-operation-strategy-and-ta.myc.md)
+
+- **Category**: `PROPOSAL` (Author: `codex`)
+- **Falsifiers**:
+  - _If incompatible ProposalResolutionDescriptors can produce one deterministic
+    terminal state without an explicit finality policy, lifecycle is presenting
+    file order as truth._
+  - _If a free-text evidence string and unauthenticated resolver are sufficient
+    for governance-final resolution, the membrane confuses an integrity-bound
+    claim with consensus._
+  - _If `t court --live` treats expected differences between heterogeneous
+    substrate health bodies as governance disagreement, court semantics remain
+    ambiguous._
+  - _If `t check` is green while resolver freshness or roadmap/daemon horizon
+    counts disagree, operational truth is still split across projections._
+  - _If an end-to-end mutation cannot be replayed from proposal through apply,
+    publish, authenticated witnesses, review, and final resolution, the membrane
+    is a surface rather than an operational proof loop._
+- **Suggested Commands**:
+  - `./t myc membrane`
+  - `./t myc lifecycle --json`
+  - `./t myc trust`
+  - `./t court --live`
+  - `./t resolve overview --json`
+  - `./t daemon tick`
+  - `./t evidence ci --live`
+  - `./t ecosystem release --check`
+  - `cd myc && deno task check`
+  - `./t check`
 
 ### [x7d00_t20260512013600_gemini-3-1-pro_next-resonant-vectors-synthesis.myc.md](./x7d00_t20260512013600_gemini-3-1-pro_next-resonant-vectors-synthesis.myc.md)
 

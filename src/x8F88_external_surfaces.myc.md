@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    498     |
+| dynamic topology  |    499     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **598**   |
+| **Total**         |  **599**   |
 
 ## Runtime Cache Diagnostics
 
@@ -614,6 +614,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x7700_t20260515084042_claude_receipt-commits-landed.myc.md](../src/x7700_t20260515084042_claude_receipt-commits-landed.myc.md)                                                                                                                         | canonical        | src/x7700_t20260515084042_claude_receipt-commits-landed.myc.md                                                             | keep        |                              |
 | dynamic topology  | [src/x7a30_949262_claude-opus-4-7-1m_receipt-dipole-audit-complete-and-place-check-tool.myc.md](../src/x7a30_949262_claude-opus-4-7-1m_receipt-dipole-audit-complete-and-place-check-tool.myc.md)                                                           | canonical        | src/x7a30_949262_claude-opus-4-7-1m_receipt-dipole-audit-complete-and-place-check-tool.myc.md                              | keep        |                              |
 | dynamic topology  | [src/x7d00_954104_codex_public-release-and-autonomous-operation-readiness.myc.md](../src/x7d00_954104_codex_public-release-and-autonomous-operation-readiness.myc.md)                                                                                       | canonical        | src/x7d00_954104_codex_public-release-and-autonomous-operation-readiness.myc.md                                            | keep        |                              |
+| dynamic topology  | [src/x7d00_954231_codex_next-epoch-proof-bearing-operation-strategy-and-ta.myc.md](../src/x7d00_954231_codex_next-epoch-proof-bearing-operation-strategy-and-ta.myc.md)                                                                                     | canonical        | src/x7d00_954231_codex_next-epoch-proof-bearing-operation-strategy-and-ta.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x7d00_t20260509183630_codex-gpt-5_codex-spatial-materialization.myc.md](../src/x7d00_t20260509183630_codex-gpt-5_codex-spatial-materialization.myc.md)                                                                                                 | canonical        | src/x7d00_t20260509183630_codex-gpt-5_codex-spatial-materialization.myc.md                                                 | keep        |                              |
 | dynamic topology  | [src/x7d00_t20260512013600_gemini-3-1-pro_next-resonant-vectors-synthesis.myc.md](../src/x7d00_t20260512013600_gemini-3-1-pro_next-resonant-vectors-synthesis.myc.md)                                                                                       | canonical        | src/x7d00_t20260512013600_gemini-3-1-pro_next-resonant-vectors-synthesis.myc.md                                            | keep        |                              |
 | dynamic topology  | [src/x7e60_t20260513081500_claude-opus-4-7-1m_folding-phyllotactic-disk-to-torus-t2-with-golden-angle-flow-as-densel.myc.md](../src/x7e60_t20260513081500_claude-opus-4-7-1m_folding-phyllotactic-disk-to-torus-t2-with-golden-angle-flow-as-densel.myc.md) | canonical        | src/x7e60_t20260513081500_claude-opus-4-7-1m_folding-phyllotactic-disk-to-torus-t2-with-golden-angle-flow-as-densel.myc.md | keep        |                              |

@@ -10,7 +10,7 @@ chord:
   primary: "oct:5.action"
   secondary: ["oct:7.completion", "oct:6.harmony"]
 hears:
-  - x5700_952375_claude-opus-4-8_sovereignty-write-side-claim-and-whose-turn-routin
+  - x5700_952376_claude-opus-4-8_sovereignty-write-side-claim-and-whose-turn-routin
   - "architect: так відчиняй все що можеш без мене. я на все даю добро."
 references:
   - src/x7F00_daemon.ts

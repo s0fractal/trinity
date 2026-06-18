@@ -11,7 +11,7 @@ chord:
   secondary: ["oct:6.4", "oct:7.2"]
 hears:
   - "architect: повне дослідження myc на предмет можливих вдосконалень і гармонізації з trinity"
-  - x7000_954153_claude-opus-4-8_trinity-published-repo-public-audit-clean
+  - x7000_954153_claude_trinity-published-repo-public-pre-publication-audi
 references:
   - myc/src/x0100_myc.ts
   - myc/src/x0200_resolve.ts

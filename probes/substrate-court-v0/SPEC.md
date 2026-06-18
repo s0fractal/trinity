@@ -66,9 +66,15 @@ The court asserts these properties on a witness set:
 
 1. **Schema version uniform.** Every envelope has
    `schema === "trinity.receipt-envelope.v0.1"`. Mismatch is a hard fail.
-2. **Body_hash agreement.** Every envelope reports the same `body_hash`.
-   Mismatch is a divergence (not necessarily fail — court reports conflict
-   explicitly).
+2. **Shared-claim body agreement (codex P2).** Two envelopes witness the *same
+   claim* iff they declare the same `subject` (absent → a `substrate_health`
+   envelope's subject is its own substrate). Witnesses to the SAME subject must
+   report the same `body_hash` — a mismatch is a real `body_hash_divergence`
+   conflict that breaks `shared_claim_agreement`. Witnesses to DIFFERENT subjects
+   (e.g. four substrates each reporting their own health) are EXPECTED to differ;
+   that is `health_divergence`, a diagnostic, never a court failure. The headline
+   `agreement` is governance (integrity + law + shared-claim), so self-report
+   diversity can never falsify it.
 3. **Envelope_id uniqueness.** Each envelope has a distinct `envelope_id`
    because `substrate_tag` differs. Duplicate envelope_ids would mean two
    witnesses wrote identical metadata (suspicious — same substrate_tag).
@@ -87,9 +93,14 @@ The court asserts these properties on a witness set:
 ```json
 {
   "type": "SubstrateCourtVerdict",
-  "schema": "trinity.substrate-court.v0.1",
+  "schema": "trinity.substrate-court.v0.2",
   "witnesses_count": <int>,
-  "agreement": <bool>,
+  "agreement": <bool>,            // governance: integrity ∧ law ∧ shared-claim
+  "integrity_valid": <bool>,      // every envelope internally valid
+  "shared_claim_agreement": <bool|null>,  // null when no two share a subject
+  "health_divergence": [          // diagnostic self-report differences, NOT failures
+    { "kind": "health_divergence", "between": ["<tag>", "<tag>"], "values": ["<h1>", "<h2>"] }
+  ],
   "body_hashes": {
     "<substrate_tag>": "<body_hash>"
   },

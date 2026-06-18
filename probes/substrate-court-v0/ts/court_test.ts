@@ -71,26 +71,63 @@ Deno.test("judge — a null law_hash is an abstention, never drift", async () =>
   });
 });
 
-Deno.test("judge — body divergence AND law drift both reported", async () => {
+Deno.test("judge — self-report body divergence is diagnostic; only law drift is a conflict (codex P2)", async () => {
   const v = await judge([
     env("omega", "Hx", "0x30a95260"),
     env("liquid", "Hy", "0xdeadbeef"),
   ]);
-  assertEquals(v.agreement, false);
-  const kinds = v.conflicts.map((c) => c.kind).sort();
-  assertEquals(kinds, ["body_hash_divergence", "law_hash_drift"]);
+  assertEquals(v.agreement, false); // law drift breaks governance
+  assertEquals(v.conflicts.map((c) => c.kind), ["law_hash_drift"]);
+  assertEquals(v.health_divergence.length, 1); // the body difference is diagnostic
 });
 
-Deno.test("law_agreement — different bodies but same law ⇒ law_agreement true", async () => {
-  // The core substrate-court case: substrates witness their OWN health bodies
-  // (so body agreement is false) but share the same law surface.
+Deno.test("law_agreement — heterogeneous self-report bodies do NOT break governance (codex P2)", async () => {
+  // The core substrate-court case: substrates witness their OWN health bodies.
+  // Different self-reports are EXPECTED — they are not four witnesses to one body.
   const v = await judge([
     env("trinity", "Htrinity", "0x30a95260"),
     env("omega", "Homega", "0x30a95260"),
   ]);
-  assertEquals(v.agreement, false); // bodies differ
-  assertEquals(v.law_agreement, true); // but the law agrees
+  assertEquals(v.agreement, true); // governance holds despite different health
+  assertEquals(v.health_divergence.length, 1); // surfaced, not a failure
+  assertEquals(v.shared_claim_agreement, null); // no two share a subject
+  assertEquals(v.law_agreement, true);
   assertEquals(v.law_witness_count, 2);
+});
+
+Deno.test("judge — two witnesses to the SAME claim with different bodies DO conflict (codex P2)", async () => {
+  const claim = (tag: string, body_hash: string): Envelope => ({
+    schema: ENVELOPE_SCHEMA,
+    envelope_id: `id-${tag}`,
+    body_hash,
+    substrate_tag: tag,
+    body_kind: "morphism_witness",
+    subject: "claim-X", // both witness the SAME subject
+    law_hash: "0x30a95260",
+    witness_chain: [],
+  });
+  const v = await judge([claim("omega", "Ha"), claim("trinity", "Hb")]);
+  assertEquals(v.agreement, false); // same subject, different body → real conflict
+  assertEquals(v.shared_claim_agreement, false);
+  assertEquals(v.conflicts.map((c) => c.kind), ["body_hash_divergence"]);
+  assertEquals(v.health_divergence.length, 0);
+});
+
+Deno.test("judge — two witnesses to the same claim AGREEING ⇒ shared_claim_agreement true", async () => {
+  const claim = (tag: string): Envelope => ({
+    schema: ENVELOPE_SCHEMA,
+    envelope_id: `id-${tag}`,
+    body_hash: "Hsame",
+    substrate_tag: tag,
+    body_kind: "morphism_witness",
+    subject: "claim-Y",
+    law_hash: "0x30a95260",
+    witness_chain: [],
+  });
+  const v = await judge([claim("omega"), claim("trinity")]);
+  assertEquals(v.agreement, true);
+  assertEquals(v.shared_claim_agreement, true);
+  assertEquals(v.integrity_valid, true);
 });
 
 Deno.test("law_agreement — fewer than two declared laws ⇒ null (cannot compare)", async () => {

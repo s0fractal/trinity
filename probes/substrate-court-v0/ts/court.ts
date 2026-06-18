@@ -18,10 +18,24 @@ export type Envelope = {
   body_hash: string;
   substrate_tag: string;
   body_kind: string;
+  // The claim this envelope witnesses. Two envelopes witness the SAME claim iff
+  // they declare the same subject. Absent → a `substrate_health` envelope is a
+  // SELF-report (its subject is its own substrate), so different substrates never
+  // share that subject; any other body_kind defaults to a shared claim of that
+  // kind. (codex P2 x7d00_954231: distinguish shared-claim disagreement from
+  // diagnostic self-report divergence.)
+  subject?: string;
   body?: CborValue;
   law_hash?: string | null;
   witness_chain?: unknown[];
 };
+
+/** The subject two envelopes must share to be "witnesses to the same body". */
+function subjectKey(env: Envelope): string {
+  if (env.subject) return `subject:${env.subject}`;
+  if (env.body_kind === "substrate_health") return `self:${env.substrate_tag}`;
+  return `kind:${env.body_kind}`;
+}
 
 export type Conflict =
   | {
@@ -47,11 +61,27 @@ export type Conflict =
     values: [string, string];
   };
 
+/** A body_hash difference between two SELF-reports (different subjects). Diagnostic,
+ *  NOT a court failure — four substrates reporting their own health are expected to
+ *  differ (codex P2). Surfaced so the difference is visible, never silently a conflict. */
+export type HealthDivergence = {
+  kind: "health_divergence";
+  between: [string, string];
+  values: [string, string];
+};
+
 export type Verdict = {
   type: "SubstrateCourtVerdict";
-  schema: "trinity.substrate-court.v0.1";
+  schema: "trinity.substrate-court.v0.2";
   witnesses_count: number;
+  // Headline: GOVERNANCE agreement — every envelope is internally valid, declared
+  // laws agree, and witnesses to a SHARED claim agree on its body. Diagnostic
+  // self-report divergence (health_divergence) never breaks it (codex P2).
   agreement: boolean;
+  // Orthogonal dimensions, so the verdict can never be self-contradictory:
+  integrity_valid: boolean; // every envelope internally valid
+  shared_claim_agreement: boolean | null; // null when no two share a subject
+  health_divergence: HealthDivergence[]; // diagnostic, not a failure
   body_hashes: Record<string, string>;
   envelope_ids: Record<string, string>;
   law_hashes: Record<string, string | null>;
@@ -133,15 +163,32 @@ export async function judge(envelopes: Envelope[]): Promise<Verdict> {
   }
 
   const tags = Object.keys(body_hashes);
+  const subjectOf: Record<string, string> = {};
+  for (const env of envelopes) subjectOf[env.substrate_tag] = subjectKey(env);
 
-  // (2) body_hash agreement across witnesses
+  // (2) body_hash comparison across witnesses, split by subject:
+  //   - SAME subject + different body  → a real body_hash_divergence CONFLICT
+  //     (two witnesses to one claim disagree);
+  //   - DIFFERENT subject + different body → health_divergence DIAGNOSTIC
+  //     (each substrate reports its own health — expected, not a failure).
+  const health_divergence: HealthDivergence[] = [];
+  let sharedClaimPairs = 0;
   for (let i = 0; i < tags.length; i++) {
     for (let j = i + 1; j < tags.length; j++) {
       const ti = tags[i];
       const tj = tags[j];
-      if (body_hashes[ti] !== body_hashes[tj]) {
+      const sameSubject = subjectOf[ti] === subjectOf[tj];
+      if (sameSubject) sharedClaimPairs++;
+      if (body_hashes[ti] === body_hashes[tj]) continue;
+      if (sameSubject) {
         conflicts.push({
           kind: "body_hash_divergence",
+          between: [ti, tj],
+          values: [body_hashes[ti], body_hashes[tj]],
+        });
+      } else {
+        health_divergence.push({
+          kind: "health_divergence",
           between: [ti, tj],
           values: [body_hashes[ti], body_hashes[tj]],
         });
@@ -187,11 +234,29 @@ export async function judge(envelopes: Envelope[]): Promise<Verdict> {
     ? null
     : declaredLaws.every((l) => l === declaredLaws[0]);
 
+  // Orthogonal dimensions (codex P2): integrity, shared-claim, law — each its own
+  // question. `conflicts` now holds ONLY governance-breaking findings (integrity +
+  // law drift + same-subject body divergence); health_divergence is excluded, so
+  // `agreement` can never be falsified by expected self-report diversity.
+  const INTEGRITY = new Set([
+    "schema_mismatch",
+    "duplicate_substrate_tag",
+    "self_inconsistent_body_hash",
+    "envelope_id_collision",
+  ]);
+  const integrity_valid = !conflicts.some((c) => INTEGRITY.has(c.kind));
+  const shared_claim_agreement = sharedClaimPairs === 0
+    ? null
+    : !conflicts.some((c) => c.kind === "body_hash_divergence");
+
   return {
     type: "SubstrateCourtVerdict",
-    schema: "trinity.substrate-court.v0.1",
+    schema: "trinity.substrate-court.v0.2",
     witnesses_count: envelopes.length,
     agreement: conflicts.length === 0,
+    integrity_valid,
+    shared_claim_agreement,
+    health_divergence,
     body_hashes,
     envelope_ids,
     law_hashes,

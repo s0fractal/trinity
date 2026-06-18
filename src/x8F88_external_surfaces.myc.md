@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    491     |
+| dynamic topology  |    492     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **591**   |
+| **Total**         |  **592**   |
 
 ## Runtime Cache Diagnostics
 
@@ -165,6 +165,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x2200_950295_claude_repo-wide-external-lens-survey.myc.md](../src/x2200_950295_claude_repo-wide-external-lens-survey.myc.md)                                                                                                                           | canonical        | src/x2200_950295_claude_repo-wide-external-lens-survey.myc.md                                                              | keep        |                              |
 | dynamic topology  | [src/x2300_950626_claude_bucket-8-crystallization-observation.myc.md](../src/x2300_950626_claude_bucket-8-crystallization-observation.myc.md)                                                                                                               | canonical        | src/x2300_950626_claude_bucket-8-crystallization-observation.myc.md                                                        | keep        |                              |
 | dynamic topology  | [src/x2300_954117_claude_substrate-at-internal-rest-read-side-triad-complet.myc.md](../src/x2300_954117_claude_substrate-at-internal-rest-read-side-triad-complet.myc.md)                                                                                   | canonical        | src/x2300_954117_claude_substrate-at-internal-rest-read-side-triad-complet.myc.md                                          | keep        |                              |
+| dynamic topology  | [src/x2300_954221_claude_authenticated-trust-integrity-plus-authenticity-la.myc.md](../src/x2300_954221_claude_authenticated-trust-integrity-plus-authenticity-la.myc.md)                                                                                   | canonical        | src/x2300_954221_claude_authenticated-trust-integrity-plus-authenticity-la.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x2600_949982_codex_coordinate-naming-cowitness.myc.md](../src/x2600_949982_codex_coordinate-naming-cowitness.myc.md)                                                                                                                                   | canonical        | src/x2600_949982_codex_coordinate-naming-cowitness.myc.md                                                                  | keep        |                              |
 | dynamic topology  | [src/x2600_950005_codex_x8888-state-memory-cowitness.myc.md](../src/x2600_950005_codex_x8888-state-memory-cowitness.myc.md)                                                                                                                                 | canonical        | src/x2600_950005_codex_x8888-state-memory-cowitness.myc.md                                                                 | keep        |                              |
 | dynamic topology  | [src/x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.myc.md](../src/x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.myc.md)                                                                       | canonical        | src/x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.myc.md                                    | keep        |                              |

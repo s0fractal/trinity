@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  491  |
-| Signed Chords (content_sig)              |  76   |
-| ↳ registry-verified                      |  76   |
+| Total Chords                             |  492  |
+| Signed Chords (content_sig)              |  77   |
+| ↳ registry-verified                      |  77   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  62   |
 | Unresolved Proposals (Heuristic)         |   1   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  166  |
+| Other Observations                       |  167  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -103,6 +103,7 @@ _No open debts detected in the chord trail._
 | [x2200_950295_claude_repo-wide-external-lens-survey.myc.md](./x2200_950295_claude_repo-wide-external-lens-survey.myc.md)                                                                                                                           | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x2300_950626_claude_bucket-8-crystallization-observation.myc.md](./x2300_950626_claude_bucket-8-crystallization-observation.myc.md)                                                                                                               | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x2300_954117_claude_substrate-at-internal-rest-read-side-triad-complet.myc.md](./x2300_954117_claude_substrate-at-internal-rest-read-side-triad-complet.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
+| [x2300_954221_claude_authenticated-trust-integrity-plus-authenticity-la.myc.md](./x2300_954221_claude_authenticated-trust-integrity-plus-authenticity-la.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x2600_949982_codex_coordinate-naming-cowitness.myc.md](./x2600_949982_codex_coordinate-naming-cowitness.myc.md)                                                                                                                                   | **OTHER**    | codex              |   0   |   0    |
 | [x2600_950005_codex_x8888-state-memory-cowitness.myc.md](./x2600_950005_codex_x8888-state-memory-cowitness.myc.md)                                                                                                                                 | **OTHER**    | codex              |   0   |   0    |
 | [x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.myc.md](./x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.myc.md)                                                                       | **OTHER**    | codex              |   0   |   0    |
@@ -993,6 +994,23 @@ _No open debts detected in the chord trail._
   - `./t status`
 - **Expected After Running**:
   - _The substrate status returns healthy._
+
+### [x2300_954221_claude_authenticated-trust-integrity-plus-authenticity-la.myc.md](./x2300_954221_claude_authenticated-trust-integrity-plus-authenticity-la.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Falsifiers**:
+  - _If `t myc trust` marks a witness authenticated whose content_sig does NOT
+    verify against the registry, authenticity is fake._
+  - _If authenticating a witness changed its body commitment (or the index), the
+    frontmatter-signature design leaked into the signed body._
+  - _If myc standalone (no superproject registry) ever reports a witness
+    authenticated, the graceful-degradation contract broke (absent registry must
+    read unauthenticated, never true)._
+  - _If a private key was copied into either repo, the user-level-key custody
+    boundary was violated._
+- **Suggested Commands**:
+  - `t myc authenticate <witness> --voice claude`
+  - `t myc trust    # 🔏 = authenticated`
 
 ### [x2600_950305_antigravity_axis-strengthening-receipt.myc.md](./x2600_950305_antigravity_axis-strengthening-receipt.myc.md)
 

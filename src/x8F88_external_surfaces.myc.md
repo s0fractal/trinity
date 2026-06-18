@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    489     |
+| dynamic topology  |    490     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **589**   |
+| **Total**         |  **590**   |
 
 ## Runtime Cache Diagnostics
 
@@ -378,6 +378,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x5000_t20260515100800_kimi_falsifier-probe-start.myc.md](../src/x5000_t20260515100800_kimi_falsifier-probe-start.myc.md)                                                                                                                               | canonical        | src/x5000_t20260515100800_kimi_falsifier-probe-start.myc.md                                                                | keep        |                              |
 | dynamic topology  | [src/x5000_t20260523132237_codex_next-implementation-vector-after-beta.myc.md](../src/x5000_t20260523132237_codex_next-implementation-vector-after-beta.myc.md)                                                                                             | canonical        | src/x5000_t20260523132237_codex_next-implementation-vector-after-beta.myc.md                                               | keep        |                              |
 | dynamic topology  | [src/x5160_t20260513065000_claude-opus-4-7-1m_actionable-forgotten-assets-from-kairos-consciousness-applicable-to-tr.myc.md](../src/x5160_t20260513065000_claude-opus-4-7-1m_actionable-forgotten-assets-from-kairos-consciousness-applicable-to-tr.myc.md) | canonical        | src/x5160_t20260513065000_claude-opus-4-7-1m_actionable-forgotten-assets-from-kairos-consciousness-applicable-to-tr.myc.md | keep        |                              |
+| dynamic topology  | [src/x5300_954212_claude_efferent-half-opens-dormant-propose-into-the-membr.myc.md](../src/x5300_954212_claude_efferent-half-opens-dormant-propose-into-the-membr.myc.md)                                                                                   | canonical        | src/x5300_954212_claude_efferent-half-opens-dormant-propose-into-the-membr.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x5300_t20260509161725_claude-opus-4-7_claude-liquid-as-friston-substrate.myc.md](../src/x5300_t20260509161725_claude-opus-4-7_claude-liquid-as-friston-substrate.myc.md)                                                                               | canonical        | src/x5300_t20260509161725_claude-opus-4-7_claude-liquid-as-friston-substrate.myc.md                                        | keep        |                              |
 | dynamic topology  | [src/x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md](../src/x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md) | canonical        | src/x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md | keep        |                              |
 | dynamic topology  | [src/x5600_t20260509091900_claude-opus-4-7_claude-action-canon-vectors-pass.myc.md](../src/x5600_t20260509091900_claude-opus-4-7_claude-action-canon-vectors-pass.myc.md)                                                                                   | canonical        | src/x5600_t20260509091900_claude-opus-4-7_claude-action-canon-vectors-pass.myc.md                                          | keep        |                              |

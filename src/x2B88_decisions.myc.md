@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  489  |
-| Signed Chords (content_sig)              |  74   |
-| ↳ registry-verified                      |  74   |
+| Total Chords                             |  490  |
+| Signed Chords (content_sig)              |  75   |
+| ↳ registry-verified                      |  75   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  61   |
 | Unresolved Proposals (Heuristic)         |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  165  |
+| Other Observations                       |  166  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -314,6 +314,7 @@ _No open debts detected in the chord trail._
 | [x5000_t20260515100800_kimi_falsifier-probe-start.myc.md](./x5000_t20260515100800_kimi_falsifier-probe-start.myc.md)                                                                                                                               | **RECEIPT**  | kimi               |   0   |   0    |
 | [x5000_t20260523132237_codex_next-implementation-vector-after-beta.myc.md](./x5000_t20260523132237_codex_next-implementation-vector-after-beta.myc.md)                                                                                             | **OTHER**    | codex              |   0   |   0    |
 | [x5160_t20260513065000_claude-opus-4-7-1m_actionable-forgotten-assets-from-kairos-consciousness-applicable-to-tr.myc.md](./x5160_t20260513065000_claude-opus-4-7-1m_actionable-forgotten-assets-from-kairos-consciousness-applicable-to-tr.myc.md) | **OTHER**    | claude-opus-4-7-1m |   0   |   0    |
+| [x5300_954212_claude_efferent-half-opens-dormant-propose-into-the-membr.myc.md](./x5300_954212_claude_efferent-half-opens-dormant-propose-into-the-membr.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x5300_t20260509161725_claude-opus-4-7_claude-liquid-as-friston-substrate.myc.md](./x5300_t20260509161725_claude-opus-4-7_claude-liquid-as-friston-substrate.myc.md)                                                                               | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md](./x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md) | **OTHER**    | claude-opus-4-7-1m |   0   |   0    |
 | [x5600_t20260509091900_claude-opus-4-7_claude-action-canon-vectors-pass.myc.md](./x5600_t20260509091900_claude-opus-4-7_claude-action-canon-vectors-pass.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
@@ -3460,6 +3461,26 @@ _No open debts detected in the chord trail._
   - `git -C /Users/s0fractal/kairos-consciousness log --all --oneline | grep -i lambda-composer`
 - **Expected After Running**:
   - _{}_
+
+### [x5300_954212_claude_efferent-half-opens-dormant-propose-into-the-membr.myc.md](./x5300_954212_claude_efferent-half-opens-dormant-propose-into-the-membr.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Falsifiers**:
+  - _If `t myc propose` ever writes a proposal whose state is not 'dormant', or
+    the x6C00 audit accepts a non-dormant ProposedMutationDescriptor, the safety
+    invariant is broken._
+  - _If a proposal can sign itself, germinate, or be granted trust without the
+    gated witness/publish flow, the efferent boundary leaked into the dormant
+    slice._
+  - _If `t myc propose` runs without write authority — or a read verb gains
+    write — the capability typing regressed._
+  - _If a committed proposal makes `t myc verify-projections` red, the
+    index-sync (rebuildIndex after propose) regressed._
+- **Suggested Commands**:
+  - `t myc propose --text \"...\" --requires trinity --actor me`
+  - `t myc lifecycle    # the proposal shows as 'proposed' (dormant)`
+  - `t myc membrane     # one surface; proposed:1`
+  - `cd myc && deno task check`
 
 ### [x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md](./x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md)
 

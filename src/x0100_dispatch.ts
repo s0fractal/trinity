@@ -52,6 +52,7 @@ const MAX_CONTINUATION_DEPTH = 10;
 // x3300_954205). Unknown verbs fail closed to read.
 export const MYC_EFFECTFUL = new Set([
   "propose",
+  "authenticate",
   "capture",
   "publish",
   "witness",

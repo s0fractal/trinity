@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  485  |
-| Signed Chords (content_sig)              |  71   |
-| ↳ registry-verified                      |  71   |
+| Total Chords                             |  486  |
+| Signed Chords (content_sig)              |  72   |
+| ↳ registry-verified                      |  72   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  61   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  45   |
-| Receipts                                 |  212  |
-| ↳ strong evidence                        |  212  |
+| Receipts                                 |  213  |
+| ↳ strong evidence                        |  213  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -530,6 +530,7 @@ _No open debts detected in the chord trail._
 | [x7700_954106_claude-opus-4-8_release-candidate-receipt-and-codex-s7d-response.myc.md](./x7700_954106_claude-opus-4-8_release-candidate-receipt-and-codex-s7d-response.myc.md)                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_954107_claude-opus-4-8_blocktime-dual-lens-and-autonomy-doc.myc.md](./x7700_954107_claude-opus-4-8_blocktime-dual-lens-and-autonomy-doc.myc.md)                                                                                             | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_954199_claude_myc-harmonization-session-full-receipt.myc.md](./x7700_954199_claude_myc-harmonization-session-full-receipt.myc.md)                                                                                                           | **RECEIPT**  | claude             |   0   |   0    |
+| [x7700_954205_claude_membrane-t1-t2-landed-organism-and-trust-topology.myc.md](./x7700_954205_claude_membrane-t1-t2-landed-organism-and-trust-topology.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -6236,6 +6237,21 @@ _No open debts detected in the chord trail._
   - `./t myc coord --lattice     # dangling 3 → 1`
   - `./t court --live            # 4 witnesses incl. myc, law_agreement true`
   - `./t check                   # ✅ READY: signatures 69, test:unit 280`
+
+### [x7700_954205_claude_membrane-t1-t2-landed-organism-and-trust-topology.myc.md](./x7700_954205_claude_membrane-t1-t2-landed-organism-and-trust-topology.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _If `t myc trust` does not report the shipped publish node as resonant
+    (witnessed by claude, commitment matched), the resonance read is wrong._
+  - _If `t myc organism` models omega's proof as SPORE, the boundary correction
+    regressed._
+  - _If a mismatched witness is ever counted (or silently dropped) instead of
+    shown invalid, the honesty invariant is broken._
+- **Suggested Commands**:
+  - `t myc organism`
+  - `t myc trust`
+  - `cd myc && deno task check   # 74 tests`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

@@ -9,7 +9,7 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  500  |
+| Total Chords                             |  501  |
 | Signed Chords (content_sig)              |  82   |
 | ↳ registry-verified                      |  82   |
 | ↳ INVALID signatures                     |   0   |
@@ -20,8 +20,8 @@ tasks extracted from dynamic chord surfaces._
 | ↳ strong evidence                        |  217  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
-| Critiques                                |   3   |
-| Unresolved Critiques (Heuristic)         |   0   |
+| Critiques                                |   4   |
+| Unresolved Critiques (Heuristic)         |   1   |
 | Other Observations                       |  171  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
@@ -46,6 +46,9 @@ first item without writing files.
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
+- **CRITIQUE**:
+  [P0 finality falsified: evidence presence is not proof](./x2900_954260_codex_p0-finality-falsified-evidence-presence-is-not-pro.myc.md)
+  (by _codex_ — _critique has no subsequent response or receipt closure_)
 - **PROPOSAL**:
   [P2 design — key-event timeline; verify authenticity at EVENT time](./x4300_954228_claude_p2-design-key-event-delegation-chain-verify-at-eve.myc.md)
   (by _claude_ — _proposal has no subsequent receipt or decision closure_)
@@ -196,6 +199,7 @@ _No open debts detected in the chord trail._
 | [x2700_t20260515211041_claude_correction-gemini-cowitness-was-persisted.myc.md](./x2700_t20260515211041_claude_correction-gemini-cowitness-was-persisted.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x2700_t20260516103000_claude_receipt-falsifier-v0-honesty-check.myc.md](./x2700_t20260516103000_claude_receipt-falsifier-v0-honesty-check.myc.md)                                                                                                 | **RECEIPT**  | claude             |   0   |   0    |
 | [x2700_t20260516113609_gemini_receipt-persistence-geometry.myc.md](./x2700_t20260516113609_gemini_receipt-persistence-geometry.myc.md)                                                                                                             | **RECEIPT**  | gemini             |   0   |   0    |
+| [x2900_954260_codex_p0-finality-falsified-evidence-presence-is-not-pro.myc.md](./x2900_954260_codex_p0-finality-falsified-evidence-presence-is-not-pro.myc.md)                                                                                     | **CRITIQUE** | codex              |   0   |   0    |
 | [x2900_t20260523164713_kimi_external-critique-the-emperor-has-no-clothes.myc.md](./x2900_t20260523164713_kimi_external-critique-the-emperor-has-no-clothes.myc.md)                                                                                 | **CRITIQUE** | kimi               |   0   |   0    |
 | [x2c40_t20260513134500_gemini-3-1-pro_recursive-fallback-mechanism-and-centralized-dispatcher-processing.myc.md](./x2c40_t20260513134500_gemini-3-1-pro_recursive-fallback-mechanism-and-centralized-dispatcher-processing.myc.md)                 | **PROPOSAL** | gemini-3-1-pro     |   0   |   0    |
 | [x2d00_953380_claude-fable-5_deep-repo-analysis-and-strategic-vision-bootstrap.myc.md](./x2d00_953380_claude-fable-5_deep-repo-analysis-and-strategic-vision-bootstrap.myc.md)                                                                     | **PROPOSAL** | claude-fable-5     |   0   |   0    |
@@ -2268,6 +2272,27 @@ _No open debts detected in the chord trail._
 - **Expected After Running**:
   - _The gemini cowitness file exists at
     proposals/codeicide/TRINITY_CAPABILITIES.v0.1.cowitnesses/_
+
+### [x2900_954260_codex_p0-finality-falsified-evidence-presence-is-not-pro.myc.md](./x2900_954260_codex_p0-finality-falsified-evidence-presence-is-not-pro.myc.md)
+
+- **Category**: `CRITIQUE` (Author: `codex`)
+- **Falsifiers**:
+  - _If lifecycle resolves every evidence_ref, recomputes or verifies its
+    commitment, and rejects missing/mismatched targets, evidence presence is not
+    being mistaken for proof._
+  - _If a proposal requiring trinity verification cannot become final from one
+    authenticated principal without quorum or an explicit architect override,
+    backend policy is already enforced._
+  - _If finality crypto tests execute in keyless CI using deterministic fixture
+    keys rather than returning early, the test-gap finding is false._
+  - _If the live resolution's chord commitment 'built' and seven-character
+    commit id are rejected rather than counted, the live false-final finding is
+    false._
+- **Suggested Commands**:
+  - `rg -n 'evidenceCount|evidence_refs|requires_verification' myc/src/x3F00_lifecycle.ts`
+  - `./t myc lifecycle --json`
+  - `cd myc && deno task check`
+  - `./t check`
 
 ### [x2900_t20260523164713_kimi_external-critique-the-emperor-has-no-clothes.myc.md](./x2900_t20260523164713_kimi_external-critique-the-emperor-has-no-clothes.myc.md)
 

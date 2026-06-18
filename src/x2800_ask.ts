@@ -10,8 +10,8 @@
 //   +0.40 (returns a finished answer)
 // placement_policy: axis
 // maturity: active
-// horizon: deterministic intent router; an LLM-backed `--smart` mode could parse
-//   arbitrary questions, but that needs a model call (a voice) — out of scope here
+// horizon: none (English + Ukrainian deterministic intent routing landed;
+//   open-ended semantic interpretation remains the calling voice's layer)
 // skill_tag: ask
 // skill_safe: yes-readonly
 //   routes to READ-ONLY lenses only (status/recent/atlas/lineage/self-portrait/
@@ -73,10 +73,24 @@ const STOPWORDS = new Set([
   "for",
   "on",
   "in",
+  "що",
+  "це",
+  "є",
+  "покажи",
+  "мені",
+  "знайди",
+  "про",
+  "поясни",
+  "розкажи",
+  "будь",
+  "ласка",
+  "у",
+  "в",
+  "на",
 ]);
 
 const has = (q: string, ...words: string[]) =>
-  words.some((w) => new RegExp(`\\b${w}`, "i").test(q));
+  words.some((w) => new RegExp(`(?:^|[^\\p{L}\\p{N}_])(?:${w})`, "iu").test(q));
 
 /** Map a plain question to a read-only lens. Pure; exported for the test. The
  *  order is priority — earlier intents win, so "what is the network" reads as the
@@ -99,6 +113,12 @@ export function routeQuestion(raw: string): Route {
       "wrong",
       "alright",
       "status",
+      "здоров",
+      "стан",
+      "працює",
+      "зламан",
+      "стабільн",
+      "зелений",
     )
   ) {
     return {
@@ -120,6 +140,12 @@ export function routeQuestion(raw: string): Route {
       "week",
       "happening",
       "happened",
+      "останн",
+      "недавн",
+      "нового",
+      "зміни",
+      "змінил",
+      "сьогодні",
     )
   ) {
     return {
@@ -142,6 +168,12 @@ export function routeQuestion(raw: string): Route {
       "count",
       "stats",
       "network",
+      "огляд",
+      "структур",
+      "мереж",
+      "мапа",
+      "карта",
+      "скільки",
     )
   ) {
     return {
@@ -165,6 +197,13 @@ export function routeQuestion(raw: string): Route {
       "came to be",
       "arc",
       "how did",
+      "істор",
+      "походжен",
+      "еволю",
+      "розвива",
+      "збудован",
+      "побудован",
+      "як виник",
     )
   ) {
     return {
@@ -184,6 +223,11 @@ export function routeQuestion(raw: string): Route {
       "active",
       "contributor",
       "models",
+      "хто",
+      "голос",
+      "автор",
+      "учасник",
+      "модел",
     )
   ) {
     return {
@@ -205,6 +249,12 @@ export function routeQuestion(raw: string): Route {
       "work on",
       "do now",
       "what now",
+      "далі",
+      "наступн",
+      "пріоритет",
+      "фронтир",
+      "робити",
+      "відкрит",
     )
   ) {
     return {
@@ -248,6 +298,8 @@ const EXAMPLES = [
   ["what should I do next?", "→ t self / t roadmap"],
   ["what is x6600?", "→ t resolve-fqdn x6600"],
   ['find "coherence"', "→ t resolve-fqdn search coherence"],
+  ["що змінилося останнім часом?", "→ t resolve-fqdn recent"],
+  ["що робити далі?", "→ t self / t roadmap"],
 ];
 
 function renderHelp(): string {

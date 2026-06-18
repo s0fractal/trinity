@@ -17,6 +17,15 @@ Deno.test("routeQuestion - maps plain questions to the right read-only lens", ()
   assertEquals(routeQuestion("what should I do next?").intent, "next");
 });
 
+Deno.test("routeQuestion - routes Ukrainian questions without an LLM", () => {
+  assertEquals(routeQuestion("система здорова?").intent, "health");
+  assertEquals(routeQuestion("що змінилося останнім часом?").intent, "recent");
+  assertEquals(routeQuestion("покажи структуру мережі").intent, "overview");
+  assertEquals(routeQuestion("як це було побудовано?").intent, "lineage");
+  assertEquals(routeQuestion("хто з голосів активний?").intent, "voices");
+  assertEquals(routeQuestion("що робити далі?").intent, "next");
+});
+
 Deno.test("routeQuestion - extracts a coordinate subject → resolve", () => {
   const r = routeQuestion("what is x6600?");
   assertEquals(r.intent, "show");
@@ -27,6 +36,10 @@ Deno.test("routeQuestion - free-text subject → search (stopwords stripped)", (
   const r = routeQuestion("tell me about coherence");
   assertEquals(r.intent, "search");
   assertEquals(r.cmd, ["resolve-fqdn", "search", "coherence"]);
+
+  const uk = routeQuestion("розкажи мені про когерентність");
+  assertEquals(uk.intent, "search");
+  assertEquals(uk.cmd, ["resolve-fqdn", "search", "когерентність"]);
 });
 
 Deno.test("routeQuestion - priority: 'network' reads as overview, not a search", () => {
@@ -37,4 +50,5 @@ Deno.test("routeQuestion - priority: 'network' reads as overview, not a search",
 Deno.test("routeQuestion - empty / content-free question → help", () => {
   assertEquals(routeQuestion("").intent, "help");
   assertEquals(routeQuestion("what is this?").intent, "help"); // only stopwords
+  assertEquals(routeQuestion("що це є?").intent, "help");
 });

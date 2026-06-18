@@ -58,7 +58,7 @@ import {
   fromFileUrl,
   join,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
-import { signChordContent } from "./x2F37_voice_keys.ts";
+import { resignChordFile, signChordContent } from "./x2F37_voice_keys.ts";
 
 const BTC_TIP_URL = "https://blockstream.info/api/blocks/tip/height";
 
@@ -549,6 +549,9 @@ Subcommands:
        [--stance=S] [--write]        in src/; otherwise prints it (dry).
   claim --voice=N --horizon=H        Bind an open roadmap horizon to a voice —
        [--primary=oct:N.M] [--write] the write side of taking your turn.
+  sign <file>                        Re-sign a chord after editing its body
+                                     (flow: init → edit → fmt → sign). Run AFTER
+                                     deno fmt, else the signature is invalidated.
   translate <axis> <value>           Convert human axis name + signed float
                                      to hex byte
   parse "<hex bytes>"                Convert 8-byte hex vector to human readings
@@ -570,6 +573,38 @@ ${pairLines}
 Lifecycle phases (trimmed to 3 for v0.1):
 ${LIFECYCLE_PHASES.map((n, i) => `  ${i}: ${n}`).join("\n")}
 `);
+}
+
+/** `chord sign <file>` — re-sign a chord after its body was edited. A signature
+ *  made at `init`/`receipt` dies the moment the body changes (by design — verify
+ *  reports exactly that), so the authoring flow is init → edit → fmt → SIGN.
+ *  This wires the existing resignChordFile (x2F37) — strip stale content_sig,
+ *  hash the current {filename, body}, sign with the voice's local key, reinsert.
+ *  IMPORTANT: run AFTER `deno fmt`; fmt reformats the .myc.md body and would
+ *  invalidate a signature made before it. */
+async function cmdSign(positional: string[]): Promise<void> {
+  const path = positional[0];
+  if (!path) {
+    console.error("usage: chord sign <path-to-chord.myc.md>");
+    Deno.exit(1);
+  }
+  const result = await resignChordFile(path);
+  console.log(JSON.stringify(
+    {
+      type: "chord_sign",
+      position: "4/0",
+      path,
+      signed: result.ok,
+      voice: result.voice,
+      reason: result.reason ?? null,
+      note: result.ok
+        ? "re-signed; remember to `git add` and verify with `t check` (signatures gate)"
+        : "not signed — unsigned chords stay legal but unauthenticated",
+    },
+    null,
+    2,
+  ));
+  if (!result.ok) Deno.exitCode = 1;
 }
 
 async function main(): Promise<void> {
@@ -600,6 +635,9 @@ async function main(): Promise<void> {
       break;
     case "parse":
       cmdParse(positional);
+      break;
+    case "sign":
+      await cmdSign(positional);
       break;
     default:
       console.error(`unknown subcommand: ${cmd}`);

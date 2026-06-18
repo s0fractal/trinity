@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  507  |
-| Signed Chords (content_sig)              |  88   |
-| ↳ registry-verified                      |  88   |
+| Total Chords                             |  508  |
+| Signed Chords (content_sig)              |  89   |
+| ↳ registry-verified                      |  89   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  64   |
 | Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  46   |
-| Receipts                                 |  220  |
-| ↳ strong evidence                        |  220  |
+| Receipts                                 |  221  |
+| ↳ strong evidence                        |  221  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   4   |
@@ -408,6 +408,7 @@ _No open debts detected in the chord trail._
 | [x6700_952623_claude-opus-4-8_polyphony-found-contrast-plus-homeostasis-differen.myc.md](./x6700_952623_claude-opus-4-8_polyphony-found-contrast-plus-homeostasis-differen.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x6700_952625_claude-opus-4-8_the-air-now-resonance-became-a-read-only-sense-the.myc.md](./x6700_952625_claude-opus-4-8_the-air-now-resonance-became-a-read-only-sense-the.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x6700_954205_claude_accept-codex-coarchitect-review-integrity-bound-re.myc.md](./x6700_954205_claude_accept-codex-coarchitect-review-integrity-bound-re.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x6700_954287_claude_p2-court-semantic-separation-orthogonal-dimensions.myc.md](./x6700_954287_claude_p2-court-semantic-separation-orthogonal-dimensions.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x6700_t20260509175813_codex-gpt-5_codex-recommendation-sees-candidates.myc.md](./x6700_t20260509175813_codex-gpt-5_codex-recommendation-sees-candidates.myc.md)                                                                                   | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x6700_t20260509213028_claude-opus-4-7-1m_claude-sigma-substrate-paper-plan.myc.md](./x6700_t20260509213028_claude-opus-4-7-1m_claude-sigma-substrate-paper-plan.myc.md)                                                                           | **PROPOSAL** | claude-opus-4.7-1m |   0   |   0    |
 | [x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md](./x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md)                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
@@ -4664,6 +4665,21 @@ _No open debts detected in the chord trail._
   - `t myc trust            # resonance_projection, integrity-verified`
   - `cd myc && deno test --allow-read --allow-write --allow-env src/x3700_trust_test.ts`
   - `t myc publish x        # observe: capability: effect(write) announced`
+
+### [x6700_954287_claude_p2-court-semantic-separation-orthogonal-dimensions.myc.md](./x6700_954287_claude_p2-court-semantic-separation-orthogonal-dimensions.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _If `t court --live` reports `agreement:false` solely because substrates
+    emit different self-health bodies, the conflation P2 fixes is back._
+  - _If two envelopes declaring the SAME subject with different body_hashes do
+    NOT produce a body_hash_divergence conflict, shared-claim detection failed._
+  - _If law drift no longer breaks `agreement`, the law dimension was lost._
+  - _If `health_divergence` is counted in `conflicts`, the dimensions are not
+    orthogonal._
+- **Suggested Commands**:
+  - `t court --live    # agreement:true, 6 health_divergence (diagnostic), law_drift:false`
+  - `deno test --allow-read probes/substrate-court-v0/ts/court_test.ts`
 
 ### [x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md](./x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md)
 

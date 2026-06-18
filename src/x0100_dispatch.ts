@@ -1301,9 +1301,16 @@ if (import.meta.main) {
   // surface reachable from `t` without trinity reinterpreting myc's output.
   // Stdio is inherited (no capture) so long-running subcommands like `serve` and
   // myc's own JSON/human rendering pass through untouched. cwd is the submodule
-  // so myc's defaultRoot() resolves there; the permission set is the union of
-  // myc's own `myc` + `resolve` deno tasks (read/write/env/net for x0100, +run
-  // for the x0200 coordinate resolver it dispatches).
+  // so myc's defaultRoot() resolves there.
+  //
+  // Capability-separated dispatch (per codex coarchitect review x3300_954205):
+  // the permission set is the MINIMUM for the subcommand, not a blanket union.
+  // READ surfaces get read+env+run only (run is needed because coord/organism/
+  // trust shell their sub-organs; x0100's fixed handlers bound what is spawned —
+  // a model passing args cannot escalate beyond the handler for that verb). EFFECT
+  // surfaces additionally get write; only `serve` gets net. Unknown verbs default
+  // to READ (fail-closed): a new effectful verb must be listed here to gain write.
+  // Finer typing (removing run from pure-read) is T4's capability layer.
   if (word === "myc") {
     const mycEntry = join(SUBSTRATE_ROOT, "myc", "src", "x0100_myc.ts");
     if (!(await fn_exists(mycEntry))) {
@@ -1313,17 +1320,35 @@ if (import.meta.main) {
       );
       Deno.exit(2);
     }
+    const sub = rest[0] ?? "";
+    // Verbs that WRITE the descriptor graph (or stamp provenance on disk).
+    const EFFECTFUL = new Set([
+      "capture",
+      "publish",
+      "witness",
+      "review",
+      "import",
+      "reproject",
+      "index",
+      "graph",
+      "demo",
+    ]);
+    const stampWrites = sub === "coord" && rest.includes("--stamp");
+    const perms = ["--allow-read", "--allow-env", "--allow-run"];
+    let cls = "read";
+    if (sub === "serve") {
+      perms.push("--allow-write", "--allow-net");
+      cls = "serve(net)";
+    } else if (EFFECTFUL.has(sub) || stampWrites) {
+      perms.push("--allow-write");
+      cls = "effect(write)";
+    }
+    if (cls !== "read" && Deno.stdout.isTerminal()) {
+      // surface the effect class so a mutating call is legible, not silent.
+      console.error(`# t myc ${sub} — capability: ${cls}`);
+    }
     const proc = new Deno.Command("deno", {
-      args: [
-        "run",
-        "--allow-read",
-        "--allow-write",
-        "--allow-env",
-        "--allow-net",
-        "--allow-run",
-        mycEntry,
-        ...rest,
-      ],
+      args: ["run", ...perms, mycEntry, ...rest],
       cwd: join(SUBSTRATE_ROOT, "myc"),
       stdin: "inherit",
       stdout: "inherit",

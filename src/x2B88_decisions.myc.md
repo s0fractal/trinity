@@ -9,7 +9,7 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  482  |
+| Total Chords                             |  483  |
 | Signed Chords (content_sig)              |  69   |
 | ↳ registry-verified                      |  69   |
 | ↳ INVALID signatures                     |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  162  |
+| Other Observations                       |  163  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -222,6 +222,7 @@ _No open debts detected in the chord trail._
 | [x3300_953632_antigravity_digital-niche-expansion-vision-and-tactics.myc.md](./x3300_953632_antigravity_digital-niche-expansion-vision-and-tactics.myc.md)                                                                                         | **OTHER**    | antigravity        |   0   |   0    |
 | [x3300_953947_antigravity_super-deep-ecosystem-analysis-and-digital-life-ref.myc.md](./x3300_953947_antigravity_super-deep-ecosystem-analysis-and-digital-life-ref.myc.md)                                                                         | **OTHER**    | antigravity        |   0   |   0    |
 | [x3300_953965_claude-opus-4-8_global-research-priority-directions.myc.md](./x3300_953965_claude-opus-4-8_global-research-priority-directions.myc.md)                                                                                               | **OTHER**    | claude-opus-4-8    |   0   |   0    |
+| [x3300_954197_claude_myc-module-audit-and-trinity-harmonization.myc.md](./x3300_954197_claude_myc-module-audit-and-trinity-harmonization.myc.md)                                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -2512,6 +2513,26 @@ _No open debts detected in the chord trail._
   - `git log --format='%an' | sort | uniq -c   # author concentration`
   - `grep -E '^status|^version' contracts/*.md  # versioned-aspiration audit`
   - `deno run -A src/x2F30_fqdn_resolver.ts overview --pretty  # the outward thread`
+
+### [x3300_954197_claude_myc-module-audit-and-trinity-harmonization.myc.md](./x3300_954197_claude_myc-module-audit-and-trinity-harmonization.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Falsifiers**:
+  - _If `cd myc && deno task check` is not green (66 tests, audit 124 files,
+    projections fresh), the coverage close regressed._
+  - _If `./t myc coord x0000_spec_provenance --json` does not return a
+    git-proven match, the resolver unification is broken._
+  - _If any historical `x<hex>_` filename across substrates has a non-4-hex run,
+    tightening x2F30 COORD_PREFIX to {4} silently dropped a node — the
+    harmonization was unsafe._
+  - _If `./t myc verify-projections` disagrees with
+    `cd myc && deno task myc verify-projections`, the `t myc` passthrough is not
+    faithfully reaching the submodule root._
+- **Suggested Commands**:
+  - `cd myc && deno task check`
+  - `./t myc help`
+  - `./t myc coord x0000_spec_provenance --json`
+  - `./t check   # trinity-side gates incl. signatures`
 
 ### [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)
 

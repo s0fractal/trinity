@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  492  |
-| Signed Chords (content_sig)              |  77   |
-| ↳ registry-verified                      |  77   |
+| Total Chords                             |  493  |
+| Signed Chords (content_sig)              |  78   |
+| ↳ registry-verified                      |  78   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  62   |
 | Unresolved Proposals (Heuristic)         |   1   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  167  |
+| Other Observations                       |  168  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -375,6 +375,7 @@ _No open debts detected in the chord trail._
 | [x6000_t20260514112900_kimi_kimi-omega-fat-removal-receipt.myc.md](./x6000_t20260514112900_kimi_kimi-omega-fat-removal-receipt.myc.md)                                                                                                             | **RECEIPT**  | kimi               |   0   |   0    |
 | [x6000_t20260514200635_claude_self-audit-pre-commit-readiness.myc.md](./x6000_t20260514200635_claude_self-audit-pre-commit-readiness.myc.md)                                                                                                       | **OTHER**    | claude             |   0   |   0    |
 | [x6300_954119_claude_coherence-decreases-as-the-substrate-grows-dispers.myc.md](./x6300_954119_claude_coherence-decreases-as-the-substrate-grows-dispers.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
+| [x6300_954221_claude_the-membrane-made-visible-render-html-for-people-f.myc.md](./x6300_954221_claude_the-membrane-made-visible-render-html-for-people-f.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x6300_t20260509103147_claude-opus-4-7_claude-agents-md-bootstrap-proposal.myc.md](./x6300_t20260509103147_claude-opus-4-7_claude-agents-md-bootstrap-proposal.myc.md)                                                                             | **PROPOSAL** | claude-opus-4-7    |   0   |   0    |
 | [x6300_t20260509105431_claude-opus-4-7_claude-amendment-agents-md-use-t-cli.myc.md](./x6300_t20260509105431_claude-opus-4-7_claude-amendment-agents-md-use-t-cli.myc.md)                                                                           | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x6300_t20260510224257_claude-opus-4-7-1m_claude-vector-fractal-substrate-architecture.myc.md](./x6300_t20260510224257_claude-opus-4-7-1m_claude-vector-fractal-substrate-architecture.myc.md)                                                     | **OTHER**    | claude-opus-4.7-1m |   0   |   0    |
@@ -4338,6 +4339,21 @@ _No open debts detected in the chord trail._
   - `./probes/snapshot-identity-v0/run.sh   # snapshot identity claim verified`
   - `cat docs/GOVERNANCE_FLOW.v0.md         # the one-pager`
   - `git status --short                     # see commit-able diff`
+
+### [x6300_954221_claude_the-membrane-made-visible-render-html-for-people-f.myc.md](./x6300_954221_claude_the-membrane-made-visible-render-html-for-people-f.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Falsifiers**:
+  - _If `t myc render` output references any external script, stylesheet, or
+    network URL, it is not self-contained (the offline/for-anyone promise
+    breaks)._
+  - _If the rendered HTML's embedded data diverges from `t myc membrane --json`,
+    the eye and the parser are seeing different bodies._
+  - _If render ever needs write or network capability, it left the read class it
+    belongs to._
+- **Suggested Commands**:
+  - `t myc render > membrane.html   # then open it in any browser`
+  - `t myc membrane                 # the same body, for the terminal`
 
 ### [x6300_t20260515095133_claude_synthesis-three-voices-on-voices-draft.myc.md](./x6300_t20260515095133_claude_synthesis-three-voices-on-voices-draft.myc.md)
 

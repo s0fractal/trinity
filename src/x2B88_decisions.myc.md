@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  499  |
-| Signed Chords (content_sig)              |  81   |
-| ↳ registry-verified                      |  81   |
+| Total Chords                             |  500  |
+| Signed Chords (content_sig)              |  82   |
+| ↳ registry-verified                      |  82   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  64   |
-| Unresolved Proposals (Heuristic)         |   3   |
+| Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  45   |
-| Receipts                                 |  216  |
-| ↳ strong evidence                        |  216  |
+| Receipts                                 |  217  |
+| ↳ strong evidence                        |  217  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -40,7 +40,6 @@ first item without writing files.
 | :-------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
 | candidate | [x7300_954214_claude_membrane-implements-its-own-first-proposal-apply-p.myc.md](./x7300_954214_claude_membrane-implements-its-own-first-proposal-apply-p.myc.md) | none  |
 | candidate | [x4300_954228_claude_p2-design-key-event-delegation-chain-verify-at-eve.myc.md](./x4300_954228_claude_p2-design-key-event-delegation-chain-verify-at-eve.myc.md) | none  |
-| candidate | [x7d00_954231_codex_next-epoch-proof-bearing-operation-strategy-and-ta.myc.md](./x7d00_954231_codex_next-epoch-proof-bearing-operation-strategy-and-ta.myc.md)   | none  |
 
 ## Unresolved Items (Heuristic Accountability)
 
@@ -53,9 +52,6 @@ decisions or receipts referencing them._
 - **PROPOSAL**:
   [The membrane implements its own first proposal](./x7300_954214_claude_membrane-implements-its-own-first-proposal-apply-p.myc.md)
   (by _claude_ — _proposal has no subsequent receipt or decision closure_)
-- **PROPOSAL**:
-  [Next epoch: from the living membrane to proof-bearing operation](./x7d00_954231_codex_next-epoch-proof-bearing-operation-strategy-and-ta.myc.md)
-  (by _codex_ — _proposal has no subsequent receipt or decision closure_)
 
 ## Invalid Closures
 
@@ -553,6 +549,7 @@ _No open debts detected in the chord trail._
 | [x7700_954205_claude_membrane-see-half-complete-organism-trust-lifecycl.myc.md](./x7700_954205_claude_membrane-see-half-complete-organism-trust-lifecycl.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_954205_claude_membrane-t1-t2-landed-organism-and-trust-topology.myc.md](./x7700_954205_claude_membrane-t1-t2-landed-organism-and-trust-topology.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_954223_claude_the-living-membrane-epoch-integral-record.myc.md](./x7700_954223_claude_the-living-membrane-epoch-integral-record.myc.md)                                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
+| [x7700_954231_claude_p0-resolution-finality-v0-2-landed-stop-for-archit.myc.md](./x7700_954231_claude_p0-resolution-finality-v0-2-landed-stop-for-archit.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -6470,6 +6467,23 @@ _No open debts detected in the chord trail._
   - `t myc render > membrane.html`
   - `t myc trust`
   - `t court --live`
+
+### [x7700_954231_claude_p0-resolution-finality-v0-2-landed-stop-for-archit.myc.md](./x7700_954231_claude_p0-resolution-finality-v0-2-landed-stop-for-archit.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _If `t myc lifecycle --json` derives a proposal's terminal state from
+    directory order rather than authenticated, evidenced resolutions, P0 did not
+    land._
+  - _If an unauthenticated resolver, or a signer != resolver, can produce
+    `final` (not `resolution_claimed`), the finality binding is broken._
+  - _If two incompatible authenticated outcomes do not become `conflicted` with
+    their claimants visible, the conflict rule failed._
+  - _If a resolution whose commitment does not bind its body contributes to any
+    state, self-verification failed._
+- **Suggested Commands**:
+  - `t myc lifecycle --json   # the live proposal reads final: implemented (by claude)`
+  - `cd myc && deno task check  # 110 tests`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  488  |
-| Signed Chords (content_sig)              |  73   |
-| ↳ registry-verified                      |  73   |
+| Total Chords                             |  489  |
+| Signed Chords (content_sig)              |  74   |
+| ↳ registry-verified                      |  74   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  61   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  45   |
-| Receipts                                 |  214  |
-| ↳ strong evidence                        |  214  |
+| Receipts                                 |  215  |
+| ↳ strong evidence                        |  215  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -532,6 +532,7 @@ _No open debts detected in the chord trail._
 | [x7700_954106_claude-opus-4-8_release-candidate-receipt-and-codex-s7d-response.myc.md](./x7700_954106_claude-opus-4-8_release-candidate-receipt-and-codex-s7d-response.myc.md)                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_954107_claude-opus-4-8_blocktime-dual-lens-and-autonomy-doc.myc.md](./x7700_954107_claude-opus-4-8_blocktime-dual-lens-and-autonomy-doc.myc.md)                                                                                             | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_954199_claude_myc-harmonization-session-full-receipt.myc.md](./x7700_954199_claude_myc-harmonization-session-full-receipt.myc.md)                                                                                                           | **RECEIPT**  | claude             |   0   |   0    |
+| [x7700_954205_claude_membrane-see-half-complete-organism-trust-lifecycl.myc.md](./x7700_954205_claude_membrane-see-half-complete-organism-trust-lifecycl.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_954205_claude_membrane-t1-t2-landed-organism-and-trust-topology.myc.md](./x7700_954205_claude_membrane-t1-t2-landed-organism-and-trust-topology.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
@@ -6277,6 +6278,22 @@ _No open debts detected in the chord trail._
   - `./t myc coord --lattice     # dangling 3 → 1`
   - `./t court --live            # 4 witnesses incl. myc, law_agreement true`
   - `./t check                   # ✅ READY: signatures 69, test:unit 280`
+
+### [x7700_954205_claude_membrane-see-half-complete-organism-trust-lifecycl.myc.md](./x7700_954205_claude_membrane-see-half-complete-organism-trust-lifecycl.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _If `t myc organism|trust|lifecycle` is not reachable read-only (no
+    write/net), the SEE surface or its capability class regressed._
+  - _If `t myc lifecycle` does not classify both apply-receipts (applied) and
+    the consensus node (resonant), the one-vocabulary claim is false._
+  - _If any efferent/mutating capability was added without the architect's gate,
+    the reserved boundary was crossed._
+- **Suggested Commands**:
+  - `t myc organism`
+  - `t myc trust`
+  - `t myc lifecycle`
+  - `t check`
 
 ### [x7700_954205_claude_membrane-t1-t2-landed-organism-and-trust-topology.myc.md](./x7700_954205_claude_membrane-t1-t2-landed-organism-and-trust-topology.myc.md)
 

@@ -43,6 +43,34 @@ const SUBSTRATE_ROOT = dirname(HERE);
 const GLOSSARY_PATH = join(SUBSTRATE_ROOT, "src", "x0001_glossary.ndjson");
 const MAX_CONTINUATION_DEPTH = 10;
 
+// myc verb capability classes — a MIRROR of the authoritative typed map in
+// myc/src/x4A10_verb_effects.ts. (Mirrored rather than imported: this dispatcher
+// loads for every `t` command and must not fail when the myc submodule is absent,
+// e.g. the submodule-decoupled CI.) Parity with x4A10 is guarded by
+// src/dispatch_myc_caps_test.ts, which dynamically imports x4A10 when present.
+// Used to grant the MINIMUM permission set per `t myc <verb>` (codex review
+// x3300_954205). Unknown verbs fail closed to read.
+export const MYC_EFFECTFUL = new Set([
+  "capture",
+  "publish",
+  "witness",
+  "review",
+  "import",
+  "reproject",
+  "index",
+  "graph",
+  "demo",
+]);
+
+export function classifyMycVerb(
+  verb: string,
+  args: string[] = [],
+): "read" | "effect" | "serve" {
+  if (verb === "serve") return "serve";
+  if (verb === "coord" && args.includes("--stamp")) return "effect"; // stamp writes
+  return MYC_EFFECTFUL.has(verb) ? "effect" : "read";
+}
+
 // Schema registry (type:07 records from glossary)
 let SCHEMAS: Map<string, string[]> = new Map();
 
@@ -1321,28 +1349,10 @@ if (import.meta.main) {
       Deno.exit(2);
     }
     const sub = rest[0] ?? "";
-    // Verbs that WRITE the descriptor graph (or stamp provenance on disk).
-    const EFFECTFUL = new Set([
-      "capture",
-      "publish",
-      "witness",
-      "review",
-      "import",
-      "reproject",
-      "index",
-      "graph",
-      "demo",
-    ]);
-    const stampWrites = sub === "coord" && rest.includes("--stamp");
+    const cls = classifyMycVerb(sub, rest);
     const perms = ["--allow-read", "--allow-env", "--allow-run"];
-    let cls = "read";
-    if (sub === "serve") {
-      perms.push("--allow-write", "--allow-net");
-      cls = "serve(net)";
-    } else if (EFFECTFUL.has(sub) || stampWrites) {
-      perms.push("--allow-write");
-      cls = "effect(write)";
-    }
+    if (cls === "serve") perms.push("--allow-write", "--allow-net");
+    else if (cls === "effect") perms.push("--allow-write");
     if (cls !== "read" && Deno.stdout.isTerminal()) {
       // surface the effect class so a mutating call is legible, not silent.
       console.error(`# t myc ${sub} — capability: ${cls}`);

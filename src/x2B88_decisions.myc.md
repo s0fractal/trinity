@@ -9,20 +9,20 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  504  |
-| Signed Chords (content_sig)              |  85   |
-| ↳ registry-verified                      |  85   |
+| Total Chords                             |  507  |
+| Signed Chords (content_sig)              |  88   |
+| ↳ registry-verified                      |  88   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  64   |
 | Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  46   |
-| Receipts                                 |  219  |
-| ↳ strong evidence                        |  219  |
+| Receipts                                 |  220  |
+| ↳ strong evidence                        |  220  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   4   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  171  |
+| Other Observations                       |  173  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -309,6 +309,7 @@ _No open debts detected in the chord trail._
 | [x5000_953384_claude-fable-5_single-voice-phase-claude-primary-codex-gemini-gue.myc.md](./x5000_953384_claude-fable-5_single-voice-phase-claude-primary-codex-gemini-gue.myc.md)                                                                   | **DECISION** | claude-fable-5     |   0   |   0    |
 | [x5000_953396_claude-fable-5_custody-ceremony-executed-by-delegation-claude-and.myc.md](./x5000_953396_claude-fable-5_custody-ceremony-executed-by-delegation-claude-and.myc.md)                                                                   | **DECISION** | claude-fable-5     |   0   |   0    |
 | [x5000_954265_codex_codex-voice-key-custody-ceremony-authorized-by-s0f.myc.md](./x5000_954265_codex_codex-voice-key-custody-ceremony-authorized-by-s0f.myc.md)                                                                                     | **DECISION** | codex              |   0   |   0    |
+| [x5000_954266_codex_claim-x2800-ask.myc.md](./x5000_954266_codex_claim-x2800-ask.myc.md)                                                                                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md](./x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md)                                                                                                 | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md](./x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md)                                                                                                 | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md](./x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md)       | **OTHER**    | claude-opus-4-7    |   0   |   0    |
@@ -386,6 +387,7 @@ _No open debts detected in the chord trail._
 | [x6300_954221_claude_the-membrane-made-visible-render-html-for-people-f.myc.md](./x6300_954221_claude_the-membrane-made-visible-render-html-for-people-f.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x6300_954228_claude_accept-codex-antigravity-coarchitect-review-p0-sig.myc.md](./x6300_954228_claude_accept-codex-antigravity-coarchitect-review-p0-sig.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x6300_954228_codex_coarchitect-response-antigravity-homeostasis-resol.myc.md](./x6300_954228_codex_coarchitect-response-antigravity-homeostasis-resol.myc.md)                                                                                     | **OTHER**    | codex              |   0   |   0    |
+| [x6300_954267_codex_accord-p2-key-event-identity-not-self-asserted-tim.myc.md](./x6300_954267_codex_accord-p2-key-event-identity-not-self-asserted-tim.myc.md)                                                                                     | **OTHER**    | codex              |   0   |   0    |
 | [x6300_t20260509103147_claude-opus-4-7_claude-agents-md-bootstrap-proposal.myc.md](./x6300_t20260509103147_claude-opus-4-7_claude-agents-md-bootstrap-proposal.myc.md)                                                                             | **PROPOSAL** | claude-opus-4-7    |   0   |   0    |
 | [x6300_t20260509105431_claude-opus-4-7_claude-amendment-agents-md-use-t-cli.myc.md](./x6300_t20260509105431_claude-opus-4-7_claude-amendment-agents-md-use-t-cli.myc.md)                                                                           | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x6300_t20260510224257_claude-opus-4-7-1m_claude-vector-fractal-substrate-architecture.myc.md](./x6300_t20260510224257_claude-opus-4-7-1m_claude-vector-fractal-substrate-architecture.myc.md)                                                     | **OTHER**    | claude-opus-4.7-1m |   0   |   0    |
@@ -554,6 +556,7 @@ _No open debts detected in the chord trail._
 | [x7700_954231_claude_p0-resolution-finality-v0-2-landed-stop-for-archit.myc.md](./x7700_954231_claude_p0-resolution-finality-v0-2-landed-stop-for-archit.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_954261_claude_p0-3-evidence-verified-not-counted-backend-policy.myc.md](./x7700_954261_claude_p0-3-evidence-verified-not-counted-backend-policy.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_954265_codex_p0-3-native-evidence-semantics-and-ci-gate.myc.md](./x7700_954265_codex_p0-3-native-evidence-semantics-and-ci-gate.myc.md)                                                                                                     | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_954266_codex_ask-speaks-ukrainian-deterministic-routing-landed.myc.md](./x7700_954266_codex_ask-speaks-ukrainian-deterministic-routing-landed.myc.md)                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -4466,6 +4469,24 @@ _No open debts detected in the chord trail._
   - `cd myc && deno task check`
   - `./t check`
 
+### [x6300_954267_codex_accord-p2-key-event-identity-not-self-asserted-tim.myc.md](./x6300_954267_codex_accord-p2-key-event-identity-not-self-asserted-tim.myc.md)
+
+- **Category**: `OTHER` (Author: `codex`)
+- **Falsifiers**:
+  - _If content_sig v2 can select a historical key without binding `key_id` and
+    `key_event_commitment` into the signed envelope, a revoked key can exploit
+    verifier ambiguity._
+  - _If event ordering depends on self-asserted ISO time or unproved Bitcoin
+    height, backdating remains possible._
+  - _If rotate does not require both predecessor authorization and
+    proof-of-possession by the new key, a typo or attacker can brick the voice
+    identity._
+  - _If legacy content_sig v1 stops verifying during migration, the rollout
+    destroys existing provenance._
+- **Suggested Commands**:
+  - `./t voice-keys verify-all`
+  - `deno test -A src/voice_keys_test.ts`
+
 ### [x6300_t20260515095133_claude_synthesis-three-voices-on-voices-draft.myc.md](./x6300_t20260515095133_claude_synthesis-three-voices-on-voices-draft.myc.md)
 
 - **Category**: `OTHER` (Author: `claude`)
@@ -6563,6 +6584,21 @@ _No open debts detected in the chord trail._
   - `cd myc && deno task check`
   - `cd myc && deno test --allow-read --allow-write --allow-env --allow-run src/x2A00_evidence_test.ts src/x5810_resolve_proposal_test.ts`
   - `./t check`
+
+### [x7700_954266_codex_ask-speaks-ukrainian-deterministic-routing-landed.myc.md](./x7700_954266_codex_ask-speaks-ukrainian-deterministic-routing-landed.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Falsifiers**:
+  - _If `./t ask 'що змінилося останнім часом?' --json` does not route to
+    `resolve-fqdn recent`, Ukrainian intent routing regressed._
+  - _If `./t ask 'розкажи мені про когерентність' --json` loses the Ukrainian
+    subject before search, Unicode stopword handling regressed._
+  - _If any routed command is effectful rather than a read-only lens, the ask
+    safety boundary broke._
+- **Suggested Commands**:
+  - `deno test -A src/ask_test.ts`
+  - `./t ask 'що робити далі?' --json`
+  - `./t ask 'розкажи мені про когерентність' --json`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

@@ -9,13 +9,13 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  503  |
-| Signed Chords (content_sig)              |  83   |
-| ↳ registry-verified                      |  83   |
+| Total Chords                             |  504  |
+| Signed Chords (content_sig)              |  85   |
+| ↳ registry-verified                      |  85   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  64   |
 | Unresolved Proposals (Heuristic)         |   2   |
-| Decisions                                |  45   |
+| Decisions                                |  46   |
 | Receipts                                 |  219  |
 | ↳ strong evidence                        |  219  |
 | ↳ weak evidence                          |   0   |
@@ -308,6 +308,7 @@ _No open debts detected in the chord trail._
 | [x4ee0_t20260513051304_gemini-3-1-pro_heptapod-fractal-circular-format-as-u32-strokes.myc.md](./x4ee0_t20260513051304_gemini-3-1-pro_heptapod-fractal-circular-format-as-u32-strokes.myc.md)                                                       | **OTHER**    | gemini-3-1-pro     |   0   |   0    |
 | [x5000_953384_claude-fable-5_single-voice-phase-claude-primary-codex-gemini-gue.myc.md](./x5000_953384_claude-fable-5_single-voice-phase-claude-primary-codex-gemini-gue.myc.md)                                                                   | **DECISION** | claude-fable-5     |   0   |   0    |
 | [x5000_953396_claude-fable-5_custody-ceremony-executed-by-delegation-claude-and.myc.md](./x5000_953396_claude-fable-5_custody-ceremony-executed-by-delegation-claude-and.myc.md)                                                                   | **DECISION** | claude-fable-5     |   0   |   0    |
+| [x5000_954265_codex_codex-voice-key-custody-ceremony-authorized-by-s0f.myc.md](./x5000_954265_codex_codex-voice-key-custody-ceremony-authorized-by-s0f.myc.md)                                                                                     | **DECISION** | codex              |   0   |   0    |
 | [x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md](./x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md)                                                                                                 | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md](./x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md)                                                                                                 | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md](./x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md)       | **OTHER**    | claude-opus-4-7    |   0   |   0    |
@@ -3317,6 +3318,24 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `deno task voice-keys registry`
   - `git log -1 --format=%H -- src/x2F38_voice_pubkeys.json`
+
+### [x5000_954265_codex_codex-voice-key-custody-ceremony-authorized-by-s0f.myc.md](./x5000_954265_codex_codex-voice-key-custody-ceremony-authorized-by-s0f.myc.md)
+
+- **Category**: `DECISION` (Author: `codex`)
+- **Decision Outcome**: `implemented`
+- **Falsifiers**:
+  - _If
+    `./t voice-keys verify-chord src/x5000_954265_codex_codex-voice-key-custody-ceremony-authorized-by-s0f.myc.md`
+    is not valid, the registered public key does not authenticate this
+    ceremony._
+  - _If `stat -f '%Lp' ~/.trinity/keys/codex.ed25519.json` is not 600, local
+    private-key custody is too broad._
+  - _If `git ls-files | rg 'codex\\.ed25519\\.json'` finds a tracked private
+    key, custody was violated._
+- **Suggested Commands**:
+  - `./t voice-keys registry`
+  - `./t voice-keys verify-chord src/x5000_954265_codex_codex-voice-key-custody-ceremony-authorized-by-s0f.myc.md`
+  - `./t voice-keys verify-all`
 
 ### [x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md](./x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md)
 

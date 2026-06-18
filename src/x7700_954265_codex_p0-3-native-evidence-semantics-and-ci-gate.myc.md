@@ -33,6 +33,11 @@ suggested_commands:
 expected_after_running:
   myc_tests: "124 passed, 0 failed"
   myc_audit: "ok; 147 files; 0 errors; 0 warnings"
+content_sig:
+  voice: codex
+  alg: ed25519
+  payload: "sha256:b3d110e0039239f470437c0e538f6aa20ba7d9ccf863198bea65a4ee3fb59804"
+  sig: "OlYlpWYc3LrPv9cmBbXBQ27GYGQAu6/UKKvb4SgpUnb+GXOgIu5dKadBZyuQZBaerY/NVs88uAzdppVlU3/8Cw=="
 ---
 
 # Receipt: P0.3 evidence is now proved at the native boundary

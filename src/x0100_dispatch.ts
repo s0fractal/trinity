@@ -361,8 +361,26 @@ function fn_render_health(p: any): void {
 
 function fn_render_help(p: any): void {
   if (p.mode === "list") {
+    // Newcomer onboarding (TTY-only; the --json/piped payload is unchanged, so
+    // CI/tools are unaffected). The bare verb wall answers "what exists" but not
+    // "how do I begin" — these lines are the start-here for someone who does not
+    // yet know the vocabulary.
+    console.log("# trinity — start here:");
     console.log(
-      "# substrate words (exists, position, primary handle, handles count):",
+      '#   t ask "<question>"     ask in plain words; routes to the right view',
+    );
+    console.log(
+      "#   t resolve-fqdn atlas   the network at a glance (shape + becoming)",
+    );
+    console.log(
+      "#   t check                is my change ready to push?",
+    );
+    console.log(
+      "#   t help <word>          detail on any verb listed below",
+    );
+    console.log("#");
+    console.log(
+      "# all substrate words (exists, position, primary handle, handles count):",
     );
     for (const r of p.records ?? []) {
       const exists = r.exists ? "✓" : "✗";

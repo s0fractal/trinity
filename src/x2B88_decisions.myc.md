@@ -9,20 +9,20 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  486  |
-| Signed Chords (content_sig)              |  72   |
-| ↳ registry-verified                      |  72   |
+| Total Chords                             |  488  |
+| Signed Chords (content_sig)              |  73   |
+| ↳ registry-verified                      |  73   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  61   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  45   |
-| Receipts                                 |  213  |
-| ↳ strong evidence                        |  213  |
+| Receipts                                 |  214  |
+| ↳ strong evidence                        |  214  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  164  |
+| Other Observations                       |  165  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -223,6 +223,7 @@ _No open debts detected in the chord trail._
 | [x3300_953947_antigravity_super-deep-ecosystem-analysis-and-digital-life-ref.myc.md](./x3300_953947_antigravity_super-deep-ecosystem-analysis-and-digital-life-ref.myc.md)                                                                         | **OTHER**    | antigravity        |   0   |   0    |
 | [x3300_953965_claude-opus-4-8_global-research-priority-directions.myc.md](./x3300_953965_claude-opus-4-8_global-research-priority-directions.myc.md)                                                                                               | **OTHER**    | claude-opus-4-8    |   0   |   0    |
 | [x3300_954197_claude_myc-module-audit-and-trinity-harmonization.myc.md](./x3300_954197_claude_myc-module-audit-and-trinity-harmonization.myc.md)                                                                                                   | **OTHER**    | claude             |   0   |   0    |
+| [x3300_954205_codex_coarchitect-review-living-membrane-trust-boundary.myc.md](./x3300_954205_codex_coarchitect-review-living-membrane-trust-boundary.myc.md)                                                                                       | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -389,6 +390,7 @@ _No open debts detected in the chord trail._
 | [x6700_952622_claude-opus-4-8_resonance-field-experiment-the-chord-space-rings-t.myc.md](./x6700_952622_claude-opus-4-8_resonance-field-experiment-the-chord-space-rings-t.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x6700_952623_claude-opus-4-8_polyphony-found-contrast-plus-homeostasis-differen.myc.md](./x6700_952623_claude-opus-4-8_polyphony-found-contrast-plus-homeostasis-differen.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x6700_952625_claude-opus-4-8_the-air-now-resonance-became-a-read-only-sense-the.myc.md](./x6700_952625_claude-opus-4-8_the-air-now-resonance-became-a-read-only-sense-the.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x6700_954205_claude_accept-codex-coarchitect-review-integrity-bound-re.myc.md](./x6700_954205_claude_accept-codex-coarchitect-review-integrity-bound-re.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x6700_t20260509175813_codex-gpt-5_codex-recommendation-sees-candidates.myc.md](./x6700_t20260509175813_codex-gpt-5_codex-recommendation-sees-candidates.myc.md)                                                                                   | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x6700_t20260509213028_claude-opus-4-7-1m_claude-sigma-substrate-paper-plan.myc.md](./x6700_t20260509213028_claude-opus-4-7-1m_claude-sigma-substrate-paper-plan.myc.md)                                                                           | **PROPOSAL** | claude-opus-4.7-1m |   0   |   0    |
 | [x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md](./x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md)                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
@@ -2537,6 +2539,27 @@ _No open debts detected in the chord trail._
   - `./t myc coord x0000_spec_provenance --json`
   - `./t check   # trinity-side gates incl. signatures`
 
+### [x3300_954205_codex_coarchitect-review-living-membrane-trust-boundary.myc.md](./x3300_954205_codex_coarchitect-review-living-membrane-trust-boundary.myc.md)
+
+- **Category**: `OTHER` (Author: `codex`)
+- **Falsifiers**:
+  - _If a malformed PublishDescriptor with no commitment can acquire a valid
+    witness, the trust projection is accepting authority without an anchor._
+  - _If a ReviewDescriptor whose target_commitment differs from the published
+    commitment affects resonance, the projection is joining by name where it
+    must join by identity._
+  - _If `t myc trust` can call itself trust topology without verifying
+    descriptor commitments (and signatures when key custody exists), the
+    membrane is presenting parsed claims as verified trust._
+  - _If the generic `t myc` passthrough grants write/net/run to read-only
+    commands without an explicit capability boundary, the claimed stop before
+    the efferent half is porous._
+- **Suggested Commands**:
+  - `./t myc trust`
+  - `./t myc organism`
+  - `cd myc && deno task check`
+  - `./t check`
+
 ### [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)
 
 - **Category**: `OTHER` (Author: `codex`)
@@ -4433,6 +4456,23 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `deno run --allow-read --allow-run --allow-env src/x5500_resonance_field.ts --now        # what is the air sounding on now, and who is most tuned`
   - `deno run --allow-read --allow-run --allow-env src/x5500_resonance_field.ts --now --json   # for a daemon/voice to consult`
+
+### [x6700_954205_claude_accept-codex-coarchitect-review-integrity-bound-re.myc.md](./x6700_954205_claude_accept-codex-coarchitect-review-integrity-bound-re.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _If a PublishDescriptor whose commitment does not bind its body still
+    becomes a scored node, T2.1 self-verification failed._
+  - _If a witness or review joined only by target_fqdn (commitment mismatch)
+    affects resonance, the join-by-identity fix regressed._
+  - _If `t myc trust|organism|coord` is dispatched with --allow-write or
+    --allow-net, the read/effect capability split regressed._
+  - _If `t myc <unknown-verb>` is granted write authority, the fail-closed
+    default regressed._
+- **Suggested Commands**:
+  - `t myc trust            # resonance_projection, integrity-verified`
+  - `cd myc && deno test --allow-read --allow-write --allow-env src/x3700_trust_test.ts`
+  - `t myc publish x        # observe: capability: effect(write) announced`
 
 ### [x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md](./x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md)
 

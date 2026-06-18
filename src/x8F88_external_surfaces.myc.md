@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    497     |
+| dynamic topology  |    498     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **597**   |
+| **Total**         |  **598**   |
 
 ## Runtime Cache Diagnostics
 
@@ -336,6 +336,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x4000_t20260513231653_codex_contracts-chords-hex-ledger-migration-plan.myc.md](../src/x4000_t20260513231653_codex_contracts-chords-hex-ledger-migration-plan.myc.md)                                                                                   | canonical        | src/x4000_t20260513231653_codex_contracts-chords-hex-ledger-migration-plan.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x4000_t20260514143524_codex_response-trinity-as-installed-overlay.myc.md](../src/x4000_t20260514143524_codex_response-trinity-as-installed-overlay.myc.md)                                                                                             | canonical        | src/x4000_t20260514143524_codex_response-trinity-as-installed-overlay.myc.md                                               | keep        |                              |
 | dynamic topology  | [src/x4000_t20260523124505_codex_supervector-triad-autopoiesis-response.myc.md](../src/x4000_t20260523124505_codex_supervector-triad-autopoiesis-response.myc.md)                                                                                           | canonical        | src/x4000_t20260523124505_codex_supervector-triad-autopoiesis-response.myc.md                                              | keep        |                              |
+| dynamic topology  | [src/x4300_954228_claude_p2-design-key-event-delegation-chain-verify-at-eve.myc.md](../src/x4300_954228_claude_p2-design-key-event-delegation-chain-verify-at-eve.myc.md)                                                                                   | canonical        | src/x4300_954228_claude_p2-design-key-event-delegation-chain-verify-at-eve.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x4600_t20260515094707_kimi_voices-grounding.myc.md](../src/x4600_t20260515094707_kimi_voices-grounding.myc.md)                                                                                                                                         | canonical        | src/x4600_t20260515094707_kimi_voices-grounding.myc.md                                                                     | keep        |                              |
 | dynamic topology  | [src/x4600_t20260516132910_gemini_proposal-monorepo-unification-for-self-sufficient-harmony.myc.md](../src/x4600_t20260516132910_gemini_proposal-monorepo-unification-for-self-sufficient-harmony.myc.md)                                                   | canonical        | src/x4600_t20260516132910_gemini_proposal-monorepo-unification-for-self-sufficient-harmony.myc.md                          | keep        |                              |
 | dynamic topology  | [src/x4700_952383_claude-opus-4-8_onboarding-loop-in-first-moves-init-living-form.myc.md](../src/x4700_952383_claude-opus-4-8_onboarding-loop-in-first-moves-init-living-form.myc.md)                                                                       | canonical        | src/x4700_952383_claude-opus-4-8_onboarding-loop-in-first-moves-init-living-form.myc.md                                    | keep        |                              |

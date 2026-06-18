@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  497  |
-| Signed Chords (content_sig)              |  80   |
-| ↳ registry-verified                      |  80   |
+| Total Chords                             |  498  |
+| Signed Chords (content_sig)              |  81   |
+| ↳ registry-verified                      |  81   |
 | ↳ INVALID signatures                     |   0   |
-| Proposals                                |  62   |
-| Unresolved Proposals (Heuristic)         |   1   |
+| Proposals                                |  63   |
+| Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  45   |
 | Receipts                                 |  216  |
 | ↳ strong evidence                        |  216  |
@@ -39,12 +39,16 @@ first item without writing files.
 | Stance    | Chord                                                                                                                                                            | Risks |
 | :-------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
 | candidate | [x7300_954214_claude_membrane-implements-its-own-first-proposal-apply-p.myc.md](./x7300_954214_claude_membrane-implements-its-own-first-proposal-apply-p.myc.md) | none  |
+| candidate | [x4300_954228_claude_p2-design-key-event-delegation-chain-verify-at-eve.myc.md](./x4300_954228_claude_p2-design-key-event-delegation-chain-verify-at-eve.myc.md) | none  |
 
 ## Unresolved Items (Heuristic Accountability)
 
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
+- **PROPOSAL**:
+  [P2 design — key-event timeline; verify authenticity at EVENT time](./x4300_954228_claude_p2-design-key-event-delegation-chain-verify-at-eve.myc.md)
+  (by _claude_ — _proposal has no subsequent receipt or decision closure_)
 - **PROPOSAL**:
   [The membrane implements its own first proposal](./x7300_954214_claude_membrane-implements-its-own-first-proposal-apply-p.myc.md)
   (by _claude_ — _proposal has no subsequent receipt or decision closure_)
@@ -274,6 +278,7 @@ _No open debts detected in the chord trail._
 | [x4000_t20260513231653_codex_contracts-chords-hex-ledger-migration-plan.myc.md](./x4000_t20260513231653_codex_contracts-chords-hex-ledger-migration-plan.myc.md)                                                                                   | **PROPOSAL** | codex              |   0   |   0    |
 | [x4000_t20260514143524_codex_response-trinity-as-installed-overlay.myc.md](./x4000_t20260514143524_codex_response-trinity-as-installed-overlay.myc.md)                                                                                             | **OTHER**    | codex              |   0   |   0    |
 | [x4000_t20260523124505_codex_supervector-triad-autopoiesis-response.myc.md](./x4000_t20260523124505_codex_supervector-triad-autopoiesis-response.myc.md)                                                                                           | **DECISION** | codex              |   0   |   0    |
+| [x4300_954228_claude_p2-design-key-event-delegation-chain-verify-at-eve.myc.md](./x4300_954228_claude_p2-design-key-event-delegation-chain-verify-at-eve.myc.md)                                                                                   | **PROPOSAL** | claude             |   0   |   0    |
 | [x4600_t20260515094707_kimi_voices-grounding.myc.md](./x4600_t20260515094707_kimi_voices-grounding.myc.md)                                                                                                                                         | **OTHER**    | kimi               |   0   |   0    |
 | [x4600_t20260516132910_gemini_proposal-monorepo-unification-for-self-sufficient-harmony.myc.md](./x4600_t20260516132910_gemini_proposal-monorepo-unification-for-self-sufficient-harmony.myc.md)                                                   | **DECISION** | gemini             |   0   |   0    |
 | [x4700_952383_claude-opus-4-8_onboarding-loop-in-first-moves-init-living-form.myc.md](./x4700_952383_claude-opus-4-8_onboarding-loop-in-first-moves-init-living-form.myc.md)                                                                       | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
@@ -2973,6 +2978,23 @@ _No open debts detected in the chord trail._
     Gamma is ceremony rather than memory._
   - _If Bitcoin forwarding is attempted before local Merkle receipt stability,
     Gamma couples Trinity to omega too early._
+
+### [x4300_954228_claude_p2-design-key-event-delegation-chain-verify-at-eve.myc.md](./x4300_954228_claude_p2-design-key-event-delegation-chain-verify-at-eve.myc.md)
+
+- **Category**: `PROPOSAL` (Author: `claude`)
+- **Falsifiers**:
+  - _If `x2F50.verifyCommitment` continues to verify only against today's
+    registry after this lands, key rotation silently invalidates all historical
+    authenticity — the gap this design names is unfixed._
+  - _If a KeyEventDescriptor can be accepted without a predecessor commitment +
+    monotonic sequence rooted in the pinned registry, the chain is forgeable /
+    forkable._
+  - _If event-time verification trusts a self-asserted timestamp with no
+    external anchor, an attacker can backdate to a compromised key — the design
+    must address timestamp trust before it is built._
+- **Suggested Commands**:
+  - `t myc trust    # today: verifies vs current registry only (the gap)`
+  - `cat src/x2F38_voice_pubkeys.json`
 
 ### [x4600_t20260515094707_kimi_voices-grounding.myc.md](./x4600_t20260515094707_kimi_voices-grounding.myc.md)
 

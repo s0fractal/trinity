@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  502  |
+| Total Chords                             |  503  |
 | Signed Chords (content_sig)              |  83   |
 | ↳ registry-verified                      |  83   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  64   |
 | Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  45   |
-| Receipts                                 |  218  |
-| ↳ strong evidence                        |  218  |
+| Receipts                                 |  219  |
+| ↳ strong evidence                        |  219  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   4   |
@@ -552,6 +552,7 @@ _No open debts detected in the chord trail._
 | [x7700_954223_claude_the-living-membrane-epoch-integral-record.myc.md](./x7700_954223_claude_the-living-membrane-epoch-integral-record.myc.md)                                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_954231_claude_p0-resolution-finality-v0-2-landed-stop-for-archit.myc.md](./x7700_954231_claude_p0-resolution-finality-v0-2-landed-stop-for-archit.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_954261_claude_p0-3-evidence-verified-not-counted-backend-policy.myc.md](./x7700_954261_claude_p0-3-evidence-verified-not-counted-backend-policy.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
+| [x7700_954265_codex_p0-3-native-evidence-semantics-and-ci-gate.myc.md](./x7700_954265_codex_p0-3-native-evidence-semantics-and-ci-gate.myc.md)                                                                                                     | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -6524,6 +6525,25 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `t myc lifecycle --json   # the live proposal reads evidence_verified, quorum 1/2`
   - `cd myc && deno task check  # 114 tests, evidence fixtures run in CI`
+
+### [x7700_954265_codex_p0-3-native-evidence-semantics-and-ci-gate.myc.md](./x7700_954265_codex_p0-3-native-evidence-semantics-and-ci-gate.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Falsifiers**:
+  - _If `cd myc && deno task check` does not execute x2A00_evidence_test.ts,
+    evidence verification is outside the quality gate and this receipt is
+    false._
+  - _If a canonical-looking Git hash becomes valid evidence without proving that
+    the object exists, pointer syntax has again been mistaken for proof._
+  - _If changing a signed chord body, SPORE raw record, PHI receipt signature,
+    or evidence commitment still permits terminal finality, evidence presence is
+    again being counted instead of verified._
+  - _If the authenticated lifecycle finality suite passes with a status-only
+    synthetic apply receipt, the native-proof boundary regressed._
+- **Suggested Commands**:
+  - `cd myc && deno task check`
+  - `cd myc && deno test --allow-read --allow-write --allow-env --allow-run src/x2A00_evidence_test.ts src/x5810_resolve_proposal_test.ts`
+  - `./t check`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

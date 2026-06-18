@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  493  |
-| Signed Chords (content_sig)              |  78   |
-| ↳ registry-verified                      |  78   |
+| Total Chords                             |  494  |
+| Signed Chords (content_sig)              |  79   |
+| ↳ registry-verified                      |  79   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  62   |
 | Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  45   |
-| Receipts                                 |  215  |
-| ↳ strong evidence                        |  215  |
+| Receipts                                 |  216  |
+| ↳ strong evidence                        |  216  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -540,6 +540,7 @@ _No open debts detected in the chord trail._
 | [x7700_954199_claude_myc-harmonization-session-full-receipt.myc.md](./x7700_954199_claude_myc-harmonization-session-full-receipt.myc.md)                                                                                                           | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_954205_claude_membrane-see-half-complete-organism-trust-lifecycl.myc.md](./x7700_954205_claude_membrane-see-half-complete-organism-trust-lifecycl.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_954205_claude_membrane-t1-t2-landed-organism-and-trust-topology.myc.md](./x7700_954205_claude_membrane-t1-t2-landed-organism-and-trust-topology.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
+| [x7700_954223_claude_the-living-membrane-epoch-integral-record.myc.md](./x7700_954223_claude_the-living-membrane-epoch-integral-record.myc.md)                                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -6380,6 +6381,25 @@ _No open debts detected in the chord trail._
   - `t myc organism`
   - `t myc trust`
   - `cd myc && deno task check   # 74 tests`
+
+### [x7700_954223_claude_the-living-membrane-epoch-integral-record.myc.md](./x7700_954223_claude_the-living-membrane-epoch-integral-record.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _If any membrane verb
+    (organism/membrane/trust/lifecycle/effects/render/coord) is not reachable
+    read-only via `t myc`, or propose/authenticate without explicit write, the
+    surface or its capability boundary regressed._
+  - _If `t myc trust` reports authenticity it cannot verify against the
+    registry, or the audit accepts a non-dormant proposal, a safety invariant
+    broke._
+  - _If germination ever granted consensus trust by a single voice signing its
+    own attestation, the quorum principle was faked._
+- **Suggested Commands**:
+  - `t myc membrane`
+  - `t myc render > membrane.html`
+  - `t myc trust`
+  - `t court --live`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

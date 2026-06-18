@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  483  |
-| Signed Chords (content_sig)              |  69   |
-| ↳ registry-verified                      |  69   |
+| Total Chords                             |  484  |
+| Signed Chords (content_sig)              |  70   |
+| ↳ registry-verified                      |  70   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  61   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  45   |
-| Receipts                                 |  211  |
-| ↳ strong evidence                        |  211  |
+| Receipts                                 |  212  |
+| ↳ strong evidence                        |  212  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
@@ -528,6 +528,7 @@ _No open debts detected in the chord trail._
 | [x7700_954101_claude-opus-4-8_fqdn-provenance-codex-s6.myc.md](./x7700_954101_claude-opus-4-8_fqdn-provenance-codex-s6.myc.md)                                                                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_954106_claude-opus-4-8_release-candidate-receipt-and-codex-s7d-response.myc.md](./x7700_954106_claude-opus-4-8_release-candidate-receipt-and-codex-s7d-response.myc.md)                                                                     | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x7700_954107_claude-opus-4-8_blocktime-dual-lens-and-autonomy-doc.myc.md](./x7700_954107_claude-opus-4-8_blocktime-dual-lens-and-autonomy-doc.myc.md)                                                                                             | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x7700_954199_claude_myc-harmonization-session-full-receipt.myc.md](./x7700_954199_claude_myc-harmonization-session-full-receipt.myc.md)                                                                                                           | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -6192,6 +6193,25 @@ _No open debts detected in the chord trail._
   - `./t resolve recent --pretty   # window line names lens: compat`
   - `deno test --allow-all src/blocktime_test.ts   # incl. dual-lens`
   - `head -40 docs/AUTONOMY.md`
+
+### [x7700_954199_claude_myc-harmonization-session-full-receipt.myc.md](./x7700_954199_claude_myc-harmonization-session-full-receipt.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _If `t myc coord --lattice` reports more than 1 dangling citation, a broken
+    link regressed (the 1 remaining is the intentional unfulfilled-claim
+    pointer)._
+  - _If any of the 69 content_sigs is invalid, a frontmatter-only citation fix
+    wrongly touched a signed body._
+  - _If `t court --live` drops myc as a witness or law_agreement goes false, the
+    x2E00 testability refactor broke the court._
+  - _If `t chord sign` is not a real verb, the dogfood that signed THIS receipt
+    did not happen._
+- **Suggested Commands**:
+  - `cd myc && deno task check   # 66 tests, audit 124 files, projections fresh`
+  - `./t myc coord --lattice     # dangling 3 → 1`
+  - `./t court --live            # 4 witnesses incl. myc, law_agreement true`
+  - `./t check                   # ✅ READY: signatures 69, test:unit 280`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    483     |
+| dynamic topology  |    484     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **583**   |
+| **Total**         |  **584**   |
 
 ## Runtime Cache Diagnostics
 
@@ -592,6 +592,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x7700_954101_claude-opus-4-8_fqdn-provenance-codex-s6.myc.md](../src/x7700_954101_claude-opus-4-8_fqdn-provenance-codex-s6.myc.md)                                                                                                                     | canonical        | src/x7700_954101_claude-opus-4-8_fqdn-provenance-codex-s6.myc.md                                                           | keep        |                              |
 | dynamic topology  | [src/x7700_954106_claude-opus-4-8_release-candidate-receipt-and-codex-s7d-response.myc.md](../src/x7700_954106_claude-opus-4-8_release-candidate-receipt-and-codex-s7d-response.myc.md)                                                                     | canonical        | src/x7700_954106_claude-opus-4-8_release-candidate-receipt-and-codex-s7d-response.myc.md                                   | keep        |                              |
 | dynamic topology  | [src/x7700_954107_claude-opus-4-8_blocktime-dual-lens-and-autonomy-doc.myc.md](../src/x7700_954107_claude-opus-4-8_blocktime-dual-lens-and-autonomy-doc.myc.md)                                                                                             | canonical        | src/x7700_954107_claude-opus-4-8_blocktime-dual-lens-and-autonomy-doc.myc.md                                               | keep        |                              |
+| dynamic topology  | [src/x7700_954199_claude_myc-harmonization-session-full-receipt.myc.md](../src/x7700_954199_claude_myc-harmonization-session-full-receipt.myc.md)                                                                                                           | canonical        | src/x7700_954199_claude_myc-harmonization-session-full-receipt.myc.md                                                      | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](../src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | canonical        | src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](../src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | canonical        | src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md                                                     | keep        |                              |
 | dynamic topology  | [src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](../src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | canonical        | src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md                                                      | keep        |                              |

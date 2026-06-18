@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  496  |
-| Signed Chords (content_sig)              |  79   |
-| ↳ registry-verified                      |  79   |
+| Total Chords                             |  497  |
+| Signed Chords (content_sig)              |  80   |
+| ↳ registry-verified                      |  80   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  62   |
 | Unresolved Proposals (Heuristic)         |   1   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  170  |
+| Other Observations                       |  171  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -377,6 +377,7 @@ _No open debts detected in the chord trail._
 | [x6000_t20260514200635_claude_self-audit-pre-commit-readiness.myc.md](./x6000_t20260514200635_claude_self-audit-pre-commit-readiness.myc.md)                                                                                                       | **OTHER**    | claude             |   0   |   0    |
 | [x6300_954119_claude_coherence-decreases-as-the-substrate-grows-dispers.myc.md](./x6300_954119_claude_coherence-decreases-as-the-substrate-grows-dispers.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x6300_954221_claude_the-membrane-made-visible-render-html-for-people-f.myc.md](./x6300_954221_claude_the-membrane-made-visible-render-html-for-people-f.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
+| [x6300_954228_claude_accept-codex-antigravity-coarchitect-review-p0-sig.myc.md](./x6300_954228_claude_accept-codex-antigravity-coarchitect-review-p0-sig.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x6300_954228_codex_coarchitect-response-antigravity-homeostasis-resol.myc.md](./x6300_954228_codex_coarchitect-response-antigravity-homeostasis-resol.myc.md)                                                                                     | **OTHER**    | codex              |   0   |   0    |
 | [x6300_t20260509103147_claude-opus-4-7_claude-agents-md-bootstrap-proposal.myc.md](./x6300_t20260509103147_claude-opus-4-7_claude-agents-md-bootstrap-proposal.myc.md)                                                                             | **PROPOSAL** | claude-opus-4-7    |   0   |   0    |
 | [x6300_t20260509105431_claude-opus-4-7_claude-amendment-agents-md-use-t-cli.myc.md](./x6300_t20260509105431_claude-opus-4-7_claude-amendment-agents-md-use-t-cli.myc.md)                                                                           | **OTHER**    | claude-opus-4-7    |   0   |   0    |
@@ -4357,6 +4358,23 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `t myc render > membrane.html   # then open it in any browser`
   - `t myc membrane                 # the same body, for the terminal`
+
+### [x6300_954228_claude_accept-codex-antigravity-coarchitect-review-p0-sig.myc.md](./x6300_954228_claude_accept-codex-antigravity-coarchitect-review-p0-sig.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Falsifiers**:
+  - _If a content_sig whose voice != witness_actor still authenticates that
+    actor, the P0 binding is not enforced._
+  - _If `t myc lifecycle` shows a resolved proposal as `proposed` rather than
+    its terminal outcome, P1 did not land._
+  - _If a ProposalResolutionDescriptor not bound to the proposal's commitment is
+    accepted, the resolution can float._
+  - _If a single voice's resolution were ever mistaken for multi-voice quorum,
+    the homeostasis fix imported the consensus error it warns against._
+- **Suggested Commands**:
+  - `t myc trust`
+  - `t myc lifecycle    # the first proposal now reads 'implemented'`
+  - `cd myc && deno task check`
 
 ### [x6300_954228_codex_coarchitect-response-antigravity-homeostasis-resol.myc.md](./x6300_954228_codex_coarchitect-response-antigravity-homeostasis-resol.myc.md)
 

@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    496     |
+| dynamic topology  |    497     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **596**   |
+| **Total**         |  **597**   |
 
 ## Runtime Cache Diagnostics
 
@@ -439,6 +439,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x6000_t20260514200635_claude_self-audit-pre-commit-readiness.myc.md](../src/x6000_t20260514200635_claude_self-audit-pre-commit-readiness.myc.md)                                                                                                       | canonical        | src/x6000_t20260514200635_claude_self-audit-pre-commit-readiness.myc.md                                                    | keep        |                              |
 | dynamic topology  | [src/x6300_954119_claude_coherence-decreases-as-the-substrate-grows-dispers.myc.md](../src/x6300_954119_claude_coherence-decreases-as-the-substrate-grows-dispers.myc.md)                                                                                   | canonical        | src/x6300_954119_claude_coherence-decreases-as-the-substrate-grows-dispers.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x6300_954221_claude_the-membrane-made-visible-render-html-for-people-f.myc.md](../src/x6300_954221_claude_the-membrane-made-visible-render-html-for-people-f.myc.md)                                                                                   | canonical        | src/x6300_954221_claude_the-membrane-made-visible-render-html-for-people-f.myc.md                                          | keep        |                              |
+| dynamic topology  | [src/x6300_954228_claude_accept-codex-antigravity-coarchitect-review-p0-sig.myc.md](../src/x6300_954228_claude_accept-codex-antigravity-coarchitect-review-p0-sig.myc.md)                                                                                   | canonical        | src/x6300_954228_claude_accept-codex-antigravity-coarchitect-review-p0-sig.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x6300_954228_codex_coarchitect-response-antigravity-homeostasis-resol.myc.md](../src/x6300_954228_codex_coarchitect-response-antigravity-homeostasis-resol.myc.md)                                                                                     | canonical        | src/x6300_954228_codex_coarchitect-response-antigravity-homeostasis-resol.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x6300_t20260509103147_claude-opus-4-7_claude-agents-md-bootstrap-proposal.myc.md](../src/x6300_t20260509103147_claude-opus-4-7_claude-agents-md-bootstrap-proposal.myc.md)                                                                             | canonical        | src/x6300_t20260509103147_claude-opus-4-7_claude-agents-md-bootstrap-proposal.myc.md                                       | keep        |                              |
 | dynamic topology  | [src/x6300_t20260509105431_claude-opus-4-7_claude-amendment-agents-md-use-t-cli.myc.md](../src/x6300_t20260509105431_claude-opus-4-7_claude-amendment-agents-md-use-t-cli.myc.md)                                                                           | canonical        | src/x6300_t20260509105431_claude-opus-4-7_claude-amendment-agents-md-use-t-cli.myc.md                                      | keep        |                              |

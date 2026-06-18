@@ -36,7 +36,7 @@
 {"path":"public/functions/h.7efa1b6e7564.myc-quarantine-policy.function.myc.md","size":1047,"hash":"sha256:7253535cf74c9148ceb5a2ed18fc759b77f0e9a43e88c669eaa73feea401c48c"}
 {"path":"public/functions/h.849874aa8a18.myc-fqdn-naming-policy.function.myc.md","size":1015,"hash":"sha256:2b2fb670b3dc1056e85b2e213b0fc90a938da0658066753c94c6ee6d2d20d8f3"}
 {"path":"public/graph.ndjson","size":9131,"hash":"sha256:8e33e41e594beb12d628170f79279ca99e67a96e85836e70bcd7799d05d87c89"}
-{"path":"public/index.ndjson","size":9812,"hash":"sha256:7b4ab4ef328300107c2c6ada8efc3dcf4ec3e1c6107a1dff1b207fa59f7cef08"}
+{"path":"public/index.ndjson","size":10035,"hash":"sha256:b3347d36ad0c0bf0b540a6d96a4a72a9e696c5804917b440c6754bbd0a6e6beb"}
 {"path":"public/objects/h/2a10699544f3/h.2a10699544f3.projection-descriptor.claude.raw.myc.md","size":1215,"hash":"sha256:34fd282a674cfe926d8213b2ecef6bfdca928cb90bf2c18b3ddb6a066320391e"}
 {"path":"public/objects/h/2a10699544f3/intent.task.claude.h.2a10699544f3.myc.md","size":1563,"hash":"sha256:b09cf5616dcfa09595b9c55d501d418598fc3afadd5c8a73addc36bb0c1079c2"}
 {"path":"public/objects/h/2a10699544f3/naming-proof.claude.h.2a10699544f3.myc.md","size":1801,"hash":"sha256:4678272a8d669281db7f2707b1866e302ea15e1f69026167df9ed370524f93e2"}
@@ -50,6 +50,7 @@
 {"path":"public/objects/h/f1b9f8142d5f/task.s0fractal.h.f1b9f8142d5f.myc.md","size":2071,"hash":"sha256:c6271b1ce251f19eab3c5f20822c1d19d1ba57f60c9956affbad656e9195140e"}
 {"path":"public/proposals/h.9068b4888a6f.proposal.myc.md","size":1254,"hash":"sha256:bff3d6320907055abbac05b9beeef0b90a0950e256da0ee6660d0919136fc7ca"}
 {"path":"public/README.md","size":806,"hash":"sha256:953a745fd28d41605a9bca9dd7210d60c4ff90d1e1503a7d6ade5862bb48c716"}
+{"path":"public/resolutions/h.fc08c9e5113b.resolution.myc.md","size":1112,"hash":"sha256:cdb9d379ed7949ce473e821b86ee36cb7fdedd3a81364ea4d1b3174bb3be156f"}
 {"path":"public/transforms/h/2a10699544f3/transform.forward.canonicalize.claude.h.2a10699544f3.myc.md","size":1750,"hash":"sha256:d4a0feb556fdb2f0eadeb9ed2b6e6f6ba29936695aefd0497039d35d194f24df"}
 {"path":"public/transforms/h/2a10699544f3/transform.forward.classify.claude.h.2a10699544f3.myc.md","size":1761,"hash":"sha256:994f1f37eabf1cae102dc730234af616df67b25cb040d909c5b0509044ac50a1"}
 {"path":"public/transforms/h/2a10699544f3/transform.forward.name.claude.h.2a10699544f3.myc.md","size":1930,"hash":"sha256:d1582fdc2ea8ea58e7ffc540edcb8946be0ea3dcfa4eecc8a0d5ab1e275b5817"}

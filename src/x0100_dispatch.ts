@@ -376,6 +376,9 @@ function fn_render_help(p: any): void {
       "#   t check                is my change ready to push?",
     );
     console.log(
+      "#   t myc <cmd>            the myc substrate CLI (capture/coord/verify/serve)",
+    );
+    console.log(
       "#   t help <word>          detail on any verb listed below",
     );
     console.log("#");

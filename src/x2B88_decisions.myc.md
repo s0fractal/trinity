@@ -9,19 +9,19 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  501  |
-| Signed Chords (content_sig)              |  82   |
-| ↳ registry-verified                      |  82   |
+| Total Chords                             |  502  |
+| Signed Chords (content_sig)              |  83   |
+| ↳ registry-verified                      |  83   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  64   |
 | Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  45   |
-| Receipts                                 |  217  |
-| ↳ strong evidence                        |  217  |
+| Receipts                                 |  218  |
+| ↳ strong evidence                        |  218  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   4   |
-| Unresolved Critiques (Heuristic)         |   1   |
+| Unresolved Critiques (Heuristic)         |   0   |
 | Other Observations                       |  171  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
@@ -46,9 +46,6 @@ first item without writing files.
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
-- **CRITIQUE**:
-  [P0 finality falsified: evidence presence is not proof](./x2900_954260_codex_p0-finality-falsified-evidence-presence-is-not-pro.myc.md)
-  (by _codex_ — _critique has no subsequent response or receipt closure_)
 - **PROPOSAL**:
   [P2 design — key-event timeline; verify authenticity at EVENT time](./x4300_954228_claude_p2-design-key-event-delegation-chain-verify-at-eve.myc.md)
   (by _claude_ — _proposal has no subsequent receipt or decision closure_)
@@ -554,6 +551,7 @@ _No open debts detected in the chord trail._
 | [x7700_954205_claude_membrane-t1-t2-landed-organism-and-trust-topology.myc.md](./x7700_954205_claude_membrane-t1-t2-landed-organism-and-trust-topology.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_954223_claude_the-living-membrane-epoch-integral-record.myc.md](./x7700_954223_claude_the-living-membrane-epoch-integral-record.myc.md)                                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_954231_claude_p0-resolution-finality-v0-2-landed-stop-for-archit.myc.md](./x7700_954231_claude_p0-resolution-finality-v0-2-landed-stop-for-archit.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x7700_954261_claude_p0-3-evidence-verified-not-counted-backend-policy.myc.md](./x7700_954261_claude_p0-3-evidence-verified-not-counted-backend-policy.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -6509,6 +6507,23 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `t myc lifecycle --json   # the live proposal reads final: implemented (by claude)`
   - `cd myc && deno task check  # 110 tests`
+
+### [x7700_954261_claude_p0-3-evidence-verified-not-counted-backend-policy.myc.md](./x7700_954261_claude_p0-3-evidence-verified-not-counted-backend-policy.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _If `t myc lifecycle` projects `final` for the live trinity proposal from a
+    single principal, the quorum policy is not enforced._
+  - _If an abbreviated git id, a mismatched chord identity, or an unknown
+    evidence kind contributes to any terminal state, the verifier is still
+    counting presence._
+  - _If the finality crypto tests skip in keyless CI rather than running with
+    injected ephemeral keys, codex #4 is unmet._
+  - _If a tampered proposal body can anchor a resolution, proposal
+    self-verification failed._
+- **Suggested Commands**:
+  - `t myc lifecycle --json   # the live proposal reads evidence_verified, quorum 1/2`
+  - `cd myc && deno task check  # 114 tests, evidence fixtures run in CI`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

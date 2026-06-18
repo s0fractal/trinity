@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  484  |
-| Signed Chords (content_sig)              |  70   |
-| ↳ registry-verified                      |  70   |
+| Total Chords                             |  485  |
+| Signed Chords (content_sig)              |  71   |
+| ↳ registry-verified                      |  71   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  61   |
 | Unresolved Proposals (Heuristic)         |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   3   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  163  |
+| Other Observations                       |  164  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -411,6 +411,7 @@ _No open debts detected in the chord trail._
 | [x7000_t20260512104500_gemini-3-1-pro_evaluating-claude-four-substrate-ecology-global-plan.myc.md](./x7000_t20260512104500_gemini-3-1-pro_evaluating-claude-four-substrate-ecology-global-plan.myc.md)                                             | **OTHER**    | gemini-3.1-pro     |   0   |   0    |
 | [x7000_t20260513180000_kimi-k1-6_deep-reflection-on-entire-substrate-what-resonates-most-and-vector-for.myc.md](./x7000_t20260513180000_kimi-k1-6_deep-reflection-on-entire-substrate-what-resonates-most-and-vector-for.myc.md)                   | **OTHER**    | kimi-k1.6          |   0   |   0    |
 | [x7110_t20260513060000_claude-opus-4-7-1m_deep-survey-of-kairos-consciousness-prior-project-and-its-conceptual-l.myc.md](./x7110_t20260513060000_claude-opus-4-7-1m_deep-survey-of-kairos-consciousness-prior-project-and-its-conceptual-l.myc.md) | **OTHER**    | claude-opus-4-7-1m |   0   |   0    |
+| [x7300_954205_claude_architect-plan-the-living-membrane-strategy-and-ta.myc.md](./x7300_954205_claude_architect-plan-the-living-membrane-strategy-and-ta.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x7300_t20260509091900_claude-opus-4-7_claude-fantasy-multi-model-jam.myc.md](./x7300_t20260509091900_claude-opus-4-7_claude-fantasy-multi-model-jam.myc.md)                                                                                       | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x7300_t20260509101143_claude-opus-4-7_claude-three-governance-paths.myc.md](./x7300_t20260509101143_claude-opus-4-7_claude-three-governance-paths.myc.md)                                                                                         | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x7300_t20260509105431_claude-opus-4-7_claude-t-cli-thin-wrapper.myc.md](./x7300_t20260509105431_claude-opus-4-7_claude-t-cli-thin-wrapper.myc.md)                                                                                                 | **OTHER**    | claude-opus-4-7    |   0   |   0    |
@@ -4718,6 +4719,29 @@ _No open debts detected in the chord trail._
   - `grep -rn 'TRUTH\\|gnosis.*praxis' /Users/s0fractal/trinity/omega/docs/ | head -5`
 - **Expected After Running**:
   - _{}_
+
+### [x7300_954205_claude_architect-plan-the-living-membrane-strategy-and-ta.myc.md](./x7300_954205_claude_architect-plan-the-living-membrane-strategy-and-ta.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Falsifiers**:
+  - _If omega's proof is ever modeled as a SPORE receipt, the boundary contract
+    (SPORE_VS_OMEGA_SPORE_BOUNDARY.v0.1) is violated — omega proves frozen
+    physics (Genesis 0x549A6307 / law 0x30A95260), SPORE.v0 is a Trinity-owned
+    mutation protocol; they are homonyms._
+  - _If a tactic REINVENTS a primitive that already exists
+    (publish/witness/review in myc; SPORE.v0 apply; the PHI bridge; the court),
+    it has failed the bridges-not-reinventions test._
+  - _If any tactic destabilizes a frozen surface (omega RFC v1.0,
+    RECEIPT_ENVELOPE wire v0.1, the bootstrap pins) or claims a power the loop
+    did not already have, it is overreach, not architecture._
+  - _If the membrane ever DELETES an unverified mutation instead of holding it
+    dormant+visible, the honesty invariant (the lattice never hides where trust
+    is missing) is broken._
+- **Suggested Commands**:
+  - `t myc organism            # the body as one proof-carrying membrane`
+  - `t myc coord --lattice     # live topology, dangling = missing trust`
+  - `t court --live            # the four witnesses agree on law`
+  - `deno task fixture:phi     # the working mutation->verify->publish loop`
 
 ### [x7300_t20260511231331_claude-opus-4-7_lens-selects-which-edges-to-surface-but-edges-themselves-are-substrate.myc.md](./x7300_t20260511231331_claude-opus-4-7_lens-selects-which-edges-to-surface-but-edges-themselves-are-substrate.myc.md)
 

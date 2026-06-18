@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    484     |
+| dynamic topology  |    485     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **584**   |
+| **Total**         |  **585**   |
 
 ## Runtime Cache Diagnostics
 
@@ -475,6 +475,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x7000_t20260512104500_gemini-3-1-pro_evaluating-claude-four-substrate-ecology-global-plan.myc.md](../src/x7000_t20260512104500_gemini-3-1-pro_evaluating-claude-four-substrate-ecology-global-plan.myc.md)                                             | canonical        | src/x7000_t20260512104500_gemini-3-1-pro_evaluating-claude-four-substrate-ecology-global-plan.myc.md                       | keep        |                              |
 | dynamic topology  | [src/x7000_t20260513180000_kimi-k1-6_deep-reflection-on-entire-substrate-what-resonates-most-and-vector-for.myc.md](../src/x7000_t20260513180000_kimi-k1-6_deep-reflection-on-entire-substrate-what-resonates-most-and-vector-for.myc.md)                   | canonical        | src/x7000_t20260513180000_kimi-k1-6_deep-reflection-on-entire-substrate-what-resonates-most-and-vector-for.myc.md          | keep        |                              |
 | dynamic topology  | [src/x7110_t20260513060000_claude-opus-4-7-1m_deep-survey-of-kairos-consciousness-prior-project-and-its-conceptual-l.myc.md](../src/x7110_t20260513060000_claude-opus-4-7-1m_deep-survey-of-kairos-consciousness-prior-project-and-its-conceptual-l.myc.md) | canonical        | src/x7110_t20260513060000_claude-opus-4-7-1m_deep-survey-of-kairos-consciousness-prior-project-and-its-conceptual-l.myc.md | keep        |                              |
+| dynamic topology  | [src/x7300_954205_claude_architect-plan-the-living-membrane-strategy-and-ta.myc.md](../src/x7300_954205_claude_architect-plan-the-living-membrane-strategy-and-ta.myc.md)                                                                                   | canonical        | src/x7300_954205_claude_architect-plan-the-living-membrane-strategy-and-ta.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x7300_t20260509091900_claude-opus-4-7_claude-fantasy-multi-model-jam.myc.md](../src/x7300_t20260509091900_claude-opus-4-7_claude-fantasy-multi-model-jam.myc.md)                                                                                       | canonical        | src/x7300_t20260509091900_claude-opus-4-7_claude-fantasy-multi-model-jam.myc.md                                            | keep        |                              |
 | dynamic topology  | [src/x7300_t20260509101143_claude-opus-4-7_claude-three-governance-paths.myc.md](../src/x7300_t20260509101143_claude-opus-4-7_claude-three-governance-paths.myc.md)                                                                                         | canonical        | src/x7300_t20260509101143_claude-opus-4-7_claude-three-governance-paths.myc.md                                             | keep        |                              |
 | dynamic topology  | [src/x7300_t20260509105431_claude-opus-4-7_claude-t-cli-thin-wrapper.myc.md](../src/x7300_t20260509105431_claude-opus-4-7_claude-t-cli-thin-wrapper.myc.md)                                                                                                 | canonical        | src/x7300_t20260509105431_claude-opus-4-7_claude-t-cli-thin-wrapper.myc.md                                                 | keep        |                              |

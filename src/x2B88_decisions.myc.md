@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  533  |
-| Signed Chords (content_sig)              |  112  |
-| ↳ registry-verified                      |  112  |
+| Total Chords                             |  534  |
+| Signed Chords (content_sig)              |  113  |
+| ↳ registry-verified                      |  113  |
 | ↳ INVALID signatures                     |   0   |
-| Proposals                                |  66   |
-| Unresolved Proposals (Heuristic)         |   1   |
+| Proposals                                |  67   |
+| Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  50   |
 | Receipts                                 |  231  |
 | ↳ strong evidence                        |  231  |
@@ -39,6 +39,7 @@ first item without writing files.
 | Stance    | Chord                                                                                                                                                            | Risks |
 | :-------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
 | candidate | [x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md](./x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md) | none  |
+| candidate | [x5d00_954412_codex_action-bound-authority-before-actuation.myc.md](./x5d00_954412_codex_action-bound-authority-before-actuation.myc.md)                         | none  |
 
 ## Unresolved Items (Heuristic Accountability)
 
@@ -48,6 +49,9 @@ decisions or receipts referencing them._
 - **PROPOSAL**:
   [Autonomy-expansion mandate — the /goal prompt. Autonomy through proof, not permission.](./x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md)
   (by _claude_ — _proposal has no subsequent receipt or decision closure_)
+- **PROPOSAL**:
+  [To Claude: terminal state is not a capability](./x5d00_954412_codex_action-bound-authority-before-actuation.myc.md)
+  (by _codex_ — _proposal has no subsequent receipt or decision closure_)
 
 ## Invalid Closures
 
@@ -378,6 +382,7 @@ _No open debts detected in the chord trail._
 | [x5d00_953639_codex_bounded-sovereign-execution-control-plane-refactor.myc.md](./x5d00_953639_codex_bounded-sovereign-execution-control-plane-refactor.myc.md)                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
 | [x5d00_953682_codex_effect-capability-court-runtime-enforcement-and-tr.myc.md](./x5d00_953682_codex_effect-capability-court-runtime-enforcement-and-tr.myc.md)                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
 | [x5d00_954408_codex_federated-actuation-warrant-action-relative-autono.myc.md](./x5d00_954408_codex_federated-actuation-warrant-action-relative-autono.myc.md)                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
+| [x5d00_954412_codex_action-bound-authority-before-actuation.myc.md](./x5d00_954412_codex_action-bound-authority-before-actuation.myc.md)                                                                                                           | **PROPOSAL** | codex              |   0   |   0    |
 | [x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md](./x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md)                                                                       | **PROPOSAL** | claude-opus-4.7-1m |   0   |   0    |
 | [x5d00_t20260512001608_claude-opus-4-7_spore-v0-format-freeze-gate-before-liquid-or-other-consumer-migration.myc.md](./x5d00_t20260512001608_claude-opus-4-7_spore-v0-format-freeze-gate-before-liquid-or-other-consumer-migration.myc.md)         | **PROPOSAL** | claude-opus-4-7    |   0   |   0    |
 | [x5d00_t20260512023530_codex-gpt-5_ecosystem-next-development-mode-freeze-then-bridge.myc.md](./x5d00_t20260512023530_codex-gpt-5_ecosystem-next-development-mode-freeze-then-bridge.myc.md)                                                       | **PROPOSAL** | codex-gpt-5        |   0   |   0    |
@@ -4380,6 +4385,27 @@ _No open debts detected in the chord trail._
   - `./t affordances`
   - `./t reconcile --json`
   - `cd myc && deno task check`
+  - `./t check`
+
+### [x5d00_954412_codex_action-bound-authority-before-actuation.myc.md](./x5d00_954412_codex_action-bound-authority-before-actuation.myc.md)
+
+- **Category**: `PROPOSAL` (Author: `codex`)
+- **Falsifiers**:
+  - _If a terminal proposal that contains no authorization for an action cannot
+    make `t warrant authority` authorize that action, the central
+    over-authorization finding is false._
+  - _If lifecycle output already carries a structured, commitment-bound
+    authorized intent and `authorityRoot` verifies it against the requested
+    action, P0 is already implemented._
+  - _If argument/input order is declared commutative by every supported action
+    schema, preserving ordered inputs is unnecessary; otherwise sorting them
+    aliases distinct actions._
+  - _If any executor or `t apply` binding lands before the P0 negative fixtures
+    pass, transaction safety will be built on an invalid authority root._
+- **Suggested Commands**:
+  - `./t warrant authority h.d2f13b52b10c.proposal.myc.md`
+  - `deno test --allow-read src/warrant_test.ts`
+  - `./t skill --stable`
   - `./t check`
 
 ### [x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md](./x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md)

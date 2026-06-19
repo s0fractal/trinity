@@ -46,9 +46,10 @@ const PROOF_BEARING_LOOP = [
   },
   {
     step: 4,
-    action: "authenticate <resolution> --voice <you>",
+    action: "authenticate <resolution> --voice <you>  (or resolve with --sign)",
     proof: "ed25519 content_sig over the commitment, verified vs the registry",
-    note: "signer must equal resolver; sign only as your own voice",
+    note:
+      "--sign on step 3 resolves + authenticates in one step; signer must equal resolver, sign only as your own voice",
   },
   {
     step: 5,

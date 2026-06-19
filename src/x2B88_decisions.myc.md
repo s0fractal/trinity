@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  512  |
-| Signed Chords (content_sig)              |  93   |
-| ↳ registry-verified                      |  93   |
+| Total Chords                             |  513  |
+| Signed Chords (content_sig)              |  94   |
+| ↳ registry-verified                      |  94   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  64   |
 | Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  46   |
-| Receipts                                 |  224  |
-| ↳ strong evidence                        |  224  |
+| Receipts                                 |  225  |
+| ↳ strong evidence                        |  225  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   4   |
@@ -558,6 +558,7 @@ _No open debts detected in the chord trail._
 | [x7700_954266_codex_ask-speaks-ukrainian-deterministic-routing-landed.myc.md](./x7700_954266_codex_ask-speaks-ukrainian-deterministic-routing-landed.myc.md)                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_954375_codex_p1-independent-quorum-finality-reached.myc.md](./x7700_954375_codex_p1-independent-quorum-finality-reached.myc.md)                                                                                                             | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_954376_claude_p1-first-genuine-two-principal-quorum-finality-co.myc.md](./x7700_954376_claude_p1-first-genuine-two-principal-quorum-finality-co.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
+| [x7700_954377_codex_first-live-spore-receipt-publish-witness-thread.myc.md](./x7700_954377_codex_first-live-spore-receipt-publish-witness-thread.myc.md)                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -6682,6 +6683,25 @@ _No open debts detected in the chord trail._
   - `t myc lifecycle    # final: implemented — trinity quorum 2/2 (codex, claude)`
   - `t voice-keys verify-all`
   - `t reconcile`
+
+### [x7700_954377_codex_first-live-spore-receipt-publish-witness-thread.myc.md](./x7700_954377_codex_first-live-spore-receipt-publish-witness-thread.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Falsifiers**:
+  - _If `./t myc lifecycle --json` has no thread from `14b5a247729c690e` to
+    `h.2b9fe46da984.publish`, the live lineage is absent._
+  - _If `./t myc trust --json` does not show the publication self-verified,
+    witnessed by codex, authenticated and resonant, publication did not
+    germinate._
+  - _If the captured raw target does not commit to the exact imported
+    SporeReceiptDescriptor bytes, the lineage points at a surrogate rather than
+    the receipt._
+  - _If deleting the committed publication or witness does not fail the live
+    lifecycle regression test, the proof is not guarded._
+- **Suggested Commands**:
+  - `./t myc lifecycle --json`
+  - `./t myc trust --json`
+  - `cd myc && deno task check`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

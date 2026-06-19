@@ -79,3 +79,4 @@ src/x7F88_daemon.lock
 # Generated export dumps and reports
 reports/
 .autonomy-probe/
+.autonomy-exec/

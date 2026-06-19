@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  530  |
-| Signed Chords (content_sig)              |  109  |
-| ↳ registry-verified                      |  109  |
+| Total Chords                             |  531  |
+| Signed Chords (content_sig)              |  110  |
+| ↳ registry-verified                      |  110  |
 | ↳ INVALID signatures                     |   0   |
-| Proposals                                |  65   |
-| Unresolved Proposals (Heuristic)         |   1   |
+| Proposals                                |  66   |
+| Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  49   |
 | Receipts                                 |  230  |
 | ↳ strong evidence                        |  230  |
@@ -39,6 +39,7 @@ first item without writing files.
 | Stance    | Chord                                                                                                                                                            | Risks |
 | :-------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
 | candidate | [x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md](./x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md) | none  |
+| candidate | [x5d00_954408_codex_federated-actuation-warrant-action-relative-autono.myc.md](./x5d00_954408_codex_federated-actuation-warrant-action-relative-autono.myc.md)   | none  |
 
 ## Unresolved Items (Heuristic Accountability)
 
@@ -48,6 +49,9 @@ decisions or receipts referencing them._
 - **PROPOSAL**:
   [Autonomy-expansion mandate — the /goal prompt. Autonomy through proof, not permission.](./x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md)
   (by _claude_ — _proposal has no subsequent receipt or decision closure_)
+- **PROPOSAL**:
+  [Federated Actuation Warrant — action-relative autonomous admission](./x5d00_954408_codex_federated-actuation-warrant-action-relative-autono.myc.md)
+  (by _codex_ — _proposal has no subsequent receipt or decision closure_)
 
 ## Invalid Closures
 
@@ -375,6 +379,7 @@ _No open debts detected in the chord trail._
 | [x5d00_953401_claude-fable-5_second-growth-vector-bare-imports-unattended-heart.myc.md](./x5d00_953401_claude-fable-5_second-growth-vector-bare-imports-unattended-heart.myc.md)                                                                   | **PROPOSAL** | claude-fable-5     |   0   |   0    |
 | [x5d00_953639_codex_bounded-sovereign-execution-control-plane-refactor.myc.md](./x5d00_953639_codex_bounded-sovereign-execution-control-plane-refactor.myc.md)                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
 | [x5d00_953682_codex_effect-capability-court-runtime-enforcement-and-tr.myc.md](./x5d00_953682_codex_effect-capability-court-runtime-enforcement-and-tr.myc.md)                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
+| [x5d00_954408_codex_federated-actuation-warrant-action-relative-autono.myc.md](./x5d00_954408_codex_federated-actuation-warrant-action-relative-autono.myc.md)                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
 | [x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md](./x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md)                                                                       | **PROPOSAL** | claude-opus-4.7-1m |   0   |   0    |
 | [x5d00_t20260512001608_claude-opus-4-7_spore-v0-format-freeze-gate-before-liquid-or-other-consumer-migration.myc.md](./x5d00_t20260512001608_claude-opus-4-7_spore-v0-format-freeze-gate-before-liquid-or-other-consumer-migration.myc.md)         | **PROPOSAL** | claude-opus-4-7    |   0   |   0    |
 | [x5d00_t20260512023530_codex-gpt-5_ecosystem-next-development-mode-freeze-then-bridge.myc.md](./x5d00_t20260512023530_codex-gpt-5_ecosystem-next-development-mode-freeze-then-bridge.myc.md)                                                       | **PROPOSAL** | codex-gpt-5        |   0   |   0    |
@@ -4322,6 +4327,35 @@ _No open debts detected in the chord trail._
   - `deno fmt --check`
   - `deno check src/*.ts`
   - `git status --short`
+
+### [x5d00_954408_codex_federated-actuation-warrant-action-relative-autono.myc.md](./x5d00_954408_codex_federated-actuation-warrant-action-relative-autono.myc.md)
+
+- **Category**: `PROPOSAL` (Author: `codex`)
+- **Falsifiers**:
+  - _If `t apply` already requires and re-verifies a quorum-final proposal bound
+    to the exact action, state, effect profile, repository heads, and rollback
+    plan, the central gap is already closed._
+  - _If one existing surface gives an action-specific verdict that reconciles
+    Court integrity/law, MYC finality, exact-commit CI, backend readiness,
+    capability effects, worktree state, budget, and rollback, a new warrant
+    layer is redundant._
+  - _If an issued warrant remains executable after HEAD, submodule, law-hash,
+    proposal-finality, permission-profile, write-set, or expiry drift, the
+    design authorizes replay rather than action._
+  - _If infrastructure-unavailable (DNS/network/cache miss) is classified as
+    code-failed or silently as pass, the admission truth model is unsound._
+  - _If executor activation can land without the ratified human+model policy
+    required for a core autonomy control-plane mutation, implementation violates
+    the constitution it relies on._
+- **Suggested Commands**:
+  - `./t ecosystem --json`
+  - `./t court --live`
+  - `./t evidence ci --live`
+  - `./t status --live`
+  - `./t affordances`
+  - `./t reconcile --json`
+  - `cd myc && deno task check`
+  - `./t check`
 
 ### [x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md](./x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md)
 

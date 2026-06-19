@@ -4,9 +4,30 @@ import {
 } from "https://deno.land/std@0.224.0/assert/mod.ts";
 import {
   classifyProposal,
+  closedByTrinity,
   openHorizonInHeader,
   reconcile,
 } from "./x6B00_reconcile.ts";
+
+Deno.test("reconcile — closure requires a `closes:` relation, not a mere mention (red-team)", () => {
+  const hash = "h.9068b4888a6f";
+  // a `closes:` block naming the proposal → genuine closure
+  assert(closedByTrinity(hash, [
+    `---\ncloses:\n  path_hint: ${hash}.proposal\n  relation: implements\n---\n`,
+  ]));
+  // an inline closes: also counts
+  assert(closedByTrinity(hash, [`---\ncloses: ${hash}\n---\n`]));
+  // a `hears:` mention is NOT a closure
+  assertEquals(
+    closedByTrinity(hash, [`---\nhears:\n  - ${hash}.proposal\n---\n`]),
+    false,
+  );
+  // prose mention is NOT a closure
+  assertEquals(
+    closedByTrinity(hash, [`# we discussed ${hash} at length`]),
+    false,
+  );
+});
 
 Deno.test("reconcile — a real horizon header counts; 'none' and prose do not", () => {
   assert(openHorizonInHeader("// horizon: build the next thing\ncode"));

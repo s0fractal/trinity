@@ -28,6 +28,20 @@ interface Dimension {
   data?: Record<string, unknown>;
 }
 
+/** Is a proposal genuinely CLOSED by a trinity chord — i.e. named inside a
+ *  `closes:` relation, not merely mentioned (a `hears:` or prose reference is not a
+ *  closure)? Pure + testable. Red-team fix: the prior `.includes(stem)` conflated
+ *  mention with closure — a chord that only HEARD an open proposal would have
+ *  flipped cross_ledger to a false `inconsistent` and reddened `t check`. */
+export function closedByTrinity(hash: string, chords: string[]): boolean {
+  if (!hash) return false;
+  return chords.some((t) => {
+    const block = t.match(/^closes:\s*\n((?:[ \t]+.*\n?)+)/m)?.[1] ?? "";
+    const inline = t.match(/^closes:[ \t]+(.+)$/m)?.[1] ?? "";
+    return (block + "\n" + inline).includes(hash);
+  });
+}
+
 /** The cross-ledger rule, pure + testable: a myc proposal's finality vs whether a
  *  trinity closing chord reflects it. Both-not-done and both-done AGREE; final
  *  without a trinity closure is a reconcilable gap; trinity-closed while myc is not
@@ -155,15 +169,12 @@ async function dimCrossLedger(): Promise<Dimension> {
       chordText.push(Deno.readTextFileSync(join(ROOT, "src", e.name)));
     }
   }
-  const referenced = (id: string) => {
-    const stem = id.replace(/\.myc\.md$/, "").replace(/\.proposal$/, "");
-    return chordText.some((t) => t.includes(stem));
-  };
-
   const items = proposals.map((p) => {
     const id = String(p.id ?? "");
+    const hash = id.match(/h\.[0-9a-fA-F]+/)?.[0] ?? id;
     const mycFinal = TERMINAL.has(String(p.state));
-    const trinityClosed = referenced(id);
+    // genuine closure only — a `closes:` relation naming the proposal hash.
+    const trinityClosed = closedByTrinity(hash, chordText);
     const status = classifyProposal(mycFinal, trinityClosed);
     return { id, myc_state: p.state, mycFinal, trinityClosed, status };
   });

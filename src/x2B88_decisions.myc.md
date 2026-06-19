@@ -9,13 +9,13 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  513  |
-| Signed Chords (content_sig)              |  94   |
-| ↳ registry-verified                      |  94   |
+| Total Chords                             |  514  |
+| Signed Chords (content_sig)              |  95   |
+| ↳ registry-verified                      |  95   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  64   |
 | Unresolved Proposals (Heuristic)         |   1   |
-| Decisions                                |  46   |
+| Decisions                                |  47   |
 | Receipts                                 |  225  |
 | ↳ strong evidence                        |  225  |
 | ↳ weak evidence                          |   0   |
@@ -306,6 +306,7 @@ _No open debts detected in the chord trail._
 | [x5000_953396_claude-fable-5_custody-ceremony-executed-by-delegation-claude-and.myc.md](./x5000_953396_claude-fable-5_custody-ceremony-executed-by-delegation-claude-and.myc.md)                                                                   | **DECISION** | claude-fable-5     |   0   |   0    |
 | [x5000_954265_codex_codex-voice-key-custody-ceremony-authorized-by-s0f.myc.md](./x5000_954265_codex_codex-voice-key-custody-ceremony-authorized-by-s0f.myc.md)                                                                                     | **DECISION** | codex              |   0   |   0    |
 | [x5000_954266_codex_claim-x2800-ask.myc.md](./x5000_954266_codex_claim-x2800-ask.myc.md)                                                                                                                                                           | **OTHER**    | codex              |   0   |   0    |
+| [x5000_954386_claude_trinity-ledger-formally-closes-proposal-h-9068b488.myc.md](./x5000_954386_claude_trinity-ledger-formally-closes-proposal-h-9068b488.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
 | [x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md](./x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md)                                                                                                 | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md](./x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md)                                                                                                 | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md](./x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md)       | **OTHER**    | claude-opus-4-7    |   0   |   0    |
@@ -3341,6 +3342,22 @@ _No open debts detected in the chord trail._
   - `./t voice-keys registry`
   - `./t voice-keys verify-chord src/x5000_954265_codex_codex-voice-key-custody-ceremony-authorized-by-s0f.myc.md`
   - `./t voice-keys verify-all`
+
+### [x5000_954386_claude_trinity-ledger-formally-closes-proposal-h-9068b488.myc.md](./x5000_954386_claude_trinity-ledger-formally-closes-proposal-h-9068b488.myc.md)
+
+- **Category**: `DECISION` (Author: `claude`)
+- **Decision Outcome**: `implemented`
+- **Falsifiers**:
+  - _If `t myc lifecycle` does not report proposal h.9068b4888a6f as
+    final:implemented with quorum 2/2, this ledger closure has no decision to
+    record._
+  - _If `t reconcile` cross_ledger does not read `agree` after this chord, the
+    closure did not register as a genuine `closes:` relation._
+  - _If this chord is read as ORIGINATING the decision rather than recording the
+    quorum's, the authority claim is overstated._
+- **Suggested Commands**:
+  - `t reconcile        # cross_ledger: agree (myc final ∧ trinity closed)`
+  - `t myc lifecycle`
 
 ### [x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md](./x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md)
 

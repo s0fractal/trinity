@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    508     |
+| dynamic topology  |    509     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **608**   |
+| **Total**         |  **609**   |
 
 ## Runtime Cache Diagnostics
 
@@ -467,6 +467,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x6700_952625_claude-opus-4-8_the-air-now-resonance-became-a-read-only-sense-the.myc.md](../src/x6700_952625_claude-opus-4-8_the-air-now-resonance-became-a-read-only-sense-the.myc.md)                                                                 | canonical        | src/x6700_952625_claude-opus-4-8_the-air-now-resonance-became-a-read-only-sense-the.myc.md                                 | keep        |                              |
 | dynamic topology  | [src/x6700_954205_claude_accept-codex-coarchitect-review-integrity-bound-re.myc.md](../src/x6700_954205_claude_accept-codex-coarchitect-review-integrity-bound-re.myc.md)                                                                                   | canonical        | src/x6700_954205_claude_accept-codex-coarchitect-review-integrity-bound-re.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x6700_954287_claude_p2-court-semantic-separation-orthogonal-dimensions.myc.md](../src/x6700_954287_claude_p2-court-semantic-separation-orthogonal-dimensions.myc.md)                                                                                   | canonical        | src/x6700_954287_claude_p2-court-semantic-separation-orthogonal-dimensions.myc.md                                          | keep        |                              |
+| dynamic topology  | [src/x6700_954373_claude_p4-operational-truth-reconciliation-gate-surfaces.myc.md](../src/x6700_954373_claude_p4-operational-truth-reconciliation-gate-surfaces.myc.md)                                                                                     | canonical        | src/x6700_954373_claude_p4-operational-truth-reconciliation-gate-surfaces.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x6700_t20260509175813_codex-gpt-5_codex-recommendation-sees-candidates.myc.md](../src/x6700_t20260509175813_codex-gpt-5_codex-recommendation-sees-candidates.myc.md)                                                                                   | canonical        | src/x6700_t20260509175813_codex-gpt-5_codex-recommendation-sees-candidates.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x6700_t20260509213028_claude-opus-4-7-1m_claude-sigma-substrate-paper-plan.myc.md](../src/x6700_t20260509213028_claude-opus-4-7-1m_claude-sigma-substrate-paper-plan.myc.md)                                                                           | canonical        | src/x6700_t20260509213028_claude-opus-4-7-1m_claude-sigma-substrate-paper-plan.myc.md                                      | keep        |                              |
 | dynamic topology  | [src/x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md](../src/x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md)                                                                                       | canonical        | src/x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md                                            | keep        |                              |

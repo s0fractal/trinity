@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  508  |
-| Signed Chords (content_sig)              |  89   |
-| ↳ registry-verified                      |  89   |
+| Total Chords                             |  509  |
+| Signed Chords (content_sig)              |  90   |
+| ↳ registry-verified                      |  90   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  64   |
 | Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  46   |
-| Receipts                                 |  221  |
-| ↳ strong evidence                        |  221  |
+| Receipts                                 |  222  |
+| ↳ strong evidence                        |  222  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   4   |
@@ -409,6 +409,7 @@ _No open debts detected in the chord trail._
 | [x6700_952625_claude-opus-4-8_the-air-now-resonance-became-a-read-only-sense-the.myc.md](./x6700_952625_claude-opus-4-8_the-air-now-resonance-became-a-read-only-sense-the.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x6700_954205_claude_accept-codex-coarchitect-review-integrity-bound-re.myc.md](./x6700_954205_claude_accept-codex-coarchitect-review-integrity-bound-re.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x6700_954287_claude_p2-court-semantic-separation-orthogonal-dimensions.myc.md](./x6700_954287_claude_p2-court-semantic-separation-orthogonal-dimensions.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x6700_954373_claude_p4-operational-truth-reconciliation-gate-surfaces.myc.md](./x6700_954373_claude_p4-operational-truth-reconciliation-gate-surfaces.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x6700_t20260509175813_codex-gpt-5_codex-recommendation-sees-candidates.myc.md](./x6700_t20260509175813_codex-gpt-5_codex-recommendation-sees-candidates.myc.md)                                                                                   | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x6700_t20260509213028_claude-opus-4-7-1m_claude-sigma-substrate-paper-plan.myc.md](./x6700_t20260509213028_claude-opus-4-7-1m_claude-sigma-substrate-paper-plan.myc.md)                                                                           | **PROPOSAL** | claude-opus-4.7-1m |   0   |   0    |
 | [x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md](./x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md)                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
@@ -4680,6 +4681,22 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `t court --live    # agreement:true, 6 health_divergence (diagnostic), law_drift:false`
   - `deno test --allow-read probes/substrate-court-v0/ts/court_test.ts`
+
+### [x6700_954373_claude_p4-operational-truth-reconciliation-gate-surfaces.myc.md](./x6700_954373_claude_p4-operational-truth-reconciliation-gate-surfaces.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _If `t check` is green while `t reconcile` would report an `inconsistent`
+    dimension, the gate is not wired into preflight._
+  - _If a stale resolver index or cognition cache is no longer surfaced by
+    `t check`, a green preflight is hiding an operational divergence again._
+  - _If a myc proposal that is final without any trinity closure is not flagged
+    as a reconcilable_gap, the cross-ledger mapping is not computed._
+  - _If a trinity chord closes a proposal that myc reports as not-final and
+    reconcile does NOT fail, the contradiction case is unguarded._
+- **Suggested Commands**:
+  - `t reconcile          # the three dimensions, each agree or explained`
+  - `t check              # now includes the reconcile gate`
 
 ### [x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md](./x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md)
 

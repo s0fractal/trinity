@@ -556,6 +556,36 @@ async function main() {
   // Build the claims-to-evidence matrix
   const claims_matrix: ClaimEvidence[] = [
     {
+      // a settled proven FACT (not a live invariant): the typed human-model
+      // constitution reached finality by a genuine cross-class quorum. Static +
+      // deterministic; the command reproduces it independently.
+      claim: "Human-Model Constitution Ratified",
+      claim_status: "implemented",
+      contract_status: null,
+      contract: "myc/public/proposals/h.d2f13b52b10c.proposal.myc.md",
+      command: "./t myc lifecycle",
+      test: "./t myc lifecycle",
+      evidence:
+        "h.d2f13b52b10c final: class quorum human:1/1, model:1/1 (claude, s0fractal)",
+      evidence_source: "declared",
+    },
+    {
+      // a settled proven FACT: a v1 temporal signature was emitted and submitted to
+      // OpenTimestamps. `fully_anchored` still requires a Bitcoin node — the honesty
+      // line the temporal epoch holds; the command reports it exactly.
+      claim: "Temporal Signature Bitcoin-Anchored",
+      claim_status: "implemented",
+      contract_status: null,
+      contract: "myc/public/temporal/codex-x2d00-954422.envelope.json.ots",
+      command:
+        "./t myc temporal-verify myc/public/temporal/codex-x2d00-954422.envelope.json --anchor myc/public/temporal/codex-x2d00-954422.envelope.json.ots [--bitcoin-node <url>]",
+      test:
+        "./t myc temporal-verify myc/public/temporal/codex-x2d00-954422.envelope.json",
+      evidence:
+        "codex v1 envelope signed (valid) + OTS proof embeds BitcoinBlockHeaderAttestation; fully_anchored needs a Bitcoin node",
+      evidence_source: "declared",
+    },
+    {
       claim: "Substrate Health Check",
       claim_status: "implemented",
       contract_status: null,

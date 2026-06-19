@@ -141,6 +141,7 @@
 {"00":"5","02":["cognition_phase_report","cognition-phase-report","звіт-фаз-когніції"],"04":"2/C","09":"mirror+build-pair = report cognitive phases","11":"26 26 6C 59 26 26 26 26"}
 {"00":"5","02":["cognition_recommend","cognition-recommend","рекомендація"],"04":"5/2","09":"action+mirror = suggest recommendations","11":"26 26 59 26 26 6C 26 26"}
 {"00":"5","02":["cognition_recommend_receipt","cognition-recommend-receipt","чек-рекомендації"],"04":"5/E","09":"action+harmony-pair = create recommend receipt","11":"26 26 26 26 26 6C 59 26"}
+{"00":"5","02":["warrant","actuation","ордер"],"04":"5/E1","09":"action+emergence = Actuation Warrant authority-root: derive whether a quorum-final proposal authorizes one concrete effect (codex ACTUATION_WARRANT.v0 §1-2; fail-closed; verification only)","11":"00 00 00 00 00 6C 00 00"}
 {"00":"5","02":["chord_play","chord-play","програти-акорд"],"04":"3/5","09":"triangle+action = parse and visualize chord structure","11":"26 26 26 6C 26 59 26 26"}
 {"00":"5","02":["recommend_to_chord","recommend-to-chord","до-акорду"],"04":"5/3","09":"action+triangle = convert recommendation to chord","11":"26 26 26 59 26 6C 26 26"}
 {"00":"5","02":["grind","grind-nonce","знайти-нонс"],"04":"7/0","09":"completion+void = topological hex-dipole nonce grinding","11":"8E 00 00 00 00 00 00 59"}

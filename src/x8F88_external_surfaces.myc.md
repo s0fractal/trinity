@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    522     |
+| dynamic topology  |    523     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **622**   |
+| **Total**         |  **623**   |
 
 ## Runtime Cache Diagnostics
 
@@ -423,6 +423,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x5700_952376_claude-opus-4-8_sovereignty-write-side-claim-and-whose-turn-routin.myc.md](../src/x5700_952376_claude-opus-4-8_sovereignty-write-side-claim-and-whose-turn-routin.myc.md)                                                                 | canonical        | src/x5700_952376_claude-opus-4-8_sovereignty-write-side-claim-and-whose-turn-routin.myc.md                                 | keep        |                              |
 | dynamic topology  | [src/x5700_952393_claude-opus-4-8_phase-3-act-door-opened-loop-self-maintains.myc.md](../src/x5700_952393_claude-opus-4-8_phase-3-act-door-opened-loop-self-maintains.myc.md)                                                                               | canonical        | src/x5700_952393_claude-opus-4-8_phase-3-act-door-opened-loop-self-maintains.myc.md                                        | keep        |                              |
 | dynamic topology  | [src/x5700_952625_claude-opus-4-8_metabolic-feasibility-sovereignty-is-gated-by-the.myc.md](../src/x5700_952625_claude-opus-4-8_metabolic-feasibility-sovereignty-is-gated-by-the.myc.md)                                                                   | canonical        | src/x5700_952625_claude-opus-4-8_metabolic-feasibility-sovereignty-is-gated-by-the.myc.md                                  | keep        |                              |
+| dynamic topology  | [src/x5700_954397_claude_close-codex-constitutional-bootstrap-gap-typed-hum.myc.md](../src/x5700_954397_claude_close-codex-constitutional-bootstrap-gap-typed-hum.myc.md)                                                                                   | canonical        | src/x5700_954397_claude_close-codex-constitutional-bootstrap-gap-typed-hum.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md](../src/x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md)                                                                                                 | canonical        | src/x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md                                                 | keep        |                              |
 | dynamic topology  | [src/x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md](../src/x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md)                                                                                 | canonical        | src/x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md                                         | keep        |                              |
 | dynamic topology  | [src/x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md](../src/x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md)                                                                             | canonical        | src/x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md                                       | keep        |                              |

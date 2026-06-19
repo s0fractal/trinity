@@ -36,6 +36,7 @@
 {"00":"04","01":"3","08":"5","10":{"en":"stable action / repeated reliable doing","uk":"стабільна дія / повторюване надійне діяння"},"15":"5(action)+3(triangle/stable)→reliable repeatable action","14":"60","13":{"30":"7F","31":"7F","32":"7F","33":"00"}}
 {"00":"02","02":"18","03":"word"}
 {"11":"00 00 59 00 00 59 00 00","00":"5","02":["verify","init","fresh-action","check","перевірити","ініціалізувати","свіжа-дія","створити"],"04":"5/A","09":"action+apex = fresh verification"}
+{"00":"5","02":["affordances","actions","що-я-можу"],"04":"5/B","09":"action+bridge = what a digital entity can DO + the proof each action carries (proof-bearing loop + live verb surface)","11":"00 00 00 00 00 59 00 00"}
 
 {"11":"6C 26 40 33 66 40 40 19","00":"5","02":["t","runtime","exec","ст","рантайм"],"04":"0/01","09":"foundation+byte01 = runtime entry"}
 {"11":"00 00 00 00 59 00 00 59","00":"5","02":["help","info","describe","show","допомога","інфо","опиши","покажи"],"04":"0/0F","09":"foundation+frontier-edge = boundary info"}

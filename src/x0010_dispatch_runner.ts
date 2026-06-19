@@ -71,6 +71,7 @@ export const POSITION_TO_FILE: Record<string, string> = {
   "5/9": "x5900_nay.ts",
   "5/91": "x5910_compost_watchdog.ts",
   "5/A": "x5A00_fresh.ts",
+  "5/B": "x5B00_affordances.ts",
   "5/C": "x5C00_cross_verify.ts",
   "5/D": "x5D00_apply_codeicide.ts",
   "5/E": "x5E00_cognition_recommend_receipt.ts",

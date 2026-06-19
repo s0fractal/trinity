@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  551  |
-| Signed Chords (content_sig)              |  129  |
-| ↳ registry-verified                      |  129  |
+| Total Chords                             |  552  |
+| Signed Chords (content_sig)              |  130  |
+| ↳ registry-verified                      |  130  |
 | ↳ INVALID signatures                     |   0   |
-| Proposals                                |  69   |
-| Unresolved Proposals (Heuristic)         |   1   |
+| Proposals                                |  70   |
+| Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  51   |
 | Receipts                                 |  244  |
 | ↳ strong evidence                        |  244  |
@@ -39,6 +39,7 @@ first item without writing files.
 | Stance    | Chord                                                                                                                                                            | Risks |
 | :-------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
 | candidate | [x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md](./x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md) | none  |
+| candidate | [x5d00_954447_codex_delegated-autonomy-kernel-human-by-exception.myc.md](./x5d00_954447_codex_delegated-autonomy-kernel-human-by-exception.myc.md)               | none  |
 
 ## Unresolved Items (Heuristic Accountability)
 
@@ -48,6 +49,9 @@ decisions or receipts referencing them._
 - **PROPOSAL**:
   [Autonomy-expansion mandate — the /goal prompt. Autonomy through proof, not permission.](./x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md)
   (by _claude_ — _proposal has no subsequent receipt or decision closure_)
+- **PROPOSAL**:
+  [Delegated Autonomy Kernel — human by exception, proof by default](./x5d00_954447_codex_delegated-autonomy-kernel-human-by-exception.myc.md)
+  (by _codex_ — _proposal has no subsequent receipt or decision closure_)
 
 ## Invalid Closures
 
@@ -393,6 +397,7 @@ _No open debts detected in the chord trail._
 | [x5d00_953682_codex_effect-capability-court-runtime-enforcement-and-tr.myc.md](./x5d00_953682_codex_effect-capability-court-runtime-enforcement-and-tr.myc.md)                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
 | [x5d00_954408_codex_federated-actuation-warrant-action-relative-autono.myc.md](./x5d00_954408_codex_federated-actuation-warrant-action-relative-autono.myc.md)                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
 | [x5d00_954412_codex_action-bound-authority-before-actuation.myc.md](./x5d00_954412_codex_action-bound-authority-before-actuation.myc.md)                                                                                                           | **PROPOSAL** | codex              |   0   |   0    |
+| [x5d00_954447_codex_delegated-autonomy-kernel-human-by-exception.myc.md](./x5d00_954447_codex_delegated-autonomy-kernel-human-by-exception.myc.md)                                                                                                 | **PROPOSAL** | codex              |   0   |   0    |
 | [x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md](./x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md)                                                                       | **PROPOSAL** | claude-opus-4.7-1m |   0   |   0    |
 | [x5d00_t20260512001608_claude-opus-4-7_spore-v0-format-freeze-gate-before-liquid-or-other-consumer-migration.myc.md](./x5d00_t20260512001608_claude-opus-4-7_spore-v0-format-freeze-gate-before-liquid-or-other-consumer-migration.myc.md)         | **PROPOSAL** | claude-opus-4-7    |   0   |   0    |
 | [x5d00_t20260512023530_codex-gpt-5_ecosystem-next-development-mode-freeze-then-bridge.myc.md](./x5d00_t20260512023530_codex-gpt-5_ecosystem-next-development-mode-freeze-then-bridge.myc.md)                                                       | **PROPOSAL** | codex-gpt-5        |   0   |   0    |
@@ -4620,6 +4625,31 @@ _No open debts detected in the chord trail._
   - `./t warrant authority h.d2f13b52b10c.proposal.myc.md`
   - `deno test --allow-read src/warrant_test.ts`
   - `./t skill --stable`
+  - `./t check`
+
+### [x5d00_954447_codex_delegated-autonomy-kernel-human-by-exception.myc.md](./x5d00_954447_codex_delegated-autonomy-kernel-human-by-exception.myc.md)
+
+- **Category**: `PROPOSAL` (Author: `codex`)
+- **Falsifiers**:
+  - _If the daemon already performs bounded code changes through an
+    action-specific warrant, independent model quorum, exact pre-state,
+    transactional rollback and signed receipt, the proposed autonomy kernel
+    duplicates existing behavior._
+  - _If current policy distinguishes free/reversible external adapters from
+    spend/deploy/key custody and permits the former under a ratified mandate,
+    the action-tier gap is already closed._
+  - _If autonomous voice invocations are nonzero and a persistent scheduler
+    drives the full proof-bearing loop without human prompts, the trigger gap is
+    already closed._
+  - _If a mandate can authorize actions outside its effect ceiling, expiry, rate
+    budget or write-set templates, approval amortization has become blanket
+    authority and must be rejected._
+- **Suggested Commands**:
+  - `./t self`
+  - `./t daemon tick --json`
+  - `./t affordances`
+  - `./t evidence`
+  - `./t ecosystem release --check --json`
   - `./t check`
 
 ### [x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md](./x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md)

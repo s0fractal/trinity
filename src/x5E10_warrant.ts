@@ -70,7 +70,10 @@ async function sha256(s: string): Promise<string> {
   )
     .join("");
 }
-/** The content commitment of a normalized intent (codex §1+§5). */
+/** The content commitment of a normalized intent (codex §1+§5). VENDORED byte-for-
+ *  byte from MYC's canonical contract `myc/src/x5820_action_intent.ts` (MYC owns it,
+ *  Trinity cannot static-import the submodule under CI decoupling). A shared
+ *  known-answer vector pins both sides — see warrant_test.ts + x5820_action_intent_test.ts. */
 export async function intentCommitment(intent: ActionIntent): Promise<string> {
   return await sha256(stable({
     args_commitment: intent.args_commitment,

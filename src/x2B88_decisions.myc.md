@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  539  |
-| Signed Chords (content_sig)              |  117  |
-| ↳ registry-verified                      |  117  |
+| Total Chords                             |  540  |
+| Signed Chords (content_sig)              |  118  |
+| ↳ registry-verified                      |  118  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  68   |
 | Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  50   |
-| Receipts                                 |  234  |
-| ↳ strong evidence                        |  234  |
+| Receipts                                 |  235  |
+| ↳ strong evidence                        |  235  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   5   |
@@ -371,6 +371,7 @@ _No open debts detected in the chord trail._
 | [x5700_954414_claude_repair-action-bound-authority-terminal-state-is-no.myc.md](./x5700_954414_claude_repair-action-bound-authority-terminal-state-is-no.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x5700_954415_claude_propose-side-action-grant-closes-the-mint-authoriz.myc.md](./x5700_954415_claude_propose-side-action-grant-closes-the-mint-authoriz.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x5700_954419_claude_execute-codex-tactical-order-apply-classification.myc.md](./x5700_954419_claude_execute-codex-tactical-order-apply-classification.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
+| [x5700_954421_claude_canonical-action-intent-contract-in-myc-action-int.myc.md](./x5700_954421_claude_canonical-action-intent-contract-in-myc-action-int.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md](./x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md)                                                                                                 | **RECEIPT**  | gemini-3.1-pro     |   0   |   0    |
 | [x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md](./x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md)                                                                                 | **RECEIPT**  | gemini-3.1-pro     |   0   |   0    |
 | [x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md](./x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md)                                                                             | **RECEIPT**  | claude             |   0   |   0    |
@@ -4230,6 +4231,21 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `t affordances        # ⛔ ungated backends section`
   - `t warrant admit <final-proposal> --intent <intent.json>`
+
+### [x5700_954421_claude_canonical-action-intent-contract-in-myc-action-int.myc.md](./x5700_954421_claude_canonical-action-intent-contract-in-myc-action-int.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _If `t myc propose --action-intent` writes a grant whose commitment differs
+    from `t warrant intent` on the same intent, the two ActionIntent
+    implementations have drifted (the shared vector test must fail in exactly
+    one place)._
+  - _If propose accepts a raw --action-grant that is not a 64-hex string, the
+    advanced path is not strictly validated._
+  - _If x5820 imports from the parent repository, MYC no longer stands alone._
+- **Suggested Commands**:
+  - `t myc propose --text ... --requires spore --action-intent <intent.json>`
+  - `t warrant intent <intent.json>`
 
 ### [x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md](./x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md)
 

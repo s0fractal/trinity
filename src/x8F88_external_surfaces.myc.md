@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    539     |
+| dynamic topology  |    540     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **639**   |
+| **Total**         |  **640**   |
 
 ## Runtime Cache Diagnostics
 
@@ -433,6 +433,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x5700_954414_claude_repair-action-bound-authority-terminal-state-is-no.myc.md](../src/x5700_954414_claude_repair-action-bound-authority-terminal-state-is-no.myc.md)                                                                                   | canonical        | src/x5700_954414_claude_repair-action-bound-authority-terminal-state-is-no.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x5700_954415_claude_propose-side-action-grant-closes-the-mint-authoriz.myc.md](../src/x5700_954415_claude_propose-side-action-grant-closes-the-mint-authoriz.myc.md)                                                                                   | canonical        | src/x5700_954415_claude_propose-side-action-grant-closes-the-mint-authoriz.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x5700_954419_claude_execute-codex-tactical-order-apply-classification.myc.md](../src/x5700_954419_claude_execute-codex-tactical-order-apply-classification.myc.md)                                                                                     | canonical        | src/x5700_954419_claude_execute-codex-tactical-order-apply-classification.myc.md                                           | keep        |                              |
+| dynamic topology  | [src/x5700_954421_claude_canonical-action-intent-contract-in-myc-action-int.myc.md](../src/x5700_954421_claude_canonical-action-intent-contract-in-myc-action-int.myc.md)                                                                                   | canonical        | src/x5700_954421_claude_canonical-action-intent-contract-in-myc-action-int.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md](../src/x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md)                                                                                                 | canonical        | src/x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md                                                 | keep        |                              |
 | dynamic topology  | [src/x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md](../src/x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md)                                                                                 | canonical        | src/x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md                                         | keep        |                              |
 | dynamic topology  | [src/x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md](../src/x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md)                                                                             | canonical        | src/x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md                                       | keep        |                              |

@@ -105,3 +105,20 @@ Deno.test("warrant — pending_quorum is readiness 'pending', not 'stale' (codex
   assertEquals(v.readiness, "pending"); // evidence is current, just a signature short — never 'stale'
   assert(!v.authorized);
 });
+
+Deno.test("warrant — intent commitment matches the SHARED cross-substrate vector (parity with MYC x5820)", async () => {
+  // Trinity x5E10 and MYC x5820 vendor the same algorithm; this pins both to one
+  // value. If this fails but MYC's x5820 vector test passes (or vice versa), the
+  // two implementations have drifted and must be reconciled.
+  const commitment = await intentCommitment({
+    verb: "apply",
+    target_substrate: "myc",
+    args_commitment: "c1",
+    input_commitments: ["a", "b"],
+    requested_effects: ["receipt", "write"],
+  });
+  assertEquals(
+    commitment,
+    "d02d75adca7e0dbbd10244c7ea1e9aeafa7b6d019a0f570bcad471a38d997552",
+  );
+});

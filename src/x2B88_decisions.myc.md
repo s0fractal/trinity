@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  546  |
-| Signed Chords (content_sig)              |  124  |
-| ↳ registry-verified                      |  124  |
+| Total Chords                             |  547  |
+| Signed Chords (content_sig)              |  125  |
+| ↳ registry-verified                      |  125  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  69   |
 | Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  50   |
-| Receipts                                 |  240  |
-| ↳ strong evidence                        |  240  |
+| Receipts                                 |  241  |
+| ↳ strong evidence                        |  241  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   5   |
@@ -294,6 +294,7 @@ _No open debts detected in the chord trail._
 | [x4700_952699_claude-opus-4-8_fqdn-unify-code-and-docs-mycelium-as-sovereign-segment.myc.md](./x4700_952699_claude-opus-4-8_fqdn-unify-code-and-docs-mycelium-as-sovereign-segment.myc.md)                                                         | **PROPOSAL** | claude-opus-4-8    |   0   |   0    |
 | [x4700_954115_claude_ecosystem-grow-loop-review-closed-t-check-route-ga.myc.md](./x4700_954115_claude_ecosystem-grow-loop-review-closed-t-check-route-ga.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x4700_954426_claude_canonical-chain-verifier-in-myc-full-verifychain-n.myc.md](./x4700_954426_claude_canonical-chain-verifier-in-myc-full-verifychain-n.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x4700_954427_claude_opentimestamps-proof-adapter-honest-offline-first.myc.md](./x4700_954427_claude_opentimestamps-proof-adapter-honest-offline-first.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x4b00_t20260523133425_codex_repo-wide-refactor-harmonization-audit.myc.md](./x4b00_t20260523133425_codex_repo-wide-refactor-harmonization-audit.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x4c40_t20260513103500_gemini-3-1-pro_dual-layer-filesystem-with-hex-folders-and-hidden-semantic-overlays.myc.md](./x4c40_t20260513103500_gemini-3-1-pro_dual-layer-filesystem-with-hex-folders-and-hidden-semantic-overlays.myc.md)               | **PROPOSAL** | gemini-3-1-pro     |   0   |   0    |
 | [x4d00_950620_claude_cross-substrate-roadmap-federation.myc.md](./x4d00_950620_claude_cross-substrate-roadmap-federation.myc.md)                                                                                                                   | **PROPOSAL** | claude-opus-4-7    |   0   |   0    |
@@ -3262,6 +3263,20 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `deno test --allow-read myc/src/x2F70_keytimeline_test.ts`
   - `t myc standing`
+
+### [x4700_954427_claude_opentimestamps-proof-adapter-honest-offline-first.myc.md](./x4700_954427_claude_opentimestamps-proof-adapter-honest-offline-first.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _If the adapter reports `valid` without a successful on-chain `ots verify`,
+    it fabricated an anchor._
+  - _If a missing `ots` tool or an unreachable Bitcoin source yields anything
+    other than `unavailable`, it is not fail-closed._
+  - _If the bootstrap proof's attestation is treated as proof for any subject
+    other than 8c9b9845…, receipt identity replaced evidence._
+- **Suggested Commands**:
+  - `t myc ots-verify <proof.ots>            # embedded attestations (offline)`
+  - `t myc ots-verify <proof.ots> --verify   # on-chain (unavailable without a Bitcoin source)`
 
 ### [x4b00_t20260523133425_codex_repo-wide-refactor-harmonization-audit.myc.md](./x4b00_t20260523133425_codex_repo-wide-refactor-harmonization-audit.myc.md)
 

@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  529  |
-| Signed Chords (content_sig)              |  108  |
-| ↳ registry-verified                      |  108  |
+| Total Chords                             |  530  |
+| Signed Chords (content_sig)              |  109  |
+| ↳ registry-verified                      |  109  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  65   |
 | Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  49   |
-| Receipts                                 |  229  |
-| ↳ strong evidence                        |  229  |
+| Receipts                                 |  230  |
+| ↳ strong evidence                        |  230  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   5   |
@@ -575,6 +575,7 @@ _No open debts detected in the chord trail._
 | [x7700_954377_codex_first-live-spore-receipt-publish-witness-thread.myc.md](./x7700_954377_codex_first-live-spore-receipt-publish-witness-thread.myc.md)                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_954391_codex_p3-keytimeline-strict-authorization-and-evidence-h.myc.md](./x7700_954391_codex_p3-keytimeline-strict-authorization-and-evidence-h.myc.md)                                                                                     | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_954402_codex_resolve-one-step-fail-closed-hardening.myc.md](./x7700_954402_codex_resolve-one-step-fail-closed-hardening.myc.md)                                                                                                             | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_954405_claude_the-membrane-ratified-its-own-constitution-by-a-ge.myc.md](./x7700_954405_claude_the-membrane-ratified-its-own-constitution-by-a-ge.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -6903,6 +6904,20 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `cd myc && deno task check`
   - `./t check`
+
+### [x7700_954405_claude_the-membrane-ratified-its-own-constitution-by-a-ge.myc.md](./x7700_954405_claude_the-membrane-ratified-its-own-constitution-by-a-ge.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _If `t myc lifecycle` does not report h.d2f13b52b10c as final:implemented
+    with class quorum human:1/1, model:1/1, the ratification did not hold._
+  - _If either resolution's content_sig fails to verify against its own voice's
+    key, a principal was not independent._
+  - _If both resolvers share a class (two models or two humans), the human-model
+    rule was not actually satisfied._
+- **Suggested Commands**:
+  - `t myc lifecycle    # final: implemented — class quorum human:1/1, model:1/1 (claude, s0fractal)`
+  - `t voice-keys verify-all`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

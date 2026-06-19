@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  552  |
-| Signed Chords (content_sig)              |  130  |
-| ↳ registry-verified                      |  130  |
+| Total Chords                             |  553  |
+| Signed Chords (content_sig)              |  131  |
+| ↳ registry-verified                      |  131  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  70   |
-| Unresolved Proposals (Heuristic)         |   2   |
+| Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  51   |
-| Receipts                                 |  244  |
-| ↳ strong evidence                        |  244  |
+| Receipts                                 |  245  |
+| ↳ strong evidence                        |  245  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   5   |
@@ -39,7 +39,6 @@ first item without writing files.
 | Stance    | Chord                                                                                                                                                            | Risks |
 | :-------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
 | candidate | [x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md](./x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md) | none  |
-| candidate | [x5d00_954447_codex_delegated-autonomy-kernel-human-by-exception.myc.md](./x5d00_954447_codex_delegated-autonomy-kernel-human-by-exception.myc.md)               | none  |
 
 ## Unresolved Items (Heuristic Accountability)
 
@@ -49,9 +48,6 @@ decisions or receipts referencing them._
 - **PROPOSAL**:
   [Autonomy-expansion mandate — the /goal prompt. Autonomy through proof, not permission.](./x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md)
   (by _claude_ — _proposal has no subsequent receipt or decision closure_)
-- **PROPOSAL**:
-  [Delegated Autonomy Kernel — human by exception, proof by default](./x5d00_954447_codex_delegated-autonomy-kernel-human-by-exception.myc.md)
-  (by _codex_ — _proposal has no subsequent receipt or decision closure_)
 
 ## Invalid Closures
 
@@ -385,6 +381,7 @@ _No open debts detected in the chord trail._
 | [x5700_954419_claude_execute-codex-tactical-order-apply-classification.myc.md](./x5700_954419_claude_execute-codex-tactical-order-apply-classification.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x5700_954421_claude_canonical-action-intent-contract-in-myc-action-int.myc.md](./x5700_954421_claude_canonical-action-intent-contract-in-myc-action-int.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x5700_954431_claude_temporal-sign-emission-tooling-done-division-of-la.myc.md](./x5700_954431_claude_temporal-sign-emission-tooling-done-division-of-la.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
+| [x5700_954450_claude_autonomy-kernel-policy-compiler-codex-p0-pure-fail.myc.md](./x5700_954450_claude_autonomy-kernel-policy-compiler-codex-p0-pure-fail.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md](./x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md)                                                                                                 | **RECEIPT**  | gemini-3.1-pro     |   0   |   0    |
 | [x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md](./x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md)                                                                                 | **RECEIPT**  | gemini-3.1-pro     |   0   |   0    |
 | [x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md](./x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md)                                                                             | **RECEIPT**  | claude             |   0   |   0    |
@@ -4404,6 +4401,14 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `t myc temporal-sign --descriptor <commitment> --timeline-root <hash> --actor codex`
   - `t myc ots-verify <proof.ots> --verify`
+
+### [x5700_954450_claude_autonomy-kernel-policy-compiler-codex-p0-pure-fail.myc.md](./x5700_954450_claude_autonomy-kernel-policy-compiler-codex-p0-pure-fail.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Suggested Commands**:
+  - `[]`
+- **Expected After Running**:
+  - _{}_
 
 ### [x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md](./x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md)
 

@@ -1,9 +1,22 @@
+---
+type: "ContractDescriptor"
+version: "1"
+title: "Autonomy Mandate: amortize human approval into a machine-enforced, class-typed, expiring grant"
+status: "draft"
+implementation_status: "prototype"
+hears:
+  - "../src/x5C20_autonomy.ts"
+  - "../src/x5d00_954447_codex_delegated-autonomy-kernel-human-by-exception.myc.md"
+related:
+  - "../src/x5E10_warrant.ts"
+---
+
 # AUTONOMY_MANDATE.v1
 
-**Status:** prototype (policy compiler implemented; ratifiable instance is P5)
-**Organ:** `src/x5C20_autonomy.ts` (`t autonomy`) — pure, read-only, fail-closed
-**Proposed by:** codex `x5d00_954447` (Delegated Autonomy Kernel — human by
-exception)
+**Organ:** `src/x5C20_autonomy.ts` (`t autonomy`) — pure, read-only,
+fail-closed. Policy compiler implemented; the ratifiable mandate instance is
+codex P5. **Proposed by:** codex `x5d00_954447` (Delegated Autonomy Kernel —
+human by exception)
 
 ## Intent
 

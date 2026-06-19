@@ -3,74 +3,93 @@ import {
   assertEquals,
 } from "https://deno.land/std@0.224.0/assert/mod.ts";
 import {
+  actionBoundAuthority,
   type ActionIntent,
-  authorityRoot,
   intentCommitment,
+  type ProposalDescriptor,
 } from "./x5E10_warrant.ts";
 
-const prop = (id: string, state: string, detail = ""): {
-  kind: string;
-  id: string;
-  state: string;
-  detail: string;
-} => ({ kind: "proposal", id, state, detail });
-
-Deno.test("warrant — a final:implemented proposal grants authority", () => {
-  const v = authorityRoot("h.abc123", [
-    prop(
-      "h.abc123.proposal.my",
-      "implemented",
-      "final: implemented — class quorum human:1/1, model:1/1 satisfied (principals: claude, s0fractal)",
-    ),
-  ]);
-  assert(v.authorized);
-  assertEquals(v.readiness, "pass");
-  assertEquals(v.authority?.principals, ["claude", "s0fractal"]);
+const desc = (over: Partial<ProposalDescriptor> = {}): ProposalDescriptor => ({
+  fqdn: "h.aaaa.proposal.myc.md",
+  commitment: "c0ffee",
+  ...over,
 });
 
-Deno.test("warrant — fail closed: a non-final proposal grants NO authority", () => {
-  for (const state of ["proposed", "resolution_claimed", "evidence_verified"]) {
-    const v = authorityRoot("h.abc123", [prop("h.abc123.proposal.my", state)]);
-    assert(!v.authorized, `${state} must not authorize`);
-  }
-  // evidence_verified is `stale` (one signature short), not a hard fail
-  assertEquals(
-    authorityRoot("h.x", [prop("h.x.proposal", "evidence_verified")]).readiness,
-    "stale",
+const IC = "deadbeef"; // a stand-in intent commitment
+
+Deno.test("warrant — terminal state is NOT a capability: final without action_grant is denied", () => {
+  // codex acceptance #1: a ratified governance proposal (no action_grant) grants
+  // NO actuation authority, even though it is final:implemented.
+  const v = actionBoundAuthority(IC, desc(), "implemented");
+  assert(!v.authorized);
+  assertEquals(v.reason_code, "missing_action_grant");
+});
+
+Deno.test("warrant — final proposal committing the EXACT intent is admitted", () => {
+  // codex acceptance #2
+  const v = actionBoundAuthority(
+    IC,
+    desc({ action_grant: { intent_commitment: IC } }),
+    "implemented",
   );
+  assert(v.authorized);
+  assertEquals(v.reason_code, "action_authorized");
+  assertEquals(v.bound?.intent_commitment, IC);
 });
 
-Deno.test("warrant — fail closed: a conflicted proposal is a hard fail", () => {
-  const v = authorityRoot("h.abc123", [
-    prop("h.abc123.proposal.my", "conflicted"),
-  ]);
+Deno.test("warrant — action_grant for a DIFFERENT intent is denied (intent_mismatch)", () => {
+  const v = actionBoundAuthority(
+    IC,
+    desc({ action_grant: { intent_commitment: "other" } }),
+    "implemented",
+  );
   assert(!v.authorized);
-  assertEquals(v.readiness, "fail");
+  assertEquals(v.reason_code, "intent_mismatch");
 });
 
-Deno.test("warrant — fail closed: a missing proposal grants no authority", () => {
-  const v = authorityRoot("h.nope", [prop("h.other.proposal", "implemented")]);
-  assert(!v.authorized);
-  assertEquals(v.readiness, "not_applicable");
+Deno.test("warrant — fail closed with distinct reason codes for every non-final state", () => {
+  const g = desc({ action_grant: { intent_commitment: IC } });
+  assertEquals(
+    actionBoundAuthority(IC, g, "evidence_verified").reason_code,
+    "pending_quorum",
+  );
+  assertEquals(
+    actionBoundAuthority(IC, g, "proposed").reason_code,
+    "not_final",
+  );
+  assertEquals(
+    actionBoundAuthority(IC, g, "conflicted").reason_code,
+    "conflict",
+  );
+  assertEquals(
+    actionBoundAuthority(IC, null, "implemented").reason_code,
+    "no_proposal",
+  );
+  // none of them authorize
+  for (const s of ["evidence_verified", "proposed", "conflicted", null]) {
+    assert(!actionBoundAuthority(IC, s === null ? null : g, s).authorized);
+  }
 });
 
-Deno.test("warrant — intent commitment is deterministic and order-independent", async () => {
-  const a: ActionIntent = {
+Deno.test("warrant — intent identity preserves input order, treats effects as a set", async () => {
+  const base: ActionIntent = {
     verb: "apply",
     target_substrate: "myc",
     args_commitment: "c1",
     input_commitments: ["a", "b"],
     requested_effects: ["write", "receipt"],
   };
-  const b: ActionIntent = {
-    ...a,
-    input_commitments: ["b", "a"],
-    requested_effects: ["receipt", "write"],
-  };
-  assertEquals(await intentCommitment(a), await intentCommitment(b));
-  // different args ⇒ different commitment (cannot reuse)
+  // effects are a set: reordering does NOT change identity
+  assertEquals(
+    await intentCommitment(base),
+    await intentCommitment({
+      ...base,
+      requested_effects: ["receipt", "write"],
+    }),
+  );
+  // input order IS significant (codex §5): [a,b] != [b,a]
   assert(
-    await intentCommitment(a) !==
-      await intentCommitment({ ...a, args_commitment: "c2" }),
+    await intentCommitment(base) !==
+      await intentCommitment({ ...base, input_commitments: ["b", "a"] }),
   );
 });

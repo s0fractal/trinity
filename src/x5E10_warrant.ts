@@ -1,17 +1,20 @@
 #!/usr/bin/env -S deno run --allow-read --allow-run --allow-env
-// src/x5E10_warrant.ts — Actuation Warrant: authority-root verification.
+// src/x5E10_warrant.ts — Actuation Warrant: action-bound authority verification.
 // position: 5/E1 → action × emergence = the authority to perform one effect.
 // hex_dipole: "00 00 00 00 00 6C 00 00"
 // placement_policy: axis
 //
-// Goal x5000_954398, vector 1 (propose → ratify → APPLY). First slice of codex's
-// ACTUATION_WARRANT.v0 (x5d00_954408): the AUTHORITY ROOT. A signed warrant does
-// not INVENT authority — its authority is DERIVED from a quorum-final proposal.
-// This is the pure, fail-closed bridge from finality to "may this action run":
-// no proposal, non-final, conflicted, claimed, evidence-unverified, or invalid →
-// `denied`. Execution, pre-state snapshot, transaction and rollback (codex §3-5)
-// are deliberately NOT here — authority first, actuation later. Pure over the
-// lifecycle; the CLI is a thin reader. NEVER touches keys or performs an effect.
+// Goal x5000_954398, vector 1 (propose → ratify → APPLY). The authority root of
+// codex's ACTUATION_WARRANT.v0 (x5d00_954408), REPAIRED per codex's review
+// x5d00_954412: **terminal state is not a capability.** Finality answers "was
+// this proposal's outcome accepted under its policy?"; authority must ALSO answer
+// "does the accepted proposal commit to THIS exact action?" — and the second
+// cannot be derived from the first. So a proposal authorizes actuation ONLY when
+// its committed descriptor carries a structured `action_grant.intent_commitment`
+// that the requested intent matches. Absence → denied. Narrative resemblance is
+// not authority. Fail-closed; exact identity (never substring/prefix); authority
+// reads structured fields, never display prose. Verification only — never executes
+// or signs. §3-5 (pre-state, transaction, rollback) remain deliberately unbuilt.
 
 import { dirname, fromFileUrl, join } from "jsr:@std/path@1.1.4";
 import { extractOrganJson, runOrgan } from "./x0010_dispatch_runner.ts";
@@ -19,10 +22,8 @@ import { extractOrganJson, runOrgan } from "./x0010_dispatch_runner.ts";
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
 
-/** Typed readiness — codex §4. Infrastructure-unavailable is NOT a failure, and a
- *  pass for another pre-state is stale. Unknown/unavailable/stale never satisfy a
- *  required gate, but stay distinguishable so an actor knows whether to repair
- *  code, refresh evidence, request network, or wait. */
+/** Typed readiness — codex §4. Unavailable ≠ fail; a pass for another pre-state is
+ *  stale. Each verdict also carries a stable reason code (below). */
 export type Readiness =
   | "pass"
   | "fail"
@@ -30,8 +31,18 @@ export type Readiness =
   | "stale"
   | "not_applicable";
 
-/** A normalized action intent — codex §1. Equivalent actions yield the same
- *  commitment; different args/targets cannot reuse it. */
+export type ReasonCode =
+  | "action_authorized"
+  | "no_proposal"
+  | "not_final"
+  | "pending_quorum"
+  | "conflict"
+  | "missing_action_grant"
+  | "intent_mismatch";
+
+/** A normalized action intent — codex §1, narrowed by §5: requested_effects is a
+ *  SET (canonical), but input_commitments order is PRESERVED — [a,b] ≠ [b,a]
+ *  unless an action schema explicitly declares the field commutative. */
 export interface ActionIntent {
   verb: string;
   target_substrate: "trinity" | "myc" | "liquid" | "omega";
@@ -58,122 +69,202 @@ async function sha256(s: string): Promise<string> {
   )
     .join("");
 }
-/** The content commitment of a normalized intent. Pure. */
+/** The content commitment of a normalized intent (codex §1+§5). */
 export async function intentCommitment(intent: ActionIntent): Promise<string> {
   return await sha256(stable({
     args_commitment: intent.args_commitment,
-    input_commitments: [...intent.input_commitments].sort(),
-    requested_effects: [...intent.requested_effects].sort(),
+    input_commitments: intent.input_commitments, // ORDER PRESERVED (codex §5)
+    requested_effects: [...intent.requested_effects].sort(), // a set
     target_substrate: intent.target_substrate,
     verb: intent.verb,
   }));
 }
 
-const TERMINAL_FINAL = "implemented"; // the only outcome that authorizes an effect
+/** The committed proposal descriptor — the PROOF (not the lifecycle summary, which
+ *  is only an index). */
+export interface ProposalDescriptor {
+  fqdn: string;
+  commitment: string;
+  action_grant?: { intent_commitment?: string };
+}
 
 export interface AuthorityVerdict {
   authorized: boolean;
   readiness: Readiness;
+  reason_code: ReasonCode;
   reason: string;
-  authority?: {
-    proposal: string;
-    state: string;
-    principals: string[];
-    policy: string;
-  };
+  bound?: { proposal: string; commitment: string; intent_commitment: string };
 }
 
-interface Mutation {
-  kind?: string;
-  id?: string;
-  state?: string;
-  detail?: string;
-}
+const TERMINAL_FINAL = "implemented";
 
-/** Derive whether a proposal is a valid AUTHORITY for actuation, purely from the
- *  lifecycle. Fail closed: a proposal that is missing, not `implemented`, or
- *  conflicted/claimed/evidence_verified grants NO authority. (codex §2) */
-export function authorityRoot(
-  proposalRef: string,
-  mutations: Mutation[],
+/** ACTION-BOUND authority (codex §P0). Pure. A proposal authorizes one effect only
+ *  when (1) it exists with exact identity, (2) it is final:implemented, and (3) its
+ *  committed descriptor carries an `action_grant.intent_commitment` equal to the
+ *  requested intent's commitment. Anything else is denied with a reason code that
+ *  tells an autonomous actor what to do next. Authority is never inferred from
+ *  prose, narrative resemblance, or a bare finality event. */
+export function actionBoundAuthority(
+  intentCommit: string,
+  descriptor: ProposalDescriptor | null,
+  finalState: string | null,
 ): AuthorityVerdict {
-  const hash = proposalRef.match(/h\.[0-9a-fA-F]+/)?.[0] ?? proposalRef;
-  const p = mutations.find((m) =>
-    m.kind === "proposal" && String(m.id).includes(hash)
-  );
-  if (!p) {
+  if (!descriptor) {
     return {
       authorized: false,
       readiness: "not_applicable",
-      reason: `no proposal matching ${hash}`,
+      reason_code: "no_proposal",
+      reason: "no proposal with this exact identity",
     };
   }
-  if (p.state === "conflicted") {
+  if (finalState === "conflicted") {
     return {
       authorized: false,
       readiness: "fail",
+      reason_code: "conflict",
       reason: "proposal is conflicted — incompatible authenticated outcomes",
     };
   }
-  if (p.state !== TERMINAL_FINAL) {
+  if (finalState !== TERMINAL_FINAL) {
+    const pending = finalState === "evidence_verified";
     return {
       authorized: false,
-      readiness: p.state === "evidence_verified" ? "stale" : "not_applicable",
-      reason:
-        `proposal is '${p.state}', not final:${TERMINAL_FINAL} — no authority (${
-          p.detail ?? ""
-        })`,
+      readiness: pending ? "stale" : "not_applicable",
+      reason_code: pending ? "pending_quorum" : "not_final",
+      reason: `proposal is '${finalState}', not final:${TERMINAL_FINAL}`,
     };
   }
-  // final:implemented → authority. Surface the quorum/policy that granted it.
-  const detail = String(p.detail ?? "");
-  const principals =
-    detail.match(/principals:\s*([^)]+)\)/)?.[1]?.split(",").map((s) =>
-      s.trim()
-    ) ??
-      [];
-  const policy = detail.match(/—\s*(.*?quorum[^(]*)\s*(?:\(|$)/)?.[1]?.trim() ??
-    "satisfied";
+  const grant = descriptor.action_grant?.intent_commitment;
+  if (!grant) {
+    return {
+      authorized: false,
+      readiness: "not_applicable",
+      reason_code: "missing_action_grant",
+      reason:
+        "final proposal carries no action_grant — it is governance history, not actuation authority",
+    };
+  }
+  if (grant !== intentCommit) {
+    return {
+      authorized: false,
+      readiness: "fail",
+      reason_code: "intent_mismatch",
+      reason: "the proposal's action_grant does not commit to this intent",
+    };
+  }
   return {
     authorized: true,
     readiness: "pass",
-    reason: "authority derived from a quorum-final proposal",
-    authority: {
-      proposal: String(p.id),
-      state: String(p.state),
-      principals,
-      policy,
+    reason_code: "action_authorized",
+    reason: "a quorum-final proposal commits to exactly this action",
+    bound: {
+      proposal: descriptor.fqdn,
+      commitment: descriptor.commitment,
+      intent_commitment: intentCommit,
     },
   };
 }
 
+// ── CLI helpers (read-only) ─────────────────────────────────────────────────────
+/** Read a proposal descriptor by EXACT fqdn (codex §3 — never substring/prefix). */
+async function readProposal(fqdn: string): Promise<ProposalDescriptor | null> {
+  const path = join(ROOT, "myc", "public", "proposals", fqdn);
+  try {
+    const text = await Deno.readTextFile(path);
+    const d = JSON.parse(text.match(/```json myc\s*\n([\s\S]*?)\n```/)![1]);
+    if (d?.type !== "ProposedMutationDescriptor") return null;
+    return {
+      fqdn: String(d.fqdn),
+      commitment: String(d.commitment?.value ?? ""),
+      action_grant: d.body?.action_grant,
+    };
+  } catch {
+    return null;
+  }
+}
+/** The proposal's finality STATE from the lifecycle — used only as an index. */
+async function finalState(fqdn: string): Promise<string | null> {
+  const r = await runOrgan(join(ROOT, "t"), ["myc", "lifecycle", "--json"], {
+    cwd: ROOT,
+  });
+  const o = (r.code === 0 ? extractOrganJson(r.stdout) : null) as
+    | { mutations?: Array<{ kind?: string; id?: string; state?: string }> }
+    | null;
+  // exact match: the lifecycle id is the descriptor fqdn truncated to 26 chars
+  const key = fqdn.slice(0, 26);
+  const m = (o?.mutations ?? []).find((x) =>
+    x.kind === "proposal" && x.id === key
+  );
+  return m?.state ?? null;
+}
+
 async function runCli(args: string[] = Deno.args): Promise<void> {
   const sub = args[0];
-  if (sub !== "authority" || !args[1]) {
+  const fqdn = args[1];
+
+  // `warrant authority <proposal>` — FINALITY DIAGNOSTIC only (codex: never emit
+  // authorized:true without an intent; finality_satisfied ≠ action_authorized).
+  if (sub === "authority" && fqdn) {
+    const state = await finalState(fqdn);
     console.log(JSON.stringify(
       {
-        type: "warrant",
+        type: "warrant_finality_diagnostic",
         position: "5/E1",
-        usage: "warrant authority <proposal-fqdn>",
+        proposal: fqdn,
+        finality_satisfied: state === TERMINAL_FINAL,
+        state,
         note:
-          "authority-root verification only — derives 'may this action run' from finality; never executes or signs",
+          "finality_satisfied is NOT action_authorized — use `warrant admit <p> --intent` to test a concrete action",
       },
       null,
       2,
     ));
     return;
   }
-  const life = await runOrgan(join(ROOT, "t"), ["myc", "lifecycle", "--json"], {
-    cwd: ROOT,
-  });
-  const o = (life.code === 0 ? extractOrganJson(life.stdout) : null) as
-    | { mutations?: Mutation[] }
-    | null;
-  const verdict = authorityRoot(args[1], o?.mutations ?? []);
-  console.log(
-    JSON.stringify({ type: "warrant", position: "5/E1", ...verdict }, null, 2),
-  );
-  if (!verdict.authorized) Deno.exitCode = 1;
+
+  // `warrant admit <proposal> --intent <intent.json>` — action-bound authority.
+  if (sub === "admit" && fqdn) {
+    const ipath = args[args.indexOf("--intent") + 1];
+    if (!args.includes("--intent") || !ipath) {
+      console.error("# error: admit requires --intent <intent.json>");
+      Deno.exitCode = 1;
+      return;
+    }
+    let intent: ActionIntent;
+    try {
+      intent = JSON.parse(await Deno.readTextFile(ipath));
+    } catch {
+      console.error(`# error: could not read intent from ${ipath}`);
+      Deno.exitCode = 1;
+      return;
+    }
+    const [descriptor, state, ic] = await Promise.all([
+      readProposal(fqdn),
+      finalState(fqdn),
+      intentCommitment(intent),
+    ]);
+    const v = actionBoundAuthority(ic, descriptor, state);
+    console.log(
+      JSON.stringify({ type: "warrant", position: "5/E1", ...v }, null, 2),
+    );
+    if (!v.authorized) Deno.exitCode = 1;
+    return;
+  }
+
+  console.log(JSON.stringify(
+    {
+      type: "warrant",
+      position: "5/E1",
+      usage: [
+        "warrant admit <proposal-fqdn> --intent <intent.json>   (action-bound authority)",
+        "warrant authority <proposal-fqdn>                       (finality diagnostic only)",
+      ],
+      note:
+        "authority is action-bound: a final proposal authorizes ONLY the action it grants. Verification only — never executes or signs.",
+    },
+    null,
+    2,
+  ));
 }
 
 if (import.meta.main) await runCli();

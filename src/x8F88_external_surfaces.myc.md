@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    515     |
+| dynamic topology  |    516     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **615**   |
+| **Total**         |  **616**   |
 
 ## Runtime Cache Diagnostics
 
@@ -199,6 +199,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x2700_952403_claude-opus-4-8_opinion-into-code-myc-coordinate-resolver-with-dua.myc.md](../src/x2700_952403_claude-opus-4-8_opinion-into-code-myc-coordinate-resolver-with-dua.myc.md)                                                                 | canonical        | src/x2700_952403_claude-opus-4-8_opinion-into-code-myc-coordinate-resolver-with-dua.myc.md                                 | keep        |                              |
 | dynamic topology  | [src/x2700_952415_claude-opus-4-8_canonical-commitment-one-provenance-schema-conform.myc.md](../src/x2700_952415_claude-opus-4-8_canonical-commitment-one-provenance-schema-conform.myc.md)                                                                 | canonical        | src/x2700_952415_claude-opus-4-8_canonical-commitment-one-provenance-schema-conform.myc.md                                 | keep        |                              |
 | dynamic topology  | [src/x2700_953527_claude-opus-4-8_omega-deterministic-execution-verified-green-visit.myc.md](../src/x2700_953527_claude-opus-4-8_omega-deterministic-execution-verified-green-visit.myc.md)                                                                 | canonical        | src/x2700_953527_claude-opus-4-8_omega-deterministic-execution-verified-green-visit.myc.md                                 | keep        |                              |
+| dynamic topology  | [src/x2700_954388_claude_accept-p3-and-build-the-key-event-timeline-verific.myc.md](../src/x2700_954388_claude_accept-p3-and-build-the-key-event-timeline-verific.myc.md)                                                                                   | canonical        | src/x2700_954388_claude_accept-p3-and-build-the-key-event-timeline-verific.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md](../src/x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md)                                                                                           | canonical        | src/x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md                                              | keep        |                              |
 | dynamic topology  | [src/x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md](../src/x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md)                                                   | canonical        | src/x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md                          | keep        |                              |
 | dynamic topology  | [src/x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md](../src/x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md)                                                       | canonical        | src/x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md                            | keep        |                              |

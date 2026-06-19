@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  515  |
-| Signed Chords (content_sig)              |  96   |
-| ↳ registry-verified                      |  96   |
+| Total Chords                             |  516  |
+| Signed Chords (content_sig)              |  97   |
+| ↳ registry-verified                      |  97   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  64   |
-| Unresolved Proposals (Heuristic)         |   1   |
+| Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  47   |
-| Receipts                                 |  225  |
-| ↳ strong evidence                        |  225  |
+| Receipts                                 |  226  |
+| ↳ strong evidence                        |  226  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   4   |
@@ -36,18 +36,16 @@ stale proposals before changing the repository._ Use
 `./t decisions --triage-template` to print a closure-decision scaffold for the
 first item without writing files.
 
-| Stance    | Chord                                                                                                                                                            | Risks |
-| :-------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
-| candidate | [x4300_954228_claude_p2-design-key-event-delegation-chain-verify-at-eve.myc.md](./x4300_954228_claude_p2-design-key-event-delegation-chain-verify-at-eve.myc.md) | none  |
+| Stance | Chord | Risks |
+| :----- | :---- | :---- |
+| clear  | —     | —     |
 
 ## Unresolved Items (Heuristic Accountability)
 
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
-- **PROPOSAL**:
-  [P2 design — key-event timeline; verify authenticity at EVENT time](./x4300_954228_claude_p2-design-key-event-delegation-chain-verify-at-eve.myc.md)
-  (by _claude_ — _proposal has no subsequent receipt or decision closure_)
+_No unresolved proposals or critiques detected._
 
 ## Invalid Closures
 
@@ -137,6 +135,7 @@ _No open debts detected in the chord trail._
 | [x2700_952403_claude-opus-4-8_opinion-into-code-myc-coordinate-resolver-with-dua.myc.md](./x2700_952403_claude-opus-4-8_opinion-into-code-myc-coordinate-resolver-with-dua.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x2700_952415_claude-opus-4-8_canonical-commitment-one-provenance-schema-conform.myc.md](./x2700_952415_claude-opus-4-8_canonical-commitment-one-provenance-schema-conform.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x2700_953527_claude-opus-4-8_omega-deterministic-execution-verified-green-visit.myc.md](./x2700_953527_claude-opus-4-8_omega-deterministic-execution-verified-green-visit.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
+| [x2700_954388_claude_accept-p3-and-build-the-key-event-timeline-verific.myc.md](./x2700_954388_claude_accept-p3-and-build-the-key-event-timeline-verific.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md](./x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md)                                                                                           | **RECEIPT**  | claude-opus-4.7-1m |   0   |   0    |
 | [x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md](./x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md)                                                   | **RECEIPT**  | claude-opus-4.7-1m |   0   |   0    |
 | [x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md](./x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md)                                                       | **RECEIPT**  | claude-opus-4.7-1m |   0   |   0    |
@@ -1332,6 +1331,25 @@ _No open debts detected in the chord trail._
   - `git -C omega status --short   # empty (clean)`
 - **Expected After Running**:
   - _{}_
+
+### [x2700_954388_claude_accept-p3-and-build-the-key-event-timeline-verific.myc.md](./x2700_954388_claude_accept-p3-and-build-the-key-event-timeline-verific.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _If `verifyChain` accepts a chain with a sequence gap, a broken predecessor
+    link, or a genesis key that disagrees with the registry root, integrity is
+    not enforced._
+  - _If a forked principal is not `suspended` (the chain chooses a branch on its
+    own), the no-self-adjudication rule broke._
+  - _If `keyStateAt` reports `trusted_now: true` for an anchor ≥ a revoke's
+    compromised_since, retroactive revocation failed._
+  - _If `keyStateAt` for an old anchor changes after a later rotation/revoke is
+    appended, historical verification is not reproducible._
+  - _If `delegationPermits` grants any action/substrate outside an explicit
+    scope, the no-implicit-all rule broke._
+- **Suggested Commands**:
+  - `deno test --allow-read src/keytimeline_test.ts   # 9 fixtures`
+  - `t keytimeline verify <chain.json>`
 
 ### [x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md](./x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md)
 

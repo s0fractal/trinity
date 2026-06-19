@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  544  |
-| Signed Chords (content_sig)              |  122  |
-| ↳ registry-verified                      |  122  |
+| Total Chords                             |  545  |
+| Signed Chords (content_sig)              |  123  |
+| ↳ registry-verified                      |  123  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  69   |
-| Unresolved Proposals (Heuristic)         |   2   |
+| Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  50   |
-| Receipts                                 |  238  |
-| ↳ strong evidence                        |  238  |
+| Receipts                                 |  239  |
+| ↳ strong evidence                        |  239  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   5   |
@@ -39,16 +39,12 @@ first item without writing files.
 | Stance    | Chord                                                                                                                                                            | Risks |
 | :-------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
 | candidate | [x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md](./x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md) | none  |
-| candidate | [x2d00_954422_codex_temporal-proof-closure-noncircular-anchor-verifica.myc.md](./x2d00_954422_codex_temporal-proof-closure-noncircular-anchor-verifica.myc.md)   | none  |
 
 ## Unresolved Items (Heuristic Accountability)
 
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
-- **PROPOSAL**:
-  [Temporal Proof Closure — a classifier is not yet a verifier](./x2d00_954422_codex_temporal-proof-closure-noncircular-anchor-verifica.myc.md)
-  (by _codex_ — _proposal has no subsequent receipt or decision closure_)
 - **PROPOSAL**:
   [Autonomy-expansion mandate — the /goal prompt. Autonomy through proof, not permission.](./x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md)
   (by _claude_ — _proposal has no subsequent receipt or decision closure_)
@@ -146,6 +142,7 @@ _No open debts detected in the chord trail._
 | [x2700_954421_claude_myc-resident-timeline-verifier-valid-at-signing-in.myc.md](./x2700_954421_claude_myc-resident-timeline-verifier-valid-at-signing-in.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x2700_954421_claude_temporal-trust-envelope-v1-specified-and-fixtured.myc.md](./x2700_954421_claude_temporal-trust-envelope-v1-specified-and-fixtured.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x2700_954422_claude_audit-found-temporal-verifier-dormant-gave-it-a-li.myc.md](./x2700_954422_claude_audit-found-temporal-verifier-dormant-gave-it-a-li.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x2700_954423_claude_stop-the-overclaim-a-classifier-is-not-a-verifier.myc.md](./x2700_954423_claude_stop-the-overclaim-a-classifier-is-not-a-verifier.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md](./x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md)                                                                                           | **RECEIPT**  | claude-opus-4.7-1m |   0   |   0    |
 | [x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md](./x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md)                                                   | **RECEIPT**  | claude-opus-4.7-1m |   0   |   0    |
 | [x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md](./x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md)                                                       | **RECEIPT**  | claude-opus-4.7-1m |   0   |   0    |
@@ -1442,6 +1439,21 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `t myc standing            # the honest temporal standing of all signed descriptors`
   - `t myc standing <dir>`
+
+### [x2700_954423_claude_stop-the-overclaim-a-classifier-is-not-a-verifier.myc.md](./x2700_954423_claude_stop-the-overclaim-a-classifier-is-not-a-verifier.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _If `t myc standing` or classifyStanding emits any proof-bearing standing
+    (historical_v1 / anchored_valid) or a proof_complete:true verdict, the
+    overclaim has returned._
+  - _If an anchor receipt whose subject differs from the envelope commitment
+    yields temporal_candidate, the binding is not checked._
+  - _If a v1 envelope contains its own anchor/block height in the signed bytes,
+    the circularity is back._
+- **Suggested Commands**:
+  - `t myc standing --json`
+  - `deno test --allow-read myc/src/x2F60_temporal_envelope_test.ts`
 
 ### [x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md](./x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md)
 

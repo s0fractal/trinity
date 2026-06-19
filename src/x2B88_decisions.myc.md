@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  541  |
-| Signed Chords (content_sig)              |  119  |
-| ↳ registry-verified                      |  119  |
+| Total Chords                             |  542  |
+| Signed Chords (content_sig)              |  120  |
+| ↳ registry-verified                      |  120  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  68   |
 | Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  50   |
-| Receipts                                 |  236  |
-| ↳ strong evidence                        |  236  |
+| Receipts                                 |  237  |
+| ↳ strong evidence                        |  237  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   5   |
@@ -139,6 +139,7 @@ _No open debts detected in the chord trail._
 | [x2700_952415_claude-opus-4-8_canonical-commitment-one-provenance-schema-conform.myc.md](./x2700_952415_claude-opus-4-8_canonical-commitment-one-provenance-schema-conform.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x2700_953527_claude-opus-4-8_omega-deterministic-execution-verified-green-visit.myc.md](./x2700_953527_claude-opus-4-8_omega-deterministic-execution-verified-green-visit.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x2700_954388_claude_accept-p3-and-build-the-key-event-timeline-verific.myc.md](./x2700_954388_claude_accept-p3-and-build-the-key-event-timeline-verific.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x2700_954421_claude_myc-resident-timeline-verifier-valid-at-signing-in.myc.md](./x2700_954421_claude_myc-resident-timeline-verifier-valid-at-signing-in.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x2700_954421_claude_temporal-trust-envelope-v1-specified-and-fixtured.myc.md](./x2700_954421_claude_temporal-trust-envelope-v1-specified-and-fixtured.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md](./x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md)                                                                                           | **RECEIPT**  | claude-opus-4.7-1m |   0   |   0    |
 | [x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md](./x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md)                                                   | **RECEIPT**  | claude-opus-4.7-1m |   0   |   0    |
@@ -1391,6 +1392,23 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `deno test --allow-read src/keytimeline_test.ts   # 9 fixtures`
   - `t keytimeline verify <chain.json>`
+
+### [x2700_954421_claude_myc-resident-timeline-verifier-valid-at-signing-in.myc.md](./x2700_954421_claude_myc-resident-timeline-verifier-valid-at-signing-in.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _If MYC x2F70.keyStateAt and Trinity x2B00.keyStateAt disagree on the shared
+    compromised_since scenario, the vendored verifiers have drifted (a parity
+    test must fail on one side)._
+  - _If a key revoked with compromised_since ≤ anchor is reported trusted_now,
+    retroactive revocation is broken._
+  - _If a forked principal (duplicate sequence/predecessor) yields any
+    non-suspended key state, a branch was silently chosen._
+  - _If classifyStanding resolves valid_at_signing without an independently
+    verified anchor, self-asserted time became proof._
+- **Suggested Commands**:
+  - `deno test --allow-read myc/src/x2F70_keytimeline_test.ts`
+  - `deno test --allow-read myc/src/x2F60_temporal_envelope_test.ts`
 
 ### [x2700_954421_claude_temporal-trust-envelope-v1-specified-and-fixtured.myc.md](./x2700_954421_claude_temporal-trust-envelope-v1-specified-and-fixtured.myc.md)
 

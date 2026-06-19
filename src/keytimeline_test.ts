@@ -263,3 +263,25 @@ Deno.test("keytimeline — safe resolver rejects a self-asserted query anchor", 
     "query anchor is not independently verified",
   );
 });
+
+Deno.test("keytimeline — PARITY with myc x2F70: compromised_since verdicts match", async () => {
+  // The SAME scenario the MYC x2F70 vendor pins. If these verdicts diverge from
+  // x2F70_keytimeline_test.ts, the two keyStateAt implementations have drifted.
+  const events = [
+    await ev({ signing_key: "K0", sequence: 0, valid_from: blk(100) }),
+    await ev({
+      event: "revoke",
+      signing_key: "K0",
+      sequence: 1,
+      valid_from: blk(200),
+      compromised_since: blk(150),
+    }),
+  ];
+  const before = keyStateAt(events, "claude", blk(120));
+  assertEquals(before.valid_at_signing, true);
+  assertEquals(before.trusted_now, true);
+  assertEquals(before.signing_key, "K0");
+  const after = keyStateAt(events, "claude", blk(160));
+  assertEquals(after.valid_at_signing, true);
+  assertEquals(after.trusted_now, false);
+});

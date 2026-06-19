@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    541     |
+| dynamic topology  |    542     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **641**   |
+| **Total**         |  **642**   |
 
 ## Runtime Cache Diagnostics
 
@@ -201,6 +201,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x2700_952415_claude-opus-4-8_canonical-commitment-one-provenance-schema-conform.myc.md](../src/x2700_952415_claude-opus-4-8_canonical-commitment-one-provenance-schema-conform.myc.md)                                                                 | canonical        | src/x2700_952415_claude-opus-4-8_canonical-commitment-one-provenance-schema-conform.myc.md                                 | keep        |                              |
 | dynamic topology  | [src/x2700_953527_claude-opus-4-8_omega-deterministic-execution-verified-green-visit.myc.md](../src/x2700_953527_claude-opus-4-8_omega-deterministic-execution-verified-green-visit.myc.md)                                                                 | canonical        | src/x2700_953527_claude-opus-4-8_omega-deterministic-execution-verified-green-visit.myc.md                                 | keep        |                              |
 | dynamic topology  | [src/x2700_954388_claude_accept-p3-and-build-the-key-event-timeline-verific.myc.md](../src/x2700_954388_claude_accept-p3-and-build-the-key-event-timeline-verific.myc.md)                                                                                   | canonical        | src/x2700_954388_claude_accept-p3-and-build-the-key-event-timeline-verific.myc.md                                          | keep        |                              |
+| dynamic topology  | [src/x2700_954421_claude_myc-resident-timeline-verifier-valid-at-signing-in.myc.md](../src/x2700_954421_claude_myc-resident-timeline-verifier-valid-at-signing-in.myc.md)                                                                                   | canonical        | src/x2700_954421_claude_myc-resident-timeline-verifier-valid-at-signing-in.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x2700_954421_claude_temporal-trust-envelope-v1-specified-and-fixtured.myc.md](../src/x2700_954421_claude_temporal-trust-envelope-v1-specified-and-fixtured.myc.md)                                                                                     | canonical        | src/x2700_954421_claude_temporal-trust-envelope-v1-specified-and-fixtured.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md](../src/x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md)                                                                                           | canonical        | src/x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md                                              | keep        |                              |
 | dynamic topology  | [src/x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md](../src/x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md)                                                   | canonical        | src/x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md                          | keep        |                              |

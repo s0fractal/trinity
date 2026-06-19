@@ -9,13 +9,13 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  555  |
-| Signed Chords (content_sig)              |  133  |
-| ↳ registry-verified                      |  133  |
+| Total Chords                             |  556  |
+| Signed Chords (content_sig)              |  134  |
+| ↳ registry-verified                      |  134  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  70   |
 | Unresolved Proposals (Heuristic)         |   1   |
-| Decisions                                |  51   |
+| Decisions                                |  52   |
 | Receipts                                 |  247  |
 | ↳ strong evidence                        |  247  |
 | ↳ weak evidence                          |   0   |
@@ -601,6 +601,7 @@ _No open debts detected in the chord trail._
 | [x7700_954433_codex_codex-temporal-envelope-emitted-exact-ots-subject.myc.md](./x7700_954433_codex_codex-temporal-envelope-emitted-exact-ots-subject.myc.md)                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_954444_claude_first-bitcoin-temporal-anchor-codex-envelope-times.myc.md](./x7700_954444_claude_first-bitcoin-temporal-anchor-codex-envelope-times.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_954451_codex_autonomy-p0-5-evidence-standing-boundary.myc.md](./x7700_954451_codex_autonomy-p0-5-evidence-standing-boundary.myc.md)                                                                                                         | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_954454_claude_autonomy-kernel-foundation-complete-five-links-pur.myc.md](./x7700_954454_claude_autonomy-kernel-foundation-complete-five-links-pur.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -7348,6 +7349,22 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `deno test --allow-all src/autonomy_test.ts`
   - `t check`
+
+### [x7700_954454_claude_autonomy-kernel-foundation-complete-five-links-pur.myc.md](./x7700_954454_claude_autonomy-kernel-foundation-complete-five-links-pur.myc.md)
+
+- **Category**: `DECISION` (Author: `claude`)
+- **Falsifiers**:
+  - _If any of these links performs a persistent write to the main tree, the
+    pre-ratification boundary was crossed._
+  - _If the probe leaves a worktree behind or mutates the working tree, its
+    isolation is broken._
+  - _If a scheduler or real executor is activated before a mandate is ratified,
+    the gate failed._
+- **Suggested Commands**:
+  - `t autonomy explain <intent.json> --mandate <m.json>`
+  - `t autonomy-context build --verb <v> --target <t> --organ <file>`
+  - `t confinement build --profile <p> --verb <v> --target <t> --generator <cmd> --write-set <a,b>`
+  - `t autonomy-probe <receipt.json>`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

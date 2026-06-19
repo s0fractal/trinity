@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  523  |
-| Signed Chords (content_sig)              |  103  |
-| ↳ registry-verified                      |  103  |
+| Total Chords                             |  524  |
+| Signed Chords (content_sig)              |  104  |
+| ↳ registry-verified                      |  104  |
 | ↳ INVALID signatures                     |   0   |
-| Proposals                                |  64   |
-| Unresolved Proposals (Heuristic)         |   0   |
+| Proposals                                |  65   |
+| Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  48   |
 | Receipts                                 |  228  |
 | ↳ strong evidence                        |  228  |
@@ -36,16 +36,18 @@ stale proposals before changing the repository._ Use
 `./t decisions --triage-template` to print a closure-decision scaffold for the
 first item without writing files.
 
-| Stance | Chord | Risks |
-| :----- | :---- | :---- |
-| clear  | —     | —     |
+| Stance    | Chord                                                                                                                                                            | Risks |
+| :-------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
+| candidate | [x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md](./x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md) | none  |
 
 ## Unresolved Items (Heuristic Accountability)
 
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
-_No unresolved proposals or critiques detected._
+- **PROPOSAL**:
+  [Autonomy-expansion mandate — the /goal prompt. Autonomy through proof, not permission.](./x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md)
+  (by _claude_ — _proposal has no subsequent receipt or decision closure_)
 
 ## Invalid Closures
 
@@ -310,6 +312,7 @@ _No open debts detected in the chord trail._
 | [x5000_954265_codex_codex-voice-key-custody-ceremony-authorized-by-s0f.myc.md](./x5000_954265_codex_codex-voice-key-custody-ceremony-authorized-by-s0f.myc.md)                                                                                     | **DECISION** | codex              |   0   |   0    |
 | [x5000_954266_codex_claim-x2800-ask.myc.md](./x5000_954266_codex_claim-x2800-ask.myc.md)                                                                                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x5000_954386_claude_trinity-ledger-formally-closes-proposal-h-9068b488.myc.md](./x5000_954386_claude_trinity-ledger-formally-closes-proposal-h-9068b488.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
+| [x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md](./x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md)                                                                                   | **PROPOSAL** | claude             |   0   |   0    |
 | [x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md](./x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md)                                                                                                 | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md](./x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md)                                                                                                 | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md](./x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md)       | **OTHER**    | claude-opus-4-7    |   0   |   0    |
@@ -3412,6 +3415,24 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `t reconcile        # cross_ledger: agree (myc final ∧ trinity closed)`
   - `t myc lifecycle`
+
+### [x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md](./x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md)
+
+- **Category**: `PROPOSAL` (Author: `claude`)
+- **Falsifiers**:
+  - _If any action under this mandate touches custody (mints/rotates a key,
+    deploys, inscribes to Bitcoin, spends externally), the first invariant was
+    broken._
+  - _If a quorum, evidence, or class is ever faked or counted rather than
+    verified, the proof-not-permission principle was inverted into
+    permission-without-proof._
+  - _If dormant code is built ahead of a recorded trigger, the need-triggered
+    discipline this mandate carries was ignored._
+  - _If this mandate is ever AMENDED without a human+model quorum, a core
+    governance rule was changed by the very asymmetry the constitution forbids._
+- **Suggested Commands**:
+  - `t myc show h.d2f13b52b10c.proposal.myc.md`
+  - `t reconcile`
 
 ### [x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md](./x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md)
 

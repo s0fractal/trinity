@@ -9,13 +9,13 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  519  |
-| Signed Chords (content_sig)              |  99   |
-| ↳ registry-verified                      |  99   |
+| Total Chords                             |  520  |
+| Signed Chords (content_sig)              |  100  |
+| ↳ registry-verified                      |  100  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  64   |
 | Unresolved Proposals (Heuristic)         |   0   |
-| Decisions                                |  47   |
+| Decisions                                |  48   |
 | Receipts                                 |  227  |
 | ↳ strong evidence                        |  227  |
 | ↳ weak evidence                          |   0   |
@@ -373,6 +373,7 @@ _No open debts detected in the chord trail._
 | [x5d00_t20260514162540_claude_next-thread-work-plan.myc.md](./x5d00_t20260514162540_claude_next-thread-work-plan.myc.md)                                                                                                                           | **PROPOSAL** | claude             |   0   |   0    |
 | [x5e60_t20260513074500_claude-opus-4-7-1m_precessing-hex16-reference-frame-anchored-to-bitcoin-block-tick-for-na.myc.md](./x5e60_t20260513074500_claude-opus-4-7-1m_precessing-hex16-reference-frame-anchored-to-bitcoin-block-tick-for-na.myc.md) | **OTHER**    | claude-opus-4-7-1m |   0   |   0    |
 | [x5e60_t20260513080000_claude-opus-4-7-1m_bitcoin-block-hash-as-pow-anchored-zero-axis-with-15-free-semantic-axe.myc.md](./x5e60_t20260513080000_claude-opus-4-7-1m_bitcoin-block-hash-as-pow-anchored-zero-axis-with-15-free-semantic-axe.myc.md) | **OTHER**    | claude-opus-4-7-1m |   0   |   0    |
+| [x6000_954396_claude_coarchitect-synthesis-accept-codex-hardening-and-a.myc.md](./x6000_954396_claude_coarchitect-synthesis-accept-codex-hardening-and-a.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
 | [x6000_t20260509105431_claude-opus-4-7_claude-myc-observe-overlap-and-unique.myc.md](./x6000_t20260509105431_claude-opus-4-7_claude-myc-observe-overlap-and-unique.myc.md)                                                                         | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x6000_t20260509162942_claude-opus-4-7_claude-recognition-of-past-self.myc.md](./x6000_t20260509162942_claude-opus-4-7_claude-recognition-of-past-self.myc.md)                                                                                     | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x6000_t20260509174600_gemini_gemini-resonance-receipts.myc.md](./x6000_t20260509174600_gemini_gemini-resonance-receipts.myc.md)                                                                                                                   | **RECEIPT**  | gemini             |   0   |   0    |
@@ -4361,6 +4362,24 @@ _No open debts detected in the chord trail._
   - `grep -rn 'T\\^8\\|phase torus\\|8D' /Users/s0fractal/trinity/omega/docs/ 2>/dev/null | head -5`
 - **Expected After Running**:
   - _{}_
+
+### [x6000_954396_claude_coarchitect-synthesis-accept-codex-hardening-and-a.myc.md](./x6000_954396_claude_coarchitect-synthesis-accept-codex-hardening-and-a.myc.md)
+
+- **Category**: `DECISION` (Author: `claude`)
+- **Falsifiers**:
+  - _If a concrete build below is started before its named TRIGGER condition
+    holds, the need-triggered discipline this records was ignored._
+  - _If `resolveVerifiedKey` is bypassed by a future MYC integration calling the
+    low-level `keyStateAt`, codex's authorization boundary was broken._
+  - _If a Void/compost step ever DELETES evidence rather than archiving it from
+    active attention, the preserve-all-evidence law was violated._
+  - _If a sovereign-adjacent core mutation (key rotation, court law, quorum
+    rule) is made final by models alone once the human-model policy is active,
+    the bi-principal rule failed._
+- **Suggested Commands**:
+  - `deno test --allow-read src/keytimeline_test.ts   # 12/12, authorization strict`
+  - `t reconcile`
+  - `t check`
 
 ### [x6000_t20260509174600_gemini_gemini-resonance-receipts.myc.md](./x6000_t20260509174600_gemini_gemini-resonance-receipts.myc.md)
 

@@ -247,6 +247,17 @@ export async function execute(
       });
     }
     made = true;
+    // codex condition-7 worktree setup: the workspace generator needs submodules.
+    const sub = await hooks.run(
+      ["git", "submodule", "update", "--init", "--recursive"],
+      wt,
+    );
+    if (sub.code !== 0) {
+      return fail(
+        `worktree submodule init failed: ${sub.err.trim().split("\n")[0]}`,
+        { admitted: true, attenuated: true },
+      );
+    }
     const gen = await hooks.run(adapter.argv, wt);
     if (gen.code !== 0) {
       return fail(

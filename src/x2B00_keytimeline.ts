@@ -31,7 +31,7 @@ export interface Anchor {
   kind: AnchorKind;
   height?: number; // bitcoin_block
   iso?: string; // wall_clock
-  inclusion_receipt?: string; // a verifiable anchor proof; absent ⇒ self-asserted
+  inclusion_receipt?: string; // receipt identifier; trust requires external verification
 }
 export type EventKind = "activate" | "delegate" | "revoke" | "rotate";
 export interface Scope {
@@ -52,6 +52,10 @@ export interface KeyEvent {
   valid_from: Anchor;
   valid_until?: Anchor | null;
   compromised_since?: Anchor; // revoke: trust is withdrawn for anchors ≥ this
+  authorization?: {
+    predecessor_signature: string; // active predecessor key signs `commitment`
+    subject_signature?: string; // rotate/delegate key proves possession
+  };
   commitment: string; // sha256(stableStringify(body without `commitment`))
 }
 
@@ -74,16 +78,23 @@ async function sha256(s: string): Promise<string> {
     .join("");
 }
 
-/** The content commitment of an event — binds every field except `commitment`. */
+/** The content commitment of an event — signatures are detached to avoid a
+ *  circular commitment. */
 export async function commitmentOf(ev: KeyEvent): Promise<string> {
-  const { commitment: _omit, ...body } = ev;
+  const { commitment: _omit, authorization: _authorization, ...body } = ev;
   return await sha256(stable(body as unknown as Json));
 }
 
-/** A bitcoin_block anchor is only VERIFIABLE with an inclusion receipt; otherwise
- *  it is self-asserted and must not be trusted as a time root (codex §P3.3). */
-export function anchorTrust(a: Anchor): "verifiable" | "self_asserted" {
-  if (a.kind === "bitcoin_block" && a.inclusion_receipt) return "verifiable";
+/** A receipt identifier is a reference, not proof. Only a receipt independently
+ *  admitted by the caller's verifier makes the anchor usable as a time root. */
+export function anchorTrust(
+  a: Anchor,
+  verifiedReceipts: ReadonlySet<string> = new Set(),
+): "verifiable" | "self_asserted" {
+  if (
+    a.kind === "bitcoin_block" && a.inclusion_receipt &&
+    verifiedReceipts.has(a.inclusion_receipt)
+  ) return "verifiable";
   return "self_asserted";
 }
 
@@ -110,6 +121,18 @@ export interface ChainVerdict {
   errors: string[];
 }
 
+export type SignatureVerifier = (
+  publicKey: string,
+  commitment: string,
+  signature: string,
+) => boolean | Promise<boolean>;
+
+export interface ChainVerificationOptions {
+  registryRoot: Record<string, string>;
+  verifySignature: SignatureVerifier;
+  verifiedAnchorReceipts: ReadonlySet<string>;
+}
+
 /** Verify chain integrity per principal: genesis is an `activate` at sequence 0
  *  with a null predecessor (and, if a registry root is given, a signing_key that
  *  matches it); each later event links to its predecessor's commitment with a
@@ -119,7 +142,7 @@ export interface ChainVerdict {
  *  (codex §P3.2). Pure; commitments are recomputed, never trusted as written. */
 export async function verifyChain(
   events: KeyEvent[],
-  registryRoot?: Record<string, string>,
+  options: ChainVerificationOptions,
 ): Promise<ChainVerdict> {
   const errors: string[] = [];
   const forks: Array<{ principal: string; at_sequence: number }> = [];
@@ -131,6 +154,22 @@ export async function verifyChain(
       errors.push(
         `${ev.principal}#${ev.sequence}: commitment does not bind body`,
       );
+    }
+    for (
+      const [name, anchor] of [
+        ["valid_from", ev.valid_from],
+        ["valid_until", ev.valid_until],
+        ["compromised_since", ev.compromised_since],
+      ] as const
+    ) {
+      if (
+        anchor &&
+        anchorTrust(anchor, options.verifiedAnchorReceipts) !== "verifiable"
+      ) {
+        errors.push(
+          `${ev.principal}#${ev.sequence}: ${name} anchor is not independently verified`,
+        );
+      }
     }
   }
 
@@ -168,23 +207,53 @@ export async function verifyChain(
     if (genesis.event !== "activate") {
       errors.push(`${principal}: genesis event must be 'activate'`);
     }
-    if (registryRoot && registryRoot[principal] !== undefined) {
-      if (genesis.signing_key !== registryRoot[principal]) {
-        errors.push(
-          `${principal}: genesis signing_key does not match the pinned registry root`,
-        );
-      }
+    if (genesis.signing_key !== options.registryRoot[principal]) {
+      errors.push(
+        `${principal}: genesis signing_key does not match the pinned registry root`,
+      );
     }
+    let activeKey: string | null = genesis.signing_key;
     for (let i = 1; i < ordered.length; i++) {
-      if (ordered[i].sequence !== ordered[i - 1].sequence + 1) {
-        errors.push(`${principal}: sequence gap at #${ordered[i].sequence}`);
+      const event = ordered[i];
+      if (event.sequence !== ordered[i - 1].sequence + 1) {
+        errors.push(`${principal}: sequence gap at #${event.sequence}`);
       }
-      if (ordered[i].predecessor_commitment !== ordered[i - 1].commitment) {
+      if (event.predecessor_commitment !== ordered[i - 1].commitment) {
         errors.push(
-          `${principal}: #${
-            ordered[i].sequence
-          } predecessor does not match prior commitment`,
+          `${principal}: #${event.sequence} predecessor does not match prior commitment`,
         );
+      }
+      if (event.event === "activate") {
+        errors.push(`${principal}#${event.sequence}: activate is genesis-only`);
+      }
+      const auth = event.authorization;
+      if (
+        !activeKey || !auth || !await options.verifySignature(
+          activeKey,
+          event.commitment,
+          auth.predecessor_signature,
+        )
+      ) {
+        errors.push(
+          `${principal}#${event.sequence}: predecessor authorization is invalid`,
+        );
+      }
+      if (event.event === "rotate" || event.event === "delegate") {
+        if (
+          !auth?.subject_signature || !await options.verifySignature(
+            event.signing_key,
+            event.commitment,
+            auth.subject_signature,
+          )
+        ) {
+          errors.push(
+            `${principal}#${event.sequence}: subject proof-of-possession is invalid`,
+          );
+        }
+      }
+      if (event.event === "rotate") activeKey = event.signing_key;
+      if (event.event === "revoke" && event.signing_key === activeKey) {
+        activeKey = null;
       }
     }
   }
@@ -242,9 +311,7 @@ export function keyStateAt(
   for (const e of evs) {
     if (e.event !== "activate" && e.event !== "rotate") continue;
     const started = lte(e.valid_from, at);
-    const ended = e.valid_until
-      ? lte(e.valid_until, at) && compareAnchor(e.valid_until, at) !== 0
-      : false;
+    const ended = e.valid_until ? lte(e.valid_until, at) : false;
     if (started && !ended) active = e; // later events with same key window override
   }
   if (!active) return { ...base, reason: "no key active at that anchor" };
@@ -273,6 +340,49 @@ export function keyStateAt(
   };
 }
 
+/** Safe integration boundary for MYC and other callers. It refuses to resolve a
+ *  key from an unauthorised/forked chain or from self-asserted anchor time. */
+export async function resolveVerifiedKey(
+  events: KeyEvent[],
+  principal: string,
+  at: Anchor,
+  options: ChainVerificationOptions,
+): Promise<{ verdict: ChainVerdict; state: KeyState }> {
+  const verdict = await verifyChain(events, options);
+  if (!verdict.valid) {
+    return {
+      verdict,
+      state: {
+        principal,
+        anchor: at,
+        signing_key: null,
+        valid_at_signing: false,
+        trusted_now: false,
+        suspended: verdict.suspended.includes(principal),
+        reason: "key-event chain did not pass strict verification",
+      },
+    };
+  }
+  if (anchorTrust(at, options.verifiedAnchorReceipts) !== "verifiable") {
+    return {
+      verdict,
+      state: {
+        principal,
+        anchor: at,
+        signing_key: null,
+        valid_at_signing: false,
+        trusted_now: false,
+        suspended: false,
+        reason: "query anchor is not independently verified",
+      },
+    };
+  }
+  return {
+    verdict,
+    state: keyStateAt(events, principal, at, verdict.suspended),
+  };
+}
+
 /** A delegated key may act only WITHIN its scope — no implicit `all`. An absent or
  *  empty scope grants nothing (codex §P3.6). */
 export function delegationPermits(
@@ -288,16 +398,50 @@ export function delegationPermits(
   return true;
 }
 
+function unb64(s: string): Uint8Array<ArrayBuffer> {
+  const bin = atob(s);
+  const out = new Uint8Array(new ArrayBuffer(bin.length));
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+}
+
+async function verifyEd25519(
+  publicKey: string,
+  commitment: string,
+  signature: string,
+): Promise<boolean> {
+  try {
+    const key = await crypto.subtle.importKey(
+      "raw",
+      unb64(publicKey),
+      "Ed25519",
+      false,
+      ["verify"],
+    );
+    return await crypto.subtle.verify(
+      "Ed25519",
+      key,
+      unb64(signature),
+      new TextEncoder().encode(commitment),
+    );
+  } catch {
+    return false;
+  }
+}
+
 async function runCli(args: string[] = Deno.args): Promise<void> {
-  // `t keytimeline verify <chain.json>` — reads an array of KeyEvent and reports
-  // the integrity verdict. Pure verification; no key material is touched.
+  // The bundle supplies public registry roots and receipt identifiers already
+  // admitted by an external anchor verifier. No private key material is touched.
+  if (args[0] === "verify") args.shift();
   const path = args.find((a) => !a.startsWith("--"));
   if (!path) {
     console.log(JSON.stringify(
       {
         type: "keytimeline",
         position: "2/B",
-        usage: "keytimeline verify <chain.json>",
+        usage: "keytimeline verify <bundle.json>",
+        bundle:
+          "{ events, registry_root, verified_anchor_receipts } (Ed25519 values are base64)",
         note:
           "verification only — minting/rotating keys is an architect custody ceremony",
       },
@@ -306,8 +450,24 @@ async function runCli(args: string[] = Deno.args): Promise<void> {
     ));
     return;
   }
-  const events = JSON.parse(await Deno.readTextFile(path)) as KeyEvent[];
-  const verdict = await verifyChain(events);
+  const bundle = JSON.parse(await Deno.readTextFile(path)) as {
+    events: KeyEvent[];
+    registry_root: Record<string, string>;
+    verified_anchor_receipts: string[];
+  };
+  if (
+    !Array.isArray(bundle.events) || !bundle.registry_root ||
+    !Array.isArray(bundle.verified_anchor_receipts)
+  ) {
+    throw new Error(
+      "invalid bundle: expected events, registry_root, verified_anchor_receipts",
+    );
+  }
+  const verdict = await verifyChain(bundle.events, {
+    registryRoot: bundle.registry_root,
+    verifySignature: verifyEd25519,
+    verifiedAnchorReceipts: new Set(bundle.verified_anchor_receipts),
+  });
   console.log(
     JSON.stringify(
       { type: "keytimeline", position: "2/B", ...verdict },

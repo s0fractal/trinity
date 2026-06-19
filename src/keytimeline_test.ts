@@ -8,10 +8,26 @@ import {
   delegationPermits,
   type KeyEvent,
   keyStateAt,
+  resolveVerifiedKey,
   verifyChain,
 } from "./x2B00_keytimeline.ts";
 
-const blk = (height: number) => ({ kind: "bitcoin_block" as const, height });
+const blk = (height: number) => ({
+  kind: "bitcoin_block" as const,
+  height,
+  inclusion_receipt: `proof://${height}`,
+});
+
+const options = (events: KeyEvent[], registryKey = "KEY0") => ({
+  registryRoot: { claude: registryKey },
+  verifySignature: (key: string, commitment: string, signature: string) =>
+    signature === `${key}:${commitment}`,
+  verifiedAnchorReceipts: new Set(
+    events.flatMap((e) => [e.valid_from, e.valid_until, e.compromised_since])
+      .filter((a) => a?.inclusion_receipt)
+      .map((a) => a!.inclusion_receipt!),
+  ),
+});
 
 /** Build an event with a correct content commitment. */
 async function ev(p: Partial<KeyEvent>): Promise<KeyEvent> {
@@ -36,13 +52,23 @@ async function chain(
   ...partials: Array<Partial<KeyEvent>>
 ): Promise<KeyEvent[]> {
   const out: KeyEvent[] = [];
+  let activeKey = partials[0]?.signing_key ?? "KEY0";
   for (let i = 0; i < partials.length; i++) {
     const e = await ev({
       ...partials[i],
       sequence: i,
       predecessor_commitment: i === 0 ? null : out[i - 1].commitment,
     });
+    if (i > 0) {
+      e.authorization = {
+        predecessor_signature: `${activeKey}:${e.commitment}`,
+        ...((e.event === "rotate" || e.event === "delegate")
+          ? { subject_signature: `${e.signing_key}:${e.commitment}` }
+          : {}),
+      };
+    }
     out.push(e);
+    if (e.event === "rotate") activeKey = e.signing_key;
   }
   return out;
 }
@@ -52,14 +78,14 @@ Deno.test("keytimeline — a clean genesis-rooted chain verifies", async () => {
     { event: "activate", signing_key: "KEY0", valid_from: blk(954000) },
     { event: "rotate", signing_key: "KEY1", valid_from: blk(955000) },
   );
-  const v = await verifyChain(c, { claude: "KEY0" });
+  const v = await verifyChain(c, options(c));
   assert(v.valid, JSON.stringify(v.errors));
   assertEquals(v.suspended, []);
 });
 
 Deno.test("keytimeline — genesis signing_key must match the pinned registry root", async () => {
   const c = await chain({ event: "activate", signing_key: "WRONG" });
-  const v = await verifyChain(c, { claude: "KEY0" });
+  const v = await verifyChain(c, options(c));
   assert(!v.valid);
   assert(v.errors.some((e) => /registry root/.test(e)));
 });
@@ -72,7 +98,7 @@ Deno.test("keytimeline — a sequence gap is rejected", async () => {
     event: "rotate",
     signing_key: "K1",
   });
-  const v = await verifyChain([a, b]);
+  const v = await verifyChain([a, b], options([a, b]));
   assert(!v.valid);
   assert(v.errors.some((e) => /sequence gap/.test(e)));
 });
@@ -80,7 +106,7 @@ Deno.test("keytimeline — a sequence gap is rejected", async () => {
 Deno.test("keytimeline — a tampered event (commitment ∤ body) is caught", async () => {
   const c = await chain({ event: "activate", signing_key: "KEY0" });
   c[0].custodian = "attacker"; // mutate after commitment was computed
-  const v = await verifyChain(c);
+  const v = await verifyChain(c, options(c));
   assert(!v.valid);
   assert(v.errors.some((e) => /commitment does not bind/.test(e)));
 });
@@ -100,7 +126,10 @@ Deno.test("keytimeline — a FORK suspends the principal (detects, does not choo
     event: "rotate",
     signing_key: "KB",
   });
-  const v = await verifyChain([g, childA, childB]);
+  const v = await verifyChain(
+    [g, childA, childB],
+    options([g, childA, childB]),
+  );
   assert(!v.valid);
   assertEquals(v.suspended, ["claude"]);
   assertEquals(v.forks.length, 1);
@@ -171,7 +200,7 @@ Deno.test("keytimeline — delegation is scoped; no implicit 'all'", async () =>
   assert(!delegationPermits(empty, { action: "resolve", substrate: "myc" }));
 });
 
-Deno.test("keytimeline — a bitcoin_block anchor is verifiable only with an inclusion receipt", async () => {
+Deno.test("keytimeline — receipt presence is not proof", () => {
   assertEquals(
     anchorTrust({ kind: "bitcoin_block", height: 954000 }),
     "self_asserted",
@@ -182,6 +211,55 @@ Deno.test("keytimeline — a bitcoin_block anchor is verifiable only with an inc
       height: 954000,
       inclusion_receipt: "proof://…",
     }),
+    "self_asserted",
+  );
+  assertEquals(
+    anchorTrust(
+      {
+        kind: "bitcoin_block",
+        height: 954000,
+        inclusion_receipt: "proof://…",
+      },
+      new Set(["proof://…"]),
+    ),
     "verifiable",
+  );
+});
+
+Deno.test("keytimeline — valid_until is exclusive at the exact anchor", async () => {
+  const c = await chain({
+    event: "activate",
+    signing_key: "KEY0",
+    valid_from: blk(954000),
+    valid_until: blk(955000),
+  });
+  const state = keyStateAt(c, "claude", blk(955000));
+  assertEquals(state.valid_at_signing, false);
+  assertEquals(state.signing_key, null);
+});
+
+Deno.test("keytimeline — a linked but unauthorised rotation is rejected", async () => {
+  const c = await chain(
+    { event: "activate", signing_key: "KEY0" },
+    { event: "rotate", signing_key: "KEY1", valid_from: blk(955000) },
+  );
+  c[1].authorization!.predecessor_signature = `ATTACKER:${c[1].commitment}`;
+  const verdict = await verifyChain(c, options(c));
+  assert(!verdict.valid);
+  assert(verdict.errors.some((e) => /predecessor authorization/.test(e)));
+});
+
+Deno.test("keytimeline — safe resolver rejects a self-asserted query anchor", async () => {
+  const c = await chain({ event: "activate", signing_key: "KEY0" });
+  const resolved = await resolveVerifiedKey(
+    c,
+    "claude",
+    { kind: "bitcoin_block", height: 954500 },
+    options(c),
+  );
+  assertEquals(resolved.state.signing_key, null);
+  assertEquals(
+    resolved.state.reason,
+    "query anchor is not independently verified",
   );
 });

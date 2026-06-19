@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    518     |
+| dynamic topology  |    519     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **618**   |
+| **Total**         |  **619**   |
 
 ## Runtime Cache Diagnostics
 
@@ -626,6 +626,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x7700_954375_codex_p1-independent-quorum-finality-reached.myc.md](../src/x7700_954375_codex_p1-independent-quorum-finality-reached.myc.md)                                                                                                             | canonical        | src/x7700_954375_codex_p1-independent-quorum-finality-reached.myc.md                                                       | keep        |                              |
 | dynamic topology  | [src/x7700_954376_claude_p1-first-genuine-two-principal-quorum-finality-co.myc.md](../src/x7700_954376_claude_p1-first-genuine-two-principal-quorum-finality-co.myc.md)                                                                                     | canonical        | src/x7700_954376_claude_p1-first-genuine-two-principal-quorum-finality-co.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x7700_954377_codex_first-live-spore-receipt-publish-witness-thread.myc.md](../src/x7700_954377_codex_first-live-spore-receipt-publish-witness-thread.myc.md)                                                                                           | canonical        | src/x7700_954377_codex_first-live-spore-receipt-publish-witness-thread.myc.md                                              | keep        |                              |
+| dynamic topology  | [src/x7700_954391_codex_p3-keytimeline-strict-authorization-and-evidence-h.myc.md](../src/x7700_954391_codex_p3-keytimeline-strict-authorization-and-evidence-h.myc.md)                                                                                     | canonical        | src/x7700_954391_codex_p3-keytimeline-strict-authorization-and-evidence-h.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](../src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | canonical        | src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](../src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | canonical        | src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md                                                     | keep        |                              |
 | dynamic topology  | [src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](../src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | canonical        | src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md                                                      | keep        |                              |

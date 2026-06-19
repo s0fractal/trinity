@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  516  |
-| Signed Chords (content_sig)              |  97   |
-| ↳ registry-verified                      |  97   |
+| Total Chords                             |  517  |
+| Signed Chords (content_sig)              |  98   |
+| ↳ registry-verified                      |  98   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  64   |
 | Unresolved Proposals (Heuristic)         |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   4   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  175  |
+| Other Observations                       |  176  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -103,6 +103,7 @@ _No open debts detected in the chord trail._
 | [x2300_954117_claude_substrate-at-internal-rest-read-side-triad-complet.myc.md](./x2300_954117_claude_substrate-at-internal-rest-read-side-triad-complet.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x2300_954221_claude_authenticated-trust-integrity-plus-authenticity-la.myc.md](./x2300_954221_claude_authenticated-trust-integrity-plus-authenticity-la.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x2300_954387_claude_red-team-of-the-proof-bearing-finality-one-hole-fi.myc.md](./x2300_954387_claude_red-team-of-the-proof-bearing-finality-one-hole-fi.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
+| [x2300_954389_claude_scaffold-vs-substrate-audit-of-the-proof-bearing-e.myc.md](./x2300_954389_claude_scaffold-vs-substrate-audit-of-the-proof-bearing-e.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x2600_949982_codex_coordinate-naming-cowitness.myc.md](./x2600_949982_codex_coordinate-naming-cowitness.myc.md)                                                                                                                                   | **OTHER**    | codex              |   0   |   0    |
 | [x2600_950005_codex_x8888-state-memory-cowitness.myc.md](./x2600_950005_codex_x8888-state-memory-cowitness.myc.md)                                                                                                                                 | **OTHER**    | codex              |   0   |   0    |
 | [x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.myc.md](./x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.myc.md)                                                                       | **OTHER**    | codex              |   0   |   0    |
@@ -1047,6 +1048,20 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `cd myc && deno task check    # 126 tests incl. the red-team fixtures`
   - `t reconcile`
+
+### [x2300_954389_claude_scaffold-vs-substrate-audit-of-the-proof-bearing-e.myc.md](./x2300_954389_claude_scaffold-vs-substrate-audit-of-the-proof-bearing-e.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Falsifiers**:
+  - _If any epoch organ is unreachable AND unimported AND unused — pure scaffold
+    — then this 'lean' verdict is wrong and it should compost._
+  - _If x2B00_keytimeline gains a real consumer (x2F50 integration or a live
+    chain) it is no longer dormant and this note is stale._
+  - _If a later addition repeats work an existing organ already does, the 'stop
+    adding' guidance was ignored._
+- **Suggested Commands**:
+  - `t check        # reconcile gate green, all surfaces agree-or-explained`
+  - `t myc lifecycle`
 
 ### [x2600_950305_antigravity_axis-strengthening-receipt.myc.md](./x2600_950305_antigravity_axis-strengthening-receipt.myc.md)
 

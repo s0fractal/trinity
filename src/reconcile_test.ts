@@ -1,5 +1,23 @@
-import { assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
-import { classifyProposal, reconcile } from "./x6B00_reconcile.ts";
+import {
+  assert,
+  assertEquals,
+} from "https://deno.land/std@0.224.0/assert/mod.ts";
+import {
+  classifyProposal,
+  openHorizonInHeader,
+  reconcile,
+} from "./x6B00_reconcile.ts";
+
+Deno.test("reconcile — a real horizon header counts; 'none' and prose do not", () => {
+  assert(openHorizonInHeader("// horizon: build the next thing\ncode"));
+  assertEquals(openHorizonInHeader("// horizon: none (done)\ncode"), false);
+  // the bug this gate caught in ITSELF: prose mentioning the word mid-comment
+  assertEquals(
+    openHorizonInHeader("// Count organ `// horizon:` headers that are open"),
+    false,
+  );
+  assertEquals(openHorizonInHeader(" *  reads the // horizon: line"), false);
+});
 
 Deno.test("reconcile — cross-ledger rule: both-not-done and both-done AGREE", () => {
   assertEquals(classifyProposal(false, false), "agree"); // myc open, trinity open

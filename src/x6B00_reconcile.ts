@@ -73,19 +73,23 @@ async function dimResolverIndex(): Promise<Dimension> {
   };
 }
 
-/** Count organ `// horizon:` headers that are still open (not "none"). Mirrors
- *  x5200's loadOrganHorizons + isOpenHorizon, but read-only and independent. */
+/** Does an organ source declare an OPEN horizon header? A horizon is a dedicated
+ *  horizon-header LINE (not "none"), LINE-ANCHORED so prose merely mentioning the
+ *  word mid-comment is not miscounted — the bug this gate caught in its own source.
+ *  Pure + testable. Mirrors x5200's isOpenHorizon. */
+export function openHorizonInHeader(source: string): boolean {
+  const m = source.slice(0, 4000).match(/^\s*\/\/\s*horizon:\s*(.+)$/im);
+  return !!m && !/^none\b/i.test(m[1].trim());
+}
+
 function liveOpenHorizons(): number {
   let n = 0;
   for (const e of Deno.readDirSync(join(ROOT, "src"))) {
     if (!e.isFile || !/^x[0-9a-fA-F]{4}_.*\.ts$/.test(e.name)) continue;
     if (e.name.endsWith("_test.ts")) continue;
-    const head = Deno.readTextFileSync(join(ROOT, "src", e.name)).slice(
-      0,
-      4000,
-    );
-    const m = head.match(/\/\/\s*horizon:\s*(.+)/i);
-    if (m && !/^none\b/i.test(m[1].trim())) n++;
+    if (openHorizonInHeader(Deno.readTextFileSync(join(ROOT, "src", e.name)))) {
+      n++;
+    }
   }
   return n;
 }

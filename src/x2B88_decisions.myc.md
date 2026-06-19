@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  514  |
-| Signed Chords (content_sig)              |  95   |
-| ↳ registry-verified                      |  95   |
+| Total Chords                             |  515  |
+| Signed Chords (content_sig)              |  96   |
+| ↳ registry-verified                      |  96   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  64   |
 | Unresolved Proposals (Heuristic)         |   1   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   4   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  174  |
+| Other Observations                       |  175  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -104,6 +104,7 @@ _No open debts detected in the chord trail._
 | [x2300_950626_claude_bucket-8-crystallization-observation.myc.md](./x2300_950626_claude_bucket-8-crystallization-observation.myc.md)                                                                                                               | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x2300_954117_claude_substrate-at-internal-rest-read-side-triad-complet.myc.md](./x2300_954117_claude_substrate-at-internal-rest-read-side-triad-complet.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x2300_954221_claude_authenticated-trust-integrity-plus-authenticity-la.myc.md](./x2300_954221_claude_authenticated-trust-integrity-plus-authenticity-la.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
+| [x2300_954387_claude_red-team-of-the-proof-bearing-finality-one-hole-fi.myc.md](./x2300_954387_claude_red-team-of-the-proof-bearing-finality-one-hole-fi.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x2600_949982_codex_coordinate-naming-cowitness.myc.md](./x2600_949982_codex_coordinate-naming-cowitness.myc.md)                                                                                                                                   | **OTHER**    | codex              |   0   |   0    |
 | [x2600_950005_codex_x8888-state-memory-cowitness.myc.md](./x2600_950005_codex_x8888-state-memory-cowitness.myc.md)                                                                                                                                 | **OTHER**    | codex              |   0   |   0    |
 | [x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.myc.md](./x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.myc.md)                                                                       | **OTHER**    | codex              |   0   |   0    |
@@ -1033,6 +1034,20 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `t myc authenticate <witness> --voice claude`
   - `t myc trust    # 🔏 = authenticated`
+
+### [x2300_954387_claude_red-team-of-the-proof-bearing-finality-one-hole-fi.myc.md](./x2300_954387_claude_red-team-of-the-proof-bearing-finality-one-hole-fi.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Falsifiers**:
+  - _If a resolution whose signer != resolver, or whose evidence does not
+    resolve, can still reach `final`, a verified defense regressed._
+  - _If two resolutions sharing one voiceFamily count as a 2-principal quorum,
+    the anti-collusion invariant broke._
+  - _If `t reconcile` cross_ledger marks a proposal closed from a mere
+    `hears:`/prose mention, the mention≠closure fix regressed._
+- **Suggested Commands**:
+  - `cd myc && deno task check    # 126 tests incl. the red-team fixtures`
+  - `t reconcile`
 
 ### [x2600_950305_antigravity_axis-strengthening-receipt.myc.md](./x2600_950305_antigravity_axis-strengthening-receipt.myc.md)
 

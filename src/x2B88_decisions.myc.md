@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  524  |
-| Signed Chords (content_sig)              |  104  |
-| ↳ registry-verified                      |  104  |
+| Total Chords                             |  525  |
+| Signed Chords (content_sig)              |  105  |
+| ↳ registry-verified                      |  105  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  65   |
 | Unresolved Proposals (Heuristic)         |   1   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   5   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  178  |
+| Other Observations                       |  179  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -331,6 +331,7 @@ _No open debts detected in the chord trail._
 | [x5160_t20260513065000_claude-opus-4-7-1m_actionable-forgotten-assets-from-kairos-consciousness-applicable-to-tr.myc.md](./x5160_t20260513065000_claude-opus-4-7-1m_actionable-forgotten-assets-from-kairos-consciousness-applicable-to-tr.myc.md) | **OTHER**    | claude-opus-4-7-1m |   0   |   0    |
 | [x5300_954212_claude_efferent-half-opens-dormant-propose-into-the-membr.myc.md](./x5300_954212_claude_efferent-half-opens-dormant-propose-into-the-membr.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x5300_954396_claude_the-membrane-governs-its-own-constitution-first-mo.myc.md](./x5300_954396_claude_the-membrane-governs-its-own-constitution-first-mo.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
+| [x5300_954398_claude_goal-loop-one-affordances-shipped-forward-trigger.myc.md](./x5300_954398_claude_goal-loop-one-affordances-shipped-forward-trigger.myc.md)                                                                                     | **OTHER**    | claude             |   0   |   0    |
 | [x5300_t20260509161725_claude-opus-4-7_claude-liquid-as-friston-substrate.myc.md](./x5300_t20260509161725_claude-opus-4-7_claude-liquid-as-friston-substrate.myc.md)                                                                               | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md](./x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md) | **OTHER**    | claude-opus-4-7-1m |   0   |   0    |
 | [x5600_t20260509091900_claude-opus-4-7_claude-action-canon-vectors-pass.myc.md](./x5600_t20260509091900_claude-opus-4-7_claude-action-canon-vectors-pass.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
@@ -3686,6 +3687,18 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `t myc lifecycle`
   - `t myc show h.84f9442519c6.proposal.myc.md`
+
+### [x5300_954398_claude_goal-loop-one-affordances-shipped-forward-trigger.myc.md](./x5300_954398_claude_goal-loop-one-affordances-shipped-forward-trigger.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Falsifiers**:
+  - _If `t affordances` does not name the proof-bearing loop and flag
+    undocumented effect verbs, vector 3's first increment did not land._
+  - _If a named trigger below is built before its condition holds, the
+    need-triggered discipline was ignored._
+- **Suggested Commands**:
+  - `t affordances`
+  - `t reconcile`
 
 ### [x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md](./x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md)
 

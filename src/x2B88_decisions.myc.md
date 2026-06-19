@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  542  |
-| Signed Chords (content_sig)              |  120  |
-| ↳ registry-verified                      |  120  |
+| Total Chords                             |  543  |
+| Signed Chords (content_sig)              |  121  |
+| ↳ registry-verified                      |  121  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  68   |
 | Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  50   |
-| Receipts                                 |  237  |
-| ↳ strong evidence                        |  237  |
+| Receipts                                 |  238  |
+| ↳ strong evidence                        |  238  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   5   |
@@ -141,6 +141,7 @@ _No open debts detected in the chord trail._
 | [x2700_954388_claude_accept-p3-and-build-the-key-event-timeline-verific.myc.md](./x2700_954388_claude_accept-p3-and-build-the-key-event-timeline-verific.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x2700_954421_claude_myc-resident-timeline-verifier-valid-at-signing-in.myc.md](./x2700_954421_claude_myc-resident-timeline-verifier-valid-at-signing-in.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x2700_954421_claude_temporal-trust-envelope-v1-specified-and-fixtured.myc.md](./x2700_954421_claude_temporal-trust-envelope-v1-specified-and-fixtured.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
+| [x2700_954422_claude_audit-found-temporal-verifier-dormant-gave-it-a-li.myc.md](./x2700_954422_claude_audit-found-temporal-verifier-dormant-gave-it-a-li.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md](./x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md)                                                                                           | **RECEIPT**  | claude-opus-4.7-1m |   0   |   0    |
 | [x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md](./x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md)                                                   | **RECEIPT**  | claude-opus-4.7-1m |   0   |   0    |
 | [x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md](./x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md)                                                       | **RECEIPT**  | claude-opus-4.7-1m |   0   |   0    |
@@ -1424,6 +1425,18 @@ _No open debts detected in the chord trail._
     decide standing, the three-planes law is violated._
 - **Suggested Commands**:
   - `deno test --allow-read myc/src/x2F60_temporal_envelope_test.ts`
+
+### [x2700_954422_claude_audit-found-temporal-verifier-dormant-gave-it-a-li.myc.md](./x2700_954422_claude_audit-found-temporal-verifier-dormant-gave-it-a-li.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _If `t myc standing` reports any current signature as historical_v1 while no
+    v1 envelope has been emitted, the standing classifier is over-claiming._
+  - _If x2F60/x2F70 again have no caller or route, the dormancy the audit found
+    has returned._
+- **Suggested Commands**:
+  - `t myc standing            # the honest temporal standing of all signed descriptors`
+  - `t myc standing <dir>`
 
 ### [x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md](./x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md)
 

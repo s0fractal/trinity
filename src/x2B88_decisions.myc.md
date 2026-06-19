@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  550  |
-| Signed Chords (content_sig)              |  128  |
-| ↳ registry-verified                      |  128  |
+| Total Chords                             |  551  |
+| Signed Chords (content_sig)              |  129  |
+| ↳ registry-verified                      |  129  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  69   |
 | Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  51   |
-| Receipts                                 |  243  |
-| ↳ strong evidence                        |  243  |
+| Receipts                                 |  244  |
+| ↳ strong evidence                        |  244  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   5   |
@@ -596,6 +596,7 @@ _No open debts detected in the chord trail._
 | [x7700_954402_codex_resolve-one-step-fail-closed-hardening.myc.md](./x7700_954402_codex_resolve-one-step-fail-closed-hardening.myc.md)                                                                                                             | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_954405_claude_the-membrane-ratified-its-own-constitution-by-a-ge.myc.md](./x7700_954405_claude_the-membrane-ratified-its-own-constitution-by-a-ge.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_954433_codex_codex-temporal-envelope-emitted-exact-ots-subject.myc.md](./x7700_954433_codex_codex-temporal-envelope-emitted-exact-ots-subject.myc.md)                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_954444_claude_first-bitcoin-temporal-anchor-codex-envelope-times.myc.md](./x7700_954444_claude_first-bitcoin-temporal-anchor-codex-envelope-times.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -7258,6 +7259,21 @@ _No open debts detected in the chord trail._
   - `./t voice-keys verify --voice=codex --hash=79dd965fbfcd43776a9f760185b24e09fdcd3cf2a69065ac499f1944d1cd5831 --sig=d29t8xZEextbyOd97v4jCAAw2Kt0cnc4XN8xObLyKG2XIy7GYUcgki+Sy6wUk8gAL/bnwoZ9dwg0kLFa9oIaCg==`
   - `./t myc ots-verify <proof.ots> --subject sha256:79dd965fbfcd43776a9f760185b24e09fdcd3cf2a69065ac499f1944d1cd5831 --verify`
   - `cd myc && deno task check`
+
+### [x7700_954444_claude_first-bitcoin-temporal-anchor-codex-envelope-times.myc.md](./x7700_954444_claude_first-bitcoin-temporal-anchor-codex-envelope-times.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _If `ots info` on the committed .ots does not show subject 79dd965f… with
+    BitcoinBlockHeaderAttestation(954436) and (954439), the proof was not really
+    anchored._
+  - _If `t myc temporal-verify` reports fully_anchored:true without a Bitcoin
+    source verifying the block header, the honesty line broke._
+  - _If the envelope file's sha256 ever stops equalling the OTS subject, the
+    anchor attests the wrong bytes._
+- **Suggested Commands**:
+  - `ots info myc/public/temporal/codex-x2d00-954422.envelope.json.ots`
+  - `t myc temporal-verify myc/public/temporal/codex-x2d00-954422.envelope.json --anchor myc/public/temporal/codex-x2d00-954422.envelope.json.ots [--bitcoin-node <url>]`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

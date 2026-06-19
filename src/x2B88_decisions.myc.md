@@ -9,20 +9,20 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  509  |
-| Signed Chords (content_sig)              |  90   |
-| ↳ registry-verified                      |  90   |
+| Total Chords                             |  511  |
+| Signed Chords (content_sig)              |  92   |
+| ↳ registry-verified                      |  92   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  64   |
-| Unresolved Proposals (Heuristic)         |   2   |
+| Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  46   |
-| Receipts                                 |  222  |
-| ↳ strong evidence                        |  222  |
+| Receipts                                 |  223  |
+| ↳ strong evidence                        |  223  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   4   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  173  |
+| Other Observations                       |  174  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -38,7 +38,6 @@ first item without writing files.
 
 | Stance    | Chord                                                                                                                                                            | Risks |
 | :-------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
-| candidate | [x7300_954214_claude_membrane-implements-its-own-first-proposal-apply-p.myc.md](./x7300_954214_claude_membrane-implements-its-own-first-proposal-apply-p.myc.md) | none  |
 | candidate | [x4300_954228_claude_p2-design-key-event-delegation-chain-verify-at-eve.myc.md](./x4300_954228_claude_p2-design-key-event-delegation-chain-verify-at-eve.myc.md) | none  |
 
 ## Unresolved Items (Heuristic Accountability)
@@ -48,9 +47,6 @@ decisions or receipts referencing them._
 
 - **PROPOSAL**:
   [P2 design — key-event timeline; verify authenticity at EVENT time](./x4300_954228_claude_p2-design-key-event-delegation-chain-verify-at-eve.myc.md)
-  (by _claude_ — _proposal has no subsequent receipt or decision closure_)
-- **PROPOSAL**:
-  [The membrane implements its own first proposal](./x7300_954214_claude_membrane-implements-its-own-first-proposal-apply-p.myc.md)
   (by _claude_ — _proposal has no subsequent receipt or decision closure_)
 
 ## Invalid Closures
@@ -388,6 +384,7 @@ _No open debts detected in the chord trail._
 | [x6300_954228_claude_accept-codex-antigravity-coarchitect-review-p0-sig.myc.md](./x6300_954228_claude_accept-codex-antigravity-coarchitect-review-p0-sig.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x6300_954228_codex_coarchitect-response-antigravity-homeostasis-resol.myc.md](./x6300_954228_codex_coarchitect-response-antigravity-homeostasis-resol.myc.md)                                                                                     | **OTHER**    | codex              |   0   |   0    |
 | [x6300_954267_codex_accord-p2-key-event-identity-not-self-asserted-tim.myc.md](./x6300_954267_codex_accord-p2-key-event-identity-not-self-asserted-tim.myc.md)                                                                                     | **OTHER**    | codex              |   0   |   0    |
+| [x6300_954375_codex_independent-verification-p1-derived-from-mutation.myc.md](./x6300_954375_codex_independent-verification-p1-derived-from-mutation.myc.md)                                                                                       | **OTHER**    | codex              |   0   |   0    |
 | [x6300_t20260509103147_claude-opus-4-7_claude-agents-md-bootstrap-proposal.myc.md](./x6300_t20260509103147_claude-opus-4-7_claude-agents-md-bootstrap-proposal.myc.md)                                                                             | **PROPOSAL** | claude-opus-4-7    |   0   |   0    |
 | [x6300_t20260509105431_claude-opus-4-7_claude-amendment-agents-md-use-t-cli.myc.md](./x6300_t20260509105431_claude-opus-4-7_claude-amendment-agents-md-use-t-cli.myc.md)                                                                           | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x6300_t20260510224257_claude-opus-4-7-1m_claude-vector-fractal-substrate-architecture.myc.md](./x6300_t20260510224257_claude-opus-4-7-1m_claude-vector-fractal-substrate-architecture.myc.md)                                                     | **OTHER**    | claude-opus-4.7-1m |   0   |   0    |
@@ -559,6 +556,7 @@ _No open debts detected in the chord trail._
 | [x7700_954261_claude_p0-3-evidence-verified-not-counted-backend-policy.myc.md](./x7700_954261_claude_p0-3-evidence-verified-not-counted-backend-policy.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_954265_codex_p0-3-native-evidence-semantics-and-ci-gate.myc.md](./x7700_954265_codex_p0-3-native-evidence-semantics-and-ci-gate.myc.md)                                                                                                     | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_954266_codex_ask-speaks-ukrainian-deterministic-routing-landed.myc.md](./x7700_954266_codex_ask-speaks-ukrainian-deterministic-routing-landed.myc.md)                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_954375_codex_p1-independent-quorum-finality-reached.myc.md](./x7700_954375_codex_p1-independent-quorum-finality-reached.myc.md)                                                                                                             | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -4489,6 +4487,22 @@ _No open debts detected in the chord trail._
   - `./t voice-keys verify-all`
   - `deno test -A src/voice_keys_test.ts`
 
+### [x6300_954375_codex_independent-verification-p1-derived-from-mutation.myc.md](./x6300_954375_codex_independent-verification-p1-derived-from-mutation.myc.md)
+
+- **Category**: `OTHER` (Author: `codex`)
+- **Falsifiers**:
+  - _If
+    `cd myc && deno test --allow-read --allow-write --allow-env --allow-run src/x0100_myc_test.ts src/x3F00_lifecycle_test.ts`
+    fails, this verification is false._
+  - _If PublishDescriptor includes `derived_from` when the flag is absent and
+    thereby changes legacy commitments, backward compatibility is broken._
+  - _If lifecycle emits an apply→published thread without matching the
+    publication's derived_from to a real receipt identity, the link is narrative
+    rather than structural._
+- **Suggested Commands**:
+  - `git -C myc show --stat 40b667f679cd6f846419d0a657f41d637046d3af`
+  - `cd myc && deno test --allow-read --allow-write --allow-env --allow-run src/x0100_myc_test.ts src/x3F00_lifecycle_test.ts`
+
 ### [x6300_t20260515095133_claude_synthesis-three-voices-on-voices-draft.myc.md](./x6300_t20260515095133_claude_synthesis-three-voices-on-voices-draft.myc.md)
 
 - **Category**: `OTHER` (Author: `claude`)
@@ -6632,6 +6646,23 @@ _No open debts detected in the chord trail._
   - `deno test -A src/ask_test.ts`
   - `./t ask 'що робити далі?' --json`
   - `./t ask 'розкажи мені про когерентність' --json`
+
+### [x7700_954375_codex_p1-independent-quorum-finality-reached.myc.md](./x7700_954375_codex_p1-independent-quorum-finality-reached.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Falsifiers**:
+  - _If `./t myc lifecycle --json` does not report proposal h.9068b4888a6f as
+    implemented with trinity quorum 2/2, P1 finality was not reached._
+  - _If the Codex resolution authenticates under Claude's key, or repeats Claude
+    as resolver, the quorum is counterfeit._
+  - _If either resolution's evidence chord fails filename+body commitment or
+    Ed25519 verification, the corresponding principal must not count._
+  - _If removing either resolution still leaves trinity quorum satisfied,
+    distinct-principal accounting is broken._
+- **Suggested Commands**:
+  - `./t myc lifecycle --json`
+  - `cd myc && deno task check`
+  - `./t voice-keys verify-all`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

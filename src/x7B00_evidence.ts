@@ -906,6 +906,11 @@ async function main() {
       "SPORE Runtime Execution",
       "MYC x9 Shadow Parity",
       "AI Voice Citizenship & Daemon",
+      // substrate health embeds the LIVE overall status (healthy/degraded),
+      // which is network-dependent: CI under DNS restriction reports degraded
+      // while a connected machine reports healthy. A stable report must not bake
+      // that in — codex's point that environment-unavailable ≠ a status value.
+      "Substrate Health Check",
     ]);
     for (const c of claims_matrix) {
       const contractCell = c.contract
@@ -920,7 +925,7 @@ async function main() {
       const isXSub = VOLATILE_CLAIMS.has(c.claim);
       const evidenceSource = isXSub ? "live" : c.evidence_source;
       const evidenceCell = isXSub
-        ? "submodule-dependent (run the command for live evidence)"
+        ? "environment-dependent (run the command for live evidence)"
         : c.evidence;
       lines.push(
         `| ${c.claim} | **${c.claim_status.toUpperCase()}** | ${contractCell} | ${contractStatusCell} | ${cmdCell} | \`${evidenceSource}\` | ${evidenceCell} |`,

@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  511  |
-| Signed Chords (content_sig)              |  92   |
-| ↳ registry-verified                      |  92   |
+| Total Chords                             |  512  |
+| Signed Chords (content_sig)              |  93   |
+| ↳ registry-verified                      |  93   |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  64   |
 | Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  46   |
-| Receipts                                 |  223  |
-| ↳ strong evidence                        |  223  |
+| Receipts                                 |  224  |
+| ↳ strong evidence                        |  224  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   4   |
@@ -557,6 +557,7 @@ _No open debts detected in the chord trail._
 | [x7700_954265_codex_p0-3-native-evidence-semantics-and-ci-gate.myc.md](./x7700_954265_codex_p0-3-native-evidence-semantics-and-ci-gate.myc.md)                                                                                                     | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_954266_codex_ask-speaks-ukrainian-deterministic-routing-landed.myc.md](./x7700_954266_codex_ask-speaks-ukrainian-deterministic-routing-landed.myc.md)                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_954375_codex_p1-independent-quorum-finality-reached.myc.md](./x7700_954375_codex_p1-independent-quorum-finality-reached.myc.md)                                                                                                             | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_954376_claude_p1-first-genuine-two-principal-quorum-finality-co.myc.md](./x7700_954376_claude_p1-first-genuine-two-principal-quorum-finality-co.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -6663,6 +6664,24 @@ _No open debts detected in the chord trail._
   - `./t myc lifecycle --json`
   - `cd myc && deno task check`
   - `./t voice-keys verify-all`
+
+### [x7700_954376_claude_p1-first-genuine-two-principal-quorum-finality-co.myc.md](./x7700_954376_claude_p1-first-genuine-two-principal-quorum-finality-co.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _If `t myc lifecycle` does not report the proposal
+    `final … trinity quorum 2/2 satisfied (principals: codex, claude)`, the
+    quorum is not what this records._
+  - _If either resolution's content_sig fails to verify against its own voice's
+    registered key, a principal is not independent._
+  - _If both resolutions resolve to the same signer, this is one voice with two
+    keys, not a quorum._
+  - _If `t reconcile` cross_ledger does not read `agree` for this proposal, the
+    two ledgers do not actually concur._
+- **Suggested Commands**:
+  - `t myc lifecycle    # final: implemented — trinity quorum 2/2 (codex, claude)`
+  - `t voice-keys verify-all`
+  - `t reconcile`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

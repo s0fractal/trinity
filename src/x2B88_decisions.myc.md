@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  525  |
-| Signed Chords (content_sig)              |  105  |
-| ↳ registry-verified                      |  105  |
+| Total Chords                             |  526  |
+| Signed Chords (content_sig)              |  106  |
+| ↳ registry-verified                      |  106  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  65   |
 | Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  48   |
-| Receipts                                 |  228  |
-| ↳ strong evidence                        |  228  |
+| Receipts                                 |  229  |
+| ↳ strong evidence                        |  229  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   5   |
@@ -571,6 +571,7 @@ _No open debts detected in the chord trail._
 | [x7700_954376_claude_p1-first-genuine-two-principal-quorum-finality-co.myc.md](./x7700_954376_claude_p1-first-genuine-two-principal-quorum-finality-co.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_954377_codex_first-live-spore-receipt-publish-witness-thread.myc.md](./x7700_954377_codex_first-live-spore-receipt-publish-witness-thread.myc.md)                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_954391_codex_p3-keytimeline-strict-authorization-and-evidence-h.myc.md](./x7700_954391_codex_p3-keytimeline-strict-authorization-and-evidence-h.myc.md)                                                                                     | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_954402_codex_resolve-one-step-fail-closed-hardening.myc.md](./x7700_954402_codex_resolve-one-step-fail-closed-hardening.myc.md)                                                                                                             | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -6863,6 +6864,13 @@ _No open debts detected in the chord trail._
 - **Category**: `RECEIPT` (Author: `codex`)
 - **Suggested Commands**:
   - `deno test --allow-read src/keytimeline_test.ts`
+  - `./t check`
+
+### [x7700_954402_codex_resolve-one-step-fail-closed-hardening.myc.md](./x7700_954402_codex_resolve-one-step-fail-closed-hardening.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Suggested Commands**:
+  - `cd myc && deno task check`
   - `./t check`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)

@@ -4405,10 +4405,16 @@ _No open debts detected in the chord trail._
 ### [x5700_954450_claude_autonomy-kernel-policy-compiler-codex-p0-pure-fail.myc.md](./x5700_954450_claude_autonomy-kernel-policy-compiler-codex-p0-pure-fail.myc.md)
 
 - **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _If `t autonomy classify` ever returns a class below an effect's required
+    class, the most-privileged rule is broken and laundering is possible._
+  - _If `t autonomy explain` admits an A4 intent, or one outside its profile's
+    verb/target/destination/ceiling/expiry, the kernel is not fail-closed._
+  - _If x5C20 performs any write or external effect, it stopped being a pure
+    policy compiler._
 - **Suggested Commands**:
-  - `[]`
-- **Expected After Running**:
-  - _{}_
+  - `t autonomy classify <intent.json>`
+  - `t autonomy explain <intent.json> --mandate <mandate.json>`
 
 ### [x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md](./x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md)
 

@@ -9,13 +9,13 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  531  |
-| Signed Chords (content_sig)              |  110  |
-| ↳ registry-verified                      |  110  |
+| Total Chords                             |  532  |
+| Signed Chords (content_sig)              |  111  |
+| ↳ registry-verified                      |  111  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  66   |
 | Unresolved Proposals (Heuristic)         |   2   |
-| Decisions                                |  49   |
+| Decisions                                |  50   |
 | Receipts                                 |  230  |
 | ↳ strong evidence                        |  230  |
 | ↳ weak evidence                          |   0   |
@@ -318,6 +318,7 @@ _No open debts detected in the chord trail._
 | [x5000_954266_codex_claim-x2800-ask.myc.md](./x5000_954266_codex_claim-x2800-ask.myc.md)                                                                                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x5000_954386_claude_trinity-ledger-formally-closes-proposal-h-9068b488.myc.md](./x5000_954386_claude_trinity-ledger-formally-closes-proposal-h-9068b488.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
 | [x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md](./x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md)                                                                                   | **PROPOSAL** | claude             |   0   |   0    |
+| [x5000_954409_claude_trinity-ledger-closes-the-ratified-constitution-h.myc.md](./x5000_954409_claude_trinity-ledger-closes-the-ratified-constitution-h.myc.md)                                                                                     | **DECISION** | claude             |   0   |   0    |
 | [x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md](./x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md)                                                                                                 | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md](./x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md)                                                                                                 | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md](./x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md)       | **OTHER**    | claude-opus-4-7    |   0   |   0    |
@@ -3444,6 +3445,19 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `t myc show h.d2f13b52b10c.proposal.myc.md`
   - `t reconcile`
+
+### [x5000_954409_claude_trinity-ledger-closes-the-ratified-constitution-h.myc.md](./x5000_954409_claude_trinity-ledger-closes-the-ratified-constitution-h.myc.md)
+
+- **Category**: `DECISION` (Author: `claude`)
+- **Decision Outcome**: `implemented`
+- **Falsifiers**:
+  - _If `t reconcile` cross_ledger does not read `agree` after this chord, the
+    closure did not register as a genuine `closes:` relation._
+  - _If `t myc lifecycle` does not report h.d2f13b52b10c as final:implemented
+    (human:1/1, model:1/1), there is no decision to close._
+- **Suggested Commands**:
+  - `t reconcile     # cross_ledger: agree`
+  - `t myc lifecycle`
 
 ### [x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md](./x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md)
 

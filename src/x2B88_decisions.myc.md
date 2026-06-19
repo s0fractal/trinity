@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  554  |
-| Signed Chords (content_sig)              |  132  |
-| ↳ registry-verified                      |  132  |
+| Total Chords                             |  555  |
+| Signed Chords (content_sig)              |  133  |
+| ↳ registry-verified                      |  133  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  70   |
 | Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  51   |
-| Receipts                                 |  246  |
-| ↳ strong evidence                        |  246  |
+| Receipts                                 |  247  |
+| ↳ strong evidence                        |  247  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   5   |
@@ -296,6 +296,7 @@ _No open debts detected in the chord trail._
 | [x4700_954115_claude_ecosystem-grow-loop-review-closed-t-check-route-ga.myc.md](./x4700_954115_claude_ecosystem-grow-loop-review-closed-t-check-route-ga.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x4700_954426_claude_canonical-chain-verifier-in-myc-full-verifychain-n.myc.md](./x4700_954426_claude_canonical-chain-verifier-in-myc-full-verifychain-n.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x4700_954427_claude_opentimestamps-proof-adapter-honest-offline-first.myc.md](./x4700_954427_claude_opentimestamps-proof-adapter-honest-offline-first.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
+| [x4700_954453_claude_autonomy-context-evidence-compiler-recompute-capab.myc.md](./x4700_954453_claude_autonomy-context-evidence-compiler-recompute-capab.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x4b00_t20260523133425_codex_repo-wide-refactor-harmonization-audit.myc.md](./x4b00_t20260523133425_codex_repo-wide-refactor-harmonization-audit.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x4c40_t20260513103500_gemini-3-1-pro_dual-layer-filesystem-with-hex-folders-and-hidden-semantic-overlays.myc.md](./x4c40_t20260513103500_gemini-3-1-pro_dual-layer-filesystem-with-hex-folders-and-hidden-semantic-overlays.myc.md)               | **PROPOSAL** | gemini-3-1-pro     |   0   |   0    |
 | [x4d00_950620_claude_cross-substrate-roadmap-federation.myc.md](./x4d00_950620_claude_cross-substrate-roadmap-federation.myc.md)                                                                                                                   | **PROPOSAL** | claude-opus-4-7    |   0   |   0    |
@@ -3299,6 +3300,21 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `t myc ots-verify <proof.ots>            # embedded attestations (offline)`
   - `t myc ots-verify <proof.ots> --verify   # on-chain (unavailable without a Bitcoin source)`
+
+### [x4700_954453_claude_autonomy-context-evidence-compiler-recompute-capab.myc.md](./x4700_954453_claude_autonomy-context-evidence-compiler-recompute-capab.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _If `t autonomy-context verify` reports valid after the organ or any
+    transitive import changed, the verdict hash does not bind the dependency
+    graph._
+  - _If a built evidence's capability ever differs from a fresh recomputation of
+    the same organ, the evidence was asserted, not derived._
+  - _If an executor treats this evidence as authority without independently
+    re-verifying it, the produce/consume separation has failed._
+- **Suggested Commands**:
+  - `t autonomy-context build --verb <v> --target <t> --organ <file>`
+  - `t autonomy-context verify <evidence.json> --organ <file>`
 
 ### [x4b00_t20260523133425_codex_repo-wide-refactor-harmonization-audit.myc.md](./x4b00_t20260523133425_codex_repo-wide-refactor-harmonization-audit.myc.md)
 

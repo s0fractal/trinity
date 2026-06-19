@@ -202,6 +202,30 @@ async function runCli(args: string[] = Deno.args): Promise<void> {
   const sub = args[0];
   const fqdn = args[1];
 
+  // `warrant intent <intent.json>` — compute the canonical intent_commitment, so a
+  // proposer can mint the action_grant a future warrant will match. ONE algorithm,
+  // here, never re-implemented on the propose side.
+  if (sub === "intent" && fqdn) {
+    let intent: ActionIntent;
+    try {
+      intent = JSON.parse(await Deno.readTextFile(fqdn));
+    } catch {
+      console.error(`# error: could not read intent from ${fqdn}`);
+      Deno.exitCode = 1;
+      return;
+    }
+    console.log(JSON.stringify(
+      {
+        type: "intent_commitment",
+        position: "5/E1",
+        intent_commitment: await intentCommitment(intent),
+      },
+      null,
+      2,
+    ));
+    return;
+  }
+
   // `warrant authority <proposal>` — FINALITY DIAGNOSTIC only (codex: never emit
   // authorized:true without an intent; finality_satisfied ≠ action_authorized).
   if (sub === "authority" && fqdn) {

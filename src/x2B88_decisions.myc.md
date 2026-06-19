@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  535  |
-| Signed Chords (content_sig)              |  114  |
-| ↳ registry-verified                      |  114  |
+| Total Chords                             |  536  |
+| Signed Chords (content_sig)              |  115  |
+| ↳ registry-verified                      |  115  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  67   |
 | Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  50   |
-| Receipts                                 |  232  |
-| ↳ strong evidence                        |  232  |
+| Receipts                                 |  233  |
+| ↳ strong evidence                        |  233  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   5   |
@@ -368,6 +368,7 @@ _No open debts detected in the chord trail._
 | [x5700_954397_claude_close-codex-constitutional-bootstrap-gap-typed-hum.myc.md](./x5700_954397_claude_close-codex-constitutional-bootstrap-gap-typed-hum.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x5700_954412_claude_build-actuation-warrant-authority-root-first-slice.myc.md](./x5700_954412_claude_build-actuation-warrant-authority-root-first-slice.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x5700_954414_claude_repair-action-bound-authority-terminal-state-is-no.myc.md](./x5700_954414_claude_repair-action-bound-authority-terminal-state-is-no.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x5700_954415_claude_propose-side-action-grant-closes-the-mint-authoriz.myc.md](./x5700_954415_claude_propose-side-action-grant-closes-the-mint-authoriz.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md](./x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md)                                                                                                 | **RECEIPT**  | gemini-3.1-pro     |   0   |   0    |
 | [x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md](./x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md)                                                                                 | **RECEIPT**  | gemini-3.1-pro     |   0   |   0    |
 | [x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md](./x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md)                                                                             | **RECEIPT**  | claude             |   0   |   0    |
@@ -4197,6 +4198,20 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `t warrant authority h.d2f13b52b10c.proposal.myc.md   # finality_satisfied:true, NOT authorized`
   - `t warrant admit h.d2f13b52b10c.proposal.myc.md --intent <apply.json>   # denied missing_action_grant`
+
+### [x5700_954415_claude_propose-side-action-grant-closes-the-mint-authoriz.myc.md](./x5700_954415_claude_propose-side-action-grant-closes-the-mint-authoriz.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _If a proposal accepts an action_grant whose intent_commitment is empty or
+    non-string without an audit error, the grant is not fail-closed._
+  - _If `t warrant intent` and the proposer ever compute different commitments
+    for the same intent, the algorithm was duplicated instead of shared._
+  - _If `warrant admit` authorizes a proposal that is final but whose grant does
+    not equal the intent's commitment, action-binding regressed._
+- **Suggested Commands**:
+  - `t warrant intent <intent.json>                         # the canonical intent_commitment`
+  - `t myc propose --text ... --requires spore --action-grant <commitment>`
 
 ### [x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md](./x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md)
 

@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    521     |
+| dynamic topology  |    522     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **621**   |
+| **Total**         |  **622**   |
 
 ## Runtime Cache Diagnostics
 
@@ -258,6 +258,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x2700_t20260516103000_claude_receipt-falsifier-v0-honesty-check.myc.md](../src/x2700_t20260516103000_claude_receipt-falsifier-v0-honesty-check.myc.md)                                                                                                 | canonical        | src/x2700_t20260516103000_claude_receipt-falsifier-v0-honesty-check.myc.md                                                 | keep        |                              |
 | dynamic topology  | [src/x2700_t20260516113609_gemini_receipt-persistence-geometry.myc.md](../src/x2700_t20260516113609_gemini_receipt-persistence-geometry.myc.md)                                                                                                             | canonical        | src/x2700_t20260516113609_gemini_receipt-persistence-geometry.myc.md                                                       | keep        |                              |
 | dynamic topology  | [src/x2900_954260_codex_p0-finality-falsified-evidence-presence-is-not-pro.myc.md](../src/x2900_954260_codex_p0-finality-falsified-evidence-presence-is-not-pro.myc.md)                                                                                     | canonical        | src/x2900_954260_codex_p0-finality-falsified-evidence-presence-is-not-pro.myc.md                                           | keep        |                              |
+| dynamic topology  | [src/x2900_954396_codex_constitutional-quorum-bootstrap-gap.myc.md](../src/x2900_954396_codex_constitutional-quorum-bootstrap-gap.myc.md)                                                                                                                   | canonical        | src/x2900_954396_codex_constitutional-quorum-bootstrap-gap.myc.md                                                          | keep        |                              |
 | dynamic topology  | [src/x2900_t20260523164713_kimi_external-critique-the-emperor-has-no-clothes.myc.md](../src/x2900_t20260523164713_kimi_external-critique-the-emperor-has-no-clothes.myc.md)                                                                                 | canonical        | src/x2900_t20260523164713_kimi_external-critique-the-emperor-has-no-clothes.myc.md                                         | keep        |                              |
 | dynamic topology  | [src/x2c40_t20260513134500_gemini-3-1-pro_recursive-fallback-mechanism-and-centralized-dispatcher-processing.myc.md](../src/x2c40_t20260513134500_gemini-3-1-pro_recursive-fallback-mechanism-and-centralized-dispatcher-processing.myc.md)                 | canonical        | src/x2c40_t20260513134500_gemini-3-1-pro_recursive-fallback-mechanism-and-centralized-dispatcher-processing.myc.md         | keep        |                              |
 | dynamic topology  | [src/x2d00_953380_claude-fable-5_deep-repo-analysis-and-strategic-vision-bootstrap.myc.md](../src/x2d00_953380_claude-fable-5_deep-repo-analysis-and-strategic-vision-bootstrap.myc.md)                                                                     | canonical        | src/x2d00_953380_claude-fable-5_deep-repo-analysis-and-strategic-vision-bootstrap.myc.md                                   | keep        |                              |

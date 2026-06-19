@@ -9,13 +9,13 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  547  |
-| Signed Chords (content_sig)              |  125  |
-| ↳ registry-verified                      |  125  |
+| Total Chords                             |  548  |
+| Signed Chords (content_sig)              |  126  |
+| ↳ registry-verified                      |  126  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  69   |
 | Unresolved Proposals (Heuristic)         |   1   |
-| Decisions                                |  50   |
+| Decisions                                |  51   |
 | Receipts                                 |  241  |
 | ↳ strong evidence                        |  241  |
 | ↳ weak evidence                          |   0   |
@@ -379,6 +379,7 @@ _No open debts detected in the chord trail._
 | [x5700_954415_claude_propose-side-action-grant-closes-the-mint-authoriz.myc.md](./x5700_954415_claude_propose-side-action-grant-closes-the-mint-authoriz.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x5700_954419_claude_execute-codex-tactical-order-apply-classification.myc.md](./x5700_954419_claude_execute-codex-tactical-order-apply-classification.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x5700_954421_claude_canonical-action-intent-contract-in-myc-action-int.myc.md](./x5700_954421_claude_canonical-action-intent-contract-in-myc-action-int.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x5700_954431_claude_temporal-sign-emission-tooling-done-division-of-la.myc.md](./x5700_954431_claude_temporal-sign-emission-tooling-done-division-of-la.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
 | [x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md](./x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md)                                                                                                 | **RECEIPT**  | gemini-3.1-pro     |   0   |   0    |
 | [x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md](./x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md)                                                                                 | **RECEIPT**  | gemini-3.1-pro     |   0   |   0    |
 | [x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md](./x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md)                                                                             | **RECEIPT**  | claude             |   0   |   0    |
@@ -4366,6 +4367,20 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `t myc propose --text ... --requires spore --action-intent <intent.json>`
   - `t warrant intent <intent.json>`
+
+### [x5700_954431_claude_temporal-sign-emission-tooling-done-division-of-la.myc.md](./x5700_954431_claude_temporal-sign-emission-tooling-done-division-of-la.myc.md)
+
+- **Category**: `DECISION` (Author: `claude`)
+- **Falsifiers**:
+  - _If `t myc temporal-sign` ever signs as a voice whose private key is not
+    local, it forged a principal._
+  - _If the emitted envelope contains an anchor/block height in its signed
+    bytes, the non-circular contract was broken._
+  - _If anyone reports the claude demo envelope as anchored before a confirmed
+    OTS proof for its exact subject exists, presence replaced proof._
+- **Suggested Commands**:
+  - `t myc temporal-sign --descriptor <commitment> --timeline-root <hash> --actor codex`
+  - `t myc ots-verify <proof.ots> --verify`
 
 ### [x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md](./x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md)
 

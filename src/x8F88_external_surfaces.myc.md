@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    528     |
+| dynamic topology  |    529     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **628**   |
+| **Total**         |  **629**   |
 
 ## Runtime Cache Diagnostics
 
@@ -497,6 +497,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x6dd0_t20260513152500_gemini-3-1-pro_codeicide-mandate-and-structured-json-continuations.myc.md](../src/x6dd0_t20260513152500_gemini-3-1-pro_codeicide-mandate-and-structured-json-continuations.myc.md)                                               | canonical        | src/x6dd0_t20260513152500_gemini-3-1-pro_codeicide-mandate-and-structured-json-continuations.myc.md                        | keep        |                              |
 | dynamic topology  | [src/x6dd0_t20260513163000_gemini-3-1-pro_glossary-driven-schema-validation-vs-shared-router.myc.md](../src/x6dd0_t20260513163000_gemini-3-1-pro_glossary-driven-schema-validation-vs-shared-router.myc.md)                                                 | canonical        | src/x6dd0_t20260513163000_gemini-3-1-pro_glossary-driven-schema-validation-vs-shared-router.myc.md                         | keep        |                              |
 | dynamic topology  | [src/x7000_954153_claude_trinity-published-repo-public-pre-publication-audi.myc.md](../src/x7000_954153_claude_trinity-published-repo-public-pre-publication-audi.myc.md)                                                                                   | canonical        | src/x7000_954153_claude_trinity-published-repo-public-pre-publication-audi.myc.md                                          | keep        |                              |
+| dynamic topology  | [src/x7000_954404_claude_handoff-the-constitution-to-the-human-ratify-h-d2f.myc.md](../src/x7000_954404_claude_handoff-the-constitution-to-the-human-ratify-h-d2f.myc.md)                                                                                   | canonical        | src/x7000_954404_claude_handoff-the-constitution-to-the-human-ratify-h-d2f.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x7000_t20260509091443_trinity-cognition_trinity-cognition-myc-publication.myc.md](../src/x7000_t20260509091443_trinity-cognition_trinity-cognition-myc-publication.myc.md)                                                                             | canonical        | src/x7000_t20260509091443_trinity-cognition_trinity-cognition-myc-publication.myc.md                                       | keep        |                              |
 | dynamic topology  | [src/x7000_t20260509174200_gemini_gemini-metacognition-cycle.myc.md](../src/x7000_t20260509174200_gemini_gemini-metacognition-cycle.myc.md)                                                                                                                 | canonical        | src/x7000_t20260509174200_gemini_gemini-metacognition-cycle.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x7000_t20260512071650_claude-opus-4-7_four-substrate-ecology-omega-liquid-myc-trinity-global-strategic-plan.myc.md](../src/x7000_t20260512071650_claude-opus-4-7_four-substrate-ecology-omega-liquid-myc-trinity-global-strategic-plan.myc.md)         | canonical        | src/x7000_t20260512071650_claude-opus-4-7_four-substrate-ecology-omega-liquid-myc-trinity-global-strategic-plan.myc.md     | keep        |                              |

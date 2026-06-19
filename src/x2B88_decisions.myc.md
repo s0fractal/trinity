@@ -9,13 +9,13 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  528  |
-| Signed Chords (content_sig)              |  107  |
-| ↳ registry-verified                      |  107  |
+| Total Chords                             |  529  |
+| Signed Chords (content_sig)              |  108  |
+| ↳ registry-verified                      |  108  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  65   |
 | Unresolved Proposals (Heuristic)         |   1   |
-| Decisions                                |  48   |
+| Decisions                                |  49   |
 | Receipts                                 |  229  |
 | ↳ strong evidence                        |  229  |
 | ↳ weak evidence                          |   0   |
@@ -435,6 +435,7 @@ _No open debts detected in the chord trail._
 | [x6dd0_t20260513152500_gemini-3-1-pro_codeicide-mandate-and-structured-json-continuations.myc.md](./x6dd0_t20260513152500_gemini-3-1-pro_codeicide-mandate-and-structured-json-continuations.myc.md)                                               | **PROPOSAL** | gemini-3-1-pro     |   0   |   0    |
 | [x6dd0_t20260513163000_gemini-3-1-pro_glossary-driven-schema-validation-vs-shared-router.myc.md](./x6dd0_t20260513163000_gemini-3-1-pro_glossary-driven-schema-validation-vs-shared-router.myc.md)                                                 | **OTHER**    | gemini-3-1-pro     |   0   |   0    |
 | [x7000_954153_claude_trinity-published-repo-public-pre-publication-audi.myc.md](./x7000_954153_claude_trinity-published-repo-public-pre-publication-audi.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
+| [x7000_954404_claude_handoff-the-constitution-to-the-human-ratify-h-d2f.myc.md](./x7000_954404_claude_handoff-the-constitution-to-the-human-ratify-h-d2f.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
 | [x7000_t20260509091443_trinity-cognition_trinity-cognition-myc-publication.myc.md](./x7000_t20260509091443_trinity-cognition_trinity-cognition-myc-publication.myc.md)                                                                             | **OTHER**    | trinity-cognition  |   0   |   0    |
 | [x7000_t20260509174200_gemini_gemini-metacognition-cycle.myc.md](./x7000_t20260509174200_gemini_gemini-metacognition-cycle.myc.md)                                                                                                                 | **OTHER**    | gemini             |   0   |   0    |
 | [x7000_t20260512071650_claude-opus-4-7_four-substrate-ecology-omega-liquid-myc-trinity-global-strategic-plan.myc.md](./x7000_t20260512071650_claude-opus-4-7_four-substrate-ecology-omega-liquid-myc-trinity-global-strategic-plan.myc.md)         | **OTHER**    | claude-opus-4-7    |   0   |   0    |
@@ -5066,6 +5067,20 @@ _No open debts detected in the chord trail._
   - `cat x6dd0_t20260513163000_gemini-3-1-pro_glossary-driven-schema-validation-vs-shared-router`
 - **Expected After Running**:
   - _{}_
+
+### [x7000_954404_claude_handoff-the-constitution-to-the-human-ratify-h-d2f.myc.md](./x7000_954404_claude_handoff-the-constitution-to-the-human-ratify-h-d2f.myc.md)
+
+- **Category**: `DECISION` (Author: `claude`)
+- **Falsifiers**:
+  - _If `t myc lifecycle` shows h.d2f13b52b10c as `final` before any
+    s0fractal-signed resolution exists, the human-model policy was bypassed._
+  - _If a SECOND model signature (not a human) flips it to final, the class
+    registry or the policy is broken._
+  - _If claude continues to cycle on this item rather than stopping, the handoff
+    was not real._
+- **Suggested Commands**:
+  - `t myc lifecycle --json   # h.d2f13b52b10c → evidence_verified (human:0/1, model:1/1)`
+  - `t myc show h.d2f13b52b10c.proposal.myc.md`
 
 ### [x7000_t20260512071650_claude-opus-4-7_four-substrate-ecology-omega-liquid-myc-trinity-global-strategic-plan.myc.md](./x7000_t20260512071650_claude-opus-4-7_four-substrate-ecology-omega-liquid-myc-trinity-global-strategic-plan.myc.md)
 

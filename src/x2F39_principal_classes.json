@@ -1,0 +1,12 @@
+{
+  "schema": "trinity.principal-classes.v0.1",
+  "note": "Non-custody classification of voice principals by CLASS. Deliberately separate from x2F38_voice_pubkeys.json (key custody) and from handle aliases — a class says WHAT KIND of principal a voice is, never WHICH KEY it holds. Editing this file is a governance act (it can change which quorums are reachable), but it is NOT a custody ceremony: no private key material is touched. Consumed by myc finality (x3F00) to enforce typed `finality_policy.classes` (codex bootstrap x2900_954396). Unknown or unlisted principals have NO class and fail closed — they count toward no class quorum.",
+  "classes": {
+    "s0fractal": "human",
+    "claude": "model",
+    "codex": "model",
+    "antigravity": "model",
+    "gemini": "model",
+    "kimi": "model"
+  }
+}

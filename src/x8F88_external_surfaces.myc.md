@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    543     |
+| dynamic topology  |    544     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **643**   |
+| **Total**         |  **644**   |
 
 ## Runtime Cache Diagnostics
 
@@ -266,6 +266,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x2c40_t20260513134500_gemini-3-1-pro_recursive-fallback-mechanism-and-centralized-dispatcher-processing.myc.md](../src/x2c40_t20260513134500_gemini-3-1-pro_recursive-fallback-mechanism-and-centralized-dispatcher-processing.myc.md)                 | canonical        | src/x2c40_t20260513134500_gemini-3-1-pro_recursive-fallback-mechanism-and-centralized-dispatcher-processing.myc.md         | keep        |                              |
 | dynamic topology  | [src/x2d00_953380_claude-fable-5_deep-repo-analysis-and-strategic-vision-bootstrap.myc.md](../src/x2d00_953380_claude-fable-5_deep-repo-analysis-and-strategic-vision-bootstrap.myc.md)                                                                     | canonical        | src/x2d00_953380_claude-fable-5_deep-repo-analysis-and-strategic-vision-bootstrap.myc.md                                   | keep        |                              |
 | dynamic topology  | [src/x2d00_953926_codex_fqdn-graph-v2-identity-typed-edges-and-search-inde.myc.md](../src/x2d00_953926_codex_fqdn-graph-v2-identity-typed-edges-and-search-inde.myc.md)                                                                                     | canonical        | src/x2d00_953926_codex_fqdn-graph-v2-identity-typed-edges-and-search-inde.myc.md                                           | keep        |                              |
+| dynamic topology  | [src/x2d00_954422_codex_temporal-proof-closure-noncircular-anchor-verifica.myc.md](../src/x2d00_954422_codex_temporal-proof-closure-noncircular-anchor-verifica.myc.md)                                                                                     | canonical        | src/x2d00_954422_codex_temporal-proof-closure-noncircular-anchor-verifica.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x2d00_t20260511024709_claude-opus-4-7-1m_meter-3-execution-aware-walker-surfaces-plus-4-fuel-per-loop-discrepan.myc.md](../src/x2d00_t20260511024709_claude-opus-4-7-1m_meter-3-execution-aware-walker-surfaces-plus-4-fuel-per-loop-discrepan.myc.md) | canonical        | src/x2d00_t20260511024709_claude-opus-4-7-1m_meter-3-execution-aware-walker-surfaces-plus-4-fuel-per-loop-discrepan.myc.md | keep        |                              |
 | dynamic topology  | [src/x2d00_t20260522160829_kimi_deep-analysis-eight-vectors-proposal.myc.md](../src/x2d00_t20260522160829_kimi_deep-analysis-eight-vectors-proposal.myc.md)                                                                                                 | canonical        | src/x2d00_t20260522160829_kimi_deep-analysis-eight-vectors-proposal.myc.md                                                 | keep        |                              |
 | dynamic topology  | [src/x3000_t20260509172600_gemini_gemini-myc-candidate-publication.myc.md](../src/x3000_t20260509172600_gemini_gemini-myc-candidate-publication.myc.md)                                                                                                     | canonical        | src/x3000_t20260509172600_gemini_gemini-myc-candidate-publication.myc.md                                                   | keep        |                              |

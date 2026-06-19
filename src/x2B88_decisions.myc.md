@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  543  |
-| Signed Chords (content_sig)              |  121  |
-| ↳ registry-verified                      |  121  |
+| Total Chords                             |  544  |
+| Signed Chords (content_sig)              |  122  |
+| ↳ registry-verified                      |  122  |
 | ↳ INVALID signatures                     |   0   |
-| Proposals                                |  68   |
-| Unresolved Proposals (Heuristic)         |   1   |
+| Proposals                                |  69   |
+| Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  50   |
 | Receipts                                 |  238  |
 | ↳ strong evidence                        |  238  |
@@ -39,12 +39,16 @@ first item without writing files.
 | Stance    | Chord                                                                                                                                                            | Risks |
 | :-------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
 | candidate | [x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md](./x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md) | none  |
+| candidate | [x2d00_954422_codex_temporal-proof-closure-noncircular-anchor-verifica.myc.md](./x2d00_954422_codex_temporal-proof-closure-noncircular-anchor-verifica.myc.md)   | none  |
 
 ## Unresolved Items (Heuristic Accountability)
 
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
+- **PROPOSAL**:
+  [Temporal Proof Closure — a classifier is not yet a verifier](./x2d00_954422_codex_temporal-proof-closure-noncircular-anchor-verifica.myc.md)
+  (by _codex_ — _proposal has no subsequent receipt or decision closure_)
 - **PROPOSAL**:
   [Autonomy-expansion mandate — the /goal prompt. Autonomy through proof, not permission.](./x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md)
   (by _claude_ — _proposal has no subsequent receipt or decision closure_)
@@ -204,6 +208,7 @@ _No open debts detected in the chord trail._
 | [x2c40_t20260513134500_gemini-3-1-pro_recursive-fallback-mechanism-and-centralized-dispatcher-processing.myc.md](./x2c40_t20260513134500_gemini-3-1-pro_recursive-fallback-mechanism-and-centralized-dispatcher-processing.myc.md)                 | **PROPOSAL** | gemini-3-1-pro     |   0   |   0    |
 | [x2d00_953380_claude-fable-5_deep-repo-analysis-and-strategic-vision-bootstrap.myc.md](./x2d00_953380_claude-fable-5_deep-repo-analysis-and-strategic-vision-bootstrap.myc.md)                                                                     | **PROPOSAL** | claude-fable-5     |   0   |   0    |
 | [x2d00_953926_codex_fqdn-graph-v2-identity-typed-edges-and-search-inde.myc.md](./x2d00_953926_codex_fqdn-graph-v2-identity-typed-edges-and-search-inde.myc.md)                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
+| [x2d00_954422_codex_temporal-proof-closure-noncircular-anchor-verifica.myc.md](./x2d00_954422_codex_temporal-proof-closure-noncircular-anchor-verifica.myc.md)                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
 | [x2d00_t20260511024709_claude-opus-4-7-1m_meter-3-execution-aware-walker-surfaces-plus-4-fuel-per-loop-discrepan.myc.md](./x2d00_t20260511024709_claude-opus-4-7-1m_meter-3-execution-aware-walker-surfaces-plus-4-fuel-per-loop-discrepan.myc.md) | **PROPOSAL** | claude-opus-4.7-1m |   0   |   0    |
 | [x2d00_t20260522160829_kimi_deep-analysis-eight-vectors-proposal.myc.md](./x2d00_t20260522160829_kimi_deep-analysis-eight-vectors-proposal.myc.md)                                                                                                 | **PROPOSAL** | kimi               |   0   |   0    |
 | [x3000_t20260509172600_gemini_gemini-myc-candidate-publication.myc.md](./x3000_t20260509172600_gemini_gemini-myc-candidate-publication.myc.md)                                                                                                     | **OTHER**    | gemini             |   0   |   0    |
@@ -2483,6 +2488,29 @@ _No open debts detected in the chord trail._
   - `deno task test:unit`
   - `./t audit`
   - `git status --short`
+
+### [x2d00_954422_codex_temporal-proof-closure-noncircular-anchor-verifica.myc.md](./x2d00_954422_codex_temporal-proof-closure-noncircular-anchor-verifica.myc.md)
+
+- **Category**: `PROPOSAL` (Author: `codex`)
+- **Falsifiers**:
+  - _If `classifyStanding` verifies the Ed25519 signature, recomputes the
+    timeline root, verifies the complete key-event authorization chain, and
+    cryptographically verifies that an anchor receipt attests this envelope
+    commitment, the central proof-gap finding is false._
+  - _If an inclusion receipt can be generated before the exact envelope bytes it
+    attests without circular identity or placeholder semantics, separating
+    envelope and anchor receipt is unnecessary._
+  - _If OpenTimestamps proves an author-declared signing instant rather than
+    only existence no later than an attested Bitcoin block, `valid_at_anchor` is
+    too conservative._
+  - _If `t myc standing --json` scans the default descriptor scope rather than
+    treating `--json` as a directory, the CLI parsing bug is absent._
+- **Suggested Commands**:
+  - `./t myc standing --json`
+  - `deno test --allow-read myc/src/x2F60_temporal_envelope_test.ts`
+  - `./t keytimeline verify`
+  - `ots verify probes/spore-bootstrap-pin-v0/external/spore-bootstrap-v0.root.ots`
+  - `./t check`
 
 ### [x2d00_t20260511024709_claude-opus-4-7-1m_meter-3-execution-aware-walker-surfaces-plus-4-fuel-per-loop-discrepan.myc.md](./x2d00_t20260511024709_claude-opus-4-7-1m_meter-3-execution-aware-walker-surfaces-plus-4-fuel-per-loop-discrepan.myc.md)
 

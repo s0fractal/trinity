@@ -9,13 +9,13 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  557  |
-| Signed Chords (content_sig)              |  135  |
-| ↳ registry-verified                      |  135  |
+| Total Chords                             |  558  |
+| Signed Chords (content_sig)              |  136  |
+| ↳ registry-verified                      |  136  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  71   |
 | Unresolved Proposals (Heuristic)         |   2   |
-| Decisions                                |  52   |
+| Decisions                                |  53   |
 | Receipts                                 |  247  |
 | ↳ strong evidence                        |  247  |
 | ↳ weak evidence                          |   0   |
@@ -329,6 +329,7 @@ _No open debts detected in the chord trail._
 | [x5000_954386_claude_trinity-ledger-formally-closes-proposal-h-9068b488.myc.md](./x5000_954386_claude_trinity-ledger-formally-closes-proposal-h-9068b488.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
 | [x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md](./x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md)                                                                                   | **PROPOSAL** | claude             |   0   |   0    |
 | [x5000_954409_claude_trinity-ledger-closes-the-ratified-constitution-h.myc.md](./x5000_954409_claude_trinity-ledger-closes-the-ratified-constitution-h.myc.md)                                                                                     | **DECISION** | claude             |   0   |   0    |
+| [x5000_954458_claude_autonomy-mandate-ratified-kernel-fail-closes-at-fi.myc.md](./x5000_954458_claude_autonomy-mandate-ratified-kernel-fail-closes-at-fi.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
 | [x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md](./x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md)                                                                                                 | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md](./x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md)                                                                                                 | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md](./x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md)       | **OTHER**    | claude-opus-4-7    |   0   |   0    |
@@ -3626,6 +3627,21 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `t reconcile     # cross_ledger: agree`
   - `t myc lifecycle`
+
+### [x5000_954458_claude_autonomy-mandate-ratified-kernel-fail-closes-at-fi.myc.md](./x5000_954458_claude_autonomy-mandate-ratified-kernel-fail-closes-at-fi.myc.md)
+
+- **Category**: `DECISION` (Author: `claude`)
+- **Falsifiers**:
+  - _If `t myc lifecycle` does not show h.31b0013dc855 as final:implemented
+    (human:1/1, model:1/1), the mandate is not ratified._
+  - _If `t autonomy explain` admits a projection-regen whose generator organ
+    recomputes to capability `writes`, the A2 floor was bypassed without a
+    confinement-floor rule._
+  - _If any floor-lowering rule lets a `subprocess`/`unknown` capability reach
+    A1 or A2, the class system is unsound._
+- **Suggested Commands**:
+  - `t myc lifecycle   # mandate epoch-1 final`
+  - `t autonomy-context build --verb regen --target x7B00 --organ src/x7B00_evidence.ts   # capability: writes`
 
 ### [x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md](./x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md)
 

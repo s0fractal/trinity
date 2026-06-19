@@ -93,3 +93,15 @@ Deno.test("warrant — intent identity preserves input order, treats effects as 
       await intentCommitment({ ...base, input_commitments: ["b", "a"] }),
   );
 });
+
+Deno.test("warrant — pending_quorum is readiness 'pending', not 'stale' (codex P0.5)", () => {
+  const g = {
+    fqdn: "h.aaaa.proposal.myc.md",
+    commitment: "c",
+    action_grant: { intent_commitment: "deadbeef" },
+  };
+  const v = actionBoundAuthority("deadbeef", g, "evidence_verified");
+  assertEquals(v.reason_code, "pending_quorum");
+  assertEquals(v.readiness, "pending"); // evidence is current, just a signature short — never 'stale'
+  assert(!v.authorized);
+});

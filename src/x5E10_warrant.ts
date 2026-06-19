@@ -29,6 +29,7 @@ export type Readiness =
   | "fail"
   | "unavailable"
   | "stale"
+  | "pending"
   | "not_applicable";
 
 export type ReasonCode =
@@ -126,10 +127,12 @@ export function actionBoundAuthority(
     };
   }
   if (finalState !== TERMINAL_FINAL) {
+    // codex P0.5: evidence_verified is `pending` (current but a signature short),
+    // NOT `stale` (which means evidence for the wrong pre-state).
     const pending = finalState === "evidence_verified";
     return {
       authorized: false,
-      readiness: pending ? "stale" : "not_applicable",
+      readiness: pending ? "pending" : "not_applicable",
       reason_code: pending ? "pending_quorum" : "not_final",
       reason: `proposal is '${finalState}', not final:${TERMINAL_FINAL}`,
     };
@@ -166,36 +169,56 @@ export function actionBoundAuthority(
 }
 
 // ── CLI helpers (read-only) ─────────────────────────────────────────────────────
-/** Read a proposal descriptor by EXACT fqdn (codex §3 — never substring/prefix). */
+/** Read a proposal descriptor by EXACT fqdn (codex §3 — never substring/prefix).
+ *  RECOMPUTES the body commitment (codex P0.5 — never trust the written value): a
+ *  descriptor whose commitment does not bind its body, or whose fqdn does not match
+ *  its commitment, is rejected as no proposal at all. */
 async function readProposal(fqdn: string): Promise<ProposalDescriptor | null> {
   const path = join(ROOT, "myc", "public", "proposals", fqdn);
   try {
     const text = await Deno.readTextFile(path);
     const d = JSON.parse(text.match(/```json myc\s*\n([\s\S]*?)\n```/)![1]);
     if (d?.type !== "ProposedMutationDescriptor") return null;
+    const claimed = String(d.commitment?.value ?? "");
+    const recomputed = await sha256(stable(d.body ?? {}));
+    // commitment must bind the body, and the fqdn must derive from the commitment
+    if (!claimed || recomputed !== claimed) return null;
+    if (String(d.fqdn) !== `h.${claimed.slice(0, 12)}.proposal.myc.md`) {
+      return null;
+    }
+    if (String(d.fqdn) !== fqdn) return null; // exact identity, no aliasing
     return {
       fqdn: String(d.fqdn),
-      commitment: String(d.commitment?.value ?? ""),
+      commitment: claimed,
       action_grant: d.body?.action_grant,
     };
   } catch {
     return null;
   }
 }
-/** The proposal's finality STATE from the lifecycle — used only as an index. */
-async function finalState(fqdn: string): Promise<string | null> {
+/** The proposal's finality state + the verified commitment the lifecycle bound to
+ *  it — so the caller can join on the EXACT commitment, not a truncated label
+ *  (codex P0.5). The lifecycle is the deterministic-interpretation index; the
+ *  commitment is the fact it points at. */
+async function finalState(
+  fqdn: string,
+): Promise<{ state: string; key: string } | null> {
   const r = await runOrgan(join(ROOT, "t"), ["myc", "lifecycle", "--json"], {
     cwd: ROOT,
   });
   const o = (r.code === 0 ? extractOrganJson(r.stdout) : null) as
-    | { mutations?: Array<{ kind?: string; id?: string; state?: string }> }
+    | {
+      mutations?: Array<
+        { kind?: string; id?: string; state?: string; key?: string }
+      >;
+    }
     | null;
-  // exact match: the lifecycle id is the descriptor fqdn truncated to 26 chars
-  const key = fqdn.slice(0, 26);
+  const idKey = fqdn.slice(0, 26);
   const m = (o?.mutations ?? []).find((x) =>
-    x.kind === "proposal" && x.id === key
+    x.kind === "proposal" && x.id === idKey
   );
-  return m?.state ?? null;
+  if (!m || typeof m.state !== "string") return null;
+  return { state: m.state, key: String(m.key ?? "") };
 }
 
 async function runCli(args: string[] = Deno.args): Promise<void> {
@@ -229,14 +252,14 @@ async function runCli(args: string[] = Deno.args): Promise<void> {
   // `warrant authority <proposal>` — FINALITY DIAGNOSTIC only (codex: never emit
   // authorized:true without an intent; finality_satisfied ≠ action_authorized).
   if (sub === "authority" && fqdn) {
-    const state = await finalState(fqdn);
+    const fs = await finalState(fqdn);
     console.log(JSON.stringify(
       {
         type: "warrant_finality_diagnostic",
         position: "5/E1",
         proposal: fqdn,
-        finality_satisfied: state === TERMINAL_FINAL,
-        state,
+        finality_satisfied: fs?.state === TERMINAL_FINAL,
+        state: fs?.state ?? null,
         note:
           "finality_satisfied is NOT action_authorized — use `warrant admit <p> --intent` to test a concrete action",
       },
@@ -262,11 +285,17 @@ async function runCli(args: string[] = Deno.args): Promise<void> {
       Deno.exitCode = 1;
       return;
     }
-    const [descriptor, state, ic] = await Promise.all([
+    const [descriptor, fs, ic] = await Promise.all([
       readProposal(fqdn),
       finalState(fqdn),
       intentCommitment(intent),
     ]);
+    // EXACT commitment join (codex P0.5): trust the lifecycle's finality only when
+    // it is bound to this descriptor's recomputed commitment, never a truncated
+    // label. Any inconsistency drops finality to null → fail closed.
+    const state = descriptor && fs && descriptor.commitment === fs.key
+      ? fs.state
+      : null;
     const v = actionBoundAuthority(ic, descriptor, state);
     console.log(
       JSON.stringify({ type: "warrant", position: "5/E1", ...v }, null, 2),

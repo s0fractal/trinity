@@ -114,6 +114,19 @@ const PROOF_SEMANTICS: Record<
   },
 };
 
+/** Surfaces where an effect can run WITHOUT the proof-bearing loop having admitted
+ *  it — so a model is never misled into treating a raw backend call as authorized
+ *  autonomous action (codex x6d00_954417 P2: ungated backends, three-planes law). */
+const UNGATED_BACKENDS = [
+  {
+    action: "apply",
+    organ: "x5F00_apply.ts",
+    classification: "yes-with-care",
+    warning:
+      "ungated_backend — `t apply` executes the Liquid SPORE backend directly (--allow-all) with NO warrant admission, pre-state binding, or transaction confinement. It produces a receipt (the EVIDENCE step), it is NOT authorized actuation. Obtain authority via `t warrant admit <final-proposal> --intent`; do not call apply directly for a consequential effect until it is warrant-bound.",
+  },
+] as const;
+
 export interface Affordances {
   type: "affordances";
   position: "5/B";
@@ -128,6 +141,7 @@ export interface Affordances {
     proof?: string;
     consequence?: string;
   }>;
+  ungated_backends: typeof UNGATED_BACKENDS;
   undocumented: string[];
 }
 
@@ -165,6 +179,7 @@ export async function affordances(): Promise<Affordances> {
     proof_bearing_loop: PROOF_BEARING_LOOP,
     finality_policies: FINALITY_POLICIES,
     actions,
+    ungated_backends: UNGATED_BACKENDS,
     undocumented,
   };
 }
@@ -206,6 +221,12 @@ export async function runCli(args: string[] = Deno.args): Promise<void> {
         a.undocumented.join(", ")
       }`,
     );
+  }
+  if (a.ungated_backends.length) {
+    console.log("\n## ⛔ ungated backends (NOT authorized autonomous action)");
+    for (const u of a.ungated_backends) {
+      console.log(`  ${u.action} [${u.classification}] — ${u.warning}`);
+    }
   }
 }
 

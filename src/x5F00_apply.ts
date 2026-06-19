@@ -2,9 +2,17 @@
 // src/x5F00_apply.ts — apply (SPORE Primitive)
 // position: 5/F → action_frontier
 // maturity: active
-// skill_safe: yes
+// skill_safe: yes-with-care
 // hex_dipole: "26 26 40 33 40 6C 40 59"
 // placement_policy: axis
+//
+// UNGATED BACKEND (codex x6d00_954417 P2): this runs with --allow-all and executes
+// the Liquid SPORE backend DIRECTLY — with no warrant admission, pre-state binding,
+// or transaction confinement. It produces a receipt (the EVIDENCE step of the
+// proof-bearing loop), it is NOT authorized autonomous actuation. Until it is
+// warrant-bound (action_grant + final proposal + pre-state + rollback), it is
+// `yes-with-care`, surfaced as `ungated_backend` in affordances, and must never be
+// advertised as safe autonomous action.
 
 import { SporeApplyBackend } from "./x5F10_spore_apply_backend.ts";
 

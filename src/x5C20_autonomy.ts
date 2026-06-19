@@ -91,10 +91,22 @@ export interface MandateStanding {
   final_state: "implemented";
 }
 
+/** A ratified A1 write-attenuation verdict (codex x5d00_954460, FINAL human+model).
+ * "Preserve the fact, narrow the act": the capability stays `writes`/A2 in the
+ * evidence; this SEPARATE verdict — computed by the dormant-no-more verifier x5C70 —
+ * lets ONE confined transaction EXECUTE as A1. admit CONSUMES it (it does not compute
+ * it) and independently re-checks the floor before honoring it. */
+export interface AttenuationFact {
+  eligible: boolean;
+  execution_class: "A1";
+  attenuation_hash: string;
+}
+
 export interface AdmissionContext {
   anchor_verified: boolean;
   capability_evidence?: CapabilityEvidence;
   mandate_standing?: MandateStanding;
+  attenuation?: AttenuationFact;
 }
 
 // The effect taxonomy → the class each effect demands. The most-privileged effect
@@ -160,6 +172,26 @@ function maxClass(a: ActionClass, b: ActionClass): ActionClass {
   return ORDER[a] >= ORDER[b] ? a : b;
 }
 
+/** The class demanded by the intent's effects ALONE — no capability floor. Used to
+ * confirm that an A2 intrinsic class came from the `writes` FLOOR and not from a
+ * genuinely A2+ effect (e.g. source_change), which attenuation must never touch. */
+function effectsOnlyClass(
+  intent: AutonomyIntent,
+  evidence?: CapabilityEvidence,
+): ActionClass {
+  let cls: ActionClass = "A0";
+  for (
+    const e of [
+      ...(intent.effects ?? []),
+      ...(evidence?.semantic_effects ?? []),
+    ]
+  ) {
+    const ec = EFFECT_CLASS[e] ?? "A4";
+    if (ORDER[ec] > ORDER[cls]) cls = ec;
+  }
+  return cls;
+}
+
 /** The class of an intent — the MOST-PRIVILEGED of its effects; an unknown effect
  *  is A4 (fail-closed: the kernel never guesses a privilege down). An intent with
  *  no effects is A0 (pure observation). */
@@ -208,7 +240,10 @@ export type ReasonCode =
 
 export interface AdmitVerdict {
   admitted: boolean;
-  cls: ActionClass;
+  cls: ActionClass; // the EXECUTION class (A1 when attenuated)
+  intrinsic_class?: ActionClass; // the unattenuated class (A2 for a writes generator)
+  attenuated?: boolean; // true iff a ratified attenuation lowered the execution class
+  attenuation_hash?: string | null; // bound into the warrant when attenuated
   profile_id: string | null;
   reason_code: ReasonCode;
   reason: string;
@@ -230,9 +265,28 @@ export function admit(
   context: AdmissionContext = { anchor_verified: false },
 ): AdmitVerdict {
   const evidence = context.capability_evidence;
-  const { cls } = classifyIntent(intent, evidence);
+  const intrinsicCls = classifyIntent(intent, evidence).cls;
+
+  // Attenuation (codex x5d00_954460, ratified): a `writes`-FLOORED A2 may EXECUTE as
+  // A1 inside one confined transaction. admit re-checks the floor independently — the
+  // capability must be EXACTLY `writes` and the effects alone must be <= A1 — so a
+  // genuinely A2+ effect (source_change) and every network/subprocess/unknown
+  // capability are categorically un-attenuable here too, not just in the verifier.
+  const att = context.attenuation;
+  const attenuable = intrinsicCls === "A2" &&
+    evidence?.capability === "writes" &&
+    ORDER[effectsOnlyClass(intent, evidence)] <= ORDER["A1"];
+  const attenuated = !!(
+    attenuable && att?.eligible && att.execution_class === "A1" &&
+    att.attenuation_hash
+  );
+  const cls: ActionClass = attenuated ? "A1" : intrinsicCls;
+
   const base = {
     cls,
+    intrinsic_class: intrinsicCls,
+    attenuated,
+    attenuation_hash: attenuated ? att!.attenuation_hash : null,
     profile_id: null,
     mandate_commitment: context.mandate_standing?.mandate_commitment ?? null,
     effect_verdict_hash: evidence?.verdict_hash ?? null,
@@ -349,11 +403,15 @@ export function admit(
     }
     return {
       cls,
+      intrinsic_class: intrinsicCls,
+      attenuated,
+      attenuation_hash: attenuated ? att!.attenuation_hash : null,
       profile_id: p.id,
       admitted: true,
       reason_code: "admitted",
-      reason:
-        `authorized by profile ${p.id} under mandate ${mandate.mandate_id}`,
+      reason: attenuated
+        ? `authorized by profile ${p.id} (writes attenuated to A1) under mandate ${mandate.mandate_id}`
+        : `authorized by profile ${p.id} under mandate ${mandate.mandate_id}`,
       mandate_commitment: standing.mandate_commitment,
       effect_verdict_hash: evidence.verdict_hash,
     };

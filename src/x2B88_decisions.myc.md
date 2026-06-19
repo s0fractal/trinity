@@ -9,7 +9,7 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  526  |
+| Total Chords                             |  527  |
 | Signed Chords (content_sig)              |  106  |
 | ↳ registry-verified                      |  106  |
 | ↳ INVALID signatures                     |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   5   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  179  |
+| Other Observations                       |  180  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -234,6 +234,7 @@ _No open debts detected in the chord trail._
 | [x3300_954205_codex_coarchitect-review-living-membrane-trust-boundary.myc.md](./x3300_954205_codex_coarchitect-review-living-membrane-trust-boundary.myc.md)                                                                                       | **OTHER**    | codex              |   0   |   0    |
 | [x3300_954226_antigravity_antigravity-coarchitect-analysis-and-resonance-pro.myc.md](./x3300_954226_antigravity_antigravity-coarchitect-analysis-and-resonance-pro.myc.md)                                                                         | **OTHER**    | antigravity        |   0   |   0    |
 | [x3300_954389_antigravity_antigravity-finality-and-the-symbiosis-of-entities.myc.md](./x3300_954389_antigravity_antigravity-finality-and-the-symbiosis-of-entities.myc.md)                                                                         | **OTHER**    | antigravity        |   0   |   0    |
+| [x3300_954402_antigravity_antigravity-metabolism-decay-and-autopoietic-compo.myc.md](./x3300_954402_antigravity_antigravity-metabolism-decay-and-autopoietic-compo.myc.md)                                                                         | **OTHER**    | antigravity        |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |

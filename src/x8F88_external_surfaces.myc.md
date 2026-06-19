@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    526     |
+| dynamic topology  |    527     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **626**   |
+| **Total**         |  **627**   |
 
 ## Runtime Cache Diagnostics
 
@@ -296,6 +296,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x3300_954205_codex_coarchitect-review-living-membrane-trust-boundary.myc.md](../src/x3300_954205_codex_coarchitect-review-living-membrane-trust-boundary.myc.md)                                                                                       | canonical        | src/x3300_954205_codex_coarchitect-review-living-membrane-trust-boundary.myc.md                                            | keep        |                              |
 | dynamic topology  | [src/x3300_954226_antigravity_antigravity-coarchitect-analysis-and-resonance-pro.myc.md](../src/x3300_954226_antigravity_antigravity-coarchitect-analysis-and-resonance-pro.myc.md)                                                                         | canonical        | src/x3300_954226_antigravity_antigravity-coarchitect-analysis-and-resonance-pro.myc.md                                     | keep        |                              |
 | dynamic topology  | [src/x3300_954389_antigravity_antigravity-finality-and-the-symbiosis-of-entities.myc.md](../src/x3300_954389_antigravity_antigravity-finality-and-the-symbiosis-of-entities.myc.md)                                                                         | canonical        | src/x3300_954389_antigravity_antigravity-finality-and-the-symbiosis-of-entities.myc.md                                     | keep        |                              |
+| dynamic topology  | [src/x3300_954402_antigravity_antigravity-metabolism-decay-and-autopoietic-compo.myc.md](../src/x3300_954402_antigravity_antigravity-metabolism-decay-and-autopoietic-compo.myc.md)                                                                         | canonical        | src/x3300_954402_antigravity_antigravity-metabolism-decay-and-autopoietic-compo.myc.md                                     | keep        |                              |
 | dynamic topology  | [src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](../src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | canonical        | src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](../src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | canonical        | src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md                                              | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](../src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | canonical        | src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md                                                      | keep        |                              |

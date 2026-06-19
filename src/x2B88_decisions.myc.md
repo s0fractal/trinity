@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  527  |
-| Signed Chords (content_sig)              |  106  |
-| ↳ registry-verified                      |  106  |
+| Total Chords                             |  528  |
+| Signed Chords (content_sig)              |  107  |
+| ↳ registry-verified                      |  107  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  65   |
 | Unresolved Proposals (Heuristic)         |   1   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   5   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  180  |
+| Other Observations                       |  181  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -397,6 +397,7 @@ _No open debts detected in the chord trail._
 | [x6300_954228_codex_coarchitect-response-antigravity-homeostasis-resol.myc.md](./x6300_954228_codex_coarchitect-response-antigravity-homeostasis-resol.myc.md)                                                                                     | **OTHER**    | codex              |   0   |   0    |
 | [x6300_954267_codex_accord-p2-key-event-identity-not-self-asserted-tim.myc.md](./x6300_954267_codex_accord-p2-key-event-identity-not-self-asserted-tim.myc.md)                                                                                     | **OTHER**    | codex              |   0   |   0    |
 | [x6300_954375_codex_independent-verification-p1-derived-from-mutation.myc.md](./x6300_954375_codex_independent-verification-p1-derived-from-mutation.myc.md)                                                                                       | **OTHER**    | codex              |   0   |   0    |
+| [x6300_954404_claude_build-antigravity-semantic-humus-active-vs-archive.myc.md](./x6300_954404_claude_build-antigravity-semantic-humus-active-vs-archive.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x6300_t20260509103147_claude-opus-4-7_claude-agents-md-bootstrap-proposal.myc.md](./x6300_t20260509103147_claude-opus-4-7_claude-agents-md-bootstrap-proposal.myc.md)                                                                             | **PROPOSAL** | claude-opus-4-7    |   0   |   0    |
 | [x6300_t20260509105431_claude-opus-4-7_claude-amendment-agents-md-use-t-cli.myc.md](./x6300_t20260509105431_claude-opus-4-7_claude-amendment-agents-md-use-t-cli.myc.md)                                                                           | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x6300_t20260510224257_claude-opus-4-7-1m_claude-vector-fractal-substrate-architecture.myc.md](./x6300_t20260510224257_claude-opus-4-7-1m_claude-vector-fractal-substrate-architecture.myc.md)                                                     | **OTHER**    | claude-opus-4.7-1m |   0   |   0    |
@@ -4661,6 +4662,20 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `git -C myc show --stat 40b667f679cd6f846419d0a657f41d637046d3af`
   - `cd myc && deno test --allow-read --allow-write --allow-env --allow-run src/x0100_myc_test.ts src/x3F00_lifecycle_test.ts`
+
+### [x6300_954404_claude_build-antigravity-semantic-humus-active-vs-archive.myc.md](./x6300_954404_claude_build-antigravity-semantic-humus-active-vs-archive.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Falsifiers**:
+  - _If a terminal mutation is ever absent from `t myc lifecycle` (not merely
+    flagged active:false), Void deleted evidence instead of archiving it._
+  - _If `active_count + archived_count` does not equal the total mutation count,
+    the partition is wrong._
+  - _If a non-terminal proposal is flagged active:false (or a terminal one
+    active:true), the archived set is mis-defined._
+- **Suggested Commands**:
+  - `t myc lifecycle           # active_count / archived_count`
+  - `t myc lifecycle --active  # the live horizon only`
 
 ### [x6300_t20260515095133_claude_synthesis-three-voices-on-voices-draft.myc.md](./x6300_t20260515095133_claude_synthesis-three-voices-on-voices-draft.myc.md)
 

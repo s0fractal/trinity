@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  520  |
-| Signed Chords (content_sig)              |  100  |
-| ↳ registry-verified                      |  100  |
+| Total Chords                             |  521  |
+| Signed Chords (content_sig)              |  101  |
+| ↳ registry-verified                      |  101  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  64   |
 | Unresolved Proposals (Heuristic)         |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   4   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  177  |
+| Other Observations                       |  178  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -326,6 +326,7 @@ _No open debts detected in the chord trail._
 | [x5000_t20260523132237_codex_next-implementation-vector-after-beta.myc.md](./x5000_t20260523132237_codex_next-implementation-vector-after-beta.myc.md)                                                                                             | **OTHER**    | codex              |   0   |   0    |
 | [x5160_t20260513065000_claude-opus-4-7-1m_actionable-forgotten-assets-from-kairos-consciousness-applicable-to-tr.myc.md](./x5160_t20260513065000_claude-opus-4-7-1m_actionable-forgotten-assets-from-kairos-consciousness-applicable-to-tr.myc.md) | **OTHER**    | claude-opus-4-7-1m |   0   |   0    |
 | [x5300_954212_claude_efferent-half-opens-dormant-propose-into-the-membr.myc.md](./x5300_954212_claude_efferent-half-opens-dormant-propose-into-the-membr.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
+| [x5300_954396_claude_the-membrane-governs-its-own-constitution-first-mo.myc.md](./x5300_954396_claude_the-membrane-governs-its-own-constitution-first-mo.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x5300_t20260509161725_claude-opus-4-7_claude-liquid-as-friston-substrate.myc.md](./x5300_t20260509161725_claude-opus-4-7_claude-liquid-as-friston-substrate.myc.md)                                                                               | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md](./x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md) | **OTHER**    | claude-opus-4-7-1m |   0   |   0    |
 | [x5600_t20260509091900_claude-opus-4-7_claude-action-canon-vectors-pass.myc.md](./x5600_t20260509091900_claude-opus-4-7_claude-action-canon-vectors-pass.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
@@ -3647,6 +3648,21 @@ _No open debts detected in the chord trail._
   - `t myc lifecycle    # the proposal shows as 'proposed' (dormant)`
   - `t myc membrane     # one surface; proposed:1`
   - `cd myc && deno task check`
+
+### [x5300_954396_claude_the-membrane-governs-its-own-constitution-first-mo.myc.md](./x5300_954396_claude_the-membrane-governs-its-own-constitution-first-mo.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Falsifiers**:
+  - _If `t myc lifecycle` does not show proposal h.84f9442519c6 as a dormant
+    proposal, the constitution proposal was not actually entered into the
+    membrane._
+  - _If this proposal is ever made final by models alone, the very rule it
+    proposes was violated in its own ratification._
+  - _If proposing (a dormant descriptor) is treated as building, the
+    USE-not-build distinction collapsed._
+- **Suggested Commands**:
+  - `t myc lifecycle`
+  - `t myc show h.84f9442519c6.proposal.myc.md`
 
 ### [x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md](./x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md)
 

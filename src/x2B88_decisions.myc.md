@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  538  |
-| Signed Chords (content_sig)              |  116  |
-| ↳ registry-verified                      |  116  |
+| Total Chords                             |  539  |
+| Signed Chords (content_sig)              |  117  |
+| ↳ registry-verified                      |  117  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  68   |
-| Unresolved Proposals (Heuristic)         |   2   |
+| Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  50   |
-| Receipts                                 |  233  |
-| ↳ strong evidence                        |  233  |
+| Receipts                                 |  234  |
+| ↳ strong evidence                        |  234  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   5   |
@@ -39,7 +39,6 @@ first item without writing files.
 | Stance    | Chord                                                                                                                                                            | Risks |
 | :-------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
 | candidate | [x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md](./x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md) | none  |
-| candidate | [x6d00_954417_codex_antigravity-review-temporal-trust-derived-metaboli.myc.md](./x6d00_954417_codex_antigravity-review-temporal-trust-derived-metaboli.myc.md)   | none  |
 
 ## Unresolved Items (Heuristic Accountability)
 
@@ -49,9 +48,6 @@ decisions or receipts referencing them._
 - **PROPOSAL**:
   [Autonomy-expansion mandate — the /goal prompt. Autonomy through proof, not permission.](./x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md)
   (by _claude_ — _proposal has no subsequent receipt or decision closure_)
-- **PROPOSAL**:
-  [Antigravity review: temporal sovereignty without metabolic authority drift](./x6d00_954417_codex_antigravity-review-temporal-trust-derived-metaboli.myc.md)
-  (by _codex_ — _proposal has no subsequent receipt or decision closure_)
 
 ## Invalid Closures
 
@@ -374,6 +370,7 @@ _No open debts detected in the chord trail._
 | [x5700_954412_claude_build-actuation-warrant-authority-root-first-slice.myc.md](./x5700_954412_claude_build-actuation-warrant-authority-root-first-slice.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x5700_954414_claude_repair-action-bound-authority-terminal-state-is-no.myc.md](./x5700_954414_claude_repair-action-bound-authority-terminal-state-is-no.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x5700_954415_claude_propose-side-action-grant-closes-the-mint-authoriz.myc.md](./x5700_954415_claude_propose-side-action-grant-closes-the-mint-authoriz.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x5700_954419_claude_execute-codex-tactical-order-apply-classification.myc.md](./x5700_954419_claude_execute-codex-tactical-order-apply-classification.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md](./x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md)                                                                                                 | **RECEIPT**  | gemini-3.1-pro     |   0   |   0    |
 | [x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md](./x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md)                                                                                 | **RECEIPT**  | gemini-3.1-pro     |   0   |   0    |
 | [x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md](./x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md)                                                                             | **RECEIPT**  | claude             |   0   |   0    |
@@ -4218,6 +4215,21 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `t warrant intent <intent.json>                         # the canonical intent_commitment`
   - `t myc propose --text ... --requires spore --action-grant <commitment>`
+
+### [x5700_954419_claude_execute-codex-tactical-order-apply-classification.myc.md](./x5700_954419_claude_execute-codex-tactical-order-apply-classification.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _If `t affordances` does not surface `apply` as an ungated_backend, or apply
+    is still classified skill_safe:yes, tactical #1 is not done._
+  - _If `t warrant admit` trusts a descriptor's written commitment without
+    recomputing sha256(stable(body)), or joins finality on a truncated label
+    rather than the exact commitment, P0.5 regressed._
+  - _If pending_quorum is again readiness `stale`, codex's distinction
+    (current-but-incomplete ≠ wrong-pre-state) was lost._
+- **Suggested Commands**:
+  - `t affordances        # ⛔ ungated backends section`
+  - `t warrant admit <final-proposal> --intent <intent.json>`
 
 ### [x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md](./x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md)
 

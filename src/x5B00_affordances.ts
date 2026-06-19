@@ -38,9 +38,11 @@ const PROOF_BEARING_LOOP = [
   },
   {
     step: 3,
-    action: "resolve-proposal --evidence-ref <kind:ref:commitment>",
+    action:
+      "resolve-proposal --from-receipt <path>  (or --evidence-ref kind:ref:commitment)",
     proof: "structured evidence_refs that RESOLVE (presence is never proof)",
-    note: "binds to the proposal's commitment; free text is not evidence",
+    note:
+      "--from-receipt derives the canonical ref FROM the proof, so you cannot mistype the commitment; binds to the proposal's commitment",
   },
   {
     step: 4,

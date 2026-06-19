@@ -26,7 +26,7 @@ export interface Anchor {
 }
 
 export interface Budgets {
-  max_output_bytes?: number;
+  max_bytes?: number;
   max_seconds?: number;
   max_actions?: number;
 }

@@ -65,7 +65,9 @@ A ratified mandate (see the `AutonomyMandate` / `ActionProfile` types in
 `src/x5C20_autonomy.ts`) carries: `mandate_id`, the `constitution_commitment` it
 binds to, `issued_by`, `valid_from`/`valid_until` anchors, a list of
 `action_profiles` (`class`, `verbs`, `targets`, `effect_ceiling`, A3
-`destinations`, `rate_limit`, `rollback`), and `global_budgets`.
+`destinations`, `rate_limit`, `rollback`), and `global_budgets`. The canonical
+byte-budget field is `global_budgets.max_bytes` (with `max_seconds` and
+`max_actions`); alternate aliases are not authority.
 
 The mandate is itself a **core autonomy-control mutation** and therefore
 requires the already-ratified `finality_policy.classes {human:1, model:1}`

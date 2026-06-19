@@ -89,6 +89,12 @@ export interface ConfinementObservation {
 }
 
 export type ViolationKind =
+  | "commitment_mismatch"
+  | "duplicate_path"
+  | "noncanonical_path"
+  | "pre_state_set_mismatch"
+  | "post_state_set_mismatch"
+  | "invalid_budget"
   | "write_outside_set"
   | "stale_pre_state"
   | "gate_failed"
@@ -98,6 +104,80 @@ export type ViolationKind =
 export interface ConfinementVerdict {
   confined: boolean;
   violations: { kind: ViolationKind; detail: string }[];
+}
+
+function duplicates(values: string[]): string[] {
+  const seen = new Set<string>();
+  return values.filter((v) => seen.has(v) || !seen.add(v));
+}
+
+/** A receipt path is a canonical repository-relative token. Realpath/symlink
+ * containment is an execution-time check; this lexical check prevents obvious
+ * aliasing before an executor touches the filesystem. */
+export function canonicalReceiptPath(path: string): boolean {
+  if (
+    !path || path.startsWith("/") || path.includes("\\") || path.includes("//")
+  ) {
+    return false;
+  }
+  const parts = path.split("/");
+  return parts.every((p) => p !== "" && p !== "." && p !== "..");
+}
+
+function sameSet(a: string[], b: string[]): boolean {
+  if (a.length !== b.length) return false;
+  const bs = new Set(b);
+  return a.every((v) => bs.has(v));
+}
+
+/** Verify the receipt itself before considering an observation. This is the
+ * pre-execution half of confinement: commitment, exact pre-state/write-set
+ * correspondence, canonical paths and finite positive budgets. */
+export async function verifyConfinementReceipt(
+  receipt: A1ConfinementReceipt,
+): Promise<ConfinementVerdict> {
+  const violations: ConfinementVerdict["violations"] = [];
+  const rebuilt = await buildConfinement(receipt);
+  if (rebuilt.commitment !== receipt.commitment) {
+    violations.push({
+      kind: "commitment_mismatch",
+      detail: "receipt body does not match its commitment",
+    });
+  }
+  const allowed = receipt.allowed_write_set;
+  const prePaths = receipt.pre_state.map((f) => f.path);
+  for (const path of [...allowed, ...prePaths]) {
+    if (!canonicalReceiptPath(path)) {
+      violations.push({
+        kind: "noncanonical_path",
+        detail: `${path} is not a canonical repository-relative path`,
+      });
+    }
+  }
+  for (const path of [...duplicates(allowed), ...duplicates(prePaths)]) {
+    violations.push({
+      kind: "duplicate_path",
+      detail: `${path} occurs more than once in the confinement receipt`,
+    });
+  }
+  if (!sameSet(allowed, prePaths)) {
+    violations.push({
+      kind: "pre_state_set_mismatch",
+      detail: "pre_state must bind exactly every path in allowed_write_set",
+    });
+  }
+  if (
+    !Number.isFinite(receipt.output_budget.max_bytes) ||
+    receipt.output_budget.max_bytes <= 0 ||
+    !Number.isFinite(receipt.output_budget.max_seconds) ||
+    receipt.output_budget.max_seconds <= 0
+  ) {
+    violations.push({
+      kind: "invalid_budget",
+      detail: "output budgets must be finite positive numbers",
+    });
+  }
+  return { confined: violations.length === 0, violations };
 }
 
 /** Verify an observation against the receipt. Fail-closed: every required gate must
@@ -114,6 +194,13 @@ export function verifyConfinement(
   // pre-state must be exactly what the receipt minted against.
   const preByPath = new Map(receipt.pre_state.map((f) => [f.path, f.hash]));
   const curByPath = new Map(currentPreState.map((f) => [f.path, f.hash]));
+  if (!sameSet([...preByPath.keys()], [...curByPath.keys()])) {
+    violations.push({
+      kind: "pre_state_set_mismatch",
+      detail:
+        "current pre-state must contain exactly the receipt pre-state paths",
+    });
+  }
   for (const [path, hash] of preByPath) {
     if (curByPath.get(path) !== hash) {
       violations.push({
@@ -132,6 +219,14 @@ export function verifyConfinement(
         detail: `${p} is not in the allowed write-set`,
       });
     }
+  }
+
+  const postPaths = obs.post_state.map((f) => f.path);
+  if (!sameSet(receipt.allowed_write_set, postPaths)) {
+    violations.push({
+      kind: "post_state_set_mismatch",
+      detail: "post_state must report exactly every allowed write path",
+    });
   }
 
   // every required gate must be present and pass.

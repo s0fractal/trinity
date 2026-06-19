@@ -71,3 +71,20 @@ Deno.test("probe — RED TEAM: a failed gate is not confined", async () => {
   assert(!r.verdict?.confined);
   assert(r.verdict?.violations.some((v) => v.kind === "gate_failed"));
 });
+
+Deno.test("probe — RED TEAM: a tampered receipt is rejected before generator execution", async () => {
+  const tampered = await receipt();
+  tampered.allowed_write_set.push("src/secret.ts");
+  let calls = 0;
+  const r = await probe(tampered, {
+    runner: (..._args) => {
+      calls++;
+      return Promise.resolve({ code: 0, out: "", err: "" });
+    },
+  });
+  assertEquals(r.ran, false);
+  assertEquals(calls, 0);
+  assert(
+    r.verdict?.violations.some((v) => v.kind === "commitment_mismatch"),
+  );
+});

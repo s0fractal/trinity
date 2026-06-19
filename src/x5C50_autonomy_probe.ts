@@ -22,6 +22,7 @@ import {
   type ConfinementVerdict,
   type FileState,
   verifyConfinement,
+  verifyConfinementReceipt,
 } from "./x5C40_autonomy_confinement.ts";
 
 const ROOT = dirname(dirname(fromFileUrl(import.meta.url)));
@@ -77,6 +78,15 @@ export async function probe(
   receipt: A1ConfinementReceipt,
   opts: { runner?: typeof run; tmpName?: string } = {},
 ): Promise<ProbeResult> {
+  const receiptVerdict = await verifyConfinementReceipt(receipt);
+  if (!receiptVerdict.confined) {
+    return {
+      ran: false,
+      verdict: receiptVerdict,
+      worktree_cleaned: true,
+      reason: "confinement receipt failed pre-execution verification",
+    };
+  }
   const exec = opts.runner ?? run;
   const wt = join(ROOT, ".autonomy-probe", opts.tmpName ?? crypto.randomUUID());
   let made = false;

@@ -7,6 +7,7 @@ import {
   type ConfinementObservation,
   type FileState,
   verifyConfinement,
+  verifyConfinementReceipt,
 } from "./x5C40_autonomy_confinement.ts";
 
 const PRE: FileState[] = [{ path: "x7B88.md", hash: "sha256:aaa" }];
@@ -84,4 +85,45 @@ Deno.test("confinement — the receipt commitment binds the write-set (tamper �
     allowed_write_set: ["x7B88.md", "evil.ts"],
   });
   assert(a.commitment !== b.commitment);
+});
+
+Deno.test("confinement receipt — tampering is rejected, not merely hash-distinct", async () => {
+  const r = await receipt();
+  r.allowed_write_set = ["x7B88.md", "src/secret.ts"];
+  const v = await verifyConfinementReceipt(r);
+  assert(!v.confined);
+  assert(v.violations.some((x) => x.kind === "commitment_mismatch"));
+  assert(v.violations.some((x) => x.kind === "pre_state_set_mismatch"));
+});
+
+Deno.test("confinement receipt — duplicate, aliasing and invalid budgets fail closed", async () => {
+  const r = await buildConfinement({
+    action_profile: "projections",
+    verb: "regen-projection",
+    target: "x7B88",
+    pre_state: [
+      { path: "src/../secret.ts", hash: null },
+      { path: "src/../secret.ts", hash: null },
+    ],
+    allowed_write_set: ["src/../secret.ts", "src/../secret.ts"],
+    generator: "t evidence --stable",
+    required_gates: ["fmt"],
+    rollback: "git checkout -- <write-set>",
+    output_budget: { max_bytes: Number.POSITIVE_INFINITY, max_seconds: 0 },
+  });
+  const v = await verifyConfinementReceipt(r);
+  assert(!v.confined);
+  assert(v.violations.some((x) => x.kind === "duplicate_path"));
+  assert(v.violations.some((x) => x.kind === "noncanonical_path"));
+  assert(v.violations.some((x) => x.kind === "invalid_budget"));
+});
+
+Deno.test("confinement observation — incomplete post-state fails closed", async () => {
+  const v = verifyConfinement(
+    await receipt(),
+    { ...okObs, post_state: [] },
+    PRE,
+  );
+  assert(!v.confined);
+  assert(v.violations.some((x) => x.kind === "post_state_set_mismatch"));
 });

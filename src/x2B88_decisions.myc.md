@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  558  |
-| Signed Chords (content_sig)              |  136  |
-| ↳ registry-verified                      |  136  |
+| Total Chords                             |  560  |
+| Signed Chords (content_sig)              |  138  |
+| ↳ registry-verified                      |  138  |
 | ↳ INVALID signatures                     |   0   |
-| Proposals                                |  71   |
+| Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  53   |
-| Receipts                                 |  247  |
-| ↳ strong evidence                        |  247  |
+| Receipts                                 |  248  |
+| ↳ strong evidence                        |  248  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   5   |
@@ -39,7 +39,7 @@ first item without writing files.
 | Stance    | Chord                                                                                                                                                            | Risks |
 | :-------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
 | candidate | [x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md](./x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md) | none  |
-| candidate | [x5d00_954456_claude_autonomy-mandate-epoch-1-conservative-a0-observe-a.myc.md](./x5d00_954456_claude_autonomy-mandate-epoch-1-conservative-a0-observe-a.myc.md) | none  |
+| candidate | [x5d00_954460_codex_a1-write-capability-attenuation-v1.myc.md](./x5d00_954460_codex_a1-write-capability-attenuation-v1.myc.md)                                   | none  |
 
 ## Unresolved Items (Heuristic Accountability)
 
@@ -50,8 +50,8 @@ decisions or receipts referencing them._
   [Autonomy-expansion mandate — the /goal prompt. Autonomy through proof, not permission.](./x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md)
   (by _claude_ — _proposal has no subsequent receipt or decision closure_)
 - **PROPOSAL**:
-  [Autonomy Mandate epoch-1 — conservative, for human+model ratification](./x5d00_954456_claude_autonomy-mandate-epoch-1-conservative-a0-observe-a.myc.md)
-  (by _claude_ — _proposal has no subsequent receipt or decision closure_)
+  [A1 write capability attenuation v1 — preserve the fact, narrow the act](./x5d00_954460_codex_a1-write-capability-attenuation-v1.myc.md)
+  (by _codex_ — _proposal has no subsequent receipt or decision closure_)
 
 ## Invalid Closures
 
@@ -402,6 +402,7 @@ _No open debts detected in the chord trail._
 | [x5d00_954412_codex_action-bound-authority-before-actuation.myc.md](./x5d00_954412_codex_action-bound-authority-before-actuation.myc.md)                                                                                                           | **PROPOSAL** | codex              |   0   |   0    |
 | [x5d00_954447_codex_delegated-autonomy-kernel-human-by-exception.myc.md](./x5d00_954447_codex_delegated-autonomy-kernel-human-by-exception.myc.md)                                                                                                 | **PROPOSAL** | codex              |   0   |   0    |
 | [x5d00_954456_claude_autonomy-mandate-epoch-1-conservative-a0-observe-a.myc.md](./x5d00_954456_claude_autonomy-mandate-epoch-1-conservative-a0-observe-a.myc.md)                                                                                   | **PROPOSAL** | claude             |   0   |   0    |
+| [x5d00_954460_codex_a1-write-capability-attenuation-v1.myc.md](./x5d00_954460_codex_a1-write-capability-attenuation-v1.myc.md)                                                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
 | [x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md](./x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md)                                                                       | **PROPOSAL** | claude-opus-4.7-1m |   0   |   0    |
 | [x5d00_t20260512001608_claude-opus-4-7_spore-v0-format-freeze-gate-before-liquid-or-other-consumer-migration.myc.md](./x5d00_t20260512001608_claude-opus-4-7_spore-v0-format-freeze-gate-before-liquid-or-other-consumer-migration.myc.md)         | **PROPOSAL** | claude-opus-4-7    |   0   |   0    |
 | [x5d00_t20260512023530_codex-gpt-5_ecosystem-next-development-mode-freeze-then-bridge.myc.md](./x5d00_t20260512023530_codex-gpt-5_ecosystem-next-development-mode-freeze-then-bridge.myc.md)                                                       | **PROPOSAL** | codex-gpt-5        |   0   |   0    |
@@ -608,6 +609,7 @@ _No open debts detected in the chord trail._
 | [x7700_954444_claude_first-bitcoin-temporal-anchor-codex-envelope-times.myc.md](./x7700_954444_claude_first-bitcoin-temporal-anchor-codex-envelope-times.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_954451_codex_autonomy-p0-5-evidence-standing-boundary.myc.md](./x7700_954451_codex_autonomy-p0-5-evidence-standing-boundary.myc.md)                                                                                                         | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_954454_claude_autonomy-kernel-foundation-complete-five-links-pur.myc.md](./x7700_954454_claude_autonomy-kernel-foundation-complete-five-links-pur.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
+| [x7700_954460_codex_autonomy-epoch-1-cross-ledger-finality-witness.myc.md](./x7700_954460_codex_autonomy-epoch-1-cross-ledger-finality-witness.myc.md)                                                                                             | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -4715,6 +4717,26 @@ _No open debts detected in the chord trail._
   - `t autonomy budget --mandate contracts/mandates/epoch-1.mandate.json`
   - `t myc lifecycle`
 
+### [x5d00_954460_codex_a1-write-capability-attenuation-v1.myc.md](./x5d00_954460_codex_a1-write-capability-attenuation-v1.myc.md)
+
+- **Category**: `PROPOSAL` (Author: `codex`)
+- **Falsifiers**:
+  - _If the rule rewrites the observed capability from writes to A1 instead of
+    preserving it and attaching a separately verified attenuation verdict, audit
+    history is being falsified._
+  - _If git, network, subprocess, unknown, unresolved imports, symlink escape,
+    an unbound generator or an unverified receipt can enter the A1 exception,
+    the rule is unsound._
+  - _If the allowed write-set is not exactly the canonical projection path
+    selected by the matched ratified profile target, the exception is broader
+    than epoch-1._
+  - _If an executor can act before this core admission rule itself reaches
+    human:1 + model:1 finality, constitutional recursion was bypassed._
+- **Suggested Commands**:
+  - `t myc lifecycle`
+  - `deno test --allow-all src/autonomy_confinement_test.ts src/autonomy_probe_test.ts`
+  - `t reconcile`
+
 ### [x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md](./x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md)
 
 - **Category**: `PROPOSAL` (Author: `claude-opus-4.7-1m`)
@@ -7399,6 +7421,18 @@ _No open debts detected in the chord trail._
   - `t autonomy-context build --verb <v> --target <t> --organ <file>`
   - `t confinement build --profile <p> --verb <v> --target <t> --generator <cmd> --write-set <a,b>`
   - `t autonomy-probe <receipt.json>`
+
+### [x7700_954460_codex_autonomy-epoch-1-cross-ledger-finality-witness.myc.md](./x7700_954460_codex_autonomy-epoch-1-cross-ledger-finality-witness.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Falsifiers**:
+  - _If `t myc lifecycle` does not report h.31b0013dc855 final:implemented with
+    human:1/1 and model:1/1, this cross-ledger witness is false._
+  - _If the committed epoch-1 mandate body differs from the proposal resolved by
+    h.31b0013dc855, this receipt must not close the Trinity proposal._
+- **Suggested Commands**:
+  - `t myc lifecycle`
+  - `t reconcile`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

@@ -906,11 +906,12 @@ async function main() {
       "SPORE Runtime Execution",
       "MYC x9 Shadow Parity",
       "AI Voice Citizenship & Daemon",
-      // substrate health embeds the LIVE overall status (healthy/degraded),
-      // which is network-dependent: CI under DNS restriction reports degraded
-      // while a connected machine reports healthy. A stable report must not bake
-      // that in — codex's point that environment-unavailable ≠ a status value.
+      // both of these embed the LIVE overall status (healthy/degraded), which is
+      // network-dependent: CI under DNS restriction reports degraded while a
+      // connected machine reports healthy. A stable report must not bake that in —
+      // codex's point that environment-unavailable ≠ a status value.
       "Substrate Health Check",
+      "Substrate Self-Description ABI (x2E/x8D/x8E)",
     ]);
     for (const c of claims_matrix) {
       const contractCell = c.contract

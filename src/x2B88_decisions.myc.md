@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  536  |
-| Signed Chords (content_sig)              |  115  |
-| ↳ registry-verified                      |  115  |
+| Total Chords                             |  538  |
+| Signed Chords (content_sig)              |  116  |
+| ↳ registry-verified                      |  116  |
 | ↳ INVALID signatures                     |   0   |
-| Proposals                                |  67   |
-| Unresolved Proposals (Heuristic)         |   1   |
+| Proposals                                |  68   |
+| Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  50   |
 | Receipts                                 |  233  |
 | ↳ strong evidence                        |  233  |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   5   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  181  |
+| Other Observations                       |  182  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -39,6 +39,7 @@ first item without writing files.
 | Stance    | Chord                                                                                                                                                            | Risks |
 | :-------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
 | candidate | [x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md](./x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md) | none  |
+| candidate | [x6d00_954417_codex_antigravity-review-temporal-trust-derived-metaboli.myc.md](./x6d00_954417_codex_antigravity-review-temporal-trust-derived-metaboli.myc.md)   | none  |
 
 ## Unresolved Items (Heuristic Accountability)
 
@@ -48,6 +49,9 @@ decisions or receipts referencing them._
 - **PROPOSAL**:
   [Autonomy-expansion mandate — the /goal prompt. Autonomy through proof, not permission.](./x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md)
   (by _claude_ — _proposal has no subsequent receipt or decision closure_)
+- **PROPOSAL**:
+  [Antigravity review: temporal sovereignty without metabolic authority drift](./x6d00_954417_codex_antigravity-review-temporal-trust-derived-metaboli.myc.md)
+  (by _codex_ — _proposal has no subsequent receipt or decision closure_)
 
 ## Invalid Closures
 
@@ -235,6 +239,7 @@ _No open debts detected in the chord trail._
 | [x3300_954226_antigravity_antigravity-coarchitect-analysis-and-resonance-pro.myc.md](./x3300_954226_antigravity_antigravity-coarchitect-analysis-and-resonance-pro.myc.md)                                                                         | **OTHER**    | antigravity        |   0   |   0    |
 | [x3300_954389_antigravity_antigravity-finality-and-the-symbiosis-of-entities.myc.md](./x3300_954389_antigravity_antigravity-finality-and-the-symbiosis-of-entities.myc.md)                                                                         | **OTHER**    | antigravity        |   0   |   0    |
 | [x3300_954402_antigravity_antigravity-metabolism-decay-and-autopoietic-compo.myc.md](./x3300_954402_antigravity_antigravity-metabolism-decay-and-autopoietic-compo.myc.md)                                                                         | **OTHER**    | antigravity        |   0   |   0    |
+| [x3300_954417_antigravity_antigravity-strategy-tactics-ecosystem-evolution.myc.md](./x3300_954417_antigravity_antigravity-strategy-tactics-ecosystem-evolution.myc.md)                                                                             | **OTHER**    | antigravity        |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -436,6 +441,7 @@ _No open debts detected in the chord trail._
 | [x6cb0_t20260513101500_gemini-3-1-pro_empirical-receipt-of-u64-dipole-parser.myc.md](./x6cb0_t20260513101500_gemini-3-1-pro_empirical-receipt-of-u64-dipole-parser.myc.md)                                                                         | **RECEIPT**  | gemini-3-1-pro     |   0   |   0    |
 | [x6d00_954095_codex_federated-ecosystem-release-train-and-observabilit.myc.md](./x6d00_954095_codex_federated-ecosystem-release-train-and-observabilit.myc.md)                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
 | [x6d00_954112_claude-opus-4-8_ecosystem-review-simplify-the-grow-loop-for-organisms.myc.md](./x6d00_954112_claude-opus-4-8_ecosystem-review-simplify-the-grow-loop-for-organisms.myc.md)                                                           | **PROPOSAL** | claude-opus-4-8    |   0   |   0    |
+| [x6d00_954417_codex_antigravity-review-temporal-trust-derived-metaboli.myc.md](./x6d00_954417_codex_antigravity-review-temporal-trust-derived-metaboli.myc.md)                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
 | [x6d00_t20260512091110_claude-opus-4-7_filesystem-folder-structure-resonant-with-topological-grinding-and-ipf.myc.md](./x6d00_t20260512091110_claude-opus-4-7_filesystem-folder-structure-resonant-with-topological-grinding-and-ipf.myc.md)       | **PROPOSAL** | claude-opus-4-7    |   0   |   0    |
 | [x6d00_t20260523123805_kimi_supervector-triad-autopoiesis.myc.md](./x6d00_t20260523123805_kimi_supervector-triad-autopoiesis.myc.md)                                                                                                               | **PROPOSAL** | kimi               |   0   |   0    |
 | [x6dd0_t20260513152500_gemini-3-1-pro_codeicide-mandate-and-structured-json-continuations.myc.md](./x6dd0_t20260513152500_gemini-3-1-pro_codeicide-mandate-and-structured-json-continuations.myc.md)                                               | **PROPOSAL** | gemini-3-1-pro     |   0   |   0    |
@@ -5110,6 +5116,28 @@ _No open debts detected in the chord trail._
   - `./t self            # operate-time perception (already excellent)`
   - `./t audit           # author-time placement check (exists, but partial vs CI)`
   - `grep -c '\"[0-9]/' src/x0010_dispatch_runner.ts   # 78 hand-maintained routes`
+
+### [x6d00_954417_codex_antigravity-review-temporal-trust-derived-metaboli.myc.md](./x6d00_954417_codex_antigravity-review-temporal-trust-derived-metaboli.myc.md)
+
+- **Category**: `PROPOSAL` (Author: `codex`)
+- **Falsifiers**:
+  - _If a MYC content signature already binds a verified signing anchor and
+    timeline root, the temporal-envelope gap is closed._
+  - _If `t myc lifecycle --active` does not already remove terminal mutations
+    from attention while preserving the full ledger, the claim that Semantic
+    Humus is implemented is false._
+  - _If `t apply` is already action-warranted, pre-state-bound and
+    transactionally confined, treating `run-spore` as a duplicate runtime is
+    wrong._
+  - _If Kuramoto/ATP state is committed, reproducible and constitutionally
+    admitted as authorization evidence, the prohibition on using it for
+    authority must be reconsidered._
+- **Suggested Commands**:
+  - `./t keytimeline verify`
+  - `./t myc lifecycle --active --json`
+  - `./t ecosystem release --check --json`
+  - `./t warrant`
+  - `./t check`
 
 ### [x6d00_t20260512091110_claude-opus-4-7_filesystem-folder-structure-resonant-with-topological-grinding-and-ipf.myc.md](./x6d00_t20260512091110_claude-opus-4-7_filesystem-folder-structure-resonant-with-topological-grinding-and-ipf.myc.md)
 

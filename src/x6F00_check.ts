@@ -131,6 +131,24 @@ async function gateAudit(): Promise<GateResult> {
   };
 }
 
+async function gateReconcile(): Promise<GateResult> {
+  const j = firstJson((await t(["reconcile", "--json"])).out) as {
+    reconciled?: boolean;
+    dimensions?: Array<{ name: string; status: string }>;
+  } | null;
+  if (!j || j.reconciled === undefined) {
+    return { gate: "reconcile", ok: false, detail: "no reconcile output" };
+  }
+  const dims = j.dimensions ?? [];
+  // ok unless a dimension is an unexplained contradiction (`inconsistent`).
+  // explained / reconcilable_gap surfaces the divergence WITHOUT hiding it.
+  return {
+    gate: "reconcile",
+    ok: j.reconciled,
+    detail: dims.map((d) => `${d.name}:${d.status}`).join(", "),
+  };
+}
+
 async function gateCapabilities(): Promise<GateResult> {
   const j = firstJson((await t(["capabilities", "validate", "--json"])).out) as
     | {
@@ -301,6 +319,7 @@ if (import.meta.main) {
   gates.push(await gateSignatures());
   gates.push(await gateTests());
   gates.push(await gateRegen());
+  gates.push(await gateReconcile());
   const tree = await worktree();
 
   const ready = gates.every((g) => g.ok);

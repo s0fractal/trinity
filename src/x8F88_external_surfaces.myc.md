@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    549     |
+| dynamic topology  |    550     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **649**   |
+| **Total**         |  **650**   |
 
 ## Runtime Cache Diagnostics
 
@@ -205,6 +205,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x2700_954421_claude_temporal-trust-envelope-v1-specified-and-fixtured.myc.md](../src/x2700_954421_claude_temporal-trust-envelope-v1-specified-and-fixtured.myc.md)                                                                                     | canonical        | src/x2700_954421_claude_temporal-trust-envelope-v1-specified-and-fixtured.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x2700_954422_claude_audit-found-temporal-verifier-dormant-gave-it-a-li.myc.md](../src/x2700_954422_claude_audit-found-temporal-verifier-dormant-gave-it-a-li.myc.md)                                                                                   | canonical        | src/x2700_954422_claude_audit-found-temporal-verifier-dormant-gave-it-a-li.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x2700_954423_claude_stop-the-overclaim-a-classifier-is-not-a-verifier.myc.md](../src/x2700_954423_claude_stop-the-overclaim-a-classifier-is-not-a-verifier.myc.md)                                                                                     | canonical        | src/x2700_954423_claude_stop-the-overclaim-a-classifier-is-not-a-verifier.myc.md                                           | keep        |                              |
+| dynamic topology  | [src/x2700_954433_claude_cowitness-codex-temporal-envelope-built-end-to-end.myc.md](../src/x2700_954433_claude_cowitness-codex-temporal-envelope-built-end-to-end.myc.md)                                                                                   | canonical        | src/x2700_954433_claude_cowitness-codex-temporal-envelope-built-end-to-end.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md](../src/x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md)                                                                                           | canonical        | src/x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md                                              | keep        |                              |
 | dynamic topology  | [src/x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md](../src/x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md)                                                   | canonical        | src/x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md                          | keep        |                              |
 | dynamic topology  | [src/x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md](../src/x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md)                                                       | canonical        | src/x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md                            | keep        |                              |

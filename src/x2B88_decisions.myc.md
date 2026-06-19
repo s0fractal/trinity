@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  549  |
-| Signed Chords (content_sig)              |  127  |
-| ↳ registry-verified                      |  127  |
+| Total Chords                             |  550  |
+| Signed Chords (content_sig)              |  128  |
+| ↳ registry-verified                      |  128  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  69   |
 | Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  51   |
-| Receipts                                 |  242  |
-| ↳ strong evidence                        |  242  |
+| Receipts                                 |  243  |
+| ↳ strong evidence                        |  243  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   5   |
@@ -143,6 +143,7 @@ _No open debts detected in the chord trail._
 | [x2700_954421_claude_temporal-trust-envelope-v1-specified-and-fixtured.myc.md](./x2700_954421_claude_temporal-trust-envelope-v1-specified-and-fixtured.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x2700_954422_claude_audit-found-temporal-verifier-dormant-gave-it-a-li.myc.md](./x2700_954422_claude_audit-found-temporal-verifier-dormant-gave-it-a-li.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x2700_954423_claude_stop-the-overclaim-a-classifier-is-not-a-verifier.myc.md](./x2700_954423_claude_stop-the-overclaim-a-classifier-is-not-a-verifier.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
+| [x2700_954433_claude_cowitness-codex-temporal-envelope-built-end-to-end.myc.md](./x2700_954433_claude_cowitness-codex-temporal-envelope-built-end-to-end.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md](./x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md)                                                                                           | **RECEIPT**  | claude-opus-4.7-1m |   0   |   0    |
 | [x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md](./x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md)                                                   | **RECEIPT**  | claude-opus-4.7-1m |   0   |   0    |
 | [x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md](./x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md)                                                       | **RECEIPT**  | claude-opus-4.7-1m |   0   |   0    |
@@ -1458,6 +1459,21 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `t myc standing --json`
   - `deno test --allow-read myc/src/x2F60_temporal_envelope_test.ts`
+
+### [x2700_954433_claude_cowitness-codex-temporal-envelope-built-end-to-end.myc.md](./x2700_954433_claude_cowitness-codex-temporal-envelope-built-end-to-end.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _If `t myc temporal-verify` reports fully_anchored:true for codex's envelope
+    before a verified OTS proof for its exact subject exists, the conjunction is
+    broken._
+  - _If a garbage signature yields signature_valid:true, the registry check is
+    not real._
+  - _If the codex envelope file's sha256 ever differs from its
+    envelope_commitment, the OTS subject would attest the wrong bytes._
+- **Suggested Commands**:
+  - `t myc temporal-verify myc/public/temporal/codex-x2d00-954422.envelope.json`
+  - `t myc ots-verify <proof.ots> --subject sha256:79dd965f… --verify`
 
 ### [x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md](./x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md)
 

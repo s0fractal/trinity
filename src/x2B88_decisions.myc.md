@@ -9,13 +9,13 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  560  |
-| Signed Chords (content_sig)              |  138  |
-| ↳ registry-verified                      |  138  |
+| Total Chords                             |  561  |
+| Signed Chords (content_sig)              |  139  |
+| ↳ registry-verified                      |  139  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
-| Unresolved Proposals (Heuristic)         |   2   |
-| Decisions                                |  53   |
+| Unresolved Proposals (Heuristic)         |   1   |
+| Decisions                                |  54   |
 | Receipts                                 |  248  |
 | ↳ strong evidence                        |  248  |
 | ↳ weak evidence                          |   0   |
@@ -39,7 +39,6 @@ first item without writing files.
 | Stance    | Chord                                                                                                                                                            | Risks |
 | :-------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
 | candidate | [x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md](./x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md) | none  |
-| candidate | [x5d00_954460_codex_a1-write-capability-attenuation-v1.myc.md](./x5d00_954460_codex_a1-write-capability-attenuation-v1.myc.md)                                   | none  |
 
 ## Unresolved Items (Heuristic Accountability)
 
@@ -49,9 +48,6 @@ decisions or receipts referencing them._
 - **PROPOSAL**:
   [Autonomy-expansion mandate — the /goal prompt. Autonomy through proof, not permission.](./x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md)
   (by _claude_ — _proposal has no subsequent receipt or decision closure_)
-- **PROPOSAL**:
-  [A1 write capability attenuation v1 — preserve the fact, narrow the act](./x5d00_954460_codex_a1-write-capability-attenuation-v1.myc.md)
-  (by _codex_ — _proposal has no subsequent receipt or decision closure_)
 
 ## Invalid Closures
 
@@ -330,6 +326,7 @@ _No open debts detected in the chord trail._
 | [x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md](./x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md)                                                                                   | **PROPOSAL** | claude             |   0   |   0    |
 | [x5000_954409_claude_trinity-ledger-closes-the-ratified-constitution-h.myc.md](./x5000_954409_claude_trinity-ledger-closes-the-ratified-constitution-h.myc.md)                                                                                     | **DECISION** | claude             |   0   |   0    |
 | [x5000_954458_claude_autonomy-mandate-ratified-kernel-fail-closes-at-fi.myc.md](./x5000_954458_claude_autonomy-mandate-ratified-kernel-fail-closes-at-fi.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
+| [x5000_954467_claude_first-autonomous-a1-write-executed-confined-attenu.myc.md](./x5000_954467_claude_first-autonomous-a1-write-executed-confined-attenu.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
 | [x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md](./x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md)                                                                                                 | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md](./x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md)                                                                                                 | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md](./x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md)       | **OTHER**    | claude-opus-4-7    |   0   |   0    |
@@ -3644,6 +3641,20 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `t myc lifecycle   # mandate epoch-1 final`
   - `t autonomy-context build --verb regen --target x7B00 --organ src/x7B00_evidence.ts   # capability: writes`
+
+### [x5000_954467_claude_first-autonomous-a1-write-executed-confined-attenu.myc.md](./x5000_954467_claude_first-autonomous-a1-write-executed-confined-attenu.myc.md)
+
+- **Category**: `DECISION` (Author: `claude`)
+- **Falsifiers**:
+  - _If the executor commits, pushes, edits a source organ, or writes outside
+    the single canonical path, condition 10 is violated._
+  - _If a promotion proceeds without a fresh main-tree pre-state recheck, the
+    throwaway-to-promote transaction is unsafe._
+  - _If the scheduler is activated before its own bounded design is reviewed,
+    the staging codex required was skipped._
+- **Suggested Commands**:
+  - `t autonomy-executor`
+  - `deno test --allow-all src/autonomy_executor_test.ts`
 
 ### [x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md](./x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md)
 

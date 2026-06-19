@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     53     |
 | compost           |     0      |
-| dynamic topology  |    560     |
+| dynamic topology  |    561     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **661**   |
+| **Total**         |  **662**   |
 
 ## Runtime Cache Diagnostics
 
@@ -389,6 +389,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md](../src/x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md)                                                                                   | canonical        | src/x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x5000_954409_claude_trinity-ledger-closes-the-ratified-constitution-h.myc.md](../src/x5000_954409_claude_trinity-ledger-closes-the-ratified-constitution-h.myc.md)                                                                                     | canonical        | src/x5000_954409_claude_trinity-ledger-closes-the-ratified-constitution-h.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x5000_954458_claude_autonomy-mandate-ratified-kernel-fail-closes-at-fi.myc.md](../src/x5000_954458_claude_autonomy-mandate-ratified-kernel-fail-closes-at-fi.myc.md)                                                                                   | canonical        | src/x5000_954458_claude_autonomy-mandate-ratified-kernel-fail-closes-at-fi.myc.md                                          | keep        |                              |
+| dynamic topology  | [src/x5000_954467_claude_first-autonomous-a1-write-executed-confined-attenu.myc.md](../src/x5000_954467_claude_first-autonomous-a1-write-executed-confined-attenu.myc.md)                                                                                   | canonical        | src/x5000_954467_claude_first-autonomous-a1-write-executed-confined-attenu.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md](../src/x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md)                                                                                                 | canonical        | src/x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md                                                 | keep        |                              |
 | dynamic topology  | [src/x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md](../src/x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md)                                                                                                 | canonical        | src/x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md                                                 | keep        |                              |
 | dynamic topology  | [src/x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md](../src/x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md)       | canonical        | src/x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md    | keep        |                              |

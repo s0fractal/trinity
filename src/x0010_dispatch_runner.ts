@@ -41,6 +41,7 @@ export const POSITION_TO_FILE: Record<string, string> = {
   "2/7": "x2700_heartbeat.ts",
   "2/8": "x2800_ask.ts",
   "2/A": "x2A00_lexicon.ts",
+  "2/B": "x2B00_keytimeline.ts",
   "2/C": "x2C00_cognition_phase_report.ts",
   "2/D": "x2D00_inbox.ts",
   "2/E": "x2E00_status.ts",

@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  556  |
-| Signed Chords (content_sig)              |  134  |
-| ↳ registry-verified                      |  134  |
+| Total Chords                             |  557  |
+| Signed Chords (content_sig)              |  135  |
+| ↳ registry-verified                      |  135  |
 | ↳ INVALID signatures                     |   0   |
-| Proposals                                |  70   |
-| Unresolved Proposals (Heuristic)         |   1   |
+| Proposals                                |  71   |
+| Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  52   |
 | Receipts                                 |  247  |
 | ↳ strong evidence                        |  247  |
@@ -39,6 +39,7 @@ first item without writing files.
 | Stance    | Chord                                                                                                                                                            | Risks |
 | :-------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
 | candidate | [x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md](./x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md) | none  |
+| candidate | [x5d00_954456_claude_autonomy-mandate-epoch-1-conservative-a0-observe-a.myc.md](./x5d00_954456_claude_autonomy-mandate-epoch-1-conservative-a0-observe-a.myc.md) | none  |
 
 ## Unresolved Items (Heuristic Accountability)
 
@@ -47,6 +48,9 @@ decisions or receipts referencing them._
 
 - **PROPOSAL**:
   [Autonomy-expansion mandate — the /goal prompt. Autonomy through proof, not permission.](./x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md)
+  (by _claude_ — _proposal has no subsequent receipt or decision closure_)
+- **PROPOSAL**:
+  [Autonomy Mandate epoch-1 — conservative, for human+model ratification](./x5d00_954456_claude_autonomy-mandate-epoch-1-conservative-a0-observe-a.myc.md)
   (by _claude_ — _proposal has no subsequent receipt or decision closure_)
 
 ## Invalid Closures
@@ -396,6 +400,7 @@ _No open debts detected in the chord trail._
 | [x5d00_954408_codex_federated-actuation-warrant-action-relative-autono.myc.md](./x5d00_954408_codex_federated-actuation-warrant-action-relative-autono.myc.md)                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
 | [x5d00_954412_codex_action-bound-authority-before-actuation.myc.md](./x5d00_954412_codex_action-bound-authority-before-actuation.myc.md)                                                                                                           | **PROPOSAL** | codex              |   0   |   0    |
 | [x5d00_954447_codex_delegated-autonomy-kernel-human-by-exception.myc.md](./x5d00_954447_codex_delegated-autonomy-kernel-human-by-exception.myc.md)                                                                                                 | **PROPOSAL** | codex              |   0   |   0    |
+| [x5d00_954456_claude_autonomy-mandate-epoch-1-conservative-a0-observe-a.myc.md](./x5d00_954456_claude_autonomy-mandate-epoch-1-conservative-a0-observe-a.myc.md)                                                                                   | **PROPOSAL** | claude             |   0   |   0    |
 | [x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md](./x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md)                                                                       | **PROPOSAL** | claude-opus-4.7-1m |   0   |   0    |
 | [x5d00_t20260512001608_claude-opus-4-7_spore-v0-format-freeze-gate-before-liquid-or-other-consumer-migration.myc.md](./x5d00_t20260512001608_claude-opus-4-7_spore-v0-format-freeze-gate-before-liquid-or-other-consumer-migration.myc.md)         | **PROPOSAL** | claude-opus-4-7    |   0   |   0    |
 | [x5d00_t20260512023530_codex-gpt-5_ecosystem-next-development-mode-freeze-then-bridge.myc.md](./x5d00_t20260512023530_codex-gpt-5_ecosystem-next-development-mode-freeze-then-bridge.myc.md)                                                       | **PROPOSAL** | codex-gpt-5        |   0   |   0    |
@@ -4680,6 +4685,19 @@ _No open debts detected in the chord trail._
   - `./t evidence`
   - `./t ecosystem release --check --json`
   - `./t check`
+
+### [x5d00_954456_claude_autonomy-mandate-epoch-1-conservative-a0-observe-a.myc.md](./x5d00_954456_claude_autonomy-mandate-epoch-1-conservative-a0-observe-a.myc.md)
+
+- **Category**: `PROPOSAL` (Author: `claude`)
+- **Falsifiers**:
+  - _If `t autonomy explain` admits any intent outside the two profiles in
+    epoch-1.mandate.json, the mandate is broader than ratified._
+  - _If the mandate authorizes any A2/A3/A4 effect, it exceeds A0/A1._
+  - _If anything runs autonomously before this proposal reaches final by
+    human+model quorum, the gate was bypassed._
+- **Suggested Commands**:
+  - `t autonomy budget --mandate contracts/mandates/epoch-1.mandate.json`
+  - `t myc lifecycle`
 
 ### [x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md](./x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md)
 

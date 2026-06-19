@@ -1,0 +1,44 @@
+{
+  "mandate_id": "epoch-1",
+  "constitution_commitment": "sha256:d2f13b52b10c9ff50beef8affc6075a41fbd5977b498a2c5c75dc59948f4ee8b",
+  "issued_by": ["s0fractal", "claude"],
+  "valid_from": { "kind": "bitcoin_block", "height": 954455 },
+  "valid_until": { "kind": "bitcoin_block", "height": 958775 },
+  "action_profiles": [
+    {
+      "id": "observe",
+      "class": "A0",
+      "verbs": [
+        "status",
+        "reconcile",
+        "evidence",
+        "roadmap",
+        "recommend",
+        "self",
+        "audit"
+      ],
+      "targets": ["*"],
+      "effect_ceiling": ["read", "observe", "derive", "reconcile"]
+    },
+    {
+      "id": "projections",
+      "class": "A1",
+      "verbs": ["regen-projection"],
+      "targets": [
+        "x7B88_evidence_report",
+        "x8788_network",
+        "x88F0_agents_bootstrap",
+        "x8CF0_skills_bootstrap"
+      ],
+      "effect_ceiling": ["projection", "format", "cache_refresh"],
+      "rate_limit": { "count": 24, "per_blocks": 144 },
+      "required_gates": ["fmt", "generation-diff"],
+      "rollback": "git checkout -- <write-set>"
+    }
+  ],
+  "global_budgets": {
+    "max_actions": 50,
+    "max_bytes": 2000000,
+    "max_seconds": 300
+  }
+}

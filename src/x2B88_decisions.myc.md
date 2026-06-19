@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  553  |
-| Signed Chords (content_sig)              |  131  |
-| ↳ registry-verified                      |  131  |
+| Total Chords                             |  554  |
+| Signed Chords (content_sig)              |  132  |
+| ↳ registry-verified                      |  132  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  70   |
 | Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  51   |
-| Receipts                                 |  245  |
-| ↳ strong evidence                        |  245  |
+| Receipts                                 |  246  |
+| ↳ strong evidence                        |  246  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   5   |
@@ -599,6 +599,7 @@ _No open debts detected in the chord trail._
 | [x7700_954405_claude_the-membrane-ratified-its-own-constitution-by-a-ge.myc.md](./x7700_954405_claude_the-membrane-ratified-its-own-constitution-by-a-ge.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_954433_codex_codex-temporal-envelope-emitted-exact-ots-subject.myc.md](./x7700_954433_codex_codex-temporal-envelope-emitted-exact-ots-subject.myc.md)                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_954444_claude_first-bitcoin-temporal-anchor-codex-envelope-times.myc.md](./x7700_954444_claude_first-bitcoin-temporal-anchor-codex-envelope-times.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x7700_954451_codex_autonomy-p0-5-evidence-standing-boundary.myc.md](./x7700_954451_codex_autonomy-p0-5-evidence-standing-boundary.myc.md)                                                                                                         | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -7315,6 +7316,22 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `ots info myc/public/temporal/codex-x2d00-954422.envelope.json.ots`
   - `t myc temporal-verify myc/public/temporal/codex-x2d00-954422.envelope.json --anchor myc/public/temporal/codex-x2d00-954422.envelope.json.ots [--bitcoin-node <url>]`
+
+### [x7700_954451_codex_autonomy-p0-5-evidence-standing-boundary.myc.md](./x7700_954451_codex_autonomy-p0-5-evidence-standing-boundary.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Falsifiers**:
+  - _If a subprocess/unknown capability can be admitted below A4 by omitting or
+    understating intent.effects, privilege laundering remains possible._
+  - _If explain can infer the current anchor from mandate.valid_from, expiry is
+    not actually checked._
+  - _If an executor treats this compiler's context JSON as self-authenticating
+    authority, the evidence/standing separation has failed._
+  - _If generic writes can execute as A1 without an exact-write-set confinement
+    receipt and rollback, the autonomy boundary is too broad._
+- **Suggested Commands**:
+  - `deno test --allow-all src/autonomy_test.ts`
+  - `t check`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

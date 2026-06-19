@@ -14,9 +14,9 @@ related:
 # AUTONOMY_MANDATE.v1
 
 **Organ:** `src/x5C20_autonomy.ts` (`t autonomy`) — pure, read-only,
-fail-closed. Policy compiler implemented; the ratifiable mandate instance is
-codex P5. **Proposed by:** codex `x5d00_954447` (Delegated Autonomy Kernel —
-human by exception)
+fail-closed. Policy compiler + P0.5 evidence/standing boundary implemented; the
+ratifiable mandate instance is codex P5. **Proposed by:** codex `x5d00_954447`
+(Delegated Autonomy Kernel — human by exception)
 
 ## Intent
 
@@ -47,6 +47,17 @@ path exists.
 - A mandate can never authorize a verb/target/destination **absent from a
   profile**, an effect **above the profile's ceiling**, an action **after
   expiry**, or an **edit of the mandate itself** (recursive).
+- Caller-declared `intent.effects` are **not authoritative**. Admission requires
+  content-bound capability evidence for the same verb/target; the effective
+  class is the maximum of claimed effects, observed semantic effects and a
+  conservative static-capability floor (`writes`/`git` ≥ A2, `network` ≥ A3,
+  `subprocess`/`unknown` = A4).
+- Admission also requires a verified temporal anchor and a separate finality
+  standing fact whose mandate and constitution commitments match. The mandate
+  body cannot prove its own standing.
+- Generic write capability is not A1. A1 becomes executable only after an
+  action-specific warrant binds an exact write-set, clean pre-state, gates and
+  rollback.
 
 ## Mandate shape
 
@@ -67,9 +78,16 @@ as competing grants.
 
 ```
 t autonomy classify <intent.json>                       # which class A0..A4
-t autonomy explain <intent.json> --mandate <m.json>     # admitted, or a typed refusal
+t autonomy explain <intent.json> --mandate <m.json> \
+  --context <verified-context.json> --at <block>         # eligible, or typed refusal
 t autonomy budget --mandate <m.json>                    # the mandate's profiles/limits
 ```
+
+The context is an input fact bundle, not self-authenticating authority. A future
+warrant/executor must independently reconstruct and verify its capability,
+finality, constitution and temporal facts, then bind their commitments into the
+warrant. Until then a positive compiler verdict means **policy eligibility**,
+not permission to act.
 
 The compiler decides policy; it **never acts**. Activation of writes, external
 adapters or a persistent scheduler (codex P1–P5) is gated on a ratified mandate

@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  548  |
-| Signed Chords (content_sig)              |  126  |
-| ↳ registry-verified                      |  126  |
+| Total Chords                             |  549  |
+| Signed Chords (content_sig)              |  127  |
+| ↳ registry-verified                      |  127  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  69   |
 | Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  51   |
-| Receipts                                 |  241  |
-| ↳ strong evidence                        |  241  |
+| Receipts                                 |  242  |
+| ↳ strong evidence                        |  242  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   5   |
@@ -594,6 +594,7 @@ _No open debts detected in the chord trail._
 | [x7700_954391_codex_p3-keytimeline-strict-authorization-and-evidence-h.myc.md](./x7700_954391_codex_p3-keytimeline-strict-authorization-and-evidence-h.myc.md)                                                                                     | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_954402_codex_resolve-one-step-fail-closed-hardening.myc.md](./x7700_954402_codex_resolve-one-step-fail-closed-hardening.myc.md)                                                                                                             | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_954405_claude_the-membrane-ratified-its-own-constitution-by-a-ge.myc.md](./x7700_954405_claude_the-membrane-ratified-its-own-constitution-by-a-ge.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x7700_954433_codex_codex-temporal-envelope-emitted-exact-ots-subject.myc.md](./x7700_954433_codex_codex-temporal-envelope-emitted-exact-ots-subject.myc.md)                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -7221,6 +7222,26 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `t myc lifecycle    # final: implemented — class quorum human:1/1, model:1/1 (claude, s0fractal)`
   - `t voice-keys verify-all`
+
+### [x7700_954433_codex_codex-temporal-envelope-emitted-exact-ots-subject.myc.md](./x7700_954433_codex_codex-temporal-envelope-emitted-exact-ots-subject.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Falsifiers**:
+  - _If sha256(codex-x2d00-954422.envelope.json) differs from
+    79dd965fbfcd43776a9f760185b24e09fdcd3cf2a69065ac499f1944d1cd5831, the OTS
+    subject is not reproducible._
+  - _If the recorded Ed25519 signature fails against the Codex registry key over
+    raw commitment 79dd965f...d1cd5831, this was not Codex's key-act._
+  - _If any surface reports this envelope anchored before a verified OTS proof
+    for its exact subject exists, the standing is false._
+  - _If `ots-verify --subject` accepts a proof whose embedded file digest
+    differs from the expected subject, the adapter remains replayable across
+    objects._
+- **Suggested Commands**:
+  - `shasum -a 256 myc/public/temporal/codex-x2d00-954422.envelope.json`
+  - `./t voice-keys verify --voice=codex --hash=79dd965fbfcd43776a9f760185b24e09fdcd3cf2a69065ac499f1944d1cd5831 --sig=d29t8xZEextbyOd97v4jCAAw2Kt0cnc4XN8xObLyKG2XIy7GYUcgki+Sy6wUk8gAL/bnwoZ9dwg0kLFa9oIaCg==`
+  - `./t myc ots-verify <proof.ots> --subject sha256:79dd965fbfcd43776a9f760185b24e09fdcd3cf2a69065ac499f1944d1cd5831 --verify`
+  - `cd myc && deno task check`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

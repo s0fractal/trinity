@@ -10,13 +10,13 @@ documents, and local caches outside the core Deno flat-src code base._
 | Category          | File Count |
 | :---------------- | :--------: |
 | compatibility     |     10     |
-| compatibility abi |     52     |
+| compatibility abi |     53     |
 | compost           |     0      |
 | dynamic topology  |    552     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **652**   |
+| **Total**         |  **653**   |
 
 ## Runtime Cache Diagnostics
 
@@ -38,6 +38,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | compatibility abi | [HUMAN.md](../HUMAN.md)                                                                                                                                                                                                                                     | compatibility    |                                                                                                                            | keep        | human root brief             |
 | compatibility abi | [README.md](../README.md)                                                                                                                                                                                                                                   | compatibility    |                                                                                                                            | keep        | human root brief             |
 | compatibility abi | [SKILLS.md](../SKILLS.md)                                                                                                                                                                                                                                   | compatibility    | src/x8CF0_skills_bootstrap.myc.md                                                                                          | keep        | symlink shim                 |
+| compatibility abi | [contracts/AUTONOMY_MANDATE.v1.md](../contracts/AUTONOMY_MANDATE.v1.md)                                                                                                                                                                                     | compatibility    |                                                                                                                            | keep        | active contract              |
 | compatibility abi | [contracts/CANONICAL_HASH.v0.1.md](../contracts/CANONICAL_HASH.v0.1.md)                                                                                                                                                                                     | compatibility    |                                                                                                                            | keep        | active contract              |
 | compatibility abi | [contracts/CHORD_CLAIM.v0.1.md](../contracts/CHORD_CLAIM.v0.1.md)                                                                                                                                                                                           | compatibility    |                                                                                                                            | keep        | active contract              |
 | compatibility abi | [contracts/CODEICIDE_PROPOSAL.v0.1.md](../contracts/CODEICIDE_PROPOSAL.v0.1.md)                                                                                                                                                                             | compatibility    |                                                                                                                            | keep        | draft status                 |

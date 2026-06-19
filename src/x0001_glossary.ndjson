@@ -43,6 +43,7 @@
 {"11":"8E 00 00 00 00 59 00 00","00":"5","02":["block","height","timestamp","блок","висота","мітка"],"04":"5/0","09":"action+void = pure fetch"}
 
 {"11":"00 00 40 00 66 6C 59 00","00":"5","02":["cross-verify","verify-all","test-all","перехресна-перевірка","перевірити-все"],"04":"5/C","09":"action+container = compatibility wrapper over all 5/C map+join"}
+{"00":"5","02":["autonomy","mandate","автономія"],"04":"5/C2","09":"action+bridge = Delegated Autonomy Kernel policy compiler (codex x5d00_954447): classify an intent A0..A4 and decide whether a ratified AUTONOMY_MANDATE authorizes it — pure, read-only, fail-closed","11":"00 00 00 00 00 59 00 00"}
 {"00":"02","02":"06","03":"substrate_mapping"}
 {"00":"6","02":["trinity","тринити","trinity-substrate","коренева"],"03":"5/C","04":".","05":"deno check src/x0100_dispatch.ts src/x5001_block.ts src/x5A00_fresh.ts src/x5C00_cross_verify.ts","09":"type-check flat-src substrate files"}
 {"00":"6","02":["omega","омега","ω"],"03":"5/C","04":"omega","05":"cargo check","09":"compile check (quick); use --deep for cargo test"}

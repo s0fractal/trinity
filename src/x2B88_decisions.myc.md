@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  545  |
-| Signed Chords (content_sig)              |  123  |
-| ↳ registry-verified                      |  123  |
+| Total Chords                             |  546  |
+| Signed Chords (content_sig)              |  124  |
+| ↳ registry-verified                      |  124  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  69   |
 | Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  50   |
-| Receipts                                 |  239  |
-| ↳ strong evidence                        |  239  |
+| Receipts                                 |  240  |
+| ↳ strong evidence                        |  240  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   5   |
@@ -293,6 +293,7 @@ _No open debts detected in the chord trail._
 | [x4700_952383_claude-opus-4-8_onboarding-loop-in-first-moves-init-living-form.myc.md](./x4700_952383_claude-opus-4-8_onboarding-loop-in-first-moves-init-living-form.myc.md)                                                                       | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x4700_952699_claude-opus-4-8_fqdn-unify-code-and-docs-mycelium-as-sovereign-segment.myc.md](./x4700_952699_claude-opus-4-8_fqdn-unify-code-and-docs-mycelium-as-sovereign-segment.myc.md)                                                         | **PROPOSAL** | claude-opus-4-8    |   0   |   0    |
 | [x4700_954115_claude_ecosystem-grow-loop-review-closed-t-check-route-ga.myc.md](./x4700_954115_claude_ecosystem-grow-loop-review-closed-t-check-route-ga.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x4700_954426_claude_canonical-chain-verifier-in-myc-full-verifychain-n.myc.md](./x4700_954426_claude_canonical-chain-verifier-in-myc-full-verifychain-n.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x4b00_t20260523133425_codex_repo-wide-refactor-harmonization-audit.myc.md](./x4b00_t20260523133425_codex_repo-wide-refactor-harmonization-audit.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x4c40_t20260513103500_gemini-3-1-pro_dual-layer-filesystem-with-hex-folders-and-hidden-semantic-overlays.myc.md](./x4c40_t20260513103500_gemini-3-1-pro_dual-layer-filesystem-with-hex-folders-and-hidden-semantic-overlays.myc.md)               | **PROPOSAL** | gemini-3-1-pro     |   0   |   0    |
 | [x4d00_950620_claude_cross-substrate-roadmap-federation.myc.md](./x4d00_950620_claude_cross-substrate-roadmap-federation.myc.md)                                                                                                                   | **PROPOSAL** | claude-opus-4-7    |   0   |   0    |
@@ -3244,6 +3245,23 @@ _No open debts detected in the chord trail._
   - `t scaffold playbook`
 - **Expected After Running**:
   - _{}_
+
+### [x4700_954426_claude_canonical-chain-verifier-in-myc-full-verifychain-n.myc.md](./x4700_954426_claude_canonical-chain-verifier-in-myc-full-verifychain-n.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _If verifyChain accepts a tampered event commitment, a forged predecessor
+    authorization, a genesis not matching the registry root, or a self-asserted
+    anchor, it is not a verifier._
+  - _If a forked principal is adjudicated rather than suspended, a branch was
+    chosen._
+  - _If classifyStanding ever reports proof_complete:true, the anchor-proof gap
+    (P2) was skipped._
+  - _If the MYC KeyEvent again omits custody/issuer/scope/authorization while
+    claiming byte-identical parity, the reduced-type objection has returned._
+- **Suggested Commands**:
+  - `deno test --allow-read myc/src/x2F70_keytimeline_test.ts`
+  - `t myc standing`
 
 ### [x4b00_t20260523133425_codex_repo-wide-refactor-harmonization-audit.myc.md](./x4b00_t20260523133425_codex_repo-wide-refactor-harmonization-audit.myc.md)
 

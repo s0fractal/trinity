@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  540  |
-| Signed Chords (content_sig)              |  118  |
-| ↳ registry-verified                      |  118  |
+| Total Chords                             |  541  |
+| Signed Chords (content_sig)              |  119  |
+| ↳ registry-verified                      |  119  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  68   |
 | Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  50   |
-| Receipts                                 |  235  |
-| ↳ strong evidence                        |  235  |
+| Receipts                                 |  236  |
+| ↳ strong evidence                        |  236  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   5   |
@@ -139,6 +139,7 @@ _No open debts detected in the chord trail._
 | [x2700_952415_claude-opus-4-8_canonical-commitment-one-provenance-schema-conform.myc.md](./x2700_952415_claude-opus-4-8_canonical-commitment-one-provenance-schema-conform.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x2700_953527_claude-opus-4-8_omega-deterministic-execution-verified-green-visit.myc.md](./x2700_953527_claude-opus-4-8_omega-deterministic-execution-verified-green-visit.myc.md)                                                                 | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
 | [x2700_954388_claude_accept-p3-and-build-the-key-event-timeline-verific.myc.md](./x2700_954388_claude_accept-p3-and-build-the-key-event-timeline-verific.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x2700_954421_claude_temporal-trust-envelope-v1-specified-and-fixtured.myc.md](./x2700_954421_claude_temporal-trust-envelope-v1-specified-and-fixtured.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md](./x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md)                                                                                           | **RECEIPT**  | claude-opus-4.7-1m |   0   |   0    |
 | [x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md](./x2700_t20260510133847_claude-opus-4-7-1m_claude-five-forms-of-substrate-self-blindness.myc.md)                                                   | **RECEIPT**  | claude-opus-4.7-1m |   0   |   0    |
 | [x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md](./x2700_t20260511012156_claude-opus-4-7-1m_spore-apply-v0-probe-byte-identical-rust-ts.myc.md)                                                       | **RECEIPT**  | claude-opus-4.7-1m |   0   |   0    |
@@ -1390,6 +1391,21 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `deno test --allow-read src/keytimeline_test.ts   # 9 fixtures`
   - `t keytimeline verify <chain.json>`
+
+### [x2700_954421_claude_temporal-trust-envelope-v1-specified-and-fixtured.myc.md](./x2700_954421_claude_temporal-trust-envelope-v1-specified-and-fixtured.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _If classifyStanding ever reports a v0 signature as historically verified,
+    the v0 downgrade is broken._
+  - _If a v1 envelope whose anchor lacks a verified inclusion receipt is treated
+    as historical, self-asserted time has become proof._
+  - _If envelopeCommitment does not change when anchor height or
+    key_timeline_root changes, a v1 signature is replayable._
+  - _If the standing classifier consults any adaptive score (resonance/ATP) to
+    decide standing, the three-planes law is violated._
+- **Suggested Commands**:
+  - `deno test --allow-read myc/src/x2F60_temporal_envelope_test.ts`
 
 ### [x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md](./x2700_t20260510130419_claude-opus-4-7-1m_claude-test-fixes-receipt.myc.md)
 

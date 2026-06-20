@@ -5,17 +5,68 @@
     {
       "from": "x2d00_954422_codex_temporal-proof-closure-noncircular-anchor-verification",
       "to": "x2d00_954422_codex_temporal-proof-closure-noncircular-anchor-verifica",
-      "reason": "historical hears used the intended full slug; canonical filename was truncated"
+      "relation": "renamed_to",
+      "evidence": "canonical target has the same coordinate, block, voice, and truncated slug"
     },
     {
       "from": "x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt",
       "to": "x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom",
-      "reason": "historical hears omitted the canonical filename truncation suffix"
+      "relation": "renamed_to",
+      "evidence": "canonical target has the same coordinate, block, voice, and slug prefix"
     },
     {
       "from": "x5300_954398_claude_goal-loop-iteration-one-affordances-shipped-forward-trigger",
       "to": "x5300_954398_claude_goal-loop-one-affordances-shipped-forward-trigger",
-      "reason": "historical wording alias for the existing canonical receipt"
+      "relation": "renamed_to",
+      "evidence": "unique same-coordinate/block/voice receipt with equivalent topic"
+    },
+    {
+      "from": "jazz/chords/2026-05-15T160323Z-codex-review-kimi-daemon-crawl-surface",
+      "to": "src/x6600_t20260515160323_codex_review-kimi-daemon-crawl-surface.myc.md",
+      "relation": "moved_to",
+      "evidence": "flat-src migration preserved timestamp, voice, topic, and frontmatter id"
+    },
+    {
+      "from": "jazz/talks/0001.deepseek.md",
+      "to": "docs/archive/jazz/talks/0001.deepseek.md",
+      "relation": "moved_to",
+      "evidence": "git d143baa archived the exact tracked path under docs/archive"
+    },
+    {
+      "from": "docs/SHAPE_MAP.v0.md",
+      "to": "contracts/SHAPE_MAP.v0.md",
+      "relation": "moved_to",
+      "evidence": "git 07af635 records R095 while promoting the document to contracts"
+    },
+    {
+      "from": "liquid/00_core/liquid_codec.ts",
+      "to": "liquid/src/xA030_liquid_codec.ts",
+      "relation": "moved_to",
+      "evidence": "liquid flat-src git rename R100"
+    },
+    {
+      "from": "liquid/00_core/liquid_pipe.ts",
+      "to": "liquid/src/xA031_liquid_pipe.ts",
+      "relation": "moved_to",
+      "evidence": "liquid flat-src git rename R093"
+    },
+    {
+      "from": "liquid/00_core/pipe/pipeline_runner.ts",
+      "to": "liquid/src/xA505_pipeline_runner.ts",
+      "relation": "moved_to",
+      "evidence": "liquid flat-src git rename R097"
+    },
+    {
+      "from": "liquid/00_core/pipe/sigma_executor.ts",
+      "to": "liquid/src/xA506_sigma_executor.ts",
+      "relation": "moved_to",
+      "evidence": "liquid flat-src git rename R091"
+    },
+    {
+      "from": "liquid/00_core/pipe/spore_apply_backend.ts",
+      "to": "liquid/src/xA507_spore_apply_backend.ts",
+      "relation": "moved_to",
+      "evidence": "liquid flat-src git rename R097"
     }
   ]
 }

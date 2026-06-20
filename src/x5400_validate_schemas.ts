@@ -304,6 +304,7 @@ async function fileExists(absPath: string): Promise<boolean> {
 const KNOWN_PATH_ROOTS = new Set([
   "src",
   "contracts",
+  "docs",
   "probes",
   "papers",
   "jazz",
@@ -315,7 +316,8 @@ const KNOWN_PATH_ROOTS = new Set([
 interface HearsAlias {
   from: string;
   to: string;
-  reason: string;
+  relation: "renamed_to" | "moved_to";
+  evidence: string;
 }
 
 interface HearsAliasRegistry {
@@ -336,7 +338,9 @@ async function loadHearsAliases(): Promise<Map<string, string>> {
   for (const entry of registry.aliases) {
     if (
       typeof entry.from !== "string" || typeof entry.to !== "string" ||
-      typeof entry.reason !== "string" || entry.from === entry.to ||
+      !["renamed_to", "moved_to"].includes(entry.relation) ||
+      typeof entry.evidence !== "string" || entry.evidence.trim() === "" ||
+      entry.from === entry.to ||
       aliases.has(entry.from)
     ) throw new Error(`invalid or duplicate hears alias: ${entry.from}`);
     aliases.set(entry.from, entry.to);

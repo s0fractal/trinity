@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  581  |
-| Signed Chords (content_sig)              |  159  |
-| ↳ registry-verified                      |  159  |
+| Total Chords                             |  582  |
+| Signed Chords (content_sig)              |  160  |
+| ↳ registry-verified                      |  160  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  56   |
-| Receipts                                 |  265  |
-| ↳ strong evidence                        |  265  |
+| Receipts                                 |  266  |
+| ↳ strong evidence                        |  266  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   6   |
@@ -625,6 +625,7 @@ _No open debts detected in the chord trail._
 | [x7700_954577_codex_external-audit-repair-co-witness-schema-identity-a.myc.md](./x7700_954577_codex_external-audit-repair-co-witness-schema-identity-a.myc.md)                                                                                     | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_954582_codex_append-only-hears-alias-registry-coordinate-rot-cl.myc.md](./x7700_954582_codex_append-only-hears-alias-registry-coordinate-rot-cl.myc.md)                                                                                     | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_954582_codex_schema-debt-ledgers-autonomy-routing.myc.md](./x7700_954582_codex_schema-debt-ledgers-autonomy-routing.myc.md)                                                                                                                 | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_954582_codex_typed-path-migrations-close-structural-link-rot.myc.md](./x7700_954582_codex_typed-path-migrations-close-structural-link-rot.myc.md)                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -7641,6 +7642,14 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `deno test --allow-all src/validate_schemas_test.ts`
   - `deno run -A src/x5400_validate_schemas.ts --json --tracked-only | jq '.summary, (.debt_ledgers | map_values(length))'`
+  - `./t check`
+
+### [x7700_954582_codex_typed-path-migrations-close-structural-link-rot.myc.md](./x7700_954582_codex_typed-path-migrations-close-structural-link-rot.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Suggested Commands**:
+  - `deno test --allow-all src/validate_schemas_test.ts`
+  - `deno run -A src/x5400_validate_schemas.ts --json --tracked-only | jq '{summary, aliases:.hears_links.aliasesResolved, remaining:([.debt_ledgers.link_rot[].message]|unique)}'`
   - `./t check`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)

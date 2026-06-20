@@ -40,6 +40,11 @@ Deno.test("checkHearsRef - path under a known root: existence-checked", async ()
   );
   // a path under an UNKNOWN root (legacy/external scheme) is skipped, not flagged
   assertEquals(await checkHearsRef("0x0/01.ts", idx), null);
+  // docs is a living root, so a missing archive target must fail closed
+  assertEquals(
+    await checkHearsRef("docs/archive/does-not-exist.md", idx),
+    "missing path: docs/archive/does-not-exist.md",
+  );
 });
 
 Deno.test("checkHearsRef - coordinate stem: resolved via the FQDN index", async () => {

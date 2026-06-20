@@ -3,7 +3,7 @@ import {
   assertEquals,
   assertStringIncludes,
 } from "https://deno.land/std@0.224.0/assert/mod.ts";
-import { renderNetwork } from "./x8700_network.ts";
+import { networkResolverArgs, renderNetwork } from "./x8700_network.ts";
 
 const atlas = {
   total_nodes: 1743,
@@ -80,4 +80,14 @@ Deno.test("renderNetwork - --stable omits the generated_at stamp (byte-determini
       manifest_hash: "sha256:deadbeef",
     }),
   );
+});
+
+Deno.test("network --stable bypasses machine-local resolver cache", () => {
+  assertEquals(networkResolverArgs(true, "atlas"), [
+    "resolve-fqdn",
+    "atlas",
+    "--no-cache",
+    "--json",
+  ]);
+  assert(!networkResolverArgs(false, "lineage").includes("--no-cache"));
 });

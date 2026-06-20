@@ -155,7 +155,18 @@ export async function demand(
         continue;
       }
       const regen = await hooks.readWorktree(wt, a.output_path);
-      const regenHash = regen === null ? null : `sha256:${await sha256(regen)}`;
+      if (regen === null) {
+        projections.push({
+          target: a.target,
+          output_path: a.output_path,
+          state: "unknown",
+          current_hash: currentHash,
+          regenerated_hash: null,
+          detail: "generator exited successfully but produced no projection",
+        });
+        continue;
+      }
+      const regenHash = `sha256:${await sha256(regen)}`;
       const stale = regenHash !== currentHash;
       projections.push({
         target: a.target,

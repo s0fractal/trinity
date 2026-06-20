@@ -102,3 +102,16 @@ Deno.test("demand — RED TEAM: a generator failure is `unknown`, never `current
     "unknown",
   );
 });
+
+Deno.test("demand — RED TEAM: success without an output is `unknown`, never stale", async () => {
+  const r = await demand(
+    [ADAPTERS[0]],
+    hooks({
+      regen: {},
+      main: { "src/x7B88_evidence_report.myc.md": "A" },
+    }),
+  );
+  assertEquals(r.unknown, 1);
+  assertEquals(r.stale, 0);
+  assertEquals(r.demand, false);
+});

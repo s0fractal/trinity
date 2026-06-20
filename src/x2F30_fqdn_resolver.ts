@@ -861,6 +861,11 @@ function flagArg(args: string[], name: string): string | undefined {
   return args.find((a) => a.startsWith(`--${name}=`))?.slice(name.length + 3);
 }
 
+/** Stable tracked projections opt out of the machine-local runtime cache. */
+export function resolverCacheAllowed(args: string[]): boolean {
+  return !args.includes("--no-cache");
+}
+
 /** Search the cached index instead of live files (codex F4): matches name + the
  *  entry's bounded `text` (first INDEX_TEXT_CAP bytes), no disk reads. Same
  *  result shape as `searchContent`. Pure over the artifact; exported for the
@@ -1818,14 +1823,17 @@ if (import.meta.main) {
   if (args[0] === "atlas") {
     const index = await buildIndex(roots);
     const { cache, fresh } = await freshCache(index);
-    const artifact = fresh && cache ? cache : await buildResolverIndex(index);
+    const useCache = resolverCacheAllowed(args);
+    const artifact = useCache && fresh && cache
+      ? cache
+      : await buildResolverIndex(index);
     const a = networkAtlas(artifact);
     if (args.includes("--json")) {
       console.log(JSON.stringify(
         {
           type: "fqdn_atlas",
           index: {
-            used: fresh && cache ? "cache" : "live",
+            used: useCache && fresh && cache ? "cache" : "live",
             fresh,
             source_hash: artifact.source_hash,
             generator_version: artifact.generator_version,
@@ -1850,14 +1858,17 @@ if (import.meta.main) {
     const limit = limitArg ? Number(limitArg) : 12;
     const index = await buildIndex(roots);
     const { cache, fresh } = await freshCache(index);
-    const artifact = fresh && cache ? cache : await buildResolverIndex(index);
+    const useCache = resolverCacheAllowed(args);
+    const artifact = useCache && fresh && cache
+      ? cache
+      : await buildResolverIndex(index);
     const l = developmentArcs(artifact, { limit });
     if (args.includes("--json")) {
       console.log(JSON.stringify(
         {
           type: "fqdn_lineage",
           index: {
-            used: fresh && cache ? "cache" : "live",
+            used: useCache && fresh && cache ? "cache" : "live",
             fresh,
             source_hash: artifact.source_hash,
             generator_version: artifact.generator_version,

@@ -89,6 +89,19 @@ async function callJson(args: string[]): Promise<unknown> {
   return JSON.parse(out.split("\n").slice(i).join("\n"));
 }
 
+export function networkResolverArgs(
+  stable: boolean,
+  view: "atlas" | "lineage",
+): string[] {
+  return [
+    "resolve-fqdn",
+    view,
+    ...(view === "lineage" ? ["--limit=12"] : []),
+    ...(stable ? ["--no-cache"] : []),
+    "--json",
+  ];
+}
+
 async function sha256Hex(s: string): Promise<string> {
   const buf = await crypto.subtle.digest(
     "SHA-256",
@@ -184,9 +197,12 @@ async function main(argv: string[]) {
   const stable = argv.includes("--stable");
   const wantJson = argv.includes("--json");
 
-  const atlas = await callJson(["resolve-fqdn", "atlas", "--json"]) as Atlas;
+  // Stable projections are a function of repository inputs, never of the
+  // gitignored resolver cache present on one machine. A fresh checkout and a
+  // long-lived worktree must therefore select the same live-built artifact.
+  const atlas = await callJson(networkResolverArgs(stable, "atlas")) as Atlas;
   const lineage = await callJson(
-    ["resolve-fqdn", "lineage", "--limit=12", "--json"],
+    networkResolverArgs(stable, "lineage"),
   ) as Lineage;
 
   // Deterministic basis: the STRUCTURAL data actually rendered — NOT the index

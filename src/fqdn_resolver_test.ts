@@ -32,10 +32,16 @@ import {
   type Resolution,
   resolveFqdn,
   resolveFromIndex,
+  resolverCacheAllowed,
   searchCache,
   searchContent,
   showHeader,
 } from "./x2F30_fqdn_resolver.ts";
+
+Deno.test("resolver cache policy — --no-cache forces live artifact", () => {
+  assertEquals(resolverCacheAllowed(["atlas", "--json"]), true);
+  assertEquals(resolverCacheAllowed(["atlas", "--no-cache", "--json"]), false);
+});
 
 // Build a throwaway federation of roots with known collisions.
 async function fixture(): Promise<

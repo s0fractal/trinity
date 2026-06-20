@@ -122,3 +122,10 @@ Deno.test("attenuation — path containment rejects escapes/absolutes/symlinks",
   assert(!pathContained("/etc/passwd"));
   assert(!pathContained("src/../../x"));
 });
+
+Deno.test("attenuation registry — skills adapter uses the canonical dispatch handle", () => {
+  const skills = EPOCH1_ADAPTERS.find((a) =>
+    a.target === "x8CF0_skills_bootstrap"
+  );
+  assertEquals(skills?.argv, ["./t", "skill", "--stable"]);
+});

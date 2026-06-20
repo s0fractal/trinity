@@ -72,7 +72,7 @@ export const EPOCH1_ADAPTERS: Adapter[] = [
   {
     target: "x8CF0_skills_bootstrap",
     organ: "src/x8C00_skill_gen.ts",
-    argv: ["./t", "skill-gen", "--stable"],
+    argv: ["./t", "skill", "--stable"],
     output_path: "src/x8CF0_skills_bootstrap.myc.md",
   },
 ];

@@ -36,8 +36,23 @@ interface ValidationResult {
   failed: number;
   grandfathered: number;
   enforceFailed: number;
-  errors: Array<{ path: string; message: string }>;
-  grandfatheredErrors: Array<{ path: string; message: string }>;
+  errors: ValidationError[];
+  grandfatheredErrors: ValidationError[];
+}
+
+export type DebtCategory =
+  | "parse_corruption"
+  | "identity_debt"
+  | "shape_debt"
+  | "link_rot";
+
+interface ValidationError {
+  path: string;
+  message: string;
+  category: DebtCategory;
+  // Validation is intentionally non-actuating. Historical records are repaired
+  // by an append-only correction/alias, never by rewriting their signed bytes.
+  repair_policy: "supersede_or_alias_never_rewrite";
 }
 
 interface ChordFile {
@@ -48,6 +63,7 @@ interface ChordFile {
 type AjvError = {
   instancePath?: string;
   message?: string;
+  params?: { missingProperty?: string };
 };
 
 type AjvValidator = {
@@ -135,15 +151,48 @@ function recordFailure(
   path: string,
   message: string,
   grandfathered: boolean,
+  category: DebtCategory,
 ): void {
+  const error: ValidationError = {
+    path,
+    message,
+    category,
+    repair_policy: "supersede_or_alias_never_rewrite",
+  };
   result.failed++;
   if (grandfathered) {
     result.grandfathered++;
-    result.grandfatheredErrors.push({ path, message });
+    result.grandfatheredErrors.push(error);
   } else {
     result.enforceFailed++;
-    result.errors.push({ path, message });
+    result.errors.push(error);
   }
+}
+
+/** Stable routing for schema debt. Root-level missing identity markers are
+ * identity debt; valid chord identities with malformed fields are shape debt. */
+export function classifySchemaFailure(
+  message: string,
+  errors: AjvError[] = [],
+): DebtCategory {
+  if (message.startsWith("parse:")) return "parse_corruption";
+  const identityProperties = new Set([
+    "chord",
+    "voice",
+    "author",
+    "speaker",
+    "mode",
+    "type",
+    "id",
+    "octant",
+  ]);
+  const missingIdentity = errors.some((error) => {
+    const params = error.params;
+    return error.instancePath === "" &&
+      !!params?.missingProperty &&
+      identityProperties.has(params.missingProperty);
+  });
+  return missingIdentity ? "identity_debt" : "shape_debt";
 }
 
 async function listChordFiles(trackedOnly: boolean): Promise<ChordFile[]> {
@@ -179,11 +228,23 @@ async function validateChords(
         const msg = errs.slice(0, 2).map((e: AjvError) =>
           `${e.instancePath || "/"} ${e.message}`
         ).join("; ");
-        recordFailure(result, path, msg, grandfathered);
+        recordFailure(
+          result,
+          path,
+          msg,
+          grandfathered,
+          classifySchemaFailure(msg, errs),
+        );
       }
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
-      recordFailure(result, path, `parse: ${msg}`, grandfathered);
+      recordFailure(
+        result,
+        path,
+        `parse: ${msg}`,
+        grandfathered,
+        "parse_corruption",
+      );
     }
   }
   return result;
@@ -208,7 +269,12 @@ async function validateRecommendation(
       const msg = errs.slice(0, 3).map((e: AjvError) =>
         `${e.instancePath || "/"} ${e.message}`
       ).join("; ");
-      result.errors.push({ path: "recommendation.latest.json", message: msg });
+      result.errors.push({
+        path: "recommendation.latest.json",
+        message: msg,
+        category: "shape_debt",
+        repair_policy: "supersede_or_alias_never_rewrite",
+      });
     }
     return result;
   } catch (e) {
@@ -312,6 +378,7 @@ async function validateHearsLinks(
         entry.relPath,
         `hears ${bad.join("; ")}`,
         grandfathered,
+        "link_rot",
       );
     }
   }
@@ -327,6 +394,15 @@ function printResult(label: string, r: ValidationResult): void {
   console.log(
     `${label}: ${r.passed}/${r.total} passed (${pct}%), ${r.failed} failed${debt}${active}`,
   );
+  const categories = countCategories(r.errors);
+  if (Object.keys(categories).length > 0) {
+    console.log(
+      `  active debt: ${
+        Object.entries(categories).map(([kind, count]) => `${kind}=${count}`)
+          .join(", ")
+      }`,
+    );
+  }
   if (r.errors.length > 0) {
     console.log(`  first ${r.errors.length} active errors:`);
     for (const err of r.errors) {
@@ -341,6 +417,16 @@ function printResult(label: string, r: ValidationResult): void {
       console.log(`    ${err.path}: ${err.message}`);
     }
   }
+}
+
+function countCategories(
+  errors: ValidationError[],
+): Partial<Record<DebtCategory, number>> {
+  const counts: Partial<Record<DebtCategory, number>> = {};
+  for (const error of errors) {
+    counts[error.category] = (counts[error.category] ?? 0) + 1;
+  }
+  return counts;
 }
 
 function printResultJson(
@@ -370,8 +456,24 @@ function printResultJson(
         passed,
         failed,
         active_failures: activeFailures,
+        active_schema_failures: chordResult.enforceFailed +
+          (recResult?.enforceFailed ?? 0),
+        dangling_hears: hearsResult.enforceFailed,
         grandfathered_failures: chordResult.grandfathered +
           hearsResult.grandfathered,
+      },
+      debt_ledgers: {
+        parse_corruption: chordResult.errors.filter((e) =>
+          e.category === "parse_corruption"
+        ),
+        identity_debt: chordResult.errors.filter((e) =>
+          e.category === "identity_debt"
+        ),
+        shape_debt: [
+          ...chordResult.errors,
+          ...(recResult?.errors ?? []),
+        ].filter((e) => e.category === "shape_debt"),
+        link_rot: hearsResult.errors,
       },
       chords: chordResult,
       recommendation: recResult,
@@ -461,5 +563,7 @@ if (import.meta.main) {
       `\noverall: ${passed}/${total} passed, ${failed} failed, ${schemaEnforceFailed} active schema failures; ${hearsResult.enforceFailed} dangling hears (diagnostic, non-gating)`,
     );
   }
-  Deno.exit(flags.strict && schemaEnforceFailed > 0 ? 1 : 0);
+  // Do not call Deno.exit() here: a large --json report may still be buffered
+  // on stdout and can be truncated before an automation consumer reads it.
+  Deno.exitCode = flags.strict && schemaEnforceFailed > 0 ? 1 : 0;
 }

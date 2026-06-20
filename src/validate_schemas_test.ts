@@ -1,6 +1,9 @@
 import { assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
 import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
-import { checkHearsRef } from "./x5400_validate_schemas.ts";
+import {
+  checkHearsRef,
+  classifySchemaFailure,
+} from "./x5400_validate_schemas.ts";
 import { buildIndex } from "./x2F30_fqdn_resolver.ts";
 
 // checkHearsRef validates ONLY unambiguous citations (coordinate stems + paths
@@ -56,4 +59,26 @@ Deno.test("checkHearsRef - coordinate stem: resolved via the FQDN index", async 
   } finally {
     await Deno.remove(base, { recursive: true });
   }
+});
+
+Deno.test("schema debt classifier separates parse, identity, and shape debt", () => {
+  assertEquals(
+    classifySchemaFailure("parse: malformed YAML"),
+    "parse_corruption",
+  );
+  assertEquals(
+    classifySchemaFailure("/ must have required property 'voice'", [{
+      instancePath: "",
+      message: "must have required property 'voice'",
+      params: { missingProperty: "voice" },
+    }]),
+    "identity_debt",
+  );
+  assertEquals(
+    classifySchemaFailure("/hears/4 must be string", [{
+      instancePath: "/hears/4",
+      message: "must be string",
+    }]),
+    "shape_debt",
+  );
 });

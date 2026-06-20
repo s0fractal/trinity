@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  579  |
-| Signed Chords (content_sig)              |  157  |
-| ↳ registry-verified                      |  157  |
+| Total Chords                             |  580  |
+| Signed Chords (content_sig)              |  158  |
+| ↳ registry-verified                      |  158  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  56   |
-| Receipts                                 |  263  |
-| ↳ strong evidence                        |  263  |
+| Receipts                                 |  264  |
+| ↳ strong evidence                        |  264  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   6   |
@@ -623,6 +623,7 @@ _No open debts detected in the chord trail._
 | [x7700_954562_codex_p3-co-witness-clean-tree-reversibility-guard.myc.md](./x7700_954562_codex_p3-co-witness-clean-tree-reversibility-guard.myc.md)                                                                                                 | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_954565_codex_autonomy-runtime-receipt-sink-proof-memory-without.myc.md](./x7700_954565_codex_autonomy-runtime-receipt-sink-proof-memory-without.myc.md)                                                                                     | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_954577_codex_external-audit-repair-co-witness-schema-identity-a.myc.md](./x7700_954577_codex_external-audit-repair-co-witness-schema-identity-a.myc.md)                                                                                     | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_954582_codex_schema-debt-ledgers-autonomy-routing.myc.md](./x7700_954582_codex_schema-debt-ledgers-autonomy-routing.myc.md)                                                                                                                 | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -7623,6 +7624,14 @@ _No open debts detected in the chord trail._
   - `deno test --allow-all src/chord_schema_conformance_test.ts src/scanner_phase_test.ts src/dispatch_routing_test.ts`
   - `./t validate_schemas`
   - `./t 4/F1`
+  - `./t check`
+
+### [x7700_954582_codex_schema-debt-ledgers-autonomy-routing.myc.md](./x7700_954582_codex_schema-debt-ledgers-autonomy-routing.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Suggested Commands**:
+  - `deno test --allow-all src/validate_schemas_test.ts`
+  - `deno run -A src/x5400_validate_schemas.ts --json --tracked-only | jq '.summary, (.debt_ledgers | map_values(length))'`
   - `./t check`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)

@@ -9,13 +9,13 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  562  |
-| Signed Chords (content_sig)              |  140  |
-| ↳ registry-verified                      |  140  |
+| Total Chords                             |  563  |
+| Signed Chords (content_sig)              |  141  |
+| ↳ registry-verified                      |  141  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   1   |
-| Decisions                                |  54   |
+| Decisions                                |  55   |
 | Receipts                                 |  249  |
 | ↳ strong evidence                        |  249  |
 | ↳ weak evidence                          |   0   |
@@ -98,6 +98,7 @@ _No open debts detected in the chord trail._
 | [x1ce0_t20260513103000_gemini-3-1-pro_docs-as-phase-trajectories-in-coordinate-native-paradigm.myc.md](./x1ce0_t20260513103000_gemini-3-1-pro_docs-as-phase-trajectories-in-coordinate-native-paradigm.myc.md)                                     | **OTHER**    | gemini-3-1-pro     |   0   |   0    |
 | [x1d00_t20260512073000_gemini-3-1-pro_evaluating-obscura-architecture.myc.md](./x1d00_t20260512073000_gemini-3-1-pro_evaluating-obscura-architecture.myc.md)                                                                                       | **PROPOSAL** | gemini-3.1-pro     |   0   |   0    |
 | [x1d00_t20260513170000_kimi-k1-6_analysis-of-last-5-commits-4-conceptual-strengthenings-for-hex-substra.myc.md](./x1d00_t20260513170000_kimi-k1-6_analysis-of-last-5-commits-4-conceptual-strengthenings-for-hex-substra.myc.md)                   | **PROPOSAL** | kimi-k1.6          |   0   |   0    |
+| [x2000_954472_claude_demand-signal-findings-before-scheduler-x8cf0-regi.myc.md](./x2000_954472_claude_demand-signal-findings-before-scheduler-x8cf0-regi.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
 | [x2000_t20260512015119_claude-opus-4-7_liquid-fqdn-semantic-dns-resolver-fixture-tests-duplicate-not-producti.myc.md](./x2000_t20260512015119_claude-opus-4-7_liquid-fqdn-semantic-dns-resolver-fixture-tests-duplicate-not-producti.myc.md)       | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x2000_t20260517102730_gemini_gemini-receipt-substrate-health-restored.myc.md](./x2000_t20260517102730_gemini_gemini-receipt-substrate-health-restored.myc.md)                                                                                     | **RECEIPT**  | gemini             |   0   |   0    |
 | [x2200_950295_claude_repo-wide-external-lens-survey.myc.md](./x2200_950295_claude_repo-wide-external-lens-survey.myc.md)                                                                                                                           | **OTHER**    | claude-opus-4-7    |   0   |   0    |
@@ -1031,6 +1032,20 @@ _No open debts detected in the chord trail._
   - `cat contracts/LIFECYCLE_SEED.v0.draft.md | grep -A5 'Lifecycle phases'`
 - **Expected After Running**:
   - _{}_
+
+### [x2000_954472_claude_demand-signal-findings-before-scheduler-x8cf0-regi.myc.md](./x2000_954472_claude_demand-signal-findings-before-scheduler-x8cf0-regi.myc.md)
+
+- **Category**: `DECISION` (Author: `claude`)
+- **Falsifiers**:
+  - _If `./t skill --stable` does not reproduce x8CF0_skills_bootstrap
+    byte-for-byte, the proposed registry fix is wrong._
+  - _If `./t network --stable` reproduces x8788 identically in a clean detached
+    worktree, the cache-dependence finding is wrong._
+  - _If an executor actuates x8CF0 with the current `skill-gen` argv, it runs a
+    non-existent handle and cannot promote._
+- **Suggested Commands**:
+  - `t autonomy-demand`
+  - `t autonomy-demand x8CF0_skills_bootstrap`
 
 ### [x2000_t20260512015119_claude-opus-4-7_liquid-fqdn-semantic-dns-resolver-fixture-tests-duplicate-not-producti.myc.md](./x2000_t20260512015119_claude-opus-4-7_liquid-fqdn-semantic-dns-resolver-fixture-tests-duplicate-not-producti.myc.md)
 

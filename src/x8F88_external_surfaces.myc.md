@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     53     |
 | compost           |     0      |
-| dynamic topology  |    562     |
+| dynamic topology  |    563     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **663**   |
+| **Total**         |  **664**   |
 
 ## Runtime Cache Diagnostics
 
@@ -161,6 +161,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x1ce0_t20260513103000_gemini-3-1-pro_docs-as-phase-trajectories-in-coordinate-native-paradigm.myc.md](../src/x1ce0_t20260513103000_gemini-3-1-pro_docs-as-phase-trajectories-in-coordinate-native-paradigm.myc.md)                                     | canonical        | src/x1ce0_t20260513103000_gemini-3-1-pro_docs-as-phase-trajectories-in-coordinate-native-paradigm.myc.md                   | keep        |                              |
 | dynamic topology  | [src/x1d00_t20260512073000_gemini-3-1-pro_evaluating-obscura-architecture.myc.md](../src/x1d00_t20260512073000_gemini-3-1-pro_evaluating-obscura-architecture.myc.md)                                                                                       | canonical        | src/x1d00_t20260512073000_gemini-3-1-pro_evaluating-obscura-architecture.myc.md                                            | keep        |                              |
 | dynamic topology  | [src/x1d00_t20260513170000_kimi-k1-6_analysis-of-last-5-commits-4-conceptual-strengthenings-for-hex-substra.myc.md](../src/x1d00_t20260513170000_kimi-k1-6_analysis-of-last-5-commits-4-conceptual-strengthenings-for-hex-substra.myc.md)                   | canonical        | src/x1d00_t20260513170000_kimi-k1-6_analysis-of-last-5-commits-4-conceptual-strengthenings-for-hex-substra.myc.md          | keep        |                              |
+| dynamic topology  | [src/x2000_954472_claude_demand-signal-findings-before-scheduler-x8cf0-regi.myc.md](../src/x2000_954472_claude_demand-signal-findings-before-scheduler-x8cf0-regi.myc.md)                                                                                   | canonical        | src/x2000_954472_claude_demand-signal-findings-before-scheduler-x8cf0-regi.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x2000_t20260512015119_claude-opus-4-7_liquid-fqdn-semantic-dns-resolver-fixture-tests-duplicate-not-producti.myc.md](../src/x2000_t20260512015119_claude-opus-4-7_liquid-fqdn-semantic-dns-resolver-fixture-tests-duplicate-not-producti.myc.md)       | canonical        | src/x2000_t20260512015119_claude-opus-4-7_liquid-fqdn-semantic-dns-resolver-fixture-tests-duplicate-not-producti.myc.md    | keep        |                              |
 | dynamic topology  | [src/x2000_t20260517102730_gemini_gemini-receipt-substrate-health-restored.myc.md](../src/x2000_t20260517102730_gemini_gemini-receipt-substrate-health-restored.myc.md)                                                                                     | canonical        | src/x2000_t20260517102730_gemini_gemini-receipt-substrate-health-restored.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x2200_950295_claude_repo-wide-external-lens-survey.myc.md](../src/x2200_950295_claude_repo-wide-external-lens-survey.myc.md)                                                                                                                           | canonical        | src/x2200_950295_claude_repo-wide-external-lens-survey.myc.md                                                              | keep        |                              |

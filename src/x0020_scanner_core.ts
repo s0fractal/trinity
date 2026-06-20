@@ -79,102 +79,104 @@ export function hasJsonBlock(content: string): boolean {
   return content.includes("```json myc") || content.includes("```json");
 }
 
-export function classifyPhase(
-  path: string,
-  content: string,
-  fm: Record<string, any> | null,
-  isHashVerified: boolean,
-): ThoughtPhase {
-  const filename = path.split("/").pop() || "";
-  const isPublished = path.includes("/myc/public/objects/");
+const THOUGHT_PHASES: ThoughtPhase[] = [
+  "raw-fantasy",
+  "hypothesis",
+  "proposal",
+  "experiment",
+  "receipt",
+  "formula",
+  "crystal",
+  "compost",
+];
 
+/** A file is receipt-backed (L7) STRUCTURALLY: a receipt-typed chord
+ *  (type/mode/stance), a content-addressed `*.receipt.*` object, or an actual
+ *  executed-output block. A bare textual mention of `receipt:`/`signature:` — or a
+ *  proposal's `receipt: "file"` policy field — must NOT count (mentions inflated the
+ *  signal; audit 2026-06-20). */
+export function structuralReceiptBacked(
+  fm: Record<string, any> | null,
+  filename: string,
+  content: string,
+): boolean {
+  if (filename.includes(".receipt.")) return true;
+  if (content.includes("------- output -------")) return true;
+  if (!fm) return false;
+  return String(fm.type ?? "").toLowerCase().includes("receipt") ||
+    String(fm.mode ?? "").toLowerCase() === "receipt" ||
+    String(fm.stance ?? "").toLowerCase() === "receipt";
+}
+
+/** Map a file's STRUCTURAL ontology profile (the L-ladder computed in analyzeFile)
+ *  to a thought phase, per the L0→L8 mapping in x2C10_cognitive_thermodynamics.
+ *
+ *  This replaced a chain of fragile content-substring guesses (`includes("∀")`,
+ *  `includes("receipt:")`, `includes("ƒ[")`, …) with the already-computed structural
+ *  signals (refactor 2026-06-21). Two things the substring version got wrong:
+ *    • every un-addressed `.md` collapsed to `hypothesis`, so `raw-fantasy` was
+ *      structurally unreachable — now a plain markdown with no FQDN (L0) is honestly
+ *      `raw-fantasy`, giving `hallucination_risk` a real numerator;
+ *    • `receipt` matched any file MENTIONING the word — now it needs a STRUCTURAL
+ *      receipt (L7).
+ *  The most-advanced signal along the maturity cycle (raw → hypothesis → proposal →
+ *  experiment → receipt → formula → crystal) wins; explicit `thought_phase:` and
+ *  `compost` (off the active path) are decided first. */
+export function classifyPhase(
+  p: Pick<
+    FileProfile,
+    | "L1_fqdn"
+    | "L2_parseable"
+    | "L3_schema_valid"
+    | "L4b_hash_verified"
+    | "L5_graph_linked"
+    | "L6_recipe"
+    | "L7_receipt_backed"
+    | "L8_published"
+  >,
+  fm: Record<string, any> | null,
+): ThoughtPhase {
+  // explicit author override wins.
   if (fm && typeof fm.thought_phase === "string") {
-    const p = fm.thought_phase.toLowerCase();
-    if (
-      [
-        "raw-fantasy",
-        "hypothesis",
-        "proposal",
-        "experiment",
-        "receipt",
-        "formula",
-        "crystal",
-        "compost",
-      ].includes(p)
-    ) {
-      return p as ThoughtPhase;
+    const phase = fm.thought_phase.toLowerCase();
+    if (THOUGHT_PHASES.includes(phase as ThoughtPhase)) {
+      return phase as ThoughtPhase;
     }
   }
-
-  // A file is in receipt phase when it STRUCTURALLY is one: a receipt-typed chord
-  // (type/mode/stance), a content-addressed `*.receipt.*` object, or an actual
-  // executed-output block. A bare textual mention of `receipt:`/`signature:` — e.g.
-  // `receipt: "none"`, a proposal's `receipt: "file"` policy field, or prose/code —
-  // must NOT count; counting mentions inflated the Rigid-Verifying archetype.
-  const receiptTyped = !!fm &&
-    (String(fm.type ?? "").toLowerCase().includes("receipt") ||
-      String(fm.mode ?? "").toLowerCase() === "receipt" ||
-      String(fm.stance ?? "").toLowerCase() === "receipt");
-  if (
-    receiptTyped || filename.includes(".receipt.") ||
-    content.includes("------- output -------")
-  ) {
-    return "receipt";
-  }
-
-  if (
-    (fm && fm.type === "RecipeDescriptor") || content.includes("ƒ[") ||
-    filename.includes(".recipe.")
-  ) {
-    return "experiment";
-  }
-
-  if (
-    (fm && fm.formula_kind) || content.includes("invariant") ||
-    content.includes("∀") || content.includes("∈")
-  ) {
-    return "formula";
-  }
-
-  // Compost: per canonical THOUGHT_PHASES.v0.1 "rejected proposal,
-  // failed experiment, superseded theory, deprecated file". Was
-  // previously over-narrow (DecisionDescriptor only); expanded to
-  // cover any descriptor that explicitly marks itself out of the
-  // active path.
-  if (
-    fm &&
-    (fm.status === "rejected" || fm.status === "superseded" ||
-      fm.status === "compost" || fm.status === "deprecated")
-  ) {
+  const status = fm ? String(fm.status ?? "").toLowerCase() : "";
+  // compost — explicitly off the active maturity path.
+  if (["rejected", "superseded", "compost", "deprecated"].includes(status)) {
     return "compost";
   }
-
-  // Crystal: per canonical THOUGHT_PHASES.v0.1 "replayable contract,
-  // verified descriptor, receipt-backed invariant, green baseline,
-  // frozen protocol, content-addressed object with stable projection".
-  // Was previously over-narrow (hash-verified AND published only);
-  // expanded to recognize active ContractDescriptors and pinned
-  // contracts (Bitcoin-anchored = strongest crystal signal).
-  if (isHashVerified && isPublished) {
-    return "crystal";
-  }
+  // crystal — published, or a verified + graph-linked load-bearing object, or an
+  // active/pinned contract.
   if (
-    fm &&
-    fm.type === "ContractDescriptor" &&
-    (fm.status === "active" || fm.status === "pinned")
+    p.L8_published ||
+    (p.L4b_hash_verified && p.L5_graph_linked) ||
+    (fm && fm.type === "ContractDescriptor" &&
+      (status === "active" || status === "pinned"))
   ) {
     return "crystal";
   }
-
+  // formula — graph-linked compression / a declared invariant family.
+  if (p.L5_graph_linked || (fm && fm.formula_kind)) return "formula";
+  // receipt — structural receipt-backing, or a content-addressed (hash-verified) object.
+  if (p.L7_receipt_backed || p.L4b_hash_verified) return "receipt";
+  // experiment — a replayable recipe.
+  if (p.L6_recipe) return "experiment";
+  // proposal — schema-valid structure, or an explicit proposal descriptor.
   if (
-    fm &&
-    (fm.type === "ProposalDescriptor" || fm.proposal_status ||
-      fm.status === "proposed")
+    p.L3_schema_valid ||
+    (fm &&
+      (fm.type === "ProposalDescriptor" || fm.proposal_status ||
+        status === "proposed"))
   ) {
     return "proposal";
   }
-
-  return "hypothesis";
+  // hypothesis — addressed / structured, but not yet validated.
+  if (p.L1_fqdn || p.L2_parseable) return "hypothesis";
+  // raw-fantasy — raw markdown, no ontological address (L0).
+  return "raw-fantasy";
 }
 
 export async function analyzeFile(
@@ -259,10 +261,7 @@ export async function analyzeFile(
     profile.L6_recipe = true;
   }
 
-  if (
-    (fm && fm["receipt"]) || content.includes("receipt:") ||
-    content.includes("signature:")
-  ) {
+  if (structuralReceiptBacked(fm, filename, content)) {
     profile.L7_receipt_backed = true;
   }
 
@@ -273,12 +272,7 @@ export async function analyzeFile(
     profile.L8_published = true;
   }
 
-  profile.thoughtPhase = classifyPhase(
-    path,
-    content,
-    fm,
-    profile.L4b_hash_verified,
-  );
+  profile.thoughtPhase = classifyPhase(profile, fm);
 
   return profile;
 }

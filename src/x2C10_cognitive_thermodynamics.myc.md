@@ -149,15 +149,22 @@ Without compost, the system repeats mistakes or lies about its past.
 > `cognition_phase_report_test`. (Audit-era note, now historical: before this
 > they were spec-only.)
 >
-> **CAVEAT — `hallucination_risk` is structurally inert (always 0).** Its
-> numerator is the `raw-fantasy` count, but the classifier
-> (`x0020_scanner_core::classifyPhase`) has no content-based path to
-> `raw-fantasy` — it is settable only via explicit `thought_phase:` frontmatter,
-> which no file uses. So the metric computes but is meaningless until a
-> raw-fantasy heuristic exists. Do not read it as a real signal yet. The other
-> six ratios are live and meaningful (e.g. crystal_ratio, grounding_ratio
-> reflect real phase distribution). Metrics are descriptors, never fitness
-> targets (see [[project_coherence_decreases_with_growth]]).
+> **`hallucination_risk` is now LIVE (2026-06-21 classifier refactor).** Earlier
+> it was structurally inert (always 0) because `raw-fantasy` had no classifier
+> path; `x0020_scanner_core::classifyPhase` is now STRUCTURAL (maps the L-ladder
+> to phase), so an un-addressed `.md` (L0) is honestly `raw-fantasy` and the
+> metric has a real numerator. TWO interpretation caveats:
+>
+> 1. **Unbounded ratio.** `hallucination_risk = raw / (receipt+formula+crystal)`
+>    can exceed 1 (e.g. omega read ~48: 48 raw markdown docs vs ~1 grounded). It
+>    is NOT a normalized probability — read it relative, not absolute.
+> 2. **Markdown-only scan skew.** `scanEcosystem` walks only `.md`, so a
+>    code-heavy substrate whose substance is non-markdown (omega = Rust) shows
+>    mostly `raw-fantasy` markdown and a high score — that means "its docs are
+>    un-addressed prose," NOT "it is hallucinating." Compare like-for-like
+>    substrates. The other six ratios are live and meaningful. Metrics are
+>    descriptors, never fitness targets (see
+>    [[project_coherence_decreases_with_growth]]).
 
 Initial metrics (spec):
 
@@ -172,9 +179,9 @@ rigidity_index     = crystal / (raw-fantasy + hypothesis + proposal)
 hallucination_risk = raw-fantasy / (receipt + formula + crystal)
 ```
 
-These are crude. Their value is not precision, but visibility. They are now
-implemented (see the status banner above) — with `hallucination_risk` inert
-until a `raw-fantasy` classifier path exists.
+These are crude. Their value is not precision, but visibility. All seven are now
+implemented and live (see the status banner) — `hallucination_risk` included, since
+the classifier now reaches `raw-fantasy`; read it with the two caveats above.
 
 ## Ontological Coverage Connection
 

@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  582  |
-| Signed Chords (content_sig)              |  160  |
-| ↳ registry-verified                      |  160  |
+| Total Chords                             |  583  |
+| Signed Chords (content_sig)              |  161  |
+| ↳ registry-verified                      |  161  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  56   |
-| Receipts                                 |  266  |
-| ↳ strong evidence                        |  266  |
+| Receipts                                 |  267  |
+| ↳ strong evidence                        |  267  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   6   |
@@ -623,6 +623,7 @@ _No open debts detected in the chord trail._
 | [x7700_954562_codex_p3-co-witness-clean-tree-reversibility-guard.myc.md](./x7700_954562_codex_p3-co-witness-clean-tree-reversibility-guard.myc.md)                                                                                                 | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_954565_codex_autonomy-runtime-receipt-sink-proof-memory-without.myc.md](./x7700_954565_codex_autonomy-runtime-receipt-sink-proof-memory-without.myc.md)                                                                                     | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_954577_codex_external-audit-repair-co-witness-schema-identity-a.myc.md](./x7700_954577_codex_external-audit-repair-co-witness-schema-identity-a.myc.md)                                                                                     | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_954582_claude_receipt-envelope-v0-1-superseded-by-v1-0-link-rot.myc.md](./x7700_954582_claude_receipt-envelope-v0-1-superseded-by-v1-0-link-rot.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_954582_codex_append-only-hears-alias-registry-coordinate-rot-cl.myc.md](./x7700_954582_codex_append-only-hears-alias-registry-coordinate-rot-cl.myc.md)                                                                                     | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_954582_codex_schema-debt-ledgers-autonomy-routing.myc.md](./x7700_954582_codex_schema-debt-ledgers-autonomy-routing.myc.md)                                                                                                                 | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_954582_codex_typed-path-migrations-close-structural-link-rot.myc.md](./x7700_954582_codex_typed-path-migrations-close-structural-link-rot.myc.md)                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -7626,6 +7627,14 @@ _No open debts detected in the chord trail._
   - `deno test --allow-all src/chord_schema_conformance_test.ts src/scanner_phase_test.ts src/dispatch_routing_test.ts`
   - `./t validate_schemas`
   - `./t 4/F1`
+  - `./t check`
+
+### [x7700_954582_claude_receipt-envelope-v0-1-superseded-by-v1-0-link-rot.myc.md](./x7700_954582_claude_receipt-envelope-v0-1-superseded-by-v1-0-link-rot.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Suggested Commands**:
+  - `deno test --allow-all src/validate_schemas_test.ts`
+  - `deno run -A src/x5400_validate_schemas.ts --json --tracked-only | jq '{aliases:.hears_links.aliasesResolved, link_rot:(.debt_ledgers.link_rot|length)}'`
   - `./t check`
 
 ### [x7700_954582_codex_append-only-hears-alias-registry-coordinate-rot-cl.myc.md](./x7700_954582_codex_append-only-hears-alias-registry-coordinate-rot-cl.myc.md)

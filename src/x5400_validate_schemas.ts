@@ -315,8 +315,14 @@ const KNOWN_PATH_ROOTS = new Set([
 
 interface HearsAlias {
   from: string;
+  // `renamed_to`/`moved_to` assert byte identity (a git rename/move preserved the
+  // content). `superseded_by` preserves historical REACHABILITY while explicitly
+  // DENYING byte identity — the cited draft name was never a tracked file; a later,
+  // distinct document carries the same wire schema and supersedes it (codex
+  // x7700_954582). All three satisfy hears-reachability; only the first two claim
+  // the bytes are the same.
   to: string;
-  relation: "renamed_to" | "moved_to";
+  relation: "renamed_to" | "moved_to" | "superseded_by";
   evidence: string;
 }
 
@@ -325,8 +331,9 @@ interface HearsAliasRegistry {
   aliases: HearsAlias[];
 }
 
-async function loadHearsAliases(): Promise<Map<string, string>> {
-  const path = `${ROOT}src/x2F31_hears_aliases.myc.json`;
+export async function loadHearsAliases(
+  path = `${ROOT}src/x2F31_hears_aliases.myc.json`,
+): Promise<Map<string, string>> {
   const registry = JSON.parse(
     await Deno.readTextFile(path),
   ) as HearsAliasRegistry;
@@ -338,7 +345,7 @@ async function loadHearsAliases(): Promise<Map<string, string>> {
   for (const entry of registry.aliases) {
     if (
       typeof entry.from !== "string" || typeof entry.to !== "string" ||
-      !["renamed_to", "moved_to"].includes(entry.relation) ||
+      !["renamed_to", "moved_to", "superseded_by"].includes(entry.relation) ||
       typeof entry.evidence !== "string" || entry.evidence.trim() === "" ||
       entry.from === entry.to ||
       aliases.has(entry.from)

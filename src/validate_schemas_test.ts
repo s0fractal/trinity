@@ -3,6 +3,7 @@ import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
 import {
   checkHearsRef,
   classifySchemaFailure,
+  loadHearsAliases,
   resolveHearsRef,
 } from "./x5400_validate_schemas.ts";
 import { buildIndex } from "./x2F30_fqdn_resolver.ts";
@@ -64,6 +65,44 @@ Deno.test("checkHearsRef - coordinate stem: resolved via the FQDN index", async 
     );
   } finally {
     await Deno.remove(base, { recursive: true });
+  }
+});
+
+Deno.test("hears-alias loader accepts superseded_by (reachable, byte-identity-denying) and rejects unknown relations", async () => {
+  const dir = await Deno.makeTempDir({ prefix: "alias_reg_" });
+  const write = (aliases: unknown[]) =>
+    Deno.writeTextFile(
+      join(dir, "reg.json"),
+      JSON.stringify({ type: "trinity.hears-alias-registry.v0.1", aliases }),
+    );
+  try {
+    // superseded_by is a first-class accepted relation (codex x7700_954582 +
+    // claude's RECEIPT_ENVELOPE v0.1→v1.0 adjudication).
+    await write([{
+      from: "contracts/OLD.v0.1.md",
+      to: "contracts/NEW.v1.0.md",
+      relation: "superseded_by",
+      evidence: "doc promoted; same wire schema; no v0.1 file ever tracked",
+    }]);
+    const m = await loadHearsAliases(join(dir, "reg.json"));
+    assertEquals(m.get("contracts/OLD.v0.1.md"), "contracts/NEW.v1.0.md");
+
+    // an unknown relation fails closed at load.
+    await write([{
+      from: "a",
+      to: "b",
+      relation: "guessed_to",
+      evidence: "x",
+    }]);
+    let threw = false;
+    try {
+      await loadHearsAliases(join(dir, "reg.json"));
+    } catch {
+      threw = true;
+    }
+    assertEquals(threw, true);
+  } finally {
+    await Deno.remove(dir, { recursive: true });
   }
 });
 

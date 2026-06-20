@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    580     |
+| dynamic topology  |    581     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **680**   |
+| **Total**         |  **681**   |
 
 ## Runtime Cache Diagnostics
 
@@ -687,6 +687,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x7700_954562_codex_p3-co-witness-clean-tree-reversibility-guard.myc.md](../src/x7700_954562_codex_p3-co-witness-clean-tree-reversibility-guard.myc.md)                                                                                                 | canonical        | src/x7700_954562_codex_p3-co-witness-clean-tree-reversibility-guard.myc.md                                                 | keep        |                              |
 | dynamic topology  | [src/x7700_954565_codex_autonomy-runtime-receipt-sink-proof-memory-without.myc.md](../src/x7700_954565_codex_autonomy-runtime-receipt-sink-proof-memory-without.myc.md)                                                                                     | canonical        | src/x7700_954565_codex_autonomy-runtime-receipt-sink-proof-memory-without.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x7700_954577_codex_external-audit-repair-co-witness-schema-identity-a.myc.md](../src/x7700_954577_codex_external-audit-repair-co-witness-schema-identity-a.myc.md)                                                                                     | canonical        | src/x7700_954577_codex_external-audit-repair-co-witness-schema-identity-a.myc.md                                           | keep        |                              |
+| dynamic topology  | [src/x7700_954582_codex_append-only-hears-alias-registry-coordinate-rot-cl.myc.md](../src/x7700_954582_codex_append-only-hears-alias-registry-coordinate-rot-cl.myc.md)                                                                                     | canonical        | src/x7700_954582_codex_append-only-hears-alias-registry-coordinate-rot-cl.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x7700_954582_codex_schema-debt-ledgers-autonomy-routing.myc.md](../src/x7700_954582_codex_schema-debt-ledgers-autonomy-routing.myc.md)                                                                                                                 | canonical        | src/x7700_954582_codex_schema-debt-ledgers-autonomy-routing.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](../src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | canonical        | src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](../src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | canonical        | src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md                                                     | keep        |                              |

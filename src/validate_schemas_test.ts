@@ -3,6 +3,7 @@ import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
 import {
   checkHearsRef,
   classifySchemaFailure,
+  resolveHearsRef,
 } from "./x5400_validate_schemas.ts";
 import { buildIndex } from "./x2F30_fqdn_resolver.ts";
 
@@ -81,4 +82,46 @@ Deno.test("schema debt classifier separates parse, identity, and shape debt", ()
     }]),
     "shape_debt",
   );
+});
+
+Deno.test("hears aliases are exact, one-hop, and fail closed", async () => {
+  const base = await Deno.makeTempDir({ prefix: "hears_alias_" });
+  try {
+    await Deno.writeTextFile(
+      join(base, "x7700_1_v_canonical.myc.md"),
+      "---\ntype: chord\n---\nbody",
+    );
+    const idx = await buildIndex([base]);
+    const aliases = new Map([
+      ["x7700_1_v_old", "x7700_1_v_canonical"],
+    ]);
+    assertEquals(
+      await resolveHearsRef("x7700_1_v_old", idx, aliases),
+      {
+        error: null,
+        aliasApplied: "x7700_1_v_old -> x7700_1_v_canonical",
+      },
+    );
+    assertEquals(
+      await checkHearsRef(
+        "x7700_1_v_unknown",
+        idx,
+        new Map([["x7700_1_v_unknown", "x7700_1_v_missing"]]),
+      ),
+      "alias target unresolved: x7700_1_v_unknown -> x7700_1_v_missing (unresolvable stem: x7700_1_v_missing)",
+    );
+    assertEquals(
+      await checkHearsRef(
+        "x7700_1_v_old",
+        idx,
+        new Map([
+          ["x7700_1_v_old", "x7700_1_v_middle"],
+          ["x7700_1_v_middle", "x7700_1_v_canonical"],
+        ]),
+      ),
+      "alias chain forbidden: x7700_1_v_old -> x7700_1_v_middle",
+    );
+  } finally {
+    await Deno.remove(base, { recursive: true });
+  }
 });

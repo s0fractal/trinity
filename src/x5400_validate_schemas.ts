@@ -36,6 +36,7 @@ interface ValidationResult {
   failed: number;
   grandfathered: number;
   enforceFailed: number;
+  aliasesResolved: number;
   errors: ValidationError[];
   grandfatheredErrors: ValidationError[];
 }
@@ -141,6 +142,7 @@ function emptyResult(): ValidationResult {
     failed: 0,
     grandfathered: 0,
     enforceFailed: 0,
+    aliasesResolved: 0,
     errors: [],
     grandfatheredErrors: [],
   };
@@ -310,6 +312,70 @@ const KNOWN_PATH_ROOTS = new Set([
   "myc",
 ]);
 
+interface HearsAlias {
+  from: string;
+  to: string;
+  reason: string;
+}
+
+interface HearsAliasRegistry {
+  type: "trinity.hears-alias-registry.v0.1";
+  aliases: HearsAlias[];
+}
+
+async function loadHearsAliases(): Promise<Map<string, string>> {
+  const path = `${ROOT}src/x2F31_hears_aliases.myc.json`;
+  const registry = JSON.parse(
+    await Deno.readTextFile(path),
+  ) as HearsAliasRegistry;
+  if (
+    registry.type !== "trinity.hears-alias-registry.v0.1" ||
+    !Array.isArray(registry.aliases)
+  ) throw new Error("invalid hears alias registry envelope");
+  const aliases = new Map<string, string>();
+  for (const entry of registry.aliases) {
+    if (
+      typeof entry.from !== "string" || typeof entry.to !== "string" ||
+      typeof entry.reason !== "string" || entry.from === entry.to ||
+      aliases.has(entry.from)
+    ) throw new Error(`invalid or duplicate hears alias: ${entry.from}`);
+    aliases.set(entry.from, entry.to);
+  }
+  return aliases;
+}
+
+export interface HearsRefResult {
+  error: string | null;
+  aliasApplied: string | null;
+}
+
+/** Resolve one citation with at most one exact alias hop. Alias targets must
+ * independently resolve; chains and cycles are rejected by construction. */
+export async function resolveHearsRef(
+  ref: string,
+  index: Index,
+  aliases: ReadonlyMap<string, string> = new Map(),
+): Promise<HearsRefResult> {
+  const directError = await checkHearsRefDirect(ref, index);
+  if (!directError) return { error: null, aliasApplied: null };
+  const target = aliases.get(ref.trim());
+  if (!target) return { error: directError, aliasApplied: null };
+  if (aliases.has(target)) {
+    return {
+      error: `alias chain forbidden: ${ref.trim()} -> ${target}`,
+      aliasApplied: null,
+    };
+  }
+  const targetError = await checkHearsRefDirect(target, index);
+  return targetError
+    ? {
+      error:
+        `alias target unresolved: ${ref.trim()} -> ${target} (${targetError})`,
+      aliasApplied: null,
+    }
+    : { error: null, aliasApplied: `${ref.trim()} -> ${target}` };
+}
+
 /** Classify a single `hears:` reference and, ONLY when it is unambiguously a
  *  citation, test that it points at something real. `hears:` is empirically a
  *  free-form "what this chord responds to" log — it holds architect utterances
@@ -321,6 +387,14 @@ const KNOWN_PATH_ROOTS = new Set([
  *    - path under a known live root          → check file existence under ROOT.
  *  Returns a reason string only for a genuine dangling citation, else null. */
 export async function checkHearsRef(
+  ref: string,
+  index: Index,
+  aliases: ReadonlyMap<string, string> = new Map(),
+): Promise<string | null> {
+  return (await resolveHearsRef(ref, index, aliases)).error;
+}
+
+async function checkHearsRefDirect(
   ref: string,
   index: Index,
 ): Promise<string | null> {
@@ -352,6 +426,7 @@ async function validateHearsLinks(
   trackedOnly: boolean,
 ): Promise<ValidationResult> {
   const index = await buildIndex(defaultRoots());
+  const aliases = await loadHearsAliases();
   const result = emptyResult();
   for (const entry of await listChordFiles(trackedOnly)) {
     let hears: unknown;
@@ -367,8 +442,9 @@ async function validateHearsLinks(
     const bad: string[] = [];
     for (const h of hears) {
       if (typeof h !== "string") continue;
-      const reason = await checkHearsRef(h, index);
-      if (reason) bad.push(reason);
+      const resolution = await resolveHearsRef(h, index, aliases);
+      if (resolution.error) bad.push(resolution.error);
+      if (resolution.aliasApplied) result.aliasesResolved++;
     }
     if (bad.length === 0) {
       result.passed++;
@@ -394,6 +470,9 @@ function printResult(label: string, r: ValidationResult): void {
   console.log(
     `${label}: ${r.passed}/${r.total} passed (${pct}%), ${r.failed} failed${debt}${active}`,
   );
+  if (r.aliasesResolved > 0) {
+    console.log(`  exact aliases resolved: ${r.aliasesResolved}`);
+  }
   const categories = countCategories(r.errors);
   if (Object.keys(categories).length > 0) {
     console.log(

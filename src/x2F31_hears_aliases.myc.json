@@ -1,0 +1,21 @@
+{
+  "type": "trinity.hears-alias-registry.v0.1",
+  "policy": "append-only exact aliases; canonical target must resolve; no chains",
+  "aliases": [
+    {
+      "from": "x2d00_954422_codex_temporal-proof-closure-noncircular-anchor-verification",
+      "to": "x2d00_954422_codex_temporal-proof-closure-noncircular-anchor-verifica",
+      "reason": "historical hears used the intended full slug; canonical filename was truncated"
+    },
+    {
+      "from": "x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt",
+      "to": "x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom",
+      "reason": "historical hears omitted the canonical filename truncation suffix"
+    },
+    {
+      "from": "x5300_954398_claude_goal-loop-iteration-one-affordances-shipped-forward-trigger",
+      "to": "x5300_954398_claude_goal-loop-one-affordances-shipped-forward-trigger",
+      "reason": "historical wording alias for the existing canonical receipt"
+    }
+  ]
+}

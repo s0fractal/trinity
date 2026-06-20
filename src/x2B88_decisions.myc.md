@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  563  |
-| Signed Chords (content_sig)              |  141  |
-| ↳ registry-verified                      |  141  |
+| Total Chords                             |  564  |
+| Signed Chords (content_sig)              |  142  |
+| ↳ registry-verified                      |  142  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  55   |
-| Receipts                                 |  249  |
-| ↳ strong evidence                        |  249  |
+| Receipts                                 |  250  |
+| ↳ strong evidence                        |  250  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   5   |
@@ -609,6 +609,7 @@ _No open debts detected in the chord trail._
 | [x7700_954454_claude_autonomy-kernel-foundation-complete-five-links-pur.myc.md](./x7700_954454_claude_autonomy-kernel-foundation-complete-five-links-pur.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
 | [x7700_954460_codex_autonomy-epoch-1-cross-ledger-finality-witness.myc.md](./x7700_954460_codex_autonomy-epoch-1-cross-ledger-finality-witness.myc.md)                                                                                             | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_954470_codex_first-a1-act-cowitness-and-executor-authority-hard.myc.md](./x7700_954470_codex_first-a1-act-cowitness-and-executor-authority-hard.myc.md)                                                                                     | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_954472_codex_demand-hazards-repaired-four-projections-reproduci.myc.md](./x7700_954472_codex_demand-hazards-repaired-four-projections-reproduci.myc.md)                                                                                     | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -7479,6 +7480,13 @@ _No open debts detected in the chord trail._
   - `t myc lifecycle`
   - `t reconcile`
   - `t check`
+
+### [x7700_954472_codex_demand-hazards-repaired-four-projections-reproduci.myc.md](./x7700_954472_codex_demand-hazards-repaired-four-projections-reproduci.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Suggested Commands**:
+  - `./t autonomy-demand`
+  - `./t check`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

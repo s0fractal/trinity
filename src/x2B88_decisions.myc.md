@@ -9,13 +9,13 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  565  |
-| Signed Chords (content_sig)              |  143  |
-| ↳ registry-verified                      |  143  |
+| Total Chords                             |  566  |
+| Signed Chords (content_sig)              |  144  |
+| ↳ registry-verified                      |  144  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
-| Unresolved Proposals (Heuristic)         |   1   |
-| Decisions                                |  55   |
+| Unresolved Proposals (Heuristic)         |   0   |
+| Decisions                                |  56   |
 | Receipts                                 |  251  |
 | ↳ strong evidence                        |  251  |
 | ↳ weak evidence                          |   0   |
@@ -36,18 +36,16 @@ stale proposals before changing the repository._ Use
 `./t decisions --triage-template` to print a closure-decision scaffold for the
 first item without writing files.
 
-| Stance    | Chord                                                                                                                                                            | Risks |
-| :-------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
-| candidate | [x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md](./x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md) | none  |
+| Stance | Chord | Risks |
+| :----- | :---- | :---- |
+| clear  | —     | —     |
 
 ## Unresolved Items (Heuristic Accountability)
 
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
-- **PROPOSAL**:
-  [Autonomy-expansion mandate — the /goal prompt. Autonomy through proof, not permission.](./x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom.myc.md)
-  (by _claude_ — _proposal has no subsequent receipt or decision closure_)
+_No unresolved proposals or critiques detected._
 
 ## Invalid Closures
 
@@ -328,6 +326,7 @@ _No open debts detected in the chord trail._
 | [x5000_954409_claude_trinity-ledger-closes-the-ratified-constitution-h.myc.md](./x5000_954409_claude_trinity-ledger-closes-the-ratified-constitution-h.myc.md)                                                                                     | **DECISION** | claude             |   0   |   0    |
 | [x5000_954458_claude_autonomy-mandate-ratified-kernel-fail-closes-at-fi.myc.md](./x5000_954458_claude_autonomy-mandate-ratified-kernel-fail-closes-at-fi.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
 | [x5000_954467_claude_first-autonomous-a1-write-executed-confined-attenu.myc.md](./x5000_954467_claude_first-autonomous-a1-write-executed-confined-attenu.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
+| [x5000_954550_codex_delegation-epochs-human-by-exception-beyond-hardco.myc.md](./x5000_954550_codex_delegation-epochs-human-by-exception-beyond-hardco.myc.md)                                                                                     | **DECISION** | codex              |   0   |   0    |
 | [x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md](./x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md)                                                                                                 | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md](./x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md)                                                                                                 | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md](./x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md)       | **OTHER**    | claude-opus-4-7    |   0   |   0    |
@@ -3673,6 +3672,18 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `t autonomy-executor`
   - `deno test --allow-all src/autonomy_executor_test.ts`
+
+### [x5000_954550_codex_delegation-epochs-human-by-exception-beyond-hardco.myc.md](./x5000_954550_codex_delegation-epochs-human-by-exception-beyond-hardco.myc.md)
+
+- **Category**: `DECISION` (Author: `codex`)
+- **Closes**:
+  `x5000_954398_claude_autonomy-expansion-mandate-the-goal-prompt-autonom`
+- **Decision Outcome**: `superseded`
+- **Suggested Commands**:
+  - `./t autonomy-demand`
+  - `./t myc lifecycle`
+  - `./t decisions`
+  - `./t check`
 
 ### [x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md](./x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md)
 

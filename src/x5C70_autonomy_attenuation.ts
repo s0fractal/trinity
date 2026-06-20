@@ -9,10 +9,9 @@
 // attenuation verdict may select EXECUTION class A1, and only inside one ratified A1
 // profile and one confined transaction; outside that the same organ is A2.
 //
-// THIS IS DORMANT. It is a pure verifier returning a content-bound verdict. It is NOT
-// imported by `admit`, the executor or any scheduler, and must not be until codex's
-// attenuation proposal x5d00_954460 reaches the constitution's {human:1, model:1}
-// finality. Building it pre-finality is allowed; consuming it is not.
+// ACTIVE after proposal x5d00_954460 / h.1bd456e1f3be reached constitutional
+// {human:1, model:1} finality. It remains a pure verifier; `admit` and the executor
+// consume only its content-bound verdict. No scheduler is activated.
 //
 // Fail-closed law: only EXACTLY `writes` is attenuable (git/network/subprocess/unknown/
 // privileged/unresolved are categorically barred); the generator must be a registered
@@ -147,7 +146,7 @@ const A1_EFFECTS = new Set([
 ]);
 
 /** Decide whether one confined action of a `writes` generator may EXECUTE as A1.
- *  Pure, fail-closed, DORMANT (not consumed by admit until ratified). */
+ *  Pure and fail-closed; activated only after constitutional ratification. */
 export async function evaluateA1Attenuation(
   input: AttenuationInput,
 ): Promise<AttenuationVerdict> {
@@ -280,7 +279,7 @@ export async function runCli(): Promise<void> {
       type: "autonomy_attenuation",
       position: "5/C7",
       status:
-        "DORMANT — pure verifier; not consumed by admit until codex x5d00_954460 reaches {human:1, model:1} finality",
+        "ACTIVE — pure verifier ratified by h.1bd456e1f3be (human:1, model:1); no scheduler",
       registry_commitment: await registryCommitment(EPOCH1_ADAPTERS),
       epoch1_targets: EPOCH1_ADAPTERS.map((a) => a.target),
     },

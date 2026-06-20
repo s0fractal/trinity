@@ -2,17 +2,13 @@ import {
   assert,
   assertEquals,
 } from "https://deno.land/std@0.224.0/assert/mod.ts";
-import { type ExecHooks, execute } from "./x5C60_autonomy_executor.ts";
-import type { Adapter } from "./x5C70_autonomy_attenuation.ts";
+import {
+  type ExecHooks,
+  execute,
+  verifyExecutionAuthority,
+} from "./x5C60_autonomy_executor.ts";
 import type { AutonomyMandate } from "./x5C20_autonomy.ts";
 
-// a real `writes` organ (x7B00) gives the capability; argv is mock-intercepted.
-const ADAPTER: Adapter = {
-  target: "x7B88_evidence_report",
-  organ: "src/x7B00_evidence.ts",
-  argv: ["gen"],
-  output_path: "src/x7B88_evidence_report.myc.md",
-};
 const MANDATE: AutonomyMandate = {
   mandate_id: "epoch-1",
   constitution_commitment: "sha256:c0",
@@ -37,9 +33,6 @@ const INTENT = {
 const input = {
   intent: INTENT,
   mandate: MANDATE,
-  mandate_final: true,
-  at_height: 954500,
-  adapters: [ADAPTER],
 };
 
 function hooks(
@@ -81,6 +74,16 @@ function hooks(
         state.main = bytes;
         return Promise.resolve();
       },
+      authorize: () =>
+        Promise.resolve({
+          verified: true,
+          reason: "test authority",
+          at_height: 954500,
+          mandate_body_commitment: "sha256:mandate",
+          mandate_finality_commitment: "sha256:mandate-finality",
+          attenuation_finality_commitment: "sha256:attenuation-finality",
+        }),
+      mainPathContained: () => Promise.resolve(true),
     },
   };
 }
@@ -144,5 +147,60 @@ Deno.test("executor — RED TEAM: a failed fmt gate is not promoted", async () =
   });
   const r = await execute(input, h);
   assert(!r.promoted);
+  assertEquals(state.main, "OLD");
+});
+
+Deno.test("executor authority — caller cannot substitute mandate body or finality booleans", async () => {
+  const denied = await verifyExecutionAuthority(MANDATE, {
+    lifecycle: () => Promise.resolve({ mutations: [] }),
+    currentBlock: () => Promise.resolve(954500),
+  });
+  assertEquals(denied.verified, false);
+  assert(denied.reason.includes("mandate body"));
+});
+
+Deno.test("executor authority — exact body still needs both live finalities and anchor", async () => {
+  const epoch = JSON.parse(
+    await Deno.readTextFile("contracts/mandates/epoch-1.mandate.json"),
+  ) as AutonomyMandate;
+  const mandateKey =
+    "31b0013dc85509f4b5386fcecb16d97ef996c0a4fe457a2ad40c824d2b2e04d9";
+  const attenuationKey =
+    "1bd456e1f3be933aa755cd64c851bee3d3c9b35a37ac8c112d3d23ccfe61e044";
+  const oneFinal = await verifyExecutionAuthority(epoch, {
+    lifecycle: () =>
+      Promise.resolve({
+        mutations: [{ key: mandateKey, state: "implemented" }],
+      }),
+    currentBlock: () => Promise.resolve(954500),
+  });
+  assertEquals(oneFinal.verified, false);
+  assert(oneFinal.reason.includes("attenuation"));
+
+  const verified = await verifyExecutionAuthority(epoch, {
+    lifecycle: () =>
+      Promise.resolve({
+        mutations: [
+          { key: mandateKey, state: "implemented" },
+          { key: attenuationKey, state: "implemented" },
+        ],
+      }),
+    currentBlock: () => Promise.resolve(954500),
+  });
+  assert(verified.verified, verified.reason);
+  assertEquals(verified.at_height, 954500);
+});
+
+Deno.test("executor — RED TEAM: path containment is rechecked before any promotion", async () => {
+  const { hooks: h, state } = hooks({
+    status: " M src/x7B88_evidence_report.myc.md",
+    wtOut: "NEW",
+    main: "OLD",
+  });
+  let checks = 0;
+  h.mainPathContained = () => Promise.resolve(++checks === 1);
+  const r = await execute(input, h);
+  assert(!r.promoted);
+  assert(r.reason.includes("containment changed"));
   assertEquals(state.main, "OLD");
 });

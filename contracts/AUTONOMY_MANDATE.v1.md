@@ -94,3 +94,9 @@ not permission to act.
 The compiler decides policy; it **never acts**. Activation of writes, external
 adapters or a persistent scheduler (codex P1–P5) is gated on a ratified mandate
 — not on this contract alone.
+
+The A1 executor must reconstruct authority at execution time: exact pinned
+mandate-body commitment, live implemented finality for both the epoch mandate
+and attenuation rule, live Bitcoin comparison height, immutable ratified adapter
+registry, and realpath containment immediately before promotion. Caller-supplied
+`verified`, `mandate_final`, anchor or adapter fields are never authority.

@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  561  |
-| Signed Chords (content_sig)              |  139  |
-| ↳ registry-verified                      |  139  |
+| Total Chords                             |  562  |
+| Signed Chords (content_sig)              |  140  |
+| ↳ registry-verified                      |  140  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  54   |
-| Receipts                                 |  248  |
-| ↳ strong evidence                        |  248  |
+| Receipts                                 |  249  |
+| ↳ strong evidence                        |  249  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   5   |
@@ -607,6 +607,7 @@ _No open debts detected in the chord trail._
 | [x7700_954451_codex_autonomy-p0-5-evidence-standing-boundary.myc.md](./x7700_954451_codex_autonomy-p0-5-evidence-standing-boundary.myc.md)                                                                                                         | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_954454_claude_autonomy-kernel-foundation-complete-five-links-pur.myc.md](./x7700_954454_claude_autonomy-kernel-foundation-complete-five-links-pur.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
 | [x7700_954460_codex_autonomy-epoch-1-cross-ledger-finality-witness.myc.md](./x7700_954460_codex_autonomy-epoch-1-cross-ledger-finality-witness.myc.md)                                                                                             | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_954470_codex_first-a1-act-cowitness-and-executor-authority-hard.myc.md](./x7700_954470_codex_first-a1-act-cowitness-and-executor-authority-hard.myc.md)                                                                                     | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -7444,6 +7445,25 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `t myc lifecycle`
   - `t reconcile`
+
+### [x7700_954470_codex_first-a1-act-cowitness-and-executor-authority-hard.myc.md](./x7700_954470_codex_first-a1-act-cowitness-and-executor-authority-hard.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Falsifiers**:
+  - _If the executor accepts caller-asserted mandate_final, anchor_verified,
+    at_height or an injected adapter registry on its live path, authority is
+    still forgeable._
+  - _If mandate_standing.mandate_commitment is a capability verdict hash rather
+    than the pinned mandate body hash, the warrant joins unrelated facts._
+  - _If a second determinism run can write outside the singleton path after git
+    status was sampled, confinement observation has a TOCTOU hole._
+  - _If promotion follows a symlink or proceeds without a second realpath check,
+    lexical path containment is insufficient._
+- **Suggested Commands**:
+  - `deno test --allow-all src/autonomy_executor_test.ts src/autonomy_attenuation_test.ts src/autonomy_attenuation_wiring_test.ts`
+  - `t myc lifecycle`
+  - `t reconcile`
+  - `t check`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

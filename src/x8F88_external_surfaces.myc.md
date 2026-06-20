@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     53     |
 | compost           |     0      |
-| dynamic topology  |    561     |
+| dynamic topology  |    562     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **662**   |
+| **Total**         |  **663**   |
 
 ## Runtime Cache Diagnostics
 
@@ -670,6 +670,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x7700_954451_codex_autonomy-p0-5-evidence-standing-boundary.myc.md](../src/x7700_954451_codex_autonomy-p0-5-evidence-standing-boundary.myc.md)                                                                                                         | canonical        | src/x7700_954451_codex_autonomy-p0-5-evidence-standing-boundary.myc.md                                                     | keep        |                              |
 | dynamic topology  | [src/x7700_954454_claude_autonomy-kernel-foundation-complete-five-links-pur.myc.md](../src/x7700_954454_claude_autonomy-kernel-foundation-complete-five-links-pur.myc.md)                                                                                   | canonical        | src/x7700_954454_claude_autonomy-kernel-foundation-complete-five-links-pur.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x7700_954460_codex_autonomy-epoch-1-cross-ledger-finality-witness.myc.md](../src/x7700_954460_codex_autonomy-epoch-1-cross-ledger-finality-witness.myc.md)                                                                                             | canonical        | src/x7700_954460_codex_autonomy-epoch-1-cross-ledger-finality-witness.myc.md                                               | keep        |                              |
+| dynamic topology  | [src/x7700_954470_codex_first-a1-act-cowitness-and-executor-authority-hard.myc.md](../src/x7700_954470_codex_first-a1-act-cowitness-and-executor-authority-hard.myc.md)                                                                                     | canonical        | src/x7700_954470_codex_first-a1-act-cowitness-and-executor-authority-hard.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](../src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | canonical        | src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](../src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | canonical        | src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md                                                     | keep        |                              |
 | dynamic topology  | [src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](../src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | canonical        | src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md                                                      | keep        |                              |

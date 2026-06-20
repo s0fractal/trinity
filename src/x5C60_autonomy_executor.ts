@@ -1,4 +1,4 @@
-#!/usr/bin/env -S deno run --allow-read --allow-write --allow-run --allow-env
+#!/usr/bin/env -S deno run --allow-read --allow-write --allow-run --allow-env --allow-net=blockstream.info
 // src/x5C60_autonomy_executor.ts — the A1 executor (codex x5d00_954460 #4).
 // position: 5/C6 → action × bridge = the first persistent autonomous write, maximally boxed.
 // hex_dipole: "00 00 00 00 00 59 00 00"
@@ -45,6 +45,14 @@ import {
 } from "./x5C70_autonomy_attenuation.ts";
 
 const ROOT = dirname(dirname(fromFileUrl(import.meta.url)));
+const MANDATE_BODY_COMMITMENT =
+  "sha256:03167aea379f8451d51701cf44da6c0b9121c91173c72b85c4b97a004145a221";
+const MANDATE_FINALITY_COMMITMENT =
+  "31b0013dc85509f4b5386fcecb16d97ef996c0a4fe457a2ad40c824d2b2e04d9";
+const ATTENUATION_FINALITY_COMMITMENT =
+  "1bd456e1f3be933aa755cd64c851bee3d3c9b35a37ac8c112d3d23ccfe61e044";
+const CONSTITUTION_COMMITMENT =
+  "sha256:d2f13b52b10c9ff50beef8affc6075a41fbd5977b498a2c5c75dc59948f4ee8b";
 
 type Run = (
   cmd: string[],
@@ -81,6 +89,10 @@ export interface ExecHooks {
   readMain: (rel: string) => Promise<string | null>;
   /** promote verified bytes to the main tree (the only write to the real repo) */
   writeMain: (rel: string, bytes: string) => Promise<void>;
+  /** execution-time authority reconstruction; injected only by transaction tests */
+  authorize: (mandate: AutonomyMandate) => Promise<ExecutionAuthority>;
+  /** lexical checks are insufficient: promotion must not follow a symlink escape */
+  mainPathContained: (rel: string) => Promise<boolean>;
 }
 
 const realHooks: ExecHooks = {
@@ -101,7 +113,134 @@ const realHooks: ExecHooks = {
   },
   writeMain: async (rel, bytes) =>
     await Deno.writeTextFile(join(ROOT, rel), bytes),
+  authorize: verifyExecutionAuthority,
+  mainPathContained: async (rel) => {
+    try {
+      const abs = join(ROOT, rel);
+      const info = await Deno.lstat(abs);
+      if (info.isSymlink) return false;
+      const [realRoot, real] = await Promise.all([
+        Deno.realPath(ROOT),
+        Deno.realPath(abs),
+      ]);
+      return real === join(realRoot, rel) && real.startsWith(`${realRoot}/`);
+    } catch {
+      return false;
+    }
+  },
 };
+
+type Json = null | boolean | number | string | Json[] | { [k: string]: Json };
+function stable(v: Json): string {
+  if (v === null) return "null";
+  if (
+    typeof v === "boolean" || typeof v === "number" || typeof v === "string"
+  ) {
+    return JSON.stringify(v);
+  }
+  if (Array.isArray(v)) return `[${v.map(stable).join(",")}]`;
+  return `{${
+    Object.keys(v).sort().map((k) => `${JSON.stringify(k)}:${stable(v[k])}`)
+      .join(",")
+  }}`;
+}
+
+export interface ExecutionAuthority {
+  verified: boolean;
+  reason: string;
+  at_height?: number;
+  mandate_body_commitment?: string;
+  mandate_finality_commitment?: string;
+  attenuation_finality_commitment?: string;
+}
+
+interface AuthorityDeps {
+  lifecycle: () => Promise<Record<string, unknown>>;
+  currentBlock: () => Promise<number | null>;
+}
+
+const realAuthorityDeps: AuthorityDeps = {
+  lifecycle: async () => {
+    const r = await realRun(["./t", "myc", "lifecycle"], ROOT);
+    if (r.code !== 0) return { mutations: [] };
+    try {
+      return JSON.parse(r.out) as Record<string, unknown>;
+    } catch {
+      return { mutations: [] };
+    }
+  },
+  currentBlock: async () => {
+    try {
+      const r = await fetch("https://blockstream.info/api/blocks/tip/height");
+      if (!r.ok) return null;
+      const n = Number((await r.text()).trim());
+      return Number.isSafeInteger(n) && n > 0 ? n : null;
+    } catch {
+      return null;
+    }
+  },
+};
+
+/** Reconstruct authority from live, self-verifying sources. Caller booleans are
+ * never standing: the exact mandate body is pinned, both constitutional
+ * proposals must be final in myc, and the comparison anchor comes from Bitcoin. */
+export async function verifyExecutionAuthority(
+  mandate: AutonomyMandate,
+  deps: AuthorityDeps = realAuthorityDeps,
+): Promise<ExecutionAuthority> {
+  const bodyCommitment = `sha256:${await sha256(
+    stable(mandate as unknown as Json),
+  )}`;
+  if (bodyCommitment !== MANDATE_BODY_COMMITMENT) {
+    return {
+      verified: false,
+      reason: "mandate body is not the ratified epoch-1 body",
+    };
+  }
+  if (mandate.constitution_commitment !== CONSTITUTION_COMMITMENT) {
+    return {
+      verified: false,
+      reason: "mandate constitution commitment mismatch",
+    };
+  }
+  const life = await deps.lifecycle();
+  const mutations = (life.mutations ?? []) as Array<{
+    key?: string;
+    state?: string;
+  }>;
+  const final = (key: string) =>
+    mutations.some((m) => m.key === key && m.state === "implemented");
+  if (!final(MANDATE_FINALITY_COMMITMENT)) {
+    return {
+      verified: false,
+      reason: "epoch-1 mandate is not final in live lifecycle",
+    };
+  }
+  if (!final(ATTENUATION_FINALITY_COMMITMENT)) {
+    return {
+      verified: false,
+      reason: "A1 attenuation rule is not final in live lifecycle",
+    };
+  }
+  const at = await deps.currentBlock();
+  if (at === null) {
+    return { verified: false, reason: "Bitcoin comparison anchor unavailable" };
+  }
+  if (at < mandate.valid_from.height || at >= mandate.valid_until.height) {
+    return {
+      verified: false,
+      reason: "epoch-1 mandate is not active at the live anchor",
+    };
+  }
+  return {
+    verified: true,
+    reason: "mandate body, constitutional finality and live anchor verified",
+    at_height: at,
+    mandate_body_commitment: bodyCommitment,
+    mandate_finality_commitment: MANDATE_FINALITY_COMMITMENT,
+    attenuation_finality_commitment: ATTENUATION_FINALITY_COMMITMENT,
+  };
+}
 
 export interface ExecResult {
   intent: AutonomyIntent;
@@ -118,9 +257,6 @@ export interface ExecResult {
 export interface ExecInput {
   intent: AutonomyIntent;
   mandate: AutonomyMandate;
-  mandate_final: boolean;
-  at_height: number;
-  adapters?: Adapter[];
 }
 
 /** Run ONE admitted+attenuated A1 action via the throwaway-to-promote transaction. */
@@ -141,13 +277,20 @@ export async function execute(
     ...over,
   });
 
-  const adapters = input.adapters ?? EPOCH1_ADAPTERS;
+  const authority = await hooks.authorize(input.mandate);
+  if (!authority.verified || authority.at_height === undefined) {
+    return fail(`authority denied: ${authority.reason}`);
+  }
+  const adapters = EPOCH1_ADAPTERS;
   const adapter = adapters.find((a) => a.target === input.intent.target);
   if (!adapter) {
     return fail(`no ratified adapter for target ${input.intent.target}`);
   }
   if (!pathContained(adapter.output_path)) {
     return fail(`adapter output path is not contained`);
+  }
+  if (!(await hooks.mainPathContained(adapter.output_path))) {
+    return fail("adapter output path failed main-tree realpath containment");
   }
 
   // 1a. recompute capability evidence from the actual generator organ (must be `writes`).
@@ -162,6 +305,11 @@ export async function execute(
 
   // 1b. build the confinement receipt from the adapter's EXACT singleton write-set.
   const preMain = await hooks.readMain(adapter.output_path);
+  if (preMain === null) {
+    return fail(
+      "epoch-1 projection target must already exist; creates are not authorized",
+    );
+  }
   const preHash = preMain === null ? null : `sha256:${await sha256(preMain)}`;
   const confinement = await buildConfinement({
     action_profile: "projections",
@@ -192,8 +340,8 @@ export async function execute(
     generator_organ: adapter.organ,
     intent: input.intent,
     mandate: input.mandate,
-    mandate_final: input.mandate_final,
-    at_height: input.at_height,
+    mandate_final: true,
+    at_height: authority.at_height,
     confinement,
     adapters,
   });
@@ -204,7 +352,7 @@ export async function execute(
   // 1d. admit, consuming the verified evidence + standing + attenuation verdict.
   const verdict = admit(input.intent, input.mandate, {
     kind: "bitcoin_block",
-    height: input.at_height,
+    height: authority.at_height,
   }, {
     anchor_verified: true,
     capability_evidence: {
@@ -214,7 +362,7 @@ export async function execute(
     mandate_standing: {
       verified: true,
       mandate_id: input.mandate.mandate_id,
-      mandate_commitment: evidence.verdict_hash,
+      mandate_commitment: authority.mandate_body_commitment!,
       constitution_commitment: input.mandate.constitution_commitment,
       final_state: "implemented",
     },
@@ -258,6 +406,7 @@ export async function execute(
         { admitted: true, attenuated: true },
       );
     }
+    const started = performance.now();
     const gen = await hooks.run(adapter.argv, wt);
     if (gen.code !== 0) {
       return fail(
@@ -269,25 +418,34 @@ export async function execute(
     }
 
     // 3. verify confinement inside the worktree.
+    const wtOut = await hooks.readWorktree(wt, adapter.output_path);
+    const postHash = wtOut === null ? null : `sha256:${await sha256(wtOut)}`;
+    const fmt = await hooks.run(
+      ["deno", "fmt", "--check", adapter.output_path],
+      wt,
+    );
+    const generationDiff = await generationDiffClean(hooks, wt, adapter, wtOut);
+    // Observe AFTER every generator invocation: the determinism gate must not be
+    // able to hide a second-run write outside the singleton set.
     const status = await hooks.run(["git", "status", "--porcelain"], wt);
+    if (status.code !== 0) {
+      return fail("git status failed in worktree", {
+        admitted: true,
+        attenuated: true,
+      });
+    }
     const written = status.out.split("\n").map((l) => l.slice(3).trim()).filter(
       Boolean,
     );
-    const wtOut = await hooks.readWorktree(wt, adapter.output_path);
-    const postHash = wtOut === null ? null : `sha256:${await sha256(wtOut)}`;
     const obs: ConfinementObservation = {
       written_paths: written,
       post_state: [{ path: adapter.output_path, hash: postHash }],
       gate_results: {
-        fmt:
-          (await hooks.run(["deno", "fmt", "--check", adapter.output_path], wt))
-              .code === 0
-            ? "pass"
-            : "fail",
-        "generation-diff": await generationDiffClean(hooks, wt, adapter, wtOut),
+        fmt: fmt.code === 0 ? "pass" : "fail",
+        "generation-diff": generationDiff,
       },
       bytes_written: wtOut ? new TextEncoder().encode(wtOut).length : 0,
-      seconds: 0,
+      seconds: (performance.now() - started) / 1000,
     };
     const cv = verifyConfinement(confinement, obs, [{
       path: adapter.output_path,
@@ -325,6 +483,12 @@ export async function execute(
       attenuated: true,
     });
   }
+  if (!(await hooks.mainPathContained(adapter.output_path))) {
+    return fail("main-tree path containment changed before promotion", {
+      admitted: true,
+      attenuated: true,
+    });
+  }
 
   // 5. PROMOTE the exact verified bytes (the only write to the real repo).
   await hooks.writeMain(adapter.output_path, verifiedBytes);
@@ -345,6 +509,9 @@ export async function execute(
   // 7. content-bound execution receipt (warrant) → returned for stdout. No commit/push.
   const warrant = {
     mandate_id: input.mandate.mandate_id,
+    mandate_body_commitment: authority.mandate_body_commitment,
+    mandate_finality_commitment: authority.mandate_finality_commitment,
+    attenuation_finality_commitment: authority.attenuation_finality_commitment,
     constitution_commitment: input.mandate.constitution_commitment,
     capability_verdict_hash: evidence.verdict_hash,
     attenuation_hash: att.attenuation_hash,
@@ -352,7 +519,7 @@ export async function execute(
     adapter_registry_commitment: await registryCommitment(adapters),
     pre_state_hash: preHash,
     promoted_hash: promotedHash,
-    anchor: { kind: "bitcoin_block", height: input.at_height },
+    anchor: { kind: "bitcoin_block", height: authority.at_height },
     output_path: adapter.output_path,
     no_op: preHash === promotedHash,
   };
@@ -367,7 +534,9 @@ export async function execute(
       ? "confined A1 executed; projection already current (no-op promotion)"
       : "confined A1 executed; verified bytes promoted to the main tree (uncommitted)",
     warrant,
-    receipt_commitment: `sha256:${await sha256(JSON.stringify(warrant))}`,
+    receipt_commitment: `sha256:${await sha256(
+      stable(warrant as unknown as Json),
+    )}`,
   };
 }
 

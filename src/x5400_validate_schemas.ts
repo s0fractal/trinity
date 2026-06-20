@@ -30,13 +30,14 @@ import {
 const ROOT = new URL("..", import.meta.url).pathname;
 const DEFAULT_GRANDFATHER_BEFORE = "2026-05-12T130546Z";
 
-interface ValidationResult {
+export interface ValidationResult {
   total: number;
   passed: number;
   failed: number;
   grandfathered: number;
   enforceFailed: number;
   aliasesResolved: number;
+  adjudicated: number;
   errors: ValidationError[];
   grandfatheredErrors: ValidationError[];
 }
@@ -47,13 +48,27 @@ export type DebtCategory =
   | "shape_debt"
   | "link_rot";
 
-interface ValidationError {
+export interface ValidationError {
   path: string;
   message: string;
   category: DebtCategory;
   // Validation is intentionally non-actuating. Historical records are repaired
   // by an append-only correction/alias, never by rewriting their signed bytes.
   repair_policy: "supersede_or_alias_never_rewrite";
+  adjudication?: SchemaDebtAdjudication;
+}
+
+export type SchemaDebtDisposition =
+  | "legacy_chord_malformed"
+  | "legacy_proposal_metadata"
+  | "legacy_decision_metadata";
+
+export interface SchemaDebtAdjudication {
+  path: string;
+  category: DebtCategory;
+  disposition: SchemaDebtDisposition;
+  adjudicated_by: string;
+  evidence: string;
 }
 
 interface ChordFile {
@@ -143,6 +158,7 @@ function emptyResult(): ValidationResult {
     grandfathered: 0,
     enforceFailed: 0,
     aliasesResolved: 0,
+    adjudicated: 0,
     errors: [],
     grandfatheredErrors: [],
   };
@@ -249,7 +265,63 @@ async function validateChords(
       );
     }
   }
+  adjudicateSchemaErrors(
+    result,
+    await loadSchemaDebtAdjudications(),
+  );
   return result;
+}
+
+export async function loadSchemaDebtAdjudications(
+  path = `${ROOT}src/x2F32_schema_debt_adjudications.myc.json`,
+): Promise<SchemaDebtAdjudication[]> {
+  const registry = JSON.parse(await Deno.readTextFile(path)) as {
+    type?: string;
+    entries?: unknown;
+  };
+  if (
+    registry.type !== "trinity.schema-debt-adjudications.v0.1" ||
+    !Array.isArray(registry.entries)
+  ) throw new Error("invalid schema-debt adjudication registry envelope");
+  const seen = new Set<string>();
+  return registry.entries.map((raw) => {
+    const entry = raw as SchemaDebtAdjudication;
+    if (
+      typeof entry.path !== "string" || seen.has(entry.path) ||
+      !["parse_corruption", "identity_debt", "shape_debt"].includes(
+        entry.category,
+      ) ||
+      ![
+        "legacy_chord_malformed",
+        "legacy_proposal_metadata",
+        "legacy_decision_metadata",
+      ].includes(entry.disposition) ||
+      !/^x[0-9A-Fa-f]{4}_/.test(entry.adjudicated_by) ||
+      typeof entry.evidence !== "string" || entry.evidence.trim() === ""
+    ) throw new Error(`invalid schema-debt adjudication: ${entry.path}`);
+    seen.add(entry.path);
+    return { ...entry };
+  });
+}
+
+/** Attach append-only adjudications to observed failures. A stale path/category
+ * fails closed: the registry may explain current debt, never hide drift. */
+export function adjudicateSchemaErrors(
+  result: ValidationResult,
+  adjudications: SchemaDebtAdjudication[],
+): void {
+  for (const adjudication of adjudications) {
+    const error = result.errors.find((candidate) =>
+      candidate.path === adjudication.path
+    );
+    if (!error || error.category !== adjudication.category) {
+      throw new Error(
+        `stale schema-debt adjudication: ${adjudication.path} expected ${adjudication.category}`,
+      );
+    }
+    error.adjudication = adjudication;
+    result.adjudicated++;
+  }
 }
 
 async function validateRecommendation(
@@ -313,7 +385,12 @@ const KNOWN_PATH_ROOTS = new Set([
   "myc",
 ]);
 
-interface HearsAlias {
+export type HearsAliasRelation =
+  | "renamed_to"
+  | "moved_to"
+  | "superseded_by";
+
+export interface HearsAlias {
   from: string;
   // `renamed_to`/`moved_to` assert byte identity (a git rename/move preserved the
   // content). `superseded_by` preserves historical REACHABILITY while explicitly
@@ -322,7 +399,7 @@ interface HearsAlias {
   // x7700_954582). All three satisfy hears-reachability; only the first two claim
   // the bytes are the same.
   to: string;
-  relation: "renamed_to" | "moved_to" | "superseded_by";
+  relation: HearsAliasRelation;
   evidence: string;
 }
 
@@ -333,7 +410,7 @@ interface HearsAliasRegistry {
 
 export async function loadHearsAliases(
   path = `${ROOT}src/x2F31_hears_aliases.myc.json`,
-): Promise<Map<string, string>> {
+): Promise<Map<string, HearsAlias>> {
   const registry = JSON.parse(
     await Deno.readTextFile(path),
   ) as HearsAliasRegistry;
@@ -341,7 +418,7 @@ export async function loadHearsAliases(
     registry.type !== "trinity.hears-alias-registry.v0.1" ||
     !Array.isArray(registry.aliases)
   ) throw new Error("invalid hears alias registry envelope");
-  const aliases = new Map<string, string>();
+  const aliases = new Map<string, HearsAlias>();
   for (const entry of registry.aliases) {
     if (
       typeof entry.from !== "string" || typeof entry.to !== "string" ||
@@ -350,14 +427,14 @@ export async function loadHearsAliases(
       entry.from === entry.to ||
       aliases.has(entry.from)
     ) throw new Error(`invalid or duplicate hears alias: ${entry.from}`);
-    aliases.set(entry.from, entry.to);
+    aliases.set(entry.from, { ...entry });
   }
   return aliases;
 }
 
 export interface HearsRefResult {
   error: string | null;
-  aliasApplied: string | null;
+  aliasApplied: HearsAlias | null;
 }
 
 /** Resolve one citation with at most one exact alias hop. Alias targets must
@@ -365,26 +442,26 @@ export interface HearsRefResult {
 export async function resolveHearsRef(
   ref: string,
   index: Index,
-  aliases: ReadonlyMap<string, string> = new Map(),
+  aliases: ReadonlyMap<string, HearsAlias> = new Map(),
 ): Promise<HearsRefResult> {
   const directError = await checkHearsRefDirect(ref, index);
   if (!directError) return { error: null, aliasApplied: null };
-  const target = aliases.get(ref.trim());
-  if (!target) return { error: directError, aliasApplied: null };
-  if (aliases.has(target)) {
+  const alias = aliases.get(ref.trim());
+  if (!alias) return { error: directError, aliasApplied: null };
+  if (aliases.has(alias.to)) {
     return {
-      error: `alias chain forbidden: ${ref.trim()} -> ${target}`,
+      error: `alias chain forbidden: ${ref.trim()} -> ${alias.to}`,
       aliasApplied: null,
     };
   }
-  const targetError = await checkHearsRefDirect(target, index);
+  const targetError = await checkHearsRefDirect(alias.to, index);
   return targetError
     ? {
       error:
-        `alias target unresolved: ${ref.trim()} -> ${target} (${targetError})`,
+        `alias target unresolved: ${ref.trim()} -> ${alias.to} (${targetError})`,
       aliasApplied: null,
     }
-    : { error: null, aliasApplied: `${ref.trim()} -> ${target}` };
+    : { error: null, aliasApplied: alias };
 }
 
 /** Classify a single `hears:` reference and, ONLY when it is unambiguously a
@@ -400,7 +477,7 @@ export async function resolveHearsRef(
 export async function checkHearsRef(
   ref: string,
   index: Index,
-  aliases: ReadonlyMap<string, string> = new Map(),
+  aliases: ReadonlyMap<string, HearsAlias> = new Map(),
 ): Promise<string | null> {
   return (await resolveHearsRef(ref, index, aliases)).error;
 }
@@ -484,6 +561,13 @@ function printResult(label: string, r: ValidationResult): void {
   if (r.aliasesResolved > 0) {
     console.log(`  exact aliases resolved: ${r.aliasesResolved}`);
   }
+  if (r.adjudicated > 0) {
+    console.log(
+      `  adjudicated historical debt: ${r.adjudicated}; unadjudicated: ${
+        r.enforceFailed - r.adjudicated
+      }`,
+    );
+  }
   const categories = countCategories(r.errors);
   if (Object.keys(categories).length > 0) {
     console.log(
@@ -548,6 +632,8 @@ function printResultJson(
         active_failures: activeFailures,
         active_schema_failures: chordResult.enforceFailed +
           (recResult?.enforceFailed ?? 0),
+        unadjudicated_schema_failures: chordResult.enforceFailed -
+          chordResult.adjudicated + (recResult?.enforceFailed ?? 0),
         dangling_hears: hearsResult.enforceFailed,
         grandfathered_failures: chordResult.grandfathered +
           hearsResult.grandfathered,

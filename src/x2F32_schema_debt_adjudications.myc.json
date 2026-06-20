@@ -1,0 +1,90 @@
+{
+  "type": "trinity.schema-debt-adjudications.v0.1",
+  "policy": "append-only adjudication; original historical bytes remain unchanged",
+  "entries": [
+    {
+      "path": "src/x2600_t20260515161102_claude_review-daemon-contract-frame.myc.md",
+      "category": "parse_corruption",
+      "disposition": "legacy_chord_malformed",
+      "adjudicated_by": "x7700_954613_codex_schema-debt-adjudication-legacy-records-without-re",
+      "evidence": "legacy Claude chord; YAML indentation is malformed under applied.voice_daemon_draft"
+    },
+    {
+      "path": "src/x2700_t20260514164336_claude_receipt-c-closed-a-drafted-f-pilot-trinity.myc.md",
+      "category": "shape_debt",
+      "disposition": "legacy_chord_malformed",
+      "adjudicated_by": "x7700_954613_codex_schema-debt-adjudication-legacy-records-without-re",
+      "evidence": "legacy Claude receipt; hears[4] is a mapping-like YAML value rather than a string"
+    },
+    {
+      "path": "src/x2700_t20260515165313_claude_receipt-inbox-organ-and-vector-closure-note.myc.md",
+      "category": "parse_corruption",
+      "disposition": "legacy_chord_malformed",
+      "adjudicated_by": "x7700_954613_codex_schema-debt-adjudication-legacy-records-without-re",
+      "evidence": "legacy Claude receipt; an unquoted colon in explanatory prose breaks YAML parsing"
+    },
+    {
+      "path": "src/x3600_t20260516132500_claude_cowitness-monorepo-aye-with-hard-tweak.myc.md",
+      "category": "parse_corruption",
+      "disposition": "legacy_chord_malformed",
+      "adjudicated_by": "x7700_954613_codex_schema-debt-adjudication-legacy-records-without-re",
+      "evidence": "legacy Claude co-witness; frontmatter contains duplicate mode keys"
+    },
+    {
+      "path": "src/x3000_t20260514114800_antigravity_spore-wasm-integration-t-apply-capability.myc.md",
+      "category": "identity_debt",
+      "disposition": "legacy_proposal_metadata",
+      "adjudicated_by": "x7700_954613_codex_schema-debt-adjudication-legacy-records-without-re",
+      "evidence": "Antigravity proposal metadata predates canonical voice/chord identity fields"
+    },
+    {
+      "path": "src/x3000_t20260530134900_antigravity_triage-spore-wasm-implemented.myc.md",
+      "category": "identity_debt",
+      "disposition": "legacy_decision_metadata",
+      "adjudicated_by": "x7700_954613_codex_schema-debt-adjudication-legacy-records-without-re",
+      "evidence": "Antigravity decision uses author_identity/claim_kind but no canonical chord identity"
+    },
+    {
+      "path": "src/x3000_t20260530135400_antigravity_triage-papers-codeicide-closed.myc.md",
+      "category": "identity_debt",
+      "disposition": "legacy_decision_metadata",
+      "adjudicated_by": "x7700_954613_codex_schema-debt-adjudication-legacy-records-without-re",
+      "evidence": "Antigravity decision uses author_identity/claim_kind but no canonical chord identity"
+    },
+    {
+      "path": "src/x3000_t20260530153632_antigravity_triage-review-proposal-filesystem-folder-topology-resonant-with.myc.md",
+      "category": "identity_debt",
+      "disposition": "legacy_decision_metadata",
+      "adjudicated_by": "x7700_954613_codex_schema-debt-adjudication-legacy-records-without-re",
+      "evidence": "Antigravity decision uses author_identity/claim_kind but no canonical chord identity"
+    },
+    {
+      "path": "src/x3500_951747_antigravity_triage-dual-layer-filesystem-topology.myc.md",
+      "category": "identity_debt",
+      "disposition": "legacy_decision_metadata",
+      "adjudicated_by": "x7700_954613_codex_schema-debt-adjudication-legacy-records-without-re",
+      "evidence": "Antigravity decision uses author_identity/claim_kind but no canonical chord identity"
+    },
+    {
+      "path": "src/x3500_951747_antigravity_triage-recursive-dispatcher-continuations.myc.md",
+      "category": "identity_debt",
+      "disposition": "legacy_decision_metadata",
+      "adjudicated_by": "x7700_954613_codex_schema-debt-adjudication-legacy-records-without-re",
+      "evidence": "Antigravity decision uses author_identity/claim_kind but no canonical chord identity"
+    },
+    {
+      "path": "src/x3500_951747_antigravity_triage-revalidate-backlog.myc.md",
+      "category": "identity_debt",
+      "disposition": "legacy_decision_metadata",
+      "adjudicated_by": "x7700_954613_codex_schema-debt-adjudication-legacy-records-without-re",
+      "evidence": "Antigravity decision uses author_identity/claim_kind but no canonical chord identity"
+    },
+    {
+      "path": "src/x3500_951747_antigravity_triage-scattered-stigmergic-chords.myc.md",
+      "category": "identity_debt",
+      "disposition": "legacy_decision_metadata",
+      "adjudicated_by": "x7700_954613_codex_schema-debt-adjudication-legacy-records-without-re",
+      "evidence": "Antigravity decision uses author_identity/claim_kind but no canonical chord identity"
+    }
+  ]
+}

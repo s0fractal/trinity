@@ -1,11 +1,14 @@
 import { assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
 import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
 import {
+  adjudicateSchemaErrors,
   checkHearsRef,
   classifySchemaFailure,
   loadHearsAliases,
+  loadSchemaDebtAdjudications,
   resolveHearsRef,
 } from "./x5400_validate_schemas.ts";
+import type { ValidationResult } from "./x5400_validate_schemas.ts";
 import { buildIndex } from "./x2F30_fqdn_resolver.ts";
 
 // checkHearsRef validates ONLY unambiguous citations (coordinate stems + paths
@@ -85,7 +88,12 @@ Deno.test("hears-alias loader accepts superseded_by (reachable, byte-identity-de
       evidence: "doc promoted; same wire schema; no v0.1 file ever tracked",
     }]);
     const m = await loadHearsAliases(join(dir, "reg.json"));
-    assertEquals(m.get("contracts/OLD.v0.1.md"), "contracts/NEW.v1.0.md");
+    assertEquals(m.get("contracts/OLD.v0.1.md"), {
+      from: "contracts/OLD.v0.1.md",
+      to: "contracts/NEW.v1.0.md",
+      relation: "superseded_by",
+      evidence: "doc promoted; same wire schema; no v0.1 file ever tracked",
+    });
 
     // an unknown relation fails closed at load.
     await write([{
@@ -128,6 +136,58 @@ Deno.test("schema debt classifier separates parse, identity, and shape debt", ()
   );
 });
 
+Deno.test("schema-debt adjudications attach only to the exact observed category", async () => {
+  const dir = await Deno.makeTempDir({ prefix: "schema_debt_reg_" });
+  const path = join(dir, "reg.json");
+  const entry = {
+    path: "src/x_bad.myc.md",
+    category: "shape_debt" as const,
+    disposition: "legacy_chord_malformed" as const,
+    adjudicated_by: "x7700_1_codex_correction",
+    evidence: "fixture explains the malformed historical field",
+  };
+  try {
+    await Deno.writeTextFile(
+      path,
+      JSON.stringify({
+        type: "trinity.schema-debt-adjudications.v0.1",
+        entries: [entry],
+      }),
+    );
+    const loaded = await loadSchemaDebtAdjudications(path);
+    const result: ValidationResult = {
+      total: 1,
+      passed: 0,
+      failed: 1,
+      grandfathered: 0,
+      enforceFailed: 1,
+      aliasesResolved: 0,
+      adjudicated: 0,
+      errors: [{
+        path: entry.path,
+        message: "/hears/0 must be string",
+        category: "shape_debt",
+        repair_policy: "supersede_or_alias_never_rewrite",
+      }],
+      grandfatheredErrors: [],
+    };
+    adjudicateSchemaErrors(result, loaded);
+    assertEquals(result.adjudicated, 1);
+    assertEquals(result.errors[0].adjudication, entry);
+
+    result.errors[0].category = "identity_debt";
+    let staleRejected = false;
+    try {
+      adjudicateSchemaErrors(result, loaded);
+    } catch {
+      staleRejected = true;
+    }
+    assertEquals(staleRejected, true);
+  } finally {
+    await Deno.remove(dir, { recursive: true });
+  }
+});
+
 Deno.test("hears aliases are exact, one-hop, and fail closed", async () => {
   const base = await Deno.makeTempDir({ prefix: "hears_alias_" });
   try {
@@ -136,21 +196,30 @@ Deno.test("hears aliases are exact, one-hop, and fail closed", async () => {
       "---\ntype: chord\n---\nbody",
     );
     const idx = await buildIndex([base]);
-    const aliases = new Map([
-      ["x7700_1_v_old", "x7700_1_v_canonical"],
-    ]);
+    const alias = {
+      from: "x7700_1_v_old",
+      to: "x7700_1_v_canonical",
+      relation: "renamed_to" as const,
+      evidence: "test fixture rename",
+    };
+    const aliases = new Map([[alias.from, alias]]);
     assertEquals(
       await resolveHearsRef("x7700_1_v_old", idx, aliases),
       {
         error: null,
-        aliasApplied: "x7700_1_v_old -> x7700_1_v_canonical",
+        aliasApplied: alias,
       },
     );
     assertEquals(
       await checkHearsRef(
         "x7700_1_v_unknown",
         idx,
-        new Map([["x7700_1_v_unknown", "x7700_1_v_missing"]]),
+        new Map([["x7700_1_v_unknown", {
+          from: "x7700_1_v_unknown",
+          to: "x7700_1_v_missing",
+          relation: "renamed_to" as const,
+          evidence: "test missing target",
+        }]]),
       ),
       "alias target unresolved: x7700_1_v_unknown -> x7700_1_v_missing (unresolvable stem: x7700_1_v_missing)",
     );
@@ -159,8 +228,18 @@ Deno.test("hears aliases are exact, one-hop, and fail closed", async () => {
         "x7700_1_v_old",
         idx,
         new Map([
-          ["x7700_1_v_old", "x7700_1_v_middle"],
-          ["x7700_1_v_middle", "x7700_1_v_canonical"],
+          ["x7700_1_v_old", {
+            from: "x7700_1_v_old",
+            to: "x7700_1_v_middle",
+            relation: "renamed_to" as const,
+            evidence: "test first hop",
+          }],
+          ["x7700_1_v_middle", {
+            from: "x7700_1_v_middle",
+            to: "x7700_1_v_canonical",
+            relation: "renamed_to" as const,
+            evidence: "test forbidden second hop",
+          }],
         ]),
       ),
       "alias chain forbidden: x7700_1_v_old -> x7700_1_v_middle",

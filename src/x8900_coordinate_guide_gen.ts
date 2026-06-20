@@ -12,10 +12,10 @@
 // skill_safe: yes-with-care
 // intent: project the glossary's kind:03 bucket archetypes into an ENGLISH
 //   coordinate reference, so a newcomer / new voice can decode xNNNN_ names
-//   without HUMAN.md (which is the original, informal, Ukrainian key).
+//   without the archived HUMAN palimpsest (the original informal Ukrainian key).
 //
 // The xNNNN_ naming scheme is the substrate's single most load-bearing
-// convention, but its key lived only in HUMAN.md (Ukrainian). This generator
+// convention, but its key lived only in the HUMAN palimpsest (Ukrainian). This generator
 // reads the authoritative bilingual source — the glossary's `kind:03` archetype
 // records (src/x0001_glossary.ndjson) — and emits docs/COORDINATES.md in English.
 // Deterministic (no timestamp); regenerate with `deno task coordinates`.
@@ -77,7 +77,7 @@ function render(arch: Archetype[]): string {
     "archetype); the rest sub-addresses within it. Identity is by *role/coordinate*",
     "— editing a file keeps its name, so `grep`/`diff`/`git` all keep working",
     "(unlike pure content-addressing). This is the English projection of the key;",
-    "the original (bilingual, informal) lives in `HUMAN.md` and the glossary.",
+    "the original bilingual sketch is archived at `docs/archive/HUMAN_2026-05-19.md`; the glossary is canonical.",
     "",
     "## The 8 octet axes",
     "",

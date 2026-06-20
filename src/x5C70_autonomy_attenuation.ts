@@ -185,6 +185,7 @@ export interface Ceiling {
   ceiling_id: string;
   capability_classes: string[]; // the only attenuable capabilities
   effect_ceiling: string[]; // the maximal effect tags a lease may carry
+  verbs: string[]; // the only verbs a lease may select
   target_families: string[]; // allowed targets — exact tokens or "*"
   catalog_ids: string[]; // committed audited adapter IDs
   catalog_commitment: string; // sha256 over the committed catalog entries
@@ -198,6 +199,7 @@ export interface Ceiling {
 export interface Lease {
   schema: typeof DELEGATION_SCHEMA_VERSION;
   ceiling_id: string; // the ceiling this lease attenuates
+  ceiling_commitment: string; // exact parent content, not a reusable label
   catalog_id: string; // the committed adapter it selects
   generator_organ: string; // the freshly-recomputed organ (must match the entry)
   capability: string; // recomputed capability (must be in the ceiling)
@@ -215,6 +217,7 @@ export interface Lease {
 export interface LiveFacts {
   at_height: number; // current Bitcoin height
   catalog_commitment: string; // the catalog commitment observed live
+  ceiling_commitment: string; // the parent commitment observed in lifecycle
   revoked: boolean; // ceiling/lease revocation state
   forked: boolean; // lifecycle fork state
   quorum_satisfied: boolean; // ratification quorum met in the live lifecycle
@@ -224,19 +227,23 @@ export type DelegationReason =
   | "delegated"
   | "schema_mismatch"
   | "ceiling_mismatch"
+  | "ceiling_commitment_drift"
   | "capability_not_in_ceiling"
   | "effect_exceeds_ceiling"
   | "target_not_in_family"
+  | "verb_not_in_ceiling"
   | "quorum_unsatisfied"
   | "anchor_outside_window"
   | "revoked"
   | "forked"
   | "generator_not_in_catalog"
+  | "catalog_ambiguous"
   | "catalog_commitment_drift"
   | "write_set_not_entry_singleton"
   | "path_not_contained"
   | "budget_exceeds_ceiling"
   | "expiry_widens_ceiling"
+  | "lease_expired"
   | "gates_not_superset";
 
 export interface DelegationVerdict {
@@ -265,6 +272,24 @@ export async function catalogCommitment(
       })) as unknown as Json,
     ),
   )}`;
+}
+
+/** Semantic content commitment of the exact authority parent a lease names. */
+export async function ceilingCommitment(ceiling: Ceiling): Promise<string> {
+  return `sha256:${await sha256(stable({
+    budgets: ceiling.budgets,
+    capability_classes: [...ceiling.capability_classes].sort(),
+    catalog_commitment: ceiling.catalog_commitment,
+    catalog_ids: [...ceiling.catalog_ids].sort(),
+    ceiling_id: ceiling.ceiling_id,
+    effect_ceiling: [...ceiling.effect_ceiling].sort(),
+    expiry: ceiling.expiry,
+    quorum: ceiling.quorum,
+    required_gates: [...ceiling.required_gates].sort(),
+    schema: ceiling.schema,
+    target_families: [...ceiling.target_families].sort(),
+    verbs: [...ceiling.verbs].sort(),
+  } as unknown as Json))}`;
 }
 
 const finitePos = (n: number) => Number.isFinite(n) && n > 0;
@@ -302,6 +327,16 @@ export async function verifyDelegation(
       `lease names ceiling ${lease.ceiling_id}, not ${ceiling.ceiling_id}`,
     );
   }
+  const parentCommitment = await ceilingCommitment(ceiling);
+  if (
+    lease.ceiling_commitment !== parentCommitment ||
+    live.ceiling_commitment !== parentCommitment
+  ) {
+    return deny(
+      "ceiling_commitment_drift",
+      "lease or live lifecycle does not commit to the exact ceiling content",
+    );
+  }
   // 2 — capability is within the ceiling's attenuable classes (set inclusion).
   if (!ceiling.capability_classes.includes(lease.capability)) {
     return deny(
@@ -328,6 +363,14 @@ export async function verifyDelegation(
       `target ${lease.target} is not in a ceiling target family`,
     );
   }
+  if (
+    !ceiling.verbs.includes(lease.verb) && !ceiling.verbs.includes("*")
+  ) {
+    return deny(
+      "verb_not_in_ceiling",
+      `verb ${lease.verb} is not in the ceiling`,
+    );
+  }
   // 4 — ratification quorum is met in the live lifecycle (quorum validity).
   if (!live.quorum_satisfied) {
     return deny(
@@ -349,7 +392,14 @@ export async function verifyDelegation(
   if (live.revoked) return deny("revoked", "ceiling or lease is revoked");
   if (live.forked) return deny("forked", "live lifecycle is forked");
   // 7 — the lease selects a COMMITTED catalog entry whose organ it actually matches.
-  const entry = catalog.find((e) => e.id === lease.catalog_id);
+  const matchingEntries = catalog.filter((e) => e.id === lease.catalog_id);
+  if (matchingEntries.length !== 1) {
+    return deny(
+      "catalog_ambiguous",
+      `catalog id ${lease.catalog_id} resolves to ${matchingEntries.length} entries`,
+    );
+  }
+  const entry = matchingEntries[0];
   const norm = lease.generator_organ.replace(/^.*\/(src\/)/, "src/");
   if (
     !ceiling.catalog_ids.includes(lease.catalog_id) || !entry ||
@@ -404,6 +454,9 @@ export async function verifyDelegation(
       "lease expiry is later than the ceiling's",
     );
   }
+  if (live.at_height >= lease.expiry_height) {
+    return deny("lease_expired", "lease is expired at the live anchor");
+  }
   // 12 — the lease requires a superset of the ceiling's gates.
   if (!ceiling.required_gates.every((g) => lease.required_gates.includes(g))) {
     return deny(
@@ -414,13 +467,13 @@ export async function verifyDelegation(
 
   // delegated — bind the verdict to every fact it relied on.
   const verdict_hash = `sha256:${await sha256(stable({
-    anchor: live.at_height,
-    catalog_commitment: ceiling.catalog_commitment,
-    ceiling_id: ceiling.ceiling_id,
+    catalog,
+    ceiling,
     lease: {
       budgets: lease.budgets,
       capability: lease.capability,
       catalog_id: lease.catalog_id,
+      ceiling_commitment: lease.ceiling_commitment,
       confinement_commitment: lease.confinement_commitment,
       effects: [...lease.effects].sort(),
       expiry_height: lease.expiry_height,
@@ -430,6 +483,7 @@ export async function verifyDelegation(
       verb: lease.verb,
       write_set: lease.write_set,
     },
+    live,
   } as unknown as Json))}`;
   return {
     schema: DELEGATION_SCHEMA_VERSION,
@@ -446,19 +500,23 @@ const DELEGATION_TO_ATTENUATION: Record<DelegationReason, AttenuationReason> = {
   delegated: "eligible",
   schema_mismatch: "generator_not_registered",
   ceiling_mismatch: "generator_not_registered",
+  ceiling_commitment_drift: "generator_not_registered",
   capability_not_in_ceiling: "non_attenuable_capability",
   effect_exceeds_ceiling: "not_semantic_a1",
   target_not_in_family: "no_matching_a1_profile",
+  verb_not_in_ceiling: "no_matching_a1_profile",
   quorum_unsatisfied: "mandate_not_final_or_expired",
   anchor_outside_window: "mandate_not_final_or_expired",
   revoked: "mandate_not_final_or_expired",
   forked: "mandate_not_final_or_expired",
   generator_not_in_catalog: "generator_not_registered",
+  catalog_ambiguous: "generator_not_registered",
   catalog_commitment_drift: "generator_not_registered",
   write_set_not_entry_singleton: "write_set_not_registry_singleton",
   path_not_contained: "path_not_contained",
   budget_exceeds_ceiling: "budget_invalid_or_exceeds_mandate",
   expiry_widens_ceiling: "mandate_not_final_or_expired",
+  lease_expired: "mandate_not_final_or_expired",
   gates_not_superset: "gates_not_superset",
 };
 
@@ -491,6 +549,7 @@ export async function epoch1Ceiling(
     capability_classes: [ATTENUABLE],
     // the semantic A1 effect set — the same ceiling the legacy C2 ladder enforced.
     effect_ceiling: [...A1_EFFECTS],
+    verbs: profile.verbs,
     target_families: profile.targets,
     catalog_ids: catalog.map((e) => e.id),
     catalog_commitment: commitment,
@@ -537,9 +596,11 @@ export async function evaluateA1Attenuation(
     );
   }
   const { ceiling, catalog } = built;
+  const parentCommitment = await ceilingCommitment(ceiling);
   const lease: Lease = {
     schema: DELEGATION_SCHEMA_VERSION,
     ceiling_id: ceiling.ceiling_id,
+    ceiling_commitment: parentCommitment,
     catalog_id: input.intent.target,
     generator_organ: input.generator_organ,
     capability: input.capability,
@@ -555,6 +616,7 @@ export async function evaluateA1Attenuation(
   const live: LiveFacts = {
     at_height: input.at_height,
     catalog_commitment: ceiling.catalog_commitment,
+    ceiling_commitment: parentCommitment,
     revoked: false,
     forked: false,
     quorum_satisfied: input.mandate_final,

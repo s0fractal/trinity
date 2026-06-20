@@ -11,6 +11,11 @@ actor: "trinity"
 hears: []
 ---
 
+> **Archived scene.** Trinity chords migrated to canonical flat
+> `src/xNNNN_*.myc.md` records. This directory is retained only for the two
+> historical talks and the former scene convention; paths described below are
+> not live routing authority.
+
 # trinity/jazz
 
 This is the trinity-level scene. Substrates (omega, liquid, myc) keep their own

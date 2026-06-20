@@ -43,6 +43,7 @@ const GLOSSARY = join(HERE, "x0001_glossary.ndjson");
 
 // The tracked generated projections the CI regen-idempotence gate diffs.
 const TRACKED_PROJECTIONS = [
+  "src/x88E0_readme_bootstrap.myc.md",
   "src/x88F0_agents_bootstrap.myc.md",
   "src/x8CF0_skills_bootstrap.myc.md",
   "src/x2B88_decisions.myc.md",
@@ -53,6 +54,7 @@ const TRACKED_PROJECTIONS = [
 // The full regen sweep (order as the CI job runs it).
 const GENS = [
   "agents",
+  "readme",
   "skill",
   "memory",
   "roadmap",

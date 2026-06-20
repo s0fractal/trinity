@@ -8,7 +8,8 @@ four-hex **coordinate**. The first hex digit is the **bucket** (a semantic
 archetype); the rest sub-addresses within it. Identity is by _role/coordinate_ —
 editing a file keeps its name, so `grep`/`diff`/`git` all keep working (unlike
 pure content-addressing). This is the English projection of the key; the
-original (bilingual, informal) lives in `HUMAN.md` and the glossary.
+original bilingual sketch is archived at `docs/archive/HUMAN_2026-05-19.md`; the
+glossary is canonical.
 
 ## The 8 octet axes
 

@@ -7,6 +7,7 @@ import {
   catalogCommitment,
   type CatalogEntry,
   type Ceiling,
+  ceilingCommitment,
   DELEGATION_SCHEMA_VERSION,
   type DelegationReason,
   evaluateA1Attenuation,
@@ -38,6 +39,7 @@ function ceiling(): Ceiling {
     ceiling_id: "epoch-1",
     capability_classes: ["writes"],
     effect_ceiling: ["projection", "format", "cache_refresh"],
+    verbs: ["regen-projection"],
     target_families: ["x7B88_evidence_report"],
     catalog_ids: ["x7B88_evidence_report"],
     catalog_commitment: COMMIT,
@@ -47,10 +49,12 @@ function ceiling(): Ceiling {
     expiry: { from_height: 954000, until_height: 958775 },
   };
 }
+const CEILING_COMMIT = await ceilingCommitment(ceiling());
 function lease(): Lease {
   return {
     schema: DELEGATION_SCHEMA_VERSION,
     ceiling_id: "epoch-1",
+    ceiling_commitment: CEILING_COMMIT,
     catalog_id: "x7B88_evidence_report",
     generator_organ: "src/x7B00_evidence.ts",
     capability: "writes",
@@ -68,6 +72,7 @@ function live(): LiveFacts {
   return {
     at_height: 954500,
     catalog_commitment: COMMIT,
+    ceiling_commitment: CEILING_COMMIT,
     revoked: false,
     forked: false,
     quorum_satisfied: true,
@@ -141,11 +146,19 @@ Deno.test("delegation — RED TEAM #4: path injection — a lease cannot introdu
     output_path: "../escape.ts",
   }];
   const evilCommit = await catalogCommitment(evil);
+  const evilCeiling = { ...ceiling(), catalog_commitment: evilCommit };
+  const evilParent = await ceilingCommitment(evilCeiling);
   await expectDeny(
     {
-      ceiling: { catalog_commitment: evilCommit },
-      lease: { write_set: ["../escape.ts"] },
-      live: { catalog_commitment: evilCommit },
+      ceiling: evilCeiling,
+      lease: {
+        ceiling_commitment: evilParent,
+        write_set: ["../escape.ts"],
+      },
+      live: {
+        catalog_commitment: evilCommit,
+        ceiling_commitment: evilParent,
+      },
       catalog: evil,
     },
     "path_not_contained",
@@ -174,6 +187,17 @@ Deno.test("delegation — RED TEAM #6: later expiry", async () => {
 
 Deno.test("delegation — RED TEAM #7: wrong parent digest (ceiling id)", async () => {
   await expectDeny({ lease: { ceiling_id: "epoch-0" } }, "ceiling_mismatch");
+});
+
+Deno.test("delegation — RED TEAM #7b: reused id cannot substitute different ceiling content", async () => {
+  await expectDeny(
+    { ceiling: { effect_ceiling: ["projection"] } },
+    "ceiling_commitment_drift",
+  );
+  await expectDeny(
+    { lease: { ceiling_commitment: "sha256:wrong" } },
+    "ceiling_commitment_drift",
+  );
 });
 
 Deno.test("delegation — RED TEAM #8: unknown schema", async () => {
@@ -211,14 +235,53 @@ Deno.test("delegation — RED TEAM: effect above the ceiling", async () => {
   );
 });
 
+Deno.test("delegation — RED TEAM: verb outside the ceiling", async () => {
+  await expectDeny(
+    { lease: { verb: "apply-source-change" } },
+    "verb_not_in_ceiling",
+  );
+});
+
 Deno.test("delegation — RED TEAM: anchor outside the ceiling window", async () => {
   await expectDeny({ live: { at_height: 999_999 } }, "anchor_outside_window");
+});
+
+Deno.test("delegation — RED TEAM: lease expires before its parent ceiling", async () => {
+  await expectDeny(
+    { lease: { expiry_height: 954499 } },
+    "lease_expired",
+  );
 });
 
 Deno.test("delegation — RED TEAM: unregistered generator organ", async () => {
   await expectDeny(
     { lease: { generator_organ: "src/x5F00_apply.ts" } },
     "generator_not_in_catalog",
+  );
+});
+
+Deno.test("delegation — RED TEAM: duplicate catalog id is ambiguous", async () => {
+  const duplicate = [...CATALOG, { ...CATALOG[0] }];
+  const duplicateCommit = await catalogCommitment(duplicate);
+  await expectDeny(
+    {
+      ceiling: { catalog_commitment: duplicateCommit },
+      lease: {
+        ceiling_commitment: await ceilingCommitment({
+          ...ceiling(),
+          catalog_commitment: duplicateCommit,
+        }),
+      },
+      live: {
+        catalog_commitment: duplicateCommit,
+        ceiling_commitment: await ceilingCommitment({
+          ...ceiling(),
+          catalog_commitment: duplicateCommit,
+        }),
+      },
+      catalog: duplicate,
+    },
+    "catalog_ambiguous",
   );
 });
 
@@ -250,6 +313,18 @@ Deno.test("delegation — the verdict hash is content-bound to every relied-on b
     { ...live(), at_height: 954501 },
   );
   assertNotEquals(a2.verdict_hash, base.verdict_hash);
+  // changing an authority-policy byte changes the verdict even if this lease
+  // would still fit beneath both ceilings.
+  const broader = { ...ceiling(), quorum: { human: 1, model: 2 } };
+  const broaderCommit = await ceilingCommitment(broader);
+  const c2 = await verifyDelegation(
+    broader,
+    { ...lease(), ceiling_commitment: broaderCommit },
+    CATALOG,
+    { ...live(), ceiling_commitment: broaderCommit },
+  );
+  assert(c2.delegated, c2.reason);
+  assertNotEquals(c2.verdict_hash, base.verdict_hash);
   // identical inputs are deterministic
   const same = await verifyDelegation(ceiling(), lease(), CATALOG, live());
   assertEquals(same.verdict_hash, base.verdict_hash);

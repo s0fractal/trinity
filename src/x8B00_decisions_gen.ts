@@ -932,7 +932,7 @@ function validateResolvedByEntries(
       const normalized = ref.replace(/^\.\//, "");
       if (stable) {
         if (!trackedFiles.has(normalized)) {
-          // Allow root-level symlinks like AGENTS.md / SKILLS.md / HUMAN.md
+          // Allow root-level compatibility symlinks like README/AGENTS/SKILLS.
           // that may not be tracked as files but resolve via filesystem.
           let fsOk = false;
           try {

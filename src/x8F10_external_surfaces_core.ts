@@ -486,7 +486,6 @@ async function scanRoot(includeVolatile: boolean): Promise<SurfaceEntry[]> {
     ".gitignore": "git hygiene config",
     ".gitmodules": "submodule boundary",
     "README.md": "human root brief",
-    "HUMAN.md": "human root brief",
     "deno.jsonc": "toolchain config",
     "deno.lock": "toolchain lockfile",
     "t": "command launcher",

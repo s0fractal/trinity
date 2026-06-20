@@ -150,45 +150,55 @@ Deno.test("executor — RED TEAM: a failed fmt gate is not promoted", async () =
   assertEquals(state.main, "OLD");
 });
 
-Deno.test("executor authority — caller cannot substitute mandate body or finality booleans", async () => {
+const MANDATE_KEY =
+  "31b0013dc85509f4b5386fcecb16d97ef996c0a4fe457a2ad40c824d2b2e04d9";
+const ATTENUATION_KEY =
+  "1bd456e1f3be933aa755cd64c851bee3d3c9b35a37ac8c112d3d23ccfe61e044";
+const bothFinal = () =>
+  Promise.resolve({
+    mutations: [
+      { key: MANDATE_KEY, state: "implemented" },
+      { key: ATTENUATION_KEY, state: "implemented" },
+    ],
+  });
+
+Deno.test("executor authority — caller cannot substitute the mandate body of a live epoch", async () => {
+  // epoch-1 is discoverable as live, but the SUBSTITUTED MANDATE (a different body)
+  // is rejected: discovery selects the epoch, the exact-body check refuses the swap.
   const denied = await verifyExecutionAuthority(MANDATE, {
-    lifecycle: () => Promise.resolve({ mutations: [] }),
+    lifecycle: bothFinal,
     currentBlock: () => Promise.resolve(954500),
   });
   assertEquals(denied.verified, false);
-  assert(denied.reason.includes("mandate body"));
+  assert(denied.reason.includes("mandate body"), denied.reason);
 });
 
-Deno.test("executor authority — exact body still needs both live finalities and anchor", async () => {
+Deno.test("executor authority — discovery requires both live finalities and the anchor", async () => {
   const epoch = JSON.parse(
     await Deno.readTextFile("contracts/mandates/epoch-1.mandate.json"),
   ) as AutonomyMandate;
-  const mandateKey =
-    "31b0013dc85509f4b5386fcecb16d97ef996c0a4fe457a2ad40c824d2b2e04d9";
-  const attenuationKey =
-    "1bd456e1f3be933aa755cd64c851bee3d3c9b35a37ac8c112d3d23ccfe61e044";
+
+  // only one finality implemented ⇒ no epoch is final ⇒ no live ratified epoch.
   const oneFinal = await verifyExecutionAuthority(epoch, {
     lifecycle: () =>
       Promise.resolve({
-        mutations: [{ key: mandateKey, state: "implemented" }],
+        mutations: [{ key: MANDATE_KEY, state: "implemented" }],
       }),
     currentBlock: () => Promise.resolve(954500),
   });
   assertEquals(oneFinal.verified, false);
-  assert(oneFinal.reason.includes("attenuation"));
+  assert(oneFinal.reason.includes("no live ratified epoch"), oneFinal.reason);
 
+  // both finalities + the real epoch-1 body + an in-window anchor ⇒ verified.
   const verified = await verifyExecutionAuthority(epoch, {
-    lifecycle: () =>
-      Promise.resolve({
-        mutations: [
-          { key: mandateKey, state: "implemented" },
-          { key: attenuationKey, state: "implemented" },
-        ],
-      }),
+    lifecycle: bothFinal,
     currentBlock: () => Promise.resolve(954500),
   });
   assert(verified.verified, verified.reason);
   assertEquals(verified.at_height, 954500);
+  // byte-for-byte: the warrant binds exactly the discovered epoch's finality keys.
+  assertEquals(verified.mandate_finality_commitment, MANDATE_KEY);
+  assertEquals(verified.attenuation_finality_commitment, ATTENUATION_KEY);
 });
 
 Deno.test("executor — RED TEAM: path containment is rechecked before any promotion", async () => {

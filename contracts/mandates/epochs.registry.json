@@ -1,0 +1,17 @@
+{
+  "schema": "trinity.epoch-registry.v0.1",
+  "note": "Candidate epochs for epoch-neutral runtime discovery (codex x5000_954550 P2). Authority is conferred by the LIVE lifecycle marking each epoch's finality keys `implemented` (quorum), NOT by an entry existing here. Adding epoch-2 = a new entry ratified in the lifecycle by quorum — never a source-code edit. epoch-1 is grandfathered (legacy=true): its ratification predates the strengthened exact-parent binding, so it carries the known finality keys as data. epoch-2+ MUST carry `ceiling_commitment`.",
+  "epochs": [
+    {
+      "ceiling_id": "epoch-1",
+      "mandate_path": "contracts/mandates/epoch-1.mandate.json",
+      "mandate_body_commitment": "sha256:03167aea379f8451d51701cf44da6c0b9121c91173c72b85c4b97a004145a221",
+      "constitution_commitment": "sha256:d2f13b52b10c9ff50beef8affc6075a41fbd5977b498a2c5c75dc59948f4ee8b",
+      "mandate_finality_key": "31b0013dc85509f4b5386fcecb16d97ef996c0a4fe457a2ad40c824d2b2e04d9",
+      "attenuation_finality_key": "1bd456e1f3be933aa755cd64c851bee3d3c9b35a37ac8c112d3d23ccfe61e044",
+      "valid_from_height": 954455,
+      "valid_until_height": 958775,
+      "legacy": true
+    }
+  ]
+}

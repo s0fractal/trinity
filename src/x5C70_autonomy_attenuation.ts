@@ -658,6 +658,151 @@ export async function evaluateA1Attenuation(
   };
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Epoch discovery — epoch-neutral runtime authority selection (codex x5000_954550 P2).
+//
+// The executor must no longer hardcode WHICH mandate body + finality records are
+// ratified. A DATA registry lists candidate epochs; the LIVE lifecycle confers
+// authority — a candidate is final iff every one of its finality records is
+// `implemented`, which the lifecycle compiler only marks after the constitutional
+// quorum is satisfied. Discovery selects the highest applicable final epoch
+// DETERMINISTICALLY and REJECTS ambiguity rather than choosing by registry order.
+// The repository only supplies bytes to verify against these commitments; it never
+// defines authority by being scanned.
+//
+// epoch-1 is grandfathered: its ratification records (h.31b0013, h.1bd456) predate
+// the strengthened binding, so its registry entry carries the known finality keys as
+// data — the same trust the prior in-code constant held, now adding epoch-2 needs
+// data + quorum, not a source edit. epoch-2+ MUST additionally carry
+// `ceiling_commitment` so discovery can verify the ratification binds the exact
+// ceiling content (codex `ceilingCommitment`); a non-legacy epoch missing it fails
+// closed.
+
+export const EPOCH_REGISTRY_SCHEMA = "trinity.epoch-registry.v0.1";
+
+/** A candidate epoch in the ratified registry. Authority is conferred by the live
+ *  lifecycle marking its finality records implemented, NOT by this record existing. */
+export interface RatifiedEpoch {
+  ceiling_id: string;
+  mandate_path: string;
+  mandate_body_commitment: string; // sha256: of the mandate body (stable serialization)
+  constitution_commitment: string;
+  mandate_finality_key: string; // lifecycle proposal key ratifying the mandate
+  attenuation_finality_key: string; // lifecycle proposal key ratifying the A1 rule
+  valid_from_height: number;
+  valid_until_height: number;
+  ceiling_commitment?: string; // epoch-2+: exact-parent binding (codex ceilingCommitment)
+  legacy?: boolean; // epoch-1 grandfather: ceiling_commitment binding waived
+}
+
+/** Live lifecycle facts the discovery reasons over — pure data, no I/O. */
+export interface LifecycleFacts {
+  implemented: string[]; // finality keys whose state is `implemented` (quorum-final)
+  revoked: string[]; // revoked epoch / finality keys
+  forked: boolean; // lifecycle fork detected
+}
+
+export type EpochSelectionReason =
+  | "selected"
+  | "no_candidates"
+  | "schema_mismatch"
+  | "binding_absent"
+  | "none_final"
+  | "none_active"
+  | "ambiguous"
+  | "forked";
+
+export interface EpochSelection {
+  epoch: RatifiedEpoch | null;
+  reason_code: EpochSelectionReason;
+  reason: string;
+}
+
+/** Select the highest applicable final epoch from the registry against live facts.
+ *  Pure, deterministic and fail-closed: multiple equally-applicable epochs are
+ *  AMBIGUOUS (rejected), never resolved by registry order. A non-legacy epoch that
+ *  fails to carry the exact-parent `ceiling_commitment` binding is rejected. */
+export function selectRatifiedEpoch(
+  registry: RatifiedEpoch[],
+  facts: LifecycleFacts,
+  at_height: number,
+): EpochSelection {
+  const none = (
+    reason_code: EpochSelectionReason,
+    reason: string,
+  ): EpochSelection => ({ epoch: null, reason_code, reason });
+
+  if (facts.forked) return none("forked", "live lifecycle is forked");
+  if (registry.length === 0) return none("no_candidates", "registry is empty");
+  // a non-legacy epoch MUST carry the strengthened exact-parent commitment.
+  if (registry.some((e) => !e.legacy && !e.ceiling_commitment)) {
+    return none(
+      "binding_absent",
+      "a non-legacy epoch is missing its exact-parent ceiling commitment",
+    );
+  }
+
+  const implemented = new Set(facts.implemented);
+  const revoked = new Set(facts.revoked);
+  const isFinal = (e: RatifiedEpoch) =>
+    implemented.has(e.mandate_finality_key) &&
+    implemented.has(e.attenuation_finality_key) &&
+    !revoked.has(e.mandate_finality_key) &&
+    !revoked.has(e.attenuation_finality_key) &&
+    !revoked.has(e.ceiling_id);
+  const final = registry.filter(isFinal);
+  if (final.length === 0) {
+    return none(
+      "none_final",
+      "no registry epoch is final and unrevoked in the live lifecycle",
+    );
+  }
+  const active = final.filter((e) =>
+    at_height >= e.valid_from_height && at_height < e.valid_until_height
+  );
+  if (active.length === 0) {
+    return none(
+      "none_active",
+      `no final epoch is active at height ${at_height}`,
+    );
+  }
+  const highest = Math.max(...active.map((e) => e.valid_from_height));
+  const top = active.filter((e) => e.valid_from_height === highest);
+  if (top.length !== 1) {
+    return none(
+      "ambiguous",
+      `${top.length} epochs are equally applicable at height ${at_height}`,
+    );
+  }
+  return {
+    epoch: top[0],
+    reason_code: "selected",
+    reason: `epoch ${
+      top[0].ceiling_id
+    } is the highest applicable final ceiling`,
+  };
+}
+
+/** Parse the `t myc lifecycle` JSON into pure `LifecycleFacts`. Revocation/fork
+ *  surfacing is the lifecycle compiler's responsibility; absent markers are read
+ *  conservatively as "none revoked / not forked". */
+export function parseLifecycleFacts(
+  life: Record<string, unknown>,
+): LifecycleFacts {
+  const muts = (life.mutations ?? []) as Array<{
+    key?: string;
+    state?: string;
+  }>;
+  const REVOKED = new Set(["revoked", "superseded", "withdrawn"]);
+  const implemented = muts
+    .filter((m) => m.state === "implemented" && m.key)
+    .map((m) => m.key!);
+  const revoked = muts
+    .filter((m) => m.state && REVOKED.has(m.state) && m.key)
+    .map((m) => m.key!);
+  return { implemented, revoked, forked: life.forked === true };
+}
+
 export async function runCli(): Promise<void> {
   console.log(JSON.stringify(
     {

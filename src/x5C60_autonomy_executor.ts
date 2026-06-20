@@ -40,19 +40,16 @@ import {
   type Adapter,
   EPOCH1_ADAPTERS,
   evaluateA1Attenuation,
+  type LifecycleFacts,
+  parseLifecycleFacts,
   pathContained,
+  type RatifiedEpoch,
   registryCommitment,
+  selectRatifiedEpoch,
 } from "./x5C70_autonomy_attenuation.ts";
 
 const ROOT = dirname(dirname(fromFileUrl(import.meta.url)));
-const MANDATE_BODY_COMMITMENT =
-  "sha256:03167aea379f8451d51701cf44da6c0b9121c91173c72b85c4b97a004145a221";
-const MANDATE_FINALITY_COMMITMENT =
-  "31b0013dc85509f4b5386fcecb16d97ef996c0a4fe457a2ad40c824d2b2e04d9";
-const ATTENUATION_FINALITY_COMMITMENT =
-  "1bd456e1f3be933aa755cd64c851bee3d3c9b35a37ac8c112d3d23ccfe61e044";
-const CONSTITUTION_COMMITMENT =
-  "sha256:d2f13b52b10c9ff50beef8affc6075a41fbd5977b498a2c5c75dc59948f4ee8b";
+const EPOCH_REGISTRY_PATH = "contracts/mandates/epochs.registry.json";
 
 type Run = (
   cmd: string[],
@@ -157,6 +154,19 @@ export interface ExecutionAuthority {
 interface AuthorityDeps {
   lifecycle: () => Promise<Record<string, unknown>>;
   currentBlock: () => Promise<number | null>;
+  /** the ratified-epoch registry — DATA candidates, never standing authority */
+  registry?: () => Promise<RatifiedEpoch[]>;
+}
+
+async function readRegistry(): Promise<RatifiedEpoch[]> {
+  try {
+    const j = JSON.parse(
+      await Deno.readTextFile(join(ROOT, EPOCH_REGISTRY_PATH)),
+    );
+    return (j.epochs ?? []) as RatifiedEpoch[];
+  } catch {
+    return [];
+  }
 }
 
 const realAuthorityDeps: AuthorityDeps = {
@@ -179,66 +189,74 @@ const realAuthorityDeps: AuthorityDeps = {
       return null;
     }
   },
+  registry: readRegistry,
 };
 
-/** Reconstruct authority from live, self-verifying sources. Caller booleans are
- * never standing: the exact mandate body is pinned, both constitutional
- * proposals must be final in myc, and the comparison anchor comes from Bitcoin. */
+/** Reconstruct authority from live, self-verifying sources, EPOCH-NEUTRALLY (codex
+ * x5000_954550 P2). No epoch is hardcoded: the ratified-epoch registry supplies
+ * candidate bytes, the live lifecycle confers finality (quorum), and discovery
+ * selects the highest applicable final epoch deterministically. The passed mandate
+ * is then verified to BE that epoch (exact body + constitution + window); caller
+ * booleans are never standing. Adding epoch-2 needs ratified data, not a code edit. */
 export async function verifyExecutionAuthority(
   mandate: AutonomyMandate,
   deps: AuthorityDeps = realAuthorityDeps,
 ): Promise<ExecutionAuthority> {
+  const registry = await (deps.registry ?? readRegistry)();
+  const life = await deps.lifecycle();
+  const facts: LifecycleFacts = parseLifecycleFacts(life);
+  const at = await deps.currentBlock();
+  if (at === null) {
+    return { verified: false, reason: "Bitcoin comparison anchor unavailable" };
+  }
+
+  // discover WHICH epoch is live — never assume epoch-1.
+  const sel = selectRatifiedEpoch(registry, facts, at);
+  if (!sel.epoch) {
+    return { verified: false, reason: `no live ratified epoch: ${sel.reason}` };
+  }
+  const epoch = sel.epoch;
+
+  // verify the passed mandate IS the discovered epoch — exact body, not a label.
   const bodyCommitment = `sha256:${await sha256(
     stable(mandate as unknown as Json),
   )}`;
-  if (bodyCommitment !== MANDATE_BODY_COMMITMENT) {
+  if (bodyCommitment !== epoch.mandate_body_commitment) {
     return {
       verified: false,
-      reason: "mandate body is not the ratified epoch-1 body",
+      reason: `mandate body is not the ratified body of ${epoch.ceiling_id}`,
     };
   }
-  if (mandate.constitution_commitment !== CONSTITUTION_COMMITMENT) {
+  if (mandate.constitution_commitment !== epoch.constitution_commitment) {
     return {
       verified: false,
       reason: "mandate constitution commitment mismatch",
     };
   }
-  const life = await deps.lifecycle();
-  const mutations = (life.mutations ?? []) as Array<{
-    key?: string;
-    state?: string;
-  }>;
-  const final = (key: string) =>
-    mutations.some((m) => m.key === key && m.state === "implemented");
-  if (!final(MANDATE_FINALITY_COMMITMENT)) {
+  // the mandate's own window must agree with the discovered epoch's, and contain the anchor.
+  if (
+    mandate.valid_from.height !== epoch.valid_from_height ||
+    mandate.valid_until.height !== epoch.valid_until_height
+  ) {
     return {
       verified: false,
-      reason: "epoch-1 mandate is not final in live lifecycle",
+      reason: "mandate window disagrees with the ratified epoch window",
     };
-  }
-  if (!final(ATTENUATION_FINALITY_COMMITMENT)) {
-    return {
-      verified: false,
-      reason: "A1 attenuation rule is not final in live lifecycle",
-    };
-  }
-  const at = await deps.currentBlock();
-  if (at === null) {
-    return { verified: false, reason: "Bitcoin comparison anchor unavailable" };
   }
   if (at < mandate.valid_from.height || at >= mandate.valid_until.height) {
     return {
       verified: false,
-      reason: "epoch-1 mandate is not active at the live anchor",
+      reason: `${epoch.ceiling_id} is not active at the live anchor`,
     };
   }
   return {
     verified: true,
-    reason: "mandate body, constitutional finality and live anchor verified",
+    reason:
+      `discovered ${epoch.ceiling_id}: body, constitutional finality and live anchor verified`,
     at_height: at,
     mandate_body_commitment: bodyCommitment,
-    mandate_finality_commitment: MANDATE_FINALITY_COMMITMENT,
-    attenuation_finality_commitment: ATTENUATION_FINALITY_COMMITMENT,
+    mandate_finality_commitment: epoch.mandate_finality_key,
+    attenuation_finality_commitment: epoch.attenuation_finality_key,
   };
 }
 

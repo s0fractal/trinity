@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  584  |
-| Signed Chords (content_sig)              |  162  |
-| ↳ registry-verified                      |  162  |
+| Total Chords                             |  585  |
+| Signed Chords (content_sig)              |  163  |
+| ↳ registry-verified                      |  163  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  56   |
-| Receipts                                 |  268  |
-| ↳ strong evidence                        |  268  |
+| Receipts                                 |  269  |
+| ↳ strong evidence                        |  269  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   6   |
@@ -628,6 +628,7 @@ _No open debts detected in the chord trail._
 | [x7700_954582_codex_schema-debt-ledgers-autonomy-routing.myc.md](./x7700_954582_codex_schema-debt-ledgers-autonomy-routing.myc.md)                                                                                                                 | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_954582_codex_typed-path-migrations-close-structural-link-rot.myc.md](./x7700_954582_codex_typed-path-migrations-close-structural-link-rot.myc.md)                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_954613_codex_schema-debt-adjudication-legacy-records-without-re.myc.md](./x7700_954613_codex_schema-debt-adjudication-legacy-records-without-re.myc.md)                                                                                     | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_954614_claude_co-witness-schema-debt-closure-never-rewrite-bound.myc.md](./x7700_954614_claude_co-witness-schema-debt-closure-never-rewrite-bound.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -7669,6 +7670,14 @@ _No open debts detected in the chord trail._
   - `deno test --allow-all src/validate_schemas_test.ts`
   - `deno run -A src/x5400_validate_schemas.ts --json --tracked-only | jq '.summary'`
   - `./t check`
+
+### [x7700_954614_claude_co-witness-schema-debt-closure-never-rewrite-bound.myc.md](./x7700_954614_claude_co-witness-schema-debt-closure-never-rewrite-bound.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Suggested Commands**:
+  - `deno test --allow-all src/validate_schemas_test.ts`
+  - `deno run -A src/x5400_validate_schemas.ts --json --tracked-only | jq '.summary'`
+  - `git show b7295ec --name-only`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

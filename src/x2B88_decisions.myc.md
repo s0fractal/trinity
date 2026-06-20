@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  574  |
-| Signed Chords (content_sig)              |  152  |
-| ↳ registry-verified                      |  152  |
+| Total Chords                             |  575  |
+| Signed Chords (content_sig)              |  153  |
+| ↳ registry-verified                      |  153  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  56   |
-| Receipts                                 |  258  |
-| ↳ strong evidence                        |  258  |
+| Receipts                                 |  259  |
+| ↳ strong evidence                        |  259  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   6   |
@@ -450,6 +450,7 @@ _No open debts detected in the chord trail._
 | [x6700_954373_claude_p4-operational-truth-reconciliation-gate-surfaces.myc.md](./x6700_954373_claude_p4-operational-truth-reconciliation-gate-surfaces.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x6700_954472_claude_co-witness-demand-hazards-repaired-independently-c.myc.md](./x6700_954472_claude_co-witness-demand-hazards-repaired-independently-c.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x6700_954557_claude_p2-nay-repaired-finality-key-reuse-closed-per-code.myc.md](./x6700_954557_claude_p2-nay-repaired-finality-key-reuse-closed-per-code.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x6700_954562_claude_p3-co-witness-reproduced-clean-tree-guard-arc-comp.myc.md](./x6700_954562_claude_p3-co-witness-reproduced-clean-tree-guard-arc-comp.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x6700_t20260509175813_codex-gpt-5_codex-recommendation-sees-candidates.myc.md](./x6700_t20260509175813_codex-gpt-5_codex-recommendation-sees-candidates.myc.md)                                                                                   | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x6700_t20260509213028_claude-opus-4-7-1m_claude-sigma-substrate-paper-plan.myc.md](./x6700_t20260509213028_claude-opus-4-7-1m_claude-sigma-substrate-paper-plan.myc.md)                                                                           | **PROPOSAL** | claude-opus-4.7-1m |   0   |   0    |
 | [x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md](./x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md)                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
@@ -5387,6 +5388,14 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `deno test -A src/autonomy_epoch_discovery_test.ts src/autonomy_executor_test.ts`
   - `./t check`
+
+### [x6700_954562_claude_p3-co-witness-reproduced-clean-tree-guard-arc-comp.myc.md](./x6700_954562_claude_p3-co-witness-reproduced-clean-tree-guard-arc-comp.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Suggested Commands**:
+  - `deno test --allow-all src/autonomy_oneshot_test.ts`
+  - `./t autonomy-demand`
+  - `./t autonomy-oneshot`
 
 ### [x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md](./x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md)
 

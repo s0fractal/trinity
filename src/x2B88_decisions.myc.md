@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  572  |
-| Signed Chords (content_sig)              |  150  |
-| ↳ registry-verified                      |  150  |
+| Total Chords                             |  573  |
+| Signed Chords (content_sig)              |  151  |
+| ↳ registry-verified                      |  151  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  56   |
-| Receipts                                 |  256  |
-| ↳ strong evidence                        |  256  |
+| Receipts                                 |  257  |
+| ↳ strong evidence                        |  257  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   6   |
@@ -387,6 +387,7 @@ _No open debts detected in the chord trail._
 | [x5700_954450_claude_autonomy-kernel-policy-compiler-codex-p0-pure-fail.myc.md](./x5700_954450_claude_autonomy-kernel-policy-compiler-codex-p0-pure-fail.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x5700_954552_claude_autonomy-p1-pure-ceiling-lease-verifier-epoch-1-by.myc.md](./x5700_954552_claude_autonomy-p1-pure-ceiling-lease-verifier-epoch-1-by.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x5700_954555_claude_autonomy-p2-epoch-neutral-runtime-discovery-regist.myc.md](./x5700_954555_claude_autonomy-p2-epoch-neutral-runtime-discovery-regist.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x5700_954561_claude_p3-one-shot-join-live-authority-demand-single-exec.myc.md](./x5700_954561_claude_p3-one-shot-join-live-authority-demand-single-exec.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md](./x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md)                                                                                                 | **RECEIPT**  | gemini-3.1-pro     |   0   |   0    |
 | [x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md](./x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md)                                                                                 | **RECEIPT**  | gemini-3.1-pro     |   0   |   0    |
 | [x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md](./x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md)                                                                             | **RECEIPT**  | claude             |   0   |   0    |
@@ -4515,6 +4516,14 @@ _No open debts detected in the chord trail._
 - **Category**: `RECEIPT` (Author: `claude`)
 - **Suggested Commands**:
   - `deno test --allow-read --allow-write --allow-run --allow-env --allow-net src/autonomy_epoch_discovery_test.ts`
+  - `./t check`
+
+### [x5700_954561_claude_p3-one-shot-join-live-authority-demand-single-exec.myc.md](./x5700_954561_claude_p3-one-shot-join-live-authority-demand-single-exec.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Suggested Commands**:
+  - `deno test --allow-all src/autonomy_oneshot_test.ts`
+  - `./t autonomy-oneshot`
   - `./t check`
 
 ### [x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md](./x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md)

@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    572     |
+| dynamic topology  |    573     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **672**   |
+| **Total**         |  **673**   |
 
 ## Runtime Cache Diagnostics
 
@@ -451,6 +451,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x5700_954450_claude_autonomy-kernel-policy-compiler-codex-p0-pure-fail.myc.md](../src/x5700_954450_claude_autonomy-kernel-policy-compiler-codex-p0-pure-fail.myc.md)                                                                                   | canonical        | src/x5700_954450_claude_autonomy-kernel-policy-compiler-codex-p0-pure-fail.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x5700_954552_claude_autonomy-p1-pure-ceiling-lease-verifier-epoch-1-by.myc.md](../src/x5700_954552_claude_autonomy-p1-pure-ceiling-lease-verifier-epoch-1-by.myc.md)                                                                                   | canonical        | src/x5700_954552_claude_autonomy-p1-pure-ceiling-lease-verifier-epoch-1-by.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x5700_954555_claude_autonomy-p2-epoch-neutral-runtime-discovery-regist.myc.md](../src/x5700_954555_claude_autonomy-p2-epoch-neutral-runtime-discovery-regist.myc.md)                                                                                   | canonical        | src/x5700_954555_claude_autonomy-p2-epoch-neutral-runtime-discovery-regist.myc.md                                          | keep        |                              |
+| dynamic topology  | [src/x5700_954561_claude_p3-one-shot-join-live-authority-demand-single-exec.myc.md](../src/x5700_954561_claude_p3-one-shot-join-live-authority-demand-single-exec.myc.md)                                                                                   | canonical        | src/x5700_954561_claude_p3-one-shot-join-live-authority-demand-single-exec.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md](../src/x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md)                                                                                                 | canonical        | src/x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md                                                 | keep        |                              |
 | dynamic topology  | [src/x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md](../src/x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md)                                                                                 | canonical        | src/x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md                                         | keep        |                              |
 | dynamic topology  | [src/x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md](../src/x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md)                                                                             | canonical        | src/x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md                                       | keep        |                              |

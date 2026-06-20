@@ -79,6 +79,7 @@ export const POSITION_TO_FILE: Record<string, string> = {
   "5/C5": "x5C50_autonomy_probe.ts",
   "5/C6": "x5C60_autonomy_executor.ts",
   "5/C7": "x5C70_autonomy_attenuation.ts",
+  "5/C8": "x5C80_autonomy_demand.ts",
   "5/D": "x5D00_apply_codeicide.ts",
   "5/E": "x5E00_cognition_recommend_receipt.ts",
   "5/E1": "x5E10_warrant.ts",

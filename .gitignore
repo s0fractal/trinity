@@ -80,3 +80,4 @@ src/x7F88_daemon.lock
 reports/
 .autonomy-probe/
 .autonomy-exec/
+.autonomy-demand/

@@ -180,8 +180,9 @@ hallucination_risk = raw-fantasy / (receipt + formula + crystal)
 ```
 
 These are crude. Their value is not precision, but visibility. All seven are now
-implemented and live (see the status banner) — `hallucination_risk` included, since
-the classifier now reaches `raw-fantasy`; read it with the two caveats above.
+implemented and live (see the status banner) — `hallucination_risk` included,
+since the classifier now reaches `raw-fantasy`; read it with the two caveats
+above.
 
 ## Ontological Coverage Connection
 

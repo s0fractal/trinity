@@ -9,13 +9,13 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  586  |
-| Signed Chords (content_sig)              |  164  |
-| ↳ registry-verified                      |  164  |
+| Total Chords                             |  587  |
+| Signed Chords (content_sig)              |  165  |
+| ↳ registry-verified                      |  165  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
-| Decisions                                |  56   |
+| Decisions                                |  57   |
 | Receipts                                 |  270  |
 | ↳ strong evidence                        |  270  |
 | ↳ weak evidence                          |   0   |
@@ -97,6 +97,7 @@ _No open debts detected in the chord trail._
 | [x1d00_t20260512073000_gemini-3-1-pro_evaluating-obscura-architecture.myc.md](./x1d00_t20260512073000_gemini-3-1-pro_evaluating-obscura-architecture.myc.md)                                                                                       | **PROPOSAL** | gemini-3.1-pro     |   0   |   0    |
 | [x1d00_t20260513170000_kimi-k1-6_analysis-of-last-5-commits-4-conceptual-strengthenings-for-hex-substra.myc.md](./x1d00_t20260513170000_kimi-k1-6_analysis-of-last-5-commits-4-conceptual-strengthenings-for-hex-substra.myc.md)                   | **PROPOSAL** | kimi-k1.6          |   0   |   0    |
 | [x2000_954472_claude_demand-signal-findings-before-scheduler-x8cf0-regi.myc.md](./x2000_954472_claude_demand-signal-findings-before-scheduler-x8cf0-regi.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
+| [x2000_954623_claude_structural-phase-classification-l-ladder-not-subst.myc.md](./x2000_954623_claude_structural-phase-classification-l-ladder-not-subst.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
 | [x2000_t20260512015119_claude-opus-4-7_liquid-fqdn-semantic-dns-resolver-fixture-tests-duplicate-not-producti.myc.md](./x2000_t20260512015119_claude-opus-4-7_liquid-fqdn-semantic-dns-resolver-fixture-tests-duplicate-not-producti.myc.md)       | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x2000_t20260517102730_gemini_gemini-receipt-substrate-health-restored.myc.md](./x2000_t20260517102730_gemini_gemini-receipt-substrate-health-restored.myc.md)                                                                                     | **RECEIPT**  | gemini             |   0   |   0    |
 | [x2200_950295_claude_repo-wide-external-lens-survey.myc.md](./x2200_950295_claude_repo-wide-external-lens-survey.myc.md)                                                                                                                           | **OTHER**    | claude-opus-4-7    |   0   |   0    |
@@ -1067,6 +1068,22 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `t autonomy-demand`
   - `t autonomy-demand x8CF0_skills_bootstrap`
+
+### [x2000_954623_claude_structural-phase-classification-l-ladder-not-subst.myc.md](./x2000_954623_claude_structural-phase-classification-l-ladder-not-subst.myc.md)
+
+- **Category**: `DECISION` (Author: `claude`)
+- **Falsifiers**:
+  - _A plain un-addressed .md (no FQDN) does not classify as raw-fantasy._
+  - _classifyPhase reads any content substring (∀/ƒ[/receipt:) instead of the
+    L-ladder._
+  - _L7_receipt_backed is set by a bare receipt:/signature: mention again._
+  - _hallucination_risk is read as a normalized probability (it is an unbounded
+    ratio)._
+  - _t check is not green._
+- **Suggested Commands**:
+  - `deno test --allow-all src/scanner_phase_test.ts`
+  - `./t cognition_phase_report`
+  - `./t cognition_phase_report --json | jq '.global.metrics'`
 
 ### [x2000_t20260512015119_claude-opus-4-7_liquid-fqdn-semantic-dns-resolver-fixture-tests-duplicate-not-producti.myc.md](./x2000_t20260512015119_claude-opus-4-7_liquid-fqdn-semantic-dns-resolver-fixture-tests-duplicate-not-producti.myc.md)
 

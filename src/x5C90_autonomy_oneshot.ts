@@ -68,6 +68,11 @@ export interface OneShotDeps {
   runExecute: (
     input: { intent: AutonomyIntent; mandate: AutonomyMandate },
   ) => Promise<ExecResult>;
+  /** Kernel-owned, append-only runtime evidence sink. It is outside the repo and
+   * confers no finality or publication standing. */
+  recordReceipt: (
+    receipt: RuntimeReceiptEnvelope,
+  ) => Promise<RuntimeReceiptRecord>;
   loadMandates: () => Promise<AutonomyMandate[]>;
   adapters: Adapter[];
 }
@@ -113,6 +118,7 @@ const realDeps: OneShotDeps = {
   authority: verifyExecutionAuthority,
   demand,
   runExecute: (input) => execute(input),
+  recordReceipt: persistRuntimeReceipt,
   loadMandates: realLoadMandates,
   adapters: EPOCH1_ADAPTERS,
 };
@@ -127,6 +133,74 @@ export interface OneShotResult {
   authority_verdict_hash?: string;
   exec?: ExecResult;
   receipt_commitment?: string;
+  runtime_receipt?: RuntimeReceiptRecord;
+}
+
+export interface RuntimeReceiptEnvelope {
+  schema: "trinity.autonomy-oneshot-receipt.v0.1";
+  acted: boolean;
+  authority_verdict_hash: string;
+  demand_snapshot_hash: string;
+  exec: ExecResult;
+  picked: string;
+  receipt_commitment: string;
+}
+
+export interface RuntimeReceiptRecord {
+  persisted: boolean;
+  path: string | null;
+  reason:
+    | "created"
+    | "already_present"
+    | "invalid_commitment"
+    | "write_failed";
+}
+
+/** Persist one acted receipt outside the repository, named by its commitment.
+ * `createNew` makes the sink append-only; an existing identical envelope is an
+ * idempotent replay, while any collision fails closed and is never overwritten. */
+export async function persistRuntimeReceipt(
+  receipt: RuntimeReceiptEnvelope,
+  runtimeRoot?: string,
+): Promise<RuntimeReceiptRecord> {
+  const { receipt_commitment, ...body } = receipt;
+  const expected = `sha256:${await sha256(stable(body as unknown as Json))}`;
+  if (receipt_commitment !== expected) {
+    return { persisted: false, path: null, reason: "invalid_commitment" };
+  }
+  const root = runtimeRoot ?? join(
+    Deno.env.get("TRINITY_RUNTIME_DIR") ??
+      join(Deno.env.get("HOME") ?? ROOT, ".trinity", "runtime"),
+    "autonomy-receipts",
+  );
+  const name = receipt_commitment.replace(/^sha256:/, "") + ".json";
+  const path = join(root, name);
+  const bytes = stable(receipt as unknown as Json) + "\n";
+  try {
+    await Deno.mkdir(root, { recursive: true, mode: 0o700 });
+    const file = await Deno.open(path, {
+      createNew: true,
+      write: true,
+      mode: 0o600,
+    });
+    try {
+      await file.write(new TextEncoder().encode(bytes));
+    } finally {
+      file.close();
+    }
+    return { persisted: true, path, reason: "created" };
+  } catch (e) {
+    if (e instanceof Deno.errors.AlreadyExists) {
+      try {
+        if (await Deno.readTextFile(path) === bytes) {
+          return { persisted: true, path, reason: "already_present" };
+        }
+      } catch {
+        // unreadable/colliding evidence is not a successful persistence.
+      }
+    }
+    return { persisted: false, path: null, reason: "write_failed" };
+  }
 }
 
 /** Compose proven demand with one bounded execution, ONCE, then stop. Fail-closed at
@@ -232,13 +306,20 @@ export async function oneShot(
   const exec = await deps.runExecute({ intent, mandate });
 
   // 6. receipt → stdout, bound to both live facts. Then STOP (no loop, no continuation).
-  const receipt = {
+  const receiptBody = {
+    schema: "trinity.autonomy-oneshot-receipt.v0.1" as const,
     acted: exec.promoted,
     authority_verdict_hash,
     demand_snapshot_hash,
-    exec_receipt_commitment: exec.receipt_commitment ?? null,
+    exec,
     picked: picked.target,
   };
+  const receipt_commitment = `sha256:${await sha256(
+    stable(receiptBody as unknown as Json),
+  )}`;
+  const runtime_receipt = exec.promoted
+    ? await deps.recordReceipt({ ...receiptBody, receipt_commitment })
+    : undefined;
   return {
     type: "a1_oneshot",
     position: "5/C9",
@@ -250,9 +331,8 @@ export async function oneShot(
     demand_snapshot_hash,
     authority_verdict_hash,
     exec,
-    receipt_commitment: `sha256:${await sha256(
-      stable(receipt as unknown as Json),
-    )}`,
+    receipt_commitment,
+    runtime_receipt,
   };
 }
 

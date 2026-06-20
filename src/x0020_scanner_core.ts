@@ -106,8 +106,17 @@ export function classifyPhase(
     }
   }
 
+  // A file is in receipt phase when it STRUCTURALLY is one: a receipt-typed chord
+  // (type/mode/stance), a content-addressed `*.receipt.*` object, or an actual
+  // executed-output block. A bare textual mention of `receipt:`/`signature:` — e.g.
+  // `receipt: "none"`, a proposal's `receipt: "file"` policy field, or prose/code —
+  // must NOT count; counting mentions inflated the Rigid-Verifying archetype.
+  const receiptTyped = !!fm &&
+    (String(fm.type ?? "").toLowerCase().includes("receipt") ||
+      String(fm.mode ?? "").toLowerCase() === "receipt" ||
+      String(fm.stance ?? "").toLowerCase() === "receipt");
   if (
-    content.includes("receipt:") || content.includes("signature:") ||
+    receiptTyped || filename.includes(".receipt.") ||
     content.includes("------- output -------")
   ) {
     return "receipt";

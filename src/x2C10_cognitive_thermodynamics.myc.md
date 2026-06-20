@@ -142,7 +142,18 @@ Without compost, the system repeats mistakes or lies about its past.
 
 ## Balance Metrics
 
-Initial metrics:
+> **STATUS — DESIGN INTENT, NOT IMPLEMENTED (verified 2026-06-20).** The ratios
+> below are a _specification only_. The live cognition pipeline implements just
+> the single-ratio `determineArchetype` in `x2C00_cognition_phase_report.ts`;
+> none of `crystal_ratio` / `grounding_ratio` / `learning_ratio` /
+> `novelty_ratio` / `compost_ratio` / `rigidity_index` / `hallucination_risk`
+> exist in code (`grep` over `src/*.ts` → zero hits). In particular
+> `hallucination_risk` can never fire: the `raw-fantasy` phase has no
+> content-based classifier path (it is settable only via explicit
+> `thought_phase:` frontmatter, which no file uses), so its numerator is
+> structurally 0. Treat this section as a horizon, not a measurement.
+
+Initial metrics (spec):
 
 ```text
 phase_distribution = normalized counts over 8 phases
@@ -155,7 +166,8 @@ rigidity_index     = crystal / (raw-fantasy + hypothesis + proposal)
 hallucination_risk = raw-fantasy / (receipt + formula + crystal)
 ```
 
-These are crude. Their value is not precision, but visibility.
+These are crude. Their value is not precision, but visibility. They are also, as
+of 2026-06-20, unimplemented — see the status banner above.
 
 ## Ontological Coverage Connection
 

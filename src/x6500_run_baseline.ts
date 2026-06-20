@@ -60,24 +60,39 @@ const gates: Gate[] = [
 
 async function runGate(gate: Gate): Promise<GateResult> {
   const started = performance.now();
-  const command = new Deno.Command(gate.command[0], {
-    args: gate.command.slice(1),
-    cwd: gate.cwd,
-    stdout: "piped",
-    stderr: "piped",
-    env: {
-      ...Deno.env.toObject(),
-      LIQUID_QUIET: "1",
-    },
-  });
-  const output = await command.output();
-  return {
-    name: gate.name,
-    code: output.code,
-    durationMs: Math.round(performance.now() - started),
-    stdout: new TextDecoder().decode(output.stdout),
-    stderr: new TextDecoder().decode(output.stderr),
-  };
+  const dur = () => Math.round(performance.now() - started);
+  try {
+    const command = new Deno.Command(gate.command[0], {
+      args: gate.command.slice(1),
+      cwd: gate.cwd,
+      stdout: "piped",
+      stderr: "piped",
+      env: {
+        ...Deno.env.toObject(),
+        LIQUID_QUIET: "1",
+      },
+    });
+    const output = await command.output();
+    return {
+      name: gate.name,
+      code: output.code,
+      durationMs: dur(),
+      stdout: new TextDecoder().decode(output.stdout),
+      stderr: new TextDecoder().decode(output.stderr),
+    };
+  } catch (e) {
+    // An absent toolchain binary (e.g. cargo not installed) throws NotFound; report it
+    // as a FAILED gate (code 127) instead of crashing the whole baseline runner.
+    return {
+      name: gate.name,
+      code: 127,
+      durationMs: dur(),
+      stdout: "",
+      stderr: `failed to spawn '${gate.command[0]}': ${
+        e instanceof Error ? e.message : String(e)
+      }`,
+    };
+  }
 }
 
 function fence(text: string, maxChars = 12000): string {

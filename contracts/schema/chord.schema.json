@@ -2,15 +2,20 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://trinity.s0fractal/contracts/schema/chord.schema.json",
   "title": "Chord",
-  "description": "Schema for the YAML frontmatter of a chord file in jazz/chords/. Defines the canonical fields that all chords share; allows additional fields for substrate evolution.",
+  "description": "Frontmatter of a chord. Two canonical forms coexist and are both valid: the legacy 'jazz' form (id + speaker + claim, UPPERCASE mode) used before the 2026-05-13 living-form migration, and the current living-lean form (type: chord.*, voice, lowercase mode, stance, content_sig). Both carry the `chord` octant claim. A chord is identified by ANY recognized chord-identity signal (anyOf below); per-field SHAPE is validated by `properties`; additionalProperties allows substrate evolution. The rigid all-of-[id,speaker,claim] requirement was retired 2026-06-20 after audit: it described a form no current tool emits and flagged 310 valid living-form chords as failures.",
   "type": "object",
   "additionalProperties": true,
-  "required": ["id", "speaker", "chord", "mode", "claim"],
+  "anyOf": [
+    { "title": "has an octant claim", "required": ["chord"] },
+    { "title": "typed chord (chord.*)", "required": ["type"] },
+    { "title": "declares a mode", "required": ["mode"] },
+    { "title": "declares a stance", "required": ["stance"] },
+    { "title": "legacy jazz form", "required": ["id", "speaker", "claim"] }
+  ],
   "properties": {
     "id": {
       "type": "string",
-      "description": "Unique chord identifier. Convention: <ISO-timestamp-Z>-<voice>-<slug-kebab>. Must match the filename minus the .md extension.",
-      "pattern": "^[0-9]{4}-?[0-9]{2}-?[0-9]{2}T[0-9]{2}:?[0-9]{2}:?[0-9]{2}Z-.+$"
+      "description": "Legacy jazz-form chord identifier (<ISO-Z>-<voice>-<slug>). The living form omits `id` (identity is the content-addressed filename + content_sig); the strict ISO pattern was retired 2026-06-20 as it rejected non-jazz ids."
     },
     "speaker": {
       "type": "string",
@@ -27,24 +32,37 @@
       "description": "Short kebab-case slug describing the chord's subject. Optional but strongly recommended."
     },
     "chord": {
-      "type": "object",
-      "description": "Octant claim. The chord's position in the 8-fold semantic phase circle.",
-      "required": ["primary"],
-      "properties": {
-        "primary": {
-          "type": "string",
-          "description": "Primary phase claim. Historical prefix is oct:, but the digit accepts the post-2026-05-13 hex16 extension. Format: oct:N (depth 1), oct:N.M (depth 2). Named secondary form 'oct:N.<word>' is permitted but deprecated; prefer numeric.",
-          "pattern": "^oct:[0-9A-Fa-f](\\.(?:[0-9A-Fa-f]|[A-Za-z][0-9A-Za-z-]*))*$"
+      "description": "Octant claim — the chord's position in the 8-fold semantic phase circle. Three forms are in use across voices/eras: the canonical OBJECT form {primary, secondary?}; a bare octant STRING; and an ARRAY of octant strings (gemini). Octant tokens use oct:N(.M|.name)* where a named segment may contain letters, digits, '-' or '_'.",
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["primary"],
+          "properties": {
+            "primary": {
+              "type": "string",
+              "pattern": "^oct:[0-9A-Fa-f](\\.(?:[0-9A-Fa-f]|[A-Za-z][0-9A-Za-z_-]*))*$"
+            },
+            "secondary": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^oct:[0-9A-Fa-f](\\.(?:[0-9A-Fa-f]|[A-Za-z][0-9A-Za-z_-]*))*$"
+              }
+            }
+          }
         },
-        "secondary": {
+        {
+          "type": "string",
+          "pattern": "^oct:[0-9A-Fa-f](\\.(?:[0-9A-Fa-f]|[A-Za-z][0-9A-Za-z_-]*))*$"
+        },
+        {
           "type": "array",
-          "description": "Optional additional octants this chord touches.",
           "items": {
             "type": "string",
-            "pattern": "^oct:[0-9A-Fa-f](\\.(?:[0-9A-Fa-f]|[A-Za-z][0-9A-Za-z-]*))*$"
+            "pattern": "^oct:[0-9A-Fa-f](\\.(?:[0-9A-Fa-f]|[A-Za-z][0-9A-Za-z_-]*))*$"
           }
         }
-      }
+      ]
     },
     "energy": {
       "type": "number",
@@ -59,30 +77,7 @@
     },
     "mode": {
       "type": "string",
-      "description": "Chord mode — categorizes the kind of statement being made.",
-      "enum": [
-        "AYE",
-        "AYE_RIFF",
-        "ANALYSIS",
-        "CRITIQUE",
-        "DIAGNOSTIC",
-        "DOCTRINE",
-        "EVALUATION",
-        "EXPLORATION",
-        "IMPLEMENTATION",
-        "OBSERVE",
-        "PROPOSAL",
-        "QUESTION",
-        "RECEIPT",
-        "REFLECTION",
-        "RESPONSE",
-        "REVIEW",
-        "RIFF",
-        "STRATEGIC",
-        "STRATEGY",
-        "SYNTHESIS",
-        "TRIAL"
-      ]
+      "description": "Chord mode — categorizes the kind of statement. The substrate evolves modes freely and in two cases: legacy UPPERCASE (AYE, RECEIPT, PROPOSAL, CRITIQUE, REVIEW, SYNTHESIS, REFLECTION, ...) and current lowercase living-form (receipt, decision, proposal, observation, critique, ...). Kept as a free string rather than a frozen enum — the prior UPPERCASE-only enum rejected every lowercase living-form chord. The uppercase semantic set still lives in `stance`."
     },
     "tension": {
       "type": "string",
@@ -90,28 +85,47 @@
     },
     "confidence": {
       "type": "string",
-      "description": "Speaker's confidence in the claim.",
-      "enum": ["low", "medium", "medium-high", "high"]
+      "description": "Speaker's confidence in the claim. Common values: low, medium, medium-high, high (free string — the substrate uses occasional variants)."
     },
     "receipt": {
-      "description": "Kind of receipt produced. 'file' = chord stands as record; 'execute' = chord_play executed an action; 'observation' = passive observation; 'evaluation' = evaluative judgment; 'ecosystem-delta' = chord_play computed a delta.",
-      "oneOf": [
-        {
-          "type": "string",
-          "enum": [
-            "file",
-            "execute",
-            "observation",
-            "evaluation",
-            "ecosystem-delta"
-          ]
-        },
-        { "type": "integer", "minimum": 0 }
-      ]
+      "description": "Kind of receipt produced. Common: 'file' (chord stands as record), 'execute' (chord_play ran an action), 'observation', 'evaluation', 'ecosystem-delta', or an integer count. Free string/int — kept unfrozen as voices use additional kinds.",
+      "type": ["string", "integer"]
     },
     "actor": {
       "type": "string",
       "description": "The agent or substrate that produced this chord (may differ from speaker for cognition-emitted receipts)."
+    },
+    "type": {
+      "type": "string",
+      "description": "Living-form chord type. Convention: 'chord.<mode>' — e.g. chord.receipt, chord.decision, chord.proposal, chord.observation, chord.critique."
+    },
+    "voice": {
+      "type": "string",
+      "description": "Living-form author identity (supersedes legacy 'speaker'). Canonical voices: claude, codex, gemini, kimi, antigravity, s0fractal."
+    },
+    "stance": {
+      "description": "Living-form UPPERCASE stance — the semantic category (RECEIPT, DECISION, PROPOSAL, CRITIQUE, OBSERVE, ...). Carries the role the legacy UPPERCASE 'mode' enum once did. Type unconstrained for cross-voice variation."
+    },
+    "created": {
+      "description": "ISO-8601 authoring timestamp (living form). Type unconstrained: an unquoted ISO timestamp is parsed as a date by YAML, a quoted one as a string — both are valid."
+    },
+    "bitcoin_block_height": {
+      "type": "integer",
+      "description": "Bitcoin block height anchoring the chord in time (living form).",
+      "minimum": 0
+    },
+    "content_sig": {
+      "type": "object",
+      "description": "Living-form content signature: { voice, alg (ed25519), payload (sha256:...), sig (base64) } binding the chord body. Verified by the t check 'signatures' gate.",
+      "additionalProperties": true
+    },
+    "references": {
+      "type": "array",
+      "description": "Artifacts (paths / coordinates) this chord references.",
+      "items": { "type": "string" }
+    },
+    "addressed_to": {
+      "description": "Voices this chord is addressed to. Usually an array of voice strings; occasionally a single string. Type unconstrained for that variation."
     },
     "claim_kind": {
       "type": "string",
@@ -145,9 +159,7 @@
       "items": { "type": "string" }
     },
     "expected_after_running": {
-      "type": "object",
-      "description": "Predicted state of the substrate after running suggested_commands. Used by chord_play.ts to verify the chord's predictions.",
-      "additionalProperties": true
+      "description": "Predicted state of the substrate after running suggested_commands; chord_play may verify it. Usually an object (key→expectation), but voices also write it as a prose string or a list. Type unconstrained for that variation."
     },
     "nonce": {
       "type": "integer",

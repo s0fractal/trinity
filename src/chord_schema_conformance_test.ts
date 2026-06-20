@@ -1,4 +1,7 @@
-import { assert } from "https://deno.land/std@0.224.0/assert/mod.ts";
+import {
+  assert,
+  assertFalse,
+} from "https://deno.land/std@0.224.0/assert/mod.ts";
 import { parse as parseYaml } from "jsr:@std/yaml@1.0.5";
 import Ajv2020Module from "npm:ajv@8.17.1/dist/2020.js";
 
@@ -69,4 +72,29 @@ Deno.test("conformance — `t chord init` output validates against chord.schema.
       }`,
     );
   }
+});
+
+Deno.test("conformance — RED TEAM: isolated marker words are not chord identity", async () => {
+  const validate = await validator();
+  for (
+    const fake of [
+      { mode: "banana" },
+      { type: "garbage" },
+      { stance: 42 },
+      { type: "chord.receipt" }, // a typed chord still needs an author identity
+    ]
+  ) {
+    assertFalse(
+      validate(fake),
+      `non-chord marker object was accepted: ${JSON.stringify(fake)}`,
+    );
+  }
+});
+
+Deno.test("conformance — historical identity branches remain explicit", async () => {
+  const validate = await validator();
+  assert(validate({ type: "chord.receipt", voice: "claude" }));
+  assert(validate({ type: "chord.receipt", author: "codex" }));
+  assert(validate({ mode: "RECEIPT", voice: "codex" }));
+  assert(validate({ id: "legacy-id", speaker: "gemini" }));
 });

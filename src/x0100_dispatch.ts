@@ -660,13 +660,20 @@ async function fn_list(): Promise<void> {
   await fn_process_payload(JSON.stringify(payload), 0);
 }
 
+/** True when a token is a complete direct fractal position. Exported so routing
+ * regression tests exercise the production predicate rather than a copied regex. */
+export function isDirectPosition(word: string): boolean {
+  const clean = word.replace(/^0x/, "");
+  return /^[0-9A-Fa-f]+(\/[0-9A-Fa-f]+)+$/.test(clean);
+}
+
 async function fn_dispatch_word(word: string, rest: string[]): Promise<number> {
   // Fractal path: direct hex position execution (e.g., 5/C, 5/C9, 2/F37, 4/F1).
   // Each segment is one-or-more hex chars: POSITION_TO_FILE keys include multi-char
   // coordinates (5/C9, 2/F3, 4/011), so a single-char-per-segment regex silently
   // dropped them to word-resolution (→ "unknown word"). Match the full key shape.
   const clean = word.replace(/^0x/, "");
-  if (/^[0-9A-Fa-f]+(\/[0-9A-Fa-f]+)+$/.test(clean)) {
+  if (isDirectPosition(word)) {
     console.error(`# ${word} → direct position`);
     return await fn_run_at_position(clean, rest, 0);
   }

@@ -7,10 +7,29 @@
   "additionalProperties": true,
   "anyOf": [
     { "title": "has an octant claim", "required": ["chord"] },
-    { "title": "typed chord (chord.*)", "required": ["type"] },
-    { "title": "declares a mode", "required": ["mode"] },
-    { "title": "declares a stance", "required": ["stance"] },
-    { "title": "legacy jazz form", "required": ["id", "speaker", "claim"] }
+    {
+      "title": "typed living chord",
+      "required": ["type"],
+      "properties": {
+        "type": { "pattern": "^chord(?:\\.|$)" }
+      },
+      "anyOf": [
+        { "required": ["voice"] },
+        { "required": ["author"] }
+      ]
+    },
+    {
+      "title": "transitional voiced chord",
+      "required": ["mode"],
+      "anyOf": [
+        { "required": ["voice"] },
+        { "required": ["author"] }
+      ]
+    },
+    {
+      "title": "legacy jazz identity",
+      "required": ["id", "speaker"]
+    }
   ],
   "properties": {
     "id": {
@@ -102,6 +121,10 @@
     "voice": {
       "type": "string",
       "description": "Living-form author identity (supersedes legacy 'speaker'). Canonical voices: claude, codex, gemini, kimi, antigravity, s0fractal."
+    },
+    "author": {
+      "type": "string",
+      "description": "Early living-form author identity used before the `voice` field stabilized."
     },
     "stance": {
       "description": "Living-form UPPERCASE stance — the semantic category (RECEIPT, DECISION, PROPOSAL, CRITIQUE, OBSERVE, ...). Carries the role the legacy UPPERCASE 'mode' enum once did. Type unconstrained for cross-voice variation."

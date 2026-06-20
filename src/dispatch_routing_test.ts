@@ -7,6 +7,7 @@ import {
   POSITION_TO_FILE,
   positionToPath,
 } from "./x0010_dispatch_runner.ts";
+import { isDirectPosition } from "./x0100_dispatch.ts";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Routing-table integrity + multi-char hex dispatch (audit 2026-06-20). The
@@ -15,20 +16,20 @@ import {
 // coordinates (5/C9, 2/F37, 4/F1) silently fell through to "unknown word" despite
 // being real entries in POSITION_TO_FILE.
 
-// The direct-position pattern used by x0100_dispatch.ts fn_dispatch_word. Kept in
-// sync here so a future narrowing (e.g. back to single-char) fails this test.
-const DIRECT_POSITION = /^[0-9A-Fa-f]+(\/[0-9A-Fa-f]+)+$/;
-
-Deno.test("routing — multi-char hex coordinates are accepted by the direct-position pattern", () => {
+Deno.test("routing — production dispatcher accepts multi-char hex coordinates", () => {
   for (const pos of ["5/C", "5/C9", "2/F3", "2/F37", "4/F1", "4/011", "8/85"]) {
     assert(
-      DIRECT_POSITION.test(pos),
+      isDirectPosition(pos),
       `${pos} must dispatch as a direct position`,
     );
   }
+  assert(
+    isDirectPosition("0x5/C9"),
+    "0x-prefixed direct positions must resolve",
+  );
   // non-coordinates must NOT match (still resolve as words)
   for (const w of ["check", "status", "autonomy-demand", "5", ""]) {
-    assert(!DIRECT_POSITION.test(w), `${w} must not be treated as a position`);
+    assert(!isDirectPosition(w), `${w} must not be treated as a position`);
   }
 });
 

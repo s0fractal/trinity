@@ -13,6 +13,7 @@ import {
   chordStamp,
   developmentArcs,
   federationMember,
+  filterIndexToTracked,
   graphQueryForms,
   indexIsFresh,
   isContentAddressed,
@@ -41,6 +42,23 @@ import {
 Deno.test("resolver cache policy — --no-cache forces live artifact", () => {
   assertEquals(resolverCacheAllowed(["atlas", "--json"]), true);
   assertEquals(resolverCacheAllowed(["atlas", "--no-cache", "--json"]), false);
+});
+
+Deno.test("tracked-only index excludes local artifacts without changing address forms", async () => {
+  const { roots, cleanup } = await fixture();
+  try {
+    const index = await buildIndex(roots);
+    const keep = [...index.byKey.values()].flat().find((s) =>
+      s.matchForm === "exact"
+    )!;
+    const filtered = filterIndexToTracked(index, new Set([keep.path]));
+    assertEquals(filtered.files, 1);
+    assert(
+      [...filtered.byKey.values()].flat().every((s) => s.path === keep.path),
+    );
+  } finally {
+    await cleanup();
+  }
 });
 
 // Build a throwaway federation of roots with known collisions.

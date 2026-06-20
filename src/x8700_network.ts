@@ -97,7 +97,7 @@ export function networkResolverArgs(
     "resolve-fqdn",
     view,
     ...(view === "lineage" ? ["--limit=12"] : []),
-    ...(stable ? ["--no-cache"] : []),
+    ...(stable ? ["--no-cache", "--tracked-only"] : []),
     "--json",
   ];
 }

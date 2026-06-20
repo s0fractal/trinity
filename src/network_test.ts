@@ -87,6 +87,7 @@ Deno.test("network --stable bypasses machine-local resolver cache", () => {
     "resolve-fqdn",
     "atlas",
     "--no-cache",
+    "--tracked-only",
     "--json",
   ]);
   assert(!networkResolverArgs(false, "lineage").includes("--no-cache"));

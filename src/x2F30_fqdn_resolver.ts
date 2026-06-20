@@ -152,6 +152,58 @@ export interface Index {
   files: number; // files indexed
 }
 
+/** Restrict a filesystem index to an explicit set of tracked absolute paths.
+ * Stable projections use this to exclude machine-local logs, exports, runtime
+ * caches and ignored generated files. */
+export function filterIndexToTracked(
+  index: Index,
+  tracked: Set<string>,
+): Index {
+  const byKey = new Map<string, Stored[]>();
+  const exactFiles = new Set<string>();
+  for (const [key, stored] of index.byKey) {
+    const kept = stored.filter((s) => tracked.has(s.path));
+    if (kept.length === 0) continue;
+    byKey.set(key, kept);
+    for (const s of kept) {
+      if (s.matchForm === "exact") exactFiles.add(`${s.rootIndex}:${s.rel}`);
+    }
+  }
+  return { roots: index.roots, byKey, files: exactFiles.size };
+}
+
+async function trackedPathSet(roots: string[]): Promise<Set<string>> {
+  const tracked = new Set<string>();
+  for (const root of roots) {
+    const topRun = await new Deno.Command("git", {
+      args: ["-C", root, "rev-parse", "--show-toplevel"],
+      stdout: "piped",
+      stderr: "null",
+    }).output();
+    if (topRun.code !== 0) {
+      throw new Error(`tracked-only: ${root} is not inside a git worktree`);
+    }
+    const top = new TextDecoder().decode(topRun.stdout).trim();
+    const filesRun = await new Deno.Command("git", {
+      args: ["-C", top, "ls-files", "-z"],
+      stdout: "piped",
+      stderr: "null",
+    }).output();
+    if (filesRun.code !== 0) {
+      throw new Error(`tracked-only: git ls-files failed for ${top}`);
+    }
+    for (const rel of new TextDecoder().decode(filesRun.stdout).split("\0")) {
+      if (rel) tracked.add(join(top, rel));
+    }
+  }
+  return tracked;
+}
+
+async function maybeTrackedOnly(index: Index, args: string[]): Promise<Index> {
+  if (!args.includes("--tracked-only")) return index;
+  return filterIndexToTracked(index, await trackedPathSet(index.roots));
+}
+
 /**
  * Walk the roots ONCE and index every file under each address form it answers
  * to. Missing/unreadable roots are skipped — local-first means "wherever it
@@ -1821,7 +1873,7 @@ if (import.meta.main) {
   // shape + pulse + doorways. Default output is the human rendering (this is the
   // "for people" front door); --json exposes the same composed aggregate.
   if (args[0] === "atlas") {
-    const index = await buildIndex(roots);
+    const index = await maybeTrackedOnly(await buildIndex(roots), args);
     const { cache, fresh } = await freshCache(index);
     const useCache = resolverCacheAllowed(args);
     const artifact = useCache && fresh && cache
@@ -1856,7 +1908,7 @@ if (import.meta.main) {
   if (args[0] === "lineage") {
     const limitArg = flagArg(args, "limit");
     const limit = limitArg ? Number(limitArg) : 12;
-    const index = await buildIndex(roots);
+    const index = await maybeTrackedOnly(await buildIndex(roots), args);
     const { cache, fresh } = await freshCache(index);
     const useCache = resolverCacheAllowed(args);
     const artifact = useCache && fresh && cache

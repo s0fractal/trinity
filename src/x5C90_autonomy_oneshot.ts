@@ -60,6 +60,9 @@ async function sha256(s: string): Promise<string> {
  *  this organ only composes them. `loadMandates` yields the registry's candidate
  *  mandates (bytes); only the one matching the live discovered epoch will verify. */
 export interface OneShotDeps {
+  /** Autonomous promotion is defined only on a clean checkout. A dirty target
+   * could otherwise be mistaken for HEAD-relative staleness and overwritten. */
+  workspaceClean: () => Promise<boolean>;
   authority: (m: AutonomyMandate) => Promise<ExecutionAuthority>;
   demand: (adapters: Adapter[]) => Promise<DemandReport>;
   runExecute: (
@@ -93,6 +96,20 @@ async function realLoadMandates(): Promise<AutonomyMandate[]> {
 }
 
 const realDeps: OneShotDeps = {
+  workspaceClean: async () => {
+    try {
+      const p = new Deno.Command("git", {
+        args: ["status", "--porcelain", "--untracked-files=all"],
+        cwd: ROOT,
+        stdout: "piped",
+        stderr: "piped",
+      });
+      const r = await p.output();
+      return r.code === 0 && new TextDecoder().decode(r.stdout).trim() === "";
+    } catch {
+      return false;
+    }
+  },
   authority: verifyExecutionAuthority,
   demand,
   runExecute: (input) => execute(input),
@@ -128,6 +145,14 @@ export async function oneShot(
     reason,
     ...over,
   });
+
+  // HEAD-relative regeneration is safe only when HEAD is the complete input state.
+  // This also protects uncommitted projection edits from being interpreted as demand.
+  if (!(await deps.workspaceClean())) {
+    return stop(
+      "working tree is dirty or unreadable — autonomous action denied",
+    );
+  }
 
   // 1. live authority — only the mandate of the single live discovered epoch verifies.
   let authority: ExecutionAuthority | null = null;
@@ -179,6 +204,14 @@ export async function oneShot(
   );
   if (!stillStale) {
     return stop("picked target no longer proven stale at revalidation");
+  }
+
+  // Recheck the reversibility boundary after the probes and immediately before the
+  // actuator. A concurrent/user edit during authority or demand reconstruction denies.
+  if (!(await deps.workspaceClean())) {
+    return stop(
+      "working tree changed before execution — autonomous action denied",
+    );
   }
 
   // bind the receipt to the fresh demand snapshot + authority verdict.

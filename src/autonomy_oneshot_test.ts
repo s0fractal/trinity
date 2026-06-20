@@ -73,6 +73,7 @@ function deps(over: Partial<OneShotDeps> = {}): {
 } {
   const execCalls: string[] = [];
   const d: OneShotDeps = {
+    workspaceClean: () => Promise.resolve(true),
     authority: () =>
       Promise.resolve({ verified: true, reason: "ok", at_height: 954500 }),
     demand: (_a) => Promise.resolve(report([proj("x_fixture_a", "stale")])),
@@ -86,6 +87,28 @@ function deps(over: Partial<OneShotDeps> = {}): {
   };
   return { d, execCalls };
 }
+
+Deno.test("oneshot — RED TEAM: a dirty tree denies before autonomous decision", async () => {
+  const { d, execCalls } = deps({
+    workspaceClean: () => Promise.resolve(false),
+  });
+  const r = await oneShot(d);
+  assert(!r.acted);
+  assert(r.reason.includes("working tree is dirty"));
+  assertEquals(execCalls, []);
+});
+
+Deno.test("oneshot — RED TEAM: tree becoming dirty during probes denies before execute", async () => {
+  let cleanChecks = 0;
+  const { d, execCalls } = deps({
+    workspaceClean: () => Promise.resolve(++cleanChecks === 1),
+  });
+  const r = await oneShot(d);
+  assert(!r.acted);
+  assert(r.reason.includes("working tree changed"));
+  assertEquals(cleanChecks, 2);
+  assertEquals(execCalls, []);
+});
 
 Deno.test("oneshot — DOGFOOD: a proven-stale fixture executes ONCE and binds both hashes", async () => {
   const { d, execCalls } = deps();

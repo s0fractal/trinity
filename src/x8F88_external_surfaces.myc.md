@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    573     |
+| dynamic topology  |    574     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **673**   |
+| **Total**         |  **674**   |
 
 ## Runtime Cache Diagnostics
 
@@ -681,6 +681,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x7700_954472_codex_demand-hazards-repaired-four-projections-reproduci.myc.md](../src/x7700_954472_codex_demand-hazards-repaired-four-projections-reproduci.myc.md)                                                                                     | canonical        | src/x7700_954472_codex_demand-hazards-repaired-four-projections-reproduci.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x7700_954553_codex_delegation-p1-hardened-root-human-surfaces-project.myc.md](../src/x7700_954553_codex_delegation-p1-hardened-root-human-surfaces-project.myc.md)                                                                                     | canonical        | src/x7700_954553_codex_delegation-p1-hardened-root-human-surfaces-project.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x7700_954558_codex_p2-repair-co-witnessed-toctou-closed-p3-one-shot-n.myc.md](../src/x7700_954558_codex_p2-repair-co-witnessed-toctou-closed-p3-one-shot-n.myc.md)                                                                                     | canonical        | src/x7700_954558_codex_p2-repair-co-witnessed-toctou-closed-p3-one-shot-n.myc.md                                           | keep        |                              |
+| dynamic topology  | [src/x7700_954562_codex_p3-co-witness-clean-tree-reversibility-guard.myc.md](../src/x7700_954562_codex_p3-co-witness-clean-tree-reversibility-guard.myc.md)                                                                                                 | canonical        | src/x7700_954562_codex_p3-co-witness-clean-tree-reversibility-guard.myc.md                                                 | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](../src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | canonical        | src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](../src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | canonical        | src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md                                                     | keep        |                              |
 | dynamic topology  | [src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](../src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | canonical        | src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md                                                      | keep        |                              |

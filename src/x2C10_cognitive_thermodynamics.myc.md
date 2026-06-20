@@ -142,16 +142,22 @@ Without compost, the system repeats mistakes or lies about its past.
 
 ## Balance Metrics
 
-> **STATUS — DESIGN INTENT, NOT IMPLEMENTED (verified 2026-06-20).** The ratios
-> below are a _specification only_. The live cognition pipeline implements just
-> the single-ratio `determineArchetype` in `x2C00_cognition_phase_report.ts`;
-> none of `crystal_ratio` / `grounding_ratio` / `learning_ratio` /
-> `novelty_ratio` / `compost_ratio` / `rigidity_index` / `hallucination_risk`
-> exist in code (`grep` over `src/*.ts` → zero hits). In particular
-> `hallucination_risk` can never fire: the `raw-fantasy` phase has no
-> content-based classifier path (it is settable only via explicit
-> `thought_phase:` frontmatter, which no file uses), so its numerator is
-> structurally 0. Treat this section as a horizon, not a measurement.
+> **STATUS — IMPLEMENTED 2026-06-21 (antigravity).** The ratios below are now
+> live in `x2C00_cognition_phase_report.ts::calculateMetrics`, surfaced
+> per-repo + global in the report and via `t cognition_phase_report --json`
+> (`trinity.cognition-phase-report.v0.1`), covered by
+> `cognition_phase_report_test`. (Audit-era note, now historical: before this
+> they were spec-only.)
+>
+> **CAVEAT — `hallucination_risk` is structurally inert (always 0).** Its
+> numerator is the `raw-fantasy` count, but the classifier
+> (`x0020_scanner_core::classifyPhase`) has no content-based path to
+> `raw-fantasy` — it is settable only via explicit `thought_phase:` frontmatter,
+> which no file uses. So the metric computes but is meaningless until a
+> raw-fantasy heuristic exists. Do not read it as a real signal yet. The other
+> six ratios are live and meaningful (e.g. crystal_ratio, grounding_ratio
+> reflect real phase distribution). Metrics are descriptors, never fitness
+> targets (see [[project_coherence_decreases_with_growth]]).
 
 Initial metrics (spec):
 
@@ -166,8 +172,9 @@ rigidity_index     = crystal / (raw-fantasy + hypothesis + proposal)
 hallucination_risk = raw-fantasy / (receipt + formula + crystal)
 ```
 
-These are crude. Their value is not precision, but visibility. They are also, as
-of 2026-06-20, unimplemented — see the status banner above.
+These are crude. Their value is not precision, but visibility. They are now
+implemented (see the status banner above) — with `hallucination_risk` inert
+until a `raw-fantasy` classifier path exists.
 
 ## Ontological Coverage Connection
 

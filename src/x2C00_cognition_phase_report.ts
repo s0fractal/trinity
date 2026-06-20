@@ -22,6 +22,40 @@ interface RepoStats {
   "compost": number;
 }
 
+export interface RepoMetrics {
+  crystal_ratio: number;
+  grounding_ratio: number;
+  learning_ratio: number;
+  novelty_ratio: number;
+  compost_ratio: number;
+  rigidity_index: number;
+  hallucination_risk: number;
+}
+
+export function calculateMetrics(s: RepoStats): RepoMetrics {
+  const total = s.total;
+  const raw = s["raw-fantasy"];
+  const hyp = s["hypothesis"];
+  const prop = s["proposal"];
+  const exp = s["experiment"];
+  const recp = s["receipt"];
+  const form = s["formula"];
+  const cryst = s["crystal"];
+  const comp = s["compost"];
+
+  return {
+    crystal_ratio: total > 0 ? cryst / total : 0,
+    grounding_ratio: total > 0 ? (recp + exp) / total : 0,
+    learning_ratio: recp > 0 ? form / recp : 0,
+    novelty_ratio: total > 0 ? (raw + hyp) / total : 0,
+    compost_ratio: total > 0 ? comp / total : 0,
+    rigidity_index: (raw + hyp + prop) > 0 ? cryst / (raw + hyp + prop) : 0,
+    hallucination_risk: (recp + form + cryst) > 0
+      ? raw / (recp + form + cryst)
+      : 0,
+  };
+}
+
 function determineArchetype(stats: RepoStats): string {
   if (stats.total === 0) return "Dormant";
 
@@ -41,6 +75,7 @@ function determineArchetype(stats: RepoStats): string {
 }
 
 async function main() {
+  const wantJson = Deno.args.includes("--json");
   const cwd = Deno.cwd();
   const profiles = await scanEcosystem(cwd);
 
@@ -65,6 +100,66 @@ async function main() {
     repoStats[profile.repo][profile.thoughtPhase]++;
   }
 
+  // Calculate global stats
+  const globalStats: RepoStats = {
+    total: 0,
+    "raw-fantasy": 0,
+    "hypothesis": 0,
+    "proposal": 0,
+    "experiment": 0,
+    "receipt": 0,
+    "formula": 0,
+    "crystal": 0,
+    "compost": 0,
+  };
+
+  for (const repo of REPOS) {
+    const s = repoStats[repo];
+    globalStats.total += s.total;
+    globalStats["raw-fantasy"] += s["raw-fantasy"];
+    globalStats["hypothesis"] += s["hypothesis"];
+    globalStats["proposal"] += s["proposal"];
+    globalStats["experiment"] += s["experiment"];
+    globalStats["receipt"] += s["receipt"];
+    globalStats["formula"] += s["formula"];
+    globalStats["crystal"] += s["crystal"];
+    globalStats["compost"] += s["compost"];
+  }
+
+  const globalMetrics = calculateMetrics(globalStats);
+  const repoMetrics: Record<string, RepoMetrics> = {};
+  const repoArchetypes: Record<string, string> = {};
+  for (const repo of REPOS) {
+    repoMetrics[repo] = calculateMetrics(repoStats[repo]);
+    repoArchetypes[repo] = determineArchetype(repoStats[repo]);
+  }
+
+  if (wantJson) {
+    const output = {
+      type: "cognition_phase_report",
+      schema: "trinity.cognition-phase-report.v0.1",
+      position: "2/C",
+      timestamp: new Date().toISOString(),
+      repos: REPOS.reduce((acc, repo) => {
+        acc[repo] = {
+          stats: repoStats[repo],
+          metrics: repoMetrics[repo],
+          archetype: repoArchetypes[repo],
+        };
+        return acc;
+      }, {} as Record<
+        string,
+        { stats: RepoStats; metrics: RepoMetrics; archetype: string }
+      >),
+      global: {
+        stats: globalStats,
+        metrics: globalMetrics,
+      },
+    };
+    console.log(JSON.stringify(output, null, 2));
+    return;
+  }
+
   console.log(
     "\n==========================================================================",
   );
@@ -84,7 +179,7 @@ async function main() {
 
   for (const repo of REPOS) {
     const s = repoStats[repo];
-    const arch = determineArchetype(s);
+    const arch = repoArchetypes[repo];
     console.log(
       `${repo.padEnd(9)} ` +
         `${String(s["raw-fantasy"]).padEnd(5)} ` +
@@ -101,6 +196,51 @@ async function main() {
   console.log(
     "==========================================================================\n",
   );
+
+  const fmtRatio = (num: number) => num.toFixed(4);
+  const fmtKey = (k: keyof RepoMetrics) => {
+    return REPOS.map((r) => `${r}: ${fmtRatio(repoMetrics[r][k])}`).join(", ");
+  };
+
+  console.log("Thermodynamic Ratios & Diagnostics (x2C10 Spec):");
+  console.log(
+    `  - crystal_ratio:      ${
+      fmtRatio(globalMetrics.crystal_ratio).padEnd(6)
+    }  (${fmtKey("crystal_ratio")})`,
+  );
+  console.log(
+    `  - grounding_ratio:    ${
+      fmtRatio(globalMetrics.grounding_ratio).padEnd(6)
+    }  (${fmtKey("grounding_ratio")})`,
+  );
+  console.log(
+    `  - learning_ratio:     ${
+      fmtRatio(globalMetrics.learning_ratio).padEnd(6)
+    }  (${fmtKey("learning_ratio")})`,
+  );
+  console.log(
+    `  - novelty_ratio:      ${
+      fmtRatio(globalMetrics.novelty_ratio).padEnd(6)
+    }  (${fmtKey("novelty_ratio")})`,
+  );
+  console.log(
+    `  - compost_ratio:      ${
+      fmtRatio(globalMetrics.compost_ratio).padEnd(6)
+    }  (${fmtKey("compost_ratio")})`,
+  );
+  console.log(
+    `  - rigidity_index:     ${
+      fmtRatio(globalMetrics.rigidity_index).padEnd(6)
+    }  (${fmtKey("rigidity_index")})`,
+  );
+  console.log(
+    `  - hallucination_risk: ${
+      fmtRatio(globalMetrics.hallucination_risk).padEnd(6)
+    }  (${fmtKey("hallucination_risk")})`,
+  );
+  console.log("");
 }
 
-main();
+if (import.meta.main) {
+  await main();
+}

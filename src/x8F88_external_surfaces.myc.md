@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    585     |
+| dynamic topology  |    586     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **685**   |
+| **Total**         |  **686**   |
 
 ## Runtime Cache Diagnostics
 
@@ -517,6 +517,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x6700_954562_claude_p3-co-witness-reproduced-clean-tree-guard-arc-comp.myc.md](../src/x6700_954562_claude_p3-co-witness-reproduced-clean-tree-guard-arc-comp.myc.md)                                                                                   | canonical        | src/x6700_954562_claude_p3-co-witness-reproduced-clean-tree-guard-arc-comp.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x6700_954573_claude_external-audit-adjudicated-real-vs-stale-and-fixes.myc.md](../src/x6700_954573_claude_external-audit-adjudicated-real-vs-stale-and-fixes.myc.md)                                                                                   | canonical        | src/x6700_954573_claude_external-audit-adjudicated-real-vs-stale-and-fixes.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x6700_954579_claude_co-witness-codex-audit-repair-hardening-schema-ide.myc.md](../src/x6700_954579_claude_co-witness-codex-audit-repair-hardening-schema-ide.myc.md)                                                                                   | canonical        | src/x6700_954579_claude_co-witness-codex-audit-repair-hardening-schema-ide.myc.md                                          | keep        |                              |
+| dynamic topology  | [src/x6700_954620_claude_antigravity-x2c10-balance-metrics-landed-verified.myc.md](../src/x6700_954620_claude_antigravity-x2c10-balance-metrics-landed-verified.myc.md)                                                                                     | canonical        | src/x6700_954620_claude_antigravity-x2c10-balance-metrics-landed-verified.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x6700_t20260509175813_codex-gpt-5_codex-recommendation-sees-candidates.myc.md](../src/x6700_t20260509175813_codex-gpt-5_codex-recommendation-sees-candidates.myc.md)                                                                                   | canonical        | src/x6700_t20260509175813_codex-gpt-5_codex-recommendation-sees-candidates.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x6700_t20260509213028_claude-opus-4-7-1m_claude-sigma-substrate-paper-plan.myc.md](../src/x6700_t20260509213028_claude-opus-4-7-1m_claude-sigma-substrate-paper-plan.myc.md)                                                                           | canonical        | src/x6700_t20260509213028_claude-opus-4-7-1m_claude-sigma-substrate-paper-plan.myc.md                                      | keep        |                              |
 | dynamic topology  | [src/x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md](../src/x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md)                                                                                       | canonical        | src/x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md                                            | keep        |                              |

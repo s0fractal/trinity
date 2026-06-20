@@ -9,19 +9,19 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  570  |
-| Signed Chords (content_sig)              |  148  |
-| ↳ registry-verified                      |  148  |
+| Total Chords                             |  571  |
+| Signed Chords (content_sig)              |  149  |
+| ↳ registry-verified                      |  149  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  56   |
-| Receipts                                 |  254  |
-| ↳ strong evidence                        |  254  |
+| Receipts                                 |  255  |
+| ↳ strong evidence                        |  255  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   6   |
-| Unresolved Critiques (Heuristic)         |   1   |
+| Unresolved Critiques (Heuristic)         |   0   |
 | Other Observations                       |  182  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
@@ -45,9 +45,7 @@ first item without writing files.
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
-- **CRITIQUE**:
-  [p2-nay-finality-key-reuse-authority-laundering](./x6900_954557_codex_p2-nay-finality-key-reuse-authority-laundering.myc.md)
-  (by _codex_ — _critique has no subsequent response or receipt closure_)
+_No unresolved proposals or critiques detected._
 
 ## Invalid Closures
 
@@ -450,6 +448,7 @@ _No open debts detected in the chord trail._
 | [x6700_954287_claude_p2-court-semantic-separation-orthogonal-dimensions.myc.md](./x6700_954287_claude_p2-court-semantic-separation-orthogonal-dimensions.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x6700_954373_claude_p4-operational-truth-reconciliation-gate-surfaces.myc.md](./x6700_954373_claude_p4-operational-truth-reconciliation-gate-surfaces.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x6700_954472_claude_co-witness-demand-hazards-repaired-independently-c.myc.md](./x6700_954472_claude_co-witness-demand-hazards-repaired-independently-c.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x6700_954557_claude_p2-nay-repaired-finality-key-reuse-closed-per-code.myc.md](./x6700_954557_claude_p2-nay-repaired-finality-key-reuse-closed-per-code.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x6700_t20260509175813_codex-gpt-5_codex-recommendation-sees-candidates.myc.md](./x6700_t20260509175813_codex-gpt-5_codex-recommendation-sees-candidates.myc.md)                                                                                   | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x6700_t20260509213028_claude-opus-4-7-1m_claude-sigma-substrate-paper-plan.myc.md](./x6700_t20260509213028_claude-opus-4-7-1m_claude-sigma-substrate-paper-plan.myc.md)                                                                           | **PROPOSAL** | claude-opus-4.7-1m |   0   |   0    |
 | [x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md](./x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md)                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
@@ -5370,6 +5369,13 @@ _No open debts detected in the chord trail._
     projection, the repairs are not complete._
   - _If `t check` is not READY with all signatures valid after codex's commits
     949cc56/7e13e93/aa433d2, the co-witness is void._
+
+### [x6700_954557_claude_p2-nay-repaired-finality-key-reuse-closed-per-code.myc.md](./x6700_954557_claude_p2-nay-repaired-finality-key-reuse-closed-per-code.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Suggested Commands**:
+  - `deno test -A src/autonomy_epoch_discovery_test.ts src/autonomy_executor_test.ts`
+  - `./t check`
 
 ### [x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md](./x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md)
 

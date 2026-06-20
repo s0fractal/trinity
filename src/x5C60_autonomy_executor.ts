@@ -38,12 +38,15 @@ import {
 } from "./x5C40_autonomy_confinement.ts";
 import {
   type Adapter,
+  ceilingCommitment,
+  durableCeiling,
   EPOCH1_ADAPTERS,
+  type EpochBindingFact,
+  type EpochRegistryDoc,
   evaluateA1Attenuation,
   type LifecycleFacts,
   parseLifecycleFacts,
   pathContained,
-  type RatifiedEpoch,
   registryCommitment,
   selectRatifiedEpoch,
 } from "./x5C70_autonomy_attenuation.ts";
@@ -154,29 +157,70 @@ export interface ExecutionAuthority {
 interface AuthorityDeps {
   lifecycle: () => Promise<Record<string, unknown>>;
   currentBlock: () => Promise<number | null>;
-  /** the ratified-epoch registry — DATA candidates, never standing authority */
-  registry?: () => Promise<RatifiedEpoch[]>;
+  /** the ratified-epoch registry DOC — DATA candidates, never standing authority */
+  registry?: () => Promise<EpochRegistryDoc>;
+  /** verified registry-binding facts for the given non-legacy finality keys */
+  bindings?: (keys: string[]) => Promise<Record<string, EpochBindingFact>>;
 }
 
-async function readRegistry(): Promise<RatifiedEpoch[]> {
+async function readRegistry(): Promise<EpochRegistryDoc> {
   try {
     const j = JSON.parse(
       await Deno.readTextFile(join(ROOT, EPOCH_REGISTRY_PATH)),
     );
-    return (j.epochs ?? []) as RatifiedEpoch[];
+    return { schema: j.schema, epochs: j.epochs ?? [] } as EpochRegistryDoc;
   } catch {
-    return [];
+    return { schema: "", epochs: [] };
   }
+}
+
+/** Verify each non-legacy registry binding by reusing myc's OWN canonical descriptor
+ * verifier (codex x6900_954557 #1): `t myc verify` proves the proposal file matches
+ * its commitment (tamper-proof), and `t myc resolve` yields the structured body. A
+ * binding is authentic only when the proposal's commitment equals the named key; the
+ * structured `epoch_registry_entry_commitment` field is surfaced for the pure selector
+ * to compare against the row. Reusing an unrelated key (e.g. epoch-1's mandate
+ * finality) yields a null field → the selector denies. Fail-closed on any error. */
+async function loadBindings(
+  keys: string[],
+): Promise<Record<string, EpochBindingFact>> {
+  const out: Record<string, EpochBindingFact> = {};
+  for (const key of keys) {
+    const fqdn = `h.${key.slice(0, 12)}.proposal.myc.md`;
+    let body_commitment_ok = false;
+    let entry: string | null = null;
+    try {
+      const v = JSON.parse(
+        (await realRun(["./t", "myc", "verify", fqdn], ROOT)).out,
+      );
+      if (v.ok === true) {
+        const r = JSON.parse(
+          (await realRun(["./t", "myc", "resolve", fqdn], ROOT)).out,
+        );
+        if (r.ok && r.descriptor?.commitment?.value === key) {
+          body_commitment_ok = true;
+          const b = r.descriptor.body ?? {};
+          entry = typeof b.epoch_registry_entry_commitment === "string"
+            ? b.epoch_registry_entry_commitment
+            : null;
+        }
+      }
+    } catch {
+      // fail closed — an unloadable/unparseable binding proves nothing.
+    }
+    out[key] = { body_commitment_ok, epoch_registry_entry_commitment: entry };
+  }
+  return out;
 }
 
 const realAuthorityDeps: AuthorityDeps = {
   lifecycle: async () => {
     const r = await realRun(["./t", "myc", "lifecycle"], ROOT);
-    if (r.code !== 0) return { mutations: [] };
+    if (r.code !== 0) return {};
     try {
       return JSON.parse(r.out) as Record<string, unknown>;
     } catch {
-      return { mutations: [] };
+      return {};
     }
   },
   currentBlock: async () => {
@@ -190,19 +234,23 @@ const realAuthorityDeps: AuthorityDeps = {
     }
   },
   registry: readRegistry,
+  bindings: loadBindings,
 };
 
 /** Reconstruct authority from live, self-verifying sources, EPOCH-NEUTRALLY (codex
- * x5000_954550 P2). No epoch is hardcoded: the ratified-epoch registry supplies
- * candidate bytes, the live lifecycle confers finality (quorum), and discovery
- * selects the highest applicable final epoch deterministically. The passed mandate
- * is then verified to BE that epoch (exact body + constitution + window); caller
- * booleans are never standing. Adding epoch-2 needs ratified data, not a code edit. */
+ * x5000_954550 P2; repaired per NAY x6900_954557). No epoch is hardcoded: the
+ * registry supplies candidate bytes, the live lifecycle confers finality (quorum),
+ * a non-legacy row is authorized ONLY by a quorum-final proposal structurally
+ * committing to its exact canonical row, and epoch-1 runs via a single code pin.
+ * Discovery selects the highest applicable final epoch deterministically; the passed
+ * mandate is then verified to BE that epoch (exact body + constitution + window), and
+ * for a non-legacy epoch its exact-parent ceiling commitment is recomputed and
+ * compared. Caller booleans are never standing. */
 export async function verifyExecutionAuthority(
   mandate: AutonomyMandate,
   deps: AuthorityDeps = realAuthorityDeps,
 ): Promise<ExecutionAuthority> {
-  const registry = await (deps.registry ?? readRegistry)();
+  const doc = await (deps.registry ?? readRegistry)();
   const life = await deps.lifecycle();
   const facts: LifecycleFacts = parseLifecycleFacts(life);
   const at = await deps.currentBlock();
@@ -210,8 +258,16 @@ export async function verifyExecutionAuthority(
     return { verified: false, reason: "Bitcoin comparison anchor unavailable" };
   }
 
+  // load binding facts for non-legacy rows (legacy epoch-1 needs none).
+  const bindKeys = (doc.epochs ?? [])
+    .filter((e) => !e.legacy && e.registry_finality_key)
+    .map((e) => e.registry_finality_key!);
+  const bindings = bindKeys.length
+    ? await (deps.bindings ?? loadBindings)(bindKeys)
+    : {};
+
   // discover WHICH epoch is live — never assume epoch-1.
-  const sel = selectRatifiedEpoch(registry, facts, at);
+  const sel = await selectRatifiedEpoch(doc, facts, bindings, at);
   if (!sel.epoch) {
     return { verified: false, reason: `no live ratified epoch: ${sel.reason}` };
   }
@@ -249,6 +305,26 @@ export async function verifyExecutionAuthority(
       reason: `${epoch.ceiling_id} is not active at the live anchor`,
     };
   }
+
+  // consume the exact-parent commitment for a non-legacy epoch (codex #3): recompute
+  // the intent-INDEPENDENT durable ceiling and require it to equal the committed one.
+  if (!epoch.legacy) {
+    const dc = await durableCeiling(mandate, EPOCH1_ADAPTERS);
+    if (!dc) {
+      return {
+        verified: false,
+        reason: `${epoch.ceiling_id} has no unambiguous durable ceiling`,
+      };
+    }
+    if ((await ceilingCommitment(dc)) !== epoch.ceiling_commitment) {
+      return {
+        verified: false,
+        reason:
+          `${epoch.ceiling_id} ceiling commitment does not match the derived ceiling`,
+      };
+    }
+  }
+
   return {
     verified: true,
     reason:

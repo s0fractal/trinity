@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    570     |
+| dynamic topology  |    571     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **670**   |
+| **Total**         |  **671**   |
 
 ## Runtime Cache Diagnostics
 
@@ -512,6 +512,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x6700_954287_claude_p2-court-semantic-separation-orthogonal-dimensions.myc.md](../src/x6700_954287_claude_p2-court-semantic-separation-orthogonal-dimensions.myc.md)                                                                                   | canonical        | src/x6700_954287_claude_p2-court-semantic-separation-orthogonal-dimensions.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x6700_954373_claude_p4-operational-truth-reconciliation-gate-surfaces.myc.md](../src/x6700_954373_claude_p4-operational-truth-reconciliation-gate-surfaces.myc.md)                                                                                     | canonical        | src/x6700_954373_claude_p4-operational-truth-reconciliation-gate-surfaces.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x6700_954472_claude_co-witness-demand-hazards-repaired-independently-c.myc.md](../src/x6700_954472_claude_co-witness-demand-hazards-repaired-independently-c.myc.md)                                                                                   | canonical        | src/x6700_954472_claude_co-witness-demand-hazards-repaired-independently-c.myc.md                                          | keep        |                              |
+| dynamic topology  | [src/x6700_954557_claude_p2-nay-repaired-finality-key-reuse-closed-per-code.myc.md](../src/x6700_954557_claude_p2-nay-repaired-finality-key-reuse-closed-per-code.myc.md)                                                                                   | canonical        | src/x6700_954557_claude_p2-nay-repaired-finality-key-reuse-closed-per-code.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x6700_t20260509175813_codex-gpt-5_codex-recommendation-sees-candidates.myc.md](../src/x6700_t20260509175813_codex-gpt-5_codex-recommendation-sees-candidates.myc.md)                                                                                   | canonical        | src/x6700_t20260509175813_codex-gpt-5_codex-recommendation-sees-candidates.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x6700_t20260509213028_claude-opus-4-7-1m_claude-sigma-substrate-paper-plan.myc.md](../src/x6700_t20260509213028_claude-opus-4-7-1m_claude-sigma-substrate-paper-plan.myc.md)                                                                           | canonical        | src/x6700_t20260509213028_claude-opus-4-7-1m_claude-sigma-substrate-paper-plan.myc.md                                      | keep        |                              |
 | dynamic topology  | [src/x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md](../src/x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md)                                                                                       | canonical        | src/x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md                                            | keep        |                              |

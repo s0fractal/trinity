@@ -659,29 +659,29 @@ export async function evaluateA1Attenuation(
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Epoch discovery — epoch-neutral runtime authority selection (codex x5000_954550 P2).
+// Epoch discovery — epoch-neutral runtime authority selection (codex x5000_954550 P2,
+// repaired after codex's NAY x6900_954557 — finality-key reuse / authority laundering).
 //
 // The executor must no longer hardcode WHICH mandate body + finality records are
-// ratified. A DATA registry lists candidate epochs; the LIVE lifecycle confers
-// authority — a candidate is final iff every one of its finality records is
-// `implemented`, which the lifecycle compiler only marks after the constitutional
-// quorum is satisfied. Discovery selects the highest applicable final epoch
-// DETERMINISTICALLY and REJECTS ambiguity rather than choosing by registry order.
-// The repository only supplies bytes to verify against these commitments; it never
-// defines authority by being scanned.
+// ratified. A DATA registry lists candidate epochs — but the registry file is
+// editable bytes and confers NOTHING by itself. Authority for a non-legacy row comes
+// from a quorum-final proposal whose STRUCTURED body commits to that row's exact
+// canonical commitment. Reusing an unrelated implemented key (e.g. epoch-1's mandate
+// finality) does not authorize a forged row, because that proposal's body does not
+// carry this row's `epoch_registry_entry_commitment`. epoch-1 is grandfathered by a
+// SINGLE code pin (not a self-declared `legacy` flag): `legacy:true` is honored only
+// for ceiling_id=epoch-1 whose full canonical row matches the immutable pin.
 //
-// epoch-1 is grandfathered: its ratification records (h.31b0013, h.1bd456) predate
-// the strengthened binding, so its registry entry carries the known finality keys as
-// data — the same trust the prior in-code constant held, now adding epoch-2 needs
-// data + quorum, not a source edit. epoch-2+ MUST additionally carry
-// `ceiling_commitment` so discovery can verify the ratification binds the exact
-// ceiling content (codex `ceilingCommitment`); a non-legacy epoch missing it fails
-// closed.
+// Discovery selects the highest applicable final epoch DETERMINISTICALLY, rejects
+// ambiguity rather than choosing by registry order, validates the registry as hostile
+// input, and denies (never defaults to safe) on a malformed/unavailable lifecycle.
+// The repository only supplies bytes to verify against these commitments.
 
 export const EPOCH_REGISTRY_SCHEMA = "trinity.epoch-registry.v0.1";
 
-/** A candidate epoch in the ratified registry. Authority is conferred by the live
- *  lifecycle marking its finality records implemented, NOT by this record existing. */
+/** A candidate epoch row. Authority for a non-legacy row is conferred by a
+ *  quorum-final proposal that STRUCTURALLY commits to this exact row, never by the
+ *  row existing or by reusing an unrelated implemented key (codex x6900_954557 #1). */
 export interface RatifiedEpoch {
   ceiling_id: string;
   mandate_path: string;
@@ -692,25 +692,49 @@ export interface RatifiedEpoch {
   valid_from_height: number;
   valid_until_height: number;
   ceiling_commitment?: string; // epoch-2+: exact-parent binding (codex ceilingCommitment)
-  legacy?: boolean; // epoch-1 grandfather: ceiling_commitment binding waived
+  registry_finality_key?: string; // epoch-2+: the proposal that ratifies THIS row
+  registry_entry_commitment?: string; // epoch-2+: the canonical exact-row commitment
+  legacy?: boolean; // epoch-1 bootstrap only; must match the code pin
 }
 
-/** Live lifecycle facts the discovery reasons over — pure data, no I/O. */
+export interface EpochRegistryDoc {
+  schema: string;
+  epochs: RatifiedEpoch[];
+}
+
+/** Live lifecycle facts — pure data. `ok` is false when the lifecycle output was
+ *  malformed/unavailable; discovery then DENIES rather than defaulting to safe. */
 export interface LifecycleFacts {
+  ok: boolean;
   implemented: string[]; // finality keys whose state is `implemented` (quorum-final)
   revoked: string[]; // revoked epoch / finality keys
   forked: boolean; // lifecycle fork detected
 }
 
+/** A verified registry-binding fact for one `registry_finality_key`, produced by the
+ *  I/O wrapper: whether the proposal's recomputed body commitment matched the key,
+ *  and the structured `epoch_registry_entry_commitment` its body carries. The pure
+ *  selector trusts only these, never the raw registry row. */
+export interface EpochBindingFact {
+  body_commitment_ok: boolean;
+  epoch_registry_entry_commitment: string | null;
+}
+
 export type EpochSelectionReason =
   | "selected"
+  | "lifecycle_unavailable"
+  | "forked"
   | "no_candidates"
-  | "schema_mismatch"
+  | "registry_schema_mismatch"
+  | "malformed_registry"
+  | "duplicate_id"
+  | "duplicate_binding"
+  | "legacy_not_pinned"
   | "binding_absent"
+  | "binding_unproven"
   | "none_final"
   | "none_active"
-  | "ambiguous"
-  | "forked";
+  | "ambiguous";
 
 export interface EpochSelection {
   epoch: RatifiedEpoch | null;
@@ -718,52 +742,220 @@ export interface EpochSelection {
   reason: string;
 }
 
-/** Select the highest applicable final epoch from the registry against live facts.
- *  Pure, deterministic and fail-closed: multiple equally-applicable epochs are
- *  AMBIGUOUS (rejected), never resolved by registry order. A non-legacy epoch that
- *  fails to carry the exact-parent `ceiling_commitment` binding is rejected. */
-export function selectRatifiedEpoch(
-  registry: RatifiedEpoch[],
+// The one bootstrap pin (codex x6900_954557 #2): the exact canonical commitment of
+// the epoch-1 registry row. `legacy:true` is honored ONLY for ceiling_id=epoch-1 and
+// ONLY when its full canonical row hashes to this immutable value — so `legacy` can
+// never be a self-declared escape from the strengthened exact-parent binding.
+export const EPOCH1_PINNED_ENTRY_COMMITMENT =
+  "sha256:ad33e8f1dda514b15464c225a3fa5dfe83188adfc4d7039e684afc357fde2068";
+
+const SHA256_RE = /^sha256:[0-9a-f]{64}$/;
+const KEY_RE = /^[0-9a-f]{64}$/;
+
+/** Canonical commitment of a registry row, EXCLUDING the binding proposal key and the
+ *  row-commitment field itself (codex #1, to avoid circular hashing). Every other
+ *  authority-bearing field is bound, so flipping any of them invalidates the row. */
+export async function epochEntryCommitment(e: RatifiedEpoch): Promise<string> {
+  return `sha256:${await sha256(stable({
+    attenuation_finality_key: e.attenuation_finality_key,
+    ceiling_commitment: e.ceiling_commitment ?? null,
+    ceiling_id: e.ceiling_id,
+    constitution_commitment: e.constitution_commitment,
+    legacy: e.legacy === true,
+    mandate_body_commitment: e.mandate_body_commitment,
+    mandate_finality_key: e.mandate_finality_key,
+    mandate_path: e.mandate_path,
+    valid_from_height: e.valid_from_height,
+    valid_until_height: e.valid_until_height,
+  } as unknown as Json))}`;
+}
+
+function malformedEntry(e: RatifiedEpoch): boolean {
+  if (typeof e.ceiling_id !== "string" || !e.ceiling_id) return true;
+  if (typeof e.mandate_path !== "string" || !e.mandate_path) return true;
+  if (!SHA256_RE.test(e.mandate_body_commitment ?? "")) return true;
+  if (!SHA256_RE.test(e.constitution_commitment ?? "")) return true;
+  if (!KEY_RE.test(e.mandate_finality_key ?? "")) return true;
+  if (!KEY_RE.test(e.attenuation_finality_key ?? "")) return true;
+  if (!Number.isInteger(e.valid_from_height) || e.valid_from_height <= 0) {
+    return true;
+  }
+  if (!Number.isInteger(e.valid_until_height) || e.valid_until_height <= 0) {
+    return true;
+  }
+  if (e.valid_from_height >= e.valid_until_height) return true;
+  if (
+    e.ceiling_commitment !== undefined && !SHA256_RE.test(e.ceiling_commitment)
+  ) {
+    return true;
+  }
+  if (
+    e.registry_entry_commitment !== undefined &&
+    !SHA256_RE.test(e.registry_entry_commitment)
+  ) {
+    return true;
+  }
+  if (
+    e.registry_finality_key !== undefined &&
+    !KEY_RE.test(e.registry_finality_key)
+  ) {
+    return true;
+  }
+  return false;
+}
+
+interface RowAuth {
+  ok: boolean;
+  reason_code: EpochSelectionReason;
+  reason: string;
+}
+
+/** Prove ONE row is authorized — legacy via the code pin, non-legacy via a
+ *  quorum-final proposal that structurally commits to the row. Fail-closed. */
+async function authorizeRow(
+  e: RatifiedEpoch,
   facts: LifecycleFacts,
+  bindings: Record<string, EpochBindingFact>,
+): Promise<RowAuth> {
+  const implemented = new Set(facts.implemented);
+  const revoked = new Set(facts.revoked);
+  const commitment = await epochEntryCommitment(e);
+  const fail = (
+    reason_code: EpochSelectionReason,
+    reason: string,
+  ): RowAuth => ({
+    ok: false,
+    reason_code,
+    reason,
+  });
+
+  if (e.legacy) {
+    if (
+      e.ceiling_id !== "epoch-1" ||
+      commitment !== EPOCH1_PINNED_ENTRY_COMMITMENT
+    ) {
+      return fail(
+        "legacy_not_pinned",
+        "legacy is honored only for the code-pinned epoch-1 row",
+      );
+    }
+  } else {
+    if (
+      !e.ceiling_commitment || !e.registry_finality_key ||
+      !e.registry_entry_commitment
+    ) {
+      return fail(
+        "binding_absent",
+        "non-legacy epoch lacks ceiling_commitment / registry binding",
+      );
+    }
+    if (e.registry_entry_commitment !== commitment) {
+      return fail("binding_unproven", "row commitment mismatch");
+    }
+    if (!implemented.has(e.registry_finality_key)) {
+      return fail("binding_unproven", "registry binding proposal is not final");
+    }
+    if (revoked.has(e.registry_finality_key)) {
+      return fail("binding_unproven", "registry binding proposal is revoked");
+    }
+    const b = bindings[e.registry_finality_key];
+    if (!b || !b.body_commitment_ok) {
+      return fail(
+        "binding_unproven",
+        "registry binding proposal is unauthentic",
+      );
+    }
+    if (b.epoch_registry_entry_commitment !== commitment) {
+      return fail(
+        "binding_unproven",
+        "binding proposal does not structurally commit to this exact row",
+      );
+    }
+  }
+  // both legacy and non-legacy: the mandate + attenuation finalities must be live.
+  if (
+    !implemented.has(e.mandate_finality_key) ||
+    !implemented.has(e.attenuation_finality_key)
+  ) {
+    return fail(
+      "none_final",
+      "mandate or attenuation finality is not implemented",
+    );
+  }
+  if (
+    revoked.has(e.mandate_finality_key) ||
+    revoked.has(e.attenuation_finality_key) ||
+    revoked.has(e.ceiling_id)
+  ) {
+    return fail("none_final", "a relied-on finality or the ceiling is revoked");
+  }
+  return { ok: true, reason_code: "selected", reason: "row authorized" };
+}
+
+/** Select the highest applicable final epoch. Pure, deterministic, fail-closed.
+ *  Authority for a non-legacy row requires a quorum-final proposal whose body
+ *  STRUCTURALLY commits to the row's exact canonical commitment; legacy is honored
+ *  only for the code-pinned epoch-1 row. Hostile registry input is rejected, and a
+ *  malformed/unavailable lifecycle denies rather than defaulting to safe. */
+export async function selectRatifiedEpoch(
+  doc: EpochRegistryDoc,
+  facts: LifecycleFacts,
+  bindings: Record<string, EpochBindingFact>,
   at_height: number,
-): EpochSelection {
+): Promise<EpochSelection> {
   const none = (
     reason_code: EpochSelectionReason,
     reason: string,
   ): EpochSelection => ({ epoch: null, reason_code, reason });
 
-  if (facts.forked) return none("forked", "live lifecycle is forked");
-  if (registry.length === 0) return none("no_candidates", "registry is empty");
-  // a non-legacy epoch MUST carry the strengthened exact-parent commitment.
-  if (registry.some((e) => !e.legacy && !e.ceiling_commitment)) {
+  if (!facts.ok) {
     return none(
-      "binding_absent",
-      "a non-legacy epoch is missing its exact-parent ceiling commitment",
+      "lifecycle_unavailable",
+      "live lifecycle is unavailable or malformed",
     );
+  }
+  if (facts.forked) return none("forked", "live lifecycle is forked");
+  if (!doc || doc.schema !== EPOCH_REGISTRY_SCHEMA) {
+    return none("registry_schema_mismatch", "unknown epoch-registry schema");
+  }
+  const registry = doc.epochs ?? [];
+  if (registry.length === 0) return none("no_candidates", "registry is empty");
+
+  // hostile-input validation (codex #4) — independent of file order.
+  if (registry.some(malformedEntry)) {
+    return none("malformed_registry", "a registry row is malformed");
+  }
+  const ids = registry.map((e) => e.ceiling_id);
+  if (new Set(ids).size !== ids.length) {
+    return none("duplicate_id", "duplicate ceiling_id");
+  }
+  const bkeys = registry
+    .filter((e) => e.registry_finality_key)
+    .map((e) => e.registry_finality_key!);
+  if (new Set(bkeys).size !== bkeys.length) {
+    return none("duplicate_binding", "duplicate registry_finality_key");
   }
 
-  const implemented = new Set(facts.implemented);
-  const revoked = new Set(facts.revoked);
-  const isFinal = (e: RatifiedEpoch) =>
-    implemented.has(e.mandate_finality_key) &&
-    implemented.has(e.attenuation_finality_key) &&
-    !revoked.has(e.mandate_finality_key) &&
-    !revoked.has(e.attenuation_finality_key) &&
-    !revoked.has(e.ceiling_id);
-  const final = registry.filter(isFinal);
-  if (final.length === 0) {
-    return none(
-      "none_final",
-      "no registry epoch is final and unrevoked in the live lifecycle",
-    );
+  // per-row authority proof.
+  const results = await Promise.all(
+    registry.map(async (e) => ({
+      e,
+      auth: await authorizeRow(e, facts, bindings),
+    })),
+  );
+  const authorized = results.filter((r) => r.auth.ok).map((r) => r.e);
+  if (authorized.length === 0) {
+    const firstFail = results.find((r) => !r.auth.ok)!;
+    return none(firstFail.auth.reason_code, firstFail.auth.reason);
   }
-  const active = final.filter((e) =>
+
+  const active = authorized.filter((e) =>
     at_height >= e.valid_from_height && at_height < e.valid_until_height
   );
   if (active.length === 0) {
     return none(
       "none_active",
-      `no final epoch is active at height ${at_height}`,
+      `no authorized epoch is active at height ${at_height}`,
     );
   }
   const highest = Math.max(...active.map((e) => e.valid_from_height));
@@ -783,16 +975,58 @@ export function selectRatifiedEpoch(
   };
 }
 
-/** Parse the `t myc lifecycle` JSON into pure `LifecycleFacts`. Revocation/fork
- *  surfacing is the lifecycle compiler's responsibility; absent markers are read
- *  conservatively as "none revoked / not forked". */
+/** The intent-INDEPENDENT durable ceiling of a mandate (codex x6900_954557 #3): a
+ *  mandate with exactly one A1 profile has one durable ceiling; ≠1 is ambiguous and
+ *  yields null. epoch-2+ commits to `ceilingCommitment(durableCeiling(...))`; the
+ *  executor recomputes and compares it, rather than hashing whichever intent runs. */
+export async function durableCeiling(
+  mandate: AutonomyMandate,
+  adapters: Adapter[],
+): Promise<Ceiling | null> {
+  const a1 = mandate.action_profiles.filter((p) => p.class === "A1");
+  if (a1.length !== 1) return null;
+  const profile = a1[0];
+  const catalog: CatalogEntry[] = adapters.map((a) => ({
+    id: a.target,
+    organ: a.organ,
+    argv: a.argv,
+    output_path: a.output_path,
+  }));
+  const mb = mandate.global_budgets ?? {};
+  return {
+    schema: DELEGATION_SCHEMA_VERSION,
+    ceiling_id: mandate.mandate_id,
+    capability_classes: [ATTENUABLE],
+    effect_ceiling: [...A1_EFFECTS],
+    verbs: profile.verbs,
+    target_families: profile.targets,
+    catalog_ids: catalog.map((e) => e.id),
+    catalog_commitment: await catalogCommitment(catalog),
+    budgets: {
+      max_bytes: mb.max_bytes ?? Number.POSITIVE_INFINITY,
+      max_seconds: mb.max_seconds ?? Number.POSITIVE_INFINITY,
+    },
+    required_gates: profile.required_gates ?? [],
+    quorum: { human: 1, model: 1 },
+    expiry: {
+      from_height: mandate.valid_from.height,
+      until_height: mandate.valid_until.height,
+    },
+  };
+}
+
+/** Parse the `t myc lifecycle` JSON into pure `LifecycleFacts`. A malformed shape
+ *  (no `mutations` array) sets `ok=false`, so discovery DENIES rather than treating
+ *  an unparseable lifecycle as "nothing implemented but otherwise safe" (codex #4).
+ *  Revocation/fork surfacing is the lifecycle compiler's responsibility; absent
+ *  markers are read as "none revoked / not forked". */
 export function parseLifecycleFacts(
   life: Record<string, unknown>,
 ): LifecycleFacts {
-  const muts = (life.mutations ?? []) as Array<{
-    key?: string;
-    state?: string;
-  }>;
+  if (!life || !Array.isArray(life.mutations)) {
+    return { ok: false, implemented: [], revoked: [], forked: false };
+  }
+  const muts = life.mutations as Array<{ key?: string; state?: string }>;
   const REVOKED = new Set(["revoked", "superseded", "withdrawn"]);
   const implemented = muts
     .filter((m) => m.state === "implemented" && m.key)
@@ -800,7 +1034,7 @@ export function parseLifecycleFacts(
   const revoked = muts
     .filter((m) => m.state && REVOKED.has(m.state) && m.key)
     .map((m) => m.key!);
-  return { implemented, revoked, forked: life.forked === true };
+  return { ok: true, implemented, revoked, forked: life.forked === true };
 }
 
 export async function runCli(): Promise<void> {

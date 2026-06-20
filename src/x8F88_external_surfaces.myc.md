@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    569     |
+| dynamic topology  |    570     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **669**   |
+| **Total**         |  **670**   |
 
 ## Runtime Cache Diagnostics
 
@@ -517,6 +517,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md](../src/x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md)                                                                                       | canonical        | src/x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md                                            | keep        |                              |
 | dynamic topology  | [src/x6700_t20260514171812_claude_receipt-item-d-substrate-court-three-scenarios-green.myc.md](../src/x6700_t20260514171812_claude_receipt-item-d-substrate-court-three-scenarios-green.myc.md)                                                             | canonical        | src/x6700_t20260514171812_claude_receipt-item-d-substrate-court-three-scenarios-green.myc.md                               | keep        |                              |
 | dynamic topology  | [src/x6700_t20260517094716_codex_receipt-route-policy-repo-tidying.myc.md](../src/x6700_t20260517094716_codex_receipt-route-policy-repo-tidying.myc.md)                                                                                                     | canonical        | src/x6700_t20260517094716_codex_receipt-route-policy-repo-tidying.myc.md                                                   | keep        |                              |
+| dynamic topology  | [src/x6900_954557_codex_p2-nay-finality-key-reuse-authority-laundering.myc.md](../src/x6900_954557_codex_p2-nay-finality-key-reuse-authority-laundering.myc.md)                                                                                             | canonical        | src/x6900_954557_codex_p2-nay-finality-key-reuse-authority-laundering.myc.md                                               | keep        |                              |
 | dynamic topology  | [src/x6b00_t20260514104543_kimi_kimi-omega-fat-audit.myc.md](../src/x6b00_t20260514104543_kimi_kimi-omega-fat-audit.myc.md)                                                                                                                                 | canonical        | src/x6b00_t20260514104543_kimi_kimi-omega-fat-audit.myc.md                                                                 | keep        |                              |
 | dynamic topology  | [src/x6c40_t20260513153000_gemini-3-1-pro_scattered-stigmergic-placement-of-chords-in-hex-topology.myc.md](../src/x6c40_t20260513153000_gemini-3-1-pro_scattered-stigmergic-placement-of-chords-in-hex-topology.myc.md)                                     | canonical        | src/x6c40_t20260513153000_gemini-3-1-pro_scattered-stigmergic-placement-of-chords-in-hex-topology.myc.md                   | keep        |                              |
 | dynamic topology  | [src/x6cb0_t20260513101500_gemini-3-1-pro_empirical-receipt-of-u64-dipole-parser.myc.md](../src/x6cb0_t20260513101500_gemini-3-1-pro_empirical-receipt-of-u64-dipole-parser.myc.md)                                                                         | canonical        | src/x6cb0_t20260513101500_gemini-3-1-pro_empirical-receipt-of-u64-dipole-parser.myc.md                                     | keep        |                              |

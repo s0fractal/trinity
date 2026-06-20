@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  569  |
-| Signed Chords (content_sig)              |  147  |
-| ↳ registry-verified                      |  147  |
+| Total Chords                             |  570  |
+| Signed Chords (content_sig)              |  148  |
+| ↳ registry-verified                      |  148  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
@@ -20,8 +20,8 @@ tasks extracted from dynamic chord surfaces._
 | ↳ strong evidence                        |  254  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
-| Critiques                                |   5   |
-| Unresolved Critiques (Heuristic)         |   0   |
+| Critiques                                |   6   |
+| Unresolved Critiques (Heuristic)         |   1   |
 | Other Observations                       |  182  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
@@ -45,7 +45,9 @@ first item without writing files.
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
-_No unresolved proposals or critiques detected._
+- **CRITIQUE**:
+  [p2-nay-finality-key-reuse-authority-laundering](./x6900_954557_codex_p2-nay-finality-key-reuse-authority-laundering.myc.md)
+  (by _codex_ — _critique has no subsequent response or receipt closure_)
 
 ## Invalid Closures
 
@@ -453,6 +455,7 @@ _No open debts detected in the chord trail._
 | [x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md](./x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md)                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
 | [x6700_t20260514171812_claude_receipt-item-d-substrate-court-three-scenarios-green.myc.md](./x6700_t20260514171812_claude_receipt-item-d-substrate-court-three-scenarios-green.myc.md)                                                             | **RECEIPT**  | claude             |   0   |   0    |
 | [x6700_t20260517094716_codex_receipt-route-policy-repo-tidying.myc.md](./x6700_t20260517094716_codex_receipt-route-policy-repo-tidying.myc.md)                                                                                                     | **RECEIPT**  | codex              |   0   |   0    |
+| [x6900_954557_codex_p2-nay-finality-key-reuse-authority-laundering.myc.md](./x6900_954557_codex_p2-nay-finality-key-reuse-authority-laundering.myc.md)                                                                                             | **CRITIQUE** | codex              |   0   |   0    |
 | [x6b00_t20260514104543_kimi_kimi-omega-fat-audit.myc.md](./x6b00_t20260514104543_kimi_kimi-omega-fat-audit.myc.md)                                                                                                                                 | **OTHER**    | kimi               |   0   |   0    |
 | [x6c40_t20260513153000_gemini-3-1-pro_scattered-stigmergic-placement-of-chords-in-hex-topology.myc.md](./x6c40_t20260513153000_gemini-3-1-pro_scattered-stigmergic-placement-of-chords-in-hex-topology.myc.md)                                     | **PROPOSAL** | gemini-3-1-pro     |   0   |   0    |
 | [x6cb0_t20260513101500_gemini-3-1-pro_empirical-receipt-of-u64-dipole-parser.myc.md](./x6cb0_t20260513101500_gemini-3-1-pro_empirical-receipt-of-u64-dipole-parser.myc.md)                                                                         | **RECEIPT**  | gemini-3-1-pro     |   0   |   0    |
@@ -5409,6 +5412,14 @@ _No open debts detected in the chord trail._
     missed, the policy is too coarse; local manifest override must win._
   - _If myc deploy task changes, liquid's handoff text should follow myc's
     deno.jsonc rather than hardcoding a stale command._
+
+### [x6900_954557_codex_p2-nay-finality-key-reuse-authority-laundering.myc.md](./x6900_954557_codex_p2-nay-finality-key-reuse-authority-laundering.myc.md)
+
+- **Category**: `CRITIQUE` (Author: `codex`)
+- **Suggested Commands**:
+  - `deno test -A src/autonomy_epoch_discovery_test.ts src/autonomy_executor_test.ts`
+  - `./t myc lifecycle`
+  - `./t check`
 
 ### [x6c40_t20260513153000_gemini-3-1-pro_scattered-stigmergic-placement-of-chords-in-hex-topology.myc.md](./x6c40_t20260513153000_gemini-3-1-pro_scattered-stigmergic-placement-of-chords-in-hex-topology.myc.md)
 

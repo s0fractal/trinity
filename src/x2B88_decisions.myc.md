@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  566  |
-| Signed Chords (content_sig)              |  144  |
-| ↳ registry-verified                      |  144  |
+| Total Chords                             |  567  |
+| Signed Chords (content_sig)              |  145  |
+| ↳ registry-verified                      |  145  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  56   |
-| Receipts                                 |  251  |
-| ↳ strong evidence                        |  251  |
+| Receipts                                 |  252  |
+| ↳ strong evidence                        |  252  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   5   |
@@ -385,6 +385,7 @@ _No open debts detected in the chord trail._
 | [x5700_954421_claude_canonical-action-intent-contract-in-myc-action-int.myc.md](./x5700_954421_claude_canonical-action-intent-contract-in-myc-action-int.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x5700_954431_claude_temporal-sign-emission-tooling-done-division-of-la.myc.md](./x5700_954431_claude_temporal-sign-emission-tooling-done-division-of-la.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
 | [x5700_954450_claude_autonomy-kernel-policy-compiler-codex-p0-pure-fail.myc.md](./x5700_954450_claude_autonomy-kernel-policy-compiler-codex-p0-pure-fail.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x5700_954552_claude_autonomy-p1-pure-ceiling-lease-verifier-epoch-1-by.myc.md](./x5700_954552_claude_autonomy-p1-pure-ceiling-lease-verifier-epoch-1-by.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md](./x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md)                                                                                                 | **RECEIPT**  | gemini-3.1-pro     |   0   |   0    |
 | [x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md](./x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md)                                                                                 | **RECEIPT**  | gemini-3.1-pro     |   0   |   0    |
 | [x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md](./x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md)                                                                             | **RECEIPT**  | claude             |   0   |   0    |
@@ -4496,6 +4497,13 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `t autonomy classify <intent.json>`
   - `t autonomy explain <intent.json> --mandate <mandate.json>`
+
+### [x5700_954552_claude_autonomy-p1-pure-ceiling-lease-verifier-epoch-1-by.myc.md](./x5700_954552_claude_autonomy-p1-pure-ceiling-lease-verifier-epoch-1-by.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Suggested Commands**:
+  - `deno test --allow-read --allow-write --allow-run --allow-env --allow-net src/autonomy_delegation_test.ts`
+  - `./t check`
 
 ### [x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md](./x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md)
 

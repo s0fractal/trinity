@@ -145,8 +145,376 @@ const A1_EFFECTS = new Set([
   "reconcile",
 ]);
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Delegation Epoch Protocol — the pure ceiling/lease verifier (codex x5000_954550, P1).
+//
+// codex's forward architecture splits durable authority from its momentary use:
+//   • a CEILING is a durable, constitutionally-ratified MAXIMUM (capability classes,
+//     committed catalog IDs, target families, budgets, quorum policy, expiry);
+//   • a LEASE is a short-lived attenuation that SELECTS, never INTRODUCES — every
+//     field must be equal-or-narrower than its ceiling and may only pick a committed
+//     catalog entry. It can never add argv, paths, capabilities, principals or budgets.
+//
+// `verifyDelegation` is the pure verifier that proves a lease is a sound attenuation
+// of its ceiling against live facts (anchor window, revocation, fork, catalog hash,
+// quorum). It outputs a content-bound verdict; every decision fact is hashed in, so
+// changing any ceiling/lease/catalog/anchor byte invalidates the downstream verdict.
+// There is no administrator override and no I/O — facts arrive as data, never as
+// caller authority. epoch-1's `evaluateA1Attenuation` is wired through it below with
+// byte-for-byte equivalence: the new verifier replaces the hardcoded C1–C6 ladder
+// without changing any granted authority.
+//
+// This is the type groundwork for epoch-neutral runtime (P2). It does NOT yet make
+// the runtime discover ceilings; epoch-1 remains the golden fixture.
+export const DELEGATION_SCHEMA_VERSION = "trinity.delegation.v0.1";
+
+/** An audited catalog entry — a generator bound by ID plus its argv/organ/output.
+ *  `impl_hash` is the forward binding (P-later) once the executor recomputes it; it
+ *  is optional here and, when absent, simply omitted from the catalog commitment. */
+export interface CatalogEntry {
+  id: string; // stable adapter ID (== target in epoch-1)
+  organ: string;
+  argv: string[];
+  output_path: string;
+  impl_hash?: string;
+}
+
+/** The durable, constitutionally-ratified authority ceiling. */
+export interface Ceiling {
+  schema: typeof DELEGATION_SCHEMA_VERSION;
+  ceiling_id: string;
+  capability_classes: string[]; // the only attenuable capabilities
+  effect_ceiling: string[]; // the maximal effect tags a lease may carry
+  target_families: string[]; // allowed targets — exact tokens or "*"
+  catalog_ids: string[]; // committed audited adapter IDs
+  catalog_commitment: string; // sha256 over the committed catalog entries
+  budgets: { max_bytes: number; max_seconds: number };
+  required_gates: string[]; // a lease must require a superset of these
+  quorum: { human: number; model: number }; // ratification quorum policy
+  expiry: { from_height: number; until_height: number };
+}
+
+/** A short-lived attenuation of ONE ceiling — it selects, it never introduces. */
+export interface Lease {
+  schema: typeof DELEGATION_SCHEMA_VERSION;
+  ceiling_id: string; // the ceiling this lease attenuates
+  catalog_id: string; // the committed adapter it selects
+  generator_organ: string; // the freshly-recomputed organ (must match the entry)
+  capability: string; // recomputed capability (must be in the ceiling)
+  effects: string[]; // intent effects (⊆ the ceiling's effect ceiling)
+  verb: string;
+  target: string;
+  write_set: string[]; // must equal the selected entry's singleton output path
+  budgets: { max_bytes: number; max_seconds: number }; // ≤ the ceiling
+  required_gates: string[]; // ⊇ the ceiling's required gates
+  expiry_height: number; // ≤ the ceiling's until-height
+  confinement_commitment: string; // binds the confined transaction
+}
+
+/** Live, self-verifying facts resolved at decision time — never caller authority. */
+export interface LiveFacts {
+  at_height: number; // current Bitcoin height
+  catalog_commitment: string; // the catalog commitment observed live
+  revoked: boolean; // ceiling/lease revocation state
+  forked: boolean; // lifecycle fork state
+  quorum_satisfied: boolean; // ratification quorum met in the live lifecycle
+}
+
+export type DelegationReason =
+  | "delegated"
+  | "schema_mismatch"
+  | "ceiling_mismatch"
+  | "capability_not_in_ceiling"
+  | "effect_exceeds_ceiling"
+  | "target_not_in_family"
+  | "quorum_unsatisfied"
+  | "anchor_outside_window"
+  | "revoked"
+  | "forked"
+  | "generator_not_in_catalog"
+  | "catalog_commitment_drift"
+  | "write_set_not_entry_singleton"
+  | "path_not_contained"
+  | "budget_exceeds_ceiling"
+  | "expiry_widens_ceiling"
+  | "gates_not_superset";
+
+export interface DelegationVerdict {
+  schema: typeof DELEGATION_SCHEMA_VERSION;
+  delegated: boolean;
+  reason_code: DelegationReason;
+  reason: string;
+  verdict_hash?: string; // content-bound over ceiling, lease, catalog and anchor
+}
+
+/** Content commitment over a catalog — committed entries only, ID-sorted, stable. */
+export async function catalogCommitment(
+  entries: CatalogEntry[],
+): Promise<string> {
+  const sorted = [...entries].sort((a, b) =>
+    a.id < b.id ? -1 : a.id > b.id ? 1 : 0
+  );
+  return `sha256:${await sha256(
+    stable(
+      sorted.map((e) => ({
+        argv: e.argv,
+        id: e.id,
+        ...(e.impl_hash !== undefined ? { impl_hash: e.impl_hash } : {}),
+        organ: e.organ,
+        output_path: e.output_path,
+      })) as unknown as Json,
+    ),
+  )}`;
+}
+
+const finitePos = (n: number) => Number.isFinite(n) && n > 0;
+
+/** Prove a lease is a sound attenuation of its ceiling against live facts.
+ *  Pure and fail-closed: any field broader than the ceiling, any uncommitted
+ *  catalog selection, any stale/revoked/forked/ambiguous authority denies. */
+export async function verifyDelegation(
+  ceiling: Ceiling,
+  lease: Lease,
+  catalog: CatalogEntry[],
+  live: LiveFacts,
+): Promise<DelegationVerdict> {
+  const deny = (
+    reason_code: DelegationReason,
+    reason: string,
+  ): DelegationVerdict => ({
+    schema: DELEGATION_SCHEMA_VERSION,
+    delegated: false,
+    reason_code,
+    reason,
+  });
+
+  // 0 — both documents speak this schema version (an unknown schema is never trusted).
+  if (
+    ceiling.schema !== DELEGATION_SCHEMA_VERSION ||
+    lease.schema !== DELEGATION_SCHEMA_VERSION
+  ) {
+    return deny("schema_mismatch", "ceiling or lease is not the known schema");
+  }
+  // 1 — the lease attenuates THIS ceiling (no cross-ceiling / wrong-parent leases).
+  if (lease.ceiling_id !== ceiling.ceiling_id) {
+    return deny(
+      "ceiling_mismatch",
+      `lease names ceiling ${lease.ceiling_id}, not ${ceiling.ceiling_id}`,
+    );
+  }
+  // 2 — capability is within the ceiling's attenuable classes (set inclusion).
+  if (!ceiling.capability_classes.includes(lease.capability)) {
+    return deny(
+      "capability_not_in_ceiling",
+      NON_ATTENUABLE.has(lease.capability)
+        ? `${lease.capability} crosses boundaries and can never be attenuated`
+        : `capability '${lease.capability}' is not in the ceiling`,
+    );
+  }
+  // 3 — every effect is within the ceiling's effect ceiling (set inclusion).
+  if (!(lease.effects ?? []).every((e) => ceiling.effect_ceiling.includes(e))) {
+    return deny(
+      "effect_exceeds_ceiling",
+      "lease carries an effect outside the ceiling's effect ceiling",
+    );
+  }
+  // 3b — the target is within the ceiling's target families (exact token or "*").
+  if (
+    !ceiling.target_families.includes(lease.target) &&
+    !ceiling.target_families.includes("*")
+  ) {
+    return deny(
+      "target_not_in_family",
+      `target ${lease.target} is not in a ceiling target family`,
+    );
+  }
+  // 4 — ratification quorum is met in the live lifecycle (quorum validity).
+  if (!live.quorum_satisfied) {
+    return deny(
+      "quorum_unsatisfied",
+      "ceiling is not final in the live lifecycle",
+    );
+  }
+  // 5 — the anchor is inside the ceiling's window (expiry).
+  if (
+    live.at_height < ceiling.expiry.from_height ||
+    live.at_height >= ceiling.expiry.until_height
+  ) {
+    return deny(
+      "anchor_outside_window",
+      "anchor is outside the ceiling window",
+    );
+  }
+  // 6 — neither parent nor lease is revoked, and the lifecycle is not forked.
+  if (live.revoked) return deny("revoked", "ceiling or lease is revoked");
+  if (live.forked) return deny("forked", "live lifecycle is forked");
+  // 7 — the lease selects a COMMITTED catalog entry whose organ it actually matches.
+  const entry = catalog.find((e) => e.id === lease.catalog_id);
+  const norm = lease.generator_organ.replace(/^.*\/(src\/)/, "src/");
+  if (
+    !ceiling.catalog_ids.includes(lease.catalog_id) || !entry ||
+    entry.organ !== norm || entry.id !== lease.target
+  ) {
+    return deny(
+      "generator_not_in_catalog",
+      `no committed catalog entry binds ${lease.target} to organ ${lease.generator_organ}`,
+    );
+  }
+  // 8 — the live catalog has not drifted from what the ceiling committed.
+  const liveCommitment = await catalogCommitment(catalog);
+  if (
+    liveCommitment !== ceiling.catalog_commitment ||
+    live.catalog_commitment !== ceiling.catalog_commitment
+  ) {
+    return deny(
+      "catalog_commitment_drift",
+      "live catalog commitment does not match the ceiling's",
+    );
+  }
+  // 9 — the write-set is EXACTLY the selected entry's singleton output path, contained.
+  const ws = lease.write_set;
+  if (ws.length !== 1 || ws[0] !== entry.output_path) {
+    return deny(
+      "write_set_not_entry_singleton",
+      `write-set must be exactly [${entry.output_path}]`,
+    );
+  }
+  if (!pathContained(ws[0])) {
+    return deny(
+      "path_not_contained",
+      `${ws[0]} is not a contained repo-relative path`,
+    );
+  }
+  // 10 — budgets are finite, positive and no broader than the ceiling (monotonicity).
+  const b = lease.budgets;
+  if (
+    !finitePos(b.max_bytes) || !finitePos(b.max_seconds) ||
+    b.max_bytes > ceiling.budgets.max_bytes ||
+    b.max_seconds > ceiling.budgets.max_seconds
+  ) {
+    return deny(
+      "budget_exceeds_ceiling",
+      "lease budget is invalid or exceeds the ceiling",
+    );
+  }
+  // 11 — the lease's expiry does not widen the ceiling's (expiry narrowing).
+  if (lease.expiry_height > ceiling.expiry.until_height) {
+    return deny(
+      "expiry_widens_ceiling",
+      "lease expiry is later than the ceiling's",
+    );
+  }
+  // 12 — the lease requires a superset of the ceiling's gates.
+  if (!ceiling.required_gates.every((g) => lease.required_gates.includes(g))) {
+    return deny(
+      "gates_not_superset",
+      "lease gates do not cover the ceiling's required gates",
+    );
+  }
+
+  // delegated — bind the verdict to every fact it relied on.
+  const verdict_hash = `sha256:${await sha256(stable({
+    anchor: live.at_height,
+    catalog_commitment: ceiling.catalog_commitment,
+    ceiling_id: ceiling.ceiling_id,
+    lease: {
+      budgets: lease.budgets,
+      capability: lease.capability,
+      catalog_id: lease.catalog_id,
+      confinement_commitment: lease.confinement_commitment,
+      effects: [...lease.effects].sort(),
+      expiry_height: lease.expiry_height,
+      generator_organ: norm,
+      required_gates: [...lease.required_gates].sort(),
+      target: lease.target,
+      verb: lease.verb,
+      write_set: lease.write_set,
+    },
+  } as unknown as Json))}`;
+  return {
+    schema: DELEGATION_SCHEMA_VERSION,
+    delegated: true,
+    reason_code: "delegated",
+    reason: `lease is a sound attenuation of ceiling ${ceiling.ceiling_id}`,
+    verdict_hash,
+  };
+}
+
+/** Map a delegation reason code onto the legacy epoch-1 attenuation reason code,
+ *  preserving the exact refusal vocabulary the kernel and its tests expect. */
+const DELEGATION_TO_ATTENUATION: Record<DelegationReason, AttenuationReason> = {
+  delegated: "eligible",
+  schema_mismatch: "generator_not_registered",
+  ceiling_mismatch: "generator_not_registered",
+  capability_not_in_ceiling: "non_attenuable_capability",
+  effect_exceeds_ceiling: "not_semantic_a1",
+  target_not_in_family: "no_matching_a1_profile",
+  quorum_unsatisfied: "mandate_not_final_or_expired",
+  anchor_outside_window: "mandate_not_final_or_expired",
+  revoked: "mandate_not_final_or_expired",
+  forked: "mandate_not_final_or_expired",
+  generator_not_in_catalog: "generator_not_registered",
+  catalog_commitment_drift: "generator_not_registered",
+  write_set_not_entry_singleton: "write_set_not_registry_singleton",
+  path_not_contained: "path_not_contained",
+  budget_exceeds_ceiling: "budget_invalid_or_exceeds_mandate",
+  expiry_widens_ceiling: "mandate_not_final_or_expired",
+  gates_not_superset: "gates_not_superset",
+};
+
+/** Build the epoch-1 ceiling from the live mandate, its matched A1 profile and the
+ *  ratified adapter registry. Returns null when the mandate is structurally ambiguous
+ *  (≠ exactly one matching A1 profile) — the caller denies `no_matching_a1_profile`. */
+export async function epoch1Ceiling(
+  mandate: AutonomyMandate,
+  intent: AutonomyIntent,
+  adapters: Adapter[],
+): Promise<{ ceiling: Ceiling; catalog: CatalogEntry[] } | null> {
+  const profiles = mandate.action_profiles.filter((p) =>
+    p.class === "A1" &&
+    (p.verbs.includes(intent.verb) || p.verbs.includes("*")) &&
+    (p.targets.includes(intent.target) || p.targets.includes("*"))
+  );
+  if (profiles.length !== 1) return null;
+  const profile = profiles[0];
+  const catalog: CatalogEntry[] = adapters.map((a) => ({
+    id: a.target,
+    organ: a.organ,
+    argv: a.argv,
+    output_path: a.output_path,
+  }));
+  const commitment = await catalogCommitment(catalog);
+  const mb = mandate.global_budgets ?? {};
+  const ceiling: Ceiling = {
+    schema: DELEGATION_SCHEMA_VERSION,
+    ceiling_id: mandate.mandate_id,
+    capability_classes: [ATTENUABLE],
+    // the semantic A1 effect set — the same ceiling the legacy C2 ladder enforced.
+    effect_ceiling: [...A1_EFFECTS],
+    target_families: profile.targets,
+    catalog_ids: catalog.map((e) => e.id),
+    catalog_commitment: commitment,
+    budgets: {
+      max_bytes: mb.max_bytes ?? Number.POSITIVE_INFINITY,
+      max_seconds: mb.max_seconds ?? Number.POSITIVE_INFINITY,
+    },
+    required_gates: profile.required_gates ?? [],
+    quorum: { human: 1, model: 1 },
+    expiry: {
+      from_height: mandate.valid_from.height,
+      until_height: mandate.valid_until.height,
+    },
+  };
+  return { ceiling, catalog };
+}
+
 /** Decide whether one confined action of a `writes` generator may EXECUTE as A1.
- *  Pure and fail-closed; activated only after constitutional ratification. */
+ *  Pure and fail-closed; activated only after constitutional ratification.
+ *
+ *  As of codex x5000_954550 (P1) this is a thin epoch-1 adapter over the general
+ *  `verifyDelegation` verifier: it builds the epoch-1 ceiling + lease, delegates the
+ *  field comparison, then emits the SAME content-bound `attenuation_hash` the warrant
+ *  binds — byte-for-byte identical to the prior hardcoded ladder. */
 export async function evaluateA1Attenuation(
   input: AttenuationInput,
 ): Promise<AttenuationVerdict> {
@@ -160,107 +528,62 @@ export async function evaluateA1Attenuation(
     reason,
   });
 
-  // C1 — capability is EXACTLY `writes`; everything else is categorically non-attenuable.
-  if (input.capability !== ATTENUABLE) {
-    return deny(
-      "non_attenuable_capability",
-      NON_ATTENUABLE.has(input.capability)
-        ? `${input.capability} crosses boundaries and can never be attenuated`
-        : `only 'writes' is attenuable, got '${input.capability}'`,
-    );
-  }
-  // C2 — every claimed/observed effect is an A1 effect (semantic class A1).
-  if (!(input.intent.effects ?? []).every((e) => A1_EFFECTS.has(e))) {
-    return deny(
-      "not_semantic_a1",
-      "intent carries an effect outside the A1 set",
-    );
-  }
-  // C2b — the mandate is final and unexpired at the anchor.
-  const inWindow = input.at_height >= input.mandate.valid_from.height &&
-    input.at_height < input.mandate.valid_until.height;
-  if (!input.mandate_final || !inWindow) {
-    return deny(
-      "mandate_not_final_or_expired",
-      input.mandate_final
-        ? "anchor outside the mandate window"
-        : "mandate is not final",
-    );
-  }
-  // C2c — exactly one A1 profile matches verb + target.
-  const profiles = input.mandate.action_profiles.filter((p) =>
-    p.class === "A1" &&
-    (p.verbs.includes(input.intent.verb) || p.verbs.includes("*")) &&
-    (p.targets.includes(input.intent.target) || p.targets.includes("*"))
-  );
-  if (profiles.length !== 1) {
+  const adapters = input.adapters ?? EPOCH1_ADAPTERS;
+  const built = await epoch1Ceiling(input.mandate, input.intent, adapters);
+  if (!built) {
     return deny(
       "no_matching_a1_profile",
-      `expected exactly one matching A1 profile, found ${profiles.length}`,
+      "expected exactly one matching A1 profile",
     );
   }
-  const profile = profiles[0];
-  // C3 — the generator is a registered adapter; its organ matches the recomputed organ.
-  const adapters = input.adapters ?? EPOCH1_ADAPTERS;
-  const adapter = adapters.find((a) => a.target === input.intent.target);
-  if (
-    !adapter ||
-    adapter.organ !== input.generator_organ.replace(/^.*\/(src\/)/, "src/")
-  ) {
-    return deny(
-      "generator_not_registered",
-      `no adapter binds target ${input.intent.target} to organ ${input.generator_organ}`,
-    );
-  }
-  // C4 — the write-set is EXACTLY the registered singleton output path, and contained.
-  const ws = input.confinement.allowed_write_set;
-  if (ws.length !== 1 || ws[0] !== adapter.output_path) {
-    return deny(
-      "write_set_not_registry_singleton",
-      `write-set must be exactly [${adapter.output_path}]`,
-    );
-  }
-  if (!pathContained(ws[0])) {
-    return deny(
-      "path_not_contained",
-      `${ws[0]} is not a contained repo-relative path`,
-    );
-  }
-  // C5 — budgets finite, positive, and no broader than the mandate's.
-  const b = input.confinement.output_budget;
-  const mb = input.mandate.global_budgets ?? {};
-  const finite = (n: number) => Number.isFinite(n) && n > 0;
-  if (
-    !finite(b.max_bytes) || !finite(b.max_seconds) ||
-    (mb.max_bytes !== undefined && b.max_bytes > mb.max_bytes) ||
-    (mb.max_seconds !== undefined && b.max_seconds > mb.max_seconds)
-  ) {
-    return deny(
-      "budget_invalid_or_exceeds_mandate",
-      "confinement budget is invalid or exceeds the mandate",
-    );
-  }
-  // C6 — required gates are a superset of the profile's gates.
-  const need = new Set(profile.required_gates ?? []);
-  if (![...need].every((g) => input.confinement.required_gates.includes(g))) {
-    return deny(
-      "gates_not_superset",
-      "confinement gates do not cover the profile's required gates",
-    );
+  const { ceiling, catalog } = built;
+  const lease: Lease = {
+    schema: DELEGATION_SCHEMA_VERSION,
+    ceiling_id: ceiling.ceiling_id,
+    catalog_id: input.intent.target,
+    generator_organ: input.generator_organ,
+    capability: input.capability,
+    effects: input.intent.effects ?? [],
+    verb: input.intent.verb,
+    target: input.intent.target,
+    write_set: input.confinement.allowed_write_set,
+    budgets: input.confinement.output_budget,
+    required_gates: input.confinement.required_gates,
+    expiry_height: input.mandate.valid_until.height,
+    confinement_commitment: input.confinement.commitment,
+  };
+  const live: LiveFacts = {
+    at_height: input.at_height,
+    catalog_commitment: ceiling.catalog_commitment,
+    revoked: false,
+    forked: false,
+    quorum_satisfied: input.mandate_final,
+  };
+
+  const v = await verifyDelegation(ceiling, lease, catalog, live);
+  if (!v.delegated) {
+    return deny(DELEGATION_TO_ATTENUATION[v.reason_code], v.reason);
   }
 
-  // eligible — bind the verdict to every fact it relied on.
+  // eligible — bind the legacy verdict to every fact it relied on (unchanged preimage).
+  const adapter = catalog.find((e) => e.id === input.intent.target)!;
+  const profileId =
+    input.mandate.action_profiles.find((p) =>
+      p.class === "A1" &&
+      (p.verbs.includes(input.intent.verb) || p.verbs.includes("*")) &&
+      (p.targets.includes(input.intent.target) || p.targets.includes("*"))
+    )!.id;
   const attenuation_hash = `sha256:${await sha256(stable({
     adapter: {
       argv: adapter.argv,
       organ: adapter.organ,
       output_path: adapter.output_path,
-      target: adapter.target,
+      target: adapter.id,
     },
     capability: input.capability,
     confinement_commitment: input.confinement.commitment,
     mandate_id: input.mandate.mandate_id,
-    profile: profile.id,
+    profile: profileId,
     verb: input.intent.verb,
   } as unknown as Json))}`;
   return {
@@ -268,7 +591,7 @@ export async function evaluateA1Attenuation(
     eligible: true,
     reason_code: "eligible",
     reason:
-      `confined A1 execution of a writes generator under profile ${profile.id}`,
+      `confined A1 execution of a writes generator under profile ${profileId}`,
     attenuation_hash,
   };
 }

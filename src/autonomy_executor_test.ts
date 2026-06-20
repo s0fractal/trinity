@@ -3,6 +3,7 @@ import {
   assertEquals,
 } from "https://deno.land/std@0.224.0/assert/mod.ts";
 import {
+  bindingFactFromDescriptor,
   type ExecHooks,
   execute,
   verifyExecutionAuthority,
@@ -40,6 +41,47 @@ async function tSha(s: string): Promise<string> {
   )
     .join("");
 }
+
+Deno.test("authority binding — resolved descriptor is independently content-bound", async () => {
+  const body = { epoch_registry_entry_commitment: "sha256:" + "a".repeat(64) };
+  const key = await tSha(tStable(body));
+  const descriptor = {
+    type: "ProposedMutationDescriptor",
+    commitment: {
+      algorithm: "sha256",
+      value: key,
+      covers: "descriptor.body",
+    },
+    body,
+  };
+  assertEquals(await bindingFactFromDescriptor(key, true, descriptor), {
+    body_commitment_ok: true,
+    epoch_registry_entry_commitment: body.epoch_registry_entry_commitment,
+  });
+});
+
+Deno.test("authority binding — TOCTOU body replacement after canonical verify denies", async () => {
+  const original = {
+    epoch_registry_entry_commitment: "sha256:" + "a".repeat(64),
+  };
+  const key = await tSha(tStable(original));
+  const replaced = {
+    epoch_registry_entry_commitment: "sha256:" + "b".repeat(64),
+  };
+  const descriptor = {
+    type: "ProposedMutationDescriptor",
+    commitment: {
+      algorithm: "sha256",
+      value: key,
+      covers: "descriptor.body",
+    },
+    body: replaced,
+  };
+  assertEquals(await bindingFactFromDescriptor(key, true, descriptor), {
+    body_commitment_ok: false,
+    epoch_registry_entry_commitment: null,
+  });
+});
 
 const MANDATE: AutonomyMandate = {
   mandate_id: "epoch-1",

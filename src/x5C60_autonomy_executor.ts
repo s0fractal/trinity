@@ -80,6 +80,41 @@ async function sha256(s: string): Promise<string> {
   ).join("");
 }
 
+/** Bind the canonical-verifier result to the exact descriptor subsequently
+ * consumed by the executor. `myc verify` and `myc resolve` are separate process
+ * calls, so the proposal could otherwise change between them while the second
+ * body inherited the first call's `ok`. */
+export async function bindingFactFromDescriptor(
+  key: string,
+  canonicalVerified: boolean,
+  descriptor: Record<string, unknown>,
+): Promise<EpochBindingFact> {
+  const deny: EpochBindingFact = {
+    body_commitment_ok: false,
+    epoch_registry_entry_commitment: null,
+  };
+  if (!canonicalVerified || !/^[0-9a-f]{64}$/.test(key)) return deny;
+  const commitment = descriptor.commitment as
+    | Record<string, unknown>
+    | undefined;
+  const body = descriptor.body as Record<string, unknown> | undefined;
+  if (
+    descriptor.type !== "ProposedMutationDescriptor" ||
+    commitment?.algorithm !== "sha256" ||
+    commitment?.covers !== "descriptor.body" ||
+    commitment?.value !== key ||
+    !body || Array.isArray(body)
+  ) return deny;
+  if (await sha256(stable(body as unknown as Json)) !== key) return deny;
+  return {
+    body_commitment_ok: true,
+    epoch_registry_entry_commitment:
+      typeof body.epoch_registry_entry_commitment === "string"
+        ? body.epoch_registry_entry_commitment
+        : null,
+  };
+}
+
 /** Injected transaction hooks — the worktree run + the main-tree promotion. */
 export interface ExecHooks {
   run: Run;
@@ -197,12 +232,10 @@ async function loadBindings(
         const r = JSON.parse(
           (await realRun(["./t", "myc", "resolve", fqdn], ROOT)).out,
         );
-        if (r.ok && r.descriptor?.commitment?.value === key) {
-          body_commitment_ok = true;
-          const b = r.descriptor.body ?? {};
-          entry = typeof b.epoch_registry_entry_commitment === "string"
-            ? b.epoch_registry_entry_commitment
-            : null;
+        if (r.ok && r.descriptor) {
+          const fact = await bindingFactFromDescriptor(key, true, r.descriptor);
+          body_commitment_ok = fact.body_commitment_ok;
+          entry = fact.epoch_registry_entry_commitment;
         }
       }
     } catch {

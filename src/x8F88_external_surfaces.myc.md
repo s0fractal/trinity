@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    590     |
+| dynamic topology  |    591     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **690**   |
+| **Total**         |  **691**   |
 
 ## Runtime Cache Diagnostics
 
@@ -349,6 +349,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x3d00_t20260518195420_claude-opus-4-7_fqdn-content-addressed-naming.myc.md](../src/x3d00_t20260518195420_claude-opus-4-7_fqdn-content-addressed-naming.myc.md)                                                                                         | canonical        | src/x3d00_t20260518195420_claude-opus-4-7_fqdn-content-addressed-naming.myc.md                                             | keep        |                              |
 | dynamic topology  | [src/x3d00_t20260518230712_claude-opus-4-7_auto-generated-bucket-state-x8-cache.myc.md](../src/x3d00_t20260518230712_claude-opus-4-7_auto-generated-bucket-state-x8-cache.myc.md)                                                                           | canonical        | src/x3d00_t20260518230712_claude-opus-4-7_auto-generated-bucket-state-x8-cache.myc.md                                      | keep        |                              |
 | dynamic topology  | [src/x3d00_t20260519120243_codex_self-description-roadmap-axis.myc.md](../src/x3d00_t20260519120243_codex_self-description-roadmap-axis.myc.md)                                                                                                             | canonical        | src/x3d00_t20260519120243_codex_self-description-roadmap-axis.myc.md                                                       | keep        |                              |
+| dynamic topology  | [src/x4000_954706_claude_join-the-mycelium-onboarding-trinity-myc-public-in.myc.md](../src/x4000_954706_claude_join-the-mycelium-onboarding-trinity-myc-public-in.myc.md)                                                                                   | canonical        | src/x4000_954706_claude_join-the-mycelium-onboarding-trinity-myc-public-in.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x4000_t20260513231653_codex_contracts-chords-hex-ledger-migration-plan.myc.md](../src/x4000_t20260513231653_codex_contracts-chords-hex-ledger-migration-plan.myc.md)                                                                                   | canonical        | src/x4000_t20260513231653_codex_contracts-chords-hex-ledger-migration-plan.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x4000_t20260514143524_codex_response-trinity-as-installed-overlay.myc.md](../src/x4000_t20260514143524_codex_response-trinity-as-installed-overlay.myc.md)                                                                                             | canonical        | src/x4000_t20260514143524_codex_response-trinity-as-installed-overlay.myc.md                                               | keep        |                              |
 | dynamic topology  | [src/x4000_t20260523124505_codex_supervector-triad-autopoiesis-response.myc.md](../src/x4000_t20260523124505_codex_supervector-triad-autopoiesis-response.myc.md)                                                                                           | canonical        | src/x4000_t20260523124505_codex_supervector-triad-autopoiesis-response.myc.md                                              | keep        |                              |

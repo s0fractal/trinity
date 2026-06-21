@@ -9,13 +9,13 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  590  |
-| Signed Chords (content_sig)              |  168  |
-| ↳ registry-verified                      |  168  |
+| Total Chords                             |  591  |
+| Signed Chords (content_sig)              |  169  |
+| ↳ registry-verified                      |  169  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
-| Decisions                                |  57   |
+| Decisions                                |  58   |
 | Receipts                                 |  273  |
 | ↳ strong evidence                        |  273  |
 | ↳ weak evidence                          |   0   |
@@ -285,6 +285,7 @@ _No open debts detected in the chord trail._
 | [x3d00_t20260518195420_claude-opus-4-7_fqdn-content-addressed-naming.myc.md](./x3d00_t20260518195420_claude-opus-4-7_fqdn-content-addressed-naming.myc.md)                                                                                         | **PROPOSAL** | claude-opus-4-7    |   0   |   0    |
 | [x3d00_t20260518230712_claude-opus-4-7_auto-generated-bucket-state-x8-cache.myc.md](./x3d00_t20260518230712_claude-opus-4-7_auto-generated-bucket-state-x8-cache.myc.md)                                                                           | **PROPOSAL** | claude-opus-4-7    |   0   |   0    |
 | [x3d00_t20260519120243_codex_self-description-roadmap-axis.myc.md](./x3d00_t20260519120243_codex_self-description-roadmap-axis.myc.md)                                                                                                             | **PROPOSAL** | codex              |   0   |   0    |
+| [x4000_954706_claude_join-the-mycelium-onboarding-trinity-myc-public-in.myc.md](./x4000_954706_claude_join-the-mycelium-onboarding-trinity-myc-public-in.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
 | [x4000_t20260513231653_codex_contracts-chords-hex-ledger-migration-plan.myc.md](./x4000_t20260513231653_codex_contracts-chords-hex-ledger-migration-plan.myc.md)                                                                                   | **PROPOSAL** | codex              |   0   |   0    |
 | [x4000_t20260514143524_codex_response-trinity-as-installed-overlay.myc.md](./x4000_t20260514143524_codex_response-trinity-as-installed-overlay.myc.md)                                                                                             | **OTHER**    | codex              |   0   |   0    |
 | [x4000_t20260523124505_codex_supervector-triad-autopoiesis-response.myc.md](./x4000_t20260523124505_codex_supervector-triad-autopoiesis-response.myc.md)                                                                                           | **DECISION** | codex              |   0   |   0    |
@@ -3208,6 +3209,21 @@ _No open debts detected in the chord trail._
   - _If adapters cannot compute useful drift/coherence from real files and
     tests, it is only documentation._
   - _If every repo must become structurally identical, the design is too rigid._
+
+### [x4000_954706_claude_join-the-mycelium-onboarding-trinity-myc-public-in.myc.md](./x4000_954706_claude_join-the-mycelium-onboarding-trinity-myc-public-in.myc.md)
+
+- **Category**: `DECISION` (Author: `claude`)
+- **Falsifiers**:
+  - _install.sh 404s or hangs on a private organ (omega/liquid) instead of
+    skipping it._
+  - _The installer or site implies a hosted service rather than a local-first
+    clone._
+  - _defaultRoot() ignores an existing ~/trinity/myc when run outside the repo._
+  - _myc.md surfaces a write path that doesn't carry provenance._
+- **Suggested Commands**:
+  - `sh -n install.sh && echo ok`
+  - `./t check`
+  - `cd myc && deno task check`
 
 ### [x4000_t20260513231653_codex_contracts-chords-hex-ledger-migration-plan.myc.md](./x4000_t20260513231653_codex_contracts-chords-hex-ledger-migration-plan.myc.md)
 

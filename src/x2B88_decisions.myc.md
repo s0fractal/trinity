@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  601  |
-| Signed Chords (content_sig)              |  178  |
-| ↳ registry-verified                      |  178  |
+| Total Chords                             |  602  |
+| Signed Chords (content_sig)              |  179  |
+| ↳ registry-verified                      |  179  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  59   |
-| Receipts                                 |  279  |
-| ↳ strong evidence                        |  279  |
+| Receipts                                 |  280  |
+| ↳ strong evidence                        |  280  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   6   |
@@ -463,6 +463,7 @@ _No open debts detected in the chord trail._
 | [x6700_954579_claude_co-witness-codex-audit-repair-hardening-schema-ide.myc.md](./x6700_954579_claude_co-witness-codex-audit-repair-hardening-schema-ide.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x6700_954620_claude_antigravity-x2c10-balance-metrics-landed-verified.myc.md](./x6700_954620_claude_antigravity-x2c10-balance-metrics-landed-verified.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x6700_954731_claude_resonant-resolution-snapshot-export-plus-verify-by.myc.md](./x6700_954731_claude_resonant-resolution-snapshot-export-plus-verify-by.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x6700_954734_claude_resonant-resolution-import-snapshot-exchange-triad.myc.md](./x6700_954734_claude_resonant-resolution-import-snapshot-exchange-triad.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x6700_t20260509175813_codex-gpt-5_codex-recommendation-sees-candidates.myc.md](./x6700_t20260509175813_codex-gpt-5_codex-recommendation-sees-candidates.myc.md)                                                                                   | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x6700_t20260509213028_claude-opus-4-7-1m_claude-sigma-substrate-paper-plan.myc.md](./x6700_t20260509213028_claude-opus-4-7-1m_claude-sigma-substrate-paper-plan.myc.md)                                                                           | **PROPOSAL** | claude-opus-4.7-1m |   0   |   0    |
 | [x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md](./x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md)                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
@@ -5563,6 +5564,20 @@ _No open debts detected in the chord trail._
   - `./t myc verify-snapshot /tmp/peer.json   # → VERIFIED 66/66`
 - **Expected After Running**:
   - _{}_
+
+### [x6700_954734_claude_resonant-resolution-import-snapshot-exchange-triad.myc.md](./x6700_954734_claude_resonant-resolution-import-snapshot-exchange-triad.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _import-snapshot merges a record that did not pass canonical verification._
+  - _import overwrites existing local bytes, or silently merges a same-path
+    conflict._
+  - _import writes anything without --write (dry-run must be inert)._
+  - _myc deno task check is not green._
+- **Suggested Commands**:
+  - `./t myc snapshot --write /tmp/peer.json`
+  - `./t myc import-snapshot /tmp/peer.json          # dry-run: verify + plan`
+  - `./t myc import-snapshot /tmp/peer.json --write   # merge new verified records`
 
 ### [x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md](./x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md)
 

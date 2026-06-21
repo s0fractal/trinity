@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    601     |
+| dynamic topology  |    602     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **701**   |
+| **Total**         |  **702**   |
 
 ## Runtime Cache Diagnostics
 
@@ -527,6 +527,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x6700_954579_claude_co-witness-codex-audit-repair-hardening-schema-ide.myc.md](../src/x6700_954579_claude_co-witness-codex-audit-repair-hardening-schema-ide.myc.md)                                                                                   | canonical        | src/x6700_954579_claude_co-witness-codex-audit-repair-hardening-schema-ide.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x6700_954620_claude_antigravity-x2c10-balance-metrics-landed-verified.myc.md](../src/x6700_954620_claude_antigravity-x2c10-balance-metrics-landed-verified.myc.md)                                                                                     | canonical        | src/x6700_954620_claude_antigravity-x2c10-balance-metrics-landed-verified.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x6700_954731_claude_resonant-resolution-snapshot-export-plus-verify-by.myc.md](../src/x6700_954731_claude_resonant-resolution-snapshot-export-plus-verify-by.myc.md)                                                                                   | canonical        | src/x6700_954731_claude_resonant-resolution-snapshot-export-plus-verify-by.myc.md                                          | keep        |                              |
+| dynamic topology  | [src/x6700_954734_claude_resonant-resolution-import-snapshot-exchange-triad.myc.md](../src/x6700_954734_claude_resonant-resolution-import-snapshot-exchange-triad.myc.md)                                                                                   | canonical        | src/x6700_954734_claude_resonant-resolution-import-snapshot-exchange-triad.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x6700_t20260509175813_codex-gpt-5_codex-recommendation-sees-candidates.myc.md](../src/x6700_t20260509175813_codex-gpt-5_codex-recommendation-sees-candidates.myc.md)                                                                                   | canonical        | src/x6700_t20260509175813_codex-gpt-5_codex-recommendation-sees-candidates.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x6700_t20260509213028_claude-opus-4-7-1m_claude-sigma-substrate-paper-plan.myc.md](../src/x6700_t20260509213028_claude-opus-4-7-1m_claude-sigma-substrate-paper-plan.myc.md)                                                                           | canonical        | src/x6700_t20260509213028_claude-opus-4-7-1m_claude-sigma-substrate-paper-plan.myc.md                                      | keep        |                              |
 | dynamic topology  | [src/x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md](../src/x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md)                                                                                       | canonical        | src/x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md                                            | keep        |                              |

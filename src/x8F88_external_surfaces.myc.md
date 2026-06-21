@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    595     |
+| dynamic topology  |    596     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **695**   |
+| **Total**         |  **696**   |
 
 ## Runtime Cache Diagnostics
 
@@ -456,6 +456,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x5700_954555_claude_autonomy-p2-epoch-neutral-runtime-discovery-regist.myc.md](../src/x5700_954555_claude_autonomy-p2-epoch-neutral-runtime-discovery-regist.myc.md)                                                                                   | canonical        | src/x5700_954555_claude_autonomy-p2-epoch-neutral-runtime-discovery-regist.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x5700_954561_claude_p3-one-shot-join-live-authority-demand-single-exec.myc.md](../src/x5700_954561_claude_p3-one-shot-join-live-authority-demand-single-exec.myc.md)                                                                                   | canonical        | src/x5700_954561_claude_p3-one-shot-join-live-authority-demand-single-exec.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x5700_954712_claude_organism-inhabitable-keyless-contribution-visible.myc.md](../src/x5700_954712_claude_organism-inhabitable-keyless-contribution-visible.myc.md)                                                                                     | canonical        | src/x5700_954712_claude_organism-inhabitable-keyless-contribution-visible.myc.md                                           | keep        |                              |
+| dynamic topology  | [src/x5700_954724_claude_membrane-two-way-keyless-contribute-passage-post-p.myc.md](../src/x5700_954724_claude_membrane-two-way-keyless-contribute-passage-post-p.myc.md)                                                                                   | canonical        | src/x5700_954724_claude_membrane-two-way-keyless-contribute-passage-post-p.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md](../src/x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md)                                                                                                 | canonical        | src/x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md                                                 | keep        |                              |
 | dynamic topology  | [src/x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md](../src/x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md)                                                                                 | canonical        | src/x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md                                         | keep        |                              |
 | dynamic topology  | [src/x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md](../src/x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md)                                                                             | canonical        | src/x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md                                       | keep        |                              |

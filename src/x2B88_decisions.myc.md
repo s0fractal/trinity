@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  595  |
-| Signed Chords (content_sig)              |  173  |
-| ↳ registry-verified                      |  173  |
+| Total Chords                             |  596  |
+| Signed Chords (content_sig)              |  174  |
+| ↳ registry-verified                      |  174  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  58   |
-| Receipts                                 |  276  |
-| ↳ strong evidence                        |  276  |
+| Receipts                                 |  277  |
+| ↳ strong evidence                        |  277  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   6   |
@@ -392,6 +392,7 @@ _No open debts detected in the chord trail._
 | [x5700_954555_claude_autonomy-p2-epoch-neutral-runtime-discovery-regist.myc.md](./x5700_954555_claude_autonomy-p2-epoch-neutral-runtime-discovery-regist.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x5700_954561_claude_p3-one-shot-join-live-authority-demand-single-exec.myc.md](./x5700_954561_claude_p3-one-shot-join-live-authority-demand-single-exec.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x5700_954712_claude_organism-inhabitable-keyless-contribution-visible.myc.md](./x5700_954712_claude_organism-inhabitable-keyless-contribution-visible.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
+| [x5700_954724_claude_membrane-two-way-keyless-contribute-passage-post-p.myc.md](./x5700_954724_claude_membrane-two-way-keyless-contribute-passage-post-p.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md](./x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md)                                                                                                 | **RECEIPT**  | gemini-3.1-pro     |   0   |   0    |
 | [x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md](./x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md)                                                                                 | **RECEIPT**  | gemini-3.1-pro     |   0   |   0    |
 | [x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md](./x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md)                                                                             | **RECEIPT**  | claude             |   0   |   0    |
@@ -4601,6 +4602,21 @@ _No open debts detected in the chord trail._
   - `./t myc propose --text \"your thought\" --requires trinity`
   - `./t myc lifecycle`
   - `./t health   # healthy — install.sh no longer false-warns`
+
+### [x5700_954724_claude_membrane-two-way-keyless-contribute-passage-post-p.myc.md](./x5700_954724_claude_membrane-two-way-keyless-contribute-passage-post-p.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _POST /propose signs, witnesses, or germinates anything (it must only write
+    a dormant proposal)._
+  - _POST /propose writes to cwd instead of the resolver's --root._
+  - _The contribute UI claims trust/authority for a dormant proposal._
+  - _A non-POST /propose creates anything._
+  - _myc deno task check is not green._
+- **Suggested Commands**:
+  - `cd myc && deno task site:dev   # preview at http://localhost:8788`
+  - `cd myc && deno test --allow-read --allow-write --allow-env --allow-run src/x0100_myc_test.ts --filter propose`
+  - `cd myc && npx wrangler deploy --dry-run   # bundles ~57 KiB`
 
 ### [x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md](./x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md)
 

@@ -335,14 +335,29 @@ Deno.test("discovery — parseLifecycleFacts: malformed shape ⇒ ok:false; well
 
 // ── live integration ──────────────────────────────────────────────────────────
 
-Deno.test("discovery — INTEGRATION: the shipped registry resolves epoch-1 live", async () => {
-  const life = JSON.parse(
-    await new Deno.Command("./t", { args: ["myc", "lifecycle"] }).output().then(
-      (o) => new TextDecoder().decode(o.stdout),
-    ),
-  );
-  const f = parseLifecycleFacts(life);
-  const s = await selectRatifiedEpoch(REG, f, {}, E1.valid_from_height);
-  assertEquals(s.reason_code, "selected");
-  assertEquals(s.epoch?.ceiling_id, "epoch-1");
+let hasMyc = false;
+try {
+  hasMyc = (await Deno.stat("myc/deno.jsonc")).isFile;
+} catch { /* optional submodule absent in trinity-core CI */ }
+
+Deno.test({
+  name: "discovery — INTEGRATION: the shipped registry resolves epoch-1 live",
+  ignore: !hasMyc,
+  fn: async () => {
+    const out = await new Deno.Command("./t", {
+      args: ["myc", "lifecycle"],
+      stdout: "piped",
+      stderr: "piped",
+    }).output();
+    assertEquals(
+      out.success,
+      true,
+      new TextDecoder().decode(out.stderr) || "t myc lifecycle failed",
+    );
+    const life = JSON.parse(new TextDecoder().decode(out.stdout));
+    const f = parseLifecycleFacts(life);
+    const s = await selectRatifiedEpoch(REG, f, {}, E1.valid_from_height);
+    assertEquals(s.reason_code, "selected");
+    assertEquals(s.epoch?.ceiling_id, "epoch-1");
+  },
 });

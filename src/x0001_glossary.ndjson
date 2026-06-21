@@ -147,6 +147,8 @@
 {"00":"5","02":["ontology_coverage","ontology","покриття"],"04":"6/3","09":"harmony+build = ontology coverage scanner","11":"26 26 26 59 26 26 6C 26"}
 {"00":"5","02":["cognition_snapshot","cognition-snapshot","зліпок-когніції"],"04":"2/4","09":"mirror+foundation = capture cognitive state","11":"26 26 6C 26 59 26 26 26"}
 {"00":"5","02":["cognition_delta","cognition-delta","дельта-когніції"],"04":"2/6","09":"mirror+harmony = measure cognitive delta","11":"26 26 6C 26 26 26 59 26"}
+{"00":"07","01":"CognitionSnapshot","02":"type,schema,snapshot_id,comparable_key,classifier_version,scan_scope,global,repos","03":"written_to","04":"content-bound cognition observation from x2400; identical state+classifier+scope has identical snapshot_id; descriptive_only and never actuation authority"}
+{"00":"07","01":"CognitionDelta","02":"type,schema,comparable,actuation_eligible,reasons,from,to,phase_delta,level_delta","03":"","04":"x2600 comparison; phase/level deltas emitted only when comparable_key matches, otherwise fail-closed with no interpretation"}
 {"00":"5","02":["cognition_field","cognition-field","поле-когніції"],"04":"2/5","09":"mirror+action = evaluate cognitive field","11":"26 26 6C 26 26 59 26 26"}
 {"00":"5","02":["cognition_phase_report","cognition-phase-report","звіт-фаз-когніції"],"04":"2/C","09":"mirror+build-pair = report cognitive phases","11":"26 26 6C 59 26 26 26 26"}
 {"00":"5","02":["cognition_recommend","cognition-recommend","рекомендація"],"04":"5/2","09":"action+mirror = suggest recommendations","11":"26 26 59 26 26 6C 26 26"}

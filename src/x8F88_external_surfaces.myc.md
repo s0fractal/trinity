@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    588     |
+| dynamic topology  |    589     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **688**   |
+| **Total**         |  **689**   |
 
 ## Runtime Cache Diagnostics
 
@@ -696,6 +696,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x7700_954613_codex_schema-debt-adjudication-legacy-records-without-re.myc.md](../src/x7700_954613_codex_schema-debt-adjudication-legacy-records-without-re.myc.md)                                                                                     | canonical        | src/x7700_954613_codex_schema-debt-adjudication-legacy-records-without-re.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x7700_954614_claude_co-witness-schema-debt-closure-never-rewrite-bound.myc.md](../src/x7700_954614_claude_co-witness-schema-debt-closure-never-rewrite-bound.myc.md)                                                                                   | canonical        | src/x7700_954614_claude_co-witness-schema-debt-closure-never-rewrite-bound.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x7700_954626_codex_cognition-metrics-proof-standing-before-autonomous.myc.md](../src/x7700_954626_codex_cognition-metrics-proof-standing-before-autonomous.myc.md)                                                                                     | canonical        | src/x7700_954626_codex_cognition-metrics-proof-standing-before-autonomous.myc.md                                           | keep        |                              |
+| dynamic topology  | [src/x7700_954703_codex_content-bound-comparable-cognition-snapshots.myc.md](../src/x7700_954703_codex_content-bound-comparable-cognition-snapshots.myc.md)                                                                                                 | canonical        | src/x7700_954703_codex_content-bound-comparable-cognition-snapshots.myc.md                                                 | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](../src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | canonical        | src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](../src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | canonical        | src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md                                                     | keep        |                              |
 | dynamic topology  | [src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](../src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | canonical        | src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md                                                      | keep        |                              |

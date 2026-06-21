@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  588  |
-| Signed Chords (content_sig)              |  166  |
-| ↳ registry-verified                      |  166  |
+| Total Chords                             |  589  |
+| Signed Chords (content_sig)              |  167  |
+| ↳ registry-verified                      |  167  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  57   |
-| Receipts                                 |  271  |
-| ↳ strong evidence                        |  271  |
+| Receipts                                 |  272  |
+| ↳ strong evidence                        |  272  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   6   |
@@ -632,6 +632,7 @@ _No open debts detected in the chord trail._
 | [x7700_954613_codex_schema-debt-adjudication-legacy-records-without-re.myc.md](./x7700_954613_codex_schema-debt-adjudication-legacy-records-without-re.myc.md)                                                                                     | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_954614_claude_co-witness-schema-debt-closure-never-rewrite-bound.myc.md](./x7700_954614_claude_co-witness-schema-debt-closure-never-rewrite-bound.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_954626_codex_cognition-metrics-proof-standing-before-autonomous.myc.md](./x7700_954626_codex_cognition-metrics-proof-standing-before-autonomous.myc.md)                                                                                     | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_954703_codex_content-bound-comparable-cognition-snapshots.myc.md](./x7700_954703_codex_content-bound-comparable-cognition-snapshots.myc.md)                                                                                                 | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -7712,6 +7713,15 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `deno test --allow-all src/cognition_phase_report_test.ts src/scanner_phase_test.ts`
   - `./t cognition_phase_report --json | jq '.measurement_standing, .repos.omega.evidence.hallucination_risk, .repos.liquid.evidence.learning_ratio'`
+  - `./t check`
+
+### [x7700_954703_codex_content-bound-comparable-cognition-snapshots.myc.md](./x7700_954703_codex_content-bound-comparable-cognition-snapshots.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Suggested Commands**:
+  - `deno test --allow-all src/cognition_snapshot_delta_test.ts src/cognition_phase_report_test.ts src/scanner_phase_test.ts`
+  - `deno run -A src/x2400_cognition_snapshot.ts --json`
+  - `deno run -A src/x2600_cognition_delta.ts --from=<a.json> --to=<b.json> --json`
   - `./t check`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)

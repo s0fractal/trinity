@@ -173,6 +173,13 @@ Without compost, the system repeats mistakes or lies about its past.
 > absent, but consumers MUST inspect `evidence.defined`; zero without evidence
 > is not a measured zero. No scheduler/admission policy may consume these
 > metrics until a separately ratified actuation standing exists.
+>
+> **Longitudinal boundary.** `t cognition_snapshot` v0.2 binds aggregate state
+> to `snapshot_id` and binds schema + classifier + scan scope to
+> `comparable_key`. `t cognition_delta` emits phase/level differences only when
+> both keys match; taxonomy or scope changes are `NOT COMPARABLE`, never
+> narrated as progress/regression. Both surfaces carry
+> `actuation_eligible: false`.
 
 Initial metrics (spec):
 

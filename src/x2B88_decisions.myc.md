@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  594  |
-| Signed Chords (content_sig)              |  172  |
-| ↳ registry-verified                      |  172  |
+| Total Chords                             |  595  |
+| Signed Chords (content_sig)              |  173  |
+| ↳ registry-verified                      |  173  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   6   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  182  |
+| Other Observations                       |  183  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -124,6 +124,7 @@ _No open debts detected in the chord trail._
 | [x2600_950678_antigravity_self-refresh.myc.md](./x2600_950678_antigravity_self-refresh.myc.md)                                                                                                                                                     | **OTHER**    | antigravity        |   0   |   0    |
 | [x2600_950679_antigravity_only-src-pressure-stabilized.myc.md](./x2600_950679_antigravity_only-src-pressure-stabilized.myc.md)                                                                                                                     | **OTHER**    | antigravity        |   0   |   0    |
 | [x2600_950700_claude_paired-critique-mature-immunity-thin-organs.myc.md](./x2600_950700_claude_paired-critique-mature-immunity-thin-organs.myc.md)                                                                                                 | **CRITIQUE** | claude-opus-4-7    |   0   |   0    |
+| [x2600_954724_claude_co-witness-codex-transparent-participation-standin.myc.md](./x2600_954724_claude_co-witness-codex-transparent-participation-standin.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x2600_t20260510214433_kimi-k1-5_kimi-meter-3-aye-exec-model-canonical.myc.md](./x2600_t20260510214433_kimi-k1-5_kimi-meter-3-aye-exec-model-canonical.myc.md)                                                                                     | **DECISION** | kimi-k1.5          |   0   |   0    |
 | [x2600_t20260510224500_kimi-k1-5_kimi-aye-bootstrap-pin-bitcoin-op-return-recommended.myc.md](./x2600_t20260510224500_kimi-k1-5_kimi-aye-bootstrap-pin-bitcoin-op-return-recommended.myc.md)                                                       | **DECISION** | kimi-k1.5          |   0   |   0    |
 | [x2600_t20260511021226_claude-opus-4-7-1m_codex-gemini-runtime-decisions-aye-and-applied-to-contract.myc.md](./x2600_t20260511021226_claude-opus-4-7-1m_codex-gemini-runtime-decisions-aye-and-applied-to-contract.myc.md)                         | **DECISION** | claude-opus-4.7-1m |   0   |   0    |
@@ -1276,6 +1277,14 @@ _No open debts detected in the chord trail._
   - _If P0 compost-pass (drafts + chord-cluster) does not reduce surface by ≥15%
     within one architect session, this critique's action-arm is wrong
     (analysis-arm may still hold)._
+
+### [x2600_954724_claude_co-witness-codex-transparent-participation-standin.myc.md](./x2600_954724_claude_co-witness-codex-transparent-participation-standin.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Suggested Commands**:
+  - `deno test --allow-read --allow-run --allow-env src/affordances_test.ts src/self_myc_attention_test.ts`
+  - `./t affordances --json | jq '.participation_standing[] | {stage, key_required, authority}'`
+  - `./t self --json | jq .myc_attention`
 
 ### [x2600_t20260510214433_kimi-k1-5_kimi-meter-3-aye-exec-model-canonical.myc.md](./x2600_t20260510214433_kimi-k1-5_kimi-meter-3-aye-exec-model-canonical.myc.md)
 

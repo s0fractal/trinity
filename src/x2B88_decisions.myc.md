@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  597  |
-| Signed Chords (content_sig)              |  175  |
-| ↳ registry-verified                      |  175  |
+| Total Chords                             |  598  |
+| Signed Chords (content_sig)              |  176  |
+| ↳ registry-verified                      |  176  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  59   |
-| Receipts                                 |  277  |
-| ↳ strong evidence                        |  277  |
+| Receipts                                 |  278  |
+| ↳ strong evidence                        |  278  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   6   |
@@ -641,6 +641,7 @@ _No open debts detected in the chord trail._
 | [x7700_954705_claude_myc-publication-readiness-audit-clean-agpl-prepped.myc.md](./x7700_954705_claude_myc-publication-readiness-audit-clean-agpl-prepped.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_954710_codex_installer-idempotency-clone-fetch-preserve-local-s.myc.md](./x7700_954710_codex_installer-idempotency-clone-fetch-preserve-local-s.myc.md)                                                                                     | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_954719_codex_transparent-participation-standing-and-myc-attenti.myc.md](./x7700_954719_codex_transparent-participation-standing-and-myc-attenti.myc.md)                                                                                     | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_954728_claude_resonant-resolution-step1-deployed-local-attestati.myc.md](./x7700_954728_claude_resonant-resolution-step1-deployed-local-attestati.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -7826,6 +7827,24 @@ _No open debts detected in the chord trail._
   - `./t affordances --json | jq '{participation_standing, participation_invariants}'`
   - `./t self --json | jq '{myc_attention, attention}'`
   - `deno test --allow-read --allow-run --allow-env src/affordances_test.ts src/self_myc_attention_test.ts`
+
+### [x7700_954728_claude_resonant-resolution-step1-deployed-local-attestati.myc.md](./x7700_954728_claude_resonant-resolution-step1-deployed-local-attestati.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _A tampered/forged deployment passes verify-deployment (it must recompute
+    served bytes vs LOCAL, never trust the claim)._
+  - _/attestation is not served, or its digest is non-deterministic._
+  - _verify-deployment trusts the attestation digest without recomputing from
+    served bytes._
+  - _myc deno task check is not green._
+- **Suggested Commands**:
+  - `[]`
+  - `cd myc && deno task site:dev   # preview`
+  - `./t myc verify-deployment http://localhost:8788   # → VERIFIED`
+  - `./t myc verify-deployment https://myc.md   # after you deploy`
+- **Expected After Running**:
+  - _{}_
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

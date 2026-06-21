@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  589  |
-| Signed Chords (content_sig)              |  167  |
-| ↳ registry-verified                      |  167  |
+| Total Chords                             |  590  |
+| Signed Chords (content_sig)              |  168  |
+| ↳ registry-verified                      |  168  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  57   |
-| Receipts                                 |  272  |
-| ↳ strong evidence                        |  272  |
+| Receipts                                 |  273  |
+| ↳ strong evidence                        |  273  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   6   |
@@ -633,6 +633,7 @@ _No open debts detected in the chord trail._
 | [x7700_954614_claude_co-witness-schema-debt-closure-never-rewrite-bound.myc.md](./x7700_954614_claude_co-witness-schema-debt-closure-never-rewrite-bound.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_954626_codex_cognition-metrics-proof-standing-before-autonomous.myc.md](./x7700_954626_codex_cognition-metrics-proof-standing-before-autonomous.myc.md)                                                                                     | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_954703_codex_content-bound-comparable-cognition-snapshots.myc.md](./x7700_954703_codex_content-bound-comparable-cognition-snapshots.myc.md)                                                                                                 | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_954705_claude_myc-publication-readiness-audit-clean-agpl-prepped.myc.md](./x7700_954705_claude_myc-publication-readiness-audit-clean-agpl-prepped.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -7723,6 +7724,14 @@ _No open debts detected in the chord trail._
   - `deno run -A src/x2400_cognition_snapshot.ts --json`
   - `deno run -A src/x2600_cognition_delta.ts --from=<a.json> --to=<b.json> --json`
   - `./t check`
+
+### [x7700_954705_claude_myc-publication-readiness-audit-clean-agpl-prepped.myc.md](./x7700_954705_claude_myc-publication-readiness-audit-clean-agpl-prepped.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Suggested Commands**:
+  - `cd myc && deno task check`
+  - `cd myc && git log --oneline -1   # 1eccbd2, on main, NOT pushed`
+  - `git -C myc grep -nIE 'BEGIN .* PRIVATE|api[_-]?key|secret' || echo clean`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

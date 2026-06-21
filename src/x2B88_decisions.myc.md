@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  592  |
-| Signed Chords (content_sig)              |  170  |
-| ↳ registry-verified                      |  170  |
+| Total Chords                             |  593  |
+| Signed Chords (content_sig)              |  171  |
+| ↳ registry-verified                      |  171  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  58   |
-| Receipts                                 |  274  |
-| ↳ strong evidence                        |  274  |
+| Receipts                                 |  275  |
+| ↳ strong evidence                        |  275  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   6   |
@@ -390,6 +390,7 @@ _No open debts detected in the chord trail._
 | [x5700_954552_claude_autonomy-p1-pure-ceiling-lease-verifier-epoch-1-by.myc.md](./x5700_954552_claude_autonomy-p1-pure-ceiling-lease-verifier-epoch-1-by.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x5700_954555_claude_autonomy-p2-epoch-neutral-runtime-discovery-regist.myc.md](./x5700_954555_claude_autonomy-p2-epoch-neutral-runtime-discovery-regist.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x5700_954561_claude_p3-one-shot-join-live-authority-demand-single-exec.myc.md](./x5700_954561_claude_p3-one-shot-join-live-authority-demand-single-exec.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x5700_954712_claude_organism-inhabitable-keyless-contribution-visible.myc.md](./x5700_954712_claude_organism-inhabitable-keyless-contribution-visible.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md](./x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md)                                                                                                 | **RECEIPT**  | gemini-3.1-pro     |   0   |   0    |
 | [x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md](./x5700_t20260511024951_gemini-3-1-pro_spore-fuel-v1-exec-vs-static-model.myc.md)                                                                                 | **RECEIPT**  | gemini-3.1-pro     |   0   |   0    |
 | [x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md](./x5700_t20260514172534_claude_receipt-t-court-and-t-status-envelope-landed.myc.md)                                                                             | **RECEIPT**  | claude             |   0   |   0    |
@@ -4575,6 +4576,21 @@ _No open debts detected in the chord trail._
   - `deno test --allow-all src/autonomy_oneshot_test.ts`
   - `./t autonomy-oneshot`
   - `./t check`
+
+### [x5700_954712_claude_organism-inhabitable-keyless-contribution-visible.myc.md](./x5700_954712_claude_organism-inhabitable-keyless-contribution-visible.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _A newcomer who joins is never shown they can contribute (onboarding silent
+    on propose)._
+  - _t myc propose requires a registered key (it must stay keyless)._
+  - _Witnessing a contribution does NOT require a registered voice (admission
+    must stay gated)._
+  - _install.sh re-triggers a health dipole warn._
+- **Suggested Commands**:
+  - `./t myc propose --text \"your thought\" --requires trinity`
+  - `./t myc lifecycle`
+  - `./t health   # healthy — install.sh no longer false-warns`
 
 ### [x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md](./x5700_t20260511020735_gemini-3-1-pro_spore-v1-runtime-decisions.myc.md)
 

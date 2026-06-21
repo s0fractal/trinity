@@ -105,6 +105,13 @@ if (import.meta.main) {
 
   const allFiles = await scan(`${ROOT}/..`, "");
 
+  // Bootstrap infra (root shell scripts: installer, launcher) legitimately
+  // carries no hex_dipole — the dipole is a property of hex-coordinate organs,
+  // not installers. See the no_dipole infra policy. Existence is still checked.
+  const DIPOLE_EXEMPT = new Set(["install.sh"]);
+  const isExempt = (f: string) =>
+    DIPOLE_EXEMPT.has(f) || DIPOLE_EXEMPT.has(f.split("/").pop() ?? f);
+
   for (const f of allFiles) {
     const exists = await checkFile(`../${f}`);
     checks.push({
@@ -115,6 +122,7 @@ if (import.meta.main) {
   }
 
   for (const f of allFiles) {
+    if (isExempt(f)) continue;
     const hasDipole = await checkDipole(`../${f}`);
     checks.push({
       name: `dipole:${f}`,

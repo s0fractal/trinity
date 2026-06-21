@@ -125,12 +125,22 @@ cat <<EOF
 
 ✓ Joined. The organism lives at $DEST — local-first.
 
-  next:
+  read it:
     cd $DEST
     ./t self                # orient: substrate state + your standing
     ./t myc overview        # browse the content-addressed network
+
+  contribute a thought (no key needed):
+    ./t myc propose --text "your thought" --requires trinity
+                            # records a content-addressed, DORMANT proposal.
+                            # --requires = which organ it concerns
+                            #   (trinity | omega | liquid | spore)
+    ./t myc lifecycle       # watch how a contribution earns trust:
+                            #   proposed -> witnessed -> reviewed -> resonant
+
+  check it:
     ./t check               # the substrate's own health gate
 
-You now work by the mycelium's rules: content-addressed, chord-recorded,
-local-first. Reading is open; writing carries provenance.
+You're a participant, not a spectator. Reading is open; contributing is keyless
+and content-addressed; trust is earned through witnessing, not granted by a key.
 EOF

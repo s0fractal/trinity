@@ -2,7 +2,12 @@ import {
   assert,
   assertEquals,
 } from "https://deno.land/std@0.224.0/assert/mod.ts";
-import { firstJson, glossaryPositions, routeReport } from "./x6F00_check.ts";
+import {
+  auditGateResult,
+  firstJson,
+  glossaryPositions,
+  routeReport,
+} from "./x6F00_check.ts";
 
 Deno.test("firstJson - extracts the first JSON object after a dispatch header line", () => {
   // dispatch prints a `# verb → pos` header before the JSON payload
@@ -16,6 +21,33 @@ Deno.test("firstJson - handles arrays, leading noise, and absent JSON", () => {
   assertEquals(firstJson(""), null);
   // malformed JSON after the marker → null, not a throw
   assertEquals(firstJson("# x\n{ not valid"), null);
+});
+
+Deno.test("audit gate mirrors CI coordinate-uniqueness and registry invariants", () => {
+  const healthy = {
+    summary: {
+      match: 1,
+      mismatch: 0,
+      malformed: 0,
+      import_warnings_count: 0,
+      orphans_count: 0,
+      no_dipole_organ_gap: 0,
+      registry_warnings_count: 0,
+    },
+    coordinate_uniqueness: { ok: true },
+  };
+  assertEquals(auditGateResult(healthy).ok, true);
+  assertEquals(
+    auditGateResult({ ...healthy, coordinate_uniqueness: { ok: false } }).ok,
+    false,
+  );
+  assertEquals(
+    auditGateResult({
+      ...healthy,
+      summary: { ...healthy.summary, registry_warnings_count: 1 },
+    }).ok,
+    false,
+  );
 });
 
 Deno.test("glossaryPositions - reads kind:5 field 04 and kind:6 field 03, dedups, skips junk", () => {

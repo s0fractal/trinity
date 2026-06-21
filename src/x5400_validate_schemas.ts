@@ -273,7 +273,7 @@ async function validateChords(
 }
 
 export async function loadSchemaDebtAdjudications(
-  path = `${ROOT}src/x2F32_schema_debt_adjudications.myc.json`,
+  path = `${ROOT}src/x2F33_schema_debt_adjudications.myc.json`,
 ): Promise<SchemaDebtAdjudication[]> {
   const registry = JSON.parse(await Deno.readTextFile(path)) as {
     type?: string;

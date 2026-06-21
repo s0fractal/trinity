@@ -1,5 +1,6 @@
 {
   "type": "trinity.schema-debt-adjudications.v0.1",
+  "position": "2/F33",
   "policy": "append-only adjudication; original historical bytes remain unchanged",
   "entries": [
     {

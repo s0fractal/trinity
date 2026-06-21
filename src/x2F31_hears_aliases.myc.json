@@ -73,6 +73,12 @@
       "to": "contracts/RECEIPT_ENVELOPE.v1.0.md",
       "relation": "superseded_by",
       "evidence": "NOT a rename: git 38d370a ADDED RECEIPT_ENVELOPE.v1.0.md fresh (status A), no v0.1.md file was ever tracked (denies byte identity). Same envelope: the v1.0 doc carries wire `schema: trinity.receipt-envelope.v0.1` (line 40), so the draft name and the promoted doc are the same wire envelope (preserves reachability). All 9 citing chords are pre-promotion (t20260514-15, before 38d370a on 05-23), referencing the anticipated v0.1 draft name. Claude adjudication x7700_954582 follow-on."
+    },
+    {
+      "from": "src/x2F32_schema_debt_adjudications.myc.json",
+      "to": "src/x2F33_schema_debt_adjudications.myc.json",
+      "relation": "moved_to",
+      "evidence": "coordinate-uniqueness repair after CI exposed collision with the canonical x2F32_fqdn_witness organ; git history preserves byte identity"
     }
   ]
 }

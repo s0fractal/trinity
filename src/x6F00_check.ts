@@ -116,21 +116,33 @@ async function gateFmt(fix: boolean): Promise<GateResult> {
   };
 }
 
-async function gateAudit(): Promise<GateResult> {
-  const j = firstJson((await t(["audit", "--json"])).out) as {
-    summary?: Record<string, number>;
-  } | null;
+interface AuditReceiptShape {
+  summary?: Record<string, number>;
+  coordinate_uniqueness?: { ok?: boolean };
+}
+
+export function auditGateResult(j: AuditReceiptShape | null): GateResult {
   const s = j?.summary;
   if (!s) return { gate: "audit", ok: false, detail: "no audit output" };
   const ok = s.mismatch === 0 && s.malformed === 0 &&
     s.import_warnings_count === 0 && s.orphans_count === 0 &&
-    s.no_dipole_organ_gap === 0;
+    s.no_dipole_organ_gap === 0 && s.registry_warnings_count === 0 &&
+    j?.coordinate_uniqueness?.ok === true;
   return {
     gate: "audit",
     ok,
     detail:
-      `match ${s.match}, mismatch ${s.mismatch}, import_warnings ${s.import_warnings_count}, orphans ${s.orphans_count}, dipole_gap ${s.no_dipole_organ_gap}`,
+      `match ${s.match}, mismatch ${s.mismatch}, import_warnings ${s.import_warnings_count}, orphans ${s.orphans_count}, dipole_gap ${s.no_dipole_organ_gap}, registry_warnings ${s.registry_warnings_count}, coordinates_unique ${
+        j?.coordinate_uniqueness?.ok === true
+      }`,
   };
+}
+
+async function gateAudit(): Promise<GateResult> {
+  const j = firstJson((await t(["audit", "--json"])).out) as
+    | AuditReceiptShape
+    | null;
+  return auditGateResult(j);
 }
 
 async function gateReconcile(): Promise<GateResult> {

@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  602  |
-| Signed Chords (content_sig)              |  179  |
-| ↳ registry-verified                      |  179  |
+| Total Chords                             |  603  |
+| Signed Chords (content_sig)              |  180  |
+| ↳ registry-verified                      |  180  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  59   |
-| Receipts                                 |  280  |
-| ↳ strong evidence                        |  280  |
+| Receipts                                 |  281  |
+| ↳ strong evidence                        |  281  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   6   |
@@ -646,6 +646,7 @@ _No open debts detected in the chord trail._
 | [x7700_954710_codex_installer-idempotency-clone-fetch-preserve-local-s.myc.md](./x7700_954710_codex_installer-idempotency-clone-fetch-preserve-local-s.myc.md)                                                                                     | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_954719_codex_transparent-participation-standing-and-myc-attenti.myc.md](./x7700_954719_codex_transparent-participation-standing-and-myc-attenti.myc.md)                                                                                     | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_954728_claude_resonant-resolution-step1-deployed-local-attestati.myc.md](./x7700_954728_claude_resonant-resolution-step1-deployed-local-attestati.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x7700_954737_claude_resonant-resolution-capstone-myc-md-serves-the-net.myc.md](./x7700_954737_claude_resonant-resolution-capstone-myc-md-serves-the-net.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -7895,6 +7896,20 @@ _No open debts detected in the chord trail._
   - `./t myc verify-deployment https://myc.md   # after you deploy`
 - **Expected After Running**:
   - _{}_
+
+### [x7700_954737_claude_resonant-resolution-capstone-myc-md-serves-the-net.myc.md](./x7700_954737_claude_resonant-resolution-capstone-myc-md-serves-the-net.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _myc.md /snapshot.json is not byte-identical to the committed snapshot
+    (verify-deployment fails)._
+  - _A served snapshot record fails canonical verification on import._
+  - _The served snapshot is not covered by /attestation._
+  - _myc deno task check is not green._
+- **Suggested Commands**:
+  - `cd myc && deno task site:deploy   # architect: regenerates snapshot + deploys`
+  - `./t myc import-snapshot https://myc.md/snapshot.json --write   # anyone, after deploy`
+  - `./t myc verify-deployment https://myc.md   # /snapshot.json is in the attested assets`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

@@ -32,6 +32,48 @@ export interface RepoMetrics {
   hallucination_risk: number;
 }
 
+export interface MetricEvidence {
+  denominator: number;
+  defined: boolean;
+  bounded_0_1: boolean;
+}
+
+export type MetricsEvidence = Record<keyof RepoMetrics, MetricEvidence>;
+
+export function calculateMetricEvidence(s: RepoStats): MetricsEvidence {
+  const total = s.total;
+  const novelty = s["raw-fantasy"] + s.hypothesis + s.proposal;
+  const grounded = s.receipt + s.formula + s.crystal;
+  const evidence = (denominator: number, bounded_0_1: boolean) => ({
+    denominator,
+    defined: denominator > 0,
+    bounded_0_1,
+  });
+  return {
+    crystal_ratio: evidence(total, true),
+    grounding_ratio: evidence(total, true),
+    learning_ratio: evidence(s.receipt, false),
+    novelty_ratio: evidence(total, true),
+    compost_ratio: evidence(total, true),
+    rigidity_index: evidence(novelty, false),
+    hallucination_risk: evidence(grounded, false),
+  };
+}
+
+export const MEASUREMENT_STANDING = {
+  standing: "descriptive_only",
+  actuation_eligible: false,
+  scanned_extensions: [".md"],
+  excludes_entrypoints: true,
+  classifier: "structural_l_ladder_v1",
+  warnings: [
+    "metrics are descriptors, never fitness targets",
+    "undefined zero-denominator ratios retain numeric 0 for compatibility; inspect evidence.defined",
+    "learning_ratio, rigidity_index, and hallucination_risk are unbounded",
+    "cross-repository comparison is invalid unless markdown coverage is comparable",
+  ],
+} as const;
+
 export function calculateMetrics(s: RepoStats): RepoMetrics {
   const total = s.total;
   const raw = s["raw-fantasy"];
@@ -127,10 +169,13 @@ async function main() {
   }
 
   const globalMetrics = calculateMetrics(globalStats);
+  const globalEvidence = calculateMetricEvidence(globalStats);
   const repoMetrics: Record<string, RepoMetrics> = {};
+  const repoEvidence: Record<string, MetricsEvidence> = {};
   const repoArchetypes: Record<string, string> = {};
   for (const repo of REPOS) {
     repoMetrics[repo] = calculateMetrics(repoStats[repo]);
+    repoEvidence[repo] = calculateMetricEvidence(repoStats[repo]);
     repoArchetypes[repo] = determineArchetype(repoStats[repo]);
   }
 
@@ -140,20 +185,28 @@ async function main() {
       schema: "trinity.cognition-phase-report.v0.1",
       position: "2/C",
       timestamp: new Date().toISOString(),
+      measurement_standing: MEASUREMENT_STANDING,
       repos: REPOS.reduce((acc, repo) => {
         acc[repo] = {
           stats: repoStats[repo],
           metrics: repoMetrics[repo],
+          evidence: repoEvidence[repo],
           archetype: repoArchetypes[repo],
         };
         return acc;
       }, {} as Record<
         string,
-        { stats: RepoStats; metrics: RepoMetrics; archetype: string }
+        {
+          stats: RepoStats;
+          metrics: RepoMetrics;
+          evidence: MetricsEvidence;
+          archetype: string;
+        }
       >),
       global: {
         stats: globalStats,
         metrics: globalMetrics,
+        evidence: globalEvidence,
       },
     };
     console.log(JSON.stringify(output, null, 2));
@@ -203,6 +256,9 @@ async function main() {
   };
 
   console.log("Thermodynamic Ratios & Diagnostics (x2C10 Spec):");
+  console.log(
+    "  standing: descriptive_only; actuation_eligible=false; scope=.md only",
+  );
   console.log(
     `  - crystal_ratio:      ${
       fmtRatio(globalMetrics.crystal_ratio).padEnd(6)

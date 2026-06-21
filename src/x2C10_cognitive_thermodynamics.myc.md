@@ -165,6 +165,14 @@ Without compost, the system repeats mistakes or lies about its past.
 >    substrates. The other six ratios are live and meaningful. Metrics are
 >    descriptors, never fitness targets (see
 >    [[project_coherence_decreases_with_growth]]).
+>
+> **Machine boundary.** JSON output carries `measurement_standing` with
+> `standing: descriptive_only`, `actuation_eligible: false`, and the `.md` scan
+> scope. Every ratio also carries denominator evidence (`defined` and
+> `bounded_0_1`). Numeric zero remains backward-compatible when a denominator is
+> absent, but consumers MUST inspect `evidence.defined`; zero without evidence
+> is not a measured zero. No scheduler/admission policy may consume these
+> metrics until a separately ratified actuation standing exists.
 
 Initial metrics (spec):
 

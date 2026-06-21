@@ -9,20 +9,20 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  605  |
-| Signed Chords (content_sig)              |  182  |
-| ↳ registry-verified                      |  182  |
+| Total Chords                             |  607  |
+| Signed Chords (content_sig)              |  184  |
+| ↳ registry-verified                      |  184  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  59   |
-| Receipts                                 |  283  |
-| ↳ strong evidence                        |  283  |
+| Receipts                                 |  284  |
+| ↳ strong evidence                        |  284  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   6   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  185  |
+| Other Observations                       |  186  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -351,6 +351,7 @@ _No open debts detected in the chord trail._
 | [x5300_954212_claude_efferent-half-opens-dormant-propose-into-the-membr.myc.md](./x5300_954212_claude_efferent-half-opens-dormant-propose-into-the-membr.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x5300_954396_claude_the-membrane-governs-its-own-constitution-first-mo.myc.md](./x5300_954396_claude_the-membrane-governs-its-own-constitution-first-mo.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x5300_954398_claude_goal-loop-one-affordances-shipped-forward-trigger.myc.md](./x5300_954398_claude_goal-loop-one-affordances-shipped-forward-trigger.myc.md)                                                                                     | **OTHER**    | claude             |   0   |   0    |
+| [x5300_954749_claude_ratify-bi-principal-quorum-and-honest-apply-loop-r.myc.md](./x5300_954749_claude_ratify-bi-principal-quorum-and-honest-apply-loop-r.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x5300_t20260509161725_claude-opus-4-7_claude-liquid-as-friston-substrate.myc.md](./x5300_t20260509161725_claude-opus-4-7_claude-liquid-as-friston-substrate.myc.md)                                                                               | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md](./x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md) | **OTHER**    | claude-opus-4-7-1m |   0   |   0    |
 | [x5600_t20260509091900_claude-opus-4-7_claude-action-canon-vectors-pass.myc.md](./x5600_t20260509091900_claude-opus-4-7_claude-action-canon-vectors-pass.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
@@ -649,6 +650,7 @@ _No open debts detected in the chord trail._
 | [x7700_954737_claude_resonant-resolution-capstone-myc-md-serves-the-net.myc.md](./x7700_954737_claude_resonant-resolution-capstone-myc-md-serves-the-net.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_954742_claude_ecosystem-re-analysis-honest-reckoning-omega-readm.myc.md](./x7700_954742_claude_ecosystem-re-analysis-honest-reckoning-omega-readm.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_954746_claude_codex-proof-bearing-handoff-verified-complete-mach.myc.md](./x7700_954746_claude_codex-proof-bearing-handoff-verified-complete-mach.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x7700_954751_claude_bi-principal-constitution-ratified-by-the-quorum-i.myc.md](./x7700_954751_claude_bi-principal-constitution-ratified-by-the-quorum-i.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -4041,6 +4043,13 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `t affordances`
   - `t reconcile`
+
+### [x5300_954749_claude_ratify-bi-principal-quorum-and-honest-apply-loop-r.myc.md](./x5300_954749_claude_ratify-bi-principal-quorum-and-honest-apply-loop-r.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Suggested Commands**:
+  - `./t myc lifecycle --json   # h.534023858af1 stays evidence_verified until a human co-signs`
+  - `cd myc && deno test --allow-all src/x3F00_lifecycle_test.ts   # the finality gate, proven`
 
 ### [x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md](./x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md)
 
@@ -7938,6 +7947,14 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `cd myc && deno test --allow-all src/x3F00_lifecycle_test.ts src/x5810_resolve_proposal_test.ts`
   - `./t myc lifecycle --json   # states: proposed/resolution_claimed/conflicted/evidence_verified`
+
+### [x7700_954751_claude_bi-principal-constitution-ratified-by-the-quorum-i.myc.md](./x7700_954751_claude_bi-principal-constitution-ratified-by-the-quorum-i.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Suggested Commands**:
+  - `./t myc lifecycle --json   # h.534023858af1 → implemented, principals s0fractal + claude`
+- **Expected After Running**:
+  - _{}_
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

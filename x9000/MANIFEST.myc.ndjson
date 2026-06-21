@@ -39,7 +39,7 @@
 {"path":"public/functions/h.7efa1b6e7564.myc-quarantine-policy.function.myc.md","size":1047,"hash":"sha256:7253535cf74c9148ceb5a2ed18fc759b77f0e9a43e88c669eaa73feea401c48c"}
 {"path":"public/functions/h.849874aa8a18.myc-fqdn-naming-policy.function.myc.md","size":1015,"hash":"sha256:2b2fb670b3dc1056e85b2e213b0fc90a938da0658066753c94c6ee6d2d20d8f3"}
 {"path":"public/graph.ndjson","size":13672,"hash":"sha256:6f179999c555c6159bb67f5c6b4b3c58c7660d9f52f507d13a92c9c8302d7f37"}
-{"path":"public/index.ndjson","size":15935,"hash":"sha256:6711f0cf41b3f70843f0eeb563b08d26b12f3677812e5b9024a68ad5a939ead3"}
+{"path":"public/index.ndjson","size":16819,"hash":"sha256:a8c5f101f774b99bcb61eb2cea0b4cb32f423860f944c1e1916e16eb1236315a"}
 {"path":"public/objects/h/2a10699544f3/h.2a10699544f3.projection-descriptor.claude.raw.myc.md","size":1215,"hash":"sha256:34fd282a674cfe926d8213b2ecef6bfdca928cb90bf2c18b3ddb6a066320391e"}
 {"path":"public/objects/h/2a10699544f3/intent.task.claude.h.2a10699544f3.myc.md","size":1563,"hash":"sha256:b09cf5616dcfa09595b9c55d501d418598fc3afadd5c8a73addc36bb0c1079c2"}
 {"path":"public/objects/h/2a10699544f3/naming-proof.claude.h.2a10699544f3.myc.md","size":1801,"hash":"sha256:4678272a8d669281db7f2707b1866e302ea15e1f69026167df9ed370524f93e2"}
@@ -57,6 +57,7 @@
 {"path":"public/objects/h/f1b9f8142d5f/task.s0fractal.h.f1b9f8142d5f.myc.md","size":2071,"hash":"sha256:c6271b1ce251f19eab3c5f20822c1d19d1ba57f60c9956affbad656e9195140e"}
 {"path":"public/proposals/h.1bd456e1f3be.proposal.myc.md","size":1592,"hash":"sha256:f5738c1b2e798a486e040922f2b5b4a3dbb30cfe2eda17b38ffb4f528e7638ff"}
 {"path":"public/proposals/h.31b0013dc855.proposal.myc.md","size":1458,"hash":"sha256:82cb8ed6f90f834a83df0ade2cc7d9601b2f13043ddde909840b32ad14459425"}
+{"path":"public/proposals/h.534023858af1.proposal.myc.md","size":2932,"hash":"sha256:cc9a02a1d00844248e42a0b09bd0d3d7710d988817a211bde7cec0854e9f2e48"}
 {"path":"public/proposals/h.84f9442519c6.proposal.myc.md","size":1928,"hash":"sha256:9f81bc3ea8028b0a01510d821ae745aa1ecc4c23a54359b6c0940bea90d599e7"}
 {"path":"public/proposals/h.9068b4888a6f.proposal.myc.md","size":1254,"hash":"sha256:bff3d6320907055abbac05b9beeef0b90a0950e256da0ee6660d0919136fc7ca"}
 {"path":"public/proposals/h.d2f13b52b10c.proposal.myc.md","size":2181,"hash":"sha256:34d123aa07c0552c67c4c7a38a3f98585cbf1f682d8706644f43fbab4ccc33f3"}
@@ -68,8 +69,11 @@
 {"path":"public/resolutions/h.3a00021ab1ef.resolution.myc.md","size":1722,"hash":"sha256:109a30037909e9d315b0f798aa9c21a7265bf5fcc15d33adbea82d280ec5a91f"}
 {"path":"public/resolutions/h.6b798bdee8c3.resolution.myc.md","size":1730,"hash":"sha256:d0caf35f2289980d3bb3829f8cd44165079fc01a7bb20d3a77c8d1ff6e164ae8"}
 {"path":"public/resolutions/h.7d59fec442c6.resolution.myc.md","size":1713,"hash":"sha256:9be081637fcd05cfba997e54a3fb58b965592743e62c7ca9f15829a6adc7d717"}
+{"path":"public/resolutions/h.88a5cd4b0845.resolution.myc.md","size":1739,"hash":"sha256:658da2f13c27766b43044402fcd3fe3f14219d2f5d121ad38cae07f8aa5f0740"}
 {"path":"public/resolutions/h.bc02df4d8069.resolution.myc.md","size":1877,"hash":"sha256:d62c6d9f1d641271167d411ef7713730a8ed8b179d77cbf54e0faa0120f12780"}
+{"path":"public/resolutions/h.ecd63b74a7b5.resolution.myc.md","size":1807,"hash":"sha256:4a5f15490f80dc53bb62415af9cccd24a8c65c9958e3e1c232f9a93c2ecddcf1"}
 {"path":"public/resolutions/h.fc994223a644.resolution.myc.md","size":1897,"hash":"sha256:4f42c31c230c4264eaf4fe97c28cf1f75561f550074808bd40122f766210a556"}
+{"path":"public/resolutions/h.fd048ff9c8a6.resolution.myc.md","size":1820,"hash":"sha256:12d877ffd52fa95ab8dba56f568aea5a0ff2594f41485c89c4b0dcf78809e7f2"}
 {"path":"public/temporal/codex-x2d00-954422.envelope.json","size":282,"hash":"sha256:79dd965fbfcd43776a9f760185b24e09fdcd3cf2a69065ac499f1944d1cd5831"}
 {"path":"public/temporal/codex-x2d00-954422.envelope.json.ots","size":2843,"hash":"sha256:023539fa034aac9204978877e7c6cf14fdae46410e283205a7975f359967a984"}
 {"path":"public/temporal/codex-x2d00-954422.signature.json","size":460,"hash":"sha256:93d262997458cfb247d50469a09a0a86e6e1b68a83663da8843414bc88ab6945"}

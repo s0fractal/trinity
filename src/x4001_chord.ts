@@ -271,8 +271,10 @@ stance: ${stance}
 chord:
   primary: "${primary}"
   secondary: []
+addressed_to: []
 hears: []
 references: []
+suggested_commands: []
 ---
 
 # ${topicRaw}
@@ -332,6 +334,7 @@ stance: ${stance}
 chord:
   primary: "${primary}"
   secondary: []
+addressed_to: []
 ${closesBlock}${satisfiesBlock}hears: []
 references: []
 suggested_commands: []

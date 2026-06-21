@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  604  |
-| Signed Chords (content_sig)              |  181  |
-| ↳ registry-verified                      |  181  |
+| Total Chords                             |  605  |
+| Signed Chords (content_sig)              |  182  |
+| ↳ registry-verified                      |  182  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  59   |
-| Receipts                                 |  282  |
-| ↳ strong evidence                        |  282  |
+| Receipts                                 |  283  |
+| ↳ strong evidence                        |  283  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   6   |
@@ -648,6 +648,7 @@ _No open debts detected in the chord trail._
 | [x7700_954728_claude_resonant-resolution-step1-deployed-local-attestati.myc.md](./x7700_954728_claude_resonant-resolution-step1-deployed-local-attestati.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_954737_claude_resonant-resolution-capstone-myc-md-serves-the-net.myc.md](./x7700_954737_claude_resonant-resolution-capstone-myc-md-serves-the-net.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_954742_claude_ecosystem-re-analysis-honest-reckoning-omega-readm.myc.md](./x7700_954742_claude_ecosystem-re-analysis-honest-reckoning-omega-readm.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x7700_954746_claude_codex-proof-bearing-handoff-verified-complete-mach.myc.md](./x7700_954746_claude_codex-proof-bearing-handoff-verified-complete-mach.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -7924,6 +7925,19 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `cd myc && deno test --allow-all src/consensus_loop_test.ts   # loop closes + gap named`
   - `git -C omega log --oneline -1 honesty/readme-status   # the README honesty fix, on a branch`
+
+### [x7700_954746_claude_codex-proof-bearing-handoff-verified-complete-mach.myc.md](./x7700_954746_claude_codex-proof-bearing-handoff-verified-complete-mach.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _A proposal reaches `final` for a trinity-requires backend without a quorum
+    of authenticated principals._
+  - _The lifecycle projects a terminal state from file-iteration order rather
+    than grouped-by-commitment self-verified resolutions._
+  - _x3F00/x5810 finality tests do not pass._
+- **Suggested Commands**:
+  - `cd myc && deno test --allow-all src/x3F00_lifecycle_test.ts src/x5810_resolve_proposal_test.ts`
+  - `./t myc lifecycle --json   # states: proposed/resolution_claimed/conflicted/evidence_verified`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

@@ -541,6 +541,43 @@ Deno.test("searchContent - kind filter + truncation are honest", async () => {
   }
 });
 
+Deno.test("searchContent - multi-word query matches by term overlap, not exact phrase", async () => {
+  const { roots, cleanup } = await fixture();
+  try {
+    const index = await buildIndex(roots);
+    // The terms appear APART — never as the literal phrase. The old indexOf(query)
+    // found nothing; term-overlap must find AND rank it. (x5300_954749 dogfood:
+    // `search "voice key custody quorum"` → 0 despite the words being right there.)
+    const read = (p: string) =>
+      Promise.resolve(
+        p.includes("only_here")
+          ? "rotating a voice signing key needs a quorum" // 3 of 4 terms, apart
+          : p.includes("conflict")
+          ? "a key, somewhere" // only 1 term → below the ≥2 floor
+          : "unrelated prose",
+      );
+    const r = await searchContent(index, "voice key custody quorum", {
+      read,
+      limit: 10,
+    });
+    const names = r.matches.map((m) => m.name);
+    assert(
+      names.includes("only_here.ts"),
+      "multi-term doc found though the phrase never appears",
+    );
+    // a doc with only one of the terms ("key") is below the ≥2 floor → excluded
+    assert(
+      !names.some((n) => n.startsWith("conflict")),
+      "single-term noise excluded by the floor",
+    );
+    const hit = r.matches.find((m) => m.name === "only_here.ts")!;
+    assert((hit.hits ?? 0) >= 2, "relevance score reflects term overlap");
+    assert(hit.snippet !== null, "snippet anchors on a matched term");
+  } finally {
+    await cleanup();
+  }
+});
+
 Deno.test("parseChordEdges - hears/closes stem-normalized, references kept raw", () => {
   const c = [
     "---",

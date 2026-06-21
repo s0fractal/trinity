@@ -73,6 +73,43 @@ const STOPWORDS = new Set([
   "for",
   "on",
   "in",
+  // function / question / auxiliary words — they carry no subject signal, so a
+  // how-to question reaches search as its substance ("voice keys rotate"), not the
+  // whole sentence (which floods the term-overlap rank with common words).
+  "who",
+  "whom",
+  "how",
+  "can",
+  "cant",
+  "cannot",
+  "could",
+  "may",
+  "might",
+  "should",
+  "would",
+  "will",
+  "i",
+  "you",
+  "we",
+  "us",
+  "one",
+  "or",
+  "them",
+  "they",
+  "it",
+  "its",
+  "to",
+  "my",
+  "your",
+  "our",
+  "get",
+  "gets",
+  "allowed",
+  "be",
+  "been",
+  "with",
+  "and",
+  "am",
   "що",
   "це",
   "є",
@@ -87,6 +124,22 @@ const STOPWORDS = new Set([
   "у",
   "в",
   "на",
+  "хто",
+  "як",
+  "можу",
+  "може",
+  "можна",
+  "я",
+  "ти",
+  "ми",
+  "мене",
+  "або",
+  "їх",
+  "до",
+  "з",
+  "із",
+  "чи",
+  "право",
 ]);
 
 const has = (q: string, ...words: string[]) =>
@@ -98,6 +151,44 @@ const has = (q: string, ...words: string[]) =>
 export function routeQuestion(raw: string): Route {
   const q = raw.trim().toLowerCase();
   if (!q) return { intent: "help", cmd: [], why: "what you can ask" };
+
+  // 0. how-to / capability / permission questions ("who can X?", "how do I X?",
+  //    "can I X?") are about a SUBJECT, not a meta-lens — so a bare "who" or
+  //    "change" must not hijack them into the voices roster or the recent feed.
+  //    Resolve a coordinate or search the subject so a real answer surfaces.
+  //    (Dogfood x5300_954749: "who can change voice keys" was swallowed by the
+  //    recent-activity matcher because it contains "chang".)
+  const howTo =
+    /^\s*(who|whom)\s+(can|could|may|should|is\s+allowed|gets?\s+to)\b/u
+      .test(q) ||
+    /^\s*how\s+(do|can|does|would|should|might)\s+(i|you|we|one|someone)\b/u
+      .test(q) ||
+    /^\s*how\s+to\b/u.test(q) ||
+    /^\s*(can|may|could)\s+(i|we|you|one)\b/u.test(q) ||
+    /(хто\s+(може|має\s+право)|як\s+(мені|я\s+можу|зробити|можна))/u.test(q);
+  if (howTo) {
+    const subj = q
+      .replace(/[?!.]+/g, " ")
+      .split(/\s+/)
+      .filter((w) => w && !STOPWORDS.has(w))
+      .join(" ")
+      .trim();
+    const c = subj.match(/x[0-9a-f]{2,4}\w*/i)?.[0];
+    if (c) {
+      return {
+        intent: "show",
+        cmd: ["resolve-fqdn", c],
+        why: `resolve "${c}"`,
+      };
+    }
+    if (subj) {
+      return {
+        intent: "search",
+        cmd: ["resolve-fqdn", "search", subj],
+        why: `how-to → search "${subj}"`,
+      };
+    }
+  }
 
   // 1. health / state
   if (

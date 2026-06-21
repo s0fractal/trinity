@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    607     |
+| dynamic topology  |    608     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **707**   |
+| **Total**         |  **708**   |
 
 ## Runtime Cache Diagnostics
 
@@ -499,6 +499,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x6300_954267_codex_accord-p2-key-event-identity-not-self-asserted-tim.myc.md](../src/x6300_954267_codex_accord-p2-key-event-identity-not-self-asserted-tim.myc.md)                                                                                     | canonical        | src/x6300_954267_codex_accord-p2-key-event-identity-not-self-asserted-tim.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x6300_954375_codex_independent-verification-p1-derived-from-mutation.myc.md](../src/x6300_954375_codex_independent-verification-p1-derived-from-mutation.myc.md)                                                                                       | canonical        | src/x6300_954375_codex_independent-verification-p1-derived-from-mutation.myc.md                                            | keep        |                              |
 | dynamic topology  | [src/x6300_954404_claude_build-antigravity-semantic-humus-active-vs-archive.myc.md](../src/x6300_954404_claude_build-antigravity-semantic-humus-active-vs-archive.myc.md)                                                                                   | canonical        | src/x6300_954404_claude_build-antigravity-semantic-humus-active-vs-archive.myc.md                                          | keep        |                              |
+| dynamic topology  | [src/x6300_954755_claude_ask-answers-by-concept-dogfood-fixes-router-hijack.myc.md](../src/x6300_954755_claude_ask-answers-by-concept-dogfood-fixes-router-hijack.myc.md)                                                                                   | canonical        | src/x6300_954755_claude_ask-answers-by-concept-dogfood-fixes-router-hijack.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x6300_t20260509103147_claude-opus-4-7_claude-agents-md-bootstrap-proposal.myc.md](../src/x6300_t20260509103147_claude-opus-4-7_claude-agents-md-bootstrap-proposal.myc.md)                                                                             | canonical        | src/x6300_t20260509103147_claude-opus-4-7_claude-agents-md-bootstrap-proposal.myc.md                                       | keep        |                              |
 | dynamic topology  | [src/x6300_t20260509105431_claude-opus-4-7_claude-amendment-agents-md-use-t-cli.myc.md](../src/x6300_t20260509105431_claude-opus-4-7_claude-amendment-agents-md-use-t-cli.myc.md)                                                                           | canonical        | src/x6300_t20260509105431_claude-opus-4-7_claude-amendment-agents-md-use-t-cli.myc.md                                      | keep        |                              |
 | dynamic topology  | [src/x6300_t20260510224257_claude-opus-4-7-1m_claude-vector-fractal-substrate-architecture.myc.md](../src/x6300_t20260510224257_claude-opus-4-7-1m_claude-vector-fractal-substrate-architecture.myc.md)                                                     | canonical        | src/x6300_t20260510224257_claude-opus-4-7-1m_claude-vector-fractal-substrate-architecture.myc.md                           | keep        |                              |

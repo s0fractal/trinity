@@ -47,6 +47,32 @@ Deno.test("routeQuestion - priority: 'network' reads as overview, not a search",
   assertEquals(routeQuestion("what is the network").intent, "overview");
 });
 
+Deno.test("routeQuestion - how-to/capability questions route to the subject, not a meta-lens", () => {
+  // "who can change voice keys" must NOT be hijacked by the recent matcher (it
+  // contains "chang") nor the voices matcher (it contains "who"/"voice") — it is a
+  // capability question about a subject. (Dogfood: x5300_954749 bi-principal rule.)
+  const r = routeQuestion("who can change voice keys or rotate them?");
+  assertEquals(r.intent, "search");
+  assertEquals(r.cmd[0], "resolve-fqdn");
+  assertEquals(r.cmd[1], "search");
+  // the subject keeps the substantive terms (which the token search can match)
+  const subject = r.cmd[2] ?? "";
+  assertEquals(/voice|key|rotate|chang/.test(subject), true);
+
+  assertEquals(routeQuestion("how do I sign a chord?").intent, "search");
+  assertEquals(routeQuestion("can I rotate a voice key?").intent, "search");
+  assertEquals(routeQuestion("хто може змінити ключі?").intent, "search");
+
+  // a how-to that names a coordinate resolves it directly
+  assertEquals(routeQuestion("how do I use x6600?").cmd, [
+    "resolve-fqdn",
+    "x6600",
+  ]);
+
+  // and the roster question is still about the voices (not hijacked the other way)
+  assertEquals(routeQuestion("who has been active?").intent, "voices");
+});
+
 Deno.test("routeQuestion - empty / content-free question → help", () => {
   assertEquals(routeQuestion("").intent, "help");
   assertEquals(routeQuestion("what is this?").intent, "help"); // only stopwords

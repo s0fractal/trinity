@@ -344,6 +344,7 @@ export interface SearchHit {
   root: string; // root basename the winner lives in
   in_name: boolean; // the query matched the name itself
   snippet: string | null; // one-line context around the first content match
+  hits?: number; // # of distinct query terms matched (relevance rank; multi-word)
 }
 
 /** A one-line snippet around the first case-insensitive match of `q` in `text`,
@@ -391,6 +392,27 @@ export async function searchContent(
   const limit = opts.limit ?? 25;
   const maxBytes = opts.maxBytes ?? 262_144;
   const q = query.toLowerCase();
+  // Relevance is term-overlap, not one literal phrase: a multi-word query matches a
+  // document by how many of its distinct terms appear anywhere (name or body),
+  // ranked by that count with an exact-phrase bonus. Single-word queries keep the
+  // original substring behaviour. A trailing-'s fold gives light plural tolerance
+  // (keys→key). Before this, "find by what it SAYS" was one indexOf of the whole
+  // query, so every multi-word CONCEPT found nothing (x5300_954749 dogfood:
+  // `search "voice key custody quorum"` → 0 despite the words being right there).
+  const terms = Array.from(
+    new Set(q.split(/\s+/).filter((t) => t.length >= 2)),
+  );
+  const folded = terms.map((t) =>
+    t.length > 3 && t.endsWith("s") ? t.slice(0, -1) : t
+  );
+  const multi = terms.length > 1;
+  const termHits = (hay: string): number => {
+    let n = 0;
+    for (let i = 0; i < terms.length; i++) {
+      if (hay.includes(terms[i]) || hay.includes(folded[i])) n++;
+    }
+    return n;
+  };
   const read = opts.read ??
     (async (p: string) => {
       try {
@@ -412,11 +434,36 @@ export async function searchContent(
     const winner = [...exact].sort((a, b) =>
       a.rootIndex - b.rootIndex || a.depth - b.depth
     )[0];
-    const inName = key.toLowerCase().includes(q);
     scanned++;
     const content = await read(winner.path);
-    const snippet = content ? matchSnippet(content, query) : null;
-    if (inName || snippet) {
+    const nameLc = key.toLowerCase();
+    const contentLc = content ? content.toLowerCase() : "";
+    let inName: boolean;
+    let score: number;
+    let snippet: string | null;
+    if (!multi) {
+      inName = nameLc.includes(q);
+      snippet = content ? matchSnippet(content, query) : null;
+      score = inName || snippet ? 1 : 0;
+    } else {
+      const hay = nameLc + "\n" + contentLc;
+      const raw = termHits(hay);
+      const phrase = raw > 0 && hay.includes(q);
+      // a hit needs ≥2 distinct terms (or the exact phrase), so one common word
+      // like "key" cannot flood results; the rank then keeps the best on top.
+      if (raw < Math.min(2, terms.length) && !phrase) {
+        continue;
+      }
+      inName = termHits(nameLc) > 0;
+      score = raw + (phrase ? terms.length : 0);
+      const snipTerm = contentLc.includes(q)
+        ? query
+        : terms.find((t, i) =>
+          contentLc.includes(t) || contentLc.includes(folded[i])
+        );
+      snippet = content && snipTerm ? matchSnippet(content, snipTerm) : null;
+    }
+    if (score > 0) {
       hits.push({
         name: key,
         kind,
@@ -424,11 +471,13 @@ export async function searchContent(
         root: basename(winner.root),
         in_name: inName,
         snippet,
+        hits: score,
       });
     }
   }
-  // Name matches first (most likely intent), then by name; bounded.
+  // Most query terms matched first (relevance), then name-matches, then by name.
   hits.sort((a, b) =>
+    ((b.hits ?? 0) - (a.hits ?? 0)) ||
     (a.in_name === b.in_name ? 0 : a.in_name ? -1 : 1) ||
     a.name.localeCompare(b.name)
   );

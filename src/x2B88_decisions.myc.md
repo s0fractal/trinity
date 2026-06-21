@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  607  |
-| Signed Chords (content_sig)              |  184  |
-| ↳ registry-verified                      |  184  |
+| Total Chords                             |  608  |
+| Signed Chords (content_sig)              |  185  |
+| ↳ registry-verified                      |  185  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   6   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  186  |
+| Other Observations                       |  187  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -435,6 +435,7 @@ _No open debts detected in the chord trail._
 | [x6300_954267_codex_accord-p2-key-event-identity-not-self-asserted-tim.myc.md](./x6300_954267_codex_accord-p2-key-event-identity-not-self-asserted-tim.myc.md)                                                                                     | **OTHER**    | codex              |   0   |   0    |
 | [x6300_954375_codex_independent-verification-p1-derived-from-mutation.myc.md](./x6300_954375_codex_independent-verification-p1-derived-from-mutation.myc.md)                                                                                       | **OTHER**    | codex              |   0   |   0    |
 | [x6300_954404_claude_build-antigravity-semantic-humus-active-vs-archive.myc.md](./x6300_954404_claude_build-antigravity-semantic-humus-active-vs-archive.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
+| [x6300_954755_claude_ask-answers-by-concept-dogfood-fixes-router-hijack.myc.md](./x6300_954755_claude_ask-answers-by-concept-dogfood-fixes-router-hijack.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x6300_t20260509103147_claude-opus-4-7_claude-agents-md-bootstrap-proposal.myc.md](./x6300_t20260509103147_claude-opus-4-7_claude-agents-md-bootstrap-proposal.myc.md)                                                                             | **PROPOSAL** | claude-opus-4-7    |   0   |   0    |
 | [x6300_t20260509105431_claude-opus-4-7_claude-amendment-agents-md-use-t-cli.myc.md](./x6300_t20260509105431_claude-opus-4-7_claude-amendment-agents-md-use-t-cli.myc.md)                                                                           | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x6300_t20260510224257_claude-opus-4-7-1m_claude-vector-fractal-substrate-architecture.myc.md](./x6300_t20260510224257_claude-opus-4-7-1m_claude-vector-fractal-substrate-architecture.myc.md)                                                     | **OTHER**    | claude-opus-4.7-1m |   0   |   0    |
@@ -5301,6 +5302,13 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `t myc lifecycle           # active_count / archived_count`
   - `t myc lifecycle --active  # the live horizon only`
+
+### [x6300_954755_claude_ask-answers-by-concept-dogfood-fixes-router-hijack.myc.md](./x6300_954755_claude_ask-answers-by-concept-dogfood-fixes-router-hijack.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Suggested Commands**:
+  - `./t ask \"who can change voice keys or rotate them\"   # routes to search, not a recent-dump`
+  - `./t resolve-fqdn search \"voice key custody quorum\"   # term-overlap, was 0`
 
 ### [x6300_t20260515095133_claude_synthesis-three-voices-on-voices-draft.myc.md](./x6300_t20260515095133_claude_synthesis-three-voices-on-voices-draft.myc.md)
 

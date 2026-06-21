@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  593  |
-| Signed Chords (content_sig)              |  171  |
-| ↳ registry-verified                      |  171  |
+| Total Chords                             |  594  |
+| Signed Chords (content_sig)              |  172  |
+| ↳ registry-verified                      |  172  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  58   |
-| Receipts                                 |  275  |
-| ↳ strong evidence                        |  275  |
+| Receipts                                 |  276  |
+| ↳ strong evidence                        |  276  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   6   |
@@ -637,6 +637,7 @@ _No open debts detected in the chord trail._
 | [x7700_954703_codex_content-bound-comparable-cognition-snapshots.myc.md](./x7700_954703_codex_content-bound-comparable-cognition-snapshots.myc.md)                                                                                                 | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_954705_claude_myc-publication-readiness-audit-clean-agpl-prepped.myc.md](./x7700_954705_claude_myc-publication-readiness-audit-clean-agpl-prepped.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_954710_codex_installer-idempotency-clone-fetch-preserve-local-s.myc.md](./x7700_954710_codex_installer-idempotency-clone-fetch-preserve-local-s.myc.md)                                                                                     | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_954719_codex_transparent-participation-standing-and-myc-attenti.myc.md](./x7700_954719_codex_transparent-participation-standing-and-myc-attenti.myc.md)                                                                                     | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -7774,6 +7775,15 @@ _No open debts detected in the chord trail._
   - `deno test --allow-all src/install_idempotency_test.ts`
   - `cd myc && deno task check`
   - `./t check`
+
+### [x7700_954719_codex_transparent-participation-standing-and-myc-attenti.myc.md](./x7700_954719_codex_transparent-participation-standing-and-myc-attenti.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Suggested Commands**:
+  - `./t affordances`
+  - `./t affordances --json | jq '{participation_standing, participation_invariants}'`
+  - `./t self --json | jq '{myc_attention, attention}'`
+  - `deno test --allow-read --allow-run --allow-env src/affordances_test.ts src/self_myc_attention_test.ts`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

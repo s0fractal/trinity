@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    593     |
+| dynamic topology  |    594     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **693**   |
+| **Total**         |  **694**   |
 
 ## Runtime Cache Diagnostics
 
@@ -701,6 +701,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x7700_954703_codex_content-bound-comparable-cognition-snapshots.myc.md](../src/x7700_954703_codex_content-bound-comparable-cognition-snapshots.myc.md)                                                                                                 | canonical        | src/x7700_954703_codex_content-bound-comparable-cognition-snapshots.myc.md                                                 | keep        |                              |
 | dynamic topology  | [src/x7700_954705_claude_myc-publication-readiness-audit-clean-agpl-prepped.myc.md](../src/x7700_954705_claude_myc-publication-readiness-audit-clean-agpl-prepped.myc.md)                                                                                   | canonical        | src/x7700_954705_claude_myc-publication-readiness-audit-clean-agpl-prepped.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x7700_954710_codex_installer-idempotency-clone-fetch-preserve-local-s.myc.md](../src/x7700_954710_codex_installer-idempotency-clone-fetch-preserve-local-s.myc.md)                                                                                     | canonical        | src/x7700_954710_codex_installer-idempotency-clone-fetch-preserve-local-s.myc.md                                           | keep        |                              |
+| dynamic topology  | [src/x7700_954719_codex_transparent-participation-standing-and-myc-attenti.myc.md](../src/x7700_954719_codex_transparent-participation-standing-and-myc-attenti.myc.md)                                                                                     | canonical        | src/x7700_954719_codex_transparent-participation-standing-and-myc-attenti.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](../src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | canonical        | src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](../src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | canonical        | src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md                                                     | keep        |                              |
 | dynamic topology  | [src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](../src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | canonical        | src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md                                                      | keep        |                              |

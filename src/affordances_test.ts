@@ -21,6 +21,32 @@ Deno.test("affordances — finality policies include the human-model class quoru
   );
 });
 
+Deno.test("affordances — participation standing separates contribution, decision, and actuation", async () => {
+  const a = await affordances();
+  assertEquals(
+    a.participation_standing.map((x) => x.stage),
+    ["observe", "contribute", "attest", "decide", "actuate"],
+  );
+
+  const contribute = a.participation_standing[1];
+  assertEquals(contribute.key_required, false);
+  assertEquals(contribute.authority, "none");
+  assert(contribute.boundary.includes("not identity, trust, or permission"));
+
+  const decide = a.participation_standing[3];
+  assert(decide.boundary.includes("does not by itself authorize"));
+  const actuate = a.participation_standing[4];
+  assert(actuate.authority.includes("warrant"));
+
+  assert(a.participation_invariants.includes("identity is not authority"));
+  assert(a.participation_invariants.includes("a proposal is not a decision"));
+  assert(
+    a.participation_invariants.includes(
+      "a decision is not an execution warrant",
+    ),
+  );
+});
+
 Deno.test("affordances — proof-bearing verbs are flagged; undocumented is honest", async () => {
   const a = await affordances();
   // when the myc surface is present, propose/resolve-proposal must be proof-bearing

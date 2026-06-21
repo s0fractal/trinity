@@ -103,7 +103,7 @@
 {"path":"sealed/README.md","size":565,"hash":"sha256:79b01c20d4eaa557e9c91913a30f1fd8d611d57f6dd7f9a4fff03a627dc040c4"}
 {"path":"sites/myc.md/README.md","size":5136,"hash":"sha256:0ed96a3003b01c3720980d02f2a6969546a2ea63008e347b4450cc73630aa389"}
 {"path":"sites/myc.md/worker_test.ts","size":3689,"hash":"sha256:ff81c32340fac4edcee4154dd1c11e5addcbf7bbcd44a994a1536b06298eb00b"}
-{"path":"sites/myc.md/worker.ts","size":54718,"hash":"sha256:c8ffda560baa957fc8c0899f26766e46fec36c644970547bf1b59f9918a085f5"}
+{"path":"sites/myc.md/worker.ts","size":55859,"hash":"sha256:b028a13a9adfa9d82609209ef017bba398ee54bac96b1be74db010dbccbdb56b"}
 {"path":"substrates/ADAPTER_POLICY.md","size":3073,"hash":"sha256:b1e55e20471a426a82023d7b5566fd4a2bc663186c20ed6691e82860fcdbd732"}
 {"path":"substrates/codex/MYC.md","size":1052,"hash":"sha256:12d0b619b16a88713323f07891578ceaf948b11e9b0957eda51250b8c5547efc"}
 {"path":"substrates/gemini/MYC.md","size":970,"hash":"sha256:5fb69d40538ac1098b5c9c33d087450483b10b97cb5a8fb2a0a6887b7a3a7e45"}

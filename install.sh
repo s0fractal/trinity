@@ -139,6 +139,7 @@ cat <<EOF
                             #   proposed -> witnessed -> reviewed -> resonant
 
   check it:
+    ./t affordances         # what each act means, requires, and proves
     ./t check               # the substrate's own health gate
 
 You're a participant, not a spectator. Reading is open; contributing is keyless

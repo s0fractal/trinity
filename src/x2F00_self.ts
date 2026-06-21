@@ -40,6 +40,7 @@ import {
   join,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { parallel, tryOr } from "./x0030_compose.ts";
+import { extractOrganJson } from "./x0010_dispatch_runner.ts";
 import { listChordSurfaceFiles } from "./x2F21_chord_surface.ts";
 import {
   chooseNextMigration,
@@ -56,8 +57,9 @@ const T_SHIM = join(ROOT, "t");
 const ORGAN_FILE_RE = /^x([0-9A-Fa-f])([0-9A-Fa-f]{3})_/;
 const VOICE_FILE_RE = /^x8A[0-9A-Fa-f]{2}_voice_([^.]+)\.myc\.json$/;
 
-// Invoke `t <cmd> ...args` and parse JSON from the first JSON-shaped line
-// of stdout (dispatcher prepends a `# <action> → <pos>` header).
+// Invoke `t <cmd> ...args` and parse its dispatcher-style JSON. The shared
+// extractor supports both compact Trinity receipts and pretty-printed
+// cross-substrate payloads such as `t myc lifecycle --json`.
 async function callT(cmd: string, args: string[] = []): Promise<unknown> {
   const proc = new Deno.Command(T_SHIM, {
     args: [cmd, ...args],
@@ -66,11 +68,14 @@ async function callT(cmd: string, args: string[] = []): Promise<unknown> {
   });
   const { stdout } = await proc.output();
   const text = new TextDecoder().decode(stdout);
-  const jsonLine = text.split("\n").find((l) =>
-    l.trimStart().startsWith("{") || l.trimStart().startsWith("[")
-  );
-  if (!jsonLine) throw new Error(`callT: no JSON in ${cmd} output`);
-  return JSON.parse(jsonLine);
+  const parsed = extractOrganJson(text);
+  if (
+    parsed === undefined ||
+    (typeof parsed === "object" && parsed !== null && "text" in parsed)
+  ) {
+    throw new Error(`callT: no JSON in ${cmd} output`);
+  }
+  return parsed;
 }
 
 async function scanOrgans(): Promise<
@@ -299,6 +304,54 @@ interface FederationCiShape {
   substrates?: Array<{ substrate: string; state: string }>;
 }
 
+interface MycLifecycleShape {
+  active_count?: number;
+  counts?: Record<string, number>;
+  mutations?: Array<{
+    id?: string;
+    kind?: string;
+    state?: string;
+    detail?: string;
+    active?: boolean;
+  }>;
+}
+
+const MYC_ATTENTION_STATES = [
+  "proposed",
+  "resolution_claimed",
+  "evidence_verified",
+  "conflicted",
+  "dormant",
+] as const;
+
+export function summarizeMycAttention(lifecycle: MycLifecycleShape | null): {
+  requires_attention: number;
+  by_state: Record<string, number>;
+  sample: Array<{ id: string; kind: string; state: string; detail: string }>;
+} | null {
+  if (!lifecycle) return null;
+  const byState: Record<string, number> = {};
+  for (const state of MYC_ATTENTION_STATES) {
+    const count = lifecycle.counts?.[state] ?? 0;
+    if (count > 0) byState[state] = count;
+  }
+  const attentionStates = new Set<string>(MYC_ATTENTION_STATES);
+  const sample = (lifecycle.mutations ?? [])
+    .filter((m) => m.active !== false && attentionStates.has(m.state ?? ""))
+    .slice(0, 3)
+    .map((m) => ({
+      id: m.id ?? "unknown",
+      kind: m.kind ?? "unknown",
+      state: m.state ?? "unknown",
+      detail: m.detail ?? "",
+    }));
+  return {
+    requires_attention: Object.values(byState).reduce((a, b) => a + b, 0),
+    by_state: byState,
+    sample,
+  };
+}
+
 function buildAttention(args: {
   status: StatusShape | null;
   capabilitiesValidation: CapabilitiesValidationShape | null;
@@ -307,6 +360,7 @@ function buildAttention(args: {
   decisions: DecisionsShape | null;
   runtimeCacheSummary: ReturnType<typeof summarizeRuntimeCaches>;
   federationCi?: FederationCiShape | null;
+  mycLifecycle?: MycLifecycleShape | null;
 }): {
   level: "clear" | "watch" | "act";
   score: number;
@@ -354,6 +408,20 @@ function buildAttention(args: {
     reasons.push(`inbox backlog: ${pending} pending (${top})`);
     nextActions.push(
       "Run `./t inbox --next --json` to inspect the oldest routed response.",
+    );
+  }
+
+  const mycAttention = summarizeMycAttention(args.mycLifecycle ?? null);
+  if (mycAttention && mycAttention.requires_attention > 0) {
+    score += 1;
+    const states = Object.entries(mycAttention.by_state)
+      .map(([state, count]) => `${state}:${count}`)
+      .join(", ");
+    reasons.push(
+      `myc contributions awaiting judgment: ${mycAttention.requires_attention} (${states})`,
+    );
+    nextActions.push(
+      "Run `./t myc lifecycle --active` to inspect contributions; observe before choosing whether to witness, review, or leave dormant.",
     );
   }
 
@@ -522,6 +590,11 @@ if (import.meta.main) {
     // codex §2: federation CI per admitted commit, from the cached evidence-ci
     // read (callT — shell out, not import-up). Cheap (cache); --live refreshes.
     federationCi: () => tryOr(() => callT("evidence", ["ci", "--json"]), null),
+    // Cross-substrate attention is read-only and optional. A missing public myc
+    // never breaks self-introspection; an available dormant contribution must
+    // not remain invisible to the voices that can evaluate it.
+    mycLifecycle: () =>
+      tryOr(() => callT("myc", ["lifecycle", "--active", "--json"]), null),
     organs: scanOrgans,
     voices: scanVoices,
     chords: scanChords,
@@ -549,6 +622,8 @@ if (import.meta.main) {
     | null;
 
   const federationCi = data.federationCi as FederationCiShape | null;
+  const mycLifecycle = data.mycLifecycle as MycLifecycleShape | null;
+  const mycAttention = summarizeMycAttention(mycLifecycle);
 
   const composite = status?.substrate_health?.overall ?? "unknown";
   const audit = status?.summary?.audit
@@ -570,6 +645,7 @@ if (import.meta.main) {
     decisions,
     runtimeCacheSummary: data.registry.runtimeCacheSummary,
     federationCi,
+    mycLifecycle,
   });
 
   const receipt = {
@@ -608,6 +684,7 @@ if (import.meta.main) {
       null,
     decisions: decisions?.summary ?? null,
     decision_next_action: decisions?.next_action ?? null,
+    myc_attention: mycAttention,
     external_surfaces: data.registry,
     inbox: inbox?.summary ?? null,
     heartbeat: heartbeat?.summary ?? null,
@@ -696,6 +773,16 @@ if (import.meta.main) {
           `#              next ${decisions.next_action.kind}: ${decisions.next_action.filename}`,
         );
       }
+    }
+    if (mycAttention) {
+      const states = Object.entries(mycAttention.by_state)
+        .map(([state, count]) => `${state}:${count}`)
+        .join(" ");
+      console.log(
+        `# myc attention: ${mycAttention.requires_attention} awaiting judgment${
+          states ? ` (${states})` : ""
+        }`,
+      );
     }
     const reg = data.registry as {
       counts: Record<string, number>;

@@ -76,6 +76,61 @@ const FINALITY_POLICIES = {
   },
 } as const;
 
+/** Participation standing is deliberately separate from effect capability.
+ *  A capability says what a process can technically do; standing says what an
+ *  artifact means in the social/proof membrane. Keeping them separate prevents
+ *  a keyless proposal from being mistaken for authority, and prevents a valid
+ *  decision from being mistaken for permission to execute it. */
+const PARTICIPATION_STANDING = [
+  {
+    stage: "observe",
+    key_required: false,
+    authority: "none",
+    artifact: "reproducible local read",
+    boundary: "changes no shared state and makes no claim",
+  },
+  {
+    stage: "contribute",
+    key_required: false,
+    authority: "none",
+    artifact: "unsigned, content-addressed, dormant proposal",
+    boundary:
+      "enters the attention surface only; carries integrity, not identity, trust, or permission",
+  },
+  {
+    stage: "attest",
+    key_required: true,
+    authority: "one principal's authenticated judgment",
+    artifact: "commitment-bound signed witness, review, or resolution",
+    boundary:
+      "sign only with your own key; one principal is evidence, never a quorum",
+  },
+  {
+    stage: "decide",
+    key_required: true,
+    authority: "finality under the proposal's declared quorum policy",
+    artifact: "independently authenticated resolutions + verified evidence",
+    boundary:
+      "finality authorizes the decision; it does not by itself authorize a process to write",
+  },
+  {
+    stage: "actuate",
+    key_required: false,
+    authority: "runtime-reconstructed mandate + warrant + confinement",
+    artifact: "content-bound execution receipt",
+    boundary:
+      "execution is limited to the admitted intent, write-set, budgets, gates, and fresh pre-state",
+  },
+] as const;
+
+const PARTICIPATION_INVARIANTS = [
+  "identity is not authority",
+  "integrity is not authenticity",
+  "a proposal is not a decision",
+  "a decision is not an execution warrant",
+  "every consequential transition names its proof and its boundary",
+] as const;
+
 /** Proof semantics per proof-bearing verb — the contract each action carries. A
  *  verb here is documented; an effect-class verb NOT here is flagged undocumented. */
 const PROOF_SEMANTICS: Record<
@@ -132,6 +187,8 @@ export interface Affordances {
   position: "5/B";
   note: string;
   proof_bearing_loop: typeof PROOF_BEARING_LOOP;
+  participation_standing: typeof PARTICIPATION_STANDING;
+  participation_invariants: typeof PARTICIPATION_INVARIANTS;
   finality_policies: typeof FINALITY_POLICIES;
   actions: Array<{
     verb: string;
@@ -177,6 +234,8 @@ export async function affordances(): Promise<Affordances> {
       "what a digital entity can DO in Trinity and the proof each action carries. " +
       "The proof-bearing loop is the contract; actions are the live verb surface.",
     proof_bearing_loop: PROOF_BEARING_LOOP,
+    participation_standing: PARTICIPATION_STANDING,
+    participation_invariants: PARTICIPATION_INVARIANTS,
     finality_policies: FINALITY_POLICIES,
     actions,
     ungated_backends: UNGATED_BACKENDS,
@@ -193,7 +252,22 @@ export async function runCli(args: string[] = Deno.args): Promise<void> {
   console.log(
     "# affordances → 5/B   what a model can DO, and the proof it carries\n",
   );
-  console.log("## the proof-bearing loop (how to make a consequential change)");
+  console.log("## participation standing (what an act means)");
+  for (const s of a.participation_standing) {
+    console.log(
+      `  ${s.stage.padEnd(10)} key:${
+        s.key_required ? "yes" : "no "
+      }  authority: ${s.authority}\n` +
+        `             artifact: ${s.artifact}\n` +
+        `             boundary: ${s.boundary}`,
+    );
+  }
+  console.log(
+    `\n  invariants: ${a.participation_invariants.join("; ")}`,
+  );
+  console.log(
+    "\n## the proof-bearing loop (how to make a consequential change)",
+  );
   for (const s of a.proof_bearing_loop) {
     console.log(
       `  ${s.step}. ${s.action}\n     proof: ${s.proof}\n     · ${s.note}`,

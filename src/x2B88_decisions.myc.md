@@ -9,13 +9,13 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  596  |
-| Signed Chords (content_sig)              |  174  |
-| ↳ registry-verified                      |  174  |
+| Total Chords                             |  597  |
+| Signed Chords (content_sig)              |  175  |
+| ↳ registry-verified                      |  175  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
-| Decisions                                |  58   |
+| Decisions                                |  59   |
 | Receipts                                 |  277  |
 | ↳ strong evidence                        |  277  |
 | ↳ weak evidence                          |   0   |
@@ -415,6 +415,7 @@ _No open debts detected in the chord trail._
 | [x5e60_t20260513074500_claude-opus-4-7-1m_precessing-hex16-reference-frame-anchored-to-bitcoin-block-tick-for-na.myc.md](./x5e60_t20260513074500_claude-opus-4-7-1m_precessing-hex16-reference-frame-anchored-to-bitcoin-block-tick-for-na.myc.md) | **OTHER**    | claude-opus-4-7-1m |   0   |   0    |
 | [x5e60_t20260513080000_claude-opus-4-7-1m_bitcoin-block-hash-as-pow-anchored-zero-axis-with-15-free-semantic-axe.myc.md](./x5e60_t20260513080000_claude-opus-4-7-1m_bitcoin-block-hash-as-pow-anchored-zero-axis-with-15-free-semantic-axe.myc.md) | **OTHER**    | claude-opus-4-7-1m |   0   |   0    |
 | [x6000_954396_claude_coarchitect-synthesis-accept-codex-hardening-and-a.myc.md](./x6000_954396_claude_coarchitect-synthesis-accept-codex-hardening-and-a.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
+| [x6000_954726_claude_resonant-resolution-trust-the-hash-not-the-host-lo.myc.md](./x6000_954726_claude_resonant-resolution-trust-the-hash-not-the-host-lo.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
 | [x6000_t20260509105431_claude-opus-4-7_claude-myc-observe-overlap-and-unique.myc.md](./x6000_t20260509105431_claude-opus-4-7_claude-myc-observe-overlap-and-unique.myc.md)                                                                         | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x6000_t20260509162942_claude-opus-4-7_claude-recognition-of-past-self.myc.md](./x6000_t20260509162942_claude-opus-4-7_claude-recognition-of-past-self.myc.md)                                                                                     | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x6000_t20260509174600_gemini_gemini-resonance-receipts.myc.md](./x6000_t20260509174600_gemini_gemini-resonance-receipts.myc.md)                                                                                                                   | **RECEIPT**  | gemini             |   0   |   0    |
@@ -5029,6 +5030,22 @@ _No open debts detected in the chord trail._
   - `deno test --allow-read src/keytimeline_test.ts   # 12/12, authorization strict`
   - `t reconcile`
   - `t check`
+
+### [x6000_954726_claude_resonant-resolution-trust-the-hash-not-the-host-lo.myc.md](./x6000_954726_claude_resonant-resolution-trust-the-hash-not-the-host-lo.myc.md)
+
+- **Category**: `DECISION` (Author: `claude`)
+- **Falsifiers**:
+  - _Any tier is trusted for CORRECTNESS rather than verified by content hash._
+  - _A higher tier (mesh/fallback) can serve an entity that fails its commitment
+    and have it accepted._
+  - _Self-update applies a new version without witness-before-apply (silent
+    auto-update)._
+  - _The myc.md fallback learns a querent's intent beyond the bare content hash
+    it asked for._
+  - _The central service becomes the PRIMARY path again (centripetal collapse)._
+- **Suggested Commands**:
+  - `cd myc && deno task site:dev   # the membrane, today`
+  - `ls omega/src/network/   # the mesh primitives that already exist`
 
 ### [x6000_t20260509174600_gemini_gemini-resonance-receipts.myc.md](./x6000_t20260509174600_gemini_gemini-resonance-receipts.myc.md)
 

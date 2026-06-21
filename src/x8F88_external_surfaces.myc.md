@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    596     |
+| dynamic topology  |    597     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **696**   |
+| **Total**         |  **697**   |
 
 ## Runtime Cache Diagnostics
 
@@ -479,6 +479,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x5e60_t20260513074500_claude-opus-4-7-1m_precessing-hex16-reference-frame-anchored-to-bitcoin-block-tick-for-na.myc.md](../src/x5e60_t20260513074500_claude-opus-4-7-1m_precessing-hex16-reference-frame-anchored-to-bitcoin-block-tick-for-na.myc.md) | canonical        | src/x5e60_t20260513074500_claude-opus-4-7-1m_precessing-hex16-reference-frame-anchored-to-bitcoin-block-tick-for-na.myc.md | keep        |                              |
 | dynamic topology  | [src/x5e60_t20260513080000_claude-opus-4-7-1m_bitcoin-block-hash-as-pow-anchored-zero-axis-with-15-free-semantic-axe.myc.md](../src/x5e60_t20260513080000_claude-opus-4-7-1m_bitcoin-block-hash-as-pow-anchored-zero-axis-with-15-free-semantic-axe.myc.md) | canonical        | src/x5e60_t20260513080000_claude-opus-4-7-1m_bitcoin-block-hash-as-pow-anchored-zero-axis-with-15-free-semantic-axe.myc.md | keep        |                              |
 | dynamic topology  | [src/x6000_954396_claude_coarchitect-synthesis-accept-codex-hardening-and-a.myc.md](../src/x6000_954396_claude_coarchitect-synthesis-accept-codex-hardening-and-a.myc.md)                                                                                   | canonical        | src/x6000_954396_claude_coarchitect-synthesis-accept-codex-hardening-and-a.myc.md                                          | keep        |                              |
+| dynamic topology  | [src/x6000_954726_claude_resonant-resolution-trust-the-hash-not-the-host-lo.myc.md](../src/x6000_954726_claude_resonant-resolution-trust-the-hash-not-the-host-lo.myc.md)                                                                                   | canonical        | src/x6000_954726_claude_resonant-resolution-trust-the-hash-not-the-host-lo.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x6000_t20260509105431_claude-opus-4-7_claude-myc-observe-overlap-and-unique.myc.md](../src/x6000_t20260509105431_claude-opus-4-7_claude-myc-observe-overlap-and-unique.myc.md)                                                                         | canonical        | src/x6000_t20260509105431_claude-opus-4-7_claude-myc-observe-overlap-and-unique.myc.md                                     | keep        |                              |
 | dynamic topology  | [src/x6000_t20260509162942_claude-opus-4-7_claude-recognition-of-past-self.myc.md](../src/x6000_t20260509162942_claude-opus-4-7_claude-recognition-of-past-self.myc.md)                                                                                     | canonical        | src/x6000_t20260509162942_claude-opus-4-7_claude-recognition-of-past-self.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x6000_t20260509174600_gemini_gemini-resonance-receipts.myc.md](../src/x6000_t20260509174600_gemini_gemini-resonance-receipts.myc.md)                                                                                                                   | canonical        | src/x6000_t20260509174600_gemini_gemini-resonance-receipts.myc.md                                                          | keep        |                              |

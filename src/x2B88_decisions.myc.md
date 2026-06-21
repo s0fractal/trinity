@@ -9,20 +9,20 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  598  |
-| Signed Chords (content_sig)              |  176  |
-| ↳ registry-verified                      |  176  |
+| Total Chords                             |  600  |
+| Signed Chords (content_sig)              |  177  |
+| ↳ registry-verified                      |  177  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  59   |
-| Receipts                                 |  278  |
-| ↳ strong evidence                        |  278  |
+| Receipts                                 |  279  |
+| ↳ strong evidence                        |  279  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   6   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  183  |
+| Other Observations                       |  184  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -243,6 +243,7 @@ _No open debts detected in the chord trail._
 | [x3300_954389_antigravity_antigravity-finality-and-the-symbiosis-of-entities.myc.md](./x3300_954389_antigravity_antigravity-finality-and-the-symbiosis-of-entities.myc.md)                                                                         | **OTHER**    | antigravity        |   0   |   0    |
 | [x3300_954402_antigravity_antigravity-metabolism-decay-and-autopoietic-compo.myc.md](./x3300_954402_antigravity_antigravity-metabolism-decay-and-autopoietic-compo.myc.md)                                                                         | **OTHER**    | antigravity        |   0   |   0    |
 | [x3300_954417_antigravity_antigravity-strategy-tactics-ecosystem-evolution.myc.md](./x3300_954417_antigravity_antigravity-strategy-tactics-ecosystem-evolution.myc.md)                                                                             | **OTHER**    | antigravity        |   0   |   0    |
+| [x3300_954731_antigravity_antigravity-autopoietic-composting-and-consensus-damping.myc.md](./x3300_954731_antigravity_antigravity-autopoietic-composting-and-consensus-damping.myc.md)                                                             | **OTHER**    | antigravity        |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -460,6 +461,7 @@ _No open debts detected in the chord trail._
 | [x6700_954573_claude_external-audit-adjudicated-real-vs-stale-and-fixes.myc.md](./x6700_954573_claude_external-audit-adjudicated-real-vs-stale-and-fixes.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x6700_954579_claude_co-witness-codex-audit-repair-hardening-schema-ide.myc.md](./x6700_954579_claude_co-witness-codex-audit-repair-hardening-schema-ide.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x6700_954620_claude_antigravity-x2c10-balance-metrics-landed-verified.myc.md](./x6700_954620_claude_antigravity-x2c10-balance-metrics-landed-verified.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
+| [x6700_954731_claude_resonant-resolution-snapshot-export-plus-verify-by.myc.md](./x6700_954731_claude_resonant-resolution-snapshot-export-plus-verify-by.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x6700_t20260509175813_codex-gpt-5_codex-recommendation-sees-candidates.myc.md](./x6700_t20260509175813_codex-gpt-5_codex-recommendation-sees-candidates.myc.md)                                                                                   | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x6700_t20260509213028_claude-opus-4-7-1m_claude-sigma-substrate-paper-plan.myc.md](./x6700_t20260509213028_claude-opus-4-7-1m_claude-sigma-substrate-paper-plan.myc.md)                                                                           | **PROPOSAL** | claude-opus-4.7-1m |   0   |   0    |
 | [x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md](./x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md)                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
@@ -5528,6 +5530,24 @@ _No open debts detected in the chord trail._
   - `deno test --allow-all src/cognition_phase_report_test.ts`
   - `./t cognition_phase_report --json | jq '.global.metrics'`
   - `./t check`
+
+### [x6700_954731_claude_resonant-resolution-snapshot-export-plus-verify-by.myc.md](./x6700_954731_claude_resonant-resolution-snapshot-export-plus-verify-by.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _verify-snapshot trusts a peer's claimed commitment instead of recomputing
+    it canonically._
+  - _A tampered record (committed content altered) passes verify-snapshot._
+  - _snapshot is non-deterministic, or invents a record whose file is absent._
+  - _verify-snapshot writes into the caller's tree (it must rehydrate to a temp
+    root)._
+  - _myc deno task check is not green._
+- **Suggested Commands**:
+  - `[]`
+  - `./t myc snapshot --write /tmp/peer.json`
+  - `./t myc verify-snapshot /tmp/peer.json   # → VERIFIED 66/66`
+- **Expected After Running**:
+  - _{}_
 
 ### [x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md](./x6700_t20260514113420_codex_receipt-active-chord-schema-debt-cleared.myc.md)
 

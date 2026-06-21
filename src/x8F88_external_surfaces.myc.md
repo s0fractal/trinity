@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    603     |
+| dynamic topology  |    604     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **703**   |
+| **Total**         |  **704**   |
 
 ## Runtime Cache Diagnostics
 
@@ -711,6 +711,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x7700_954719_codex_transparent-participation-standing-and-myc-attenti.myc.md](../src/x7700_954719_codex_transparent-participation-standing-and-myc-attenti.myc.md)                                                                                     | canonical        | src/x7700_954719_codex_transparent-participation-standing-and-myc-attenti.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x7700_954728_claude_resonant-resolution-step1-deployed-local-attestati.myc.md](../src/x7700_954728_claude_resonant-resolution-step1-deployed-local-attestati.myc.md)                                                                                   | canonical        | src/x7700_954728_claude_resonant-resolution-step1-deployed-local-attestati.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x7700_954737_claude_resonant-resolution-capstone-myc-md-serves-the-net.myc.md](../src/x7700_954737_claude_resonant-resolution-capstone-myc-md-serves-the-net.myc.md)                                                                                   | canonical        | src/x7700_954737_claude_resonant-resolution-capstone-myc-md-serves-the-net.myc.md                                          | keep        |                              |
+| dynamic topology  | [src/x7700_954742_claude_ecosystem-re-analysis-honest-reckoning-omega-readm.myc.md](../src/x7700_954742_claude_ecosystem-re-analysis-honest-reckoning-omega-readm.myc.md)                                                                                   | canonical        | src/x7700_954742_claude_ecosystem-re-analysis-honest-reckoning-omega-readm.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](../src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | canonical        | src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](../src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | canonical        | src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md                                                     | keep        |                              |
 | dynamic topology  | [src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](../src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | canonical        | src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md                                                      | keep        |                              |

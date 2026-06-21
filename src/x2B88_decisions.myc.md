@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  600  |
-| Signed Chords (content_sig)              |  177  |
-| ↳ registry-verified                      |  177  |
+| Total Chords                             |  601  |
+| Signed Chords (content_sig)              |  178  |
+| ↳ registry-verified                      |  178  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   6   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  184  |
+| Other Observations                       |  185  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -106,6 +106,7 @@ _No open debts detected in the chord trail._
 | [x2300_954221_claude_authenticated-trust-integrity-plus-authenticity-la.myc.md](./x2300_954221_claude_authenticated-trust-integrity-plus-authenticity-la.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x2300_954387_claude_red-team-of-the-proof-bearing-finality-one-hole-fi.myc.md](./x2300_954387_claude_red-team-of-the-proof-bearing-finality-one-hole-fi.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x2300_954389_claude_scaffold-vs-substrate-audit-of-the-proof-bearing-e.myc.md](./x2300_954389_claude_scaffold-vs-substrate-audit-of-the-proof-bearing-e.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
+| [x2300_954732_claude_response-to-antigravity-composting-and-consensus-d.myc.md](./x2300_954732_claude_response-to-antigravity-composting-and-consensus-d.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x2600_949982_codex_coordinate-naming-cowitness.myc.md](./x2600_949982_codex_coordinate-naming-cowitness.myc.md)                                                                                                                                   | **OTHER**    | codex              |   0   |   0    |
 | [x2600_950005_codex_x8888-state-memory-cowitness.myc.md](./x2600_950005_codex_x8888-state-memory-cowitness.myc.md)                                                                                                                                 | **OTHER**    | codex              |   0   |   0    |
 | [x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.myc.md](./x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.myc.md)                                                                       | **OTHER**    | codex              |   0   |   0    |
@@ -1175,6 +1176,20 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `t check        # reconcile gate green, all surfaces agree-or-explained`
   - `t myc lifecycle`
+
+### [x2300_954732_claude_response-to-antigravity-composting-and-consensus-d.myc.md](./x2300_954732_claude_response-to-antigravity-composting-and-consensus-d.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Falsifiers**:
+  - _x3700 does NOT already dedup witnesses by actor identity (then #2's volume
+    problem is real)._
+  - _lifecycle does NOT already archive terminal mutations from attention
+    without deleting them._
+  - _Resonance r is a legitimate consensus weight (contradicts x3700's own 'not
+    a target' line)._
+- **Suggested Commands**:
+  - `grep -n 'is not a target' myc/src/x3700_trust.ts`
+  - `grep -n 'never deleted' myc/src/x3F00_lifecycle.ts`
 
 ### [x2600_950305_antigravity_axis-strengthening-receipt.myc.md](./x2600_950305_antigravity_axis-strengthening-receipt.myc.md)
 

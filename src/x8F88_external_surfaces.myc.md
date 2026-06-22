@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    609     |
+| dynamic topology  |    610     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **709**   |
+| **Total**         |  **710**   |
 
 ## Runtime Cache Diagnostics
 
@@ -717,6 +717,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x7700_954742_claude_ecosystem-re-analysis-honest-reckoning-omega-readm.myc.md](../src/x7700_954742_claude_ecosystem-re-analysis-honest-reckoning-omega-readm.myc.md)                                                                                   | canonical        | src/x7700_954742_claude_ecosystem-re-analysis-honest-reckoning-omega-readm.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x7700_954746_claude_codex-proof-bearing-handoff-verified-complete-mach.myc.md](../src/x7700_954746_claude_codex-proof-bearing-handoff-verified-complete-mach.myc.md)                                                                                   | canonical        | src/x7700_954746_claude_codex-proof-bearing-handoff-verified-complete-mach.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x7700_954751_claude_bi-principal-constitution-ratified-by-the-quorum-i.myc.md](../src/x7700_954751_claude_bi-principal-constitution-ratified-by-the-quorum-i.myc.md)                                                                                   | canonical        | src/x7700_954751_claude_bi-principal-constitution-ratified-by-the-quorum-i.myc.md                                          | keep        |                              |
+| dynamic topology  | [src/x7700_954825_claude_myc-is-public-the-mycelium-has-a-front-door.myc.md](../src/x7700_954825_claude_myc-is-public-the-mycelium-has-a-front-door.myc.md)                                                                                                 | canonical        | src/x7700_954825_claude_myc-is-public-the-mycelium-has-a-front-door.myc.md                                                 | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](../src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | canonical        | src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](../src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | canonical        | src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md                                                     | keep        |                              |
 | dynamic topology  | [src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](../src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | canonical        | src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md                                                      | keep        |                              |

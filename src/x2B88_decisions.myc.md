@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  609  |
-| Signed Chords (content_sig)              |  186  |
-| ↳ registry-verified                      |  186  |
+| Total Chords                             |  610  |
+| Signed Chords (content_sig)              |  187  |
+| ↳ registry-verified                      |  187  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  59   |
-| Receipts                                 |  284  |
-| ↳ strong evidence                        |  284  |
+| Receipts                                 |  285  |
+| ↳ strong evidence                        |  285  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   6   |
@@ -653,6 +653,7 @@ _No open debts detected in the chord trail._
 | [x7700_954742_claude_ecosystem-re-analysis-honest-reckoning-omega-readm.myc.md](./x7700_954742_claude_ecosystem-re-analysis-honest-reckoning-omega-readm.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_954746_claude_codex-proof-bearing-handoff-verified-complete-mach.myc.md](./x7700_954746_claude_codex-proof-bearing-handoff-verified-complete-mach.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_954751_claude_bi-principal-constitution-ratified-by-the-quorum-i.myc.md](./x7700_954751_claude_bi-principal-constitution-ratified-by-the-quorum-i.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x7700_954825_claude_myc-is-public-the-mycelium-has-a-front-door.myc.md](./x7700_954825_claude_myc-is-public-the-mycelium-has-a-front-door.myc.md)                                                                                                 | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -7968,6 +7969,15 @@ _No open debts detected in the chord trail._
 - **Category**: `RECEIPT` (Author: `claude`)
 - **Suggested Commands**:
   - `./t myc lifecycle --json   # h.534023858af1 → implemented, principals s0fractal + claude`
+- **Expected After Running**:
+  - _{}_
+
+### [x7700_954825_claude_myc-is-public-the-mycelium-has-a-front-door.myc.md](./x7700_954825_claude_myc-is-public-the-mycelium-has-a-front-door.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Suggested Commands**:
+  - `curl -sI https://github.com/s0fractal/myc | head -1   # 200 — public`
+  - `git clone --recursive https://github.com/s0fractal/trinity   # myc now fetches with no creds`
 - **Expected After Running**:
   - _{}_
 

@@ -2104,11 +2104,28 @@ if (import.meta.main) {
     Deno.exit(0);
   }
 
+  // `show <name>` — the verb form of `--show`, which the atlas advertises as the
+  // way to "read one node's content". Without this, `show` was the first non-flag
+  // token, so it became the fqdn-to-resolve and silently returned `absent` — the
+  // front door pointed at a command that did not exist. Resolve the addressed node
+  // AND print its content, exactly like `--show`.
+  if (args[0] === "show") {
+    const target = args.slice(1).find((a) => !a.startsWith("--"));
+    if (!target) {
+      console.error(
+        "usage: resolver.ts show <fqdn-or-name>   (resolve AND print its content)",
+      );
+      Deno.exit(1);
+    }
+    Deno.exit(await renderShow(await resolveFqdn(target, roots)));
+  }
+
   const fqdn = args.find((a) => !a.startsWith("--"));
   if (!fqdn) {
     console.error(
       "usage: resolver.ts [--cloud] <fqdn-or-handle-or-slug>\n" +
-        "       resolver.ts --show <fqdn>                   (resolve AND print its content)\n" +
+        "       resolver.ts show <fqdn-or-name>             (resolve AND print its content)\n" +
+        "       resolver.ts --show <fqdn>                   (same, flag form)\n" +
         "       resolver.ts list [substring] [--limit=N]   (discover the namespace)\n" +
         "       resolver.ts search <query> [--kind=K]      (find content by keyword)\n" +
         "       resolver.ts refs <chord>                   (navigate citation edges)\n" +

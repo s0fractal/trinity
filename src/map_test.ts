@@ -42,7 +42,53 @@ Deno.test("buildGraph - empty input yields an empty, well-formed payload", () =>
   const g = buildGraph([]);
   assertEquals(g.leaves.length, 0);
   assertEquals(g.semantic.length, 0);
+  assertEquals(g.ledger.length, 0);
   // the root group node is always present
   assertEquals(g.groups.length, 1);
   assertEquals(g.groups[0].id, "^root");
+});
+
+Deno.test("buildGraph - weaves the MYC ledger: proposal node, derived state, cross-links", () => {
+  const g = buildGraph(
+    [
+      {
+        name: "x5300_954749_claude_ratify.myc.md",
+        content:
+          "---\ntopic: ratify\nreferences:\n  - public/proposals/h.abc123.proposal.myc.md\n---\nb",
+      },
+      {
+        name: "x5700_954397_claude_evidence.myc.md",
+        content: "---\ntopic: evidence\n---\nb",
+      },
+    ],
+    [{
+      name: "h.abc123.proposal.myc.md",
+      content:
+        '---\n---\n```json myc\n{"fqdn":"h.abc123.proposal.myc.md","commitment":{"value":"abc123"},"body":{"proposal":"a rule"}}\n```\n',
+    }],
+    [{
+      name: "h.def.resolution.myc.md",
+      content:
+        '---\n---\n```json myc\n{"body":{"outcome":"implemented","proposal_commitment":"abc123","evidence_refs":[{"kind":"chord","ref":"x5700_954397_claude_evidence"}]}}\n```\n',
+    }],
+  );
+
+  // the proposal becomes a ledger node, state derived from its resolution
+  const prop = g.ledger.find((n) =>
+    (n.id as string) === "P|h.abc123.proposal.myc.md"
+  )!;
+  assert(prop, "proposal node exists");
+  assertEquals(prop.state, "implemented");
+
+  // cross-links both ways: chord cites the proposal, proposal points at its evidence
+  assert(
+    g.semantic.some((e) =>
+      e.source.startsWith("x5300") && e.target === "P|h.abc123.proposal.myc.md"
+    ),
+  );
+  assert(
+    g.semantic.some((e) =>
+      e.source === "P|h.abc123.proposal.myc.md" && e.target.startsWith("x5700")
+    ),
+  );
 });

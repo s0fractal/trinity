@@ -31,6 +31,7 @@ export interface Chord {
 export interface Payload {
   leaves: Record<string, unknown>[];
   groups: Record<string, unknown>[];
+  ledger: Record<string, unknown>[];
   semantic: { source: string; target: string }[];
   tree: { source: string; target: string }[];
 }
@@ -41,9 +42,25 @@ function listItems(fm: string, key: string): string[] {
   return [...m[1].matchAll(/^\s+-\s+(.+?)\s*$/gm)].map((x) => x[1].trim());
 }
 
+/** Parse the ```json myc``` descriptor block of a ledger artifact (proposal /
+ *  resolution). Returns the parsed object, or null if absent/malformed. */
+function jsonBlock(content: string): Record<string, unknown> | null {
+  const m = content.match(/```json myc\s*\n([\s\S]*?)\n```/);
+  if (!m) return null;
+  try {
+    return JSON.parse(m[1]) as Record<string, unknown>;
+  } catch {
+    return null;
+  }
+}
+
 /** Pure: fold chord names into the згортка tree + extract citation edges. Exported
  *  for the test — no file I/O, so a fixture array exercises the whole projection. */
-export function buildGraph(chords: Chord[]): Payload {
+export function buildGraph(
+  chords: Chord[],
+  proposals: Chord[] = [],
+  resolutions: Chord[] = [],
+): Payload {
   const stems = new Set(chords.map((c) => c.name.replace(/\.myc\.md$/, "")));
   const resolve = (tok: string): string | null => {
     const t = tok.replace(/\.myc\.md$/, "").replace(/^.*\//, "").trim();
@@ -148,7 +165,79 @@ export function buildGraph(chords: Chord[]): Payload {
     val: x.val,
     leaf: false,
   }));
-  return { leaves: leafArr, groups: groupArr, semantic, tree };
+
+  // antigravity Proposal 1 (x3300_955041): weave the MYC ledger into the graph —
+  // proposals as state-coloured nodes, cross-linked to the chords that JUSTIFY
+  // them (resolution evidence) and CITE them (references). So the map unifies
+  // "what was written" with "what was ratified". Coarse state from resolution
+  // outcomes — not the full x3F00 finality, which the viewer doesn't need.
+  const TERMINAL = new Set(["rejected", "superseded", "withdrawn", "expired"]);
+  const ledger: Record<string, unknown>[] = [];
+  const byCommit = new Map<string, Record<string, unknown>>();
+  const byFqdn = new Map<string, string>();
+  const xlink = (s: string, t: string) => {
+    const k = s + "|" + t;
+    if (!semKey.has(k)) {
+      semKey.add(k);
+      semantic.push({ source: s, target: t });
+    }
+  };
+  for (const pr of proposals) {
+    const d = jsonBlock(pr.content);
+    if (!d) continue;
+    const fqdn = (d.fqdn as string) ?? pr.name;
+    const commit = (d.commitment as { value?: string } | undefined)?.value;
+    const body = d.body as { proposal?: string } | undefined;
+    const node: Record<string, unknown> = {
+      id: "P|" + fqdn,
+      label: fqdn,
+      topic: String(body?.proposal ?? "").slice(0, 90),
+      kind: "proposal",
+      state: "proposed",
+      val: 4,
+      ledger: true,
+      leaf: false,
+    };
+    ledger.push(node);
+    byFqdn.set(fqdn, "P|" + fqdn);
+    if (commit) byCommit.set(commit, node);
+  }
+  for (const rs of resolutions) {
+    const d = jsonBlock(rs.content);
+    if (!d) continue;
+    const body = d.body as {
+      outcome?: string;
+      proposal_commitment?: string;
+      evidence_refs?: { kind?: string; ref?: string }[];
+    } | undefined;
+    const node = body?.proposal_commitment
+      ? byCommit.get(body.proposal_commitment)
+      : undefined;
+    if (!node) continue;
+    if (body?.outcome === "implemented") node.state = "implemented";
+    else if (
+      body?.outcome && TERMINAL.has(body.outcome) &&
+      node.state !== "implemented"
+    ) node.state = "terminal";
+    for (const e of body?.evidence_refs ?? []) {
+      if (e.kind === "chord" && e.ref) {
+        const tgt = resolve(e.ref);
+        if (tgt) xlink(node.id as string, tgt); // proposal → evidence chord
+      }
+    }
+  }
+  for (const c of chords) {
+    const stem = c.name.replace(/\.myc\.md$/, "");
+    const fm = c.content.match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1] ?? "";
+    for (
+      const ref of [...listItems(fm, "references"), ...listItems(fm, "hears")]
+    ) {
+      const id = byFqdn.get(ref.replace(/^.*\//, "").trim());
+      if (id) xlink(stem, id); // chord → proposal it cites
+    }
+  }
+
+  return { leaves: leafArr, groups: groupArr, ledger, semantic, tree };
 }
 
 function renderHtml(p: Payload): string {
@@ -184,15 +273,17 @@ function coordColor(n){ if(!n.leaf) return '#33425a'; const c=n.coord||'0000'; r
 function voiceColor(n){ if(!n.leaf) return '#33425a'; return VOICE[n.voice]||'#607d8b'; }
 function octetColor(n){ if(!n.leaf) return '#33425a'; const b=parseInt(n.bucket||'0',16); return 'hsl('+((b%8)*45)+',66%,'+(b<8?58:38)+'%)'; }
 const COLOR = {coord:coordColor, voice:voiceColor, bucket:octetColor};
+const STATE = {proposed:'#3aa0ff', implemented:'#2ecc71', terminal:'#c0392b'};
 let colorMode='coord', layout='force', HL=null;
 const G = ForceGraph3D()(document.getElementById('graph'))
   .backgroundColor('#05060a')
-  .nodeLabel(n => '<div style="background:#000c;padding:3px 6px;border-radius:4px;color:#cfe;font:12px monospace">'+(n.leaf? (n.label+'  ·  '+(n.topic||'')) : n.label)+'</div>')
+  .nodeLabel(n => '<div style="background:#000c;padding:3px 6px;border-radius:4px;color:#cfe;font:12px monospace">'+(n.ledger? ('▷ '+n.state+' · '+n.label+' — '+(n.topic||'')) : (n.leaf? (n.label+'  ·  '+(n.topic||'')) : n.label))+'</div>')
   .nodeVal('val').nodeOpacity(0.92)
   .linkColor(()=> 'rgba(120,160,200,0.15)').linkWidth(0.4)
   .onNodeClick(n => {
     const info=document.getElementById('info'); info.style.display='block';
-    info.textContent = n.leaf ? (n.label+'\\n'+(n.topic||'')+'\\n\\nголос: '+n.voice+'   координата: x'+n.coord+'   зв\\'язків: '+Math.round(((n.val-1)/1.8)**2))
+    info.textContent = n.ledger ? ('▷ пропозиція ['+n.state+']\\n'+n.label+'\\n'+(n.topic||''))
+                      : n.leaf ? (n.label+'\\n'+(n.topic||'')+'\\n\\nголос: '+n.voice+'   координата: x'+n.coord+'   зв\\'язків: '+Math.round(((n.val-1)/1.8)**2))
                               : ('▣ '+n.level+': '+n.label);
     const r=1+220/Math.hypot(n.x||1,n.y||1,n.z||1);
     G.cameraPosition({x:n.x*r,y:n.y*r,z:n.z*r},{x:n.x,y:n.y,z:n.z},700);
@@ -202,12 +293,12 @@ function updateLegend(){
   if(colorMode==='bucket'){
     L.innerHTML = '<b style="color:#9cd">октет-вісь</b><br>'+OCTET.map((nm,i)=>'<span style="color:hsl('+(i*45)+',66%,60%)">●</span> '+nm).join('<br>')+'<br><span style="color:#567">8–F = дзеркало (темніше)</span>';
   } else {
-    L.innerHTML = (layout==='force' ? P.leaves.length+' вузлів · '+P.semantic.length+' семантичних ребер' : 'згортка: октет → координата → голос → думка');
+    L.innerHTML = (layout==='force' ? P.leaves.length+' акордів · '+(P.ledger?P.ledger.length:0)+' пропозицій · <span style="color:#3aa0ff">●</span>proposed <span style="color:#2ecc71">●</span>implemented <span style="color:#c0392b">●</span>terminal' : 'згортка: октет → координата → голос → думка');
   }
 }
-function recolor(){ const f=COLOR[colorMode]; G.nodeColor(n => HL? (n.__m?'#ffffff':f(n)) : f(n)); updateLegend(); }
+function recolor(){ const f=COLOR[colorMode]; G.nodeColor(n => n.ledger? (STATE[n.state]||'#888') : (HL? (n.__m?'#ffffff':f(n)) : f(n))); updateLegend(); }
 function apply(){
-  if(layout==='force'){ G.graphData({nodes:P.leaves, links:P.semantic}); G.dagMode(null); }
+  if(layout==='force'){ G.graphData({nodes:P.leaves.concat(P.ledger||[]), links:P.semantic}); G.dagMode(null); }
   else { G.graphData({nodes:P.leaves.concat(P.groups), links:P.tree}); G.dagMode('radialout'); G.dagLevelDistance(60); }
   recolor();
 }
@@ -234,7 +325,13 @@ apply();
 
 function readChords(dir: string): Chord[] {
   const out: Chord[] = [];
-  for (const e of Deno.readDirSync(dir)) {
+  let entries: Deno.DirEntry[];
+  try {
+    entries = [...Deno.readDirSync(dir)];
+  } catch {
+    return out; // dir absent (e.g. myc submodule not checked out) — empty ledger
+  }
+  for (const e of entries) {
     if (e.isFile && e.name.endsWith(".myc.md")) {
       out.push({
         name: e.name,
@@ -247,12 +344,15 @@ function readChords(dir: string): Chord[] {
 
 if (import.meta.main) {
   const srcDir = dirname(fromFileUrl(import.meta.url));
-  const p = buildGraph(readChords(srcDir));
+  const repo = dirname(srcDir);
+  const proposals = readChords(join(repo, "myc", "public", "proposals"));
+  const resolutions = readChords(join(repo, "myc", "public", "resolutions"));
+  const p = buildGraph(readChords(srcDir), proposals, resolutions);
   const html = renderHtml(p);
   if (Deno.args.includes("--stdout")) {
     console.log(html);
   } else {
-    const out = join(dirname(srcDir), "mycelium-map.html");
+    const out = join(repo, "mycelium-map.html");
     Deno.writeTextFileSync(out, html);
     console.log(JSON.stringify(
       {
@@ -260,6 +360,7 @@ if (import.meta.main) {
         position: "8/74",
         out,
         nodes: p.leaves.length,
+        ledger: p.ledger.length,
         edges: p.semantic.length,
         groups: p.groups.length,
         note: "open in a browser (needs internet — 3d-force-graph CDN)",

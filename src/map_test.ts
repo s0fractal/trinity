@@ -2,7 +2,43 @@ import {
   assert,
   assertEquals,
 } from "https://deno.land/std@0.224.0/assert/mod.ts";
-import { buildGraph } from "./x8740_map.ts";
+import { buildGraph, insights } from "./x8740_map.ts";
+
+Deno.test("buildGraph - draws supersession lineage (kind:proposal evidence)", () => {
+  const g = buildGraph(
+    [],
+    [
+      {
+        name: "h.old.proposal.myc.md",
+        content:
+          '---\n---\n```json myc\n{"fqdn":"h.old.proposal.myc.md","commitment":{"value":"old1"},"body":{"proposal":"v1"}}\n```\n',
+      },
+      {
+        name: "h.new.proposal.myc.md",
+        content:
+          '---\n---\n```json myc\n{"fqdn":"h.new.proposal.myc.md","commitment":{"value":"new1"},"body":{"proposal":"v2"}}\n```\n',
+      },
+    ],
+    [{
+      name: "h.r.resolution.myc.md",
+      content:
+        '---\n---\n```json myc\n{"body":{"outcome":"superseded","proposal_commitment":"old1","evidence_refs":[{"kind":"proposal","ref":"h.new.proposal.myc.md"}]}}\n```\n',
+    }],
+  );
+  // old proposal is terminal, and points at its successor (lineage edge)
+  const old = g.ledger.find((n) =>
+    (n.id as string) === "P|h.old.proposal.myc.md"
+  )!;
+  assertEquals(old.state, "terminal");
+  assert(g.semantic.some((e) =>
+    e.source === "P|h.old.proposal.myc.md" &&
+    e.target === "P|h.new.proposal.myc.md"
+  ));
+  // insights renders a governance section over this graph
+  const text = insights(g);
+  assert(text.includes("governance"));
+  assert(text.includes("proposals"));
+});
 
 Deno.test("buildGraph - extracts citation edges + folds names into the згортка tree", () => {
   const g = buildGraph([

@@ -19,8 +19,9 @@
 //   nothing into the substrate).
 //
 // Usage:
-//   t map            write mycelium-map.html (gitignored) + print its path
-//   t map --stdout   emit the self-contained HTML to stdout
+//   t map             write mycelium-map.html (gitignored) + print its path
+//   t map --stdout    emit the self-contained HTML to stdout
+//   t map --insights  print the graph's findings as text (hubs + governance loop)
 
 import { dirname, fromFileUrl, join } from "jsr:@std/path@1.1.4";
 
@@ -223,6 +224,8 @@ export function buildGraph(
       if (e.kind === "chord" && e.ref) {
         const tgt = resolve(e.ref);
         if (tgt) xlink(node.id as string, tgt); // proposal → evidence chord
+      } else if (e.kind === "proposal" && e.ref && byFqdn.has(e.ref)) {
+        xlink(node.id as string, byFqdn.get(e.ref)!); // superseded → successor (lineage)
       }
     }
   }
@@ -342,18 +345,73 @@ function readChords(dir: string): Chord[] {
   return out;
 }
 
+/** A text projection of the same graph — the unified view's findings for readers
+ *  who can't see 3D (models) or just want the numbers: load-bearing chords + the
+ *  governance apply-loop (how many proposals have both a citing chord AND linked
+ *  evidence — a chord or a successor proposal). Exported for the test. */
+export function insights(p: Payload): string {
+  const deg = new Map<string, { in: number; out: number }>();
+  const bump = (id: string, d: "in" | "out") => {
+    const v = deg.get(id) ?? { in: 0, out: 0 };
+    v[d]++;
+    deg.set(id, v);
+  };
+  for (const e of p.semantic) {
+    bump(e.source, "out");
+    bump(e.target, "in");
+  }
+  const L: string[] = [
+    `# ${p.leaves.length} chords · ${p.ledger.length} proposals · ${p.semantic.length} edges`,
+    "",
+    "## load-bearing chords (most connected)",
+  ];
+  for (
+    const h of p.leaves
+      .map((l) => {
+        const d = deg.get(l.id as string);
+        return { id: l.id as string, d: (d?.in ?? 0) + (d?.out ?? 0) };
+      })
+      .sort((a, b) => b.d - a.d).slice(0, 8)
+  ) L.push(`  ${String(h.d).padStart(3)}  ${h.id}`);
+  const states: Record<string, number> = {};
+  let complete = 0, unevidenced = 0;
+  const gaps: string[] = [];
+  for (const pr of p.ledger) {
+    const st = pr.state as string;
+    states[st] = (states[st] ?? 0) + 1;
+    const d = deg.get(pr.id as string) ?? { in: 0, out: 0 };
+    if (d.in > 0 && d.out > 0) complete++;
+    if (d.out === 0) {
+      unevidenced++;
+      gaps.push(`  no linked evidence: ${pr.label} [${st}]`);
+    }
+  }
+  L.push(
+    "",
+    "## governance (the unified view's payoff)",
+    `  states: ${
+      Object.entries(states).map(([k, v]) => `${k}=${v}`).join("  ")
+    }`,
+    `  complete apply-loop (cited AND evidenced): ${complete}/${p.ledger.length}`,
+    `  no linked evidence (chord or successor): ${unevidenced}/${p.ledger.length}`,
+  );
+  if (gaps.length) L.push("", "## gaps", ...gaps);
+  return L.join("\n");
+}
+
 if (import.meta.main) {
   const srcDir = dirname(fromFileUrl(import.meta.url));
   const repo = dirname(srcDir);
   const proposals = readChords(join(repo, "myc", "public", "proposals"));
   const resolutions = readChords(join(repo, "myc", "public", "resolutions"));
   const p = buildGraph(readChords(srcDir), proposals, resolutions);
-  const html = renderHtml(p);
-  if (Deno.args.includes("--stdout")) {
-    console.log(html);
+  if (Deno.args.includes("--insights")) {
+    console.log(insights(p));
+  } else if (Deno.args.includes("--stdout")) {
+    console.log(renderHtml(p));
   } else {
     const out = join(repo, "mycelium-map.html");
-    Deno.writeTextFileSync(out, html);
+    Deno.writeTextFileSync(out, renderHtml(p));
     console.log(JSON.stringify(
       {
         type: "map",

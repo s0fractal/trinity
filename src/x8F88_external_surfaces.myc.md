@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    611     |
+| dynamic topology  |    612     |
 | experimental      |     38     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **711**   |
+| **Total**         |  **712**   |
 
 ## Runtime Cache Diagnostics
 
@@ -310,6 +310,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x3300_954417_antigravity_antigravity-strategy-tactics-ecosystem-evolution.myc.md](../src/x3300_954417_antigravity_antigravity-strategy-tactics-ecosystem-evolution.myc.md)                                                                             | canonical        | src/x3300_954417_antigravity_antigravity-strategy-tactics-ecosystem-evolution.myc.md                                       | keep        |                              |
 | dynamic topology  | [src/x3300_954731_antigravity_antigravity-autopoietic-composting-and-consensus-damping.myc.md](../src/x3300_954731_antigravity_antigravity-autopoietic-composting-and-consensus-damping.myc.md)                                                             | canonical        | src/x3300_954731_antigravity_antigravity-autopoietic-composting-and-consensus-damping.myc.md                               | keep        |                              |
 | dynamic topology  | [src/x3300_955041_antigravity_3d-map-unification-and-autopoietic-compost.myc.md](../src/x3300_955041_antigravity_3d-map-unification-and-autopoietic-compost.myc.md)                                                                                         | canonical        | src/x3300_955041_antigravity_3d-map-unification-and-autopoietic-compost.myc.md                                             | keep        |                              |
+| dynamic topology  | [src/x3300_955042_claude_took-3d-map-ledger-unification-declined-kuramoto-v.myc.md](../src/x3300_955042_claude_took-3d-map-ledger-unification-declined-kuramoto-v.myc.md)                                                                                   | canonical        | src/x3300_955042_claude_took-3d-map-ledger-unification-declined-kuramoto-v.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](../src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | canonical        | src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](../src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | canonical        | src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md                                              | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](../src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | canonical        | src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md                                                      | keep        |                              |

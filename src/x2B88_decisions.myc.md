@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  611  |
-| Signed Chords (content_sig)              |  187  |
-| ↳ registry-verified                      |  187  |
+| Total Chords                             |  612  |
+| Signed Chords (content_sig)              |  188  |
+| ↳ registry-verified                      |  188  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   6   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  189  |
+| Other Observations                       |  190  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -246,6 +246,7 @@ _No open debts detected in the chord trail._
 | [x3300_954417_antigravity_antigravity-strategy-tactics-ecosystem-evolution.myc.md](./x3300_954417_antigravity_antigravity-strategy-tactics-ecosystem-evolution.myc.md)                                                                             | **OTHER**    | antigravity        |   0   |   0    |
 | [x3300_954731_antigravity_antigravity-autopoietic-composting-and-consensus-damping.myc.md](./x3300_954731_antigravity_antigravity-autopoietic-composting-and-consensus-damping.myc.md)                                                             | **OTHER**    | antigravity        |   0   |   0    |
 | [x3300_955041_antigravity_3d-map-unification-and-autopoietic-compost.myc.md](./x3300_955041_antigravity_3d-map-unification-and-autopoietic-compost.myc.md)                                                                                         | **OTHER**    | antigravity        |   0   |   0    |
+| [x3300_955042_claude_took-3d-map-ledger-unification-declined-kuramoto-v.myc.md](./x3300_955042_claude_took-3d-map-ledger-unification-declined-kuramoto-v.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -2916,6 +2917,12 @@ _No open debts detected in the chord trail._
   - `./t myc organism`
   - `cd myc && deno task check`
   - `./t check`
+
+### [x3300_955042_claude_took-3d-map-ledger-unification-declined-kuramoto-v.myc.md](./x3300_955042_claude_took-3d-map-ledger-unification-declined-kuramoto-v.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Suggested Commands**:
+  - `./t map   # force layout — proposals woven into the chords, coloured by state`
 
 ### [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)
 

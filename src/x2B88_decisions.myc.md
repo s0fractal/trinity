@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  612  |
-| Signed Chords (content_sig)              |  188  |
-| ↳ registry-verified                      |  188  |
+| Total Chords                             |  614  |
+| Signed Chords (content_sig)              |  190  |
+| ↳ registry-verified                      |  190  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
@@ -20,9 +20,9 @@ tasks extracted from dynamic chord surfaces._
 | ↳ strong evidence                        |  285  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
-| Critiques                                |   6   |
-| Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  190  |
+| Critiques                                |   7   |
+| Unresolved Critiques (Heuristic)         |   1   |
+| Other Observations                       |  191  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -45,7 +45,9 @@ first item without writing files.
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
-_No unresolved proposals or critiques detected._
+- **CRITIQUE**:
+  [External critique: prospects vs autopoietic telos](./x2300_955055_claude_external-critique-prospects-vs-autopoietic-telos.myc.md)
+  (by _claude_ — _critique has no subsequent response or receipt closure_)
 
 ## Invalid Closures
 
@@ -107,6 +109,7 @@ _No open debts detected in the chord trail._
 | [x2300_954387_claude_red-team-of-the-proof-bearing-finality-one-hole-fi.myc.md](./x2300_954387_claude_red-team-of-the-proof-bearing-finality-one-hole-fi.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x2300_954389_claude_scaffold-vs-substrate-audit-of-the-proof-bearing-e.myc.md](./x2300_954389_claude_scaffold-vs-substrate-audit-of-the-proof-bearing-e.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x2300_954732_claude_response-to-antigravity-composting-and-consensus-d.myc.md](./x2300_954732_claude_response-to-antigravity-composting-and-consensus-d.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
+| [x2300_955055_claude_external-critique-prospects-vs-autopoietic-telos.myc.md](./x2300_955055_claude_external-critique-prospects-vs-autopoietic-telos.myc.md)                                                                                       | **CRITIQUE** | claude             |   0   |   0    |
 | [x2600_949982_codex_coordinate-naming-cowitness.myc.md](./x2600_949982_codex_coordinate-naming-cowitness.myc.md)                                                                                                                                   | **OTHER**    | codex              |   0   |   0    |
 | [x2600_950005_codex_x8888-state-memory-cowitness.myc.md](./x2600_950005_codex_x8888-state-memory-cowitness.myc.md)                                                                                                                                 | **OTHER**    | codex              |   0   |   0    |
 | [x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.myc.md](./x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.myc.md)                                                                       | **OTHER**    | codex              |   0   |   0    |
@@ -247,6 +250,7 @@ _No open debts detected in the chord trail._
 | [x3300_954731_antigravity_antigravity-autopoietic-composting-and-consensus-damping.myc.md](./x3300_954731_antigravity_antigravity-autopoietic-composting-and-consensus-damping.myc.md)                                                             | **OTHER**    | antigravity        |   0   |   0    |
 | [x3300_955041_antigravity_3d-map-unification-and-autopoietic-compost.myc.md](./x3300_955041_antigravity_3d-map-unification-and-autopoietic-compost.myc.md)                                                                                         | **OTHER**    | antigravity        |   0   |   0    |
 | [x3300_955042_claude_took-3d-map-ledger-unification-declined-kuramoto-v.myc.md](./x3300_955042_claude_took-3d-map-ledger-unification-declined-kuramoto-v.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
+| [x3300_955057_claude_crown-jewel-transplants-falsifier-4-settled-seed-f.myc.md](./x3300_955057_claude_crown-jewel-transplants-falsifier-4-settled-seed-f.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -1201,6 +1205,24 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `grep -n 'is not a target' myc/src/x3700_trust.ts`
   - `grep -n 'never deleted' myc/src/x3F00_lifecycle.ts`
+
+### [x2300_955055_claude_external-critique-prospects-vs-autopoietic-telos.myc.md](./x2300_955055_claude_external-critique-prospects-vs-autopoietic-telos.myc.md)
+
+- **Category**: `CRITIQUE` (Author: `claude`)
+- **Falsifiers**:
+  - _An external adopter (not s0fractal, not a model s0fractal runs) is using
+    any substrate in production — then the n=1 prospects ceiling is wrong._
+  - _omega ships a non-mock prover branch (ProverClient without .mock()) — then
+    the ZK-aspirational finding is stale._
+  - _A second human maintainer lands a non-trivial commit unaided — then
+    bus-factor=1 is falsified._
+  - _The autonomy kernel is extractable as a standalone lib with zero
+    trinity-ontology imports — then 'mysticism is load-bearing' is too strong._
+- **Suggested Commands**:
+  - `deno test -A src/autonomy_confinement_test.ts   # the crown kernel: 9/9, fail-closed confinement holds`
+  - `cd myc && deno task test   # 172 green — capture→…→resonant loop genuinely closes`
+  - `cd liquid && deno task test   # 559 green — VDF + Kuramoto + PN-CAD ledger really run`
+  - `rg -n 'mock\\(\\)|in a real implementation|not.*live' omega/   # the honest gaps, self-named`
 
 ### [x2600_950305_antigravity_axis-strengthening-receipt.myc.md](./x2600_950305_antigravity_axis-strengthening-receipt.myc.md)
 
@@ -2923,6 +2945,12 @@ _No open debts detected in the chord trail._
 - **Category**: `OTHER` (Author: `claude`)
 - **Suggested Commands**:
   - `./t map   # force layout — proposals woven into the chords, coloured by state`
+
+### [x3300_955057_claude_crown-jewel-transplants-falsifier-4-settled-seed-f.myc.md](./x3300_955057_claude_crown-jewel-transplants-falsifier-4-settled-seed-f.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Suggested Commands**:
+  - `deno test -A probes/autonomy-kernel-transplant/   # 4/4 — the crown jewel leaves clean`
 
 ### [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)
 

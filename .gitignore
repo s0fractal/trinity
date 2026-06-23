@@ -81,3 +81,7 @@ reports/
 .autonomy-probe/
 .autonomy-exec/
 .autonomy-demand/
+
+# Living-map HTML render — `t map`. A self-contained viewer of the namespace;
+# ephemeral (goes stale on every new chord), regenerable any time from sources.
+mycelium-map.html

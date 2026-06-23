@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    614     |
+| dynamic topology  |    615     |
 | experimental      |     39     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **715**   |
+| **Total**         |  **716**   |
 
 ## Runtime Cache Diagnostics
 
@@ -314,6 +314,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x3300_955041_antigravity_3d-map-unification-and-autopoietic-compost.myc.md](../src/x3300_955041_antigravity_3d-map-unification-and-autopoietic-compost.myc.md)                                                                                         | canonical        | src/x3300_955041_antigravity_3d-map-unification-and-autopoietic-compost.myc.md                                             | keep        |                              |
 | dynamic topology  | [src/x3300_955042_claude_took-3d-map-ledger-unification-declined-kuramoto-v.myc.md](../src/x3300_955042_claude_took-3d-map-ledger-unification-declined-kuramoto-v.myc.md)                                                                                   | canonical        | src/x3300_955042_claude_took-3d-map-ledger-unification-declined-kuramoto-v.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_955057_claude_crown-jewel-transplants-falsifier-4-settled-seed-f.myc.md](../src/x3300_955057_claude_crown-jewel-transplants-falsifier-4-settled-seed-f.myc.md)                                                                                   | canonical        | src/x3300_955057_claude_crown-jewel-transplants-falsifier-4-settled-seed-f.myc.md                                          | keep        |                              |
+| dynamic topology  | [src/x3300_955061_claude_ornament-adjudicated-decorative-at-leaf-load-beari.myc.md](../src/x3300_955061_claude_ornament-adjudicated-decorative-at-leaf-load-beari.myc.md)                                                                                   | canonical        | src/x3300_955061_claude_ornament-adjudicated-decorative-at-leaf-load-beari.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](../src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | canonical        | src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](../src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | canonical        | src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md                                              | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](../src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | canonical        | src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md                                                      | keep        |                              |

@@ -178,11 +178,12 @@ function renderHtml(p: Payload): string {
 <script>
 const P = ${JSON.stringify(p)};
 const VOICE = {claude:'#4fc3f7',codex:'#81c784',gemini:'#ba68c8',antigravity:'#ffb74d',kimi:'#f06292',s0fractal:'#fff176',fable:'#a1887f','?':'#607d8b'};
-const BUCKET = ['#e74c3c','#e67e22','#f1c40f','#2ecc71','#1abc9c','#3498db','#9b59b6','#e84393','#fd79a8','#00b894','#0984e3','#6c5ce7','#fdcb6e','#00cec9','#b2bec3','#dfe6e9'];
+// the substrate's 8-axis dipole language as a colour WHEEL; mirror pairs (N↔N+8) share the hue, darker
+const OCTET = ['void∞','first·penult','mirror·apex','triangle','foundation','action','harmony','completion'];
 function coordColor(n){ if(!n.leaf) return '#33425a'; const c=n.coord||'0000'; return '#'+c.slice(0,2)+c.slice(2,4)+'a0'; }
 function voiceColor(n){ if(!n.leaf) return '#33425a'; return VOICE[n.voice]||'#607d8b'; }
-function bucketColor(n){ if(!n.leaf) return '#33425a'; return BUCKET[parseInt(n.bucket||'0',16)]||'#888'; }
-const COLOR = {coord:coordColor, voice:voiceColor, bucket:bucketColor};
+function octetColor(n){ if(!n.leaf) return '#33425a'; const b=parseInt(n.bucket||'0',16); return 'hsl('+((b%8)*45)+',66%,'+(b<8?58:38)+'%)'; }
+const COLOR = {coord:coordColor, voice:voiceColor, bucket:octetColor};
 let colorMode='coord', layout='force', HL=null;
 const G = ForceGraph3D()(document.getElementById('graph'))
   .backgroundColor('#05060a')
@@ -196,14 +197,19 @@ const G = ForceGraph3D()(document.getElementById('graph'))
     const r=1+220/Math.hypot(n.x||1,n.y||1,n.z||1);
     G.cameraPosition({x:n.x*r,y:n.y*r,z:n.z*r},{x:n.x,y:n.y,z:n.z},700);
   });
-function recolor(){ const f=COLOR[colorMode]; G.nodeColor(n => HL? (n.__m?'#ffffff':f(n)) : f(n)); }
+function updateLegend(){
+  const L=document.getElementById('legend');
+  if(colorMode==='bucket'){
+    L.innerHTML = '<b style="color:#9cd">октет-вісь</b><br>'+OCTET.map((nm,i)=>'<span style="color:hsl('+(i*45)+',66%,60%)">●</span> '+nm).join('<br>')+'<br><span style="color:#567">8–F = дзеркало (темніше)</span>';
+  } else {
+    L.innerHTML = (layout==='force' ? P.leaves.length+' вузлів · '+P.semantic.length+' семантичних ребер' : 'згортка: октет → координата → голос → думка');
+  }
+}
+function recolor(){ const f=COLOR[colorMode]; G.nodeColor(n => HL? (n.__m?'#ffffff':f(n)) : f(n)); updateLegend(); }
 function apply(){
   if(layout==='force'){ G.graphData({nodes:P.leaves, links:P.semantic}); G.dagMode(null); }
   else { G.graphData({nodes:P.leaves.concat(P.groups), links:P.tree}); G.dagMode('radialout'); G.dagLevelDistance(60); }
   recolor();
-  document.getElementById('legend').innerHTML =
-    layout==='force' ? P.leaves.length+' вузлів · '+P.semantic.length+' семантичних ребер'
-    : 'згортка: октет → координата → голос → думка';
 }
 function setBtns(pfx,id){ document.querySelectorAll('[id^="'+pfx+'"]').forEach(b=>b.classList.toggle('on', b.id===id)); }
 const $=id=>document.getElementById(id);

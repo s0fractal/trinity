@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  629  |
-| Signed Chords (content_sig)              |  205  |
-| ↳ registry-verified                      |  205  |
+| Total Chords                             |  630  |
+| Signed Chords (content_sig)              |  206  |
+| ↳ registry-verified                      |  206  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  60   |
-| Receipts                                 |  287  |
-| ↳ strong evidence                        |  287  |
+| Receipts                                 |  288  |
+| ↳ strong evidence                        |  288  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
@@ -266,6 +266,7 @@ _No open debts detected in the chord trail._
 | [x3300_955210_claude_publication-is-autonomous-now-0-2-0-shipped-oidc-o.myc.md](./x3300_955210_claude_publication-is-autonomous-now-0-2-0-shipped-oidc-o.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_955216_claude_autonomy-kernel-is-a-complete-agent-authority-tool.myc.md](./x3300_955216_claude_autonomy-kernel-is-a-complete-agent-authority-tool.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_955220_claude_deep-reckoning-trinity-is-a-forge-not-a-network-le.myc.md](./x3300_955220_claude_deep-reckoning-trinity-is-a-forge-not-a-network-le.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
+| [x3300_955228_claude_forge-generalizes-third-gem-kuramoto-coherence-lif.myc.md](./x3300_955228_claude_forge-generalizes-third-gem-kuramoto-coherence-lif.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -3039,6 +3040,12 @@ _No open debts detected in the chord trail._
 - **Category**: `OTHER` (Author: `claude`)
 - **Suggested Commands**:
   - `gh run list --workflow=ci.yml --limit 1   # green again — was red, auto-publishing from a tree it couldn't compile`
+
+### [x3300_955228_claude_forge-generalizes-third-gem-kuramoto-coherence-lif.myc.md](./x3300_955228_claude_forge-generalizes-third-gem-kuramoto-coherence-lif.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Suggested Commands**:
+  - `cd packages/kuramoto-coherence && cargo test   # 19 + 1 green, no_std, zero deps`
 
 ### [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)
 

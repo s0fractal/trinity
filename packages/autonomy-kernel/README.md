@@ -65,6 +65,43 @@ denies a write, a deploy, a spend, and an unknown effect — is in
 deno run examples/gate_agent.ts
 ```
 
+## Gate Claude Code itself
+
+The same primitive gates a real harness.
+[`examples/claude_code_gate.ts`](./examples/claude_code_gate.ts) is a working
+**Claude Code `PreToolUse` hook**: it maps each tool call to its effect,
+classifies A0–A4, and allows only up to a ceiling — so the agent reads and edits
+the repo, but a `git push`, a `deno publish`, an `rm -rf`, a web fetch, an
+unbounded subagent, or an _unknown_ tool is denied, fail-closed.
+
+```jsonc
+// .claude/settings.json
+{
+  "hooks": {
+    "PreToolUse": [{
+      "matcher": "*",
+      "hooks": [
+        { "type": "command", "command": "deno run -A claude_code_gate.ts" }
+      ]
+    }]
+  }
+}
+```
+
+```
+$ deno run examples/claude_code_gate.ts --demo
+  ✅ ALLOW [A0] Read         README.md
+  ✅ ALLOW [A2] Edit         src/app.ts
+  ✅ ALLOW [A2] Bash         git commit -m wip
+  ⛔ DENY  [A3] Bash         git push origin main
+  ⛔ DENY  [A4] Bash         deno publish
+  ⛔ DENY  [A4] Task         (unknown effect subagent_spawn ⇒ sovereign)
+  ⛔ DENY  [A4] MysteryTool  (unknown tool ⇒ sovereign)
+```
+
+Set the ceiling with `CLAUDE_GATE_CEILING` (default `A2`). The agent that built
+this kernel runs gated by it.
+
 ## Why this exists
 
 Bounded, auditable, revocable authority is the unsolved problem under every

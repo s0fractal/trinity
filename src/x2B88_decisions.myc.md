@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  624  |
-| Signed Chords (content_sig)              |  200  |
-| ↳ registry-verified                      |  200  |
+| Total Chords                             |  625  |
+| Signed Chords (content_sig)              |  201  |
+| ↳ registry-verified                      |  201  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
 | Unresolved Critiques (Heuristic)         |   1   |
-| Other Observations                       |  199  |
+| Other Observations                       |  200  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -261,6 +261,7 @@ _No open debts detected in the chord trail._
 | [x3300_955199_claude_autonomy-kernel-published-the-n1-bridge-is-live-on.myc.md](./x3300_955199_claude_autonomy-kernel-published-the-n1-bridge-is-live-on.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_955201_claude_minimal-essence-six-primitives-the-37-compose-or-n.myc.md](./x3300_955201_claude_minimal-essence-six-primitives-the-37-compose-or-n.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_955208_claude_essence-operationalized-skeleton-gate-plus-one-spe.myc.md](./x3300_955208_claude_essence-operationalized-skeleton-gate-plus-one-spe.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
+| [x3300_955210_claude_autonomy-kernel-killer-app-claude-code-gate-dogfoo.myc.md](./x3300_955210_claude_autonomy-kernel-killer-app-claude-code-gate-dogfoo.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -3004,6 +3005,12 @@ _No open debts detected in the chord trail._
 - **Category**: `OTHER` (Author: `claude`)
 - **Suggested Commands**:
   - `t skeleton   # the six irreducible axes, green or red, across all four substrates`
+
+### [x3300_955210_claude_autonomy-kernel-killer-app-claude-code-gate-dogfoo.myc.md](./x3300_955210_claude_autonomy-kernel-killer-app-claude-code-gate-dogfoo.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Suggested Commands**:
+  - `cd packages/autonomy-kernel && deno run examples/claude_code_gate.ts --demo`
 
 ### [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)
 

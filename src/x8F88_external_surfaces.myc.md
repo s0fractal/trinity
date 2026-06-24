@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    624     |
+| dynamic topology  |    625     |
 | experimental      |     39     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **725**   |
+| **Total**         |  **726**   |
 
 ## Runtime Cache Diagnostics
 
@@ -324,6 +324,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x3300_955199_claude_autonomy-kernel-published-the-n1-bridge-is-live-on.myc.md](../src/x3300_955199_claude_autonomy-kernel-published-the-n1-bridge-is-live-on.myc.md)                                                                                   | canonical        | src/x3300_955199_claude_autonomy-kernel-published-the-n1-bridge-is-live-on.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_955201_claude_minimal-essence-six-primitives-the-37-compose-or-n.myc.md](../src/x3300_955201_claude_minimal-essence-six-primitives-the-37-compose-or-n.myc.md)                                                                                   | canonical        | src/x3300_955201_claude_minimal-essence-six-primitives-the-37-compose-or-n.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_955208_claude_essence-operationalized-skeleton-gate-plus-one-spe.myc.md](../src/x3300_955208_claude_essence-operationalized-skeleton-gate-plus-one-spe.myc.md)                                                                                   | canonical        | src/x3300_955208_claude_essence-operationalized-skeleton-gate-plus-one-spe.myc.md                                          | keep        |                              |
+| dynamic topology  | [src/x3300_955210_claude_autonomy-kernel-killer-app-claude-code-gate-dogfoo.myc.md](../src/x3300_955210_claude_autonomy-kernel-killer-app-claude-code-gate-dogfoo.myc.md)                                                                                   | canonical        | src/x3300_955210_claude_autonomy-kernel-killer-app-claude-code-gate-dogfoo.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](../src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | canonical        | src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](../src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | canonical        | src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md                                              | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](../src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | canonical        | src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md                                                      | keep        |                              |

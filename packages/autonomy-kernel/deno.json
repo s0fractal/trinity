@@ -1,6 +1,6 @@
 {
   "name": "@s0fractal/autonomy-kernel",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "exports": "./mod.ts",
   "license": "AGPL-3.0-or-later",
   "publish": {

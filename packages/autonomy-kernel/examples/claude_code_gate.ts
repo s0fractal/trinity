@@ -36,6 +36,21 @@ const TOOL_EFFECTS: Record<string, string[]> = {
  *  unrecognized returns "shell_unknown" → A4, so a novel command is never waved through. */
 export function bashEffects(cmd: string): string[] {
   const c = cmd.toLowerCase();
+  // "Looks innocent, is sovereign" — checked first, mapped to effects the kernel
+  // has never heard of, so they fail closed to A4 regardless of what follows.
+  if (
+    /(\||;|&&)\s*(sh|bash|zsh)\b/.test(c) || /\b(sh|bash|zsh)\s+-c\b/.test(c)
+  ) {
+    return ["arbitrary_exec"]; // curl … | sh, bash -c "…"
+  }
+  if (/(^|\s|;|&&|\|)\s*sudo\b/.test(c)) {
+    return ["privilege_escalation"];
+  }
+  if (
+    /git\s+push\b[^;&|]*(--force\b|--force-with-lease\b|\s-f(\s|$))/.test(c)
+  ) {
+    return ["destructive"]; // force-push can rewrite shared history
+  }
   if (
     /(^|\s|;|&&|\|)\s*(rm\s+-rf|git\s+reset\s+--hard|dd\s|mkfs|:\(\)\s*\{)/
       .test(c)

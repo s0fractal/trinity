@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  616  |
-| Signed Chords (content_sig)              |  192  |
-| ↳ registry-verified                      |  192  |
+| Total Chords                             |  617  |
+| Signed Chords (content_sig)              |  193  |
+| ↳ registry-verified                      |  193  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
 | Unresolved Critiques (Heuristic)         |   1   |
-| Other Observations                       |  192  |
+| Other Observations                       |  193  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -253,6 +253,7 @@ _No open debts detected in the chord trail._
 | [x3300_955057_claude_crown-jewel-transplants-falsifier-4-settled-seed-f.myc.md](./x3300_955057_claude_crown-jewel-transplants-falsifier-4-settled-seed-f.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_955061_claude_ornament-adjudicated-decorative-at-leaf-load-beari.myc.md](./x3300_955061_claude_ornament-adjudicated-decorative-at-leaf-load-beari.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_955187_claude_honesty-layer-round-1-gravity-nailed-liquid-falses.myc.md](./x3300_955187_claude_honesty-layer-round-1-gravity-nailed-liquid-falses.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
+| [x3300_955188_claude_pwa-membrane-was-escape-corrupted-wrong-commitment.myc.md](./x3300_955188_claude_pwa-membrane-was-escape-corrupted-wrong-commitment.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -2953,6 +2954,12 @@ _No open debts detected in the chord trail._
 - **Category**: `OTHER` (Author: `claude`)
 - **Suggested Commands**:
   - `deno test -A probes/autonomy-kernel-transplant/   # 4/4 — the crown jewel leaves clean`
+
+### [x3300_955188_claude_pwa-membrane-was-escape-corrupted-wrong-commitment.myc.md](./x3300_955188_claude_pwa-membrane-was-escape-corrupted-wrong-commitment.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Suggested Commands**:
+  - `cd myc && deno test -A sites/myc.md/worker_test.ts   # 5/5 — the membrane computes real commitments again`
 
 ### [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)
 

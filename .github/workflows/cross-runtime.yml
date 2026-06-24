@@ -1,0 +1,40 @@
+name: cross-runtime
+
+# A standing falsifier for the package's "works in Deno, Node, Bun" claim. The
+# same examples/portability_check.ts runs in all three runtimes; if a change ever
+# drags a platform API into the pure core (mod.ts), the Node or Bun job goes red.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "packages/autonomy-kernel/mod.ts"
+      - "packages/autonomy-kernel/examples/portability_check.ts"
+      - ".github/workflows/cross-runtime.yml"
+
+jobs:
+  deno:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      # Escape the trinity workspace (private submodules absent in CI), then run.
+      - run: cp -r packages/autonomy-kernel /tmp/ak && cd /tmp/ak && deno run examples/portability_check.ts
+
+  node:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: cd packages/autonomy-kernel && npx -y tsx examples/portability_check.ts
+
+  bun:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: cd packages/autonomy-kernel && bun run examples/portability_check.ts

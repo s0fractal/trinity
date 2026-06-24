@@ -6,7 +6,9 @@ intended action into a risk class and decides whether a mandate authorizes it â€
 fail-closed.
 
 - **Zero dependencies, zero IO, zero framework.** One file, two functions, plain
-  data in and out. Works in Deno, Node, Bun, the browser, an edge worker.
+  data in and out. Verified each push in **Deno, Node, and Bun** (see
+  [`cross-runtime`](../../.github/workflows/cross-runtime.yml)); pure standard JS,
+  so it runs in any browser or edge worker too.
 - **Fail-closed by construction.** An effect the kernel has never heard of is
   _sovereign_ (A4), never "probably fine". A4 is never auto-admitted. Evidence
   must be content-bound to the exact verb + target.

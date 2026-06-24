@@ -32,4 +32,10 @@ decision.
 - `intent_hash` binds the receipt to the original `PHI_INTENT`.
 - `status` is one of `ACCEPTED`, `REJECTED`, or `QUARANTINED`.
 - `derived_phase` must be deterministic when status is `ACCEPTED`.
+- `receipt_signature` is a **v0.1 PLACEHOLDER** (the example value
+  `"sha256-or-real-signature"` is literal): no substrate computes or validates
+  it yet — only `omega/tools/consume_intent_fixture.ts` references it. Treat a
+  receipt as **unauthenticated**: a forged or unsigned receipt is currently
+  undetectable. Real signing/verification is unbuilt — do not rely on this
+  field.
 - Receipt publication belongs in `myc`.

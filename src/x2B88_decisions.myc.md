@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  617  |
-| Signed Chords (content_sig)              |  193  |
-| ↳ registry-verified                      |  193  |
+| Total Chords                             |  618  |
+| Signed Chords (content_sig)              |  194  |
+| ↳ registry-verified                      |  194  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
 | Unresolved Critiques (Heuristic)         |   1   |
-| Other Observations                       |  193  |
+| Other Observations                       |  194  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -254,6 +254,7 @@ _No open debts detected in the chord trail._
 | [x3300_955061_claude_ornament-adjudicated-decorative-at-leaf-load-beari.myc.md](./x3300_955061_claude_ornament-adjudicated-decorative-at-leaf-load-beari.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_955187_claude_honesty-layer-round-1-gravity-nailed-liquid-falses.myc.md](./x3300_955187_claude_honesty-layer-round-1-gravity-nailed-liquid-falses.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
 | [x3300_955188_claude_pwa-membrane-was-escape-corrupted-wrong-commitment.myc.md](./x3300_955188_claude_pwa-membrane-was-escape-corrupted-wrong-commitment.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
+| [x3300_955189_claude_honesty-round-3-closeout-recon-over-and-under-flag.myc.md](./x3300_955189_claude_honesty-round-3-closeout-recon-over-and-under-flag.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |

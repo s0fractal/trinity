@@ -9,6 +9,13 @@ name: publish-autonomy-kernel
 #
 # Fail-closed: tests must pass; only a NEW version is published (a re-run on an
 # already-published version is skipped, never an error-loop).
+#
+# Everything runs from a copy OUTSIDE the trinity tree. The root deno.jsonc
+# declares private submodules (./liquid, ./myc, ./omega) as workspace members that
+# CI does not check out, so ANY `deno` command inside the tree fails loading them.
+# The copy is also the package exactly as a standalone consumer receives it; OIDC
+# comes from the Actions environment, not the working directory, so publishing from
+# /tmp keeps the provenance attestation.
 
 on:
   push:
@@ -30,30 +37,25 @@ jobs:
         with:
           deno-version: v2.x
 
+      - name: stage standalone (escape the trinity workspace)
+        run: cp -r packages/autonomy-kernel /tmp/ak
+
       - name: tests must pass (fail-closed)
-        # Test OUTSIDE the trinity workspace: the root deno.jsonc lists private
-        # submodules (liquid/, …) that CI does not check out, and `deno test`
-        # would try to load them. A copy in /tmp runs the package exactly as a
-        # standalone consumer would (parity_test self-skips when x5C20 is absent).
-        run: |
-          cp -r packages/autonomy-kernel /tmp/ak
-          cd /tmp/ak && deno test -A
+        run: cd /tmp/ak && deno test -A
 
       - name: is this version already on jsr?
         id: v
         run: |
-          VER=$(grep -m1 '"version"' packages/autonomy-kernel/deno.json | sed -E 's/.*"version" *: *"([^"]+)".*/\1/')
+          VER=$(grep -m1 '"version"' /tmp/ak/deno.json | sed -E 's/.*"version" *: *"([^"]+)".*/\1/')
           CODE=$(curl -s -o /dev/null -w '%{http_code}' "https://jsr.io/@s0fractal/autonomy-kernel/${VER}_meta.json")
           [ "$CODE" = "200" ] && echo "exists=yes" >> "$GITHUB_OUTPUT" || echo "exists=no" >> "$GITHUB_OUTPUT"
           echo "version=$VER" >> "$GITHUB_OUTPUT"
 
       - name: publish a new, green version
         if: steps.v.outputs.exists == 'no'
-        # `deno publish` ignores the parent workspace on its own (unlike `deno test`),
-        # so it runs from the repo dir — keeping git provenance for the OIDC attestation.
         run: |
           echo "publishing @s0fractal/autonomy-kernel@${{ steps.v.outputs.version }}"
-          cd packages/autonomy-kernel && deno publish
+          cd /tmp/ak && deno publish --allow-dirty
 
       - name: already published — nothing to do
         if: steps.v.outputs.exists == 'yes'

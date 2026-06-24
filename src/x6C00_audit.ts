@@ -245,6 +245,56 @@ async function isRuntimeOrganImport(
   }
 }
 
+export type ImportVerdict =
+  | { kind: "ok" }
+  | { kind: "boundary"; msg: string }
+  | { kind: "warning"; msg: string };
+
+/** Pure: classify ONE relative import against the package-boundary and
+ *  coordinate-gravity laws — the EXECUTABLE substance of x3300_955061 ("a
+ *  higher-bucket import is flagged; the law reds the build"). Whether the target
+ *  is a runtime organ (vs a library) is an async file probe done by the caller
+ *  and passed in as `targetIsRuntimeOrgan`, so this stays a pure, unit-testable
+ *  predicate. Library helpers are load-bearing infra, not independent organs —
+ *  importing x4010_hash.ts from a lower bucket is not a topological breach. */
+export function classifyImport(
+  imp: string,
+  fileCoordinateHex: string | null,
+  targetIsRuntimeOrgan: boolean,
+  boundaryAdapter: string | null,
+): ImportVerdict {
+  // 1. submodule / package-boundary breach (a `../` reach)
+  if (imp.startsWith("../")) {
+    return boundaryAdapter
+      ? {
+        kind: "boundary",
+        msg: `Declared adapter "${boundaryAdapter}" imports "${imp}"`,
+      }
+      : {
+        kind: "warning",
+        msg:
+          `Relative import "${imp}" reaches outside the package boundary (submodule/probe breach)`,
+      };
+  }
+  // 2. coordinate-gravity breach: a runtime organ importing a HIGHER bucket
+  const fileName = imp.split("/").pop() ?? "";
+  const m = fileName.match(/^x([0-9A-Fa-f]{4})_/);
+  if (m && fileCoordinateHex !== null && targetIsRuntimeOrgan) {
+    const importedBucketInt = parseInt(m[1][0], 16);
+    const fileBucketInt = parseInt(fileCoordinateHex[0], 16);
+    if (importedBucketInt > fileBucketInt) {
+      return {
+        kind: "warning",
+        msg:
+          `Relative import "${imp}" violates coordinate gravity law (imported bucket ${
+            m[1][0]
+          } is higher than file bucket ${fileCoordinateHex[0]})`,
+      };
+    }
+  }
+  return { kind: "ok" };
+}
+
 async function auditRelativeImports(
   relPath: string,
   imports: string[],
@@ -253,43 +303,26 @@ async function auditRelativeImports(
 ): Promise<{ warnings: string[]; boundaryImports: string[] }> {
   const warnings: string[] = [];
   const boundaryImports: string[] = [];
-  const fileBucketInt = fileCoordinateHex
-    ? parseInt(fileCoordinateHex[0], 16)
-    : null;
 
   for (const imp of imports) {
-    // 1. Check for submodule breach (starting with ../)
-    if (imp.startsWith("../")) {
-      if (boundaryAdapter) {
-        boundaryImports.push(
-          `Declared adapter "${boundaryAdapter}" imports "${imp}"`,
-        );
-        continue;
-      }
-      warnings.push(
-        `Relative import "${imp}" reaches outside the package boundary (submodule/probe breach)`,
-      );
-      continue;
-    }
-
-    // 2. Check for coordinate gravity breach within flat src/ runtime organs.
-    // Library helpers are load-bearing infrastructure, not independent organs;
-    // importing x4010_hash.ts from a lower bucket should not look like a
-    // topological breach.
+    // The async "is the target a runtime organ?" probe (a file read) stays here;
+    // the pure boundary + coordinate-gravity decision is classifyImport (tested).
+    let targetIsRuntimeOrgan = false;
     const fileName = imp.split("/").pop() ?? "";
-    const m = fileName.match(/^x([0-9A-Fa-f]{4})_/);
-    if (m && fileBucketInt !== null) {
-      if (!(await isRuntimeOrganImport(relPath, imp))) continue;
-      const importedHex = m[1];
-      const importedBucketInt = parseInt(importedHex[0], 16);
-      if (importedBucketInt > fileBucketInt) {
-        warnings.push(
-          `Relative import "${imp}" violates coordinate gravity law (imported bucket ${
-            importedHex[0]
-          } is higher than file bucket ${fileCoordinateHex![0]})`,
-        );
-      }
+    if (
+      !imp.startsWith("../") && fileCoordinateHex !== null &&
+      /^x[0-9A-Fa-f]{4}_/.test(fileName)
+    ) {
+      targetIsRuntimeOrgan = await isRuntimeOrganImport(relPath, imp);
     }
+    const v = classifyImport(
+      imp,
+      fileCoordinateHex,
+      targetIsRuntimeOrgan,
+      boundaryAdapter,
+    );
+    if (v.kind === "boundary") boundaryImports.push(v.msg);
+    else if (v.kind === "warning") warnings.push(v.msg);
   }
 
   return { warnings, boundaryImports };

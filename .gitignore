@@ -85,3 +85,11 @@ reports/
 # Living-map HTML render — `t map`. A self-contained viewer of the namespace;
 # ephemeral (goes stale on every new chord), regenerable any time from sources.
 mycelium-map.html
+
+# Secrets — NEVER commit. The deno/jsr publish token lives in .env (trinity is
+# public). Ignored everywhere so no `git add -A` can ever sweep it into history.
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*

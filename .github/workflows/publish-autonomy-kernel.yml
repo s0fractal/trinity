@@ -42,7 +42,7 @@ jobs:
       - name: is this version already on jsr?
         id: v
         run: |
-          VER=$(deno eval "console.log(JSON.parse(Deno.readTextFileSync('packages/autonomy-kernel/deno.json')).version)")
+          VER=$(grep -m1 '"version"' packages/autonomy-kernel/deno.json | sed -E 's/.*"version" *: *"([^"]+)".*/\1/')
           CODE=$(curl -s -o /dev/null -w '%{http_code}' "https://jsr.io/@s0fractal/autonomy-kernel/${VER}_meta.json")
           [ "$CODE" = "200" ] && echo "exists=yes" >> "$GITHUB_OUTPUT" || echo "exists=no" >> "$GITHUB_OUTPUT"
           echo "version=$VER" >> "$GITHUB_OUTPUT"

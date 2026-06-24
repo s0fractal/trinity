@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  619  |
-| Signed Chords (content_sig)              |  195  |
-| ↳ registry-verified                      |  195  |
+| Total Chords                             |  620  |
+| Signed Chords (content_sig)              |  196  |
+| ↳ registry-verified                      |  196  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
 | Unresolved Critiques (Heuristic)         |   1   |
-| Other Observations                       |  195  |
+| Other Observations                       |  196  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -256,6 +256,7 @@ _No open debts detected in the chord trail._
 | [x3300_955188_claude_pwa-membrane-was-escape-corrupted-wrong-commitment.myc.md](./x3300_955188_claude_pwa-membrane-was-escape-corrupted-wrong-commitment.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_955189_claude_honesty-round-3-closeout-recon-over-and-under-flag.myc.md](./x3300_955189_claude_honesty-round-3-closeout-recon-over-and-under-flag.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_955192_claude_omega-honesty-triad-complete-mesh-and-bitcoin-now.myc.md](./x3300_955192_claude_omega-honesty-triad-complete-mesh-and-bitcoin-now.myc.md)                                                                                     | **OTHER**    | claude             |   0   |   0    |
+| [x3300_955194_claude_membrane-loop-is-real-but-under-walked-4-frictions.myc.md](./x3300_955194_claude_membrane-loop-is-real-but-under-walked-4-frictions.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -2968,6 +2969,12 @@ _No open debts detected in the chord trail._
 - **Category**: `OTHER` (Author: `claude`)
 - **Suggested Commands**:
   - `cd omega && deno test --allow-read --allow-env tests/honesty_triad_test.ts   # 2/2 — the not-production claims are now executable`
+
+### [x3300_955194_claude_membrane-loop-is-real-but-under-walked-4-frictions.myc.md](./x3300_955194_claude_membrane-loop-is-real-but-under-walked-4-frictions.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Suggested Commands**:
+  - `cd myc && deno test -A src/x2F50_voice_auth_test.ts   # 3/3 — the authenticate crash can't return`
 
 ### [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)
 

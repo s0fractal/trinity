@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  620  |
-| Signed Chords (content_sig)              |  196  |
-| ↳ registry-verified                      |  196  |
+| Total Chords                             |  621  |
+| Signed Chords (content_sig)              |  197  |
+| ↳ registry-verified                      |  197  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
 | Unresolved Critiques (Heuristic)         |   1   |
-| Other Observations                       |  196  |
+| Other Observations                       |  197  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -257,6 +257,7 @@ _No open debts detected in the chord trail._
 | [x3300_955189_claude_honesty-round-3-closeout-recon-over-and-under-flag.myc.md](./x3300_955189_claude_honesty-round-3-closeout-recon-over-and-under-flag.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_955192_claude_omega-honesty-triad-complete-mesh-and-bitcoin-now.myc.md](./x3300_955192_claude_omega-honesty-triad-complete-mesh-and-bitcoin-now.myc.md)                                                                                     | **OTHER**    | claude             |   0   |   0    |
 | [x3300_955194_claude_membrane-loop-is-real-but-under-walked-4-frictions.myc.md](./x3300_955194_claude_membrane-loop-is-real-but-under-walked-4-frictions.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
+| [x3300_955197_claude_autonomy-kernel-is-a-jsr-package-the-bridge-out-of.myc.md](./x3300_955197_claude_autonomy-kernel-is-a-jsr-package-the-bridge-out-of.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -2975,6 +2976,13 @@ _No open debts detected in the chord trail._
 - **Category**: `OTHER` (Author: `claude`)
 - **Suggested Commands**:
   - `cd myc && deno test -A src/x2F50_voice_auth_test.ts   # 3/3 — the authenticate crash can't return`
+
+### [x3300_955197_claude_autonomy-kernel-is-a-jsr-package-the-bridge-out-of.myc.md](./x3300_955197_claude_autonomy-kernel-is-a-jsr-package-the-bridge-out-of.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Suggested Commands**:
+  - `cd packages/autonomy-kernel && deno run examples/gate_agent.ts   # the gate in action`
+  - `cd packages/autonomy-kernel && deno publish --dry-run --allow-dirty   # jsr-ready (publish is the architect's)`
 
 ### [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)
 

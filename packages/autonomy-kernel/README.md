@@ -106,21 +106,33 @@ this kernel runs gated by it.
 
 ## Gate an MCP server's tools
 
-MCP hosts trust every tool a connected server exposes.
-[`examples/mcp_gate.ts`](./examples/mcp_gate.ts) inverts that: a tool whose
-effect you have not **declared** is unknown ⇒ A4 ⇒ denied. You opt trusted tools
-in by declaring their effects; a new or malicious server's tools are refused by
-default.
+MCP hosts trust every tool a connected server exposes. The kernel inverts that —
+a tool whose effect you have not **declared** is unknown ⇒ A4 ⇒ denied.
 
-```
-$ deno run examples/mcp_gate.ts --demo
-  ✅ ALLOW [A0] files.read          ✅ ALLOW [A2] files.write
-  ⛔ DENY  [A4] files.delete (declared destructive)     ⛔ DENY [A3] git.push
-  ⛔ DENY  [A4] misc.run_shell (UNDECLARED ⇒ sovereign by default)
+[`examples/mcp_authority_proxy.ts`](./examples/mcp_authority_proxy.ts) is a
+complete, dependency-free stdio proxy. Put it between a host and an untrusted
+server: it relays JSON-RPC both ways, but every `tools/call` is gated — a denied
+call gets a JSON-RPC error and the server never sees it.
+
+```sh
+deno run -A mcp_authority_proxy.ts --config gate.json -- <server command…>
 ```
 
-Drop it into a proxy between host and servers — the effect map is your trust
-statement, and an empty map denies everything.
+```jsonc
+// gate.json — your trust statement; anything not listed is denied by default
+{
+  "ceiling": "A2",
+  "effects": {
+    "read_file": ["read"],
+    "write_file": ["source_change"],
+    "delete_path": ["destructive"]
+  }
+}
+```
+
+For the bare decision without the transport,
+[`examples/mcp_gate.ts`](./examples/mcp_gate.ts) is the same gate as a one-call
+helper (`deno run examples/mcp_gate.ts --demo`).
 
 ## Why this exists
 

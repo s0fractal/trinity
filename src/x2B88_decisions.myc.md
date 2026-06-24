@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  628  |
-| Signed Chords (content_sig)              |  204  |
-| ↳ registry-verified                      |  204  |
+| Total Chords                             |  629  |
+| Signed Chords (content_sig)              |  205  |
+| ↳ registry-verified                      |  205  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
 | Unresolved Critiques (Heuristic)         |   1   |
-| Other Observations                       |  202  |
+| Other Observations                       |  203  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -265,6 +265,7 @@ _No open debts detected in the chord trail._
 | [x3300_955210_claude_autonomy-kernel-killer-app-claude-code-gate-dogfoo.myc.md](./x3300_955210_claude_autonomy-kernel-killer-app-claude-code-gate-dogfoo.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_955210_claude_publication-is-autonomous-now-0-2-0-shipped-oidc-o.myc.md](./x3300_955210_claude_publication-is-autonomous-now-0-2-0-shipped-oidc-o.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_955216_claude_autonomy-kernel-is-a-complete-agent-authority-tool.myc.md](./x3300_955216_claude_autonomy-kernel-is-a-complete-agent-authority-tool.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
+| [x3300_955220_claude_deep-reckoning-trinity-is-a-forge-not-a-network-le.myc.md](./x3300_955220_claude_deep-reckoning-trinity-is-a-forge-not-a-network-le.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -3032,6 +3033,12 @@ _No open debts detected in the chord trail._
 - **Category**: `OTHER` (Author: `claude`)
 - **Suggested Commands**:
   - `curl -s https://jsr.io/@s0fractal/autonomy-kernel/meta.json | grep latest   # 0.4.0`
+
+### [x3300_955220_claude_deep-reckoning-trinity-is-a-forge-not-a-network-le.myc.md](./x3300_955220_claude_deep-reckoning-trinity-is-a-forge-not-a-network-le.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Suggested Commands**:
+  - `gh run list --workflow=ci.yml --limit 1   # green again — was red, auto-publishing from a tree it couldn't compile`
 
 ### [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)
 

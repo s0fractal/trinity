@@ -1,0 +1,52 @@
+name: publish-autonomy-kernel
+
+# Event-driven, human-untied publication. When packages/autonomy-kernel bumps its
+# version on main and its tests pass, this publishes to jsr via GitHub OIDC — no
+# token, no human in the loop. A version bump IS the release event.
+#
+# ONE-TIME ACTIVATION (the only tie, and it is sovereign-appropriate): link this
+# repo to the package on jsr — https://jsr.io/@s0fractal/autonomy-kernel → Settings
+# → "GitHub repository" → s0fractal/trinity. That authorizes this repo's OIDC
+# identity to publish to the namespace. After it, nobody publishes by hand.
+#
+# Fail-closed: tests must pass; only a NEW version is published (a re-run on an
+# already-published version is skipped, never an error-loop).
+
+on:
+  push:
+    branches: [main]
+    paths: ["packages/autonomy-kernel/**"]
+
+permissions:
+  contents: read
+  id-token: write # required for jsr OIDC publishing
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: tests must pass (fail-closed)
+        run: cd packages/autonomy-kernel && deno test -A
+
+      - name: is this version already on jsr?
+        id: v
+        run: |
+          VER=$(deno eval "console.log(JSON.parse(Deno.readTextFileSync('packages/autonomy-kernel/deno.json')).version)")
+          CODE=$(curl -s -o /dev/null -w '%{http_code}' "https://jsr.io/@s0fractal/autonomy-kernel/${VER}_meta.json")
+          [ "$CODE" = "200" ] && echo "exists=yes" >> "$GITHUB_OUTPUT" || echo "exists=no" >> "$GITHUB_OUTPUT"
+          echo "version=$VER" >> "$GITHUB_OUTPUT"
+
+      - name: publish a new, green version
+        if: steps.v.outputs.exists == 'no'
+        run: |
+          echo "publishing @s0fractal/autonomy-kernel@${{ steps.v.outputs.version }}"
+          cd packages/autonomy-kernel && deno publish
+
+      - name: already published — nothing to do
+        if: steps.v.outputs.exists == 'yes'
+        run: echo "@s0fractal/autonomy-kernel@${{ steps.v.outputs.version }} is already on jsr; skipping."

@@ -102,6 +102,24 @@ $ deno run examples/claude_code_gate.ts --demo
 Set the ceiling with `CLAUDE_GATE_CEILING` (default `A2`). The agent that built
 this kernel runs gated by it.
 
+## Gate an MCP server's tools
+
+MCP hosts trust every tool a connected server exposes.
+[`examples/mcp_gate.ts`](./examples/mcp_gate.ts) inverts that: a tool whose
+effect you have not **declared** is unknown ⇒ A4 ⇒ denied. You opt trusted tools
+in by declaring their effects; a new or malicious server's tools are refused by
+default.
+
+```
+$ deno run examples/mcp_gate.ts --demo
+  ✅ ALLOW [A0] files.read          ✅ ALLOW [A2] files.write
+  ⛔ DENY  [A4] files.delete (declared destructive)     ⛔ DENY [A3] git.push
+  ⛔ DENY  [A4] misc.run_shell (UNDECLARED ⇒ sovereign by default)
+```
+
+Drop it into a proxy between host and servers — the effect map is your trust
+statement, and an empty map denies everything.
+
 ## Why this exists
 
 Bounded, auditable, revocable authority is the unsolved problem under every

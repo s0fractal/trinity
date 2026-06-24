@@ -1,0 +1,12 @@
+[package]
+name = "kuramoto-coherence"
+version = "0.1.0"
+edition = "2021"
+license = "AGPL-3.0-or-later"
+description = "Deterministic, no_std, zk-provable Kuramoto phase-coherence over integer phase agents — bit-identical across x86/ARM/RISC-V/WASM."
+repository = "https://github.com/s0fractal/trinity"
+keywords = ["kuramoto", "no_std", "deterministic", "zk", "synchronization"]
+categories = ["no-std", "science", "algorithms"]
+
+[lib]
+path = "src/lib.rs"

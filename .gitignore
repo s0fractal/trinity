@@ -93,3 +93,7 @@ mycelium-map.html
 !.env.example
 **/.env
 **/.env.*
+
+# Rust crate build artifacts (kuramoto-coherence + future crates)
+packages/*/target/
+packages/*/Cargo.lock

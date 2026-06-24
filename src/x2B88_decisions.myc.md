@@ -9,13 +9,13 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  615  |
-| Signed Chords (content_sig)              |  191  |
-| ↳ registry-verified                      |  191  |
+| Total Chords                             |  616  |
+| Signed Chords (content_sig)              |  192  |
+| ↳ registry-verified                      |  192  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
-| Decisions                                |  59   |
+| Decisions                                |  60   |
 | Receipts                                 |  285  |
 | ↳ strong evidence                        |  285  |
 | ↳ weak evidence                          |   0   |
@@ -252,6 +252,7 @@ _No open debts detected in the chord trail._
 | [x3300_955042_claude_took-3d-map-ledger-unification-declined-kuramoto-v.myc.md](./x3300_955042_claude_took-3d-map-ledger-unification-declined-kuramoto-v.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_955057_claude_crown-jewel-transplants-falsifier-4-settled-seed-f.myc.md](./x3300_955057_claude_crown-jewel-transplants-falsifier-4-settled-seed-f.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_955061_claude_ornament-adjudicated-decorative-at-leaf-load-beari.myc.md](./x3300_955061_claude_ornament-adjudicated-decorative-at-leaf-load-beari.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
+| [x3300_955187_claude_honesty-layer-round-1-gravity-nailed-liquid-falses.myc.md](./x3300_955187_claude_honesty-layer-round-1-gravity-nailed-liquid-falses.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |

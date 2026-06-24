@@ -33,7 +33,11 @@ export const AXES: {
     name: "content-hash → identity",
     reduces:
       "CANONICAL_HASH, myc commitment, content-addressed FQDNs, Merkle ledger, omega hashes",
-    proofs: [["myc", "src/x0200_resolve_test.ts"]],
+    // cross-substrate conformance to the canon-vectors oracle + myc's own commitment proof
+    proofs: [[".", "src/canon_conformance_test.ts"], [
+      "myc",
+      "src/x0200_resolve_test.ts",
+    ]],
   },
   {
     n: 2,

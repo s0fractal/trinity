@@ -1,7 +1,6 @@
 import { assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
 import { sha256Hex as trinityHash } from "./x4010_hash.ts";
 import { sha256Hex as capabilityHash } from "./x0013_capability.ts";
-import { sha256Hex as mycHash } from "../myc/src/x0100_myc.ts";
 
 // The minimal-essence map (x3300_955201) names ONE content-hash primitive. The
 // substrate's own laws (coordinate-gravity forbids a low bucket importing a high
@@ -27,8 +26,20 @@ const vectors: { vectors: { name: string; input: string; sha256: string }[] } =
 const IMPLS: [string, (s: string) => Promise<string>][] = [
   ["trinity/x4010_hash", trinityHash],
   ["trinity/x0013_capability", capabilityHash],
-  ["myc/x0100_myc", mycHash],
 ];
+
+// myc lives in a submodule that CI does not check out. Include its hash in the
+// oracle when the submodule is present (local / full checkout) and skip cleanly
+// when it is not — so a trinity-only CI verifies the trinity impls without reding
+// on the absent path. The variable specifier keeps the type-checker from trying
+// to resolve myc/ at check time (the regression that turned main CI red).
+try {
+  const mycSpec = "../myc/src/x0100_myc.ts";
+  const myc = await import(mycSpec);
+  IMPLS.push(["myc/x0100_myc", myc.sha256Hex]);
+} catch {
+  // myc submodule absent — trinity's impls are still verified against the oracle.
+}
 
 for (const [name, hash] of IMPLS) {
   Deno.test(`canon conformance — ${name} reproduces every golden vector`, async () => {

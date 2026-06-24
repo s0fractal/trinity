@@ -4,10 +4,8 @@ name: publish-autonomy-kernel
 # version on main and its tests pass, this publishes to jsr via GitHub OIDC — no
 # token, no human in the loop. A version bump IS the release event.
 #
-# ONE-TIME ACTIVATION (the only tie, and it is sovereign-appropriate): link this
-# repo to the package on jsr — https://jsr.io/@s0fractal/autonomy-kernel → Settings
-# → "GitHub repository" → s0fractal/trinity. That authorizes this repo's OIDC
-# identity to publish to the namespace. After it, nobody publishes by hand.
+# ONE-TIME ACTIVATION (done): the repo is linked to the package on jsr, which
+# authorizes this repo's OIDC identity to publish to the namespace.
 #
 # Fail-closed: tests must pass; only a NEW version is published (a re-run on an
 # already-published version is skipped, never an error-loop).
@@ -15,7 +13,9 @@ name: publish-autonomy-kernel
 on:
   push:
     branches: [main]
-    paths: ["packages/autonomy-kernel/**"]
+    paths:
+      - "packages/autonomy-kernel/**"
+      - ".github/workflows/publish-autonomy-kernel.yml"
 
 permissions:
   contents: read
@@ -31,7 +31,13 @@ jobs:
           deno-version: v2.x
 
       - name: tests must pass (fail-closed)
-        run: cd packages/autonomy-kernel && deno test -A
+        # Test OUTSIDE the trinity workspace: the root deno.jsonc lists private
+        # submodules (liquid/, …) that CI does not check out, and `deno test`
+        # would try to load them. A copy in /tmp runs the package exactly as a
+        # standalone consumer would (parity_test self-skips when x5C20 is absent).
+        run: |
+          cp -r packages/autonomy-kernel /tmp/ak
+          cd /tmp/ak && deno test -A
 
       - name: is this version already on jsr?
         id: v
@@ -43,6 +49,8 @@ jobs:
 
       - name: publish a new, green version
         if: steps.v.outputs.exists == 'no'
+        # `deno publish` ignores the parent workspace on its own (unlike `deno test`),
+        # so it runs from the repo dir — keeping git provenance for the OIDC attestation.
         run: |
           echo "publishing @s0fractal/autonomy-kernel@${{ steps.v.outputs.version }}"
           cd packages/autonomy-kernel && deno publish

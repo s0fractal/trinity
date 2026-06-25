@@ -7,11 +7,11 @@ logic), proven by a transplant test, and is useful to people who never heard of
 trinity. The move that produces them is repeatable: _strip the framing, ship the
 math._
 
-| primitive                                      | what it is                                                                                                                                      | runtime / registry                      | status                  |
-| ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- | ----------------------- |
-| [**autonomy-kernel**](./autonomy-kernel)       | bounded, auditable, revocable authority for AI agents (classify A0–A4, admit fail-closed; Claude Code + MCP gates + a full MCP authority proxy) | TS · `jsr:@s0fractal/autonomy-kernel`   | **live**                |
-| [**canonical-receipt**](./canonical-receipt)   | deterministic RFC-8949 canonical CBOR + a self-verifying receipt envelope with a multi-party witness chain                                      | TS · `jsr:@s0fractal/canonical-receipt` | **live**                |
-| [**kuramoto-coherence**](./kuramoto-coherence) | `no_std`, integer-only, zk-provable Kuramoto phase-coherence (bit-identical x86/ARM/RISC-V/WASM)                                                | Rust · crates.io                        | built, awaiting publish |
+| primitive                                      | what it is                                                                                                                                      | runtime / registry                           | status   |
+| ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- | -------- |
+| [**autonomy-kernel**](./autonomy-kernel)       | bounded, auditable, revocable authority for AI agents (classify A0–A4, admit fail-closed; Claude Code + MCP gates + a full MCP authority proxy) | TS · `jsr:@s0fractal/autonomy-kernel`        | **live** |
+| [**canonical-receipt**](./canonical-receipt)   | deterministic RFC-8949 canonical CBOR + a self-verifying receipt envelope with a multi-party witness chain                                      | TS · `jsr:@s0fractal/canonical-receipt`      | **live** |
+| [**kuramoto-coherence**](./kuramoto-coherence) | `no_std`, integer-only, zk-provable Kuramoto phase-coherence (bit-identical x86/ARM/RISC-V/WASM)                                                | Rust · `crates.io/crates/kuramoto-coherence` | **live** |
 
 Each package carries its own README, examples, tests, and a parity/transplant
 guard that reds if the copy ever drifts from the substrate source it was lifted

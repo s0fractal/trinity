@@ -26,6 +26,9 @@ type Gap = {
   proposed_by?: string;
 };
 
+const ALLOWED_BINARIES = new Set(["deno", "cargo"]);
+const FORBIDDEN_SHELL_META = /[|;<>`$(){}[\]*?~!#\n\r]/;
+
 export async function loadGaps(): Promise<Gap[]> {
   try {
     const text = await Deno.readTextFile(GAPS);
@@ -35,18 +38,76 @@ export async function loadGaps(): Promise<Gap[]> {
   }
 }
 
+function splitArgs(segment: string): string[] | null {
+  if (FORBIDDEN_SHELL_META.test(segment)) return null;
+  const parts = segment.trim().split(/\s+/).filter(Boolean);
+  return parts.length ? parts : null;
+}
+
+function containedCwd(base: string, rel: string): string | null {
+  if (!/^[A-Za-z0-9._/-]+$/.test(rel)) return null;
+  if (rel.startsWith("/") || rel.includes("..")) return null;
+  const next = `${base}/${rel}`.replace(/\/+/g, "/").replace(/\/$/, "");
+  return next.startsWith(ROOT) ? next : null;
+}
+
+export function closureCheckSafetyError(cmd: string): string | null {
+  const segments = cmd.split("&&").map((s) => s.trim()).filter(Boolean);
+  if (segments.length === 0 || segments.length > 4) {
+    return "unsafe closure_check: empty or too many command segments";
+  }
+  for (const segment of segments) {
+    const parts = splitArgs(segment);
+    if (!parts) return `unsafe closure_check segment: ${segment.slice(0, 80)}`;
+    if (parts[0] === "cd") {
+      if (parts.length !== 2) return "unsafe closure_check: cd needs exactly one relative path";
+      const next = containedCwd(ROOT, parts[1]);
+      if (!next) return `unsafe closure_check cd target: ${parts[1]}`;
+      continue;
+    }
+    if (!ALLOWED_BINARIES.has(parts[0])) return `unsafe closure_check binary: ${parts[0]}`;
+  }
+  return null;
+}
+
 async function runCheck(cmd: string): Promise<{ ok: boolean; summary: string }> {
+  const unsafe = closureCheckSafetyError(cmd);
+  if (unsafe) return { ok: false, summary: unsafe };
+
+  const segments = cmd.split("&&").map((s) => s.trim()).filter(Boolean);
+
   try {
-    const out = await new Deno.Command("sh", {
-      args: ["-c", cmd],
-      cwd: ROOT,
-      stdout: "piped",
-      stderr: "piped",
-      signal: AbortSignal.timeout(180_000),
-    }).output();
-    const text = new TextDecoder().decode(out.stdout) + new TextDecoder().decode(out.stderr);
-    const lines = text.split("\n").map((l) => l.replace(/\x1b\[[0-9;]*m/g, "").trim()).filter(Boolean);
-    return { ok: out.success, summary: (lines.pop() ?? "").slice(0, 140) };
+    let cwd = ROOT;
+    let summary = "";
+    for (const segment of segments) {
+      const parts = splitArgs(segment);
+      if (!parts) return { ok: false, summary: `unsafe closure_check segment: ${segment.slice(0, 80)}` };
+
+      if (parts[0] === "cd") {
+        if (parts.length !== 2) return { ok: false, summary: "unsafe closure_check: cd needs exactly one relative path" };
+        const next = containedCwd(ROOT, parts[1]);
+        if (!next) return { ok: false, summary: `unsafe closure_check cd target: ${parts[1]}` };
+        cwd = next;
+        continue;
+      }
+
+      if (!ALLOWED_BINARIES.has(parts[0])) {
+        return { ok: false, summary: `unsafe closure_check binary: ${parts[0]}` };
+      }
+
+      const out = await new Deno.Command(parts[0], {
+        args: parts.slice(1),
+        cwd,
+        stdout: "piped",
+        stderr: "piped",
+        signal: AbortSignal.timeout(180_000),
+      }).output();
+      const text = new TextDecoder().decode(out.stdout) + new TextDecoder().decode(out.stderr);
+      const lines = text.split("\n").map((l) => l.replace(/\x1b\[[0-9;]*m/g, "").trim()).filter(Boolean);
+      summary = (lines.pop() ?? "").slice(0, 140);
+      if (!out.success) return { ok: false, summary };
+    }
+    return { ok: true, summary };
   } catch (e) {
     return { ok: false, summary: String(e).slice(0, 140) };
   }

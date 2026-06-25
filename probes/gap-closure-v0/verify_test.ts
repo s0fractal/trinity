@@ -1,5 +1,5 @@
 import { assert, assertEquals } from "jsr:@std/assert@^1";
-import { loadGaps, verify } from "./verify.ts";
+import { closureCheckSafetyError, loadGaps, verify } from "./verify.ts";
 
 const SOURCES = new Set([
   "failing_gate",
@@ -32,4 +32,21 @@ Deno.test("verify — report shape holds and stays non-authoritative (structural
   assertEquals(r.type, "gap_closure_report");
   assertEquals(r.authoritative, false);
   assert(r.total >= r.closed);
+});
+
+Deno.test("closure checks — current records stay inside the constrained runner grammar", async () => {
+  const gaps = await loadGaps();
+  for (const g of gaps) {
+    if (g.closure_check) {
+      assertEquals(closureCheckSafetyError(g.closure_check), null, g.gap_id);
+    }
+  }
+});
+
+Deno.test("closure checks — reject shell authority, traversal, and unapproved binaries", () => {
+  assert(closureCheckSafetyError("deno test ok.ts; rm -rf /"));
+  assert(closureCheckSafetyError("deno test ok.ts | tee /tmp/x"));
+  assert(closureCheckSafetyError("deno test $(touch pwned)"));
+  assert(closureCheckSafetyError("cd ../outside && deno test"));
+  assert(closureCheckSafetyError("python scripts/check.py"));
 });

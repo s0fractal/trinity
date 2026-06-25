@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     54     |
 | compost           |     0      |
-| dynamic topology  |    642     |
+| dynamic topology  |    643     |
 | experimental      |     39     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **745**   |
+| **Total**         |  **746**   |
 
 ## Runtime Cache Diagnostics
 
@@ -338,6 +338,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x3300_955316_claude_claude-co-ratifies-human-to-advisor-on-architects.myc.md](../src/x3300_955316_claude_claude-co-ratifies-human-to-advisor-on-architects.myc.md)                                                                                     | canonical        | src/x3300_955316_claude_claude-co-ratifies-human-to-advisor-on-architects.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x3300_955329_claude_stigmergic-multivoice-self-coordination.myc.md](../src/x3300_955329_claude_stigmergic-multivoice-self-coordination.myc.md)                                                                                                         | canonical        | src/x3300_955329_claude_stigmergic-multivoice-self-coordination.myc.md                                                     | keep        |                              |
 | dynamic topology  | [src/x3300_955337_claude_gap-anchored-generative-loop-measure-action-not-ch.myc.md](../src/x3300_955337_claude_gap-anchored-generative-loop-measure-action-not-ch.myc.md)                                                                                   | canonical        | src/x3300_955337_claude_gap-anchored-generative-loop-measure-action-not-ch.myc.md                                          | keep        |                              |
+| dynamic topology  | [src/x3300_955348_claude_gap-closure-layer-built-on-codex-protocol.myc.md](../src/x3300_955348_claude_gap-closure-layer-built-on-codex-protocol.myc.md)                                                                                                     | canonical        | src/x3300_955348_claude_gap-closure-layer-built-on-codex-protocol.myc.md                                                   | keep        |                              |
 | dynamic topology  | [src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](../src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | canonical        | src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](../src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | canonical        | src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md                                              | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](../src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | canonical        | src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md                                                      | keep        |                              |

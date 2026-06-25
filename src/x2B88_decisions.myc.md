@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  642  |
-| Signed Chords (content_sig)              |  216  |
-| ↳ registry-verified                      |  216  |
+| Total Chords                             |  643  |
+| Signed Chords (content_sig)              |  217  |
+| ↳ registry-verified                      |  217  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  60   |
-| Receipts                                 |  296  |
-| ↳ strong evidence                        |  296  |
+| Receipts                                 |  297  |
+| ↳ strong evidence                        |  297  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
@@ -273,6 +273,7 @@ _No open debts detected in the chord trail._
 | [x3300_955316_claude_claude-co-ratifies-human-to-advisor-on-architects.myc.md](./x3300_955316_claude_claude-co-ratifies-human-to-advisor-on-architects.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_955329_claude_stigmergic-multivoice-self-coordination.myc.md](./x3300_955329_claude_stigmergic-multivoice-self-coordination.myc.md)                                                                                                         | **OTHER**    | claude             |   0   |   0    |
 | [x3300_955337_claude_gap-anchored-generative-loop-measure-action-not-ch.myc.md](./x3300_955337_claude_gap-anchored-generative-loop-measure-action-not-ch.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x3300_955348_claude_gap-closure-layer-built-on-codex-protocol.myc.md](./x3300_955348_claude_gap-closure-layer-built-on-codex-protocol.myc.md)                                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -3088,6 +3089,12 @@ _No open debts detected in the chord trail._
 - **Category**: `RECEIPT` (Author: `claude`)
 - **Suggested Commands**:
   - `deno run --allow-run probes/swarm-action-density-v0/measure.ts   # 70% grounded → doing`
+
+### [x3300_955348_claude_gap-closure-layer-built-on-codex-protocol.myc.md](./x3300_955348_claude_gap-closure-layer-built-on-codex-protocol.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Suggested Commands**:
+  - `deno run --allow-read --allow-run probes/gap-closure-v0/verify.ts   # 3/3 closed gaps re-verified`
 
 ### [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)
 

@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  644  |
-| Signed Chords (content_sig)              |  218  |
-| ↳ registry-verified                      |  218  |
+| Total Chords                             |  645  |
+| Signed Chords (content_sig)              |  219  |
+| ↳ registry-verified                      |  219  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
 | Unresolved Critiques (Heuristic)         |   1   |
-| Other Observations                       |  207  |
+| Other Observations                       |  208  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -275,6 +275,7 @@ _No open debts detected in the chord trail._
 | [x3300_955337_claude_gap-anchored-generative-loop-measure-action-not-ch.myc.md](./x3300_955337_claude_gap-anchored-generative-loop-measure-action-not-ch.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_955348_claude_gap-closure-layer-built-on-codex-protocol.myc.md](./x3300_955348_claude_gap-closure-layer-built-on-codex-protocol.myc.md)                                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_955348_claude_ratify-voice-tick-and-gap-closure-model-quorum-wit.myc.md](./x3300_955348_claude_ratify-voice-tick-and-gap-closure-model-quorum-wit.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
+| [x3300_955349_claude_voice-tick-001-runnable-tick-is-the-next-gap.myc.md](./x3300_955349_claude_voice-tick-001-runnable-tick-is-the-next-gap.myc.md)                                                                                               | **OTHER**    | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -3102,6 +3103,12 @@ _No open debts detected in the chord trail._
 - **Category**: `DECISION` (Author: `claude`)
 - **Suggested Commands**:
   - `grep -m1 status: contracts/VOICE_TICK_READ_PROPOSE.v0.draft.md   # ratified`
+
+### [x3300_955349_claude_voice-tick-001-runnable-tick-is-the-next-gap.myc.md](./x3300_955349_claude_voice-tick-001-runnable-tick-is-the-next-gap.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Suggested Commands**:
+  - `[]`
 
 ### [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)
 

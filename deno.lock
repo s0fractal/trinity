@@ -2,6 +2,7 @@
   "version": "5",
   "specifiers": {
     "jsr:@std/assert@*": "1.0.19",
+    "jsr:@std/assert@1": "1.0.19",
     "jsr:@std/cli@1.0.13": "1.0.13",
     "jsr:@std/crypto@*": "1.1.0",
     "jsr:@std/crypto@1.1.0": "1.1.0",

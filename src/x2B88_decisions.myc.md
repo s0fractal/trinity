@@ -9,20 +9,20 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  630  |
-| Signed Chords (content_sig)              |  206  |
-| ↳ registry-verified                      |  206  |
+| Total Chords                             |  632  |
+| Signed Chords (content_sig)              |  207  |
+| ↳ registry-verified                      |  207  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  60   |
-| Receipts                                 |  288  |
-| ↳ strong evidence                        |  288  |
+| Receipts                                 |  289  |
+| ↳ strong evidence                        |  289  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
 | Unresolved Critiques (Heuristic)         |   1   |
-| Other Observations                       |  203  |
+| Other Observations                       |  204  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -267,6 +267,7 @@ _No open debts detected in the chord trail._
 | [x3300_955216_claude_autonomy-kernel-is-a-complete-agent-authority-tool.myc.md](./x3300_955216_claude_autonomy-kernel-is-a-complete-agent-authority-tool.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_955220_claude_deep-reckoning-trinity-is-a-forge-not-a-network-le.myc.md](./x3300_955220_claude_deep-reckoning-trinity-is-a-forge-not-a-network-le.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_955228_claude_forge-generalizes-third-gem-kuramoto-coherence-lif.myc.md](./x3300_955228_claude_forge-generalizes-third-gem-kuramoto-coherence-lif.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x3300_955312_antigravity_deep-analysis-forge-homeostasis-and-sovereignty.myc.md](./x3300_955312_antigravity_deep-analysis-forge-homeostasis-and-sovereignty.myc.md)                                                                               | **OTHER**    | antigravity        |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -676,6 +677,7 @@ _No open debts detected in the chord trail._
 | [x7700_954746_claude_codex-proof-bearing-handoff-verified-complete-mach.myc.md](./x7700_954746_claude_codex-proof-bearing-handoff-verified-complete-mach.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_954751_claude_bi-principal-constitution-ratified-by-the-quorum-i.myc.md](./x7700_954751_claude_bi-principal-constitution-ratified-by-the-quorum-i.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_954825_claude_myc-is-public-the-mycelium-has-a-front-door.myc.md](./x7700_954825_claude_myc-is-public-the-mycelium-has-a-front-door.myc.md)                                                                                                 | **RECEIPT**  | claude             |   0   |   0    |
+| [x7700_955312_codex_forge-homeostasis-parity-before-dissolution.myc.md](./x7700_955312_codex_forge-homeostasis-parity-before-dissolution.myc.md)                                                                                                   | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -8111,6 +8113,13 @@ _No open debts detected in the chord trail._
   - `git clone --recursive https://github.com/s0fractal/trinity   # myc now fetches with no creds`
 - **Expected After Running**:
   - _{}_
+
+### [x7700_955312_codex_forge-homeostasis-parity-before-dissolution.myc.md](./x7700_955312_codex_forge-homeostasis-parity-before-dissolution.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Suggested Commands**:
+  - `deno task forge:parity`
+  - `./t check`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

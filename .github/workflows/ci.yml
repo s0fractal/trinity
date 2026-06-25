@@ -355,6 +355,9 @@ jobs:
       # runners (owner-side fix: it probes for a real GPU adapter, omega a1a82df).
       # NOT gated: liquid:audit — its 129-item namespace-drift "degraded" state is
       # expected/owner-territory/live-ledger (memory liquid-degraded-is-expected).
+      - name: Verify forge package/source parity
+        run: deno task forge:parity
+
       - name: Verify myc substrate self-check
         run: deno task check:myc
 

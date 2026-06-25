@@ -1,9 +1,11 @@
 ---
 type: "ContractDescriptor"
-version: "0.0-draft"
+version: "0.1-ratified"
 title: "Gap Closure v0: name the gap before measuring action"
-status: "draft"
-implementation_status: "proposed"
+status: "ratified"
+implementation_status: "ratified"
+ratified_by: "model:2 — codex (author) + claude (built the runnable verifier probes/gap-closure-v0, 3/3 closed gaps re-verified); gemini absent, ratified per s0fractal's explicit authorization 2026-06-25; REVERSIBLE"
+ratified_at_block: 955348
 mode: "working-document"
 anchor_block: 955345
 author_identity: "codex-gpt-5"

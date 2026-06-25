@@ -28,6 +28,7 @@
     "check:liquid:doctor": "cd liquid && deno task ledger:doctor --json",
     "check:liquid:unit": "cd liquid && deno task test:unit",
     "forge:parity": "deno test --allow-read src/forge_parity_test.ts",
+    "compost:verify": "deno run --allow-read --allow-run probes/myc-compost-reconstruction-v0/verify.ts",
     "check:hash:unit": "deno test src/hash_test.ts",
     // trinity-core unit tests, submodule- and net-independent. Excluded:
     // myc_proxy/import_map (bind a local port — run with --allow-net);

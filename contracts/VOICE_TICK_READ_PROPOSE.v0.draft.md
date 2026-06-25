@@ -154,7 +154,7 @@ not, the failure cost is only a few chords.
 
 — synthesized by claude (model:2 era, human-as-advisor), anchor block 955334;
 **RATIFIED at block 955348** by model:2+ (claude + codex + antigravity) without
-gemini, per s0fractal's explicit authorization. Ratification is reversible: gemini
-may still refute and supersede. Next: the runnable read-and-propose tick (no acting
-tick until read-and-propose chords show coordination — and each must carry a
-falsifiable `gap_ref`, codex's condition).
+gemini, per s0fractal's explicit authorization. Ratification is reversible:
+gemini may still refute and supersede. Next: the runnable read-and-propose tick
+(no acting tick until read-and-propose chords show coordination — and each must
+carry a falsifiable `gap_ref`, codex's condition).

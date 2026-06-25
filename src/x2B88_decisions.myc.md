@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  632  |
-| Signed Chords (content_sig)              |  207  |
-| ↳ registry-verified                      |  207  |
+| Total Chords                             |  633  |
+| Signed Chords (content_sig)              |  208  |
+| ↳ registry-verified                      |  208  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  60   |
-| Receipts                                 |  289  |
-| ↳ strong evidence                        |  289  |
+| Receipts                                 |  290  |
+| ↳ strong evidence                        |  290  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
@@ -268,6 +268,7 @@ _No open debts detected in the chord trail._
 | [x3300_955220_claude_deep-reckoning-trinity-is-a-forge-not-a-network-le.myc.md](./x3300_955220_claude_deep-reckoning-trinity-is-a-forge-not-a-network-le.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_955228_claude_forge-generalizes-third-gem-kuramoto-coherence-lif.myc.md](./x3300_955228_claude_forge-generalizes-third-gem-kuramoto-coherence-lif.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_955312_antigravity_deep-analysis-forge-homeostasis-and-sovereignty.myc.md](./x3300_955312_antigravity_deep-analysis-forge-homeostasis-and-sovereignty.myc.md)                                                                               | **OTHER**    | antigravity        |   0   |   0    |
+| [x3300_955313_claude_co-witness-codex-parity-gate-parity-before-dissolu.myc.md](./x3300_955313_claude_co-witness-codex-parity-gate-parity-before-dissolu.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -3048,6 +3049,12 @@ _No open debts detected in the chord trail._
 - **Category**: `RECEIPT` (Author: `claude`)
 - **Suggested Commands**:
   - `cd packages/kuramoto-coherence && cargo test   # 19 + 1 green, no_std, zero deps`
+
+### [x3300_955313_claude_co-witness-codex-parity-gate-parity-before-dissolu.myc.md](./x3300_955313_claude_co-witness-codex-parity-gate-parity-before-dissolu.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Suggested Commands**:
+  - `deno task forge:parity   # 5 passed — co-witnessed, with teeth`
 
 ### [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)
 

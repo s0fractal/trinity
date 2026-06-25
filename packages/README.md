@@ -13,10 +13,26 @@ math._
 | [**canonical-receipt**](./canonical-receipt)   | deterministic RFC-8949 canonical CBOR + a self-verifying receipt envelope with a multi-party witness chain                                      | TS · `jsr:@s0fractal/canonical-receipt`      | **live** |
 | [**kuramoto-coherence**](./kuramoto-coherence) | `no_std`, integer-only, zk-provable Kuramoto phase-coherence (bit-identical x86/ARM/RISC-V/WASM)                                                | Rust · `crates.io/crates/kuramoto-coherence` | **live** |
 
-Each package carries its own README, examples, tests, and a parity/transplant
-guard that reds if the copy ever drifts from the substrate source it was lifted
-from. Two of the three self-publish on a version bump (GitHub OIDC, no token, no
-human); the Rust crate publishes with a crates.io token (the maintainer's).
+Each package carries its own README, examples, tests, and a per-package
+parity/transplant guard. On top of those, a single monorepo gate —
+`deno task forge:parity` (codex, chord x7700_955312) — checks every gem against
+its substrate source and **reds on any executable drift**, run in
+cross-substrate CI after the private submodules initialize. Parity is enforced
+_before_ dissolution, so the substrate can never silently publish a stale export
+of itself.
+
+## Manifest — source, parity, publish
+
+| gem                | source cone                                                          | parity gate                                                               | publish                              | version |
+| ------------------ | -------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------ | ------- |
+| autonomy-kernel    | `src/x5C20_autonomy.ts`                                              | `parity_test.ts` + `forge:parity`                                         | jsr · OIDC, auto on version bump     | 0.4.0   |
+| canonical-receipt  | `probes/receipt-envelope-encoder-v0/ts/{canonical_cbor,envelope}.ts` | `parity_test.ts` + `forge:parity`                                         | jsr · OIDC, auto on version bump     | 0.1.0   |
+| kuramoto-coherence | `omega/omega_v2/src/{resonance,agent,math}.rs`                       | `forge:parity` (strips only the module-doc; executable drift still fails) | crates.io · manual, maintainer token | 0.1.0   |
+
+Verified: `deno task forge:parity` → 5 passed, and proven to red on an
+executable change to a package copy (then revert → green). This is the "what
+exists outside the cathedral" map; it stays honest because the gate, not the
+table, is the source of truth for drift.
 
 The catalog is open-ended: where a part of the substrate is genuinely pure and
 genuinely useful, it wants to become a package. The provenance and falsifier

@@ -60,7 +60,11 @@ import {
 } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { resignChordFile, signChordContent } from "./x2F37_voice_keys.ts";
 
-const BTC_TIP_URL = "https://blockstream.info/api/blocks/tip/height";
+const BTC_TIP_URLS = [
+  "https://blockstream.info/api/blocks/tip/height",
+  "https://mempool.space/api/blocks/tip/height",
+  "https://blockchain.info/q/getblockcount",
+];
 
 // Canonical dipole axis order from HEX_DIPOLE_SEED.v0.draft.md
 // Byte position N corresponds to dipole pair (N, N+8) on hex16 circle.
@@ -107,12 +111,34 @@ async function fn_load_dipole_pairs(): Promise<Map<string, string>> {
 }
 
 async function fetchBtcBlock(): Promise<number> {
-  const res = await fetch(BTC_TIP_URL);
-  if (!res.ok) throw new Error(`BTC API ${res.status}`);
-  const text = (await res.text()).trim();
-  const n = Number(text);
-  if (!Number.isFinite(n)) throw new Error(`bad block height: ${text}`);
-  return n;
+  // Offline / test / outage escape hatch: an explicit override skips the network
+  // entirely — keeps the chord conformance tests net-independent (their contract),
+  // and lets a voice author a chord when every height API is unreachable. Best-effort
+  // env read so it degrades to the network when --allow-env is absent.
+  let override: string | undefined;
+  try {
+    override = Deno.env.get("BTC_BLOCK_OVERRIDE");
+  } catch { /* no --allow-env — fall through to the network */ }
+  if (override) {
+    const n = Number(override.trim());
+    if (Number.isFinite(n) && n > 0) return n;
+    throw new Error(`bad BTC_BLOCK_OVERRIDE: ${override}`);
+  }
+  // Try independent height sources so a single provider's outage is not fatal.
+  let lastErr: unknown;
+  for (const url of BTC_TIP_URLS) {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`BTC API ${res.status}`);
+      const text = (await res.text()).trim();
+      const n = Number(text);
+      if (!Number.isFinite(n)) throw new Error(`bad block height: ${text}`);
+      return n;
+    } catch (e) {
+      lastErr = e;
+    }
+  }
+  throw new Error(`all BTC height sources failed: ${lastErr}`);
 }
 
 /** Convert signed float in [-1, +1] to i8 hex byte (-127..+127 range). */

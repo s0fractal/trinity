@@ -19,8 +19,16 @@ const ROOT = new URL("..", import.meta.url).pathname;
 
 async function generateChord(args: string[]): Promise<Record<string, unknown>> {
   // dry-run (no --write): the writer prints the chord markdown to stdout.
-  const r = await new Deno.Command("./t", { args, cwd: ROOT, stdout: "piped" })
-    .output();
+  // BTC_BLOCK_OVERRIDE keeps this test net-independent (its test:unit contract):
+  // the writer uses the injected height instead of reaching a block-height API, so
+  // the test passes even when every provider is down. The value is irrelevant here —
+  // we validate the chord's shape, not its anchor.
+  const r = await new Deno.Command("./t", {
+    args,
+    cwd: ROOT,
+    stdout: "piped",
+    env: { BTC_BLOCK_OVERRIDE: "900000" },
+  }).output();
   const out = new TextDecoder().decode(r.stdout);
   const m = out.match(/^---\r?\n([\s\S]*?)\r?\n---/m);
   assert(m, `writer produced no frontmatter for: t ${args.join(" ")}`);

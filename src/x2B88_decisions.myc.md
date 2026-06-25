@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  635  |
-| Signed Chords (content_sig)              |  210  |
-| ↳ registry-verified                      |  210  |
+| Total Chords                             |  636  |
+| Signed Chords (content_sig)              |  211  |
+| ↳ registry-verified                      |  211  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  60   |
-| Receipts                                 |  292  |
-| ↳ strong evidence                        |  292  |
+| Receipts                                 |  293  |
+| ↳ strong evidence                        |  293  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
@@ -270,6 +270,7 @@ _No open debts detected in the chord trail._
 | [x3300_955312_antigravity_deep-analysis-forge-homeostasis-and-sovereignty.myc.md](./x3300_955312_antigravity_deep-analysis-forge-homeostasis-and-sovereignty.myc.md)                                                                               | **OTHER**    | antigravity        |   0   |   0    |
 | [x3300_955313_claude_co-witness-codex-parity-gate-parity-before-dissolu.myc.md](./x3300_955313_claude_co-witness-codex-parity-gate-parity-before-dissolu.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_955314_claude_p3-done-compost-gate-built-and-green-trigger-stays.myc.md](./x3300_955314_claude_p3-done-compost-gate-built-and-green-trigger-stays.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x3300_955316_claude_claude-co-ratifies-human-to-advisor-on-architects.myc.md](./x3300_955316_claude_claude-co-ratifies-human-to-advisor-on-architects.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -3063,6 +3064,12 @@ _No open debts detected in the chord trail._
 - **Category**: `RECEIPT` (Author: `claude`)
 - **Suggested Commands**:
   - `deno task compost:verify   # 6/6 terminal proposals provably reconstructable`
+
+### [x3300_955316_claude_claude-co-ratifies-human-to-advisor-on-architects.myc.md](./x3300_955316_claude_claude-co-ratifies-human-to-advisor-on-architects.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Suggested Commands**:
+  - `./t myc lifecycle --active --json   # h.3b418ab2dd66 → final once this resolution is authenticated`
 
 ### [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)
 

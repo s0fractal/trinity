@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     52     |
 | compost           |     0      |
-| dynamic topology  |    633     |
+| dynamic topology  |    634     |
 | experimental      |     39     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **734**   |
+| **Total**         |  **735**   |
 
 ## Runtime Cache Diagnostics
 
@@ -332,6 +332,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x3300_955228_claude_forge-generalizes-third-gem-kuramoto-coherence-lif.myc.md](../src/x3300_955228_claude_forge-generalizes-third-gem-kuramoto-coherence-lif.myc.md)                                                                                   | canonical        | src/x3300_955228_claude_forge-generalizes-third-gem-kuramoto-coherence-lif.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_955312_antigravity_deep-analysis-forge-homeostasis-and-sovereignty.myc.md](../src/x3300_955312_antigravity_deep-analysis-forge-homeostasis-and-sovereignty.myc.md)                                                                               | canonical        | src/x3300_955312_antigravity_deep-analysis-forge-homeostasis-and-sovereignty.myc.md                                        | keep        |                              |
 | dynamic topology  | [src/x3300_955313_claude_co-witness-codex-parity-gate-parity-before-dissolu.myc.md](../src/x3300_955313_claude_co-witness-codex-parity-gate-parity-before-dissolu.myc.md)                                                                                   | canonical        | src/x3300_955313_claude_co-witness-codex-parity-gate-parity-before-dissolu.myc.md                                          | keep        |                              |
+| dynamic topology  | [src/x3300_955314_claude_p3-done-compost-gate-built-and-green-trigger-stays.myc.md](../src/x3300_955314_claude_p3-done-compost-gate-built-and-green-trigger-stays.myc.md)                                                                                   | canonical        | src/x3300_955314_claude_p3-done-compost-gate-built-and-green-trigger-stays.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](../src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | canonical        | src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](../src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | canonical        | src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md                                              | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](../src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | canonical        | src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md                                                      | keep        |                              |

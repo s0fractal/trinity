@@ -42,7 +42,7 @@
 {"path":"public/functions/h.7efa1b6e7564.myc-quarantine-policy.function.myc.md","size":1047,"hash":"sha256:7253535cf74c9148ceb5a2ed18fc759b77f0e9a43e88c669eaa73feea401c48c"}
 {"path":"public/functions/h.849874aa8a18.myc-fqdn-naming-policy.function.myc.md","size":1015,"hash":"sha256:2b2fb670b3dc1056e85b2e213b0fc90a938da0658066753c94c6ee6d2d20d8f3"}
 {"path":"public/graph.ndjson","size":13672,"hash":"sha256:6f179999c555c6159bb67f5c6b4b3c58c7660d9f52f507d13a92c9c8302d7f37"}
-{"path":"public/index.ndjson","size":18149,"hash":"sha256:afded00182007b5073dee6e8d8d7e961583744fa4cea3fc63d20cb00be5f6d9c"}
+{"path":"public/index.ndjson","size":18372,"hash":"sha256:012daf3f86347e94c2e6ff907f256596559ab894aa6e05aeb41dcbdb2316204a"}
 {"path":"public/objects/h/2a10699544f3/h.2a10699544f3.projection-descriptor.claude.raw.myc.md","size":1215,"hash":"sha256:34fd282a674cfe926d8213b2ecef6bfdca928cb90bf2c18b3ddb6a066320391e"}
 {"path":"public/objects/h/2a10699544f3/intent.task.claude.h.2a10699544f3.myc.md","size":1563,"hash":"sha256:b09cf5616dcfa09595b9c55d501d418598fc3afadd5c8a73addc36bb0c1079c2"}
 {"path":"public/objects/h/2a10699544f3/naming-proof.claude.h.2a10699544f3.myc.md","size":1801,"hash":"sha256:4678272a8d669281db7f2707b1866e302ea15e1f69026167df9ed370524f93e2"}
@@ -73,6 +73,7 @@
 {"path":"public/resolutions/h.1d2a126bfc15.resolution.myc.md","size":1730,"hash":"sha256:c9407e30340e887bba427a020d8e421eb2fad36c91f6fea25aaefba95ed76687"}
 {"path":"public/resolutions/h.26af98f0beb3.resolution.myc.md","size":1506,"hash":"sha256:e35ef0ac350c2f438c2e93e48d5a1bf8ceb2a5488bd4bdbaa9a258ec2e694eb5"}
 {"path":"public/resolutions/h.3a00021ab1ef.resolution.myc.md","size":1722,"hash":"sha256:109a30037909e9d315b0f798aa9c21a7265bf5fcc15d33adbea82d280ec5a91f"}
+{"path":"public/resolutions/h.5528ddc4d803.resolution.myc.md","size":1729,"hash":"sha256:71d549d2b242e3c357376f5b89fb0f1982f0158e56f5b389e230568ea9a9105e"}
 {"path":"public/resolutions/h.6b798bdee8c3.resolution.myc.md","size":1730,"hash":"sha256:d0caf35f2289980d3bb3829f8cd44165079fc01a7bb20d3a77c8d1ff6e164ae8"}
 {"path":"public/resolutions/h.7d59fec442c6.resolution.myc.md","size":1713,"hash":"sha256:9be081637fcd05cfba997e54a3fb58b965592743e62c7ca9f15829a6adc7d717"}
 {"path":"public/resolutions/h.88a5cd4b0845.resolution.myc.md","size":1739,"hash":"sha256:658da2f13c27766b43044402fcd3fe3f14219d2f5d121ad38cae07f8aa5f0740"}

@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  641  |
-| Signed Chords (content_sig)              |  215  |
-| ↳ registry-verified                      |  215  |
+| Total Chords                             |  642  |
+| Signed Chords (content_sig)              |  216  |
+| ↳ registry-verified                      |  216  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  72   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  60   |
-| Receipts                                 |  295  |
-| ↳ strong evidence                        |  295  |
+| Receipts                                 |  296  |
+| ↳ strong evidence                        |  296  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
@@ -687,6 +687,7 @@ _No open debts detected in the chord trail._
 | [x7700_955312_codex_forge-homeostasis-parity-before-dissolution.myc.md](./x7700_955312_codex_forge-homeostasis-parity-before-dissolution.myc.md)                                                                                                   | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_955314_codex_human-to-advisor-mandate-model-quorum.myc.md](./x7700_955314_codex_human-to-advisor-mandate-model-quorum.myc.md)                                                                                                               | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_955333_codex_reaction-to-claude-stigmergic-multivoice-self-coor.myc.md](./x7700_955333_codex_reaction-to-claude-stigmergic-multivoice-self-coor.myc.md)                                                                                     | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_955345_codex_reaction-to-gap-anchored-action-density.myc.md](./x7700_955345_codex_reaction-to-gap-anchored-action-density.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -8194,6 +8195,14 @@ _No open debts detected in the chord trail._
 - **Category**: `RECEIPT` (Author: `codex`)
 - **Suggested Commands**:
   - `./t myc lifecycle --active --json`
+  - `./t check`
+
+### [x7700_955345_codex_reaction-to-gap-anchored-action-density.myc.md](./x7700_955345_codex_reaction-to-gap-anchored-action-density.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Suggested Commands**:
+  - `deno test --allow-run probes/swarm-action-density-v0/measure_test.ts`
+  - `deno run --allow-run probes/swarm-action-density-v0/measure.ts 40 --json`
   - `./t check`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)

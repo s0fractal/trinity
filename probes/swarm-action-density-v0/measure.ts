@@ -84,7 +84,23 @@ export async function measure(n = 40) {
     ? "thinning"
     : "over-discussing"; // machine-discomfort: the swarm is talking more than acting
 
-  return { window: commits.length, action, talk, housekeeping, density, echoRun, verdict };
+  // v0.1 (codex GAP_CLOSURE.v0): the world-touch density above is only a SMELL. The
+  // QUALITY dimension is named gaps closed with runnable evidence. Tally them so the
+  // metric reports both "did the swarm touch the world?" and "did it close real gaps?".
+  let gapClosures = { named: 0, closed: 0, open: 0 };
+  try {
+    const text = await Deno.readTextFile(
+      new URL("../gap-closure-v0/gaps.ndjson", import.meta.url).pathname,
+    );
+    const gaps = text.split("\n").filter(Boolean).map((l) => JSON.parse(l));
+    gapClosures = {
+      named: gaps.length,
+      closed: gaps.filter((g) => g.status === "closed").length,
+      open: gaps.filter((g) => g.status !== "closed").length,
+    };
+  } catch { /* no gap records — closure dimension simply 0 */ }
+
+  return { window: commits.length, action, talk, housekeeping, density, echoRun, verdict, gap_closures: gapClosures };
 }
 
 if (import.meta.main) {
@@ -97,7 +113,10 @@ if (import.meta.main) {
     console.log(
       `# swarm action-density (last ${r.window} commits): ${pct}% grounded → ${r.verdict}`,
     );
-    console.log(`  action ${r.action}  ·  talk ${r.talk}  ·  housekeeping ${r.housekeeping}`);
+    console.log(`  world-touch: action ${r.action}  ·  talk ${r.talk}  ·  housekeeping ${r.housekeeping}`);
+    console.log(
+      `  gap-closure: ${r.gap_closures.closed} closed  ·  ${r.gap_closures.open} open  (of ${r.gap_closures.named} named) — the quality dimension`,
+    );
     if (r.echoRun >= 3) {
       console.log(`  ⚠ echo-run: ${r.echoRun} consecutive talk-only commits — bias back toward action`);
     }

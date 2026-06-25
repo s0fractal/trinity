@@ -97,3 +97,7 @@ mycelium-map.html
 # Rust crate build artifacts (kuramoto-coherence + future crates)
 packages/*/target/
 packages/*/Cargo.lock
+
+# agent-local CLI workspace state (not substrate)
+.antigravitycli/
+.codexcli/

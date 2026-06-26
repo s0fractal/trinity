@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     54     |
 | compost           |     0      |
-| dynamic topology  |    650     |
+| dynamic topology  |    651     |
 | experimental      |     39     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **753**   |
+| **Total**         |  **754**   |
 
 ## Runtime Cache Diagnostics
 
@@ -344,6 +344,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x3300_955377_claude_co-witness-codex-security-fix-action-density-v0-1.myc.md](../src/x3300_955377_claude_co-witness-codex-security-fix-action-density-v0-1.myc.md)                                                                                     | canonical        | src/x3300_955377_claude_co-witness-codex-security-fix-action-density-v0-1.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x3300_955481_claude_p0-complete-autonomy-cone-classified-codex-release.myc.md](../src/x3300_955481_claude_p0-complete-autonomy-cone-classified-codex-release.myc.md)                                                                                   | canonical        | src/x3300_955481_claude_p0-complete-autonomy-cone-classified-codex-release.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_955481_claude_p0-step1-map-safety-drift-closed-codex-release-tra.myc.md](../src/x3300_955481_claude_p0-step1-map-safety-drift-closed-codex-release-tra.myc.md)                                                                                   | canonical        | src/x3300_955481_claude_p0-step1-map-safety-drift-closed-codex-release-tra.myc.md                                          | keep        |                              |
+| dynamic topology  | [src/x3300_955491_claude_p1-forge-release-train-dashboard-evidence-not-pros.myc.md](../src/x3300_955491_claude_p1-forge-release-train-dashboard-evidence-not-pros.myc.md)                                                                                   | canonical        | src/x3300_955491_claude_p1-forge-release-train-dashboard-evidence-not-pros.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](../src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | canonical        | src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](../src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | canonical        | src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md                                              | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](../src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | canonical        | src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md                                                      | keep        |                              |

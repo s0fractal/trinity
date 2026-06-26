@@ -1,0 +1,77 @@
+{
+  "type": "forge_receipt",
+  "note": "evidence-derived; `deno task forge:parity` is the authoritative parity gate. Regenerate with `t forge --stable`.",
+  "primitives": [
+    {
+      "name": "autonomy-kernel",
+      "source_cone": [
+        "src/x5C20_autonomy.ts"
+      ],
+      "package_cone": [
+        "packages/autonomy-kernel/mod.ts"
+      ],
+      "parity_gate": [
+        "src/forge_parity_test.ts"
+      ],
+      "runtime_registry": "jsr",
+      "package_version": "0.4.0",
+      "published_claim": "live",
+      "publish_evidence": [
+        ".github/workflows/publish-autonomy-kernel.yml"
+      ],
+      "last_parity_status": "green",
+      "next_action": null,
+      "warnings": []
+    },
+    {
+      "name": "canonical-receipt",
+      "source_cone": [
+        "probes/receipt-envelope-encoder-v0/ts/canonical_cbor.ts",
+        "probes/receipt-envelope-encoder-v0/ts/envelope.ts"
+      ],
+      "package_cone": [
+        "packages/canonical-receipt/mod.ts"
+      ],
+      "parity_gate": [
+        "src/forge_parity_test.ts"
+      ],
+      "runtime_registry": "jsr",
+      "package_version": "0.1.0",
+      "published_claim": "live",
+      "publish_evidence": [
+        ".github/workflows/publish-canonical-receipt.yml"
+      ],
+      "last_parity_status": "green",
+      "next_action": null,
+      "warnings": []
+    },
+    {
+      "name": "kuramoto-coherence",
+      "source_cone": [
+        "omega/omega_v2/src/agent.rs",
+        "omega/omega_v2/src/math.rs",
+        "omega/omega_v2/src/resonance.rs"
+      ],
+      "package_cone": [
+        "packages/kuramoto-coherence/src/agent.rs",
+        "packages/kuramoto-coherence/src/math.rs",
+        "packages/kuramoto-coherence/src/resonance.rs"
+      ],
+      "parity_gate": [
+        "src/forge_parity_test.ts"
+      ],
+      "runtime_registry": "crates.io",
+      "package_version": "0.1.0",
+      "published_claim": "live",
+      "publish_evidence": [
+        "packages/kuramoto-coherence/Cargo.toml",
+        "manual crates.io publish (architect; no automated workflow)"
+      ],
+      "last_parity_status": "green",
+      "next_action": null,
+      "warnings": []
+    }
+  ],
+  "warnings": [],
+  "ok": true
+}

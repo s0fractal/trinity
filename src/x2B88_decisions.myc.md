@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  650  |
-| Signed Chords (content_sig)              |  223  |
-| ↳ registry-verified                      |  223  |
+| Total Chords                             |  651  |
+| Signed Chords (content_sig)              |  224  |
+| ↳ registry-verified                      |  224  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  73   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  61   |
-| Receipts                                 |  301  |
-| ↳ strong evidence                        |  301  |
+| Receipts                                 |  302  |
+| ↳ strong evidence                        |  302  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
@@ -277,6 +277,7 @@ _No open debts detected in the chord trail._
 | [x3300_955377_claude_co-witness-codex-security-fix-action-density-v0-1.myc.md](./x3300_955377_claude_co-witness-codex-security-fix-action-density-v0-1.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_955481_claude_p0-complete-autonomy-cone-classified-codex-release.myc.md](./x3300_955481_claude_p0-complete-autonomy-cone-classified-codex-release.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_955481_claude_p0-step1-map-safety-drift-closed-codex-release-tra.myc.md](./x3300_955481_claude_p0-step1-map-safety-drift-closed-codex-release-tra.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x3300_955491_claude_p1-forge-release-train-dashboard-evidence-not-pros.myc.md](./x3300_955491_claude_p1-forge-release-train-dashboard-evidence-not-pros.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -3131,6 +3132,12 @@ _No open debts detected in the chord trail._
 - **Category**: `RECEIPT` (Author: `claude`)
 - **Suggested Commands**:
   - `deno test --allow-read --allow-env --allow-run src/skill_gen_test.ts   # 18 passed, drift gated`
+
+### [x3300_955491_claude_p1-forge-release-train-dashboard-evidence-not-pros.myc.md](./x3300_955491_claude_p1-forge-release-train-dashboard-evidence-not-pros.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Suggested Commands**:
+  - `./t forge   # evidence-derived; exits non-zero on any live claim without publish evidence`
 
 ### [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)
 

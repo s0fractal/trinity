@@ -1,6 +1,6 @@
 // A 5-minute worked example: an agent's actions, bounded and witnessed.
 // Run it:  deno run packages/agentseal/examples/seal.ts
-import { generateWitness } from "../../witness/mod.ts";
+import { generateWitness } from "@s0fractal/witness";
 import { seal, verifySeal } from "../mod.ts";
 
 const [alice, bob] = await Promise.all([generateWitness(), generateWitness()]);

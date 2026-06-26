@@ -13,8 +13,8 @@ import {
   type ActionClass,
   type AutonomyIntent,
   classifyIntent,
-} from "../autonomy-kernel/mod.ts";
-import { encodeCanonical } from "../canonical-receipt/mod.ts";
+} from "@s0fractal/autonomy-kernel";
+import { encodeCanonical } from "@s0fractal/canonical-receipt";
 import {
   coSign,
   type CoSignature,
@@ -23,7 +23,7 @@ import {
   toHex,
   verifyQuorum,
   type Witness,
-} from "../witness/mod.ts";
+} from "@s0fractal/witness";
 
 export interface SealedAction {
   intent: AutonomyIntent;

@@ -1,5 +1,5 @@
 import { assert, assertEquals } from "jsr:@std/assert@^1";
-import { generateWitness } from "../witness/mod.ts";
+import { generateWitness } from "@s0fractal/witness";
 import { seal, verifySeal } from "./agentseal.ts";
 
 Deno.test("agentseal — a bounded action is classified, witnessed, and verifies locally", async () => {

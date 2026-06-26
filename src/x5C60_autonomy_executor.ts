@@ -1,6 +1,7 @@
 #!/usr/bin/env -S deno run --allow-read --allow-write --allow-run --allow-env --allow-net=blockstream.info
 // src/x5C60_autonomy_executor.ts — the A1 executor (codex x5d00_954460 #4).
 // position: 5/C6 → action × bridge = the first persistent autonomous write, maximally boxed.
+// skill_safe: yes-with-care  (classified 2026-06-26 from AST behaviour — codex x5d00 P0)
 // hex_dipole: "00 00 00 00 00 59 00 00"
 // placement_policy: axis
 //

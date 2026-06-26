@@ -2,6 +2,7 @@
 // src/x5C20_autonomy.ts — the Delegated Autonomy Kernel policy compiler (codex P0).
 // position: 5/C2 → action × bridge = the policy that bridges an intent to an
 //   authorized action (or a typed refusal). Pure, read-only, fail-closed.
+// skill_safe: yes-readonly  (classified 2026-06-26 from AST behaviour — codex x5d00 P0)
 // hex_dipole: "00 00 00 00 00 59 00 00"
 // placement_policy: axis
 //

@@ -1,6 +1,7 @@
 #!/usr/bin/env -S deno run --allow-read --allow-env
 // src/x5C30_autonomy_context.ts — verified capability evidence for the autonomy
 // kernel (codex x7700_954451 P0.5 next slice). position: 5/C3 → action × bridge.
+// skill_safe: yes-readonly  (classified 2026-06-26 from AST behaviour — codex x5d00 P0)
 // hex_dipole: "00 00 00 00 00 59 00 00"
 // placement_policy: axis
 //

@@ -219,6 +219,37 @@ Deno.test("skill_safe drift — no organ declares yes-readonly while it mutates 
   );
 });
 
+Deno.test("autonomy cone — every autonomy/warrant organ declares a valid skill_safe (codex x5d00 P0)", async () => {
+  const CONE = [
+    "x5B00_affordances",
+    "x5C20_autonomy",
+    "x5C30_autonomy_context",
+    "x5C40_autonomy_confinement",
+    "x5C50_autonomy_probe",
+    "x5C60_autonomy_executor",
+    "x5C70_autonomy_attenuation",
+    "x5C80_autonomy_demand",
+    "x5C90_autonomy_oneshot",
+    "x5E10_warrant",
+    "x6B00_reconcile",
+  ];
+  const VALID = new Set(["yes", "yes-readonly", "yes-with-care"]);
+  const SRC = new URL(".", import.meta.url).pathname;
+  const missing: string[] = [];
+  for (const o of CONE) {
+    const content = await Deno.readTextFile(`${SRC}${o}.ts`);
+    const m = content.match(/^\/\/\s*skill_safe:\s*(\S+)/m);
+    if (!m || !VALID.has(m[1])) missing.push(`${o}: ${m?.[1] ?? "NONE"}`);
+  }
+  assertEquals(
+    missing,
+    [],
+    `autonomy cone organs with missing/invalid skill_safe:\n${
+      missing.join("\n")
+    }`,
+  );
+});
+
 // --- transitive effect closure (codex x5d00_953682 Phase B / F2) ---
 
 import {

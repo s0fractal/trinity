@@ -1,6 +1,7 @@
 #!/usr/bin/env -S deno run --allow-read --allow-write --allow-run --allow-env --allow-net=blockstream.info
 // src/x5C90_autonomy_oneshot.ts — the A1 one-shot join (codex x7700_954558 P3).
 // position: 5/C9 → action × bridge = compose proven demand with bounded execution, ONCE.
+// skill_safe: yes-with-care  (classified 2026-06-26 from AST behaviour — codex x5d00 P0)
 // hex_dipole: "00 00 00 00 00 59 00 00"
 // placement_policy: axis
 //

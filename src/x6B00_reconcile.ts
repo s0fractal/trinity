@@ -2,6 +2,7 @@
 // src/x6B00_reconcile.ts — reconcile operational truth across introspection
 // surfaces.
 // position: 6/B → harmony(6) × bridge(B) = make the surfaces agree, or say why
+// skill_safe: yes-readonly  (classified 2026-06-26 from AST behaviour — codex x5d00 P0)
 // hex_dipole: "00 00 00 00 00 00 59 00"
 // placement_policy: axis
 //

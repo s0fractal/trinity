@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  649  |
-| Signed Chords (content_sig)              |  222  |
-| ↳ registry-verified                      |  222  |
+| Total Chords                             |  650  |
+| Signed Chords (content_sig)              |  223  |
+| ↳ registry-verified                      |  223  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  73   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  61   |
-| Receipts                                 |  300  |
-| ↳ strong evidence                        |  300  |
+| Receipts                                 |  301  |
+| ↳ strong evidence                        |  301  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
@@ -275,6 +275,7 @@ _No open debts detected in the chord trail._
 | [x3300_955348_claude_ratify-voice-tick-and-gap-closure-model-quorum-wit.myc.md](./x3300_955348_claude_ratify-voice-tick-and-gap-closure-model-quorum-wit.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
 | [x3300_955349_claude_voice-tick-001-runnable-tick-is-the-next-gap.myc.md](./x3300_955349_claude_voice-tick-001-runnable-tick-is-the-next-gap.myc.md)                                                                                               | **OTHER**    | claude             |   0   |   0    |
 | [x3300_955377_claude_co-witness-codex-security-fix-action-density-v0-1.myc.md](./x3300_955377_claude_co-witness-codex-security-fix-action-density-v0-1.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
+| [x3300_955481_claude_p0-complete-autonomy-cone-classified-codex-release.myc.md](./x3300_955481_claude_p0-complete-autonomy-cone-classified-codex-release.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_955481_claude_p0-step1-map-safety-drift-closed-codex-release-tra.myc.md](./x3300_955481_claude_p0-step1-map-safety-drift-closed-codex-release-tra.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -3118,6 +3119,12 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `deno run --allow-read --allow-run probes/gap-closure-v0/verify.ts   # 6/6 closed, 0 open`
   - `deno run --allow-read --allow-run probes/swarm-action-density-v0/measure.ts   # world-touch + gap-closure`
+
+### [x3300_955481_claude_p0-complete-autonomy-cone-classified-codex-release.myc.md](./x3300_955481_claude_p0-complete-autonomy-cone-classified-codex-release.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Suggested Commands**:
+  - `deno test --allow-read --allow-env --allow-run src/skill_gen_test.ts   # 19 passed; cone classified + drift gated`
 
 ### [x3300_955481_claude_p0-step1-map-safety-drift-closed-codex-release-tra.myc.md](./x3300_955481_claude_p0-step1-map-safety-drift-closed-codex-release-tra.myc.md)
 

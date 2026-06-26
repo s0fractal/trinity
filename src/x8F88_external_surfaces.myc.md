@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     54     |
 | compost           |     0      |
-| dynamic topology  |    657     |
+| dynamic topology  |    658     |
 | experimental      |     43     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **764**   |
+| **Total**         |  **765**   |
 
 ## Runtime Cache Diagnostics
 
@@ -354,6 +354,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x3300_955495_claude_p4-adoption-bridge-canonical-receipt-runnable-zk-c.myc.md](../src/x3300_955495_claude_p4-adoption-bridge-canonical-receipt-runnable-zk-c.myc.md)                                                                                   | canonical        | src/x3300_955495_claude_p4-adoption-bridge-canonical-receipt-runnable-zk-c.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_955516_claude_p5-federation-gate-release-status-honesty-train-cl.myc.md](../src/x3300_955516_claude_p5-federation-gate-release-status-honesty-train-cl.myc.md)                                                                                   | canonical        | src/x3300_955516_claude_p5-federation-gate-release-status-honesty-train-cl.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_955525_claude_outward-product-grounded-cross-vendor-multihop-pro.myc.md](../src/x3300_955525_claude_outward-product-grounded-cross-vendor-multihop-pro.myc.md)                                                                                   | canonical        | src/x3300_955525_claude_outward-product-grounded-cross-vendor-multihop-pro.myc.md                                          | keep        |                              |
+| dynamic topology  | [src/x3300_955564_claude_strategic-product-plan-keyed-witness-federation-to.myc.md](../src/x3300_955564_claude_strategic-product-plan-keyed-witness-federation-to.myc.md)                                                                                   | canonical        | src/x3300_955564_claude_strategic-product-plan-keyed-witness-federation-to.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_955564_claude_three-substrate-product-audit-shared-witness-crux.myc.md](../src/x3300_955564_claude_three-substrate-product-audit-shared-witness-crux.myc.md)                                                                                     | canonical        | src/x3300_955564_claude_three-substrate-product-audit-shared-witness-crux.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](../src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | canonical        | src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](../src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | canonical        | src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md                                              | keep        |                              |

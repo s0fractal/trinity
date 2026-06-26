@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  657  |
-| Signed Chords (content_sig)              |  230  |
-| ↳ registry-verified                      |  230  |
+| Total Chords                             |  658  |
+| Signed Chords (content_sig)              |  231  |
+| ↳ registry-verified                      |  231  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  73   |
 | Unresolved Proposals (Heuristic)         |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  210  |
+| Other Observations                       |  211  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -283,6 +283,7 @@ _No open debts detected in the chord trail._
 | [x3300_955495_claude_p4-adoption-bridge-canonical-receipt-runnable-zk-c.myc.md](./x3300_955495_claude_p4-adoption-bridge-canonical-receipt-runnable-zk-c.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_955516_claude_p5-federation-gate-release-status-honesty-train-cl.myc.md](./x3300_955516_claude_p5-federation-gate-release-status-honesty-train-cl.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_955525_claude_outward-product-grounded-cross-vendor-multihop-pro.myc.md](./x3300_955525_claude_outward-product-grounded-cross-vendor-multihop-pro.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
+| [x3300_955564_claude_strategic-product-plan-keyed-witness-federation-to.myc.md](./x3300_955564_claude_strategic-product-plan-keyed-witness-federation-to.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_955564_claude_three-substrate-product-audit-shared-witness-crux.myc.md](./x3300_955564_claude_three-substrate-product-audit-shared-witness-crux.myc.md)                                                                                     | **OTHER**    | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -3177,6 +3178,13 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `deno run packages/canonical-receipt/examples/receipt.ts   # the content-addressed witnessed receipt, the spine`
   - `./t forge --json   # the three transplanted primitives this wedge would lean on`
+
+### [x3300_955564_claude_strategic-product-plan-keyed-witness-federation-to.myc.md](./x3300_955564_claude_strategic-product-plan-keyed-witness-federation-to.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Suggested Commands**:
+  - `ls packages/   # the forge-gem extraction pattern P1/P0 follow`
+  - `deno run packages/canonical-receipt/examples/receipt.ts   # the receipt the witness layer co-signs`
 
 ### [x3300_955564_claude_three-substrate-product-audit-shared-witness-crux.myc.md](./x3300_955564_claude_three-substrate-product-audit-shared-witness-crux.myc.md)
 

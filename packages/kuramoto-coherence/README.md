@@ -9,10 +9,17 @@ phase `Ψ` of a population of oscillators — with the same bytes on every machi
   **bit-identical across x86, ARM, RISC-V, and WASM**, which floats can never
   promise.
 - **`no_std`, allocation-free, zero dependencies.** Runs on a microcontroller,
-  and is cheap enough to **recompute and prove inside a zkVM** (it is the
-  deterministic core under an existing SP1 guest).
+  and is cheap enough to **recompute and prove inside a zkVM** — integer-only
+  and deterministic, so nothing in it can break a ZK circuit.
 - **A primitive, not a framework.** `scan_resonance_field(&[PhaseAgentMinimal])`
   in, an order parameter out.
+
+> **Scope of "zk-provable":** this crate ships the deterministic, integer-only
+> core that is _amenable_ to zero-knowledge proving — not a bundled circuit or
+> proof. Building and running a zkVM guest (e.g. SP1) over it is the consumer's
+> step; what this package demonstrates is the reproducible integer core
+> (`forge:parity` proves it matches its substrate source), not a verified ZK
+> proof.
 
 ## Use
 

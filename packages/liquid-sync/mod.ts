@@ -5,8 +5,10 @@
 // and conflict resolution is deterministic and auditable rather than
 // last-write-wins.
 //
-// Landed (v0.0.1): the PN-CAD content-addressed binary delta codec.
-// Next: the covenant-perturbed phase engine and the clock-independent resonance
-// conflict resolver. Derived from the `liquid` substrate (see README provenance).
+// Landed: the PN-CAD content-addressed binary delta codec, and the covenant-
+// perturbed phase engine (the "your governance is your physics" resonance core).
+// Next: the clock-independent resonance conflict resolver (the CRDT merge rule).
+// Derived from the `liquid` substrate (see README provenance).
 
 export * from "./codec.ts";
+export * from "./phase.ts";

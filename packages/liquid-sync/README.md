@@ -28,19 +28,34 @@ prevented from interoperating. Don't read more soundness into it than that.
 
 ## Status
 
-`v0.0.1` ships the **PN-CAD codec** only — the content-addressed binary delta
-format (`encodeBlock` / `decodeBlock` / `decodeAllBlocks` / `calculateBlockId` /
-`calculatePayloadMerkleRoot` / gzip helpers). The covenant-perturbed phase
-engine and the resonance conflict resolver land next; this README will not claim
-them until their tests are green in this package.
+`v0.1.0` ships the covenant-bound CRDT core, all tested in this package:
+
+- **codec** — the PN-CAD content-addressed binary delta format (`encodeBlock` /
+  `decodeBlock` / `decodeAllBlocks` / `calculateBlockId` / gzip helpers).
+- **phase** — the covenant-perturbed resonance engine
+  (`initCovenant({ covenant, axioms })` / `calculateResonance` / `lookupCos` /
+  `covenantSeeds`).
+- **sync** — clock-independent conflict resolution (`resolveConflict` /
+  `generateFrontier` / `missingHashes`).
 
 ```ts
 import {
-  calculateBlockId,
-  decodeBlock,
-  encodeBlock,
+  initCovenant,
+  PayloadType,
+  type PnCadBlock,
+  resolveConflict,
 } from "@s0fractal/liquid-sync";
+
+initCovenant({ covenant: "our community charter v1" });
+// resolveConflict(blockA, blockB, targetPhi) → the block that resonates most
+// with the target; ties break on content hash, never on a clock.
 ```
+
+A runnable worked example is in `examples/sync.ts` (and its test asserts it
+still works). What is **not** built here: the wide-area peer transport (the
+source substrate's discovery is local-machine-only). This package is the
+deterministic merge core; bring your own WebSocket/relay, as Yjs and Automerge
+do.
 
 ## Provenance
 

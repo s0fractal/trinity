@@ -55,6 +55,7 @@ import {
   listChordSurfaceFiles,
 } from "./x2F21_chord_surface.ts";
 import { loadLifecycleFamily } from "./x4011_contract_status_compiler.ts";
+import { parse as parseYaml } from "https://deno.land/std@0.224.0/yaml/mod.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const ROOT = dirname(HERE);
@@ -93,6 +94,9 @@ export interface ContractEntry {
     | "active" // not a draft; sunset n/a
     | "orphan"
     | "unknown";
+  // codex x5d00 P3: declarative implementation evidence + its runnable-item count.
+  impl_evidence: ImplEvidence | null;
+  evidence_count: number;
 }
 
 // Minimal YAML frontmatter parser — extracts only the flat scalar fields we need.
@@ -117,6 +121,46 @@ function parseFrontmatter(text: string): Record<string, string | number> {
     out.related_count = 0;
   }
   return out;
+}
+
+// codex x5d00 P3: the nested impl_evidence block (commands/files/tests/caveats),
+// parsed via real YAML — the flat parser above cannot reach nested lists. A claim of
+// implementation must carry evidence HERE, not just in prose.
+export interface ImplEvidence {
+  commands: string[];
+  files: string[];
+  tests: string[];
+  caveats: string[];
+}
+export function parseImplEvidence(text: string): ImplEvidence | null {
+  const m = text.match(/^---\n([\s\S]*?)\n---/);
+  if (!m) return null;
+  try {
+    const fm = parseYaml(m[1]) as Record<string, unknown> | null;
+    const ie = fm?.impl_evidence as Record<string, unknown> | undefined;
+    if (!ie || typeof ie !== "object") return null;
+    const arr = (x: unknown) => Array.isArray(x) ? x.map(String) : [];
+    return {
+      commands: arr(ie.commands),
+      files: arr(ie.files),
+      tests: arr(ie.tests),
+      caveats: arr(ie.caveats),
+    };
+  } catch {
+    return null;
+  }
+}
+
+// A contract claiming it is (partially) implemented must back that with at least one
+// runnable command, file, or test — otherwise it is prose promotion (the exact thing
+// codex P3 forbids). Surfaced by the default `t contracts` run and `--json`.
+export function lacksImplEvidence(e: ContractEntry): boolean {
+  if (
+    e.implementation_status !== "implemented" &&
+    e.implementation_status !== "partially_implemented"
+  ) return false;
+  const ev = e.impl_evidence;
+  return !ev || (ev.commands.length + ev.files.length + ev.tests.length) === 0;
 }
 
 // Parse `git log --diff-filter=A --name-only --format="COMMIT %aI"`
@@ -296,6 +340,8 @@ function buildBaseEntry(
     implementation_status = statusStr;
   }
 
+  const impl_evidence = parseImplEvidence(text);
+
   return {
     filename,
     path: `contracts/${filename}`,
@@ -303,6 +349,11 @@ function buildBaseEntry(
     version: String(fm.version ?? ""),
     status: String(fm.status ?? "unknown"),
     implementation_status,
+    impl_evidence,
+    evidence_count: impl_evidence
+      ? impl_evidence.commands.length + impl_evidence.files.length +
+        impl_evidence.tests.length
+      : 0,
     title: String(fm.title ?? filename),
     // Pinned: SPORE_BOOTSTRAP_PIN or Bitcoin attestation marker in body.
     pinned: filename.includes("BOOTSTRAP_PIN") ||
@@ -680,5 +731,16 @@ if (import.meta.main) {
     console.log(JSON.stringify(receipt, null, 2));
   } else {
     renderTable(contracts);
+  }
+
+  // codex x5d00 P3: surface prose-promotion (claims implementation, carries no
+  // impl_evidence) on stderr — visible in both modes, pollutes neither stdout.
+  const noEvidence = contracts.filter(lacksImplEvidence);
+  if (noEvidence.length > 0) {
+    console.warn(
+      `⚠ ${noEvidence.length} contract(s) claim (partial) implementation with NO impl_evidence: ${
+        noEvidence.map((c) => c.filename).join(", ")
+      }`,
+    );
   }
 }

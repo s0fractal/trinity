@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  652  |
-| Signed Chords (content_sig)              |  225  |
-| ↳ registry-verified                      |  225  |
+| Total Chords                             |  653  |
+| Signed Chords (content_sig)              |  226  |
+| ↳ registry-verified                      |  226  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  73   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  61   |
-| Receipts                                 |  303  |
-| ↳ strong evidence                        |  303  |
+| Receipts                                 |  304  |
+| ↳ strong evidence                        |  304  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
@@ -279,6 +279,7 @@ _No open debts detected in the chord trail._
 | [x3300_955481_claude_p0-step1-map-safety-drift-closed-codex-release-tra.myc.md](./x3300_955481_claude_p0-step1-map-safety-drift-closed-codex-release-tra.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_955491_claude_p1-forge-release-train-dashboard-evidence-not-pros.myc.md](./x3300_955491_claude_p1-forge-release-train-dashboard-evidence-not-pros.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_955494_claude_p2-probe-lifecycle-triage-surface-unknowns-adjudic.myc.md](./x3300_955494_claude_p2-probe-lifecycle-triage-surface-unknowns-adjudic.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x3300_955494_claude_p3a-contract-evidence-mechanism-surface-prose-prom.myc.md](./x3300_955494_claude_p3a-contract-evidence-mechanism-surface-prose-prom.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -3145,6 +3146,12 @@ _No open debts detected in the chord trail._
 - **Category**: `RECEIPT` (Author: `claude`)
 - **Suggested Commands**:
   - `./t probes --triage   # the smallest actionable queue: probes with chord pressure but no next criterion`
+
+### [x3300_955494_claude_p3a-contract-evidence-mechanism-surface-prose-prom.myc.md](./x3300_955494_claude_p3a-contract-evidence-mechanism-surface-prose-prom.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Suggested Commands**:
+  - `./t contracts   # warns: 5 contracts claim (partial) implementation with NO impl_evidence`
 
 ### [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)
 

@@ -1,0 +1,13 @@
+{
+  "name": "@s0fractal/codeicide",
+  "version": "0.1.0",
+  "exports": "./mod.ts",
+  "imports": {
+    "@s0fractal/canonical-receipt": "jsr:@s0fractal/canonical-receipt@^0.1.0",
+    "@s0fractal/witness": "jsr:@s0fractal/witness@^0.1.0"
+  },
+  "license": "AGPL-3.0-or-later",
+  "publish": {
+    "exclude": [".gitignore"]
+  }
+}

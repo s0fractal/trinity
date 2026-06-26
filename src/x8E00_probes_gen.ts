@@ -141,6 +141,12 @@ export interface ProbeRecord {
   // How to apply: render in a separate "Graduation drift" section so
   // closure work can update the probe banner instead of repeating it.
   drift_target: string | null;
+  // codex x5d00 P2: declarative triage metadata (SPEC/README frontmatter).
+  // owner_voice — who is accountable; next_verification — the concrete next
+  // criterion that would move this probe forward (its absence on an active probe
+  // with chord pressure is frontier debt, surfaced by `t probes --triage`).
+  owner_voice: string | null;
+  next_verification: string | null;
 }
 
 export interface ChordRef {
@@ -366,6 +372,10 @@ export async function readProbe(
   }
 
   // Layer 4: Frontmatter override (declarative SPEC/README frontmatter)
+  // codex x5d00 P2: also reads owner_voice / next_verification / explicit lifecycle.
+  let owner_voice: string | null = null;
+  let next_verification: string | null = null;
+  let lifecycleOverride: LifecycleStage | null = null;
   const readmeFm = parseFrontmatter(readme);
   const specFm = parseFrontmatter(spec);
   const fm = specFm ?? readmeFm;
@@ -382,6 +392,11 @@ export async function readProbe(
       graduation_date = fm.graduation_date instanceof Date
         ? fm.graduation_date.toISOString().split("T")[0]
         : String(fm.graduation_date);
+    }
+    if (fm.owner_voice) owner_voice = String(fm.owner_voice);
+    if (fm.next_verification) next_verification = String(fm.next_verification);
+    if (fm.lifecycle === "compost" || fm.lifecycle === "archived") {
+      lifecycleOverride = fm.lifecycle;
     }
   }
   // Fallback target/date to readmeFm if specFm lacked them
@@ -435,8 +450,10 @@ export async function readProbe(
     source_hash: hash,
     source_size: basis.length,
     chord_refs,
-    lifecycle: lifecycleOf(status),
+    lifecycle: lifecycleOverride ?? lifecycleOf(status),
     drift_target,
+    owner_voice,
+    next_verification,
   };
 }
 
@@ -625,14 +642,23 @@ function renderProbesIndex(
 interface Args {
   stable: boolean;
   json: boolean;
+  triage: boolean;
 }
 function parseArgs(argv: string[]): Args {
-  const out: Args = { stable: false, json: false };
+  const out: Args = { stable: false, json: false, triage: false };
   for (const a of argv) {
     if (a === "--stable") out.stable = true;
     else if (a === "--json") out.json = true;
+    else if (a === "--triage") out.triage = true;
   }
   return out;
+}
+
+// codex x5d00 P2: a probe with chord pressure but no next criterion is frontier
+// debt — `t probes --triage` surfaces exactly these as the smallest actionable queue.
+export function needsAttention(p: ProbeRecord): boolean {
+  return p.lifecycle === "active" && p.chord_refs.length > 0 &&
+    !p.next_verification && !p.target;
 }
 
 function chordSource(c: ChordSource): SourceFile {
@@ -678,6 +704,27 @@ async function main(argv: string[]) {
   const chords = await loadChordSources();
   const { probes, referencedChordFilenames } = await loadAllProbes();
 
+  // codex x5d00 P2: read-only triage — print the smallest actionable queue, no write.
+  if (args.triage) {
+    const queue = probes.filter(needsAttention);
+    console.log(
+      `# probe triage — ${queue.length} probe(s) need a next criterion (active + chord pressure + no next_verification/target)`,
+    );
+    for (const p of queue) {
+      console.log(
+        `  ⚠ ${p.name}  (${p.chord_refs.length} chord refs, owner: ${
+          p.owner_voice ?? "—"
+        })`,
+      );
+    }
+    if (queue.length === 0) {
+      console.log(
+        "  (clean — every active probe with chord pressure carries a next criterion)",
+      );
+    }
+    return;
+  }
+
   // Source manifest includes probe sources + ONLY chord files that actually
   // reference a probe (otherwise every chord change would invalidate x8E00,
   // which would be noise — only chord activity that touches probes matters).
@@ -719,6 +766,15 @@ async function main(argv: string[]) {
       args.stable ? " (stable)" : ""
     }`,
   );
+  // codex x5d00 P2: surface unknown/criterion-less probes as attention (not silent).
+  const attention = probes.filter(needsAttention);
+  if (attention.length > 0) {
+    console.warn(
+      `⚠ ${attention.length} active probe(s) with chord pressure lack a next criterion — run \`t probes --triage\`: ${
+        attention.map((p) => p.name).join(", ")
+      }`,
+    );
+  }
   if (args.json) {
     console.log = originalLog;
     console.warn = originalWarn;

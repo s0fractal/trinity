@@ -17,6 +17,9 @@ Deno.test("forge — the three primitives derive live status from real evidence,
   }
   assertEquals(r.ok, true);
   assertEquals(r.warnings, []);
+  // P5: federation availability is reported, never silently claimed green.
+  assert(["available", "unavailable"].includes(r.federation_status));
+  assertEquals(r.federation_gate, "deno task check:federation");
 });
 
 Deno.test("forge — a live claim WITHOUT publish evidence warns (codex acceptance)", () => {

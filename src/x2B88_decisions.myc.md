@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  654  |
-| Signed Chords (content_sig)              |  227  |
-| ↳ registry-verified                      |  227  |
+| Total Chords                             |  655  |
+| Signed Chords (content_sig)              |  228  |
+| ↳ registry-verified                      |  228  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  73   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  61   |
-| Receipts                                 |  305  |
-| ↳ strong evidence                        |  305  |
+| Receipts                                 |  306  |
+| ↳ strong evidence                        |  306  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
@@ -281,6 +281,7 @@ _No open debts detected in the chord trail._
 | [x3300_955494_claude_p2-probe-lifecycle-triage-surface-unknowns-adjudic.myc.md](./x3300_955494_claude_p2-probe-lifecycle-triage-surface-unknowns-adjudic.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_955494_claude_p3a-contract-evidence-mechanism-surface-prose-prom.myc.md](./x3300_955494_claude_p3a-contract-evidence-mechanism-surface-prose-prom.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_955495_claude_p4-adoption-bridge-canonical-receipt-runnable-zk-c.myc.md](./x3300_955495_claude_p4-adoption-bridge-canonical-receipt-runnable-zk-c.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x3300_955516_claude_p5-federation-gate-release-status-honesty-train-cl.myc.md](./x3300_955516_claude_p5-federation-gate-release-status-honesty-train-cl.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -3160,6 +3161,13 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `deno test --allow-run --allow-read packages/canonical-receipt/examples/receipt_test.ts`
   - `deno run packages/canonical-receipt/examples/receipt.ts   # the 5-minute worked example, zero trinity ontology`
+
+### [x3300_955516_claude_p5-federation-gate-release-status-honesty-train-cl.myc.md](./x3300_955516_claude_p5-federation-gate-release-status-honesty-train-cl.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Suggested Commands**:
+  - `./t forge --json   # carries federation_status / federation_gate / federation_note`
+  - `deno task check:federation   # the full-federation gate (maintainer machine, submodules present)`
 
 ### [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)
 

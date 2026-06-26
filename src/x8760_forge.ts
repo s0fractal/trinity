@@ -181,13 +181,30 @@ export function derive(spec: Spec): ForgePrimitive {
   };
 }
 
+// codex x5d00 P5: full-federation parity (kuramoto vs omega, plus myc + liquid) needs
+// the private submodules. A release surface must NEVER claim federation-green from a
+// submodule-absent (public-CI) checkout.
+const FEDERATION_CONE = [
+  "omega/omega_v2/src/agent.rs",
+  "myc/src/x0100_myc.ts",
+  "liquid/src/xA030_liquid_codec.ts",
+];
+
 export function build() {
   const primitives = SPECS.map(derive);
   const warnings = primitives.flatMap((p) => p.warnings);
+  const federation_available = FEDERATION_CONE.every(exists);
   return {
     type: "forge_receipt",
     note:
       "evidence-derived; `deno task forge:parity` is the authoritative parity gate. Regenerate with `t forge --stable`.",
+    // P5: core (this dashboard + forge:parity for the TS gems) is always runnable;
+    // federation (kuramoto-vs-omega + myc + liquid) needs the submodules.
+    federation_status: federation_available ? "available" : "unavailable",
+    federation_gate: "deno task check:federation",
+    federation_note: federation_available
+      ? "submodules present — run `deno task check:federation` for full-federation green before a release; this dashboard does not auto-run it (it only reports availability)."
+      : "submodules absent (public-CI checkout) — federation parity (incl. kuramoto vs omega) CANNOT run here; do NOT claim federation-green from this checkout.",
     primitives,
     warnings,
     ok: warnings.length === 0,

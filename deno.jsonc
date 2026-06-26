@@ -27,6 +27,7 @@
     "check:liquid:audit": "cd liquid && deno task audit:strict",
     "check:liquid:doctor": "cd liquid && deno task ledger:doctor --json",
     "check:liquid:unit": "cd liquid && deno task test:unit",
+    "check:federation": "deno task check && deno task forge:parity && deno task check:myc && deno task check:omega:rust && deno task check:omega:deno && deno task check:liquid:audit && deno task check:liquid:unit",
     "forge": "deno run -A src/x8760_forge.ts",
     "forge:parity": "deno test --allow-read src/forge_parity_test.ts",
     "compost:verify": "deno run --allow-read --allow-run probes/myc-compost-reconstruction-v0/verify.ts",

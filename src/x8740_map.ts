@@ -3,7 +3,9 @@
 // position: 8/74 → void_infinity(8) × ... = reach across the whole namespace and
 //   project it onto a human-perceivable space (the "membrane made visible")
 // maturity: prototype
-// skill_safe: yes-readonly
+// skill_safe: yes-with-care
+//   (default mode writes the gitignored mycelium-map.html; --stdout and --insights
+//    are read-only. Reclassified 2026-06-26 from a false yes-readonly — codex P0 drift.)
 // hex_dipole: "59 00 00 00 00 00 00 00"
 //   void_infinity+0.70 (PRIMARY: reaches across the whole namespace to render it;
 //   bucket 8 = axis 0 strongest, audit-aligned)

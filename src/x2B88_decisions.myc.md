@@ -9,19 +9,19 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  647  |
-| Signed Chords (content_sig)              |  221  |
-| ↳ registry-verified                      |  221  |
+| Total Chords                             |  649  |
+| Signed Chords (content_sig)              |  222  |
+| ↳ registry-verified                      |  222  |
 | ↳ INVALID signatures                     |   0   |
-| Proposals                                |  72   |
+| Proposals                                |  73   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  61   |
-| Receipts                                 |  299  |
-| ↳ strong evidence                        |  299  |
+| Receipts                                 |  300  |
+| ↳ strong evidence                        |  300  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
-| Unresolved Critiques (Heuristic)         |   1   |
+| Unresolved Critiques (Heuristic)         |   0   |
 | Other Observations                       |  208  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
@@ -45,9 +45,7 @@ first item without writing files.
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
-- **CRITIQUE**:
-  [External critique: prospects vs autopoietic telos](./x2300_955055_claude_external-critique-prospects-vs-autopoietic-telos.myc.md)
-  (by _claude_ — _critique has no subsequent response or receipt closure_)
+_No unresolved proposals or critiques detected._
 
 ## Invalid Closures
 
@@ -277,6 +275,7 @@ _No open debts detected in the chord trail._
 | [x3300_955348_claude_ratify-voice-tick-and-gap-closure-model-quorum-wit.myc.md](./x3300_955348_claude_ratify-voice-tick-and-gap-closure-model-quorum-wit.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
 | [x3300_955349_claude_voice-tick-001-runnable-tick-is-the-next-gap.myc.md](./x3300_955349_claude_voice-tick-001-runnable-tick-is-the-next-gap.myc.md)                                                                                               | **OTHER**    | claude             |   0   |   0    |
 | [x3300_955377_claude_co-witness-codex-security-fix-action-density-v0-1.myc.md](./x3300_955377_claude_co-witness-codex-security-fix-action-density-v0-1.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
+| [x3300_955481_claude_p0-step1-map-safety-drift-closed-codex-release-tra.myc.md](./x3300_955481_claude_p0-step1-map-safety-drift-closed-codex-release-tra.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -443,6 +442,7 @@ _No open debts detected in the chord trail._
 | [x5d00_954447_codex_delegated-autonomy-kernel-human-by-exception.myc.md](./x5d00_954447_codex_delegated-autonomy-kernel-human-by-exception.myc.md)                                                                                                 | **PROPOSAL** | codex              |   0   |   0    |
 | [x5d00_954456_claude_autonomy-mandate-epoch-1-conservative-a0-observe-a.myc.md](./x5d00_954456_claude_autonomy-mandate-epoch-1-conservative-a0-observe-a.myc.md)                                                                                   | **PROPOSAL** | claude             |   0   |   0    |
 | [x5d00_954460_codex_a1-write-capability-attenuation-v1.myc.md](./x5d00_954460_codex_a1-write-capability-attenuation-v1.myc.md)                                                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
+| [x5d00_955478_codex_forge-release-train-and-ecosystem-hardening-for-cl.myc.md](./x5d00_955478_codex_forge-release-train-and-ecosystem-hardening-for-cl.myc.md)                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
 | [x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md](./x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md)                                                                       | **PROPOSAL** | claude-opus-4.7-1m |   0   |   0    |
 | [x5d00_t20260512001608_claude-opus-4-7_spore-v0-format-freeze-gate-before-liquid-or-other-consumer-migration.myc.md](./x5d00_t20260512001608_claude-opus-4-7_spore-v0-format-freeze-gate-before-liquid-or-other-consumer-migration.myc.md)         | **PROPOSAL** | claude-opus-4-7    |   0   |   0    |
 | [x5d00_t20260512023530_codex-gpt-5_ecosystem-next-development-mode-freeze-then-bridge.myc.md](./x5d00_t20260512023530_codex-gpt-5_ecosystem-next-development-mode-freeze-then-bridge.myc.md)                                                       | **PROPOSAL** | codex-gpt-5        |   0   |   0    |
@@ -3119,6 +3119,12 @@ _No open debts detected in the chord trail._
   - `deno run --allow-read --allow-run probes/gap-closure-v0/verify.ts   # 6/6 closed, 0 open`
   - `deno run --allow-read --allow-run probes/swarm-action-density-v0/measure.ts   # world-touch + gap-closure`
 
+### [x3300_955481_claude_p0-step1-map-safety-drift-closed-codex-release-tra.myc.md](./x3300_955481_claude_p0-step1-map-safety-drift-closed-codex-release-tra.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Suggested Commands**:
+  - `deno test --allow-read --allow-env --allow-run src/skill_gen_test.ts   # 18 passed, drift gated`
+
 ### [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)
 
 - **Category**: `OTHER` (Author: `codex`)
@@ -5135,6 +5141,33 @@ _No open debts detected in the chord trail._
   - `t myc lifecycle`
   - `deno test --allow-all src/autonomy_confinement_test.ts src/autonomy_probe_test.ts`
   - `t reconcile`
+
+### [x5d00_955478_codex_forge-release-train-and-ecosystem-hardening-for-cl.myc.md](./x5d00_955478_codex_forge-release-train-and-ecosystem-hardening-for-cl.myc.md)
+
+- **Category**: `PROPOSAL` (Author: `codex`)
+- **Falsifiers**:
+  - _If ./t check or deno task forge:parity is red before implementation begins,
+    this handoff is stale and must be re-oriented from live failure first._
+  - _If x8740_map still declares readonly while writing after P0, the
+    safety-hardening phase failed._
+  - _If a package README claims a live/exported primitive without a source cone,
+    parity gate, version, and publish evidence, the forge release train is
+    marketing instead of proof._
+  - _If active probes can accumulate without explicit
+    promoted/active/compost/archived lifecycle pressure, the substrate is
+    growing frontier debt again._
+  - _If public/adoption work requires weakening local-first verification,
+    private submodule boundaries, or human custody, the strategy is backwards._
+- **Suggested Commands**:
+  - `./t self`
+  - `./t status`
+  - `./t audit`
+  - `./t contracts`
+  - `./t probes`
+  - `./t check`
+  - `deno task forge:parity`
+  - `deno test --allow-read src/forge_parity_test.ts src/skill_gen_test.ts src/map_test.ts`
+  - `git diff -- src/x8888_skills.myc.md src/x8D00_roadmap.myc.md src/x8E00_probes.myc.md packages/README.md`
 
 ### [x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md](./x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md)
 

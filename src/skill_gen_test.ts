@@ -191,6 +191,24 @@ Deno.test("admissibleForAutonomousMutation - only unknown is categorically inadm
   assertEquals(admissibleForAutonomousMutation("unknown"), false);
 });
 
+// --- skill_safe drift regression (codex x5d00 P0) ---
+
+Deno.test("skill_safe drift — no organ declares yes-readonly while it mutates state (the x8740_map class)", async () => {
+  const SRC = new URL(".", import.meta.url).pathname;
+  const offenders: string[] = [];
+  for await (const e of Deno.readDir(SRC)) {
+    if (!e.isFile || !e.name.endsWith(".ts") || e.name.endsWith("_test.ts")) continue;
+    const content = await Deno.readTextFile(`${SRC}${e.name}`);
+    const m = content.match(/^\/\/\s*skill_safe:\s*(\S+)/m);
+    if (m?.[1] !== "yes-readonly") continue;
+    const { mutations } = analyzeBehaviorWithAST(content, e.name);
+    if (mutations.length) {
+      offenders.push(`${e.name}: declared yes-readonly but mutates via ${mutations.join(", ")}`);
+    }
+  }
+  assertEquals(offenders, [], `skill_safe readonly-vs-mutation drift returned:\n${offenders.join("\n")}`);
+});
+
 // --- transitive effect closure (codex x5d00_953682 Phase B / F2) ---
 
 import {

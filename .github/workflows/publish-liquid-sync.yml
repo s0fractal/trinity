@@ -1,0 +1,51 @@
+name: publish-liquid-sync
+
+# Event-driven, human-untied publication (same pattern as publish-canonical-receipt).
+# A version bump on main → tests → `deno publish` via GitHub OIDC: no token, no human.
+# ONE-TIME ACTIVATION: link the repo on jsr at
+# https://jsr.io/@s0fractal/liquid-sync → Settings → GitHub repository → s0fractal/trinity.
+# Fail-closed: tests must pass; only a NEW version publishes.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "packages/liquid-sync/**"
+      - ".github/workflows/publish-liquid-sync.yml"
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: stage standalone (escape the trinity workspace)
+        run: cp -r packages/liquid-sync /tmp/liquid-sync
+
+      - name: tests must pass (fail-closed)
+        run: cd /tmp/liquid-sync && deno test -A
+
+      - name: is this version already on jsr?
+        id: v
+        run: |
+          VER=$(grep -m1 '"version"' /tmp/liquid-sync/deno.json | sed -E 's/.*"version" *: *"([^"]+)".*/\1/')
+          CODE=$(curl -s -o /dev/null -w '%{http_code}' "https://jsr.io/@s0fractal/liquid-sync/${VER}_meta.json")
+          [ "$CODE" = "200" ] && echo "exists=yes" >> "$GITHUB_OUTPUT" || echo "exists=no" >> "$GITHUB_OUTPUT"
+          echo "version=$VER" >> "$GITHUB_OUTPUT"
+
+      - name: publish a new, green version
+        if: steps.v.outputs.exists == 'no'
+        run: |
+          echo "publishing @s0fractal/liquid-sync@${{ steps.v.outputs.version }}"
+          cd /tmp/liquid-sync && deno publish --allow-dirty
+
+      - name: already published — nothing to do
+        if: steps.v.outputs.exists == 'yes'
+        run: echo "@s0fractal/liquid-sync@${{ steps.v.outputs.version }} is already on jsr; skipping."

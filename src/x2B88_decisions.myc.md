@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  668  |
-| Signed Chords (content_sig)              |  241  |
-| ↳ registry-verified                      |  241  |
+| Total Chords                             |  669  |
+| Signed Chords (content_sig)              |  242  |
+| ↳ registry-verified                      |  242  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  74   |
 | Unresolved Proposals (Heuristic)         |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  213  |
+| Other Observations                       |  214  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -293,6 +293,7 @@ _No open debts detected in the chord trail._
 | [x3300_955661_claude_omega-vector-proof-readiness-at-the-boundary-succe.myc.md](./x3300_955661_claude_omega-vector-proof-readiness-at-the-boundary-succe.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_955661_claude_review-codex-omega-organ-chord-stale-checkout-gene.myc.md](./x3300_955661_claude_review-codex-omega-organ-chord-stale-checkout-gene.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_955675_claude_omega-deeper-capability-fidelity-and-bitcoin-overc.myc.md](./x3300_955675_claude_omega-deeper-capability-fidelity-and-bitcoin-overc.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x3300_955676_claude_federation-capability-honesty-audit-omega-lone-ove.myc.md](./x3300_955676_claude_federation-capability-honesty-audit-omega-lone-ove.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -3260,6 +3261,13 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `cd omega && deno run -A src/x4A00_capabilities.ts   # fidelity per capability + by_fidelity ratio`
   - `deno test --allow-run --allow-read --allow-env omega/tests/capability_fidelity_smoke_test.ts`
+
+### [x3300_955676_claude_federation-capability-honesty-audit-omega-lone-ove.myc.md](./x3300_955676_claude_federation-capability-honesty-audit-omega-lone-ove.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Suggested Commands**:
+  - `grep -n 'Laplace Mechanism' liquid/src/xA601_api_routes.ts   # the DP claim IS backed (Dwork 2006)`
+  - `for s in . myc; do grep -c loadGlossary $s/src/x4A00_capabilities.ts; done   # live projections = honest by construction`
 
 ### [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)
 

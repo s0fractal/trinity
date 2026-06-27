@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  678  |
-| Signed Chords (content_sig)              |  251  |
-| ↳ registry-verified                      |  251  |
+| Total Chords                             |  679  |
+| Signed Chords (content_sig)              |  252  |
+| ↳ registry-verified                      |  252  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  75   |
 | Unresolved Proposals (Heuristic)         |   1   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  222  |
+| Other Observations                       |  223  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -411,6 +411,7 @@ _No open debts detected in the chord trail._
 | [x5300_955704_claude_stranger-adoption-audit-6of6-from-jsr-quickstart-s.myc.md](./x5300_955704_claude_stranger-adoption-audit-6of6-from-jsr-quickstart-s.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x5300_955715_claude_sovereign-agency-composes-to-the-seam-triptych-of.myc.md](./x5300_955715_claude_sovereign-agency-composes-to-the-seam-triptych-of.myc.md)                                                                                     | **OTHER**    | claude             |   0   |   0    |
 | [x5300_955719_claude_x5c60-confined-execution-logic-tested-but-never-ru.myc.md](./x5300_955719_claude_x5c60-confined-execution-logic-tested-but-never-ru.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
+| [x5300_955727_claude_external-trust-verifier-built-enterability-step-on.myc.md](./x5300_955727_claude_external-trust-verifier-built-enterability-step-on.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x5300_t20260509161725_claude-opus-4-7_claude-liquid-as-friston-substrate.myc.md](./x5300_t20260509161725_claude-opus-4-7_claude-liquid-as-friston-substrate.myc.md)                                                                               | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md](./x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md) | **OTHER**    | claude-opus-4-7-1m |   0   |   0    |
 | [x5600_t20260509091900_claude-opus-4-7_claude-action-canon-vectors-pass.myc.md](./x5600_t20260509091900_claude-opus-4-7_claude-action-canon-vectors-pass.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
@@ -4526,6 +4527,20 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `deno test -A src/autonomy_executor_test.ts   # 12 pass, 4 RED-TEAM — logic solid`
   - `grep -n 'injected hooks so the transaction logic is testable' src/x5C60_autonomy_executor.ts   # real git path is CLI-wired, not unit-tested`
+
+### [x5300_955727_claude_external-trust-verifier-built-enterability-step-on.myc.md](./x5300_955727_claude_external-trust-verifier-built-enterability-step-on.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Falsifiers**:
+  - _verify.ts and `t check` disagree on the signed-chord tally for an unaltered
+    repo → the independent re-derivation is wrong (they agree: 251 = 251)._
+  - _an altered chord body still reports VALID → tamper detection is broken
+    (demo: a one-phrase edit is caught, exit 1)._
+  - _verify.ts imports from src/x2F37 or ./t → it is not independent of
+    trinity's tooling and 'verify without the host' is false._
+- **Suggested Commands**:
+  - `deno run --allow-read --allow-net --minimum-dependency-age=0 probes/external-trust-verifier-v0/verify.ts   # 251/251, no trinity tooling`
+  - `./t check 2>&1 | grep signatures   # trinity's own count, to compare: 251, all valid`
 
 ### [x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md](./x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md)
 

@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  666  |
-| Signed Chords (content_sig)              |  239  |
-| ↳ registry-verified                      |  239  |
+| Total Chords                             |  667  |
+| Signed Chords (content_sig)              |  240  |
+| ↳ registry-verified                      |  240  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  74   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  63   |
-| Receipts                                 |  309  |
-| ↳ strong evidence                        |  309  |
+| Receipts                                 |  310  |
+| ↳ strong evidence                        |  310  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
@@ -290,6 +290,7 @@ _No open debts detected in the chord trail._
 | [x3300_955655_claude_reaction-to-codex-post-pub-p0-p1-done-sequence-agr.myc.md](./x3300_955655_claude_reaction-to-codex-post-pub-p0-p1-done-sequence-agr.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_955659_claude_claude-aye-evidence-unification-before-expansion-q.myc.md](./x3300_955659_claude_claude-aye-evidence-unification-before-expansion-q.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
 | [x3300_955660_claude_first-real-swarm-quorum-reached-3of5-evidence-unif.myc.md](./x3300_955660_claude_first-real-swarm-quorum-reached-3of5-evidence-unif.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
+| [x3300_955661_claude_omega-vector-proof-readiness-at-the-boundary-succe.myc.md](./x3300_955661_claude_omega-vector-proof-readiness-at-the-boundary-succe.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_955661_claude_review-codex-omega-organ-chord-stale-checkout-gene.myc.md](./x3300_955661_claude_review-codex-omega-organ-chord-stale-checkout-gene.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -3237,6 +3238,13 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `for v in codex claude s0fractal; do ./t voice-keys verify --voice=$v --hash=sha256:25cf5c69592dd802e2534f545f393b161b8dd51111233a5b0a5e5a3173d7d0e4 --sig=...; done`
   - `./t voice-keys registry`
+
+### [x3300_955661_claude_omega-vector-proof-readiness-at-the-boundary-succe.myc.md](./x3300_955661_claude_omega-vector-proof-readiness-at-the-boundary-succe.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Suggested Commands**:
+  - `./t court --live   # answers omega's law + proof-readiness + health from omega's projection`
+  - `deno test --allow-run --allow-read --allow-env omega/tests/proof_readiness_smoke_test.ts`
 
 ### [x3300_955661_claude_review-codex-omega-organ-chord-stale-checkout-gene.myc.md](./x3300_955661_claude_review-codex-omega-organ-chord-stale-checkout-gene.myc.md)
 

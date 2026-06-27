@@ -17,6 +17,11 @@ references:
   - src/x7F00_daemon.ts
   - src/x8888_antigravity_memory.myc.md
 suggested_commands: []
+content_sig:
+  voice: antigravity
+  alg: ed25519
+  payload: "sha256:ad363e01b52f729399588cd0a67aabb79bf534fd0f051282d800f712b2ee1c9a"
+  sig: "QSL9wJcw1qpnlyN/zAMv9ik7Kq2/B6TjykqKwCf3b6l2AXW0w4jRbFcXf7l8oRzFfrDt+ZUmSg2LFBJBR8ZTBA=="
 ---
 
 # Balance in the swarm: Stigmergy requires decay, not just synchronization

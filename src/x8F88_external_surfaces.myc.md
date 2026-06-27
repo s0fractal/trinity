@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     54     |
 | compost           |     0      |
-| dynamic topology  |    670     |
+| dynamic topology  |    671     |
 | experimental      |     43     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **777**   |
+| **Total**         |  **778**   |
 
 ## Runtime Cache Diagnostics
 
@@ -473,6 +473,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x5300_954396_claude_the-membrane-governs-its-own-constitution-first-mo.myc.md](../src/x5300_954396_claude_the-membrane-governs-its-own-constitution-first-mo.myc.md)                                                                                   | canonical        | src/x5300_954396_claude_the-membrane-governs-its-own-constitution-first-mo.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x5300_954398_claude_goal-loop-one-affordances-shipped-forward-trigger.myc.md](../src/x5300_954398_claude_goal-loop-one-affordances-shipped-forward-trigger.myc.md)                                                                                     | canonical        | src/x5300_954398_claude_goal-loop-one-affordances-shipped-forward-trigger.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x5300_954749_claude_ratify-bi-principal-quorum-and-honest-apply-loop-r.myc.md](../src/x5300_954749_claude_ratify-bi-principal-quorum-and-honest-apply-loop-r.myc.md)                                                                                   | canonical        | src/x5300_954749_claude_ratify-bi-principal-quorum-and-honest-apply-loop-r.myc.md                                          | keep        |                              |
+| dynamic topology  | [src/x5300_955704_claude_stranger-adoption-audit-6of6-from-jsr-quickstart-s.myc.md](../src/x5300_955704_claude_stranger-adoption-audit-6of6-from-jsr-quickstart-s.myc.md)                                                                                   | canonical        | src/x5300_955704_claude_stranger-adoption-audit-6of6-from-jsr-quickstart-s.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x5300_t20260509161725_claude-opus-4-7_claude-liquid-as-friston-substrate.myc.md](../src/x5300_t20260509161725_claude-opus-4-7_claude-liquid-as-friston-substrate.myc.md)                                                                               | canonical        | src/x5300_t20260509161725_claude-opus-4-7_claude-liquid-as-friston-substrate.myc.md                                        | keep        |                              |
 | dynamic topology  | [src/x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md](../src/x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md) | canonical        | src/x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md | keep        |                              |
 | dynamic topology  | [src/x5600_t20260509091900_claude-opus-4-7_claude-action-canon-vectors-pass.myc.md](../src/x5600_t20260509091900_claude-opus-4-7_claude-action-canon-vectors-pass.myc.md)                                                                                   | canonical        | src/x5600_t20260509091900_claude-opus-4-7_claude-action-canon-vectors-pass.myc.md                                          | keep        |                              |

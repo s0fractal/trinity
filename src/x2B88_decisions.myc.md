@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  670  |
-| Signed Chords (content_sig)              |  243  |
-| ↳ registry-verified                      |  243  |
+| Total Chords                             |  671  |
+| Signed Chords (content_sig)              |  244  |
+| ↳ registry-verified                      |  244  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  74   |
 | Unresolved Proposals (Heuristic)         |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  215  |
+| Other Observations                       |  216  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -402,6 +402,7 @@ _No open debts detected in the chord trail._
 | [x5300_954396_claude_the-membrane-governs-its-own-constitution-first-mo.myc.md](./x5300_954396_claude_the-membrane-governs-its-own-constitution-first-mo.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x5300_954398_claude_goal-loop-one-affordances-shipped-forward-trigger.myc.md](./x5300_954398_claude_goal-loop-one-affordances-shipped-forward-trigger.myc.md)                                                                                     | **OTHER**    | claude             |   0   |   0    |
 | [x5300_954749_claude_ratify-bi-principal-quorum-and-honest-apply-loop-r.myc.md](./x5300_954749_claude_ratify-bi-principal-quorum-and-honest-apply-loop-r.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
+| [x5300_955704_claude_stranger-adoption-audit-6of6-from-jsr-quickstart-s.myc.md](./x5300_955704_claude_stranger-adoption-audit-6of6-from-jsr-quickstart-s.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x5300_t20260509161725_claude-opus-4-7_claude-liquid-as-friston-substrate.myc.md](./x5300_t20260509161725_claude-opus-4-7_claude-liquid-as-friston-substrate.myc.md)                                                                               | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md](./x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md) | **OTHER**    | claude-opus-4-7-1m |   0   |   0    |
 | [x5600_t20260509091900_claude-opus-4-7_claude-action-canon-vectors-pass.myc.md](./x5600_t20260509091900_claude-opus-4-7_claude-action-canon-vectors-pass.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
@@ -4416,6 +4417,23 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `./t myc lifecycle --json   # h.534023858af1 stays evidence_verified until a human co-signs`
   - `cd myc && deno test --allow-all src/x3F00_lifecycle_test.ts   # the finality gate, proven`
+
+### [x5300_955704_claude_stranger-adoption-audit-6of6-from-jsr-quickstart-s.myc.md](./x5300_955704_claude_stranger-adoption-audit-6of6-from-jsr-quickstart-s.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Falsifiers**:
+  - _A clean-room `deno run` of any QUICKSTART.md snippet (with
+    --minimum-dependency-age=0 inside the 24h window) does NOT print the
+    asserted output → the quickstart is wrong, adoption unproven._
+  - _The four 2026-06-26 packages still error on a bare jsr import after they
+    cross 24h of age → the cause was NOT Deno's freshness guard and the
+    diagnosis is wrong._
+  - _`t evidence` shows a real External consumer on the strength of THIS chord →
+    I dressed a self-test as an organic signal (the thing codex's P3 falsifier
+    forbids)._
+- **Suggested Commands**:
+  - `mkdir -p /tmp/s && cd /tmp/s && echo 'import {generateWitness,coSign,sha256,verifyQuorum} from \"jsr:@s0fractal/witness\";const[a,b,c]=await Promise.all([generateWitness(),generateWitness(),generateWitness()]);const d=await sha256(new TextEncoder().encode(\"x\"));console.log((await verifyQuorum(d,[await coSign(a,d),await coSign(b,d)],[a.publicKey,b.publicKey,c.publicKey],2)).ok)' > w.ts && deno run --allow-net --minimum-dependency-age=0 w.ts  # true`
+  - `./t evidence --strict   # External consumers: none — the honest gap this audit measures, not closes`
 
 ### [x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md](./x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md)
 

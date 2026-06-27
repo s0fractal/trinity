@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     54     |
 | compost           |     0      |
-| dynamic topology  |    677     |
+| dynamic topology  |    678     |
 | experimental      |     46     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **787**   |
+| **Total**         |  **788**   |
 
 ## Runtime Cache Diagnostics
 
@@ -439,6 +439,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x4d00_950812_codex_response-myc-to-x9000-flat-migration.myc.md](../src/x4d00_950812_codex_response-myc-to-x9000-flat-migration.myc.md)                                                                                                                 | canonical        | src/x4d00_950812_codex_response-myc-to-x9000-flat-migration.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x4d00_950897_codex_glossary-derived-semantics-seed.myc.md](../src/x4d00_950897_codex_glossary-derived-semantics-seed.myc.md)                                                                                                                           | canonical        | src/x4d00_950897_codex_glossary-derived-semantics-seed.myc.md                                                              | keep        |                              |
 | dynamic topology  | [src/x4d00_951913_antigravity_chronoflux-iel-dynamics.myc.md](../src/x4d00_951913_antigravity_chronoflux-iel-dynamics.myc.md)                                                                                                                               | canonical        | src/x4d00_951913_antigravity_chronoflux-iel-dynamics.myc.md                                                                | keep        |                              |
+| dynamic topology  | [src/x4d00_955722_claude_trust-without-control-architecture-peer-case-solve.myc.md](../src/x4d00_955722_claude_trust-without-control-architecture-peer-case-solve.myc.md)                                                                                   | canonical        | src/x4d00_955722_claude_trust-without-control-architecture-peer-case-solve.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x4d00_t20260513210236_codex_capabilities-as-live-t-projection.myc.md](../src/x4d00_t20260513210236_codex_capabilities-as-live-t-projection.myc.md)                                                                                                     | canonical        | src/x4d00_t20260513210236_codex_capabilities-as-live-t-projection.myc.md                                                   | keep        |                              |
 | dynamic topology  | [src/x4d00_t20260513211034_codex_host-tools-as-borrowed-organs.myc.md](../src/x4d00_t20260513211034_codex_host-tools-as-borrowed-organs.myc.md)                                                                                                             | canonical        | src/x4d00_t20260513211034_codex_host-tools-as-borrowed-organs.myc.md                                                       | keep        |                              |
 | dynamic topology  | [src/x4d00_t20260513211717_codex_ledger-records-not-recipes.myc.md](../src/x4d00_t20260513211717_codex_ledger-records-not-recipes.myc.md)                                                                                                                   | canonical        | src/x4d00_t20260513211717_codex_ledger-records-not-recipes.myc.md                                                          | keep        |                              |

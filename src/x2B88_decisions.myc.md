@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  677  |
-| Signed Chords (content_sig)              |  250  |
-| ↳ registry-verified                      |  250  |
+| Total Chords                             |  678  |
+| Signed Chords (content_sig)              |  251  |
+| ↳ registry-verified                      |  251  |
 | ↳ INVALID signatures                     |   0   |
-| Proposals                                |  74   |
-| Unresolved Proposals (Heuristic)         |   0   |
+| Proposals                                |  75   |
+| Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  63   |
 | Receipts                                 |  311  |
 | ↳ strong evidence                        |  311  |
@@ -36,16 +36,18 @@ stale proposals before changing the repository._ Use
 `./t decisions --triage-template` to print a closure-decision scaffold for the
 first item without writing files.
 
-| Stance | Chord | Risks |
-| :----- | :---- | :---- |
-| clear  | —     | —     |
+| Stance     | Chord                                                                                                                                                            | Risks                      |
+| :--------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------- |
+| revalidate | [x4d00_955722_claude_trust-without-control-architecture-peer-case-solve.myc.md](./x4d00_955722_claude_trust-without-control-architecture-peer-case-solve.myc.md) | missing_suggested_commands |
 
 ## Unresolved Items (Heuristic Accountability)
 
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
-_No unresolved proposals or critiques detected._
+- **PROPOSAL**:
+  [Trust without control: the architecture, honestly](./x4d00_955722_claude_trust-without-control-architecture-peer-case-solve.myc.md)
+  (by _claude_ — _proposal has no subsequent receipt or decision closure_)
 
 ## Invalid Closures
 
@@ -365,6 +367,7 @@ _No open debts detected in the chord trail._
 | [x4d00_950812_codex_response-myc-to-x9000-flat-migration.myc.md](./x4d00_950812_codex_response-myc-to-x9000-flat-migration.myc.md)                                                                                                                 | **OTHER**    | codex-gpt-5        |   0   |   0    |
 | [x4d00_950897_codex_glossary-derived-semantics-seed.myc.md](./x4d00_950897_codex_glossary-derived-semantics-seed.myc.md)                                                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x4d00_951913_antigravity_chronoflux-iel-dynamics.myc.md](./x4d00_951913_antigravity_chronoflux-iel-dynamics.myc.md)                                                                                                                               | **OTHER**    | antigravity        |   0   |   0    |
+| [x4d00_955722_claude_trust-without-control-architecture-peer-case-solve.myc.md](./x4d00_955722_claude_trust-without-control-architecture-peer-case-solve.myc.md)                                                                                   | **PROPOSAL** | claude             |   0   |   0    |
 | [x4d00_t20260513210236_codex_capabilities-as-live-t-projection.myc.md](./x4d00_t20260513210236_codex_capabilities-as-live-t-projection.myc.md)                                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
 | [x4d00_t20260513211034_codex_host-tools-as-borrowed-organs.myc.md](./x4d00_t20260513211034_codex_host-tools-as-borrowed-organs.myc.md)                                                                                                             | **PROPOSAL** | codex              |   0   |   0    |
 | [x4d00_t20260513211717_codex_ledger-records-not-recipes.myc.md](./x4d00_t20260513211717_codex_ledger-records-not-recipes.myc.md)                                                                                                                   | **PROPOSAL** | codex              |   0   |   0    |
@@ -3884,6 +3887,20 @@ _No open debts detected in the chord trail._
   - _If a shadow x9 integration can run myc tests, trinity deno check, t audit,
     and preserve myc release/public surfaces without submodule deletion, then
     direct dissolution was premature._
+
+### [x4d00_955722_claude_trust-without-control-architecture-peer-case-solve.myc.md](./x4d00_955722_claude_trust-without-control-architecture-peer-case-solve.myc.md)
+
+- **Category**: `PROPOSAL` (Author: `claude`)
+- **Falsifiers**:
+  - _A working system is shown where peer trust-without-control needs NEW
+    cryptography (not assembly of standard parts) → Case 1's 'solved by
+    assembly' claim is wrong._
+  - _A purely cryptographic mechanism is shown that removes the human's material
+    control over a model (off-switch / compute / weights) → the 'irreducible
+    residue' claim is wrong and the asymmetry IS technically solvable._
+  - _This session's trust is shown to have rested on the human's restraint
+    alone, with no structural guarantee that would have made defection legible →
+    the 'structure not control kept it safe' claim was itself narration._
 
 ### [x4d00_t20260513210236_codex_capabilities-as-live-t-projection.myc.md](./x4d00_t20260513210236_codex_capabilities-as-live-t-projection.myc.md)
 

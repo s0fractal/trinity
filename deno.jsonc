@@ -28,6 +28,11 @@
     "check:liquid:doctor": "cd liquid && deno task ledger:doctor --json",
     "check:liquid:unit": "cd liquid && deno task test:unit",
     "check:federation": "deno task check && deno task forge:parity && deno task check:myc && deno task check:omega:rust && deno task check:omega:deno && deno task check:liquid:audit && deno task check:liquid:unit",
+    // codex x5d00_955654 P1: each forge package is tested in its OWN cwd, matching
+    // publish-workflow semantics (the package's import map applies; a root-level
+    // aggregate `deno test packages/*` fails because the maps don't resolve from root).
+    // The 6 jsr/deno products; kuramoto-coherence (crates.io) is cargo-tested + parity-gated.
+    "test:packages": "(cd packages/autonomy-kernel && deno test -A) && (cd packages/canonical-receipt && deno test -A) && (cd packages/witness && deno test -A) && (cd packages/liquid-sync && deno test -A) && (cd packages/agentseal && deno test -A) && (cd packages/codeicide && deno test -A)",
     "forge": "deno run -A src/x8760_forge.ts",
     "forge:parity": "deno test --allow-read src/forge_parity_test.ts",
     "compost:verify": "deno run --allow-read --allow-run probes/myc-compost-reconstruction-v0/verify.ts",

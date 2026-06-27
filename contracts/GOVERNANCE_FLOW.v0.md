@@ -4,6 +4,24 @@ version: "0"
 title: "Governance Flow: reversible archive governance flow"
 status: "active"
 implementation_status: "partially_implemented"
+impl_evidence:
+  commands:
+    - "./t propose"
+    - "./t cowitness"
+    - "./t verdict"
+    - "./t apply-codeicide"
+    - "bash probes/codeicide-flow-v0/run.sh"
+  files:
+    - "src/x4D00_propose.ts"
+    - "src/x6D00_cowitness.ts"
+    - "src/x7D00_verdict.ts"
+    - "src/x5D00_apply_codeicide.ts"
+  tests:
+    - "probes/codeicide-flow-v0/run.sh"
+    - "src/autonomy_context_test.ts"
+  caveats:
+    - "no dedicated unit test for propose/apply — the codeicide-flow probe run.sh is the E2E coverage"
+    - "the cowitnessed-envelope landing convention is unformalized (deferred to v0.2)"
 maturity: "mature"
 hears:
   - "./CODEICIDE_PROPOSAL.v0.1.md"

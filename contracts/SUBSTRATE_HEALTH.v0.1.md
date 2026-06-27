@@ -4,6 +4,19 @@ version: "0.1"
 title: "Substrate Health: uniform shape for cross-substrate status aggregation"
 status: "draft"
 implementation_status: "implemented"
+impl_evidence:
+  commands:
+    - "./t status"
+    - "./t status --json"
+    - "bash probes/substrate-court-v0/run.sh"
+  files:
+    - "src/x2E00_status.ts"
+    - "probes/substrate-court-v0/ts/witness.ts"
+  tests:
+    - "probes/substrate-court-v0/ts/court_test.ts"
+  caveats:
+    - "v0.1 still emits the legacy summary.overall alongside substrate_health.overall (intentional migration window)"
+    - "the --live cache-refresh path is the v1.0-promotion frontier"
 hears:
   - "./RECEIPT_ENVELOPE.v0.1.md"
   - "../0x2/E.ts"

@@ -4,6 +4,16 @@ version: "0.1"
 title: "Process Objects — repository records process AND state"
 status: "active"
 implementation_status: "partially_implemented"
+impl_evidence:
+  commands:
+    - "./t check"
+  files:
+    - "src/x8B00_decisions_gen.ts"
+    - "src/x2B88_decisions.myc.md"
+  tests:
+    - "src/decisions_gen_test.ts"
+  caveats:
+    - "only the chord_decision_ledger claim is implemented; the full 15 descriptor types, the h.<12hex>.<slug>.<kind>.trinity.md filename shape, and the payload_hash/descriptor_hash split are NOT built — the chord/decision ledger is the current realization, the taxonomy is the target"
 implemented_claims:
   - "chord_decision_ledger"
 ---

@@ -4,6 +4,23 @@ version: "0.1"
 title: "Substrate Self ABI: minimum self-description surface for federation"
 status: "active"
 implementation_status: "partially_implemented"
+impl_evidence:
+  commands:
+    - "./t status"
+    - "./t capabilities"
+    - "./t audit"
+    - "./t roadmap"
+    - "./t probes"
+  files:
+    - "src/x2E00_status.ts"
+    - "src/x4A00_capabilities.ts"
+    - "src/x6C00_audit.ts"
+    - "src/x8D00_roadmap_gen.ts"
+    - "src/x8E00_probes_gen.ts"
+  tests:
+    - "src/probes_test.ts"
+  caveats:
+    - "trinity emits all five ABI slots; cross-substrate adoption is incremental by design — the contract sets the target shape, not a deadline"
 hears:
   - "./SUBSTRATE_HEALTH.v0.1.md"
   - "../src/x2E00_status.ts"

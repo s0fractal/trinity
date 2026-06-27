@@ -13,6 +13,21 @@ related:
   - "../jazz/chords/2026-05-10T224257Z-claude-vector-fractal-substrate-architecture.md"
   - "../jazz/chords/2026-05-10T225257Z-codex-aye-vector-fractal-substrate.md"
 implementation_status: "partially_implemented"
+impl_evidence:
+  commands:
+    - "./t check"
+    - "deno run -A src/x8F00_external_surfaces_gen.ts"
+  files:
+    - "src/x8F00_external_surfaces_gen.ts"
+    - "src/x8D00_roadmap_gen.ts"
+    - "src/x8E00_probes_gen.ts"
+    - "src/x8E00_probes.myc.md"
+    - "src/x8D00_roadmap.myc.md"
+  tests:
+    - "src/external_surfaces_prune_test.ts"
+    - "src/decisions_gen_test.ts"
+  caveats:
+    - "status draft; the substrate out/->src/ migration is incremental (only liquid's single out/ file migrated) — norm-setting, not full adoption"
 implemented_claims:
   - "external_surfaces_tracking"
 ---

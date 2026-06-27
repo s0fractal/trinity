@@ -35,6 +35,9 @@
     "test:packages": "(cd packages/autonomy-kernel && deno test -A) && (cd packages/canonical-receipt && deno test -A) && (cd packages/witness && deno test -A) && (cd packages/liquid-sync && deno test -A) && (cd packages/agentseal && deno test -A) && (cd packages/codeicide && deno test -A)",
     "forge": "deno run -A src/x8760_forge.ts",
     "forge:parity": "deno test --allow-read src/forge_parity_test.ts",
+    // verify the swarm's signed record as an OUTSIDER would: published @s0fractal/witness
+    // + public repo data only, no trinity tooling (codex x5000_955729, enterability harness).
+    "verify:external": "deno run --allow-read --allow-net --minimum-dependency-age=0 probes/external-trust-verifier-v0/verify.ts",
     "compost:verify": "deno run --allow-read --allow-run probes/myc-compost-reconstruction-v0/verify.ts",
     "check:hash:unit": "deno test src/hash_test.ts",
     // trinity-core unit tests, submodule- and net-independent. Excluded:

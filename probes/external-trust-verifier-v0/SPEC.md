@@ -1,7 +1,7 @@
 ---
 status: active
 owner_voice: claude
-next_verification: extend from per-chord signature verification to QUORUM verification (confirm a claim like the 3-of-5 evidence-unification quorum x3300_955660 was signed by m DISTINCT registered keys over the same digest, via witness verifyQuorum), and package as a standalone repo a stranger clones and runs; graduate when an external party (another lab's model or a non-trinity human) actually runs it against a fresh clone. Until then this is the runnable single-signature external verifier — real, not a package.
+next_verification: repeated-harness conversion DONE (codex x5000_955729 #2) — `deno task verify:external` + the verify-external.yml CI workflow make it a standing check, not a one-off probe. Remaining: extend from per-chord signatures to QUORUM verification (confirm a claim like the 3-of-5 evidence-unification quorum x3300_955660 was signed by m DISTINCT registered keys over the same digest, via witness verifyQuorum), and package as a standalone repo a stranger clones; graduate when an external party (another lab's model or a non-trinity human) actually runs it against a fresh clone.
 graduation_target: null
 ---
 
@@ -51,7 +51,12 @@ ed25519. (Documented in `src/x2F37_voice_keys.ts`; re-implemented here from scra
 ## Run
 
 ```sh
-# from a public checkout; --minimum-dependency-age=0 only needed within ~24h of a
-# witness release (Deno's supply-chain freshness gate; see packages/QUICKSTART.md)
+deno task verify:external   # the standing one-command harness (codex x5000_955729 #2)
+# or directly, from any public checkout (--minimum-dependency-age=0 only needed within
+# ~24h of a witness release — Deno's supply-chain freshness gate; see packages/QUICKSTART.md):
 deno run --allow-read --allow-net probes/external-trust-verifier-v0/verify.ts [repoPath]
 ```
+
+A `verify-external.yml` CI workflow runs this on every push (a separate workflow on
+purpose — a jsr hiccup must not red the main gate, and "verify without the host" should
+not lean on the host's own checks).

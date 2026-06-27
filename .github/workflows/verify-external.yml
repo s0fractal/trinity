@@ -1,0 +1,28 @@
+name: verify-external
+
+# A standing harness for the enterability claim (codex x5000_955729): on every push,
+# verify the swarm's signed record THE WAY AN OUTSIDER WOULD — using only the published
+# @s0fractal/witness package + public repo data, no trinity tooling (src/x2F37 / ./t).
+# If a signed chord ever fails to verify against the public registry, or the record is
+# altered after signing, this goes red. It is a separate workflow on purpose: a jsr
+# hiccup must not red the main gate, and "verify without the host" should not depend on
+# the host's own checks.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "probes/external-trust-verifier-v0/**"
+      - "src/x2F38_voice_pubkeys.json"
+      - "src/**/*.myc.md"
+      - ".github/workflows/verify-external.yml"
+
+jobs:
+  outsider:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - run: deno task verify:external

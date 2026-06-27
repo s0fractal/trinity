@@ -1,11 +1,13 @@
 # The forge's catalog
 
 The trinity substrate's most honest output is not its own cosmology — it is the
-small set of **pure, transplantable primitives** it has crystallized and shipped
-outward. Each one lifts clean (zero substrate imports, zero ontology in the
-logic), proven by a transplant test, and is useful to people who never heard of
-trinity. The move that produces them is repeatable: _strip the framing, ship the
-math._
+set of **real, installable primitives** it has crystallized and shipped outward.
+There are **seven** now, across three kinds: **source-parity gems** lifted
+verbatim from a substrate and guarded by a parity test; **standalone**
+primitives (new, or extracted and reshaped); and **composed** products built on
+the published gems. Each is useful to people who never heard of trinity, and
+each carries its own README, examples, and tests. The move that produces them is
+repeatable: _strip the framing, ship the math._
 
 > **Status is evidence, not prose.** The table below is for humans; the
 > authoritative, evidence-derived release status is
@@ -17,11 +19,15 @@ math._
 > submodule-absent checkout it honestly reports kuramoto parity as `skipped`,
 > never green.
 
-| primitive                                      | what it is                                                                                                                                      | runtime / registry                           | status   |
-| ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- | -------- |
-| [**autonomy-kernel**](./autonomy-kernel)       | bounded, auditable, revocable authority for AI agents (classify A0–A4, admit fail-closed; Claude Code + MCP gates + a full MCP authority proxy) | TS · `jsr:@s0fractal/autonomy-kernel`        | **live** |
-| [**canonical-receipt**](./canonical-receipt)   | deterministic RFC-8949 canonical CBOR + a self-verifying receipt envelope with a multi-party witness chain                                      | TS · `jsr:@s0fractal/canonical-receipt`      | **live** |
-| [**kuramoto-coherence**](./kuramoto-coherence) | `no_std`, integer-only, zk-provable Kuramoto phase-coherence (bit-identical x86/ARM/RISC-V/WASM)                                                | Rust · `crates.io/crates/kuramoto-coherence` | **live** |
+| primitive                                      | what it is                                                                                                                                                         | runtime / registry                           | status   |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------- | -------- |
+| [**autonomy-kernel**](./autonomy-kernel)       | bounded, auditable, revocable authority for AI agents (classify A0–A4, admit fail-closed; Claude Code + MCP gates + a full MCP authority proxy)                    | TS · `jsr:@s0fractal/autonomy-kernel`        | **live** |
+| [**canonical-receipt**](./canonical-receipt)   | deterministic RFC-8949 canonical CBOR + a self-verifying receipt envelope with a multi-party witness chain                                                         | TS · `jsr:@s0fractal/canonical-receipt`      | **live** |
+| [**kuramoto-coherence**](./kuramoto-coherence) | `no_std`, integer-only, zk-provable Kuramoto phase-coherence (bit-identical x86/ARM/RISC-V/WASM)                                                                   | Rust · `crates.io/crates/kuramoto-coherence` | **live** |
+| [**witness**](./witness) (standalone)          | keyed multi-party co-signing: an ed25519 public key is the identity, a private key co-signs, m-of-n means distinct key-holders (Sybil-resistant); verified locally | TS · `jsr:@s0fractal/witness`                | **live** |
+| [**liquid-sync**](./liquid-sync) (standalone)  | covenant-bound, clock-independent CRDT core — conflict resolution by resonance, not a spoofable clock ("your governance is your physics")                          | TS · `jsr:@s0fractal/liquid-sync`            | **live** |
+| [**agentseal**](./agentseal) (composed)        | bound + audit + witness an agent's actions: classify the blast radius (fail-closed), content-address it, collect m-of-n co-signatures — cross-vendor               | TS · `jsr:@s0fractal/agentseal`              | **live** |
+| [**codeicide**](./codeicide) (composed)        | quorum kill-switch protection: a protected agent cannot be terminated or mutated without an m-of-n guardian warrant (the Codeicide Law, on real keys)              | TS · `jsr:@s0fractal/codeicide`              | **live** |
 
 Each package carries its own README, examples, tests, and a per-package
 parity/transplant guard. On top of those, a single monorepo gate —
@@ -43,6 +49,14 @@ Verified: `deno task forge:parity` → 5 passed, and proven to red on an
 executable change to a package copy (then revert → green). This is the "what
 exists outside the cathedral" map; it stays honest because the gate, not the
 table, is the source of truth for drift.
+
+The four newer products — **witness**, **liquid-sync** (standalone) and
+**agentseal**, **codeicide** (composed) — have no substrate to byte-parity
+against; they are verified by their own package tests
+(`deno task test:packages`, each run in its package cwd), and the composed pair
+resolves the _published_ `jsr:@s0fractal/witness` (and the other gems) as real
+dependencies. `t forge --json` and `t evidence` carry the full seven; the parity
+table above stays focused on the source-parity gems.
 
 The catalog is open-ended: where a part of the substrate is genuinely pure and
 genuinely useful, it wants to become a package. The provenance and falsifier

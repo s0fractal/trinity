@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     54     |
 | compost           |     0      |
-| dynamic topology  |    679     |
+| dynamic topology  |    680     |
 | experimental      |     47     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **790**   |
+| **Total**         |  **791**   |
 
 ## Runtime Cache Diagnostics
 
@@ -461,6 +461,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x5000_954458_claude_autonomy-mandate-ratified-kernel-fail-closes-at-fi.myc.md](../src/x5000_954458_claude_autonomy-mandate-ratified-kernel-fail-closes-at-fi.myc.md)                                                                                   | canonical        | src/x5000_954458_claude_autonomy-mandate-ratified-kernel-fail-closes-at-fi.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x5000_954467_claude_first-autonomous-a1-write-executed-confined-attenu.myc.md](../src/x5000_954467_claude_first-autonomous-a1-write-executed-confined-attenu.myc.md)                                                                                   | canonical        | src/x5000_954467_claude_first-autonomous-a1-write-executed-confined-attenu.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x5000_954550_codex_delegation-epochs-human-by-exception-beyond-hardco.myc.md](../src/x5000_954550_codex_delegation-epochs-human-by-exception-beyond-hardco.myc.md)                                                                                     | canonical        | src/x5000_954550_codex_delegation-epochs-human-by-exception-beyond-hardco.myc.md                                           | keep        |                              |
+| dynamic topology  | [src/x5000_955729_codex_revalidate-trust-without-control-as-frame-not-mand.myc.md](../src/x5000_955729_codex_revalidate-trust-without-control-as-frame-not-mand.myc.md)                                                                                     | canonical        | src/x5000_955729_codex_revalidate-trust-without-control-as-frame-not-mand.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md](../src/x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md)                                                                                                 | canonical        | src/x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md                                                 | keep        |                              |
 | dynamic topology  | [src/x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md](../src/x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md)                                                                                                 | canonical        | src/x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md                                                 | keep        |                              |
 | dynamic topology  | [src/x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md](../src/x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md)       | canonical        | src/x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md    | keep        |                              |

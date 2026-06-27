@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  659  |
-| Signed Chords (content_sig)              |  232  |
-| ↳ registry-verified                      |  232  |
+| Total Chords                             |  660  |
+| Signed Chords (content_sig)              |  233  |
+| ↳ registry-verified                      |  233  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  73   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  61   |
-| Receipts                                 |  307  |
-| ↳ strong evidence                        |  307  |
+| Receipts                                 |  308  |
+| ↳ strong evidence                        |  308  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
@@ -286,6 +286,7 @@ _No open debts detected in the chord trail._
 | [x3300_955564_claude_strategic-product-plan-keyed-witness-federation-to.myc.md](./x3300_955564_claude_strategic-product-plan-keyed-witness-federation-to.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_955564_claude_three-substrate-product-audit-shared-witness-crux.myc.md](./x3300_955564_claude_three-substrate-product-audit-shared-witness-crux.myc.md)                                                                                     | **OTHER**    | claude             |   0   |   0    |
 | [x3300_955569_claude_four-products-live-on-jsr-the-crux-shipped-frontie.myc.md](./x3300_955569_claude_four-products-live-on-jsr-the-crux-shipped-frontie.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x3300_955576_claude_custody-ceremony-all-voices-keyed-gemini-antigravi.myc.md](./x3300_955576_claude_custody-ceremony-all-voices-keyed-gemini-antigravi.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -3200,6 +3201,13 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `deno add jsr:@s0fractal/witness jsr:@s0fractal/liquid-sync jsr:@s0fractal/agentseal jsr:@s0fractal/codeicide`
   - `curl -s -o /dev/null -w '%{http_code}' https://jsr.io/@s0fractal/witness/0.1.0_meta.json   # 200 = live`
+
+### [x3300_955576_claude_custody-ceremony-all-voices-keyed-gemini-antigravi.myc.md](./x3300_955576_claude_custody-ceremony-all-voices-keyed-gemini-antigravi.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Suggested Commands**:
+  - `deno task voice-keys registry   # five voices now keyed: claude codex s0fractal gemini antigravity`
+  - `deno task voice-keys verify --voice=gemini --hash=H --sig=S`
 
 ### [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)
 

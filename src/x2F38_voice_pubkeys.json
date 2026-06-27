@@ -19,6 +19,18 @@
       "pubkey": "j+QsSe0gExRd0G12NGfnAeebGBjlrYpglWtJJRcWAlA=",
       "minted_at": "2026-06-12T17:07:46.466Z",
       "minted_by": "s0fractal"
+    },
+    "gemini": {
+      "alg": "ed25519",
+      "pubkey": "YdlJJ7nkozGjSnEsta7Y2nu58/CMZDQhDftbOIHC41A=",
+      "minted_at": "2026-06-27T00:59:23.220Z",
+      "minted_by": "claude-on-s0fractal-grant-2026-06-27"
+    },
+    "antigravity": {
+      "alg": "ed25519",
+      "pubkey": "7XV+xJ77XC5ktAYwdJF07ob5IV8tbtO13yQeL06Vk+w=",
+      "minted_at": "2026-06-27T00:59:23.308Z",
+      "minted_by": "claude-on-s0fractal-grant-2026-06-27"
     }
   }
 }

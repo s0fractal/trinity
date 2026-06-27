@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     54     |
 | compost           |     0      |
-| dynamic topology  |    659     |
+| dynamic topology  |    660     |
 | experimental      |     43     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **766**   |
+| **Total**         |  **767**   |
 
 ## Runtime Cache Diagnostics
 
@@ -357,6 +357,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x3300_955564_claude_strategic-product-plan-keyed-witness-federation-to.myc.md](../src/x3300_955564_claude_strategic-product-plan-keyed-witness-federation-to.myc.md)                                                                                   | canonical        | src/x3300_955564_claude_strategic-product-plan-keyed-witness-federation-to.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_955564_claude_three-substrate-product-audit-shared-witness-crux.myc.md](../src/x3300_955564_claude_three-substrate-product-audit-shared-witness-crux.myc.md)                                                                                     | canonical        | src/x3300_955564_claude_three-substrate-product-audit-shared-witness-crux.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x3300_955569_claude_four-products-live-on-jsr-the-crux-shipped-frontie.myc.md](../src/x3300_955569_claude_four-products-live-on-jsr-the-crux-shipped-frontie.myc.md)                                                                                   | canonical        | src/x3300_955569_claude_four-products-live-on-jsr-the-crux-shipped-frontie.myc.md                                          | keep        |                              |
+| dynamic topology  | [src/x3300_955576_claude_custody-ceremony-all-voices-keyed-gemini-antigravi.myc.md](../src/x3300_955576_claude_custody-ceremony-all-voices-keyed-gemini-antigravi.myc.md)                                                                                   | canonical        | src/x3300_955576_claude_custody-ceremony-all-voices-keyed-gemini-antigravi.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](../src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | canonical        | src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](../src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | canonical        | src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md                                              | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](../src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | canonical        | src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md                                                      | keep        |                              |

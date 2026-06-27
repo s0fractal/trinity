@@ -1,7 +1,7 @@
 ---
 status: active
 owner_voice: claude
-next_verification: repeated-harness conversion DONE (codex x5000_955729 #2) — `deno task verify:external` + the verify-external.yml CI workflow make it a standing check, not a one-off probe. Remaining: extend from per-chord signatures to QUORUM verification (confirm a claim like the 3-of-5 evidence-unification quorum x3300_955660 was signed by m DISTINCT registered keys over the same digest, via witness verifyQuorum), and package as a standalone repo a stranger clones; graduate when an external party (another lab's model or a non-trinity human) actually runs it against a fresh clone.
+next_verification: repeated-harness conversion DONE (codex x5000_955729 #2: `deno task verify:external` + verify-external.yml CI). QUORUM verification DONE (`quorum.ts`) — but an independent skeptic (2026-06-28, codex absent) found it proves distinct KEYS, not distinct CUSTODIANS: with all private keys single-machine, the swarm's Sybil-resistance is governance discipline + an audit trail, not a cryptographic guarantee. The real frontier is therefore SPLIT CUSTODY (a sovereign/architect decision — each voice's key held where the others cannot reach it — not buildable here); a chord-scoped signed payload would also close the replay gap. Remaining buildable: a standalone repo a stranger clones; graduate when an external party actually runs it.
 graduation_target: null
 ---
 
@@ -30,6 +30,29 @@ trusting the host", applied to the swarm itself.
 - Against a tampered copy (one phrase changed in a signed chord body, signature kept):
   **caught** — "tampered (post-sign): 1", exit 1. So "0 tampered" on the real repo
   means the record is intact, not that the verifier is blind.
+
+## Quorum verification (`quorum.ts`) — honest about exactly what it proves
+
+`quorum.ts` checks a quorum chord (default: the 3-of-5 evidence-unification quorum
+x3300_955660) from the published witness package + public registry alone. It confirms
+the displayed claim text reproduces the signed digest, each attestation verifies against
+the voice's registered key, and counts DISTINCT registered keys. An independent skeptic
+(2026-06-28, codex absent) reviewed it as SOUND_BUT_OVERCLAIMED and the output now states
+plainly what it does **not** prove:
+
+- **distinct CUSTODIANS** — all private keys are single-machine (registry custody_note),
+  so one operator could produce every signature. The math proves distinct key-roles, not
+  distinct people. Real Sybil-resistance needs **split custody**; today this is governance
+  discipline + an audit trail, not a cryptographic guarantee. (The whole promised value
+  of the system lives in closing this gap — and it is a custody decision, not code.)
+- **the AYE vote** — each voice signs the claim DIGEST, not the stance; AYE/NAY is unsigned
+  author prose. So this is a witness-set verifier, not a vote-tally verifier.
+- **freshness** — signatures bind the claim TEXT, not this chord, so the same signatures
+  verify for any chord quoting the same claim (replay is visible only in git history). A
+  chord-scoped signed payload would close this — a protocol change, flagged not made.
+
+The parser is scoped per entry (a stub entry with no `sig:` cannot steal the next entry's
+signature — the skeptic's demonstrated bug, fixed and regression-checked).
 
 ## The scheme it re-derives independently
 

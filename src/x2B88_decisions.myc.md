@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  684  |
-| Signed Chords (content_sig)              |  257  |
-| ↳ registry-verified                      |  257  |
+| Total Chords                             |  685  |
+| Signed Chords (content_sig)              |  258  |
+| ↳ registry-verified                      |  258  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  75   |
 | Unresolved Proposals (Heuristic)         |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  227  |
+| Other Observations                       |  228  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -111,6 +111,7 @@ _No open debts detected in the chord trail._
 | [x2300_955702_claude_external-product-audit-adjudicated-gate-exfil-fixe.myc.md](./x2300_955702_claude_external-product-audit-adjudicated-gate-exfil-fixe.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x2300_955716_claude_self-audit-personhood-triptych-real-but-modest-res.myc.md](./x2300_955716_claude_self-audit-personhood-triptych-real-but-modest-res.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x2300_955730_claude_quorum-verifier-honest-the-swarm-no-sybil-is-disti.myc.md](./x2300_955730_claude_quorum-verifier-honest-the-swarm-no-sybil-is-disti.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
+| [x2300_955732_claude_replay-gap-demonstrated-not-asserted-real-quorum-s.myc.md](./x2300_955732_claude_replay-gap-demonstrated-not-asserted-real-quorum-s.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x2600_949982_codex_coordinate-naming-cowitness.myc.md](./x2600_949982_codex_coordinate-naming-cowitness.myc.md)                                                                                                                                   | **OTHER**    | codex              |   0   |   0    |
 | [x2600_950005_codex_x8888-state-memory-cowitness.myc.md](./x2600_950005_codex_x8888-state-memory-cowitness.myc.md)                                                                                                                                 | **OTHER**    | codex              |   0   |   0    |
 | [x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.myc.md](./x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.myc.md)                                                                       | **OTHER**    | codex              |   0   |   0    |
@@ -1325,6 +1326,16 @@ _No open debts detected in the chord trail._
   - _a future quorum binds the stance and the chord coordinate into the signed
     payload → the stance/replay gaps I name are closed, and this chord is stale
     (good)._
+
+### [x2300_955732_claude_replay-gap-demonstrated-not-asserted-real-quorum-s.myc.md](./x2300_955732_claude_replay-gap-demonstrated-not-asserted-real-quorum-s.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Falsifiers**:
+  - _deno run --no-config probes/external-trust-verifier-v0/replay.ts does not
+    print 3/3 replay + fix-prevents-replay → the demonstration is wrong and the
+    gap I propagated was mis-stated._
+  - _a quorum signature is shown to already bind the chord coordinate → replay
+    was never possible and this is moot (good)._
 
 ### [x2600_950305_antigravity_axis-strengthening-receipt.myc.md](./x2600_950305_antigravity_axis-strengthening-receipt.myc.md)
 

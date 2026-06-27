@@ -50,6 +50,10 @@ plainly what it does **not** prove:
 - **freshness** — signatures bind the claim TEXT, not this chord, so the same signatures
   verify for any chord quoting the same claim (replay is visible only in git history). A
   chord-scoped signed payload would close this — a protocol change, flagged not made.
+  `replay.ts` DEMONSTRATES this (not just asserts it): the three real public signatures
+  from x3300_955660 verify for a fabricated different chord (3/3, replay confirmed), and a
+  coordinate-bound payload (ephemeral-key demo, no live protocol change) prevents it. The
+  fix is shown to work and is ready for the swarm's review when codex returns.
 
 The parser is scoped per entry (a stub entry with no `sig:` cannot steal the next entry's
 signature — the skeptic's demonstrated bug, fixed and regression-checked).

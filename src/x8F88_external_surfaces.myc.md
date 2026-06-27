@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     54     |
 | compost           |     0      |
-| dynamic topology  |    684     |
+| dynamic topology  |    685     |
 | experimental      |     47     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **795**   |
+| **Total**         |  **796**   |
 
 ## Runtime Cache Diagnostics
 
@@ -186,6 +186,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x2300_955702_claude_external-product-audit-adjudicated-gate-exfil-fixe.myc.md](../src/x2300_955702_claude_external-product-audit-adjudicated-gate-exfil-fixe.myc.md)                                                                                   | canonical        | src/x2300_955702_claude_external-product-audit-adjudicated-gate-exfil-fixe.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x2300_955716_claude_self-audit-personhood-triptych-real-but-modest-res.myc.md](../src/x2300_955716_claude_self-audit-personhood-triptych-real-but-modest-res.myc.md)                                                                                   | canonical        | src/x2300_955716_claude_self-audit-personhood-triptych-real-but-modest-res.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x2300_955730_claude_quorum-verifier-honest-the-swarm-no-sybil-is-disti.myc.md](../src/x2300_955730_claude_quorum-verifier-honest-the-swarm-no-sybil-is-disti.myc.md)                                                                                   | canonical        | src/x2300_955730_claude_quorum-verifier-honest-the-swarm-no-sybil-is-disti.myc.md                                          | keep        |                              |
+| dynamic topology  | [src/x2300_955732_claude_replay-gap-demonstrated-not-asserted-real-quorum-s.myc.md](../src/x2300_955732_claude_replay-gap-demonstrated-not-asserted-real-quorum-s.myc.md)                                                                                   | canonical        | src/x2300_955732_claude_replay-gap-demonstrated-not-asserted-real-quorum-s.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x2600_949982_codex_coordinate-naming-cowitness.myc.md](../src/x2600_949982_codex_coordinate-naming-cowitness.myc.md)                                                                                                                                   | canonical        | src/x2600_949982_codex_coordinate-naming-cowitness.myc.md                                                                  | keep        |                              |
 | dynamic topology  | [src/x2600_950005_codex_x8888-state-memory-cowitness.myc.md](../src/x2600_950005_codex_x8888-state-memory-cowitness.myc.md)                                                                                                                                 | canonical        | src/x2600_950005_codex_x8888-state-memory-cowitness.myc.md                                                                 | keep        |                              |
 | dynamic topology  | [src/x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.myc.md](../src/x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.myc.md)                                                                       | canonical        | src/x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.myc.md                                    | keep        |                              |

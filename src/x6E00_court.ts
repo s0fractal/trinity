@@ -94,10 +94,17 @@ async function runJson(args: string[]): Promise<unknown> {
     : payload ?? null;
 }
 
-/** A substrate's own status organ + the law_hash it reported. */
+/** A substrate's own status organ + the law_hash it reported + any proof readiness
+ *  it surfaces (omega does; others may not — null when absent). */
 async function statusWitness(
   path: string,
-): Promise<{ envelope: unknown; law_hash: string | null } | null> {
+): Promise<
+  {
+    envelope: unknown;
+    law_hash: string | null;
+    proof_readiness: unknown;
+  } | null
+> {
   try {
     const s = await runJson([path, "--envelope"]) as
       | Record<string, unknown>
@@ -106,7 +113,11 @@ async function statusWitness(
     const law_hash =
       ((s.substrate_health as Record<string, unknown> | undefined)
         ?.law_hash as string | null | undefined) ?? null;
-    return { envelope: s.substrate_health_envelope, law_hash };
+    return {
+      envelope: s.substrate_health_envelope,
+      law_hash,
+      proof_readiness: s.proof_readiness ?? null,
+    };
   } catch {
     return null; // substrate absent / no --envelope support
   }
@@ -124,12 +135,14 @@ async function live() {
   ];
 
   const envelopes: unknown[] = [];
+  const proofReadiness: Record<string, unknown> = {};
   let omegaNative: string | null = null;
   let trinityWitnessed: string | null = null;
   for (const s of sources) {
     const w = await statusWitness(s.path);
     if (!w) continue;
     envelopes.push(w.envelope);
+    if (w.proof_readiness) proofReadiness[s.tag] = w.proof_readiness;
     if (s.tag === "omega") omegaNative = w.law_hash;
     if (s.tag === "trinity") trinityWitnessed = w.law_hash;
   }
@@ -170,6 +183,11 @@ async function live() {
       // this field agree, so machine callers don't need to know which of
       // law_bridge vs court.conflicts is decisive.
       law_drift,
+      // codex's omega-organ thesis + the success condition: trinity answers each
+      // substrate's PROOF readiness from its own emitted projection, never by reading
+      // the substrate's internals. omega surfaces ZK guest/prover + golden-trace state
+      // here; absent substrates simply do not appear.
+      proof_readiness: proofReadiness,
       court,
       note: omegaNative === null
         ? "omega absent — law bridge unverifiable; court reflects trinity's self-witness only"

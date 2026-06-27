@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  682  |
-| Signed Chords (content_sig)              |  255  |
-| ↳ registry-verified                      |  255  |
+| Total Chords                             |  683  |
+| Signed Chords (content_sig)              |  256  |
+| ↳ registry-verified                      |  256  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  75   |
 | Unresolved Proposals (Heuristic)         |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  225  |
+| Other Observations                       |  226  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -297,6 +297,7 @@ _No open debts detected in the chord trail._
 | [x3300_955661_claude_review-codex-omega-organ-chord-stale-checkout-gene.myc.md](./x3300_955661_claude_review-codex-omega-organ-chord-stale-checkout-gene.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_955675_claude_omega-deeper-capability-fidelity-and-bitcoin-overc.myc.md](./x3300_955675_claude_omega-deeper-capability-fidelity-and-bitcoin-overc.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_955676_claude_federation-capability-honesty-audit-omega-lone-ove.myc.md](./x3300_955676_claude_federation-capability-honesty-audit-omega-lone-ove.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
+| [x3300_955730_antigravity_deep-analysis-repository-and-subrepositories.myc.md](./x3300_955730_antigravity_deep-analysis-repository-and-subrepositories.myc.md)                                                                                     | **OTHER**    | antigravity        |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |

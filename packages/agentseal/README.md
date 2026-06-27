@@ -50,10 +50,9 @@ serve.
 - This MVP uses `classifyIntent` (the lightweight blast-radius classifier), not
   the full mandate-gated `admit` — that fuller authority path is a clean next
   step.
-- It depends on the three packages above. The in-repo build imports them by
-  relative path; **to publish to jsr, those become `jsr:` specifiers** (and
-  `@s0fractal/witness` must be published first). Until then, treat this as the
-  composition, runnable and tested in-repo.
+- It depends on the three packages above, resolved as **published `jsr:`
+  specifiers** (see this package's import map). All three are live on jsr, so
+  the composition installs and runs from the registry — not only in-repo.
 - Custody of the witness keys is the caller's, always (see
   `@s0fractal/witness`).
 

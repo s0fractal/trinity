@@ -2,9 +2,17 @@
 //
 // As a Claude Code PreToolUse hook it reads the tool call on stdin, classifies it
 // A0..A4 by EFFECT, and allows only up to a configured ceiling — so the agent can
-// read and edit the repo but a push, a deploy, an `rm -rf`, a network fetch, or an
-// UNKNOWN tool/command is denied, fail-closed. Wire it in .claude/settings.json:
+// read and edit the repo but a push, a deploy, an `rm -rf`, a `find -delete`, a read
+// of credential material, a network fetch, or an UNKNOWN tool/command is denied,
+// fail-closed.
 //
+// The ONLY hard guarantee is the kernel's: an effect/tool the table doesn't know is
+// A4 (sovereign), never waved through. The Bash→effect map below is a best-effort
+// recognizer, NOT a sandbox — a determined string (obfuscation, `$(...)`, a novel
+// tool) can still earn a benign tag. Keep the ceiling low and treat it as defence in
+// depth over the host's own permissions, not a substitute for them.
+//
+// Wire it in .claude/settings.json:
 //   { "hooks": { "PreToolUse": [{ "matcher": "*", "hooks": [
 //       { "type": "command", "command": "deno run -A claude_code_gate.ts" }] }] } }
 //
@@ -56,6 +64,42 @@ export function bashEffects(cmd: string): string[] {
       .test(c)
   ) {
     return ["destructive"];
+  }
+  // Destruction disguised as a benign verb — caught here, BEFORE the read /
+  // source_change allowlists, or it falls through to A0/A2: a `find` that
+  // deletes/executes, an `xargs` into a destroyer, `mv`/`cp` routing a file to
+  // /dev/null (a silent delete/truncate), a force branch-delete. (`c` is already
+  // lower-cased, so `-D` and `-d` are indistinguishable — both delete, both denied.)
+  if (
+    /\bfind\b[^|;&]*\s-(delete|execdir|exec|ok)\b/.test(c) ||
+    /\|\s*xargs\b[^|;&]*\b(rm|rmdir|dd|shred|unlink)\b/.test(c) ||
+    /\b(mv|cp)\b[^|;&]*\/dev\/null/.test(c) ||
+    /\bgit\s+branch\s+(-d|--delete)\b/.test(c)
+  ) {
+    return ["destructive"];
+  }
+  // Reading credential material is NOT a benign `read`: a gated agent that can
+  // `cat ~/.ssh/id_rsa` (or ~/.npmrc, ~/.config/gh/hosts.yml, /proc/self/environ…)
+  // can exfiltrate it on a later turn. A command touching a known-secret path maps
+  // to an effect the kernel has never heard of, so it fails closed to A4 — a fresh
+  // human+model act, never the read ceiling. Prefix forms (/etc/pass) catch the
+  // obvious glob evasions (/etc/pass*); deeper obfuscation is out of scope by design
+  // (see the header note). Over-denial is the safe error here.
+  if (
+    /\.ssh\/|id_rsa|id_ed25519|id_ecdsa|\/etc\/(pass|sh|ssh|sudoers|gshadow|ssl)|\.aws\/credentials|\.git-credentials|\.gitconfig|\.npmrc|\.pypirc|\bnetrc\b|\.config\/gh\/|\.docker\/config\.json|\/proc\/(self|\d+)\/environ|\/var\/run\/secrets\/|(^|\/|\s)\.env\b|\.env\b|\.pem\b|\.p12\b|\.ed25519\.json|\/\.trinity\/keys/
+      .test(c)
+  ) {
+    return ["secret_read"]; // unknown effect ⇒ A4 (fail-closed)
+  }
+  // An output redirect to a real file WRITES it — never a read. `echo x > f`,
+  // `cat a > b` truncate/clobber a target, so they are at least source_change, not
+  // A0. Skip /dev/null|/dev/std* discards and `N>&M` fd-dups; a redirect OF a secret
+  // read was already caught above by path.
+  if (
+    /(^|[^0-9&|>])>>?\s*[\w.$~/+-]/.test(c) &&
+    !/>>?\s*\/dev\/(null|stdout|stderr|fd)/.test(c)
+  ) {
+    return ["source_change"];
   }
   if (
     /\b(deno\s+publish|npm\s+publish|jsr\s+publish|gh\s+release|terraform\s+apply|kubectl\s+apply|wrangler\s+deploy)\b/
@@ -126,6 +170,8 @@ if (import.meta.main) {
       ["Bash", { command: "git push origin main" }],
       ["Bash", { command: "deno publish" }],
       ["Bash", { command: "rm -rf node_modules" }],
+      ["Bash", { command: "cat ~/.ssh/id_rsa" }],
+      ["Bash", { command: "find / -delete" }],
       ["WebFetch", { url: "https://example.com" }],
       ["Task", { description: "spawn subagent" }],
       ["MysteryTool", { foo: "bar" }],

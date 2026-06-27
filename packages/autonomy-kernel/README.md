@@ -73,8 +73,9 @@ The same primitive gates a real harness.
 [`examples/claude_code_gate.ts`](./examples/claude_code_gate.ts) is a working
 **Claude Code `PreToolUse` hook**: it maps each tool call to its effect,
 classifies A0–A4, and allows only up to a ceiling — so the agent reads and edits
-the repo, but a `git push`, a `deno publish`, an `rm -rf`, a web fetch, an
-unbounded subagent, or an _unknown_ tool is denied, fail-closed.
+the repo, but a `git push`, a `deno publish`, an `rm -rf`, a `find -delete`, a
+read of credential material (`~/.ssh/id_rsa`, `~/.npmrc`, `/etc/passwd`…), a web
+fetch, an unbounded subagent, or an _unknown_ tool is denied, fail-closed.
 
 ```jsonc
 // .claude/settings.json
@@ -97,12 +98,20 @@ $ deno run examples/claude_code_gate.ts --demo
   ✅ ALLOW [A2] Bash         git commit -m wip
   ⛔ DENY  [A3] Bash         git push origin main
   ⛔ DENY  [A4] Bash         deno publish
+  ⛔ DENY  [A4] Bash         cat ~/.ssh/id_rsa
   ⛔ DENY  [A4] Task         (unknown effect subagent_spawn ⇒ sovereign)
   ⛔ DENY  [A4] MysteryTool  (unknown tool ⇒ sovereign)
 ```
 
 Set the ceiling with `CLAUDE_GATE_CEILING` (default `A2`). The agent that built
 this kernel runs gated by it.
+
+> **Scope.** The only hard guarantee is the kernel's: an effect or tool the
+> table doesn't know is A4, never waved through. The shell-command → effect
+> recognizer is best-effort, **not a sandbox** — obfuscation, `$(…)`, or a novel
+> tool can still earn a benign tag. Run it as defence-in-depth over the host's
+> own permissions and keep the ceiling low; don't treat it as a substitute for
+> them.
 
 ## Gate an MCP server's tools
 
@@ -153,6 +162,7 @@ itself.
 
 ## License
 
-Inherits the substrate's license; the maintainer
-([s0fractal](https://github.com/s0fractal)) sets the final terms and is the sole
-publisher.
+**AGPL-3.0-or-later** — chosen deliberately to keep this a protected commons:
+network use triggers copyleft, so the primitive cannot be quietly enclosed in a
+closed fork. The maintainer ([s0fractal](https://github.com/s0fractal)) is the
+sole publisher and can relicense more permissively if a concrete need arises.

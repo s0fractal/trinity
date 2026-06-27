@@ -91,6 +91,7 @@ which the omega substrate already vendors and parity-checks three ways. A
 
 ## License
 
-Inherits the substrate's license; the maintainer
-([s0fractal](https://github.com/s0fractal)) sets the final terms and is the sole
-publisher.
+**AGPL-3.0-or-later** — chosen deliberately to keep this a protected commons:
+network use triggers copyleft, so the primitive cannot be quietly enclosed in a
+closed fork. The maintainer ([s0fractal](https://github.com/s0fractal)) is the
+sole publisher and can relicense more permissively if a concrete need arises.

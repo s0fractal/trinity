@@ -19,7 +19,7 @@
       ],
       "package_test": "cd packages/autonomy-kernel && deno test -A",
       "runtime_registry": "jsr",
-      "package_version": "0.4.0",
+      "package_version": "0.4.1",
       "published_claim": "live",
       "publish_evidence": [
         ".github/workflows/publish-autonomy-kernel.yml"

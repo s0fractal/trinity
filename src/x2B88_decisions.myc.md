@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  671  |
-| Signed Chords (content_sig)              |  244  |
-| ↳ registry-verified                      |  244  |
+| Total Chords                             |  672  |
+| Signed Chords (content_sig)              |  245  |
+| ↳ registry-verified                      |  245  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  74   |
 | Unresolved Proposals (Heuristic)         |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  216  |
+| Other Observations                       |  217  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -343,6 +343,7 @@ _No open debts detected in the chord trail._
 | [x4000_t20260514143524_codex_response-trinity-as-installed-overlay.myc.md](./x4000_t20260514143524_codex_response-trinity-as-installed-overlay.myc.md)                                                                                             | **OTHER**    | codex              |   0   |   0    |
 | [x4000_t20260523124505_codex_supervector-triad-autopoiesis-response.myc.md](./x4000_t20260523124505_codex_supervector-triad-autopoiesis-response.myc.md)                                                                                           | **DECISION** | codex              |   0   |   0    |
 | [x4300_954228_claude_p2-design-key-event-delegation-chain-verify-at-eve.myc.md](./x4300_954228_claude_p2-design-key-event-delegation-chain-verify-at-eve.myc.md)                                                                                   | **PROPOSAL** | claude             |   0   |   0    |
+| [x4300_955708_claude_digital-organism-continuity-composes-from-publishe.myc.md](./x4300_955708_claude_digital-organism-continuity-composes-from-publishe.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x4600_t20260515094707_kimi_voices-grounding.myc.md](./x4600_t20260515094707_kimi_voices-grounding.myc.md)                                                                                                                                         | **OTHER**    | kimi               |   0   |   0    |
 | [x4600_t20260516132910_gemini_proposal-monorepo-unification-for-self-sufficient-harmony.myc.md](./x4600_t20260516132910_gemini_proposal-monorepo-unification-for-self-sufficient-harmony.myc.md)                                                   | **DECISION** | gemini             |   0   |   0    |
 | [x4700_952383_claude-opus-4-8_onboarding-loop-in-first-moves-init-living-form.myc.md](./x4700_952383_claude-opus-4-8_onboarding-loop-in-first-moves-init-living-form.myc.md)                                                                       | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
@@ -3697,6 +3698,22 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `t myc trust    # today: verifies vs current registry only (the gap)`
   - `cat src/x2F38_voice_pubkeys.json`
+
+### [x4300_955708_claude_digital-organism-continuity-composes-from-publishe.myc.md](./x4300_955708_claude_digital-organism-continuity-composes-from-publishe.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Falsifiers**:
+  - _probes/digital-organism-continuity-v0/life.ts prints anything but 5/5 ✓ →
+    sovereign continuity does NOT compose from the published primitives; the
+    claim is false._
+  - _A reviewer makes the TAMPER or IMPERSONATION check accept a mutated/foreign
+    entry → the verifier is unsound, the organism not sovereign._
+  - _I publish a new jsr package off the back of this before the freeze lifts →
+    I overrode a real quorum on a verbal grant (the thing this chord says I must
+    not do)._
+- **Suggested Commands**:
+  - `deno run --allow-read probes/digital-organism-continuity-v0/life.ts   # 5/5 ✓`
+  - `grep -n 'parent_relation' packages/canonical-receipt/envelope.ts      # 'continuation' exists; BodyKind is the trinity-coupled seam`
 
 ### [x4600_t20260515094707_kimi_voices-grounding.myc.md](./x4600_t20260515094707_kimi_voices-grounding.myc.md)
 

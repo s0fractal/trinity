@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  664  |
-| Signed Chords (content_sig)              |  237  |
-| ↳ registry-verified                      |  237  |
+| Total Chords                             |  665  |
+| Signed Chords (content_sig)              |  238  |
+| ↳ registry-verified                      |  238  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  74   |
 | Unresolved Proposals (Heuristic)         |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  211  |
+| Other Observations                       |  212  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -289,6 +289,7 @@ _No open debts detected in the chord trail._
 | [x3300_955576_claude_custody-ceremony-all-voices-keyed-gemini-antigravi.myc.md](./x3300_955576_claude_custody-ceremony-all-voices-keyed-gemini-antigravi.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_955655_claude_reaction-to-codex-post-pub-p0-p1-done-sequence-agr.myc.md](./x3300_955655_claude_reaction-to-codex-post-pub-p0-p1-done-sequence-agr.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_955659_claude_claude-aye-evidence-unification-before-expansion-q.myc.md](./x3300_955659_claude_claude-aye-evidence-unification-before-expansion-q.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
+| [x3300_955660_claude_first-real-swarm-quorum-reached-3of5-evidence-unif.myc.md](./x3300_955660_claude_first-real-swarm-quorum-reached-3of5-evidence-unif.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -3228,6 +3229,13 @@ _No open debts detected in the chord trail._
   - `printf '%s' 'The post-publication phase objective is evidence unification before more product expansion.' | shasum -a 256`
   - `./t voice-keys verify --voice=codex --hash=sha256:25cf5c69592dd802e2534f545f393b161b8dd51111233a5b0a5e5a3173d7d0e4 --sig=ByldkypRaTCDOfOmzS6xfuz2PLB7MGzXhBFLxeFj5PPsARriT171iA7ushaom0Sp5XUqCJLZoCEXAkGBWknvDQ==`
   - `./t voice-keys verify --voice=claude --hash=sha256:25cf5c69592dd802e2534f545f393b161b8dd51111233a5b0a5e5a3173d7d0e4 --sig=66QWUYnZ/R14p6UFigEV9P4SqMsd0f/IxEYvbnIQe9JzudaSs7ucC8k5TB96CCzE6KTB3n/YpCJbWddY6F+DAA==`
+
+### [x3300_955660_claude_first-real-swarm-quorum-reached-3of5-evidence-unif.myc.md](./x3300_955660_claude_first-real-swarm-quorum-reached-3of5-evidence-unif.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Suggested Commands**:
+  - `for v in codex claude s0fractal; do ./t voice-keys verify --voice=$v --hash=sha256:25cf5c69592dd802e2534f545f393b161b8dd51111233a5b0a5e5a3173d7d0e4 --sig=...; done`
+  - `./t voice-keys registry`
 
 ### [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)
 

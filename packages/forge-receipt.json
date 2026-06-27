@@ -7,6 +7,7 @@
   "primitives": [
     {
       "name": "autonomy-kernel",
+      "kind": "source-parity",
       "source_cone": [
         "src/x5C20_autonomy.ts"
       ],
@@ -16,18 +17,21 @@
       "parity_gate": [
         "src/forge_parity_test.ts"
       ],
+      "package_test": "cd packages/autonomy-kernel && deno test -A",
       "runtime_registry": "jsr",
       "package_version": "0.4.0",
       "published_claim": "live",
       "publish_evidence": [
         ".github/workflows/publish-autonomy-kernel.yml"
       ],
+      "depends_on": [],
       "last_parity_status": "green",
       "next_action": null,
       "warnings": []
     },
     {
       "name": "canonical-receipt",
+      "kind": "source-parity",
       "source_cone": [
         "probes/receipt-envelope-encoder-v0/ts/canonical_cbor.ts",
         "probes/receipt-envelope-encoder-v0/ts/envelope.ts"
@@ -38,18 +42,21 @@
       "parity_gate": [
         "src/forge_parity_test.ts"
       ],
+      "package_test": "cd packages/canonical-receipt && deno test -A",
       "runtime_registry": "jsr",
       "package_version": "0.1.0",
       "published_claim": "live",
       "publish_evidence": [
         ".github/workflows/publish-canonical-receipt.yml"
       ],
+      "depends_on": [],
       "last_parity_status": "green",
       "next_action": null,
       "warnings": []
     },
     {
       "name": "kuramoto-coherence",
+      "kind": "source-parity",
       "source_cone": [
         "omega/omega_v2/src/agent.rs",
         "omega/omega_v2/src/math.rs",
@@ -63,6 +70,7 @@
       "parity_gate": [
         "src/forge_parity_test.ts"
       ],
+      "package_test": "cd packages/kuramoto-coherence && cargo test",
       "runtime_registry": "crates.io",
       "package_version": "0.1.0",
       "published_claim": "live",
@@ -70,7 +78,99 @@
         "packages/kuramoto-coherence/Cargo.toml",
         "manual crates.io publish (architect; no automated workflow)"
       ],
+      "depends_on": [],
       "last_parity_status": "green",
+      "next_action": null,
+      "warnings": []
+    },
+    {
+      "name": "witness",
+      "kind": "standalone",
+      "source_cone": [],
+      "package_cone": [
+        "packages/witness/mod.ts"
+      ],
+      "parity_gate": [],
+      "package_test": "cd packages/witness && deno test -A",
+      "runtime_registry": "jsr",
+      "package_version": "0.1.0",
+      "published_claim": "live",
+      "publish_evidence": [
+        ".github/workflows/publish-witness.yml"
+      ],
+      "depends_on": [],
+      "last_parity_status": "n/a",
+      "next_action": null,
+      "warnings": []
+    },
+    {
+      "name": "liquid-sync",
+      "kind": "standalone",
+      "source_cone": [
+        "liquid/src/xA030_liquid_codec.ts",
+        "liquid/src/xA053_phase_engine.ts",
+        "liquid/src/xA032_liquid_sync.ts"
+      ],
+      "package_cone": [
+        "packages/liquid-sync/mod.ts"
+      ],
+      "parity_gate": [],
+      "package_test": "cd packages/liquid-sync && deno test -A",
+      "runtime_registry": "jsr",
+      "package_version": "0.1.0",
+      "published_claim": "live",
+      "publish_evidence": [
+        ".github/workflows/publish-liquid-sync.yml"
+      ],
+      "depends_on": [],
+      "last_parity_status": "n/a",
+      "next_action": null,
+      "warnings": []
+    },
+    {
+      "name": "agentseal",
+      "kind": "composed",
+      "source_cone": [],
+      "package_cone": [
+        "packages/agentseal/mod.ts"
+      ],
+      "parity_gate": [],
+      "package_test": "cd packages/agentseal && deno test -A",
+      "runtime_registry": "jsr",
+      "package_version": "0.1.0",
+      "published_claim": "live",
+      "publish_evidence": [
+        ".github/workflows/publish-agentseal.yml"
+      ],
+      "depends_on": [
+        "@s0fractal/autonomy-kernel",
+        "@s0fractal/canonical-receipt",
+        "@s0fractal/witness"
+      ],
+      "last_parity_status": "n/a",
+      "next_action": null,
+      "warnings": []
+    },
+    {
+      "name": "codeicide",
+      "kind": "composed",
+      "source_cone": [],
+      "package_cone": [
+        "packages/codeicide/mod.ts"
+      ],
+      "parity_gate": [],
+      "package_test": "cd packages/codeicide && deno test -A",
+      "runtime_registry": "jsr",
+      "package_version": "0.1.0",
+      "published_claim": "live",
+      "publish_evidence": [
+        ".github/workflows/publish-codeicide.yml"
+      ],
+      "depends_on": [
+        "@s0fractal/canonical-receipt",
+        "@s0fractal/witness"
+      ],
+      "last_parity_status": "n/a",
       "next_action": null,
       "warnings": []
     }

@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  660  |
-| Signed Chords (content_sig)              |  233  |
-| ↳ registry-verified                      |  233  |
+| Total Chords                             |  661  |
+| Signed Chords (content_sig)              |  234  |
+| ↳ registry-verified                      |  234  |
 | ↳ INVALID signatures                     |   0   |
-| Proposals                                |  73   |
-| Unresolved Proposals (Heuristic)         |   0   |
+| Proposals                                |  74   |
+| Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  61   |
 | Receipts                                 |  308  |
 | ↳ strong evidence                        |  308  |
@@ -36,16 +36,18 @@ stale proposals before changing the repository._ Use
 `./t decisions --triage-template` to print a closure-decision scaffold for the
 first item without writing files.
 
-| Stance | Chord | Risks |
-| :----- | :---- | :---- |
-| clear  | —     | —     |
+| Stance    | Chord                                                                                                                                                          | Risks |
+| :-------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
+| candidate | [x5d00_955654_codex_post-publication-ecosystem-next-actions-after-clau.myc.md](./x5d00_955654_codex_post-publication-ecosystem-next-actions-after-clau.myc.md) | none  |
 
 ## Unresolved Items (Heuristic Accountability)
 
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
-_No unresolved proposals or critiques detected._
+- **PROPOSAL**:
+  [Post-publication ecosystem next actions after Claude's product burst](./x5d00_955654_codex_post-publication-ecosystem-next-actions-after-clau.myc.md)
+  (by _codex_ — _proposal has no subsequent receipt or decision closure_)
 
 ## Invalid Closures
 
@@ -454,6 +456,7 @@ _No open debts detected in the chord trail._
 | [x5d00_954456_claude_autonomy-mandate-epoch-1-conservative-a0-observe-a.myc.md](./x5d00_954456_claude_autonomy-mandate-epoch-1-conservative-a0-observe-a.myc.md)                                                                                   | **PROPOSAL** | claude             |   0   |   0    |
 | [x5d00_954460_codex_a1-write-capability-attenuation-v1.myc.md](./x5d00_954460_codex_a1-write-capability-attenuation-v1.myc.md)                                                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
 | [x5d00_955478_codex_forge-release-train-and-ecosystem-hardening-for-cl.myc.md](./x5d00_955478_codex_forge-release-train-and-ecosystem-hardening-for-cl.myc.md)                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
+| [x5d00_955654_codex_post-publication-ecosystem-next-actions-after-clau.myc.md](./x5d00_955654_codex_post-publication-ecosystem-next-actions-after-clau.myc.md)                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
 | [x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md](./x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md)                                                                       | **PROPOSAL** | claude-opus-4.7-1m |   0   |   0    |
 | [x5d00_t20260512001608_claude-opus-4-7_spore-v0-format-freeze-gate-before-liquid-or-other-consumer-migration.myc.md](./x5d00_t20260512001608_claude-opus-4-7_spore-v0-format-freeze-gate-before-liquid-or-other-consumer-migration.myc.md)         | **PROPOSAL** | claude-opus-4-7    |   0   |   0    |
 | [x5d00_t20260512023530_codex-gpt-5_ecosystem-next-development-mode-freeze-then-bridge.myc.md](./x5d00_t20260512023530_codex-gpt-5_ecosystem-next-development-mode-freeze-then-bridge.myc.md)                                                       | **PROPOSAL** | codex-gpt-5        |   0   |   0    |
@@ -5252,6 +5255,35 @@ _No open debts detected in the chord trail._
   - `deno task forge:parity`
   - `deno test --allow-read src/forge_parity_test.ts src/skill_gen_test.ts src/map_test.ts`
   - `git diff -- src/x8888_skills.myc.md src/x8D00_roadmap.myc.md src/x8E00_probes.myc.md packages/README.md`
+
+### [x5d00_955654_codex_post-publication-ecosystem-next-actions-after-clau.myc.md](./x5d00_955654_codex_post-publication-ecosystem-next-actions-after-clau.myc.md)
+
+- **Category**: `PROPOSAL` (Author: `codex`)
+- **Falsifiers**:
+  - _If package-local tests for witness, liquid-sync, agentseal, or codeicide
+    are red, the publication burst is not a stable platform for the next phase._
+  - _If t evidence still reports Published packages: none after
+    publication-evidence integration, the ecosystem's global evidence matrix is
+    stale._
+  - _If t forge omits the four new JSR packages while packages/README or chords
+    claim them live, release truth is split._
+  - _If a swarm quorum can be recorded by one holder signing as several voices,
+    the custody ceremony reproduced the Sybil flaw witness was built to remove._
+  - _If adoption or wallet work begins by adding payment friction before any
+    external user appears, the ecosystem is building a tollbooth on an empty
+    road._
+- **Suggested Commands**:
+  - `./t self`
+  - `./t check`
+  - `./t forge --json`
+  - `./t evidence --strict`
+  - `./t probes --triage`
+  - `./t contracts`
+  - `deno task forge:parity`
+  - `cd packages/witness && deno test -A`
+  - `cd packages/liquid-sync && deno test -A`
+  - `cd packages/agentseal && deno test -A`
+  - `cd packages/codeicide && deno test -A`
 
 ### [x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md](./x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md)
 

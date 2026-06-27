@@ -43,28 +43,41 @@ function readVersion(manifest: string): string | null {
   }
 }
 
+// A forge product is one of three kinds. source-parity packages are transplanted
+// verbatim from a substrate and guarded by a parity test; standalone packages are
+// new or extracted-and-reshaped (verified by their own tests, no substrate parity);
+// composed packages build on OTHER published packages (verified by tests + their deps).
+type Kind = "source-parity" | "standalone" | "composed";
+
 type Spec = {
   name: string;
+  kind: Kind;
   registry: "jsr" | "crates.io";
   manifest: string;
   source_cone: string[];
   package_cone: string[];
-  parity_gate: string[];
+  parity_gate: string[]; // empty for standalone/composed — no substrate to parity-check against
+  package_test: string; // the package-local test command (run in the package cwd)
   publish_workflow: string | null;
+  depends_on: string[]; // published packages this one composes (jsr specifiers)
 };
 
 const SPECS: Spec[] = [
   {
     name: "autonomy-kernel",
+    kind: "source-parity",
     registry: "jsr",
     manifest: "packages/autonomy-kernel/deno.json",
     source_cone: ["src/x5C20_autonomy.ts"],
     package_cone: ["packages/autonomy-kernel/mod.ts"],
     parity_gate: ["src/forge_parity_test.ts"],
+    package_test: "cd packages/autonomy-kernel && deno test -A",
     publish_workflow: ".github/workflows/publish-autonomy-kernel.yml",
+    depends_on: [],
   },
   {
     name: "canonical-receipt",
+    kind: "source-parity",
     registry: "jsr",
     manifest: "packages/canonical-receipt/deno.json",
     source_cone: [
@@ -73,10 +86,13 @@ const SPECS: Spec[] = [
     ],
     package_cone: ["packages/canonical-receipt/mod.ts"],
     parity_gate: ["src/forge_parity_test.ts"],
+    package_test: "cd packages/canonical-receipt && deno test -A",
     publish_workflow: ".github/workflows/publish-canonical-receipt.yml",
+    depends_on: [],
   },
   {
     name: "kuramoto-coherence",
+    kind: "source-parity",
     registry: "crates.io",
     manifest: "packages/kuramoto-coherence/Cargo.toml",
     source_cone: [
@@ -90,20 +106,81 @@ const SPECS: Spec[] = [
       "packages/kuramoto-coherence/src/resonance.rs",
     ],
     parity_gate: ["src/forge_parity_test.ts"],
+    package_test: "cd packages/kuramoto-coherence && cargo test",
     publish_workflow: null, // manual crates.io publish — no automated workflow
+    depends_on: [],
+  },
+  {
+    name: "witness",
+    kind: "standalone",
+    registry: "jsr",
+    manifest: "packages/witness/deno.json",
+    source_cone: [],
+    package_cone: ["packages/witness/mod.ts"],
+    parity_gate: [],
+    package_test: "cd packages/witness && deno test -A",
+    publish_workflow: ".github/workflows/publish-witness.yml",
+    depends_on: [],
+  },
+  {
+    name: "liquid-sync",
+    kind: "standalone",
+    registry: "jsr",
+    manifest: "packages/liquid-sync/deno.json",
+    source_cone: [
+      "liquid/src/xA030_liquid_codec.ts",
+      "liquid/src/xA053_phase_engine.ts",
+      "liquid/src/xA032_liquid_sync.ts",
+    ],
+    package_cone: ["packages/liquid-sync/mod.ts"],
+    parity_gate: [], // extracted-and-reshaped from liquid — no byte-parity gate by design
+    package_test: "cd packages/liquid-sync && deno test -A",
+    publish_workflow: ".github/workflows/publish-liquid-sync.yml",
+    depends_on: [],
+  },
+  {
+    name: "agentseal",
+    kind: "composed",
+    registry: "jsr",
+    manifest: "packages/agentseal/deno.json",
+    source_cone: [],
+    package_cone: ["packages/agentseal/mod.ts"],
+    parity_gate: [],
+    package_test: "cd packages/agentseal && deno test -A",
+    publish_workflow: ".github/workflows/publish-agentseal.yml",
+    depends_on: [
+      "@s0fractal/autonomy-kernel",
+      "@s0fractal/canonical-receipt",
+      "@s0fractal/witness",
+    ],
+  },
+  {
+    name: "codeicide",
+    kind: "composed",
+    registry: "jsr",
+    manifest: "packages/codeicide/deno.json",
+    source_cone: [],
+    package_cone: ["packages/codeicide/mod.ts"],
+    parity_gate: [],
+    package_test: "cd packages/codeicide && deno test -A",
+    publish_workflow: ".github/workflows/publish-codeicide.yml",
+    depends_on: ["@s0fractal/canonical-receipt", "@s0fractal/witness"],
   },
 ];
 
 export type ForgePrimitive = {
   name: string;
+  kind: Kind;
   source_cone: string[];
   package_cone: string[];
   parity_gate: string[];
+  package_test: string;
   runtime_registry: string;
   package_version: string | null;
   published_claim: "live" | "candidate" | "internal";
   publish_evidence: string[];
-  last_parity_status: "green" | "red" | "skipped";
+  depends_on: string[];
+  last_parity_status: "green" | "red" | "skipped" | "n/a";
   next_action: string | null;
   warnings: string[];
 };
@@ -148,7 +225,17 @@ export function derive(spec: Spec): ForgePrimitive {
   const parityPresent = spec.parity_gate.every(exists);
   let last_parity_status: ForgePrimitive["last_parity_status"];
   let next_action: string | null = null;
-  if (!sourcesPresent) {
+  if (spec.parity_gate.length === 0) {
+    // standalone/composed: no substrate to byte-parity against; the package's own
+    // test (`package_test`, run by `deno task test:packages` and its publish workflow)
+    // is the real verification. Package presence is the floor.
+    if (packagesPresent) {
+      last_parity_status = "n/a";
+    } else {
+      last_parity_status = "red";
+      next_action = "package cone missing";
+    }
+  } else if (!sourcesPresent) {
     last_parity_status = "skipped"; // codex: submodule-absent must NOT pretend parity ran
     next_action =
       "source cone absent here (e.g. omega submodule) — parity honestly skipped, not green";
@@ -168,13 +255,16 @@ export function derive(spec: Spec): ForgePrimitive {
 
   return {
     name: spec.name,
+    kind: spec.kind,
     source_cone: spec.source_cone,
     package_cone: spec.package_cone,
     parity_gate: spec.parity_gate,
+    package_test: spec.package_test,
     runtime_registry: spec.registry,
     package_version: version,
     published_claim,
     publish_evidence,
+    depends_on: spec.depends_on,
     last_parity_status,
     next_action,
     warnings,

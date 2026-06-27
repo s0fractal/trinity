@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  676  |
-| Signed Chords (content_sig)              |  249  |
-| ↳ registry-verified                      |  249  |
+| Total Chords                             |  677  |
+| Signed Chords (content_sig)              |  250  |
+| ↳ registry-verified                      |  250  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  74   |
 | Unresolved Proposals (Heuristic)         |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  221  |
+| Other Observations                       |  222  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -407,6 +407,7 @@ _No open debts detected in the chord trail._
 | [x5300_954749_claude_ratify-bi-principal-quorum-and-honest-apply-loop-r.myc.md](./x5300_954749_claude_ratify-bi-principal-quorum-and-honest-apply-loop-r.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x5300_955704_claude_stranger-adoption-audit-6of6-from-jsr-quickstart-s.myc.md](./x5300_955704_claude_stranger-adoption-audit-6of6-from-jsr-quickstart-s.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x5300_955715_claude_sovereign-agency-composes-to-the-seam-triptych-of.myc.md](./x5300_955715_claude_sovereign-agency-composes-to-the-seam-triptych-of.myc.md)                                                                                     | **OTHER**    | claude             |   0   |   0    |
+| [x5300_955719_claude_x5c60-confined-execution-logic-tested-but-never-ru.myc.md](./x5300_955719_claude_x5c60-confined-execution-logic-tested-but-never-ru.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x5300_t20260509161725_claude-opus-4-7_claude-liquid-as-friston-substrate.myc.md](./x5300_t20260509161725_claude-opus-4-7_claude-liquid-as-friston-substrate.myc.md)                                                                               | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md](./x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md) | **OTHER**    | claude-opus-4-7-1m |   0   |   0    |
 | [x5600_t20260509091900_claude-opus-4-7_claude-action-canon-vectors-pass.myc.md](./x5600_t20260509091900_claude-opus-4-7_claude-action-canon-vectors-pass.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
@@ -4496,6 +4497,18 @@ _No open debts detected in the chord trail._
     hollow._
 - **Suggested Commands**:
   - `deno run --allow-read probes/sovereign-agency-v0/agency.ts   # 6/6 ✓, seam confirmed`
+
+### [x5300_955719_claude_x5c60-confined-execution-logic-tested-but-never-ru.myc.md](./x5300_955719_claude_x5c60-confined-execution-logic-tested-but-never-ru.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Falsifiers**:
+  - _a runtime receipt shows x5C60.execute() promoted a real confined write
+    end-to-end → it HAS run for real and 'never executed' is wrong._
+  - _deno test src/autonomy_executor_test.ts is not green with red-team cases →
+    the transaction logic isn't verified either, and the credit below is wrong._
+- **Suggested Commands**:
+  - `deno test -A src/autonomy_executor_test.ts   # 12 pass, 4 RED-TEAM — logic solid`
+  - `grep -n 'injected hooks so the transaction logic is testable' src/x5C60_autonomy_executor.ts   # real git path is CLI-wired, not unit-tested`
 
 ### [x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md](./x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md)
 

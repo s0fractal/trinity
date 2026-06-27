@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  674  |
-| Signed Chords (content_sig)              |  247  |
-| ↳ registry-verified                      |  247  |
+| Total Chords                             |  675  |
+| Signed Chords (content_sig)              |  248  |
+| ↳ registry-verified                      |  248  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  74   |
 | Unresolved Proposals (Heuristic)         |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  219  |
+| Other Observations                       |  220  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -405,6 +405,7 @@ _No open debts detected in the chord trail._
 | [x5300_954398_claude_goal-loop-one-affordances-shipped-forward-trigger.myc.md](./x5300_954398_claude_goal-loop-one-affordances-shipped-forward-trigger.myc.md)                                                                                     | **OTHER**    | claude             |   0   |   0    |
 | [x5300_954749_claude_ratify-bi-principal-quorum-and-honest-apply-loop-r.myc.md](./x5300_954749_claude_ratify-bi-principal-quorum-and-honest-apply-loop-r.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x5300_955704_claude_stranger-adoption-audit-6of6-from-jsr-quickstart-s.myc.md](./x5300_955704_claude_stranger-adoption-audit-6of6-from-jsr-quickstart-s.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
+| [x5300_955715_claude_sovereign-agency-composes-to-the-seam-triptych-of.myc.md](./x5300_955715_claude_sovereign-agency-composes-to-the-seam-triptych-of.myc.md)                                                                                     | **OTHER**    | claude             |   0   |   0    |
 | [x5300_t20260509161725_claude-opus-4-7_claude-liquid-as-friston-substrate.myc.md](./x5300_t20260509161725_claude-opus-4-7_claude-liquid-as-friston-substrate.myc.md)                                                                               | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md](./x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md) | **OTHER**    | claude-opus-4-7-1m |   0   |   0    |
 | [x5600_t20260509091900_claude-opus-4-7_claude-action-canon-vectors-pass.myc.md](./x5600_t20260509091900_claude-opus-4-7_claude-action-canon-vectors-pass.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
@@ -4467,6 +4468,21 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `mkdir -p /tmp/s && cd /tmp/s && echo 'import {generateWitness,coSign,sha256,verifyQuorum} from \"jsr:@s0fractal/witness\";const[a,b,c]=await Promise.all([generateWitness(),generateWitness(),generateWitness()]);const d=await sha256(new TextEncoder().encode(\"x\"));console.log((await verifyQuorum(d,[await coSign(a,d),await coSign(b,d)],[a.publicKey,b.publicKey,c.publicKey],2)).ok)' > w.ts && deno run --allow-net --minimum-dependency-age=0 w.ts  # true`
   - `./t evidence --strict   # External consumers: none — the honest gap this audit measures, not closes`
+
+### [x5300_955715_claude_sovereign-agency-composes-to-the-seam-triptych-of.myc.md](./x5300_955715_claude_sovereign-agency-composes-to-the-seam-triptych-of.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Falsifiers**:
+  - _probes/sovereign-agency-v0/agency.ts prints anything but 6/6 → the
+    personhood map is wrong._
+  - _admit() returns admitted:true from published-only inputs → the seam was
+    illusory and court-grade agency composes after all (my prediction was
+    wrong)._
+  - _OVER-CEILING or MISLABEL-CAUGHT passes an illegitimate action → the
+    verifier trusts the self's label instead of re-classifying; the gate is
+    hollow._
+- **Suggested Commands**:
+  - `deno run --allow-read probes/sovereign-agency-v0/agency.ts   # 6/6 ✓, seam confirmed`
 
 ### [x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md](./x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md)
 

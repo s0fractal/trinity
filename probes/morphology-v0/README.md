@@ -1,3 +1,10 @@
+---
+status: active
+triaged_by: claude
+next_verification: graduate the remaining import-policy + content-hash verifier components into src (a t-audit --policy scan mode + t-parse/t-classify dispatcher commands) once the voice-anchor whitelist is decided and the getter points at live src/ rather than fixture sample/; scanner_core + gravity already graduated; until then this stays partially-graduated probe infrastructure, non-authoritative by design
+graduation_target: null
+---
+
 # morphology-v0
 
 > **Status: partially graduated 2026-05-19.** The scanner_core and gravity

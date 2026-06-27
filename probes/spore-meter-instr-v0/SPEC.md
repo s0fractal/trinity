@@ -1,3 +1,10 @@
+---
+status: active
+triaged_by: claude
+next_verification: concluded — F-FUEL-3 held: instrumented-WASM body fuel matches the exec-aware meter across all 10 corpus cells (Deno+V8 = wasmtime, 2026-05-12), closing the algorithm-class-independence gap SPORE_FUEL.v1 required; compost candidate pending governance; extend or fork if the corpus grows beyond the v0 subset
+graduation_target: null
+---
+
 # spore-meter-instr-v0 probe (full v0 corpus: nop + identity + xor_5c + sum_bytes)
 
 > **Status: active — instrumentation-side measurement.** Meter #4 for

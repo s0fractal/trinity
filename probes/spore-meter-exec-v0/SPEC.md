@@ -1,3 +1,10 @@
+---
+status: active
+triaged_by: claude
+next_verification: concluded — the exec-aware loop model this introduced is now canonical in SPORE_FUEL.v1 (F-FUEL-3 held 2026-05-12); no open meter question for the v0 corpus; compost candidate pending governance; fork a fresh probe if the corpus expands to multi-branch loops or call_indirect
+graduation_target: null
+---
+
 # spore-meter-exec-v0 probe
 
 > **Status: active — execution-side measurement.** Meter #3 for spore.fuel.v1;

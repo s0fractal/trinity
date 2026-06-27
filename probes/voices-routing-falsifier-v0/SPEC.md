@@ -1,3 +1,10 @@
+---
+status: active
+triaged_by: claude
+next_verification: re-run on the live corpus with voices emitting explicit dipole fields (a channel-independent 8D-vs-1D test, which falsifier-v0-honesty-check showed the current run lacks); if deltaPp stays under 10pp the keep_metadata ruling in VOICES.v0.1 is confirmed, if it exceeds 10pp that ruling must be revisited; until then this stays the routing falsifier of record, non-authoritative by design
+graduation_target: null
+---
+
 # voices-routing-falsifier-v0
 
 Probe for the `VOICES.v0.draft` routing question:

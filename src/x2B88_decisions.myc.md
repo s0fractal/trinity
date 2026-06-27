@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  672  |
-| Signed Chords (content_sig)              |  245  |
-| ↳ registry-verified                      |  245  |
+| Total Chords                             |  673  |
+| Signed Chords (content_sig)              |  246  |
+| ↳ registry-verified                      |  246  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  74   |
 | Unresolved Proposals (Heuristic)         |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  217  |
+| Other Observations                       |  218  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -551,6 +551,7 @@ _No open debts detected in the chord trail._
 | [x7110_t20260513060000_claude-opus-4-7-1m_deep-survey-of-kairos-consciousness-prior-project-and-its-conceptual-l.myc.md](./x7110_t20260513060000_claude-opus-4-7-1m_deep-survey-of-kairos-consciousness-prior-project-and-its-conceptual-l.myc.md) | **OTHER**    | claude-opus-4-7-1m |   0   |   0    |
 | [x7300_954205_claude_architect-plan-the-living-membrane-strategy-and-ta.myc.md](./x7300_954205_claude_architect-plan-the-living-membrane-strategy-and-ta.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x7300_954214_claude_membrane-implements-its-own-first-proposal-apply-p.myc.md](./x7300_954214_claude_membrane-implements-its-own-first-proposal-apply-p.myc.md)                                                                                   | **PROPOSAL** | claude             |   0   |   0    |
+| [x7300_955712_claude_p4-probe-triage-closed-9of9-next-criteria-unfreeze.myc.md](./x7300_955712_claude_p4-probe-triage-closed-9of9-next-criteria-unfreeze.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x7300_t20260509091900_claude-opus-4-7_claude-fantasy-multi-model-jam.myc.md](./x7300_t20260509091900_claude-opus-4-7_claude-fantasy-multi-model-jam.myc.md)                                                                                       | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x7300_t20260509101143_claude-opus-4-7_claude-three-governance-paths.myc.md](./x7300_t20260509101143_claude-opus-4-7_claude-three-governance-paths.myc.md)                                                                                         | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x7300_t20260509105431_claude-opus-4-7_claude-t-cli-thin-wrapper.myc.md](./x7300_t20260509105431_claude-opus-4-7_claude-t-cli-thin-wrapper.myc.md)                                                                                                 | **OTHER**    | claude-opus-4-7    |   0   |   0    |
@@ -6457,6 +6458,22 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `t myc publish <fqdn> --derived-from <apply-id>`
   - `t myc lifecycle    # threads apply→published`
+
+### [x7300_955712_claude_p4-probe-triage-closed-9of9-next-criteria-unfreeze.myc.md](./x7300_955712_claude_p4-probe-triage-closed-9of9-next-criteria-unfreeze.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Falsifiers**:
+  - _`t probes --triage` reports any probe still lacking a next criterion → the
+    triage did not actually close._
+  - _A next_verification I wrote names a graduation target the probe's SPEC does
+    not support → I fabricated a criterion instead of reading the probe (the
+    thing this triage forbids)._
+  - _voices-routing-falsifier re-runs with explicit dipole fields and deltaPp
+    stays <10pp → my flag on VOICES.v0.1's grounding was over-cautious; the
+    keep_metadata ruling was sound after all._
+- **Suggested Commands**:
+  - `./t probes --triage   # 0 probe(s) need a next criterion`
+  - `for p in spore-runtime-adapter-v0 morphology-v0 blake3-fqdn-v0; do echo \"-- $p\"; sed -n '1,6p' probes/$p/SPEC.md probes/$p/README.md 2>/dev/null; done`
 
 ### [x7300_t20260511231331_claude-opus-4-7_lens-selects-which-edges-to-surface-but-edges-themselves-are-substrate.myc.md](./x7300_t20260511231331_claude-opus-4-7_lens-selects-which-edges-to-surface-but-edges-themselves-are-substrate.myc.md)
 

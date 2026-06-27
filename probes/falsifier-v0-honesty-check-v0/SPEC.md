@@ -1,3 +1,10 @@
+---
+status: active
+triaged_by: claude
+next_verification: meta — no graduation expected; stays the honesty-check watchdog over the voices-routing-falsifier verdict; re-run only when voices emit explicit dipole fields (making the 8D input independent of oct tags), at which point re-running both this and the falsifier would constitute a genuine 8D-vs-1D test
+graduation_target: null
+---
+
 # falsifier-v0-honesty-check-v0
 
 > **Status: meta — checks probe-output honesty itself.** No graduation expected;

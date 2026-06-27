@@ -1,3 +1,10 @@
+---
+status: active
+triaged_by: claude
+next_verification: deferred to the PHI_BRIDGE_SPEC / cross-substrate organ decision; graduate only once Liquid hex-map + LegacyPathResolver prerequisites land and a PN-CAD event round-trips through the SPORE apply receipt without losing its Liquid namespace identity; until then this stays the bridge exploration stub, non-authoritative by design
+graduation_target: null
+---
+
 # spore-liquid-bridge-v0 probe
 
 > **Status: active — cross-substrate bridge exploration.** Adapter pattern

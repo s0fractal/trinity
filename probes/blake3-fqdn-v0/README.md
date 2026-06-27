@@ -1,3 +1,10 @@
+---
+status: active
+triaged_by: claude
+next_verification: deferred pending explicit architect go-ahead on FQDN content-addressed naming (project_fqdn_content_addressed); if approved, the next step is a Liquid PN-CAD compatibility audit before any live neuron is renamed; until then this stays a proof-of-concept probe, non-authoritative by design
+graduation_target: null
+---
+
 # blake3-fqdn-v0
 
 > **Status: deferred 2026-05-19.** Pattern proved out as a probe but has NOT

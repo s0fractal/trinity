@@ -1,3 +1,10 @@
+---
+status: active
+triaged_by: claude
+next_verification: graduate the SporeRuntimeAdapter interface into a stable src organ once a third backend (omega-zk or SP1) joins runMutator() with byte-identical output_hash; until then this stays the backend-agnostic apply probe, non-authoritative by design
+graduation_target: null
+---
+
 # spore-runtime-adapter-v0 probe
 
 Adapter probe for **runtime-pluggable** SPORE.v0 `apply` execution.

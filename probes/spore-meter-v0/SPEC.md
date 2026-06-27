@@ -1,3 +1,10 @@
+---
+status: active
+triaged_by: claude
+next_verification: concluded — SPORE_FUEL.v1 promoted to v1.0 (2026-05-11, three criteria green, F-FUEL-3 held); meter #1 has no open question for the v0 mutator corpus; compost candidate pending a governance compost pass (historical trail retained); reopen by forking a fresh probe only if the corpus expands (i64 mul/div, call_indirect)
+graduation_target: null
+---
+
 # spore-meter-v0 probe
 
 > **Status: active — measurement exploration.** Pattern may or may not become a

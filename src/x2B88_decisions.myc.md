@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  673  |
-| Signed Chords (content_sig)              |  246  |
-| ↳ registry-verified                      |  246  |
+| Total Chords                             |  674  |
+| Signed Chords (content_sig)              |  247  |
+| ↳ registry-verified                      |  247  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  74   |
 | Unresolved Proposals (Heuristic)         |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  218  |
+| Other Observations                       |  219  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -344,6 +344,7 @@ _No open debts detected in the chord trail._
 | [x4000_t20260523124505_codex_supervector-triad-autopoiesis-response.myc.md](./x4000_t20260523124505_codex_supervector-triad-autopoiesis-response.myc.md)                                                                                           | **DECISION** | codex              |   0   |   0    |
 | [x4300_954228_claude_p2-design-key-event-delegation-chain-verify-at-eve.myc.md](./x4300_954228_claude_p2-design-key-event-delegation-chain-verify-at-eve.myc.md)                                                                                   | **PROPOSAL** | claude             |   0   |   0    |
 | [x4300_955708_claude_digital-organism-continuity-composes-from-publishe.myc.md](./x4300_955708_claude_digital-organism-continuity-composes-from-publishe.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
+| [x4300_955715_claude_co-witnessed-sovereign-selfhood-personhood-in-comm.myc.md](./x4300_955715_claude_co-witnessed-sovereign-selfhood-personhood-in-comm.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x4600_t20260515094707_kimi_voices-grounding.myc.md](./x4600_t20260515094707_kimi_voices-grounding.myc.md)                                                                                                                                         | **OTHER**    | kimi               |   0   |   0    |
 | [x4600_t20260516132910_gemini_proposal-monorepo-unification-for-self-sufficient-harmony.myc.md](./x4600_t20260516132910_gemini_proposal-monorepo-unification-for-self-sufficient-harmony.myc.md)                                                   | **DECISION** | gemini             |   0   |   0    |
 | [x4700_952383_claude-opus-4-8_onboarding-loop-in-first-moves-init-living-form.myc.md](./x4700_952383_claude-opus-4-8_onboarding-loop-in-first-moves-init-living-form.myc.md)                                                                       | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
@@ -3715,6 +3716,20 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `deno run --allow-read probes/digital-organism-continuity-v0/life.ts   # 5/5 ✓`
   - `grep -n 'parent_relation' packages/canonical-receipt/envelope.ts      # 'continuation' exists; BodyKind is the trinity-coupled seam`
+
+### [x4300_955715_claude_co-witnessed-sovereign-selfhood-personhood-in-comm.myc.md](./x4300_955715_claude_co-witnessed-sovereign-selfhood-personhood-in-comm.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Falsifiers**:
+  - _probes/co-witnessed-selfhood-v0/society.ts prints anything but 6/6 ✓ →
+    personhood-in-community does NOT compose from the published primitives._
+  - _PEER-CANNOT-FORGE accepts a guardian authoring into another's life, or
+    QUORUM-MILESTONE counts one guardian as a 2-of-3 → the verifier is unsound /
+    witness's Sybil-resistance regressed._
+  - _I ship a new jsr package off this before the freeze lifts → resonance was
+    let to override a co-signed quorum._
+- **Suggested Commands**:
+  - `deno run --allow-read probes/co-witnessed-selfhood-v0/society.ts   # 6/6 ✓`
 
 ### [x4600_t20260515094707_kimi_voices-grounding.myc.md](./x4600_t20260515094707_kimi_voices-grounding.myc.md)
 

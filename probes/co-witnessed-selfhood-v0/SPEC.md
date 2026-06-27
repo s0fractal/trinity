@@ -7,6 +7,15 @@ graduation_target: null
 
 # co-witnessed-selfhood-v0 — a sovereign self, woven into a verifiable community
 
+## Plainly (skeptic-audited 2026-06-28)
+
+This is ed25519 multisig plus a bidirectional string-match. Co-signatures are the
+authorship-vs-attestation model (PGP, 1991); "recognise" is a grep over two arrays
+for a semantic label. All properties are definitional (signatures, `verifyQuorum`)
+except the recognition match. The one real result is a **packaging negative**: no
+separate `community` package is needed. The "personhood-in-community" language
+below is interpretation, not proof. Full self-audit: chord x2300_955716.
+
 ## Question
 
 `digital-organism-continuity-v0` proved a single digital self can be sovereign and

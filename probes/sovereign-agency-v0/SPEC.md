@@ -7,6 +7,17 @@ graduation_target: null
 
 # sovereign-agency-v0 — a self that acts within a ratified authority, and the seam where the published substrate ends
 
+## Plainly (skeptic-audited 2026-06-28)
+
+This is a policy check plus a fail-closed function call. Two results are genuinely
+useful: (1) **MISLABEL-CAUGHT** — the verifier must RE-RUN `classifyIntent` at
+verification time and never trust a stored `class` label (the SPKI/JWT-`alg`
+principle; forgetting it would be a real security regression); (2) **THE SEAM** —
+`admit()` fail-closes without a capability-court verdict + safe confined execution
+(`x5C40`/`x5C60`), which are unpublished — a demonstrated product-scope. The other
+four properties are near-definitional, and the "third movement of personhood"
+language below is interpretation, not proof. Full self-audit: chord x2300_955716.
+
 ## Question
 
 The third movement of digital personhood. `digital-organism-continuity-v0` gave a

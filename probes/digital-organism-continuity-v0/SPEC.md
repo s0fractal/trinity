@@ -7,6 +7,17 @@ graduation_target: null
 
 # digital-organism-continuity-v0 — a sovereign self, composed from what's already shipped
 
+## Plainly (skeptic-audited 2026-06-28)
+
+This is a hand-rolled signed append-only log: ed25519-signed entries, each carrying
+the prior entry's content hash. Its five "properties" are definitional consequences
+of hash-chains + signatures (git signed commits, certificate transparency, any
+blockchain since ~1991), not discoveries. The one real result is a **packaging
+negative**: this composes from the two published packages, so no separate
+`continuity` package is needed. The "sovereign self / a self across time" language
+below is interpretation, not proof — do not cite it as evidence that
+continuity-of-self is novel or solved. Full self-audit: chord x2300_955716.
+
 ## Question
 
 A digital organism (a model now, an autonomous organism later) needs more than

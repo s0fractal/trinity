@@ -25,4 +25,7 @@ jobs:
       - uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
-      - run: deno task verify:external
+      # --no-config escapes trinity's workspace (whose private submodules are absent in
+      # a public/CI checkout) — exactly the partial clone a real outsider has. The
+      # verifier needs no config: it resolves jsr:@s0fractal/witness on its own.
+      - run: deno run --no-config --allow-read --allow-net --minimum-dependency-age=0 probes/external-trust-verifier-v0/verify.ts

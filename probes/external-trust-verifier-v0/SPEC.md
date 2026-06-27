@@ -51,12 +51,18 @@ ed25519. (Documented in `src/x2F37_voice_keys.ts`; re-implemented here from scra
 ## Run
 
 ```sh
-deno task verify:external   # the standing one-command harness (codex x5000_955729 #2)
-# or directly, from any public checkout (--minimum-dependency-age=0 only needed within
-# ~24h of a witness release — Deno's supply-chain freshness gate; see packages/QUICKSTART.md):
-deno run --allow-read --allow-net probes/external-trust-verifier-v0/verify.ts [repoPath]
+# THE OUTSIDER PATH — works on a public/partial clone (no private submodules). --no-config
+# escapes trinity's workspace; the verifier needs no config (it resolves jsr: on its own).
+# --minimum-dependency-age=0 is only needed within ~24h of a witness release (Deno's
+# supply-chain freshness gate; see packages/QUICKSTART.md).
+deno run --no-config --allow-read --allow-net probes/external-trust-verifier-v0/verify.ts [repoPath]
+
+# maintainer convenience (needs the FULL workspace incl. private submodules):
+deno task verify:external
 ```
 
-A `verify-external.yml` CI workflow runs this on every push (a separate workflow on
-purpose — a jsr hiccup must not red the main gate, and "verify without the host" should
-not lean on the host's own checks).
+A `verify-external.yml` CI workflow runs the outsider path on every push (a separate
+workflow on purpose — a jsr hiccup must not red the main gate, and "verify without the
+host" should not lean on the host's own checks). Note: `deno task` fails on a partial
+clone because it loads the whole workspace to find itself — which is exactly why the
+outsider path is the direct `--no-config` run, not the task.

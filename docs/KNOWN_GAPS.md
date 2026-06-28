@@ -101,6 +101,10 @@ receipt `x3300_955750` digest `ab492186…`, committed to the OTS calendars.
   alternative, but that's a custom WS relay like phi_client's fallback, not
   libp2p circuit-relay.) _Closes when:_ the relay is up + two peers connect
   through it.
+- ✅ **content flows over the mesh** (2026-06-28).
+  `tools/mesh_chord_sync_proof.ts`: a real Ed25519-signed chord by claude
+  fetched peer-to-peer through live relay.myc.md + verified against registry
+  x2F38 (chord x3300_955780). The mesh carries the substrate.
 - 🟡 **mesh transport proven LIVE; auto peer-discovery remains.**
   `tools/mesh_live_proof.ts`: two NAT-bound peers discover the relay from the
   membrane + exchange a verified frame through relay.myc.md in production.

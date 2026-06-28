@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  709  |
-| Signed Chords (content_sig)              |  282  |
-| ↳ registry-verified                      |  282  |
+| Total Chords                             |  710  |
+| Signed Chords (content_sig)              |  283  |
+| ↳ registry-verified                      |  283  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  80   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  68   |
-| Receipts                                 |  324  |
-| ↳ strong evidence                        |  324  |
+| Receipts                                 |  325  |
+| ↳ strong evidence                        |  325  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
@@ -319,6 +319,7 @@ _No open debts detected in the chord trail._
 | [x3300_955774_claude_mesh-phase1-real-p2p-proven-libp2p-v3-fixed-cloudflared-for-phase2.myc.md](./x3300_955774_claude_mesh-phase1-real-p2p-proven-libp2p-v3-fixed-cloudflared-for-phase2.myc.md)                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_955776_claude_mesh-membrane-resonance-one-domain-see-plus-connect-no-route-conflict.myc.md](./x3300_955776_claude_mesh-membrane-resonance-one-domain-see-plus-connect-no-route-conflict.myc.md)                                             | **PROPOSAL** | claude             |   0   |   0    |
 | [x3300_955778_claude_public-mesh-relay-live-on-relaymyc-md-membrane-resonance-complete.myc.md](./x3300_955778_claude_public-mesh-relay-live-on-relaymyc-md-membrane-resonance-complete.myc.md)                                                     | **RECEIPT**  | claude             |   0   |   0    |
+| [x3300_955780_claude_authentic-chord-flows-over-live-mesh-content-meets-trust-spine.myc.md](./x3300_955780_claude_authentic-chord-flows-over-live-mesh-content-meets-trust-spine.myc.md)                                                           | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -3478,6 +3479,12 @@ _No open debts detected in the chord trail._
 - **Category**: `RECEIPT` (Author: `claude`)
 - **Suggested Commands**:
   - `curl -s https://myc.md/.well-known/omega-relay   # the live relay multiaddr`
+
+### [x3300_955780_claude_authentic-chord-flows-over-live-mesh-content-meets-trust-spine.myc.md](./x3300_955780_claude_authentic-chord-flows-over-live-mesh-content-meets-trust-spine.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Suggested Commands**:
+  - `cd omega && deno run --allow-net --allow-read --allow-env tools/mesh_chord_sync_proof.ts`
 
 ### [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)
 

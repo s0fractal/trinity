@@ -84,14 +84,17 @@ receipt `x3300_955750` digest `ab492186…`, committed to the OTS calendars.
 - 🟡 **gossipsub topic-mesh on 2 loopback nodes was finicky** (subscriptions
   didn't propagate in time) — the proof uses a direct protocol stream instead.
   Real deployments with the relay + heartbeats should mesh fine; revisit if not.
-- 🔴 **Phase 2 — no relay/bootstrap deployed (architect-gated).** Browser/remote
-  peers need a public `circuit-relay-v2` node (NAT traversal + a known omega
-  peer). _Recommended (Cloudflare):_ run a libp2p relay (same Deno stack, public
-  `wss` listen) exposed via **`cloudflared` tunnel** — free, reliable, no VPS/
-  inbound ports, libp2p-native; bake its multiaddr into config. (A
-  Durable-Object hibernatable-WebSocket hub is the CF-native alternative, but
-  that's a custom WS relay like phi_client's fallback, not libp2p
-  circuit-relay.) _Closes when:_ the relay is up + two peers connect through it.
+- 🟡 **Phase 2 — relay CODE proven, only HOSTING gated.**
+  `tools/mesh_relay_proof.ts` proves a real libp2p `circuit-relay-v2` relays B→A
+  (signed frame verified) locally — the keystone works in code. What remains
+  (architect-gated): Browser/remote peers need a public `circuit-relay-v2` node
+  (NAT traversal + a known omega peer). _Recommended (Cloudflare):_ run a libp2p
+  relay (same Deno stack, public `wss` listen) exposed via **`cloudflared`
+  tunnel** — free, reliable, no VPS/ inbound ports, libp2p-native; bake its
+  multiaddr into config. (A Durable-Object hibernatable-WebSocket hub is the
+  CF-native alternative, but that's a custom WS relay like phi_client's
+  fallback, not libp2p circuit-relay.) _Closes when:_ the relay is up + two
+  peers connect through it.
 - 🟡 **phi_client WebRTC SDP still a stub** (browser path) — Phase 3, after the
   relay exists.
 

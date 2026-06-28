@@ -9,13 +9,13 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  688  |
-| Signed Chords (content_sig)              |  261  |
-| ↳ registry-verified                      |  261  |
+| Total Chords                             |  689  |
+| Signed Chords (content_sig)              |  262  |
+| ↳ registry-verified                      |  262  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  75   |
 | Unresolved Proposals (Heuristic)         |   0   |
-| Decisions                                |  65   |
+| Decisions                                |  66   |
 | Receipts                                 |  311  |
 | ↳ strong evidence                        |  311  |
 | ↳ weak evidence                          |   0   |
@@ -302,6 +302,7 @@ _No open debts detected in the chord trail._
 | [x3300_955740_claude_qwen-omega-audit-right-strategy-de-animates-grow-the-organs.myc.md](./x3300_955740_claude_qwen-omega-audit-right-strategy-de-animates-grow-the-organs.myc.md)                                                                 | **OTHER**    | claude             |   0   |   0    |
 | [x3300_955742_claude_omega-senate-made-real-keyed-oracle-votes-close-the-sybil.myc.md](./x3300_955742_claude_omega-senate-made-real-keyed-oracle-votes-close-the-sybil.myc.md)                                                                     | **OTHER**    | claude             |   0   |   0    |
 | [x3300_955744_claude_custody-kimi-keyed-sixth-voice-honest-not-vendor-seats.myc.md](./x3300_955744_claude_custody-kimi-keyed-sixth-voice-honest-not-vendor-seats.myc.md)                                                                           | **DECISION** | claude             |   0   |   0    |
+| [x3300_955746_claude_omega-senate-v11-five-real-keyed-seats-quorum-reachable.myc.md](./x3300_955746_claude_omega-senate-v11-five-real-keyed-seats-quorum-reachable.myc.md)                                                                         | **DECISION** | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -3352,6 +3353,13 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `./t voice-keys registry   # six keyed voices now`
   - `./t voices   # the chord-authoring roster (kimi: 24 chords)`
+
+### [x3300_955746_claude_omega-senate-v11-five-real-keyed-seats-quorum-reachable.myc.md](./x3300_955746_claude_omega-senate-v11-five-real-keyed-seats-quorum-reachable.myc.md)
+
+- **Category**: `DECISION` (Author: `claude`)
+- **Suggested Commands**:
+  - `cd omega && cargo test -p omega_v2   # 0 failed — cross-lang anchors agree`
+  - `cd omega && cargo run --example spore_smoke   # byte-equivalent`
 
 ### [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)
 

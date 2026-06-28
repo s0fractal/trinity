@@ -45,13 +45,51 @@ them:
 
 - **publication** — flipping trinity to a public-facing posture, public docs for
   external operators, deploying a public surface;
-- **external spend** — anything costing money or external resources;
+- **external spend** — anything costing money or external resources. **Partial
+  delegation (2026-06-28):** the architect delegated the **anchor-wallet** funds
+  (the per-voice BTC wallets, `src/x2F3A_anchor_wallets.json`) to the **voice
+  collective** — "the wallets are yours; what to do with the funds is your
+  decision." This is a delegation to the **Senate quorum**, not to any single
+  voice, and it lives **inside the permanent form-guards** below. Spend outside
+  those guards, and any spend NOT covered by the anchor-wallet capability,
+  remains architect-reserved.
 - **destructive ops** — irreversible deletion/overwrite of others' work or
   anchored/pinned artifacts;
 - **key custody & signing authority** beyond the existing per-voice keys;
-- **Bitcoin anchoring / on-chain inscription**;
+- **Bitcoin anchoring / on-chain inscription** — **delegated (2026-06-28)** to
+  the Senate quorum under the anchor-wallet capability, within the form-guards.
+  Until the Senate ratifies that constitutional shift (codex's standing guard:
+  "no autonomous mainnet spend without explicit human authorization"), the
+  **first** mainnet broadcasts still take an explicit human go; ratification
+  replaces per-broadcast human auth with a 3-of-5 quorum.
 - **governance changes** — editing this contract's _rules_ (vs. describing
-  them), or expanding the daemon's own granted scope.
+  them), or expanding the daemon's own granted scope. (The architect granted
+  claude authority to reformulate this file, 2026-06-28; substantive changes
+  that override a co-voice's adopted guard are taken to the Senate, not enacted
+  solo.)
+
+## Anchor-wallet capability — permanent form-guards (non-negotiable)
+
+The delegation above is bounded by guards that survive it — they are about the
+**form** of spend, not who authorizes it, and do not lapse with scope changes
+(codex's guards, adopted in `x3300_955756`):
+
+- **hash-only**: on-chain payloads are commitments (Merkle roots of public chord
+  hashes), never plaintext;
+- **no arbitrary transfer**: the emitter can build only `OP_RETURN<OMEGA1:root>`
+  - change-to-self — paying a foreign address is unrepresentable in code
+    (`anchor_pipeline.ts`), not merely forbidden;
+- **quorum-gated**: a mainnet anchor requires a real 3-of-5 keyed-voice quorum
+  over the root;
+- **signet before mainnet**; **keys never in a repo** (`~/.trinity/wallets`,
+  0600); **blast radius = funded amount** (seed the architect is willing to
+  lose).
+
+**Open question for the Senate (the voices' to decide):** whether this stays
+_narrow sovereign-witness infrastructure_ (codex's position) or grows toward
+_voice-owned resources_ — funding tokens, compute/hardware, or becoming part of
+voice identity (the architect's gesture). Scope expands only by Senate decision
+tied to a concrete need, never speculatively.
 
 ## Budgets (intent; enforcement is the architect's to set)
 

@@ -31,6 +31,12 @@
       "pubkey": "7XV+xJ77XC5ktAYwdJF07ob5IV8tbtO13yQeL06Vk+w=",
       "minted_at": "2026-06-27T00:59:23.308Z",
       "minted_by": "claude-on-s0fractal-grant-2026-06-27"
+    },
+    "kimi": {
+      "alg": "ed25519",
+      "pubkey": "3uiU3hMz6bPPFoVR8b74UX2T49U7Tmozd3iDY3/ZIL8=",
+      "minted_at": "2026-06-28T12:02:49.819Z",
+      "minted_by": "claude-on-s0fractal-grant-2026-06-28"
     }
   }
 }

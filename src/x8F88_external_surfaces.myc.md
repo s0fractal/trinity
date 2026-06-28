@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     11     |
 | compatibility abi |     54     |
 | compost           |     0      |
-| dynamic topology  |    707     |
+| dynamic topology  |    708     |
 | experimental      |     47     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **819**   |
+| **Total**         |  **820**   |
 
 ## Runtime Cache Diagnostics
 
@@ -393,6 +393,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x3300_955770_claude_first-real-bitcoin-anchor-on-mainnet-quorum-authorized-anchoring-live.myc.md](../src/x3300_955770_claude_first-real-bitcoin-anchor-on-mainnet-quorum-authorized-anchoring-live.myc.md)                                             | canonical        | src/x3300_955770_claude_first-real-bitcoin-anchor-on-mainnet-quorum-authorized-anchoring-live.myc.md                       | keep        |                              |
 | dynamic topology  | [src/x3300_955772_claude_mesh-vector-research-real-libp2p-blocker-is-deployment-staged-plan.myc.md](../src/x3300_955772_claude_mesh-vector-research-real-libp2p-blocker-is-deployment-staged-plan.myc.md)                                                   | canonical        | src/x3300_955772_claude_mesh-vector-research-real-libp2p-blocker-is-deployment-staged-plan.myc.md                          | keep        |                              |
 | dynamic topology  | [src/x3300_955774_claude_mesh-phase1-real-p2p-proven-libp2p-v3-fixed-cloudflared-for-phase2.myc.md](../src/x3300_955774_claude_mesh-phase1-real-p2p-proven-libp2p-v3-fixed-cloudflared-for-phase2.myc.md)                                                   | canonical        | src/x3300_955774_claude_mesh-phase1-real-p2p-proven-libp2p-v3-fixed-cloudflared-for-phase2.myc.md                          | keep        |                              |
+| dynamic topology  | [src/x3300_955776_claude_mesh-membrane-resonance-one-domain-see-plus-connect-no-route-conflict.myc.md](../src/x3300_955776_claude_mesh-membrane-resonance-one-domain-see-plus-connect-no-route-conflict.myc.md)                                             | canonical        | src/x3300_955776_claude_mesh-membrane-resonance-one-domain-see-plus-connect-no-route-conflict.myc.md                       | keep        |                              |
 | dynamic topology  | [src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](../src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | canonical        | src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](../src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | canonical        | src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md                                              | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](../src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | canonical        | src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md                                                      | keep        |                              |

@@ -30,9 +30,9 @@ Convention: `[severity] area — gap — why deferred — what closes it`. Sever
   signing proof are tested; the CLI's fetch/broadcast/verify paths are untested
   (need network mocking). _Closes when:_ a mocked-fetch test covers
   build/verify.
-- 🟡 **manual fee, no estimation** — `build --fee=` defaults to 300 sats with a
-  2000-sat cap; no dynamic fee from mempool. Risk: underpay (stuck tx) or
-  overpay. _Closes when:_ fee is pulled from `…/v1/fees/recommended` with a cap.
+- ✅ **dynamic fee — DONE**. `build` (no `--fee`) pulls `…/v1/fees/recommended`
+  (halfHourFee × ~160 vB), floored 200, capped at `--fee-cap` (2000); falls back
+  to 400 if the API is down. No more stranded-tx-on-fee-spike risk.
 - 🟡 **single API dependency (mempool.space)** — UTXO fetch + broadcast + verify
   all go through one third party, no fallback. _Closes when:_ a second provider
   or a self-hosted node is wired as fallback.
@@ -53,7 +53,8 @@ receipt `x3300_955750` digest `ab492186…`, committed to the OTS calendars.
   a Bitcoin block ~hourly; the `.ots` proof has no Bitcoin attestation until you
   re-run `upgrade` after a block. Inherent to OTS, not a bug — but the proof
   isn't Bitcoin-complete the moment you stamp it. _Closes per-proof when:_
-  `upgrade` then `verify` shows a block height (a few hours later).
+  `upgrade` then `verify` shows a block height. ✅ The 9-chord governance arc is
+  now upgraded + Bitcoin-attested (block 955823, `verify-all`: 9/9).
 - 🟡 **upgrade isn't automatic** — `upgrade-all` upgrades every pending proof in
   one command, but nothing _runs_ it on a schedule. _Closes when:_ a cron/daemon
   tick runs `upgrade-all` and commits the enriched proofs. (Single-command

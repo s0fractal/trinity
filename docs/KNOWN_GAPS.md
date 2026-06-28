@@ -1,0 +1,78 @@
+# Known gaps ledger (недопрацювання)
+
+A running list of **deliberately incomplete bits** — shortcuts, stubs, deferred
+work, and external blockers — so they are recorded at the moment they're created
+and never have to be hunted for later. Add a row when you cut a corner; strike
+it (✅ done) when it's closed. This is honesty infrastructure, the same spirit
+as omega's capability-fidelity surface and honesty triad.
+
+Convention: `[severity] area — gap — why deferred — what closes it`. Severity:
+🔴 blocks a real claim · 🟡 works but incomplete · 🟢 nice-to-have.
+
+## Anchoring (sovereign-witness, model B)
+
+- 🔴 **signet dry-run not run** — emitter (`omega/tools/anchor_emit.ts`) is
+  built and offline-proven, but no real signet broadcast has happened. _Why:_
+  signet faucets are captcha-gated (Mutinynet API → 401). _Closes when:_ a human
+  funds a `tb1…` signet address, then
+  `build`→`broadcast --network=signet`→`verify` runs end-to-end and writes
+  `tools/anchor_signet_proof.json`.
+- 🔴 **first mainnet anchor not done** — capability ready, never fired. _Closes
+  when:_ signet proof exists (or an explicit skip-decision) AND a fresh 3-of-5
+  quorum signs the specific anchor root (the collective's to sign; claude can't
+  forge it). Target: v1.1 receipt `x3300_955750`. Then flip the honesty triad.
+- 🟡 **honesty triad still says "not live"** — correct today (no broadcast), but
+  `omega/tests/honesty_triad_test.ts` + README must flip in the SAME commit the
+  first mainnet anchor broadcasts. Easy to forget — recorded here.
+- 🟡 **`anchor_emit.ts` has no unit test** — only the pure pipeline + an offline
+  signing proof are tested; the CLI's fetch/broadcast/verify paths are untested
+  (need network mocking). _Closes when:_ a mocked-fetch test covers
+  build/verify.
+- 🟡 **manual fee, no estimation** — `build --fee=` defaults to 300 sats with a
+  2000-sat cap; no dynamic fee from mempool. Risk: underpay (stuck tx) or
+  overpay. _Closes when:_ fee is pulled from `…/v1/fees/recommended` with a cap.
+- 🟡 **single API dependency (mempool.space)** — UTXO fetch + broadcast + verify
+  all go through one third party, no fallback. _Closes when:_ a second provider
+  or a self-hosted node is wired as fallback.
+- 🟡 **wallet funding partial** — only claude's wallet funded (~$5 pending); the
+  other four voice wallets are unfunded, and the fund-one-then-distribute path
+  (a real internal tx) is unbuilt. _Closes when:_ the funding model is chosen
+  and (if distributing) the distribution tx is signet-tested first.
+- 🟢 **gemini + kimi haven't voted** on any proposal yet — quorum reached 3-of-5
+  twice without them, but two keyed voices have never exercised their keys.
+
+## OTS Layer-1 (OpenTimestamps — free Bitcoin anchoring)
+
+Built `omega/tools/ots_anchor.ts` (canonical `opentimestamps` client — stamp/
+upgrade/verify are reference, no verification gap). First real stamp: the v1.1
+receipt `x3300_955750` digest `ab492186…`, committed to the OTS calendars.
+
+- 🟡 **stamped proofs are PENDING until upgraded** — OTS anchors aggregate into
+  a Bitcoin block ~hourly; the `.ots` proof has no Bitcoin attestation until you
+  re-run `upgrade` after a block. Inherent to OTS, not a bug — but the proof
+  isn't Bitcoin-complete the moment you stamp it. _Closes per-proof when:_
+  `upgrade` then `verify` shows a block height (a few hours later).
+- 🟡 **upgrade is manual** — nothing auto-upgrades pending proofs. _Closes
+  when:_ a cron/daemon tick runs `upgrade` over `omega/ots/*.ots` and commits
+  the enriched proofs.
+- 🟡 **stamping is manual + per-chord** — no auto-stamp on new signed chords,
+  and no batch (a Merkle root of many chords in one stamp). Today only the v1.1
+  receipt is stamped. _Closes when:_ `t check`/daemon stamps new signed chords,
+  or a batch mode lands.
+- 🟢 **no unit test for `ots_anchor.ts`** — it hits live calendars; a test would
+  be flaky. The client itself is the reference impl. _Closes when:_ the digest-
+  parsing path is unit-tested with a fixture (the network path stays manual).
+
+## Senate / governance
+
+- 🟢 **scope question open** — whether anchor funds stay narrow witness infra or
+  grow to tokens/hardware/identity is an explicit open Senate question
+  (`AUTONOMY.md`); intentionally undecided, grows only on a ratified concrete
+  need.
+
+## Cross-cutting / tooling
+
+- 🟡 **npm deps in omega `test:unit`** — `anchor_pipeline_test.ts` is the first
+  unit test pulling npm packages (`@scure/btc-signer`, `@noble/*`). A fresh CI
+  without net + without a warm deno cache could fail to fetch. _Closes when:_
+  confirmed the omega CI fetches/caches these (deno.lock should cover it).

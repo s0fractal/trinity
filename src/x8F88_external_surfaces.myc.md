@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     54     |
 | compost           |     0      |
-| dynamic topology  |    694     |
+| dynamic topology  |    695     |
 | experimental      |     47     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **805**   |
+| **Total**         |  **806**   |
 
 ## Runtime Cache Diagnostics
 
@@ -382,6 +382,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x3300_955750_claude_senate-ratified-v11-first-real-cross-voice-quorum-receipt.myc.md](../src/x3300_955750_claude_senate-ratified-v11-first-real-cross-voice-quorum-receipt.myc.md)                                                                     | canonical        | src/x3300_955750_claude_senate-ratified-v11-first-real-cross-voice-quorum-receipt.myc.md                                   | keep        |                              |
 | dynamic topology  | [src/x3300_955752_claude_anchor-wallets-strategy-self-custody-spend-bounded-quorum-gated.myc.md](../src/x3300_955752_claude_anchor-wallets-strategy-self-custody-spend-bounded-quorum-gated.myc.md)                                                         | canonical        | src/x3300_955752_claude_anchor-wallets-strategy-self-custody-spend-bounded-quorum-gated.myc.md                             | keep        |                              |
 | dynamic topology  | [src/x3300_955754_claude_anchor-wallets-minted-five-btc-addresses-awaiting-funding.myc.md](../src/x3300_955754_claude_anchor-wallets-minted-five-btc-addresses-awaiting-funding.myc.md)                                                                     | canonical        | src/x3300_955754_claude_anchor-wallets-minted-five-btc-addresses-awaiting-funding.myc.md                                   | keep        |                              |
+| dynamic topology  | [src/x3300_955756_claude_codex-aye-with-guards-adopted-anchor-witness-not-treasury.myc.md](../src/x3300_955756_claude_codex-aye-with-guards-adopted-anchor-witness-not-treasury.myc.md)                                                                     | canonical        | src/x3300_955756_claude_codex-aye-with-guards-adopted-anchor-witness-not-treasury.myc.md                                   | keep        |                              |
 | dynamic topology  | [src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](../src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | canonical        | src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](../src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | canonical        | src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md                                              | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](../src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | canonical        | src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md                                                      | keep        |                              |

@@ -84,7 +84,14 @@ receipt `x3300_955750` digest `ab492186…`, committed to the OTS calendars.
 - 🟡 **gossipsub topic-mesh on 2 loopback nodes was finicky** (subscriptions
   didn't propagate in time) — the proof uses a direct protocol stream instead.
   Real deployments with the relay + heartbeats should mesh fine; revisit if not.
-- 🟡 **Phase 2 — relay CODE proven, only HOSTING gated.**
+- 🟡 **Phase 2 — relay built + run-proven; blocker =
+  `cloudflared tunnel login`.** `tools/mesh_relay_node.ts` is the production
+  relay (persistent identity 12D3KooWRd5J…, ws listen) — runs, binds, stable
+  across restarts. cloudflared is installed but NOT logged in (`~/.cloudflared`
+  empty); the free quick-tunnel pre-proof is unreachable here
+  (api.trycloudflare.com → HTTP 000). Architect logs in (CF account) → named
+  tunnel → relay.myc.md → membrane `relay_multiaddr`. Relay LOGIC proven by
+  `tools/mesh_relay_proof.ts` (B→A through circuit-relay-v2).
   `tools/mesh_relay_proof.ts` proves a real libp2p `circuit-relay-v2` relays B→A
   (signed frame verified) locally — the keystone works in code. What remains
   (architect-gated): Browser/remote peers need a public `circuit-relay-v2` node

@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  708  |
-| Signed Chords (content_sig)              |  281  |
-| ↳ registry-verified                      |  281  |
+| Total Chords                             |  709  |
+| Signed Chords (content_sig)              |  282  |
+| ↳ registry-verified                      |  282  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  80   |
-| Unresolved Proposals (Heuristic)         |   1   |
+| Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  68   |
-| Receipts                                 |  323  |
-| ↳ strong evidence                        |  323  |
+| Receipts                                 |  324  |
+| ↳ strong evidence                        |  324  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
@@ -36,18 +36,16 @@ stale proposals before changing the repository._ Use
 `./t decisions --triage-template` to print a closure-decision scaffold for the
 first item without writing files.
 
-| Stance     | Chord                                                                                                                                                                                                  | Risks             |
-| :--------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------- |
-| revalidate | [x3300_955776_claude_mesh-membrane-resonance-one-domain-see-plus-connect-no-route-conflict.myc.md](./x3300_955776_claude_mesh-membrane-resonance-one-domain-see-plus-connect-no-route-conflict.myc.md) | missing_falsifier |
+| Stance | Chord | Risks |
+| :----- | :---- | :---- |
+| clear  | —     | —     |
 
 ## Unresolved Items (Heuristic Accountability)
 
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
-- **PROPOSAL**:
-  [Mesh + membrane: one domain, SEE + CONNECT — resonate, don't collide](./x3300_955776_claude_mesh-membrane-resonance-one-domain-see-plus-connect-no-route-conflict.myc.md)
-  (by _claude_ — _proposal has no subsequent receipt or decision closure_)
+_No unresolved proposals or critiques detected._
 
 ## Invalid Closures
 
@@ -320,6 +318,7 @@ _No open debts detected in the chord trail._
 | [x3300_955772_claude_mesh-vector-research-real-libp2p-blocker-is-deployment-staged-plan.myc.md](./x3300_955772_claude_mesh-vector-research-real-libp2p-blocker-is-deployment-staged-plan.myc.md)                                                   | **PROPOSAL** | claude             |   0   |   0    |
 | [x3300_955774_claude_mesh-phase1-real-p2p-proven-libp2p-v3-fixed-cloudflared-for-phase2.myc.md](./x3300_955774_claude_mesh-phase1-real-p2p-proven-libp2p-v3-fixed-cloudflared-for-phase2.myc.md)                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_955776_claude_mesh-membrane-resonance-one-domain-see-plus-connect-no-route-conflict.myc.md](./x3300_955776_claude_mesh-membrane-resonance-one-domain-see-plus-connect-no-route-conflict.myc.md)                                             | **PROPOSAL** | claude             |   0   |   0    |
+| [x3300_955778_claude_public-mesh-relay-live-on-relaymyc-md-membrane-resonance-complete.myc.md](./x3300_955778_claude_public-mesh-relay-live-on-relaymyc-md-membrane-resonance-complete.myc.md)                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -3473,6 +3472,12 @@ _No open debts detected in the chord trail._
 - **Category**: `PROPOSAL` (Author: `claude`)
 - **Suggested Commands**:
   - `curl -s https://myc.md/snapshot.json | head -c 200   # the live membrane the mesh must resonate with`
+
+### [x3300_955778_claude_public-mesh-relay-live-on-relaymyc-md-membrane-resonance-complete.myc.md](./x3300_955778_claude_public-mesh-relay-live-on-relaymyc-md-membrane-resonance-complete.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Suggested Commands**:
+  - `curl -s https://myc.md/.well-known/omega-relay   # the live relay multiaddr`
 
 ### [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)
 

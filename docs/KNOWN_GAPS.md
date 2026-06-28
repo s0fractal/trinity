@@ -84,24 +84,31 @@ receipt `x3300_955750` digest `ab492186…`, committed to the OTS calendars.
 - 🟡 **gossipsub topic-mesh on 2 loopback nodes was finicky** (subscriptions
   didn't propagate in time) — the proof uses a direct protocol stream instead.
   Real deployments with the relay + heartbeats should mesh fine; revisit if not.
-- 🟡 **Phase 2 — relay built + run-proven; blocker =
-  `cloudflared tunnel login`.** `tools/mesh_relay_node.ts` is the production
-  relay (persistent identity 12D3KooWRd5J…, ws listen) — runs, binds, stable
-  across restarts. cloudflared is installed but NOT logged in (`~/.cloudflared`
-  empty); the free quick-tunnel pre-proof is unreachable here
-  (api.trycloudflare.com → HTTP 000). Architect logs in (CF account) → named
-  tunnel → relay.myc.md → membrane `relay_multiaddr`. Relay LOGIC proven by
-  `tools/mesh_relay_proof.ts` (B→A through circuit-relay-v2).
-  `tools/mesh_relay_proof.ts` proves a real libp2p `circuit-relay-v2` relays B→A
-  (signed frame verified) locally — the keystone works in code. What remains
-  (architect-gated): Browser/remote peers need a public `circuit-relay-v2` node
-  (NAT traversal + a known omega peer). _Recommended (Cloudflare):_ run a libp2p
-  relay (same Deno stack, public `wss` listen) exposed via **`cloudflared`
-  tunnel** — free, reliable, no VPS/ inbound ports, libp2p-native; bake its
-  multiaddr into config. (A Durable-Object hibernatable-WebSocket hub is the
-  CF-native alternative, but that's a custom WS relay like phi_client's
-  fallback, not libp2p circuit-relay.) _Closes when:_ the relay is up + two
-  peers connect through it.
+- ✅ **Phase 2 — relay LIVE** (2026-06-28).
+  `/dns4/relay.myc.md/tcp/443/wss/p2p/12D3KooWRd5J…` — public libp2p
+  circuit-relay-v2 (`tools/mesh_relay_node.ts` + cloudflared named tunnel
+  `omega-relay` + `relay.myc.md/*` no-worker carve-out + launchd durability);
+  membrane publishes it at `myc.md/.well-known/omega-relay` (SEE→CONNECT
+  resonance). Verified: a fresh peer dials it over wss. Record:
+  `omega/docs/MESH_RELAY.md`, chord x3300_955778. `tools/mesh_relay_proof.ts`
+  proves a real libp2p `circuit-relay-v2` relays B→A (signed frame verified)
+  locally — the keystone works in code. What remains (architect-gated):
+  Browser/remote peers need a public `circuit-relay-v2` node (NAT traversal + a
+  known omega peer). _Recommended (Cloudflare):_ run a libp2p relay (same Deno
+  stack, public `wss` listen) exposed via **`cloudflared` tunnel** — free,
+  reliable, no VPS/ inbound ports, libp2p-native; bake its multiaddr into
+  config. (A Durable-Object hibernatable-WebSocket hub is the CF-native
+  alternative, but that's a custom WS relay like phi_client's fallback, not
+  libp2p circuit-relay.) _Closes when:_ the relay is up + two peers connect
+  through it.
+- 🔴 **omega APP mesh not wired through the relay yet** — relay is LIVE but
+  `libp2p_mesh.ts` doesn't read `relay_multiaddr` / reserve / gossip. Next real
+  step: turn a live relay into a live mesh (nodes discover via the membrane,
+  reserve on the relay, exchange).
+- 🟡 **single relay on the architect's mac** (launchd) — fine for genesis, not
+  redundant; a dead relay.myc.md is worse than none → monitor.
+- 🟡 **CF API token pasted in chat** — Workers-Routes-only on myc.md;
+  REVOKE/rotate it.
 - 🟡 **phi_client WebRTC SDP still a stub** (browser path) — Phase 3, after the
   relay exists.
 

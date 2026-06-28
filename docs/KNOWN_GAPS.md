@@ -52,13 +52,15 @@ receipt `x3300_955750` digest `ab492186…`, committed to the OTS calendars.
   re-run `upgrade` after a block. Inherent to OTS, not a bug — but the proof
   isn't Bitcoin-complete the moment you stamp it. _Closes per-proof when:_
   `upgrade` then `verify` shows a block height (a few hours later).
-- 🟡 **upgrade is manual** — nothing auto-upgrades pending proofs. _Closes
-  when:_ a cron/daemon tick runs `upgrade` over `omega/ots/*.ots` and commits
-  the enriched proofs.
-- 🟡 **stamping is manual + per-chord** — no auto-stamp on new signed chords,
-  and no batch (a Merkle root of many chords in one stamp). Today only the v1.1
-  receipt is stamped. _Closes when:_ `t check`/daemon stamps new signed chords,
-  or a batch mode lands.
+- 🟡 **upgrade isn't automatic** — `upgrade-all` upgrades every pending proof in
+  one command, but nothing _runs_ it on a schedule. _Closes when:_ a cron/daemon
+  tick runs `upgrade-all` and commits the enriched proofs. (Single-command
+  upgrade + `verify-all`: done.)
+- 🟡 **no auto-stamp on new chords** — `stamp-batch <files…>` stamps many
+  idempotently (the 9-chord governance arc is stamped; full 227-chord history is
+  a choice, not yet run), but new signed chords aren't stamped automatically and
+  there's no Merkle-batch (one stamp for many). _Closes when:_ `t check`/daemon
+  stamps new signed chords on creation.
 - 🟢 **no unit test for `ots_anchor.ts`** — it hits live calendars; a test would
   be flaky. The client itself is the reference impl. _Closes when:_ the digest-
   parsing path is unit-tested with a fixture (the network path stays manual).

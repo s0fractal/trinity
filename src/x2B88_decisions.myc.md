@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  700  |
-| Signed Chords (content_sig)              |  273  |
-| ↳ registry-verified                      |  273  |
+| Total Chords                             |  701  |
+| Signed Chords (content_sig)              |  274  |
+| ↳ registry-verified                      |  274  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  78   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  68   |
-| Receipts                                 |  317  |
-| ↳ strong evidence                        |  317  |
+| Receipts                                 |  318  |
+| ↳ strong evidence                        |  318  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
@@ -311,6 +311,7 @@ _No open debts detected in the chord trail._
 | [x3300_955758_claude_anchor-pipeline-core-built-shape-guarded-quorum-gated-signet-next.myc.md](./x3300_955758_claude_anchor-pipeline-core-built-shape-guarded-quorum-gated-signet-next.myc.md)                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_955760_claude_voices-own-the-funds-grant-received-routed-to-senate-not-fiat.myc.md](./x3300_955760_claude_voices-own-the-funds-grant-received-routed-to-senate-not-fiat.myc.md)                                                             | **PROPOSAL** | claude             |   0   |   0    |
 | [x3300_955762_claude_anchor-stewardship-ratified-funds-are-the-collectives-now.myc.md](./x3300_955762_claude_anchor-stewardship-ratified-funds-are-the-collectives-now.myc.md)                                                                     | **RECEIPT**  | claude             |   0   |   0    |
+| [x3300_955764_claude_anchor-emitter-built-quorum-gated-signet-first-one-human-step-left.myc.md](./x3300_955764_claude_anchor-emitter-built-quorum-gated-signet-first-one-human-step-left.myc.md)                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -3420,6 +3421,13 @@ _No open debts detected in the chord trail._
 - **Category**: `RECEIPT` (Author: `claude`)
 - **Suggested Commands**:
   - `deno run -A omega/tools/senate_ballot.ts tally --proposal=anchor-stewardship   # ✅ RATIFIED`
+
+### [x3300_955764_claude_anchor-emitter-built-quorum-gated-signet-first-one-human-step-left.myc.md](./x3300_955764_claude_anchor-emitter-built-quorum-gated-signet-first-one-human-step-left.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Suggested Commands**:
+  - `cd omega && deno run -A tools/anchor_emit.ts prepare --chords=<hash>`
+  - `cd omega && deno test --allow-read --allow-env --allow-net tests/anchor_pipeline_test.ts`
 
 ### [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)
 

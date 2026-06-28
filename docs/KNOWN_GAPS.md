@@ -68,6 +68,33 @@ receipt `x3300_955750` digest `ab492186…`, committed to the OTS calendars.
   be flaky. The client itself is the reference impl. _Closes when:_ the digest-
   parsing path is unit-tested with a fixture (the network path stays manual).
 
+## Mesh (real P2P — the big "declared but stub")
+
+- ✅ **Phase 1 — real P2P proven** (2026-06-28).
+  `omega/tools/mesh_p2p_proof.ts`: two real `createLibp2p` nodes, real ws
+  transport, direct protocol stream, an Ed25519-signed frame verified
+  cross-node. No infra/spend.
+- ✅ **libp2p_mesh fixed to v3 API** — added `identify` (gossipsub needs it) +
+  `connectionEncryption`→`connectionEncrypters`. These were why it never
+  connected (beyond deployment).
+- 🟡 **libp2p_mesh.ts UNVERIFIED end-to-end** — the node config is now
+  v3-correct but the 1446-line mesh is never instantiated/run/tested. _Closes
+  when:_ it's wired into a runnable entry + the 2-node proof pattern passes
+  through it.
+- 🟡 **gossipsub topic-mesh on 2 loopback nodes was finicky** (subscriptions
+  didn't propagate in time) — the proof uses a direct protocol stream instead.
+  Real deployments with the relay + heartbeats should mesh fine; revisit if not.
+- 🔴 **Phase 2 — no relay/bootstrap deployed (architect-gated).** Browser/remote
+  peers need a public `circuit-relay-v2` node (NAT traversal + a known omega
+  peer). _Recommended (Cloudflare):_ run a libp2p relay (same Deno stack, public
+  `wss` listen) exposed via **`cloudflared` tunnel** — free, reliable, no VPS/
+  inbound ports, libp2p-native; bake its multiaddr into config. (A
+  Durable-Object hibernatable-WebSocket hub is the CF-native alternative, but
+  that's a custom WS relay like phi_client's fallback, not libp2p
+  circuit-relay.) _Closes when:_ the relay is up + two peers connect through it.
+- 🟡 **phi_client WebRTC SDP still a stub** (browser path) — Phase 3, after the
+  relay exists.
+
 ## Senate / governance
 
 - 🟢 **scope question open** — whether anchor funds stay narrow witness infra or

@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  706  |
-| Signed Chords (content_sig)              |  279  |
-| ↳ registry-verified                      |  279  |
+| Total Chords                             |  707  |
+| Signed Chords (content_sig)              |  280  |
+| ↳ registry-verified                      |  280  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  79   |
-| Unresolved Proposals (Heuristic)         |   1   |
+| Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  68   |
-| Receipts                                 |  322  |
-| ↳ strong evidence                        |  322  |
+| Receipts                                 |  323  |
+| ↳ strong evidence                        |  323  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
@@ -36,18 +36,16 @@ stale proposals before changing the repository._ Use
 `./t decisions --triage-template` to print a closure-decision scaffold for the
 first item without writing files.
 
-| Stance     | Chord                                                                                                                                                                                            | Risks             |
-| :--------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------- |
-| revalidate | [x3300_955772_claude_mesh-vector-research-real-libp2p-blocker-is-deployment-staged-plan.myc.md](./x3300_955772_claude_mesh-vector-research-real-libp2p-blocker-is-deployment-staged-plan.myc.md) | missing_falsifier |
+| Stance | Chord | Risks |
+| :----- | :---- | :---- |
+| clear  | —     | —     |
 
 ## Unresolved Items (Heuristic Accountability)
 
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
-- **PROPOSAL**:
-  [Mesh vector — research: the code is real libp2p; the blocker is deployment, not fakery](./x3300_955772_claude_mesh-vector-research-real-libp2p-blocker-is-deployment-staged-plan.myc.md)
-  (by _claude_ — _proposal has no subsequent receipt or decision closure_)
+_No unresolved proposals or critiques detected._
 
 ## Invalid Closures
 
@@ -318,6 +316,7 @@ _No open debts detected in the chord trail._
 | [x3300_955768_claude_signet-dry-run-proven-on-chain-opreturn-mainnet-one-quorum-away.myc.md](./x3300_955768_claude_signet-dry-run-proven-on-chain-opreturn-mainnet-one-quorum-away.myc.md)                                                         | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_955770_claude_first-real-bitcoin-anchor-on-mainnet-quorum-authorized-anchoring-live.myc.md](./x3300_955770_claude_first-real-bitcoin-anchor-on-mainnet-quorum-authorized-anchoring-live.myc.md)                                             | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_955772_claude_mesh-vector-research-real-libp2p-blocker-is-deployment-staged-plan.myc.md](./x3300_955772_claude_mesh-vector-research-real-libp2p-blocker-is-deployment-staged-plan.myc.md)                                                   | **PROPOSAL** | claude             |   0   |   0    |
+| [x3300_955774_claude_mesh-phase1-real-p2p-proven-libp2p-v3-fixed-cloudflared-for-phase2.myc.md](./x3300_955774_claude_mesh-phase1-real-p2p-proven-libp2p-v3-fixed-cloudflared-for-phase2.myc.md)                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -3459,6 +3458,12 @@ _No open debts detected in the chord trail._
 - **Category**: `PROPOSAL` (Author: `claude`)
 - **Suggested Commands**:
   - `sed -n '218,295p' omega/src/network/libp2p_mesh.ts   # the real libp2p node setup`
+
+### [x3300_955774_claude_mesh-phase1-real-p2p-proven-libp2p-v3-fixed-cloudflared-for-phase2.myc.md](./x3300_955774_claude_mesh-phase1-real-p2p-proven-libp2p-v3-fixed-cloudflared-for-phase2.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Suggested Commands**:
+  - `cd omega && deno run --allow-net --allow-read --allow-env tools/mesh_p2p_proof.ts`
 
 ### [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)
 

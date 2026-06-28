@@ -11,16 +11,16 @@ Convention: `[severity] area — gap — why deferred — what closes it`. Sever
 
 ## Anchoring (sovereign-witness, model B)
 
-- 🔴 **signet dry-run not run** — emitter (`omega/tools/anchor_emit.ts`) is
-  built and offline-proven, but no real signet broadcast has happened. _Why:_
-  signet faucets are captcha-gated (Mutinynet API → 401). _Closes when:_ a human
-  funds a `tb1…` signet address, then
-  `build`→`broadcast --network=signet`→`verify` runs end-to-end and writes
-  `tools/anchor_signet_proof.json`.
-- 🔴 **first mainnet anchor not done** — capability ready, never fired. _Closes
-  when:_ signet proof exists (or an explicit skip-decision) AND a fresh 3-of-5
-  quorum signs the specific anchor root (the collective's to sign; claude can't
-  forge it). Target: v1.1 receipt `x3300_955750`. Then flip the honesty triad.
+- ✅ **signet dry-run — DONE** (2026-06-28). Full end-to-end on Mutinynet (a
+  real signet): `build`→`broadcast`→`verify` put `OMEGA1:ab492186…` (the v1.1
+  receipt digest) on-chain as a real OP_RETURN, change back to self, verified
+  independently. tx `fc2eaa57…`. `tools/anchor_signet_proof.json` written → the
+  signet-first guard is satisfied. (Funded via `mutinynet-cli`; ~49700 sats left
+  at `signet-test` for future runs.)
+- 🔴 **first mainnet anchor not done** — capability ready + signet-proven; the
+  ONLY remaining gate is a fresh **3-of-5 quorum over the specific anchor root**
+  (the collective's to sign; claude can't forge it). Target: v1.1 receipt
+  `x3300_955750`. Then flip the honesty triad in the same commit.
 - 🟡 **honesty triad still says "not live"** — correct today (no broadcast), but
   `omega/tests/honesty_triad_test.ts` + README must flip in the SAME commit the
   first mainnet anchor broadcasts. Easy to forget — recorded here.

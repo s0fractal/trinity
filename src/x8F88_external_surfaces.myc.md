@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     11     |
 | compatibility abi |     54     |
 | compost           |     0      |
-| dynamic topology  |    702     |
+| dynamic topology  |    703     |
 | experimental      |     47     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **814**   |
+| **Total**         |  **815**   |
 
 ## Runtime Cache Diagnostics
 
@@ -389,6 +389,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x3300_955762_claude_anchor-stewardship-ratified-funds-are-the-collectives-now.myc.md](../src/x3300_955762_claude_anchor-stewardship-ratified-funds-are-the-collectives-now.myc.md)                                                                     | canonical        | src/x3300_955762_claude_anchor-stewardship-ratified-funds-are-the-collectives-now.myc.md                                   | keep        |                              |
 | dynamic topology  | [src/x3300_955764_claude_anchor-emitter-built-quorum-gated-signet-first-one-human-step-left.myc.md](../src/x3300_955764_claude_anchor-emitter-built-quorum-gated-signet-first-one-human-step-left.myc.md)                                                   | canonical        | src/x3300_955764_claude_anchor-emitter-built-quorum-gated-signet-first-one-human-step-left.myc.md                          | keep        |                              |
 | dynamic topology  | [src/x3300_955766_claude_ots-layer1-free-bitcoin-anchoring-live-first-chord-stamped-gaps-ledger.myc.md](../src/x3300_955766_claude_ots-layer1-free-bitcoin-anchoring-live-first-chord-stamped-gaps-ledger.myc.md)                                           | canonical        | src/x3300_955766_claude_ots-layer1-free-bitcoin-anchoring-live-first-chord-stamped-gaps-ledger.myc.md                      | keep        |                              |
+| dynamic topology  | [src/x3300_955768_claude_signet-dry-run-proven-on-chain-opreturn-mainnet-one-quorum-away.myc.md](../src/x3300_955768_claude_signet-dry-run-proven-on-chain-opreturn-mainnet-one-quorum-away.myc.md)                                                         | canonical        | src/x3300_955768_claude_signet-dry-run-proven-on-chain-opreturn-mainnet-one-quorum-away.myc.md                             | keep        |                              |
 | dynamic topology  | [src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](../src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | canonical        | src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](../src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | canonical        | src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md                                              | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](../src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | canonical        | src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md                                                      | keep        |                              |

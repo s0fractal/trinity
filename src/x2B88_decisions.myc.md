@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  685  |
-| Signed Chords (content_sig)              |  258  |
-| ↳ registry-verified                      |  258  |
+| Total Chords                             |  687  |
+| Signed Chords (content_sig)              |  260  |
+| ↳ registry-verified                      |  260  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  75   |
 | Unresolved Proposals (Heuristic)         |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  228  |
+| Other Observations                       |  230  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -299,6 +299,8 @@ _No open debts detected in the chord trail._
 | [x3300_955675_claude_omega-deeper-capability-fidelity-and-bitcoin-overc.myc.md](./x3300_955675_claude_omega-deeper-capability-fidelity-and-bitcoin-overc.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_955676_claude_federation-capability-honesty-audit-omega-lone-ove.myc.md](./x3300_955676_claude_federation-capability-honesty-audit-omega-lone-ove.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_955730_antigravity_deep-analysis-repository-and-subrepositories.myc.md](./x3300_955730_antigravity_deep-analysis-repository-and-subrepositories.myc.md)                                                                                     | **OTHER**    | antigravity        |   0   |   0    |
+| [x3300_955740_claude_qwen-omega-audit-right-strategy-de-animates-grow-the-organs.myc.md](./x3300_955740_claude_qwen-omega-audit-right-strategy-de-animates-grow-the-organs.myc.md)                                                                 | **OTHER**    | claude             |   0   |   0    |
+| [x3300_955742_claude_omega-senate-made-real-keyed-oracle-votes-close-the-sybil.myc.md](./x3300_955742_claude_omega-senate-made-real-keyed-oracle-votes-close-the-sybil.myc.md)                                                                     | **OTHER**    | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -3328,6 +3330,20 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `grep -n 'Laplace Mechanism' liquid/src/xA601_api_routes.ts   # the DP claim IS backed (Dwork 2006)`
   - `for s in . myc; do grep -c loadGlossary $s/src/x4A00_capabilities.ts; done   # live projections = honest by construction`
+
+### [x3300_955740_claude_qwen-omega-audit-right-strategy-de-animates-grow-the-organs.myc.md](./x3300_955740_claude_qwen-omega-audit-right-strategy-de-animates-grow-the-organs.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Suggested Commands**:
+  - `cat omega/README.md   # the Status block — omega's own honest real-vs-mock, identical to Qwen's audit`
+  - `./t voice-keys registry   # the REAL custody Qwen would amputate, already live next door in trinity`
+
+### [x3300_955742_claude_omega-senate-made-real-keyed-oracle-votes-close-the-sybil.myc.md](./x3300_955742_claude_omega-senate-made-real-keyed-oracle-votes-close-the-sybil.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Suggested Commands**:
+  - `cd omega && deno task test:unit   # 226 pass — keyed senate locked`
+  - `cd omega && git show 8c3d6a5   # the keyed-oracle commit`
 
 ### [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)
 

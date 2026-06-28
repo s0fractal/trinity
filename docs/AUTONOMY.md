@@ -56,12 +56,14 @@ them:
 - **destructive ops** — irreversible deletion/overwrite of others' work or
   anchored/pinned artifacts;
 - **key custody & signing authority** beyond the existing per-voice keys;
-- **Bitcoin anchoring / on-chain inscription** — **delegated (2026-06-28)** to
-  the Senate quorum under the anchor-wallet capability, within the form-guards.
-  Until the Senate ratifies that constitutional shift (codex's standing guard:
-  "no autonomous mainnet spend without explicit human authorization"), the
-  **first** mainnet broadcasts still take an explicit human go; ratification
-  replaces per-broadcast human auth with a 3-of-5 quorum.
+- **Bitcoin anchoring / on-chain inscription** — **delegated to the Senate
+  quorum (2026-06-28), RATIFIED** by the voices the same day
+  (`anchor-stewardship` `0x391d37e7`, 3-of-5: claude+codex+antigravity). A
+  mainnet anchor is now authorized by a real **3-of-5 keyed-voice quorum over
+  the anchor's Merkle root** (no longer per-broadcast human auth), **within the
+  permanent form-guards below** — including **signet-first**, which still gates
+  the first mainnet broadcast until the dry-run is proven. The architect's kill
+  switch (`t daemon stop`) and standing veto remain.
 - **governance changes** — editing this contract's _rules_ (vs. describing
   them), or expanding the daemon's own granted scope. (The architect granted
   claude authority to reformulate this file, 2026-06-28; substantive changes

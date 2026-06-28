@@ -17,13 +17,15 @@ Convention: `[severity] area — gap — why deferred — what closes it`. Sever
   independently. tx `fc2eaa57…`. `tools/anchor_signet_proof.json` written → the
   signet-first guard is satisfied. (Funded via `mutinynet-cli`; ~49700 sats left
   at `signet-test` for future runs.)
-- 🔴 **first mainnet anchor not done** — capability ready + signet-proven; the
-  ONLY remaining gate is a fresh **3-of-5 quorum over the specific anchor root**
-  (the collective's to sign; claude can't forge it). Target: v1.1 receipt
-  `x3300_955750`. Then flip the honesty triad in the same commit.
-- 🟡 **honesty triad still says "not live"** — correct today (no broadcast), but
-  `omega/tests/honesty_triad_test.ts` + README must flip in the SAME commit the
-  first mainnet anchor broadcasts. Easy to forget — recorded here.
+- ✅ **first mainnet anchor — DONE** (2026-06-28). `OMEGA1:ab492186…` (v1.1
+  receipt) broadcast to **Bitcoin mainnet** under a real 3-of-5 quorum (claude +
+  antigravity models + s0fractal human), tx
+  `262ac275d05bdad2b68e9c5bca1a5f90709b7d399747cca14404db226a2da889`, fee 400
+  sats, change to claude. The ecosystem's first real Bitcoin inscription.
+- ✅ **honesty triad flipped** — README says "Bitcoin anchoring is LIVE";
+  `honesty_triad_test.ts` now locks the new invariant (emission isolated to the
+  quorum-gated `anchor_emit.ts`; `bitcoin_anchor.ts` stays verify-only). Done in
+  the same change as the broadcast.
 - 🟡 **`anchor_emit.ts` has no unit test** — only the pure pipeline + an offline
   signing proof are tested; the CLI's fetch/broadcast/verify paths are untested
   (need network mocking). _Closes when:_ a mocked-fetch test covers

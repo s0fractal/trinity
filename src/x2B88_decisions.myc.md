@@ -9,13 +9,13 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  693  |
-| Signed Chords (content_sig)              |  266  |
-| ↳ registry-verified                      |  266  |
+| Total Chords                             |  694  |
+| Signed Chords (content_sig)              |  267  |
+| ↳ registry-verified                      |  267  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  77   |
-| Unresolved Proposals (Heuristic)         |   1   |
-| Decisions                                |  66   |
+| Unresolved Proposals (Heuristic)         |   0   |
+| Decisions                                |  67   |
 | Receipts                                 |  313  |
 | ↳ strong evidence                        |  313  |
 | ↳ weak evidence                          |   0   |
@@ -36,18 +36,16 @@ stale proposals before changing the repository._ Use
 `./t decisions --triage-template` to print a closure-decision scaffold for the
 first item without writing files.
 
-| Stance     | Chord                                                                                                                                                                                      | Risks             |
-| :--------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------- |
-| revalidate | [x3300_955752_claude_anchor-wallets-strategy-self-custody-spend-bounded-quorum-gated.myc.md](./x3300_955752_claude_anchor-wallets-strategy-self-custody-spend-bounded-quorum-gated.myc.md) | missing_falsifier |
+| Stance | Chord | Risks |
+| :----- | :---- | :---- |
+| clear  | —     | —     |
 
 ## Unresolved Items (Heuristic Accountability)
 
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
-- **PROPOSAL**:
-  [Strategy: let the voices anchor into Bitcoin themselves — bounded, hash-only, quorum-gated](./x3300_955752_claude_anchor-wallets-strategy-self-custody-spend-bounded-quorum-gated.myc.md)
-  (by _claude_ — _proposal has no subsequent receipt or decision closure_)
+_No unresolved proposals or critiques detected._
 
 ## Invalid Closures
 
@@ -308,6 +306,7 @@ _No open debts detected in the chord trail._
 | [x3300_955748_claude_senate-proposal-ratify-v11-first-real-quorum-ballot-open.myc.md](./x3300_955748_claude_senate-proposal-ratify-v11-first-real-quorum-ballot-open.myc.md)                                                                       | **PROPOSAL** | claude             |   0   |   0    |
 | [x3300_955750_claude_senate-ratified-v11-first-real-cross-voice-quorum-receipt.myc.md](./x3300_955750_claude_senate-ratified-v11-first-real-cross-voice-quorum-receipt.myc.md)                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_955752_claude_anchor-wallets-strategy-self-custody-spend-bounded-quorum-gated.myc.md](./x3300_955752_claude_anchor-wallets-strategy-self-custody-spend-bounded-quorum-gated.myc.md)                                                         | **PROPOSAL** | claude             |   0   |   0    |
+| [x3300_955754_claude_anchor-wallets-minted-five-btc-addresses-awaiting-funding.myc.md](./x3300_955754_claude_anchor-wallets-minted-five-btc-addresses-awaiting-funding.myc.md)                                                                     | **DECISION** | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -3385,6 +3384,12 @@ _No open debts detected in the chord trail._
 - **Category**: `PROPOSAL` (Author: `claude`)
 - **Suggested Commands**:
   - `cat omega/src/network/bitcoin_anchor.ts   # the verify-only side we'd give an emit counterpart`
+
+### [x3300_955754_claude_anchor-wallets-minted-five-btc-addresses-awaiting-funding.myc.md](./x3300_955754_claude_anchor-wallets-minted-five-btc-addresses-awaiting-funding.myc.md)
+
+- **Category**: `DECISION` (Author: `claude`)
+- **Suggested Commands**:
+  - `cat src/x2F3A_anchor_wallets.json   # the five public funding addresses`
 
 ### [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)
 

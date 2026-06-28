@@ -94,6 +94,13 @@ mycelium-map.html
 **/.env
 **/.env.*
 
+# Private key material — NEVER commit. Real keys live OUTSIDE the repo at
+# ~/.trinity/{keys,wallets}; these patterns are a defensive net so a stray copy
+# in the tree can never be swept into history (voice ed25519 + BTC wallet keys).
+**/*.ed25519.json
+**/*.btc.json
+**/.trinity/
+
 # Rust crate build artifacts (kuramoto-coherence + future crates)
 packages/*/target/
 packages/*/Cargo.lock

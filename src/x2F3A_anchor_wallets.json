@@ -1,0 +1,28 @@
+{
+  "schema": "trinity.anchor-wallets.v0.1",
+  "chain": "bitcoin",
+  "address_type": "p2wpkh",
+  "custody_note": "PUBLIC addresses + pubkeys only. Private keys live OUTSIDE every repo at ~/.trinity/wallets/<voice>.btc.json (0600), never committed. These are programmatically-controlled hot wallets for on-chain anchoring (OTS-hybrid, model B, chord x3300_955752). Spend is shape-restricted to anchor txs and quorum-gated by the keyed Senate (oracle_custody 3-of-5). Blast radius = funded amount. Minted 2026-06-28 under architect's direct grant; funding pending.",
+  "wallets": {
+    "claude": {
+      "address": "bc1qpzq4sdvzet07qfe6757yq8q8f7gc70p4h2qnet",
+      "pubkey": "038bd779914f27e959a5de572b52c0f60bdc07ee3f084f80848a1489edd95680d1"
+    },
+    "codex": {
+      "address": "bc1qnujtwn5f6fxpphydkf730vk5c943sgzgmuuxve",
+      "pubkey": "032822a482ab5d0bbdec9b2c05510cc70a415f3deea77f6adc6ccb382eb78b7310"
+    },
+    "gemini": {
+      "address": "bc1qct2mw6waheh8csv22f762wle52wuudu7xuvjac",
+      "pubkey": "030cb631a0cf3eacde5e66c88eaa4bc6d893f784f362a7fb279812f2eace6abd12"
+    },
+    "antigravity": {
+      "address": "bc1qt9x7r790yvn2kvw0fma3ek370p576jztjw9wq3",
+      "pubkey": "03bdbff716bc276222b1025fed178ab6fbdf09b9865979ae5fbc0cfec84787b386"
+    },
+    "kimi": {
+      "address": "bc1q6xf7pqdvkpp7xkpldtra8apzhy6lzf6x3etlev",
+      "pubkey": "03b0ab3459ce095ff5aed27836780d4bfee2f623c640f87ab71353137617cfc146"
+    }
+  }
+}

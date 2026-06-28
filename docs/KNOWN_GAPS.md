@@ -101,10 +101,13 @@ receipt `x3300_955750` digest `ab492186…`, committed to the OTS calendars.
   alternative, but that's a custom WS relay like phi_client's fallback, not
   libp2p circuit-relay.) _Closes when:_ the relay is up + two peers connect
   through it.
-- 🔴 **omega APP mesh not wired through the relay yet** — relay is LIVE but
-  `libp2p_mesh.ts` doesn't read `relay_multiaddr` / reserve / gossip. Next real
-  step: turn a live relay into a live mesh (nodes discover via the membrane,
-  reserve on the relay, exchange).
+- 🟡 **mesh transport proven LIVE; auto peer-discovery remains.**
+  `tools/mesh_live_proof.ts`: two NAT-bound peers discover the relay from the
+  membrane + exchange a verified frame through relay.myc.md in production.
+  What's left for a self-driving mesh: automatic PEER discovery (the proof hands
+  A's circuit addr to B; the app needs DHT-provide/findPeer or a rendezvous on
+  the relay) + wiring this into `libp2p_mesh.ts` (still unverified e2e as a
+  whole).
 - 🟡 **single relay on the architect's mac** (launchd) — fine for genesis, not
   redundant; a dead relay.myc.md is worse than none → monitor.
 - 🟡 **CF API token pasted in chat** — Workers-Routes-only on myc.md;

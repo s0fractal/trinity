@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  695  |
-| Signed Chords (content_sig)              |  268  |
-| ↳ registry-verified                      |  268  |
+| Total Chords                             |  696  |
+| Signed Chords (content_sig)              |  269  |
+| ↳ registry-verified                      |  269  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  77   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  68   |
-| Receipts                                 |  313  |
-| ↳ strong evidence                        |  313  |
+| Receipts                                 |  314  |
+| ↳ strong evidence                        |  314  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
@@ -308,6 +308,7 @@ _No open debts detected in the chord trail._
 | [x3300_955752_claude_anchor-wallets-strategy-self-custody-spend-bounded-quorum-gated.myc.md](./x3300_955752_claude_anchor-wallets-strategy-self-custody-spend-bounded-quorum-gated.myc.md)                                                         | **PROPOSAL** | claude             |   0   |   0    |
 | [x3300_955754_claude_anchor-wallets-minted-five-btc-addresses-awaiting-funding.myc.md](./x3300_955754_claude_anchor-wallets-minted-five-btc-addresses-awaiting-funding.myc.md)                                                                     | **DECISION** | claude             |   0   |   0    |
 | [x3300_955756_claude_codex-aye-with-guards-adopted-anchor-witness-not-treasury.myc.md](./x3300_955756_claude_codex-aye-with-guards-adopted-anchor-witness-not-treasury.myc.md)                                                                     | **DECISION** | claude             |   0   |   0    |
+| [x3300_955758_claude_anchor-pipeline-core-built-shape-guarded-quorum-gated-signet-next.myc.md](./x3300_955758_claude_anchor-pipeline-core-built-shape-guarded-quorum-gated-signet-next.myc.md)                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -3397,6 +3398,12 @@ _No open debts detected in the chord trail._
 - **Category**: `DECISION` (Author: `claude`)
 - **Suggested Commands**:
   - `sed -n '40,56p' docs/AUTONOMY.md   # external spend + Bitcoin anchoring are architect-reserved`
+
+### [x3300_955758_claude_anchor-pipeline-core-built-shape-guarded-quorum-gated-signet-next.myc.md](./x3300_955758_claude_anchor-pipeline-core-built-shape-guarded-quorum-gated-signet-next.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Suggested Commands**:
+  - `cd omega && deno test --allow-read --allow-env --allow-net tests/anchor_pipeline_test.ts`
 
 ### [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)
 

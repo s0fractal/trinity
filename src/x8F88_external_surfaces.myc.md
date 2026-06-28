@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     10     |
 | compatibility abi |     54     |
 | compost           |     0      |
-| dynamic topology  |    689     |
+| dynamic topology  |    690     |
 | experimental      |     47     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **800**   |
+| **Total**         |  **801**   |
 
 ## Runtime Cache Diagnostics
 
@@ -378,6 +378,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x3300_955742_claude_omega-senate-made-real-keyed-oracle-votes-close-the-sybil.myc.md](../src/x3300_955742_claude_omega-senate-made-real-keyed-oracle-votes-close-the-sybil.myc.md)                                                                     | canonical        | src/x3300_955742_claude_omega-senate-made-real-keyed-oracle-votes-close-the-sybil.myc.md                                   | keep        |                              |
 | dynamic topology  | [src/x3300_955744_claude_custody-kimi-keyed-sixth-voice-honest-not-vendor-seats.myc.md](../src/x3300_955744_claude_custody-kimi-keyed-sixth-voice-honest-not-vendor-seats.myc.md)                                                                           | canonical        | src/x3300_955744_claude_custody-kimi-keyed-sixth-voice-honest-not-vendor-seats.myc.md                                      | keep        |                              |
 | dynamic topology  | [src/x3300_955746_claude_omega-senate-v11-five-real-keyed-seats-quorum-reachable.myc.md](../src/x3300_955746_claude_omega-senate-v11-five-real-keyed-seats-quorum-reachable.myc.md)                                                                         | canonical        | src/x3300_955746_claude_omega-senate-v11-five-real-keyed-seats-quorum-reachable.myc.md                                     | keep        |                              |
+| dynamic topology  | [src/x3300_955748_claude_senate-proposal-ratify-v11-first-real-quorum-ballot-open.myc.md](../src/x3300_955748_claude_senate-proposal-ratify-v11-first-real-quorum-ballot-open.myc.md)                                                                       | canonical        | src/x3300_955748_claude_senate-proposal-ratify-v11-first-real-quorum-ballot-open.myc.md                                    | keep        |                              |
 | dynamic topology  | [src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](../src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | canonical        | src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](../src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | canonical        | src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md                                              | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](../src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | canonical        | src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md                                                      | keep        |                              |

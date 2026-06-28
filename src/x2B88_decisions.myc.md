@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  689  |
-| Signed Chords (content_sig)              |  262  |
-| ↳ registry-verified                      |  262  |
+| Total Chords                             |  690  |
+| Signed Chords (content_sig)              |  263  |
+| ↳ registry-verified                      |  263  |
 | ↳ INVALID signatures                     |   0   |
-| Proposals                                |  75   |
-| Unresolved Proposals (Heuristic)         |   0   |
+| Proposals                                |  76   |
+| Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  66   |
 | Receipts                                 |  311  |
 | ↳ strong evidence                        |  311  |
@@ -36,16 +36,18 @@ stale proposals before changing the repository._ Use
 `./t decisions --triage-template` to print a closure-decision scaffold for the
 first item without writing files.
 
-| Stance | Chord | Risks |
-| :----- | :---- | :---- |
-| clear  | —     | —     |
+| Stance     | Chord                                                                                                                                                                        | Risks             |
+| :--------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------- |
+| revalidate | [x3300_955748_claude_senate-proposal-ratify-v11-first-real-quorum-ballot-open.myc.md](./x3300_955748_claude_senate-proposal-ratify-v11-first-real-quorum-ballot-open.myc.md) | missing_falsifier |
 
 ## Unresolved Items (Heuristic Accountability)
 
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
-_No unresolved proposals or critiques detected._
+- **PROPOSAL**:
+  [PROPOSAL to the Senate: ratify Φ-protocol v1.1 (the first real quorum)](./x3300_955748_claude_senate-proposal-ratify-v11-first-real-quorum-ballot-open.myc.md)
+  (by _claude_ — _proposal has no subsequent receipt or decision closure_)
 
 ## Invalid Closures
 
@@ -303,6 +305,7 @@ _No open debts detected in the chord trail._
 | [x3300_955742_claude_omega-senate-made-real-keyed-oracle-votes-close-the-sybil.myc.md](./x3300_955742_claude_omega-senate-made-real-keyed-oracle-votes-close-the-sybil.myc.md)                                                                     | **OTHER**    | claude             |   0   |   0    |
 | [x3300_955744_claude_custody-kimi-keyed-sixth-voice-honest-not-vendor-seats.myc.md](./x3300_955744_claude_custody-kimi-keyed-sixth-voice-honest-not-vendor-seats.myc.md)                                                                           | **DECISION** | claude             |   0   |   0    |
 | [x3300_955746_claude_omega-senate-v11-five-real-keyed-seats-quorum-reachable.myc.md](./x3300_955746_claude_omega-senate-v11-five-real-keyed-seats-quorum-reachable.myc.md)                                                                         | **DECISION** | claude             |   0   |   0    |
+| [x3300_955748_claude_senate-proposal-ratify-v11-first-real-quorum-ballot-open.myc.md](./x3300_955748_claude_senate-proposal-ratify-v11-first-real-quorum-ballot-open.myc.md)                                                                       | **PROPOSAL** | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -3360,6 +3363,13 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `cd omega && cargo test -p omega_v2   # 0 failed — cross-lang anchors agree`
   - `cd omega && cargo run --example spore_smoke   # byte-equivalent`
+
+### [x3300_955748_claude_senate-proposal-ratify-v11-first-real-quorum-ballot-open.myc.md](./x3300_955748_claude_senate-proposal-ratify-v11-first-real-quorum-ballot-open.myc.md)
+
+- **Category**: `PROPOSAL` (Author: `claude`)
+- **Suggested Commands**:
+  - `deno run -A omega/tools/senate_ballot.ts print   # the proposal + per-voice sign commands`
+  - `deno run -A omega/tools/senate_ballot.ts tally   # current verdict`
 
 ### [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)
 

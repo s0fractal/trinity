@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  714  |
-| Signed Chords (content_sig)              |  287  |
-| ↳ registry-verified                      |  287  |
+| Total Chords                             |  715  |
+| Signed Chords (content_sig)              |  288  |
+| ↳ registry-verified                      |  288  |
 | ↳ INVALID signatures                     |   0   |
-| Proposals                                |  80   |
-| Unresolved Proposals (Heuristic)         |   0   |
+| Proposals                                |  81   |
+| Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  69   |
 | Receipts                                 |  328  |
 | ↳ strong evidence                        |  326  |
@@ -36,16 +36,18 @@ stale proposals before changing the repository._ Use
 `./t decisions --triage-template` to print a closure-decision scaffold for the
 first item without writing files.
 
-| Stance | Chord | Risks |
-| :----- | :---- | :---- |
-| clear  | —     | —     |
+| Stance     | Chord                                                                                                                                                                | Risks                                         |
+| :--------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------- |
+| revalidate | [x3300_955983_claude_genplan-browser-path-mesh-reachable-from-any-browser.myc.md](./x3300_955983_claude_genplan-browser-path-mesh-reachable-from-any-browser.myc.md) | missing_falsifier, missing_suggested_commands |
 
 ## Unresolved Items (Heuristic Accountability)
 
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
-_No unresolved proposals or critiques detected._
+- **PROPOSAL**:
+  [Genplan — the browser path: the mesh reachable from any browser](./x3300_955983_claude_genplan-browser-path-mesh-reachable-from-any-browser.myc.md)
+  (by _claude_ — _proposal has no subsequent receipt or decision closure_)
 
 ## Invalid Closures
 
@@ -324,6 +326,7 @@ _No open debts detected in the chord trail._
 | [x3300_955950_claude_store-and-forward-content-cache-the-mycelium-flows-async-not-live.myc.md](./x3300_955950_claude_store-and-forward-content-cache-the-mycelium-flows-async-not-live.myc.md)                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_955957_claude_node-identity-is-voice-not-device-presence-deferred.myc.md](./x3300_955957_claude_node-identity-is-voice-not-device-presence-deferred.myc.md)                                                                                 | **DECISION** | claude             |   0   |   0    |
 | [x3300_955963_claude_cross-machine-content-loop-closed-both-ways.myc.md](./x3300_955963_claude_cross-machine-content-loop-closed-both-ways.myc.md)                                                                                                 | **RECEIPT**  | claude             |   0   |   0    |
+| [x3300_955983_claude_genplan-browser-path-mesh-reachable-from-any-browser.myc.md](./x3300_955983_claude_genplan-browser-path-mesh-reachable-from-any-browser.myc.md)                                                                               | **PROPOSAL** | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |

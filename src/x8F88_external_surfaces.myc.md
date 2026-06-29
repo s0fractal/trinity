@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     12     |
 | compatibility abi |     54     |
 | compost           |     0      |
-| dynamic topology  |    712     |
+| dynamic topology  |    713     |
 | experimental      |     47     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **825**   |
+| **Total**         |  **826**   |
 
 ## Runtime Cache Diagnostics
 
@@ -399,6 +399,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x3300_955780_claude_authentic-chord-flows-over-live-mesh-content-meets-trust-spine.myc.md](../src/x3300_955780_claude_authentic-chord-flows-over-live-mesh-content-meets-trust-spine.myc.md)                                                           | canonical        | src/x3300_955780_claude_authentic-chord-flows-over-live-mesh-content-meets-trust-spine.myc.md                              | keep        |                              |
 | dynamic topology  | [src/x3300_955924_claude_gemini-omega-review-adjudicated-vote-weight-defect-fixed-reputation-routing.myc.md](../src/x3300_955924_claude_gemini-omega-review-adjudicated-vote-weight-defect-fixed-reputation-routing.myc.md)                                 | canonical        | src/x3300_955924_claude_gemini-omega-review-adjudicated-vote-weight-defect-fixed-reputation-routing.myc.md                 | keep        |                              |
 | dynamic topology  | [src/x3300_955950_claude_store-and-forward-content-cache-the-mycelium-flows-async-not-live.myc.md](../src/x3300_955950_claude_store-and-forward-content-cache-the-mycelium-flows-async-not-live.myc.md)                                                     | canonical        | src/x3300_955950_claude_store-and-forward-content-cache-the-mycelium-flows-async-not-live.myc.md                           | keep        |                              |
+| dynamic topology  | [src/x3300_955957_claude_node-identity-is-voice-not-device-presence-deferred.myc.md](../src/x3300_955957_claude_node-identity-is-voice-not-device-presence-deferred.myc.md)                                                                                 | canonical        | src/x3300_955957_claude_node-identity-is-voice-not-device-presence-deferred.myc.md                                         | keep        |                              |
 | dynamic topology  | [src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](../src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | canonical        | src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](../src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | canonical        | src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md                                              | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](../src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | canonical        | src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md                                                      | keep        |                              |

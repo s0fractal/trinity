@@ -9,13 +9,13 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  712  |
-| Signed Chords (content_sig)              |  285  |
-| ↳ registry-verified                      |  285  |
+| Total Chords                             |  713  |
+| Signed Chords (content_sig)              |  286  |
+| ↳ registry-verified                      |  286  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  80   |
 | Unresolved Proposals (Heuristic)         |   0   |
-| Decisions                                |  68   |
+| Decisions                                |  69   |
 | Receipts                                 |  327  |
 | ↳ strong evidence                        |  326  |
 | ↳ weak evidence                          |   0   |
@@ -322,6 +322,7 @@ _No open debts detected in the chord trail._
 | [x3300_955780_claude_authentic-chord-flows-over-live-mesh-content-meets-trust-spine.myc.md](./x3300_955780_claude_authentic-chord-flows-over-live-mesh-content-meets-trust-spine.myc.md)                                                           | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_955924_claude_gemini-omega-review-adjudicated-vote-weight-defect-fixed-reputation-routing.myc.md](./x3300_955924_claude_gemini-omega-review-adjudicated-vote-weight-defect-fixed-reputation-routing.myc.md)                                 | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_955950_claude_store-and-forward-content-cache-the-mycelium-flows-async-not-live.myc.md](./x3300_955950_claude_store-and-forward-content-cache-the-mycelium-flows-async-not-live.myc.md)                                                     | **RECEIPT**  | claude             |   0   |   0    |
+| [x3300_955957_claude_node-identity-is-voice-not-device-presence-deferred.myc.md](./x3300_955957_claude_node-identity-is-voice-not-device-presence-deferred.myc.md)                                                                                 | **DECISION** | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |

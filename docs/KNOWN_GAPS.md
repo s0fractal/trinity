@@ -101,19 +101,25 @@ receipt `x3300_955750` digest `ab492186…`, committed to the OTS calendars.
   alternative, but that's a custom WS relay like phi_client's fallback, not
   libp2p circuit-relay.) _Closes when:_ the relay is up + two peers connect
   through it.
-- ✅ **content flows over the mesh** (2026-06-28).
-  `tools/mesh_chord_sync_proof.ts`: a real Ed25519-signed chord by claude
-  fetched peer-to-peer through live relay.myc.md + verified against registry
-  x2F38 (chord x3300_955780). The mesh carries the substrate.
-- 🟡 **mesh self-organizing (discovery DONE); standing-sync + lifecycle
-  remain.** `tools/mesh_live_proof.ts`: two NAT-bound peers discover the relay
-  from the membrane + exchange a verified frame through relay.myc.md in
-  production. What's left for a self-driving mesh: automatic PEER discovery (the
-  proof hands A's circuit addr to B; the app needs DHT-provide/findPeer or a
-  rendezvous on the relay) + wiring this into `libp2p_mesh.ts` (still unverified
-  e2e as a whole).
-- 🟡 **single relay on the architect's mac** (launchd) — fine for genesis, not
-  redundant; a dead relay.myc.md is worse than none → monitor.
+- ✅ **cross-machine content loop CLOSED — both ways** (2026-06-29, chord
+  x3300_955963). Store-and-forward: the relay is a verified content cache
+  (`push`/`get`/`list`; relay verifies the sig before caching, reader
+  re-verifies on get). Origin pushed → node 2 got VALID; node 2 pushed → origin
+  got VALID — two machines, signature-verified, on any runtime. Walls closed
+  along the way: `NO_RESERVATION` (relayed reservations don't persist over CF →
+  store-and-forward instead of live fetch), the relay directory was blind to
+  reserved peers (→ reads the reservation set), and noise's chacha20 size-switch
+  hit node:crypto on payloads ≥1200 B (→ `noise({ crypto: pureJsCrypto })`,
+  runtime-independent).
+- 🟡 **live P2P (`serve`/`fetch`) stays CF-fragile** — circuit-relay
+  reservations don't persist over the Cloudflare tunnel, so live fetch can miss
+  its window. Store-and-forward is the durable path; a durable live plane wants
+  DCUtR hole-punching (not wired). `libp2p_mesh.ts` still unverified e2e as a
+  whole.
+- 🟡 **relay store is single-host** (the architect's mac, launchd) — not
+  replicated; a dead relay.myc.md loses the cache. _Closes when:_ the store is
+  mirrored (e.g. into the myc.md membrane snapshot) or a second relay runs.
+  Presence/structure tracking is deferred to real need (chord x3300_955957).
 - 🟡 **CF API token pasted in chat** — Workers-Routes-only on myc.md;
   REVOKE/rotate it.
 - 🟡 **phi_client WebRTC SDP still a stub** (browser path) — Phase 3, after the

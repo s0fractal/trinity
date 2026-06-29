@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# post-merge — fast validity gate after any pull/merge. A mesh node should never
+# silently start running broken code after a sync. Warns LOUDLY on failure but
+# never blocks (the merge already happened) — its job is to alert, not to gate.
+# Enabled via `git config core.hooksPath .githooks` (install.sh + node-sync.sh do this).
+set -u
+ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
+SHA="$(git -C "$ROOT" rev-parse --short HEAD)"
+LOG="/tmp/trinity-postmerge.log"
+
+echo "→ post-merge: validating $SHA …"
+if command -v deno >/dev/null 2>&1; then
+  # Type-checking the dispatcher pulls in the core import graph: if it compiles,
+  # the node's code is structurally sound. Cheap + meaningful; no tests/network.
+  if deno check "$ROOT/src/x0100_dispatch.ts" >"$LOG" 2>&1; then
+    echo "✓ $SHA validated — dispatcher type-checks, node code is sound"
+  else
+    echo "✗ VALIDATION FAILED at $SHA — pulled code does not type-check (see $LOG)." >&2
+    echo "  The node may be running broken code. Review before relying on it;" >&2
+    echo "  to roll back: git -C $ROOT reset --hard HEAD@{1}" >&2
+  fi
+else
+  echo "  (deno not found — skipped validation)"
+fi
+exit 0

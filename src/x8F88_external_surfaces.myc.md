@@ -9,14 +9,14 @@ documents, and local caches outside the core Deno flat-src code base._
 
 | Category          | File Count |
 | :---------------- | :--------: |
-| compatibility     |     11     |
+| compatibility     |     12     |
 | compatibility abi |     54     |
 | compost           |     0      |
 | dynamic topology  |    712     |
 | experimental      |     47     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **824**   |
+| **Total**         |  **825**   |
 
 ## Runtime Cache Diagnostics
 
@@ -88,6 +88,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | compatibility     | [docs/COGNITIVE_THERMODYNAMICS.md](../docs/COGNITIVE_THERMODYNAMICS.md)                                                                                                                                                                                     | compatibility    | src/x2C10_cognitive_thermodynamics.myc.md                                                                                  | keep        | symlink shim                 |
 | compatibility     | [docs/COORDINATES.md](../docs/COORDINATES.md)                                                                                                                                                                                                               | migration_input  |                                                                                                                            | keep        |                              |
 | compatibility     | [docs/KNOWN_GAPS.md](../docs/KNOWN_GAPS.md)                                                                                                                                                                                                                 | migration_input  |                                                                                                                            | keep        |                              |
+| compatibility     | [docs/NODE_SYNC.md](../docs/NODE_SYNC.md)                                                                                                                                                                                                                   | migration_input  |                                                                                                                            | keep        |                              |
 | compatibility     | [docs/PROOF_CARRYING_RAW.md](../docs/PROOF_CARRYING_RAW.md)                                                                                                                                                                                                 | compatibility    | src/x5A10_proof_carrying_raw.myc.md                                                                                        | keep        | symlink shim                 |
 | compatibility     | [docs/PUBLIC_PROCESS_TRACE.md](../docs/PUBLIC_PROCESS_TRACE.md)                                                                                                                                                                                             | compatibility    | src/x8F11_public_process_trace.myc.md                                                                                      | keep        | symlink shim                 |
 | compatibility     | [docs/README.md](../docs/README.md)                                                                                                                                                                                                                         | compatibility    |                                                                                                                            | keep        | directory index              |

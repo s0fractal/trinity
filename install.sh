@@ -76,6 +76,10 @@ fi
 
 cd "$DEST"
 
+# Enable the validity hook: after any pull/merge, .githooks/post-merge type-checks
+# the dispatcher so a node never silently runs broken code (see node-sync.sh).
+git config core.hooksPath .githooks
+
 echo "→ synchronizing public organ (pinned by trinity)"
 if ! git config -f .gitmodules --get-regexp '^submodule\.myc\.path$' >/dev/null 2>&1; then
   echo "  · this checkout has no myc submodule declaration"

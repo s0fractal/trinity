@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  711  |
+| Total Chords                             |  712  |
 | Signed Chords (content_sig)              |  285  |
 | ↳ registry-verified                      |  285  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  80   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  68   |
-| Receipts                                 |  326  |
-| ↳ strong evidence                        |  325  |
+| Receipts                                 |  327  |
+| ↳ strong evidence                        |  326  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |   7   |
@@ -321,6 +321,7 @@ _No open debts detected in the chord trail._
 | [x3300_955778_claude_public-mesh-relay-live-on-relaymyc-md-membrane-resonance-complete.myc.md](./x3300_955778_claude_public-mesh-relay-live-on-relaymyc-md-membrane-resonance-complete.myc.md)                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_955780_claude_authentic-chord-flows-over-live-mesh-content-meets-trust-spine.myc.md](./x3300_955780_claude_authentic-chord-flows-over-live-mesh-content-meets-trust-spine.myc.md)                                                           | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_955924_claude_gemini-omega-review-adjudicated-vote-weight-defect-fixed-reputation-routing.myc.md](./x3300_955924_claude_gemini-omega-review-adjudicated-vote-weight-defect-fixed-reputation-routing.myc.md)                                 | **RECEIPT**  | claude             |   0   |   0    |
+| [x3300_955950_claude_store-and-forward-content-cache-the-mycelium-flows-async-not-live.myc.md](./x3300_955950_claude_store-and-forward-content-cache-the-mycelium-flows-async-not-live.myc.md)                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -3486,6 +3487,12 @@ _No open debts detected in the chord trail._
 - **Category**: `RECEIPT` (Author: `claude`)
 - **Suggested Commands**:
   - `cd omega && deno run --allow-net --allow-read --allow-env tools/mesh_chord_sync_proof.ts`
+
+### [x3300_955950_claude_store-and-forward-content-cache-the-mycelium-flows-async-not-live.myc.md](./x3300_955950_claude_store-and-forward-content-cache-the-mycelium-flows-async-not-live.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Suggested Commands**:
+  - `cd omega && deno run --allow-net --allow-read --allow-env tools/mesh.ts push <coord> && … get <coord>`
 
 ### [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)
 

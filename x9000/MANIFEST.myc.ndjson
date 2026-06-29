@@ -124,7 +124,7 @@
 {"path":"sites/myc.md/verify_snapshot_test.ts","size":2113,"hash":"sha256:843f6f88bca5fd25cfcaaa7dba6eaad199422b6ac5b9f20e1fdd38bfa79ae5b9"}
 {"path":"sites/myc.md/verify_snapshot.ts","size":3100,"hash":"sha256:f1d4eefe6a8b1837246743f64a542115447f15a428ba2f923cc01073f2cff060"}
 {"path":"sites/myc.md/worker_test.ts","size":5488,"hash":"sha256:37bb827d0c825898b761a3cece08af5b2e2f130b53e21522ddd1abdac3b6667f"}
-{"path":"sites/myc.md/worker.ts","size":61295,"hash":"sha256:ab15206fe4259014df71a8d4f1da653f6e58a3568d20aeab8b081bd29b9b6c0e"}
+{"path":"sites/myc.md/worker.ts","size":61573,"hash":"sha256:25f3d0ab8b1451d14ab30fc5237910a82dada19a879a4b7146aa4b04ec420fa0"}
 {"path":"substrates/ADAPTER_POLICY.md","size":3073,"hash":"sha256:b1e55e20471a426a82023d7b5566fd4a2bc663186c20ed6691e82860fcdbd732"}
 {"path":"substrates/codex/MYC.md","size":1052,"hash":"sha256:12d0b619b16a88713323f07891578ceaf948b11e9b0957eda51250b8c5547efc"}
 {"path":"substrates/gemini/MYC.md","size":970,"hash":"sha256:5fb69d40538ac1098b5c9c33d087450483b10b97cb5a8fb2a0a6887b7a3a7e45"}

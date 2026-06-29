@@ -108,7 +108,7 @@ if (import.meta.main) {
   // Bootstrap infra (root shell scripts: installer, launcher) legitimately
   // carries no hex_dipole — the dipole is a property of hex-coordinate organs,
   // not installers. See the no_dipole infra policy. Existence is still checked.
-  const DIPOLE_EXEMPT = new Set(["install.sh"]);
+  const DIPOLE_EXEMPT = new Set(["install.sh", "node-sync.sh"]);
   const isExempt = (f: string) =>
     DIPOLE_EXEMPT.has(f) || DIPOLE_EXEMPT.has(f.split("/").pop() ?? f);
 

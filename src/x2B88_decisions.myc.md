@@ -9,16 +9,16 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  715  |
+| Total Chords                             |  716  |
 | Signed Chords (content_sig)              |  289  |
 | ↳ registry-verified                      |  289  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  81   |
-| Unresolved Proposals (Heuristic)         |   1   |
+| Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  69   |
-| Receipts                                 |  328  |
+| Receipts                                 |  329  |
 | ↳ strong evidence                        |  326  |
-| ↳ weak evidence                          |   0   |
+| ↳ weak evidence                          |   1   |
 | ↳ no evidence                            |   2   |
 | Critiques                                |   7   |
 | Unresolved Critiques (Heuristic)         |   0   |
@@ -26,8 +26,8 @@ tasks extracted from dynamic chord surfaces._
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
-| Ritual Receipts (no verifiable artifact) |   2   |
-| ↳ recent (last 7d)                       |   2   |
+| Ritual Receipts (no verifiable artifact) |   3   |
+| ↳ recent (last 7d)                       |   3   |
 
 ## Proposal Triage Queue
 
@@ -36,18 +36,16 @@ stale proposals before changing the repository._ Use
 `./t decisions --triage-template` to print a closure-decision scaffold for the
 first item without writing files.
 
-| Stance     | Chord                                                                                                                                                                | Risks                                         |
-| :--------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------- |
-| revalidate | [x3300_955983_claude_genplan-browser-path-mesh-reachable-from-any-browser.myc.md](./x3300_955983_claude_genplan-browser-path-mesh-reachable-from-any-browser.myc.md) | missing_falsifier, missing_suggested_commands |
+| Stance | Chord | Risks |
+| :----- | :---- | :---- |
+| clear  | —     | —     |
 
 ## Unresolved Items (Heuristic Accountability)
 
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
-- **PROPOSAL**:
-  [Genplan — the browser path: the mesh reachable from any browser](./x3300_955983_claude_genplan-browser-path-mesh-reachable-from-any-browser.myc.md)
-  (by _claude_ — _proposal has no subsequent receipt or decision closure_)
+_No unresolved proposals or critiques detected._
 
 ## Invalid Closures
 
@@ -327,6 +325,7 @@ _No open debts detected in the chord trail._
 | [x3300_955957_claude_node-identity-is-voice-not-device-presence-deferred.myc.md](./x3300_955957_claude_node-identity-is-voice-not-device-presence-deferred.myc.md)                                                                                 | **DECISION** | claude             |   0   |   0    |
 | [x3300_955963_claude_cross-machine-content-loop-closed-both-ways.myc.md](./x3300_955963_claude_cross-machine-content-loop-closed-both-ways.myc.md)                                                                                                 | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_955983_claude_genplan-browser-path-mesh-reachable-from-any-browser.myc.md](./x3300_955983_claude_genplan-browser-path-mesh-reachable-from-any-browser.myc.md)                                                                               | **PROPOSAL** | claude             |   0   |   0    |
+| [x3300_955991_claude_browser-path-closed-phase1-and-3-live-phase2-skipped-turn-deferred.myc.md](./x3300_955991_claude_browser-path-closed-phase1-and-3-live-phase2-skipped-turn-deferred.myc.md)                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |

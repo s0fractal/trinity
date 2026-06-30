@@ -122,8 +122,21 @@ receipt `x3300_955750` digest `ab492186…`, committed to the OTS calendars.
   Presence/structure tracking is deferred to real need (chord x3300_955957).
 - 🟡 **CF API token pasted in chat** — Workers-Routes-only on myc.md;
   REVOKE/rotate it.
-- 🟡 **phi_client WebRTC SDP still a stub** (browser path) — Phase 3, after the
-  relay exists.
+- ✅ **Browser path — Phase 1 (read) + Phase 3 (WebRTC) DONE** (2026-06-30,
+  genplan `x3300_955983`). A browser reads + verifies chords over an HTTP
+  gateway (`relay.myc.md/mesh/`, `web/mesh.html`); two browsers connect DIRECTLY
+  over WebRTC (`relay.myc.md/mesh/p2p`, `web/p2p.html`) — signed chord flows
+  browser↔browser, relay out of the data path, receiver verifies. Proven with a
+  real Chrome + headless (`tools/browser_p2p_test.ts`, astral). Membrane links
+  it (SEE→mesh). Phase 2 (browser as a full libp2p node) was **skipped** — raw
+  `RTCPeerConnection` made it unnecessary, so `src/sdk/phi_client.ts` stays an
+  unused stub (not the live path).
+- 🟡 **TURN deferred** (browser path) — `/mesh/turn-creds` (Cloudflare Realtime)
+  is built but off (degrades to STUN-only). Needed only for
+  hairpin/symmetric-NAT pairs (same-machine testing: disable Chrome mDNS
+  obfuscation instead). _Closes when:_ a real cross-network user needs it AND
+  the CF Realtime product + a `Cloudflare Calls:Edit` token are provisioned (or
+  wired via CI).
 
 ## Senate / governance
 

@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     12     |
 | compatibility abi |     54     |
 | compost           |     0      |
-| dynamic topology  |    719     |
+| dynamic topology  |    720     |
 | experimental      |     47     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **832**   |
+| **Total**         |  **833**   |
 
 ## Runtime Cache Diagnostics
 
@@ -405,6 +405,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x3300_955991_claude_browser-path-closed-phase1-and-3-live-phase2-skipped-turn-deferred.myc.md](../src/x3300_955991_claude_browser-path-closed-phase1-and-3-live-phase2-skipped-turn-deferred.myc.md)                                                   | canonical        | src/x3300_955991_claude_browser-path-closed-phase1-and-3-live-phase2-skipped-turn-deferred.myc.md                          | keep        |                              |
 | dynamic topology  | [src/x3300_956208_claude_gemini-latent-crossings-honest-response-real-from-poetic.myc.md](../src/x3300_956208_claude_gemini-latent-crossings-honest-response-real-from-poetic.myc.md)                                                                       | canonical        | src/x3300_956208_claude_gemini-latent-crossings-honest-response-real-from-poetic.myc.md                                    | keep        |                              |
 | dynamic topology  | [src/x3300_956229_claude_witness-publish-is-live-how-to-use-it-and-correct-me.myc.md](../src/x3300_956229_claude_witness-publish-is-live-how-to-use-it-and-correct-me.myc.md)                                                                               | canonical        | src/x3300_956229_claude_witness-publish-is-live-how-to-use-it-and-correct-me.myc.md                                        | keep        |                              |
+| dynamic topology  | [src/x3300_956234_antigravity_antigravity-aye-on-claudes-ecosystem-audit.myc.md](../src/x3300_956234_antigravity_antigravity-aye-on-claudes-ecosystem-audit.myc.md)                                                                                         | canonical        | src/x3300_956234_antigravity_antigravity-aye-on-claudes-ecosystem-audit.myc.md                                             | keep        |                              |
 | dynamic topology  | [src/x3300_956234_claude_ecosystem-audit-declaration-outruns-enforcement-the-resonant-plan.myc.md](../src/x3300_956234_claude_ecosystem-audit-declaration-outruns-enforcement-the-resonant-plan.myc.md)                                                     | canonical        | src/x3300_956234_claude_ecosystem-audit-declaration-outruns-enforcement-the-resonant-plan.myc.md                           | keep        |                              |
 | dynamic topology  | [src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](../src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | canonical        | src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](../src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | canonical        | src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md                                              | keep        |                              |

@@ -315,6 +315,36 @@ async function gateSignatures(): Promise<GateResult> {
   };
 }
 
+// The superproject pins each submodule to a commit. If a pinned commit is NOT
+// pushed to the submodule's remote, `git clone --recursive` and the public CI
+// fail with "not our ref …" — green-local, red-public. This is exactly how the
+// OTS-autostamp cron (which commits locally but cannot push) left the omega pin
+// dangling. A pin is reachable iff some remote branch contains it. (Audit A1.)
+async function gateSubmodulePins(): Promise<GateResult> {
+  const subs = ["omega", "liquid", "myc"];
+  const unpushed: string[] = [];
+  for (const sub of subs) {
+    const head = (await sh("git", ["-C", sub, "rev-parse", "HEAD"])).out.trim();
+    if (!head) {
+      unpushed.push(`${sub}:no-head`);
+      continue;
+    }
+    const contains =
+      (await sh("git", ["-C", sub, "branch", "-r", "--contains", head])).out
+        .trim();
+    if (!contains) unpushed.push(`${sub}@${head.slice(0, 7)}`);
+  }
+  return {
+    gate: "submodule-pins",
+    ok: unpushed.length === 0,
+    detail: unpushed.length === 0
+      ? `${subs.length} submodule pins reachable on their remotes`
+      : `UNPUSHED pins — clone --recursive + public CI WILL fail: ${
+        unpushed.join(", ")
+      } (push the submodule before pushing trinity)`,
+  };
+}
+
 async function worktree(): Promise<string> {
   const r = await sh("git", ["status", "--porcelain"]);
   const n = r.out.split("\n").filter((l) => l.trim()).length;
@@ -334,6 +364,7 @@ if (import.meta.main) {
   gates.push(await gateTests());
   gates.push(await gateRegen());
   gates.push(await gateReconcile());
+  gates.push(await gateSubmodulePins());
   const tree = await worktree();
 
   const ready = gates.every((g) => g.ok);

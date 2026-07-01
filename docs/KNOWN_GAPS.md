@@ -175,3 +175,33 @@ honest register is itself a content node:
   is myc's canonical commitment, so `verify-snapshot` VERIFIES (82/82) but a
   naive `sha256` of the served bytes does NOT match. Real, but needs the myc
   verifier.
+
+## witness→publish contour — LIVE (2026-07-01), with honest caveats
+
+Closed the deepest "network for people" gap: a keyless capture no longer stays
+local. A keyed voice witnesses content (signs the batch) and `t myc publish`
+posts it to the membrane's `POST /publish`, which verifies the witness (Ed25519
+vs x2F38) and writes to a live CF KV store (`MYC_PUBLISHED`) the resolver reads.
+Strangers resolve it immediately — no CF creds, no maintainer deploy. Proven
+live: capture → publish (verified 8, no deploy) → stranger resolves →
+verify-snapshot VERIFIED 89/89.
+
+- 🟡 **accountable witnessing, not prevention** — the worker verifies the
+  WITNESS (a voice vouched) but NOT each content commitment (myc's canonical
+  verifier is Deno/fs-coupled, can't run in a Worker). The CLIENT pre-verifies
+  with the real verifier, and the world audits via verify-snapshot — so a bad
+  publish is detectable + attributable, but not blocked at write. _Closes when:_
+  the commitment canonicalization is ported to a pure worker-safe verifier.
+- 🟡 **verify-snapshot CRASHES on a bad record** — one malformed record throws
+  an unhandled parse error in `verify_snapshot.ts` (verifyPath), aborting the
+  whole verification instead of reporting that record as FAILED. So a single bad
+  KV publish breaks verify-snapshot for everyone until removed. _Closes when:_
+  verifyPath errors are caught per-record.
+- 🟡 **KV is the live layer; the baked snapshot is the durable layer** —
+  published KV content is not in git/snapshot.gen.json until a maintainer folds
+  it in (snapshot:publish + deploy). If KV is cleared, KV-only content is lost.
+  _Closes when:_ a periodic reconcile bakes witnessed KV content into the
+  snapshot.
+- 🟢 **ops:** CF KV is eventually-consistent (~60s delete propagation);
+  `wrangler
+  kv key ...` defaults to LOCAL — production needs `--remote`.

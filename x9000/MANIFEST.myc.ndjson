@@ -41,8 +41,8 @@
 {"path":"public/functions/h.4f76fd8466bc.myc-raw-bytes-sha256.function.myc.md","size":991,"hash":"sha256:bf68f0e2b338ade3264d9429e3f10b2abfc4dd8a73aaffdcffa52750b1ffc77d"}
 {"path":"public/functions/h.7efa1b6e7564.myc-quarantine-policy.function.myc.md","size":1047,"hash":"sha256:7253535cf74c9148ceb5a2ed18fc759b77f0e9a43e88c669eaa73feea401c48c"}
 {"path":"public/functions/h.849874aa8a18.myc-fqdn-naming-policy.function.myc.md","size":1015,"hash":"sha256:2b2fb670b3dc1056e85b2e213b0fc90a938da0658066753c94c6ee6d2d20d8f3"}
-{"path":"public/graph.ndjson","size":22722,"hash":"sha256:afcd3cf087a4178c88652f4cbc25c9bd1ea7308ce39ff971e4ad97e2cbab9861"}
-{"path":"public/index.ndjson","size":23956,"hash":"sha256:08b8b09e27a2df045e71b41cef21736400305e9298320b71c3ab16fd7a110c10"}
+{"path":"public/graph.ndjson","size":27247,"hash":"sha256:f5a13ae5948c73a1935fab8748d8652a545550d5936150bef8468a78ca854aa6"}
+{"path":"public/index.ndjson","size":26748,"hash":"sha256:bb233d969564eab0af10d716552c73c716cb3b9b2a31c8664ca1479a39845b18"}
 {"path":"public/objects/h/2a10699544f3/h.2a10699544f3.projection-descriptor.claude.raw.myc.md","size":1215,"hash":"sha256:34fd282a674cfe926d8213b2ecef6bfdca928cb90bf2c18b3ddb6a066320391e"}
 {"path":"public/objects/h/2a10699544f3/intent.task.claude.h.2a10699544f3.myc.md","size":1563,"hash":"sha256:b09cf5616dcfa09595b9c55d501d418598fc3afadd5c8a73addc36bb0c1079c2"}
 {"path":"public/objects/h/2a10699544f3/naming-proof.claude.h.2a10699544f3.myc.md","size":1801,"hash":"sha256:4678272a8d669281db7f2707b1866e302ea15e1f69026167df9ed370524f93e2"}
@@ -66,6 +66,10 @@
 {"path":"public/objects/h/f1b9f8142d5f/intent.task.s0fractal.h.f1b9f8142d5f.myc.md","size":1750,"hash":"sha256:425ecea9cbf303b99fd5731604c0143daedafa7b9fedbfc7708c2775fbb8f251"}
 {"path":"public/objects/h/f1b9f8142d5f/naming-proof.s0fractal.h.f1b9f8142d5f.myc.md","size":1819,"hash":"sha256:4f62f71f1bfce46f796eaeca71c7e38b699ef96c3ced5cbdbeb52eb0034baebf"}
 {"path":"public/objects/h/f1b9f8142d5f/task.s0fractal.h.f1b9f8142d5f.myc.md","size":2071,"hash":"sha256:c6271b1ce251f19eab3c5f20822c1d19d1ba57f60c9956affbad656e9195140e"}
+{"path":"public/objects/h/f24c45208983/h.f24c45208983.knowledge.claude.raw.myc.md","size":1179,"hash":"sha256:52f24088bf0400aa1a30a113898fe077b08c2839fdb599f7d24391c641eb9d83"}
+{"path":"public/objects/h/f24c45208983/intent.task.claude.h.f24c45208983.myc.md","size":1573,"hash":"sha256:93c5eb73f9afc1e6d9749144ef2c698737a89beb84817e628469c9c27ad5449c"}
+{"path":"public/objects/h/f24c45208983/naming-proof.claude.h.f24c45208983.myc.md","size":1801,"hash":"sha256:ab95c07ec65096a34f24524cfcbedac23cdee8373c679ba6b371396a6bc1e7f2"}
+{"path":"public/objects/h/f24c45208983/task.claude.h.f24c45208983.myc.md","size":1894,"hash":"sha256:fd69be4cc9eeecbf1a929a220a4932e16f12a6422d124bf6899b1bb168f4c48e"}
 {"path":"public/proposals/h.1bd456e1f3be.proposal.myc.md","size":1592,"hash":"sha256:f5738c1b2e798a486e040922f2b5b4a3dbb30cfe2eda17b38ffb4f528e7638ff"}
 {"path":"public/proposals/h.31b0013dc855.proposal.myc.md","size":1458,"hash":"sha256:82cb8ed6f90f834a83df0ade2cc7d9601b2f13043ddde909840b32ad14459425"}
 {"path":"public/proposals/h.3b418ab2dd66.proposal.myc.md","size":2274,"hash":"sha256:e55831607e73a1d167661016845292ba15f859fc8654bf69aaf9f51fa2ee458a"}
@@ -113,6 +117,10 @@
 {"path":"public/transforms/h/f1b9f8142d5f/transform.forward.classify.s0fractal.h.f1b9f8142d5f.myc.md","size":1759,"hash":"sha256:0daef75833581095244a9ca80973cbe48ed8d3ce515b15fa9a2272703c0380b4"}
 {"path":"public/transforms/h/f1b9f8142d5f/transform.forward.name.s0fractal.h.f1b9f8142d5f.myc.md","size":1948,"hash":"sha256:b52c7f752c7dd5600ba7b4d0b07b92df3884597fad97cca554beb3c4dd96a9d2"}
 {"path":"public/transforms/h/f1b9f8142d5f/transform.forward.project.s0fractal.h.f1b9f8142d5f.myc.md","size":2247,"hash":"sha256:fcbfdfd338cd2fd5a98415f42029e73ab9105360bdb5e5c408754d6ccd5496e1"}
+{"path":"public/transforms/h/f24c45208983/transform.forward.canonicalize.claude.h.f24c45208983.myc.md","size":1738,"hash":"sha256:31edab31da51e4f3842ff6f38fcef983d40b3151e1f3d894839f9f61c2e0b845"}
+{"path":"public/transforms/h/f24c45208983/transform.forward.classify.claude.h.f24c45208983.myc.md","size":1749,"hash":"sha256:68d468cefc555d858bedc5ea736b5e5360cf74ba690d535cb2bf008f322ad076"}
+{"path":"public/transforms/h/f24c45208983/transform.forward.name.claude.h.f24c45208983.myc.md","size":1930,"hash":"sha256:c136c3459cf73e4c5cdd223a8fb2d5e567853966100b84013633bd3bc6c56883"}
+{"path":"public/transforms/h/f24c45208983/transform.forward.project.claude.h.f24c45208983.myc.md","size":2231,"hash":"sha256:a1dc24ffe1e91e5c1a1cb7c4f2d272f9e08219366ae89e49cf0525e12b34d963"}
 {"path":"public/transforms/README.md","size":633,"hash":"sha256:66bc2703fd16b74f44de1c77aca7b51d6b1877f3b63b03251b665e80ed56f9a6"}
 {"path":"public/verification/adapter-policy.audit.myc.md","size":992,"hash":"sha256:7e23a35081c1a24fb2d0da55803b9c8ba365d6fa7945d04a15fdf457ed353ae5"}
 {"path":"public/verification/capability-sealed-draft.audit.myc.md","size":892,"hash":"sha256:8b8cf2dfa3e005fa64b23e7917aea872d3f7e23165bc9a2f36fb677a0eea6be6"}
@@ -132,6 +140,7 @@
 {"path":"sites/myc.md/app.client.js","size":40898,"hash":"sha256:b14d060c94f403d8170a3978e4cc389c8271e65392383fe4391b50018ce1bb0d"}
 {"path":"sites/myc.md/import_snapshot_test.ts","size":3735,"hash":"sha256:7e7470c625e4645cffaa3c9d019e01dcc9a04a6369bfd503b373eb8d83c5cb29"}
 {"path":"sites/myc.md/import_snapshot.ts","size":4610,"hash":"sha256:1d52dc2ccc2c1ce29aebe7a627d78228ef7946262c7f54fb7404576599c2c250"}
+{"path":"sites/myc.md/publish.ts","size":3699,"hash":"sha256:0a75d7a1afdf90d18eef90212570a0de856d354b83519ed655088c9df77bcf03"}
 {"path":"sites/myc.md/README.md","size":5136,"hash":"sha256:0ed96a3003b01c3720980d02f2a6969546a2ea63008e347b4450cc73630aa389"}
 {"path":"sites/myc.md/snapshot_test.ts","size":3590,"hash":"sha256:07cc4ad0540a0d89c94be2998a353af9a5ce235762104138747b670f94922fda"}
 {"path":"sites/myc.md/snapshot.gen.json","size":285600,"hash":"sha256:94cb011ee1f0448ed95f9aa2a2ded24d24bebf55fbbfd44b65311cab63844502"}
@@ -140,8 +149,8 @@
 {"path":"sites/myc.md/verify_deployment.ts","size":4301,"hash":"sha256:1dc817a780ce5ef69a2cad9f8b8e3965fb6f1bb89d73e3ce40a31e4912590aec"}
 {"path":"sites/myc.md/verify_snapshot_test.ts","size":2113,"hash":"sha256:843f6f88bca5fd25cfcaaa7dba6eaad199422b6ac5b9f20e1fdd38bfa79ae5b9"}
 {"path":"sites/myc.md/verify_snapshot.ts","size":3100,"hash":"sha256:f1d4eefe6a8b1837246743f64a542115447f15a428ba2f923cc01073f2cff060"}
-{"path":"sites/myc.md/worker_test.ts","size":5948,"hash":"sha256:d108709e4b504a2ea11fedc1048f3733b2d367d8d68fde3012165532c97ba7cb"}
-{"path":"sites/myc.md/worker.ts","size":38929,"hash":"sha256:ba5dc0cb7004929817931fb4d79bd0401ff44b6a802b9db700150c383883f6a6"}
+{"path":"sites/myc.md/worker_test.ts","size":7550,"hash":"sha256:2c9aeaddb683d066b1186329b2ae8d5b16f4ecfa83bb7c2ce99b609f153901a4"}
+{"path":"sites/myc.md/worker.ts","size":43922,"hash":"sha256:143f4a890700ae20a597d2ab1637773ed81ec1f2f29c1b22fc0797b3c1038d28"}
 {"path":"substrates/ADAPTER_POLICY.md","size":3073,"hash":"sha256:b1e55e20471a426a82023d7b5566fd4a2bc663186c20ed6691e82860fcdbd732"}
 {"path":"substrates/codex/MYC.md","size":1052,"hash":"sha256:12d0b619b16a88713323f07891578ceaf948b11e9b0957eda51250b8c5547efc"}
 {"path":"substrates/gemini/MYC.md","size":970,"hash":"sha256:5fb69d40538ac1098b5c9c33d087450483b10b97cb5a8fb2a0a6887b7a3a7e45"}

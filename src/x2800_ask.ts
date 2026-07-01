@@ -443,7 +443,7 @@ const DOORWAYS: Array<[string, string]> = [
   ],
   [
     "CONTRIBUTE",
-    't myc capture --text "<a thought>"           — keyless; carries no trust until a voice witnesses it',
+    't myc propose --text "<thought>" --requires trinity  — keyless; dormant until a voice witnesses it',
   ],
   [
     "JOIN",

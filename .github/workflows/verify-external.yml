@@ -29,3 +29,12 @@ jobs:
       # a public/CI checkout) — exactly the partial clone a real outsider has. The
       # verifier needs no config: it resolves jsr:@s0fractal/witness on its own.
       - run: deno run --no-config --allow-read --allow-net --minimum-dependency-age=0 probes/external-trust-verifier-v0/verify.ts
+      # The Substrate Court, re-derived from OUTSIDE: a stranger confirms a registered
+      # voice's attestation AND recomputes the court's agreement from the raw bodies.
+      - run: deno run --no-config --allow-read --allow-net --minimum-dependency-age=0 probes/external-trust-verifier-v0/court.ts probes/external-trust-verifier-v0/court-attestation.json
+      # Falsifier: the outsider MUST reject a validly-signed lie (the recompute is
+      # load-bearing, not the signature) — CI fails if court.ts accepts the tampered fixture.
+      - run: |
+          if deno run --no-config --allow-read --allow-net --minimum-dependency-age=0 probes/external-trust-verifier-v0/court.ts probes/external-trust-verifier-v0/court-attestation.tampered.json; then
+            echo "FALSIFIER FAILED: court.ts accepted a tampered attestation"; exit 1
+          else echo "court.ts correctly rejected the tampered attestation"; fi

@@ -33,7 +33,7 @@ jobs:
           fi
 
       - name: Setup Deno
-        uses: denoland/setup-deno@v1
+        uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
 
@@ -338,7 +338,7 @@ jobs:
           echo "all submodules initialized"
 
       - name: Setup Deno
-        uses: denoland/setup-deno@v1
+        uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
 

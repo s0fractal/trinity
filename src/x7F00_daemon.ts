@@ -1283,7 +1283,7 @@ async function handleTick(useJson: boolean): Promise<void> {
     gate: {
       would_act: false,
       reason:
-        "safe mode: tick is read-only orientation + choice; acting requires an explicit --act capability that is not yet enabled",
+        "safe mode: this tick is read-only orientation + choice; acting requires the --act capability, which is granted and run hourly by cron — it was simply not passed on this tick",
       next_command: Array.isArray(top?.commands)
         ? (top!.commands as string[])[(top!.commands as string[]).length - 1] ??
           null

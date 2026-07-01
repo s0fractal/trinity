@@ -78,3 +78,20 @@ Deno.test("routeQuestion - empty / content-free question → help", () => {
   assertEquals(routeQuestion("what is this?").intent, "help"); // only stopwords
   assertEquals(routeQuestion("що це є?").intent, "help");
 });
+
+Deno.test("routeQuestion - a newcomer asking what to do gets DOORWAYS, not a search dump", () => {
+  // Dogfood 2026-07-01: these routed to a keyword search → a wall of raw JSON,
+  // the worst answer for the exact person `t ask` exists to help.
+  assertEquals(
+    routeQuestion("what can I actually do here as a newcomer?").intent,
+    "doorways",
+  );
+  assertEquals(routeQuestion("what can I do here?").intent, "doorways");
+  assertEquals(routeQuestion("I'm new, where do I begin?").intent, "doorways");
+  assertEquals(routeQuestion("how do I get started?").intent, "doorways");
+  assertEquals(routeQuestion("що я можу тут робити?").intent, "doorways");
+  assertEquals(routeQuestion("з чого почати?").intent, "doorways");
+  // but "what should I do NEXT" is the frontier (roadmap), NOT newcomer doorways:
+  assertEquals(routeQuestion("what should I do next?").intent, "next");
+  assertEquals(routeQuestion("що робити далі?").intent, "next");
+});

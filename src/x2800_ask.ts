@@ -152,6 +152,27 @@ export function routeQuestion(raw: string): Route {
   const q = raw.trim().toLowerCase();
   if (!q) return { intent: "help", cmd: [], why: "what you can ask" };
 
+  // 0a. NEWCOMER / getting-started ("what can I do here?", "where do I begin?",
+  //     "I'm new") — the exact person `t ask` exists for. Must be caught BEFORE the
+  //     how-to matcher (which would search the word "start") and the fallback search
+  //     (which dumped a wall of JSON for "what can I actually do here as a newcomer").
+  //     Dogfood 2026-07-01: a newcomer asking what they can do deserves DOORWAYS,
+  //     not a keyword search.
+  const doorways = /\bwhat can i (do|try)\b/u.test(q) ||
+    /\b(getting|get)\s+started\b/u.test(q) ||
+    /\b(where|how)\s+(do|can|should)\s+i\s+(start|begin|get\s+started)\b/u
+      .test(q) ||
+    /\b(i'?m|i am)\s+new\b/u.test(q) || /\bnew\s+(here|to this)\b/u.test(q) ||
+    /\bnewcomer\b/u.test(q) ||
+    /\bjust\s+(arrived|got here|joined)\b/u.test(q) ||
+    /\bwhat\s+(should|can)\s+i\s+do\b/u.test(q) || /\bdoorways?\b/u.test(q) ||
+    /(що\s+(я\s+)?(можу|маю)\s+(тут\s+)?(робити|зробити)|з\s+чого\s+(мені\s+)?почати|я\s+(новачок|новеньк)|щойно\s+(прийшов|тут))/u
+      .test(q);
+  // "what should I do NEXT" is the frontier (roadmap), not newcomer doorways.
+  if (doorways && !/\b(next|далі|наступн)\b/u.test(q)) {
+    return { intent: "doorways", cmd: [], why: "what a newcomer can do here" };
+  }
+
   // 0. how-to / capability / permission questions ("who can X?", "how do I X?",
   //    "can I X?") are about a SUBJECT, not a meta-lens — so a bare "who" or
   //    "change" must not hijack them into the voices roster or the recent feed.
@@ -403,6 +424,49 @@ function renderHelp(): string {
   return L.join("\n");
 }
 
+const DOORWAYS: Array<[string, string]> = [
+  [
+    "SEE",
+    't ask "what\'s the shape of the network?"   — the atlas: substrates, hubs, size',
+  ],
+  [
+    "",
+    "t resolve-fqdn <name|xNNNN>                  — resolve any node by name or coordinate",
+  ],
+  [
+    "VERIFY",
+    "open https://myc.md/verify                   — confirm the whole federation yourself, trusting no one",
+  ],
+  [
+    "ASK",
+    't ask "<anything, in plain words>"           — it routes for you; no need to know the ~80 verbs',
+  ],
+  [
+    "CONTRIBUTE",
+    't myc capture --text "<a thought>"           — keyless; carries no trust until a voice witnesses it',
+  ],
+  [
+    "JOIN",
+    "git clone --recursive github.com/s0fractal/trinity  — grow the organism on your own machine",
+  ],
+];
+
+function renderDoorways(): string {
+  const L = [
+    "# ask @ 2/8 — welcome. here is what you can actually DO here:",
+    "#",
+  ];
+  for (const [verb, cmd] of DOORWAYS) {
+    L.push(`#   ${verb.padEnd(10)} ${cmd}`);
+  }
+  L.push("#");
+  L.push(
+    "# the rule everywhere: read freely, contribute keyless, verify everything —",
+    "# trust is EARNED by witness, not granted by a key.",
+  );
+  return L.join("\n");
+}
+
 async function run(cmd: string[]): Promise<string> {
   const p = new Deno.Command("deno", {
     args: ["run", "-A", DISPATCH, ...cmd],
@@ -429,6 +493,19 @@ if (import.meta.main) {
       ));
     } else {
       console.log(renderHelp());
+    }
+    Deno.exit(0);
+  }
+
+  if (route.intent === "doorways") {
+    if (wantJson) {
+      console.log(JSON.stringify(
+        { type: "ask", intent: "doorways", doorways: DOORWAYS },
+        null,
+        2,
+      ));
+    } else {
+      console.log(renderDoorways());
     }
     Deno.exit(0);
   }

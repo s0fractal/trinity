@@ -3,6 +3,7 @@
   "specifiers": {
     "jsr:@astral/astral@0.5.2": "0.5.2",
     "jsr:@deno-library/progress@^1.5.1": "1.5.1",
+    "jsr:@s0fractal/witness@*": "0.1.0",
     "jsr:@std/assert@*": "1.0.19",
     "jsr:@std/assert@1": "1.0.19",
     "jsr:@std/async@1": "1.4.0",
@@ -78,6 +79,9 @@
         "jsr:@std/fmt",
         "jsr:@std/io"
       ]
+    },
+    "@s0fractal/witness@0.1.0": {
+      "integrity": "55a8c98c0ab435fa8a5c5d5d79f38df5d079a40ce837508bea540c041d704517"
     },
     "@std/assert@1.0.19": {
       "integrity": "eaada96ee120cb980bc47e040f82814d786fe8162ecc53c91d8df60b8755991e",

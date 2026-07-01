@@ -28,23 +28,38 @@ const registryUrl = /^https?:\/\//.test(REPO)
   : `${REPO}/src/x2F38_voice_pubkeys.json`;
 const registry = JSON.parse(await readSrc(registryUrl));
 const artifact = JSON.parse(await readSrc(ARTIFACT));
-const { signed_payload, attestation } = artifact;
+const signed_payload: string = artifact.signed_payload;
+// attestations is a QUORUM (a list of voice signatures over the same bundle). Back-
+// compat: accept the older single `attestation` too.
+const attestations: { voice: string; payload: string; sig: string }[] =
+  artifact.attestations ?? (artifact.attestation ? [artifact.attestation] : []);
 const fail: string[] = [];
 
-// 1. AUTHENTICITY + INTEGRITY OF THE BUNDLE — a registered voice signed these exact
-//    bytes. Recompute the digest ourselves; verify the signature with the witness pkg.
+// 1. AUTHENTICITY + INTEGRITY — recompute the bundle digest ourselves, then verify
+//    EACH voice's signature against its registered key. Trust is not one voice: we
+//    count the DISTINCT registered voices that vouch. The more voices, the less any
+//    one of us can lie about what was published.
 const digest = "sha256:" + toHex(await sha256(enc(signed_payload)));
-if (digest !== attestation.payload) {
-  fail.push(`bundle altered after signing: recomputed ${digest} != ${attestation.payload}`);
+const attestingVoices = new Set<string>();
+for (const a of attestations) {
+  if (a.payload !== digest) {
+    fail.push(`bundle altered after ${a.voice} signed: ${a.payload} != ${digest}`);
+    continue;
+  }
+  const pk = registry.keys?.[a.voice]?.pubkey;
+  if (!pk) {
+    fail.push(`voice "${a.voice}" is not in the public registry`);
+    continue;
+  }
+  if (
+    await verifyCoSignature(enc(a.payload), {
+      publicKey: unb64(pk),
+      signature: unb64(a.sig),
+    })
+  ) attestingVoices.add(a.voice);
+  else fail.push(`signature does NOT verify against ${a.voice}'s registered key`);
 }
-const pk = registry.keys?.[attestation.voice]?.pubkey;
-if (!pk) fail.push(`voice "${attestation.voice}" is not in the public registry`);
-else if (
-  !await verifyCoSignature(enc(attestation.payload), {
-    publicKey: unb64(pk),
-    signature: unb64(attestation.sig),
-  })
-) fail.push(`signature does NOT verify against ${attestation.voice}'s registered key`);
+if (attestingVoices.size === 0) fail.push("no registered voice validly attests this bundle");
 
 const { verdict, envelopes, attested_at } = JSON.parse(signed_payload);
 const court = verdict.court ?? {};
@@ -73,7 +88,7 @@ if (court.agreement !== ourAgreement) {
 }
 
 console.log("external COURT verifier — jsr:@s0fractal/witness + public registry + public encoder, no trinity tooling");
-console.log(`  attested by:            ${attestation.voice} (registered: ${Boolean(pk)})`);
+console.log(`  attested by:            ${attestingVoices.size} registered voice(s): ${[...attestingVoices].join(", ")}`);
 console.log(`  court verdict as of:    ${attested_at ?? "unknown"} (a receipt of that moment, not a live feed)`);
 console.log(`  witnesses:              ${envelopes.map((e: { substrate_tag: string }) => e.substrate_tag).join(", ")}`);
 console.log(`  body_hashes recomputed: ${recomputed}/${envelopes.length} (from raw bodies)`);
@@ -83,7 +98,7 @@ for (const f of fail) console.log(`    ✗ ${f}`);
 const ok = fail.length === 0;
 console.log(
   `\n${ok
-    ? `✓ a registered voice attested this verdict, and I re-derived the court's agreement from the raw bodies myself — confirmed with zero trinity secrets, access, or tooling`
+    ? `✓ ${attestingVoices.size} registered voice(s) [${[...attestingVoices].join(", ")}] attest this verdict, and I re-derived the court's agreement from the raw bodies myself — confirmed with zero trinity secrets, access, or tooling`
     : `✗ ${fail.length} discrepancy(ies) — this claim does NOT independently verify`}`,
 );
 if (!ok) Deno.exit(1);

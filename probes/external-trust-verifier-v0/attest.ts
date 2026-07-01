@@ -12,7 +12,47 @@ import { encodeCanonical, multihashSha256 } from "../receipt-envelope-encoder-v0
 const HERE = new URL(".", import.meta.url).pathname;
 const ROOT = new URL("../../", import.meta.url).pathname;
 const T = `${ROOT}t`;
-const voice = Deno.args[0] ?? "claude";
+const arg = (name: string) =>
+  Deno.args.find((a) => a.startsWith(`--${name}=`))?.split("=")[1];
+const voice = arg("voice") ?? Deno.args.find((a) => !a.startsWith("--")) ??
+  "claude";
+const addVoice = arg("add-voice");
+
+/** Sign a digest with a registered voice's key (custody stays with the operator). */
+async function signWith(v: string, digest: string): Promise<string> {
+  const out = await new Deno.Command(T, {
+    args: ["voice-keys", "sign", `--voice=${v}`, `--hash=${digest}`],
+    stdout: "piped",
+    stderr: "null",
+  }).output();
+  const txt = new TextDecoder().decode(out.stdout);
+  return JSON.parse(txt.slice(txt.indexOf("{"))).sig as string;
+}
+
+// ── --add-voice=X: append X's signature over the EXISTING bundle digest, WITHOUT
+//    regenerating (so every voice signs the SAME court verdict — a real quorum, not
+//    one voice). This is the whole custody answer: adding a voice needs no minting,
+//    only that already-registered voice signing. Orchestration, not sovereignty.
+if (addVoice) {
+  const path = `${HERE}court-attestation.json`;
+  const artifact = JSON.parse(await Deno.readTextFile(path));
+  const digest: string = artifact.attestations[0].payload;
+  if (!artifact.attestations.some((a: { voice: string }) => a.voice === addVoice)) {
+    artifact.attestations.push({
+      voice: addVoice,
+      alg: "ed25519",
+      payload: digest,
+      sig: await signWith(addVoice, digest),
+    });
+    await Deno.writeTextFile(path, JSON.stringify(artifact, null, 2) + "\n");
+  }
+  console.log(JSON.stringify({
+    ok: true,
+    added: addVoice,
+    now_attested_by: artifact.attestations.map((a: { voice: string }) => a.voice),
+  }, null, 2));
+  Deno.exit(0);
+}
 
 async function run(args: string[]): Promise<unknown> {
   const p = new Deno.Command(T, { args, stdout: "piped", stderr: "null" });
@@ -83,20 +123,16 @@ const enc = new TextEncoder();
 const digest = "sha256:" +
   [...new Uint8Array(await crypto.subtle.digest("SHA-256", enc.encode(bundleStr)))]
     .map((b) => b.toString(16).padStart(2, "0")).join("");
-const signOut = await new Deno.Command(T, {
-  args: ["voice-keys", "sign", `--voice=${voice}`, `--hash=${digest}`],
-  stdout: "piped",
-  stderr: "null",
-}).output();
-const signText = new TextDecoder().decode(signOut.stdout);
-const sig = JSON.parse(signText.slice(signText.indexOf("{"))).sig as string;
+const sig = await signWith(voice, digest);
 
 const artifact = {
   note:
     "PUBLIC attestation of the live Substrate Court. Verify with court.ts using " +
-    "only jsr:@s0fractal/witness + src/x2F38_voice_pubkeys.json + a public encoder.",
+    "only jsr:@s0fractal/witness + src/x2F38_voice_pubkeys.json + a public encoder. " +
+    "attestations is a QUORUM: distinct registered VOICES vouch — the more voices, " +
+    "the less any one is trusted. Add one with `attest.ts --add-voice=<voice>`.",
   signed_payload: bundleStr,
-  attestation: { voice, alg: "ed25519", payload: digest, sig },
+  attestations: [{ voice, alg: "ed25519", payload: digest, sig }],
 };
 await Deno.writeTextFile(
   `${HERE}court-attestation.json`,

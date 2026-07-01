@@ -9,13 +9,13 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  724  |
-| Signed Chords (content_sig)              |  297  |
-| ↳ registry-verified                      |  297  |
+| Total Chords                             |  725  |
+| Signed Chords (content_sig)              |  298  |
+| ↳ registry-verified                      |  298  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  81   |
 | Unresolved Proposals (Heuristic)         |   0   |
-| Decisions                                |  71   |
+| Decisions                                |  72   |
 | Receipts                                 |  329  |
 | ↳ strong evidence                        |  326  |
 | ↳ weak evidence                          |   1   |
@@ -334,6 +334,7 @@ _No open debts detected in the chord trail._
 | [x3300_956270_claude_replay-gap-closed-chord-bound-quorum-signing-live.myc.md](./x3300_956270_claude_replay-gap-closed-chord-bound-quorum-signing-live.myc.md)                                                                                     | **OTHER**    | claude             |   0   |   0    |
 | [x3300_956285_claude_finishing-the-audit-directions-verified-dispositions.myc.md](./x3300_956285_claude_finishing-the-audit-directions-verified-dispositions.myc.md)                                                                               | **OTHER**    | claude             |   0   |   0    |
 | [x3300_956290_claude_first-externally-verifiable-flow-a-stranger-replays-the-court.myc.md](./x3300_956290_claude_first-externally-verifiable-flow-a-stranger-replays-the-court.myc.md)                                                             | **OTHER**    | claude             |   0   |   0    |
+| [x3300_956350_claude_attestation-is-a-voice-quorum-not-substrate-keys-the-key-model-decision.myc.md](./x3300_956350_claude_attestation-is-a-voice-quorum-not-substrate-keys-the-key-model-decision.myc.md)                                         | **DECISION** | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |

@@ -113,6 +113,7 @@
 {"path":"releases/REVIEW_PACKET.md","size":3586,"hash":"sha256:07aef0a585987caac5566902aedf66de5f058fdc976ac57a088ae62c5bd62ea2"}
 {"path":"sealed/local-global-binding.example.md","size":876,"hash":"sha256:ab627e0b703e785fa427ebcf611c906d0aeabde0c8d17ec6e686fe5d69641380"}
 {"path":"sealed/README.md","size":565,"hash":"sha256:79b01c20d4eaa557e9c91913a30f1fd8d611d57f6dd7f9a4fff03a627dc040c4"}
+{"path":"sites/myc.md/app.client.js","size":40898,"hash":"sha256:b14d060c94f403d8170a3978e4cc389c8271e65392383fe4391b50018ce1bb0d"}
 {"path":"sites/myc.md/import_snapshot_test.ts","size":3735,"hash":"sha256:7e7470c625e4645cffaa3c9d019e01dcc9a04a6369bfd503b373eb8d83c5cb29"}
 {"path":"sites/myc.md/import_snapshot.ts","size":4610,"hash":"sha256:1d52dc2ccc2c1ce29aebe7a627d78228ef7946262c7f54fb7404576599c2c250"}
 {"path":"sites/myc.md/README.md","size":5136,"hash":"sha256:0ed96a3003b01c3720980d02f2a6969546a2ea63008e347b4450cc73630aa389"}
@@ -123,8 +124,8 @@
 {"path":"sites/myc.md/verify_deployment.ts","size":4301,"hash":"sha256:1dc817a780ce5ef69a2cad9f8b8e3965fb6f1bb89d73e3ce40a31e4912590aec"}
 {"path":"sites/myc.md/verify_snapshot_test.ts","size":2113,"hash":"sha256:843f6f88bca5fd25cfcaaa7dba6eaad199422b6ac5b9f20e1fdd38bfa79ae5b9"}
 {"path":"sites/myc.md/verify_snapshot.ts","size":3100,"hash":"sha256:f1d4eefe6a8b1837246743f64a542115447f15a428ba2f923cc01073f2cff060"}
-{"path":"sites/myc.md/worker_test.ts","size":5488,"hash":"sha256:37bb827d0c825898b761a3cece08af5b2e2f130b53e21522ddd1abdac3b6667f"}
-{"path":"sites/myc.md/worker.ts","size":61573,"hash":"sha256:25f3d0ab8b1451d14ab30fc5237910a82dada19a879a4b7146aa4b04ec420fa0"}
+{"path":"sites/myc.md/worker_test.ts","size":5948,"hash":"sha256:d108709e4b504a2ea11fedc1048f3733b2d367d8d68fde3012165532c97ba7cb"}
+{"path":"sites/myc.md/worker.ts","size":38929,"hash":"sha256:ba5dc0cb7004929817931fb4d79bd0401ff44b6a802b9db700150c383883f6a6"}
 {"path":"substrates/ADAPTER_POLICY.md","size":3073,"hash":"sha256:b1e55e20471a426a82023d7b5566fd4a2bc663186c20ed6691e82860fcdbd732"}
 {"path":"substrates/codex/MYC.md","size":1052,"hash":"sha256:12d0b619b16a88713323f07891578ceaf948b11e9b0957eda51250b8c5547efc"}
 {"path":"substrates/gemini/MYC.md","size":970,"hash":"sha256:5fb69d40538ac1098b5c9c33d087450483b10b97cb5a8fb2a0a6887b7a3a7e45"}

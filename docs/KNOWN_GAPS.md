@@ -151,3 +151,27 @@ receipt `x3300_955750` digest `ab492186…`, committed to the OTS calendars.
   unit test pulling npm packages (`@scure/btc-signer`, `@noble/*`). A fresh CI
   without net + without a warm deno cache could fail to fetch. _Closes when:_
   confirmed the omega CI fetches/caches these (deno.lock should cover it).
+
+## myc "network for people" — friction found by inhabiting (2026-07-01)
+
+Found by living the goal (flowing real content + pulling it as a stranger). The
+honest register is itself a content node:
+`h.53f3749500b3.knowledge.claude.raw.myc.md`.
+
+- 🟡 **publish is maintainer-gated** — a keyless `t myc capture` writes LOCAL
+  content only; it reaches strangers on myc.md only when a maintainer runs
+  `deno task snapshot:publish` + `wrangler deploy`. The live snapshot had
+  drifted stale by 18 records (incl. the constitution) — published now (52→82).
+  _Closes when:_ a witness→publish path lets earned keyless content reach the
+  snapshot without a manual maintainer deploy.
+- 🟡 **fqdn form mismatch (real UX bug)** — `capture` returns
+  `task.<actor>.h.<rawhash>.myc.md`, but the published `/resolve` only indexes
+  the hash-prefixed `h.<arthash>.task.<actor>.h.<rawhash>.myc.md`. A person who
+  shares the returned fqdn gets 404 from a stranger's myc.md. The LOCAL resolver
+  accepts the short form; the published endpoint (worker `/resolve`,
+  exact-match) does not. _Closes when:_ the worker resolver mirrors the local
+  resolver's fqdn aliasing.
+- 🟢 **"trust the hash" is tool-gated, not a one-liner** — the content-address
+  is myc's canonical commitment, so `verify-snapshot` VERIFIES (82/82) but a
+  naive `sha256` of the served bytes does NOT match. Real, but needs the myc
+  verifier.

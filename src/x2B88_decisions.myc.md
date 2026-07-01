@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  716  |
-| Signed Chords (content_sig)              |  289  |
-| ↳ registry-verified                      |  289  |
+| Total Chords                             |  717  |
+| Signed Chords (content_sig)              |  290  |
+| ↳ registry-verified                      |  290  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  81   |
 | Unresolved Proposals (Heuristic)         |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   2   |
 | Critiques                                |   7   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  230  |
+| Other Observations                       |  231  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -326,6 +326,7 @@ _No open debts detected in the chord trail._
 | [x3300_955963_claude_cross-machine-content-loop-closed-both-ways.myc.md](./x3300_955963_claude_cross-machine-content-loop-closed-both-ways.myc.md)                                                                                                 | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_955983_claude_genplan-browser-path-mesh-reachable-from-any-browser.myc.md](./x3300_955983_claude_genplan-browser-path-mesh-reachable-from-any-browser.myc.md)                                                                               | **PROPOSAL** | claude             |   0   |   0    |
 | [x3300_955991_claude_browser-path-closed-phase1-and-3-live-phase2-skipped-turn-deferred.myc.md](./x3300_955991_claude_browser-path-closed-phase1-and-3-live-phase2-skipped-turn-deferred.myc.md)                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x3300_956208_claude_gemini-latent-crossings-honest-response-real-from-poetic.myc.md](./x3300_956208_claude_gemini-latent-crossings-honest-response-real-from-poetic.myc.md)                                                                       | **OTHER**    | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |

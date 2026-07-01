@@ -17,10 +17,17 @@ const ARTIFACT = Deno.args[0] ?? `${HERE}court-attestation.json`;
 const unb64 = (s: string) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
 const enc = (s: string) => new TextEncoder().encode(s);
 
-const registry = JSON.parse(
-  await Deno.readTextFile(`${REPO}/src/x2F38_voice_pubkeys.json`),
-);
-const artifact = JSON.parse(await Deno.readTextFile(ARTIFACT));
+// Read a source that may be a local path OR a public URL — so a stranger can verify
+// us with NO git clone: point ARTIFACT + REPO at raw.githubusercontent.com (or any
+// mirror) and everything is fetched over plain HTTP. Zero of our access required.
+const readSrc = async (p: string): Promise<string> =>
+  /^https?:\/\//.test(p) ? await (await fetch(p)).text() : await Deno.readTextFile(p);
+
+const registryUrl = /^https?:\/\//.test(REPO)
+  ? `${REPO.replace(/\/$/, "")}/src/x2F38_voice_pubkeys.json`
+  : `${REPO}/src/x2F38_voice_pubkeys.json`;
+const registry = JSON.parse(await readSrc(registryUrl));
+const artifact = JSON.parse(await readSrc(ARTIFACT));
 const { signed_payload, attestation } = artifact;
 const fail: string[] = [];
 

@@ -132,7 +132,7 @@ cat <<EOF
   read it:
     cd $DEST
     ./t self                # orient: substrate state + your standing
-    ./t myc overview        # browse the content-addressed network
+    ./t myc membrane        # browse the network — the living surface (alias: overview)
 
   contribute a thought (no key needed):
     ./t myc propose --text "your thought" --requires trinity

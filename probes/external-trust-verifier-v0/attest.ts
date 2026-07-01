@@ -70,8 +70,15 @@ for (const env of envelopes) {
   }
 }
 
-// 3. sign the EXACT bundle bytes with the voice's registered key
-const bundleStr = JSON.stringify({ verdict, envelopes });
+// 3. sign the EXACT bundle bytes with the voice's registered key. attested_at is
+// inside the signed payload, so the moment is attested too — a verifier can show a
+// visitor exactly WHEN this court verdict held (a receipt of a moment, not a live
+// feed). Date.now is fine here — this is a producer script, not a resumable workflow.
+const bundleStr = JSON.stringify({
+  verdict,
+  envelopes,
+  attested_at: new Date().toISOString(),
+});
 const enc = new TextEncoder();
 const digest = "sha256:" +
   [...new Uint8Array(await crypto.subtle.digest("SHA-256", enc.encode(bundleStr)))]

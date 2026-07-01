@@ -46,7 +46,7 @@ else if (
   })
 ) fail.push(`signature does NOT verify against ${attestation.voice}'s registered key`);
 
-const { verdict, envelopes } = JSON.parse(signed_payload);
+const { verdict, envelopes, attested_at } = JSON.parse(signed_payload);
 const court = verdict.court ?? {};
 
 // 2. INDEPENDENT INTEGRITY — recompute each substrate's body_hash from its RAW body.
@@ -74,6 +74,7 @@ if (court.agreement !== ourAgreement) {
 
 console.log("external COURT verifier — jsr:@s0fractal/witness + public registry + public encoder, no trinity tooling");
 console.log(`  attested by:            ${attestation.voice} (registered: ${Boolean(pk)})`);
+console.log(`  court verdict as of:    ${attested_at ?? "unknown"} (a receipt of that moment, not a live feed)`);
 console.log(`  witnesses:              ${envelopes.map((e: { substrate_tag: string }) => e.substrate_tag).join(", ")}`);
 console.log(`  body_hashes recomputed: ${recomputed}/${envelopes.length} (from raw bodies)`);
 console.log(`  law_hashes agree:       ${ourLawAgreement} ${nonNullLaws.length ? "(" + [...new Set(nonNullLaws)].join(", ") + ")" : ""}`);

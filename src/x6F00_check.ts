@@ -392,6 +392,9 @@ if (import.meta.main) {
       console.log(`#   ${g.ok ? "✅" : "⛔"} ${g.gate.padEnd(13)} ${g.detail}`);
     }
     console.log(`# worktree: ${tree}`);
+    console.log(
+      `# deno: ${Deno.version.deno} · CI tracks v2.x — upgrade freely; fmt/lint follow you`,
+    );
     if (!ready) {
       console.log("# → fix the ⛔ gates (try `t check --fix`) before pushing.");
     }

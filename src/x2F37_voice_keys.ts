@@ -33,6 +33,11 @@
 //                               the voice's private key → base64 signature
 //   verify --voice=N --hash=H --sig=S
 //                               Verify a signature against the registry
+//   quorum-sign --voice=N --claim="..." --chord=xNNNN
+//                               Sign a CHORD-BOUND quorum digest (audit A9): the
+//                               signature verifies only for that chord, never
+//                               replayed onto another chord quoting the claim
+//   quorum-verify --voice=N --claim=... --chord=xNNNN --sig=S
 //   registry                    Print the committed registry state
 //
 // Glossary words: voice-keys, ключі, підпис, signature
@@ -139,6 +144,25 @@ export async function verifySig(
   } catch {
     return false; // malformed key/sig is a failed verification, not a crash
   }
+}
+
+/** Canonical QUORUM digest — binds the chord COORDINATE into what each voice signs.
+ *  Without this, a voice signs sha256(claim) alone, so the same signatures verify
+ *  for ANY chord quoting the claim: a recorded quorum can be replayed onto a
+ *  fabricated chord (new coordinate/date/context) the voices never signed for
+ *  (audit A9; the gap and this fix are demonstrated, not asserted, in
+ *  probes/external-trust-verifier-v0/replay.ts). Payload = sha256("<claim>|<chord>").
+ *  A signature made for chord A therefore does not verify for chord B. */
+export async function quorumDigest(
+  claim: string,
+  chord: string,
+): Promise<string> {
+  const bytes = new TextEncoder().encode(`${claim}|${chord}`);
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  const hex = Array.from(new Uint8Array(digest))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+  return `sha256:${hex}`;
 }
 
 /** Mint a keypair. Returns the registry entry and the pkcs8 private key. */
@@ -485,6 +509,57 @@ async function main() {
       Deno.exit(valid ? 0 : 1);
       break;
     }
+    case "quorum-sign": {
+      const voice = flagValue(rest, "voice");
+      const claim = flagValue(rest, "claim");
+      const chord = flagValue(rest, "chord");
+      if (!voice || !claim || !chord) {
+        console.error(
+          'usage: quorum-sign --voice=NAME --claim="..." --chord=xNNNN_BLOCK',
+        );
+        Deno.exit(1);
+      }
+      const home = Deno.env.get("HOME") ?? ".";
+      const keyPath = join(home, ".trinity", "keys", `${voice}.ed25519.json`);
+      const stored = JSON.parse(await Deno.readTextFile(keyPath));
+      const digest = await quorumDigest(claim, chord);
+      const sig = await signHash(digest, stored.private_key_pkcs8);
+      out({
+        type: "quorum_sign",
+        voice,
+        chord,
+        digest,
+        sig,
+        note:
+          "chord-bound: this signature does not verify for any other chord (audit A9)",
+      });
+      break;
+    }
+    case "quorum-verify": {
+      const voice = flagValue(rest, "voice");
+      const claim = flagValue(rest, "claim");
+      const chord = flagValue(rest, "chord");
+      const sig = flagValue(rest, "sig");
+      if (!voice || !claim || !chord || !sig) {
+        console.error(
+          'usage: quorum-verify --voice=NAME --claim="..." --chord=xNNNN --sig=SIG',
+        );
+        Deno.exit(1);
+      }
+      const reg = await loadRegistry();
+      const entry = reg.keys[voice];
+      const digest = await quorumDigest(claim, chord);
+      const valid = entry ? await verifySig(digest, sig, entry.pubkey) : false;
+      out({
+        type: "quorum_verify",
+        voice,
+        chord,
+        valid,
+        registered: Boolean(entry),
+      });
+      Deno.exit(valid ? 0 : 1);
+      break;
+    }
     case "registry": {
       out({ type: "voice_registry", ...await loadRegistry() });
       break;
@@ -523,6 +598,8 @@ async function main() {
         "voice-keys — per-voice Ed25519 identity\n\n" +
           "subcommands: keygen --voice=N | sign --voice=N --hash=H | " +
           "verify --voice=N --hash=H --sig=S | registry | " +
+          'quorum-sign --voice=N --claim="..." --chord=xNNNN | ' +
+          "quorum-verify --voice=N --claim=... --chord=xNNNN --sig=S | " +
           "sign-chord <path> | verify-chord <path>",
       );
       Deno.exit(cmd ? 1 : 0);

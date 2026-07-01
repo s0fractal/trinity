@@ -1,6 +1,7 @@
 #!/usr/bin/env -S deno run --allow-read
 // src/x2B00_keytimeline.ts — the voice key-event timeline: verification only.
 // position: 2/B → mirror(2) × bridge(B) = bridge an identity across time.
+// maturity: active
 // hex_dipole: "00 00 59 00 00 00 00 00"
 // placement_policy: axis
 //

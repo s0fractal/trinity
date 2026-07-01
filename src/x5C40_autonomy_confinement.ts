@@ -1,6 +1,7 @@
 #!/usr/bin/env -S deno run --allow-read
 // src/x5C40_autonomy_confinement.ts — A1 confinement receipt (codex x7700_954451).
 // position: 5/C4 → action × bridge = the exact box a reversible action runs inside.
+// maturity: active
 // skill_safe: yes-readonly  (classified 2026-06-26 from AST behaviour — codex x5d00 P0)
 // hex_dipole: "00 00 00 00 00 59 00 00"
 // placement_policy: axis

@@ -1,6 +1,7 @@
 #!/usr/bin/env -S deno run --allow-read --allow-run --allow-env
 // src/x5E10_warrant.ts — Actuation Warrant: action-bound authority verification.
 // position: 5/E1 → action × emergence = the authority to perform one effect.
+// maturity: active
 // skill_safe: yes-readonly  (classified 2026-06-26 from AST behaviour — codex x5d00 P0)
 // hex_dipole: "00 00 00 00 00 6C 00 00"
 // placement_policy: axis

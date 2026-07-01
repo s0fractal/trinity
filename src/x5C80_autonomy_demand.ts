@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-read --allow-write --allow-run --allow-env
 // src/x5C80_autonomy_demand.ts — read-only A1 demand signal (codex x7700_954470).
 // position: 5/C8 → action × bridge = prove there is work before anything acts.
+// maturity: active
+// horizon: designed, dormant — built + tested, but the constitutional actuator has never fired (demand=false, P4 trigger-blocked per x7300_955712); it promotes to active use only on organic acted-receipt evidence, never by elapsed time (A13).
 // skill_safe: yes-with-care  (classified 2026-06-26 from AST behaviour — codex x5d00 P0)
 // hex_dipole: "00 00 00 00 00 59 00 00"
 // placement_policy: axis

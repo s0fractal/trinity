@@ -1,6 +1,8 @@
 #!/usr/bin/env -S deno run --allow-read --allow-write --allow-run --allow-env --allow-net=blockstream.info
 // src/x5C60_autonomy_executor.ts — the A1 executor (codex x5d00_954460 #4).
 // position: 5/C6 → action × bridge = the first persistent autonomous write, maximally boxed.
+// maturity: active
+// horizon: designed, dormant — built + tested, but the constitutional actuator has never fired (demand=false, P4 trigger-blocked per x7300_955712); it promotes to active use only on organic acted-receipt evidence, never by elapsed time (A13).
 // skill_safe: yes-with-care  (classified 2026-06-26 from AST behaviour — codex x5d00 P0)
 // hex_dipole: "00 00 00 00 00 59 00 00"
 // placement_policy: axis

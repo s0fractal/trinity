@@ -1,6 +1,7 @@
 #!/usr/bin/env -S deno run --allow-read --allow-write --allow-run
 // src/x5C50_autonomy_probe.ts — A1 transaction probe (codex x7700_954451 move #3).
 // position: 5/C5 → action × bridge = run the box once, in isolation, then throw it away.
+// maturity: active
 // skill_safe: yes-with-care  (classified 2026-06-26 from AST behaviour — codex x5d00 P0)
 // hex_dipole: "00 00 00 00 00 59 00 00"
 // placement_policy: axis

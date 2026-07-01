@@ -1,6 +1,7 @@
 #!/usr/bin/env -S deno run --allow-read
 // src/x5C70_autonomy_attenuation.ts — A1 write attenuation verifier (codex x5d00_954460).
 // position: 5/C7 → action × bridge = narrow the act without lying about the fact.
+// maturity: active
 // skill_safe: yes-readonly  (classified 2026-06-26 from AST behaviour — codex x5d00 P0)
 // hex_dipole: "00 00 00 00 00 59 00 00"
 // placement_policy: axis

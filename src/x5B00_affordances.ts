@@ -1,5 +1,6 @@
 #!/usr/bin/env -S deno run --allow-read --allow-run --allow-env
 // src/x5B00_affordances.ts — what a digital entity can DO here, and the proof each
+// maturity: active
 // action carries. position: 5/B → action(5) × bridge(B) = the hand reaching across.
 // skill_safe: yes-readonly  (classified 2026-06-26 from AST behaviour — codex x5d00 P0)
 // hex_dipole: "00 00 00 00 00 59 00 00"

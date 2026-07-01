@@ -148,7 +148,7 @@
 {"path":"sites/myc.md/verify_deployment_test.ts","size":2140,"hash":"sha256:c6a8cc8462d9bedd1dcd266de50565a8bec6de0bb9b9c5cd49402d23bf3be43d"}
 {"path":"sites/myc.md/verify_deployment.ts","size":4301,"hash":"sha256:1dc817a780ce5ef69a2cad9f8b8e3965fb6f1bb89d73e3ce40a31e4912590aec"}
 {"path":"sites/myc.md/verify_snapshot_test.ts","size":2113,"hash":"sha256:843f6f88bca5fd25cfcaaa7dba6eaad199422b6ac5b9f20e1fdd38bfa79ae5b9"}
-{"path":"sites/myc.md/verify_snapshot.ts","size":3100,"hash":"sha256:f1d4eefe6a8b1837246743f64a542115447f15a428ba2f923cc01073f2cff060"}
+{"path":"sites/myc.md/verify_snapshot.ts","size":3537,"hash":"sha256:94804b6a780ba6209a1a6da45ffa0492c3fa474814a6ee809bd0c6f6cab0f318"}
 {"path":"sites/myc.md/worker_test.ts","size":7550,"hash":"sha256:2c9aeaddb683d066b1186329b2ae8d5b16f4ecfa83bb7c2ce99b609f153901a4"}
 {"path":"sites/myc.md/worker.ts","size":43922,"hash":"sha256:143f4a890700ae20a597d2ab1637773ed81ec1f2f29c1b22fc0797b3c1038d28"}
 {"path":"substrates/ADAPTER_POLICY.md","size":3073,"hash":"sha256:b1e55e20471a426a82023d7b5566fd4a2bc663186c20ed6691e82860fcdbd732"}

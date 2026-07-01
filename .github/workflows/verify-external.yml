@@ -24,7 +24,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: denoland/setup-deno@v2
         with:
-          deno-version: v2.x
+          deno-version: "2.9.0"
       # --no-config escapes trinity's workspace (whose private submodules are absent in
       # a public/CI checkout) — exactly the partial clone a real outsider has. The
       # verifier needs no config: it resolves jsr:@s0fractal/witness on its own.

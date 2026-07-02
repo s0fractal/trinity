@@ -51,6 +51,7 @@ import {
   relative,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { formatGeneratedFile } from "./x0012_generated_format.ts";
+import { sha256HexBytes as sha256Hex } from "./x4010_hash.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const SRC = HERE; // organs live alongside this file in src/
@@ -127,15 +128,6 @@ function parseHeader(content: string): Map<string, string> {
     if (!fields.has(key)) fields.set(key, val);
   }
   return fields;
-}
-
-async function sha256Hex(bytes: Uint8Array): Promise<string> {
-  const copy = new Uint8Array(bytes.byteLength);
-  copy.set(bytes);
-  const buf = await crypto.subtle.digest("SHA-256", copy.buffer);
-  return Array.from(new Uint8Array(buf))
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
 }
 
 async function scanSrc(): Promise<OrganMeta[]> {

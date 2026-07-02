@@ -18,6 +18,7 @@ import {
   join,
   normalize,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { sha256Hex } from "./x4010_hash.ts";
 
 export interface BehaviorAnalysis {
   mutations: string[];
@@ -292,16 +293,9 @@ export function extractRelativeImports(
   return [...new Set(specs)];
 }
 
-/** sha256 of a UTF-8 string, hex. */
-export async function sha256Hex(text: string): Promise<string> {
-  const buf = await crypto.subtle.digest(
-    "SHA-256",
-    new TextEncoder().encode(text),
-  );
-  return Array.from(new Uint8Array(buf))
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-}
+// sha256Hex is the canonical hash primitive (x4010) — re-exported so existing
+// consumers (canon_conformance_test, skill_gen_test) keep importing it from here.
+export { sha256Hex };
 
 export interface TransitiveVerdict {
   capability: Capability;

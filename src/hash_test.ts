@@ -2,7 +2,35 @@ import {
   assert,
   assertEquals,
 } from "https://deno.land/std@0.224.0/assert/mod.ts";
-import { isValidFqdnPrefix, isValidSha256Hex } from "./x4010_hash.ts";
+import {
+  isValidFqdnPrefix,
+  isValidSha256Hex,
+  sha256Hex,
+  sha256HexBytes,
+} from "./x4010_hash.ts";
+
+Deno.test("x4010_hash - sha256HexBytes equals sha256Hex over the same UTF-8 bytes", async () => {
+  // The provenance invariant that let 5 projection generators dedup their
+  // hand-rolled byte-hashers onto x4010 without changing a single manifest hash.
+  const enc = new TextEncoder();
+  for (const s of ["", "a", "hello world", "acorn:x1d00\n— codex", "🌌Ω"]) {
+    assertEquals(await sha256HexBytes(enc.encode(s)), await sha256Hex(s));
+  }
+  // Known vector: SHA-256("") — matches the empty-string digest used elsewhere.
+  assertEquals(
+    await sha256HexBytes(new Uint8Array(0)),
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  );
+});
+
+Deno.test("x4010_hash - sha256HexBytes hashes only a subarray VIEW, not its backing buffer", async () => {
+  // The hand-rolled versions copied first for exactly this reason; the export
+  // must preserve it or a caller passing a slice would hash the wrong bytes.
+  const enc = new TextEncoder();
+  const backing = enc.encode("PREFIXpayloadSUFFIX");
+  const view = backing.subarray(6, 6 + "payload".length);
+  assertEquals(await sha256HexBytes(view), await sha256Hex("payload"));
+});
 
 Deno.test("x4010_hash - isValidFqdnPrefix", () => {
   assert(isValidFqdnPrefix("h.e3b0c44298fc"));

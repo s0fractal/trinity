@@ -42,6 +42,20 @@ export async function sha256Hex(body: string): Promise<string> {
 }
 
 /**
+ * Full SHA-256 of a raw byte sequence, lowercase hex — the byte-shaped sibling
+ * of {@link sha256Hex}. Copies the input first so a subarray VIEW hashes only
+ * its own bytes (not the whole backing buffer). Byte-identical to the copies
+ * the projection generators previously hand-rolled, so manifest hashes are
+ * preserved bit-for-bit. sha256HexBytes(new TextEncoder().encode(s)) === sha256Hex(s).
+ */
+export async function sha256HexBytes(bytes: Uint8Array): Promise<string> {
+  const copy = new Uint8Array(bytes.byteLength);
+  copy.set(bytes);
+  const buf = await crypto.subtle.digest("SHA-256", copy.buffer);
+  return bytesToHex(new Uint8Array(buf));
+}
+
+/**
  * Canonical FQDN prefix: "h." + first 12 lowercase hex chars of SHA-256(body).
  *
  * Body is treated as a raw UTF-8 byte sequence; no whitespace stripping or

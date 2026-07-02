@@ -56,6 +56,7 @@ import {
 } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { formatGeneratedFile } from "./x0012_generated_format.ts";
 import { epochSecOfBlock } from "./x0014_blocktime.ts";
+import { sha256HexBytes as sha256Hex } from "./x4010_hash.ts";
 import { listChordSurfaceFiles } from "./x2F21_chord_surface.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
@@ -124,15 +125,6 @@ async function gitTrackedSet(subdir?: string): Promise<Set<string>> {
   } catch {
     return new Set();
   }
-}
-
-async function sha256Hex(bytes: Uint8Array): Promise<string> {
-  const copy = new Uint8Array(bytes.byteLength);
-  copy.set(bytes);
-  const buf = await crypto.subtle.digest("SHA-256", copy.buffer);
-  return Array.from(new Uint8Array(buf)).map((b) =>
-    b.toString(16).padStart(2, "0")
-  ).join("");
 }
 
 interface BriefGaps {

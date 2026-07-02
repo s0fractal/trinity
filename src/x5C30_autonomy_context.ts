@@ -16,6 +16,7 @@
 // independently re-verify before acting.
 
 import { analyzeTransitive, effectVerdictHash } from "./x0013_capability.ts";
+import { sha256Hex } from "./x4010_hash.ts";
 import type { CapabilityEvidence } from "./x5C20_autonomy.ts";
 
 const reader = async (path: string): Promise<string | null> => {
@@ -25,14 +26,6 @@ const reader = async (path: string): Promise<string | null> => {
     return null;
   }
 };
-
-async function sha256Hex(s: string): Promise<string> {
-  const d = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
-  return Array.from(new Uint8Array(d)).map((b) =>
-    b.toString(16).padStart(2, "0")
-  )
-    .join("");
-}
 
 /** Recompute content-bound capability evidence for `verb`/`target` from the organ
  *  at `organPath`. The capability is TRANSITIVE (organ + every relative import);

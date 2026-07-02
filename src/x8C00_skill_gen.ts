@@ -45,6 +45,7 @@ import {
   relative,
 } from "https://deno.land/std@0.224.0/path/mod.ts";
 import { formatGeneratedFile } from "./x0012_generated_format.ts";
+import { sha256HexBytes as sha256Hex } from "./x4010_hash.ts";
 // The capability classifier (codex Phase E core) is a shared library helper in
 // x0013, imported by both this generator and x0100 dispatch (`t eval --safe`).
 // Re-exported below so x8C00 stays the registry's stable public API.
@@ -173,15 +174,6 @@ function parseArgs(argv: string[]): Args {
     }
   }
   return out;
-}
-
-async function sha256Hex(bytes: Uint8Array): Promise<string> {
-  const copy = new Uint8Array(bytes.byteLength);
-  copy.set(bytes);
-  const buf = await crypto.subtle.digest("SHA-256", copy.buffer);
-  return Array.from(new Uint8Array(buf)).map((b) =>
-    b.toString(16).padStart(2, "0")
-  ).join("");
 }
 
 function parseHeader(content: string): Map<string, string> {

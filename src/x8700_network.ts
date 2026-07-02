@@ -32,6 +32,7 @@ import {
 // bucket-0 library — canonicalizes generated output to `deno fmt` form, so the
 // regen sweep and `deno fmt --check` agree (the same helper every gen uses).
 import { formatGeneratedFile } from "./x0012_generated_format.ts";
+import { sha256Hex } from "./x4010_hash.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const DISPATCH = join(HERE, "x0100_dispatch.ts");
@@ -100,16 +101,6 @@ export function networkResolverArgs(
     ...(stable ? ["--no-cache", "--tracked-only"] : []),
     "--json",
   ];
-}
-
-async function sha256Hex(s: string): Promise<string> {
-  const buf = await crypto.subtle.digest(
-    "SHA-256",
-    new TextEncoder().encode(s),
-  );
-  return Array.from(new Uint8Array(buf)).map((b) =>
-    b.toString(16).padStart(2, "0")
-  ).join("");
 }
 
 /** Render the projection. Pure given (atlas, lineage). `generated_at` is null in

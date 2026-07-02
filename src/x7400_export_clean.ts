@@ -17,6 +17,7 @@
 import { ensureDir } from "https://deno.land/std@0.224.0/fs/ensure_dir.ts";
 import { expandGlob } from "https://deno.land/std@0.224.0/fs/expand_glob.ts";
 import { join } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { sha256Hex, sha256HexBytes } from "./x4010_hash.ts";
 
 const OUTPUT_DIR = "reports";
 const OUTPUT_FILE = join(Deno.cwd(), OUTPUT_DIR, "trinity_clean_export.md");
@@ -65,17 +66,6 @@ function parseArgs(argv: string[]): Args {
   }
 
   return args;
-}
-
-async function sha256Hex(data: string | Uint8Array): Promise<string> {
-  const source = typeof data === "string"
-    ? new TextEncoder().encode(data)
-    : data;
-  const bytes = new Uint8Array(source);
-  const buf = await crypto.subtle.digest("SHA-256", bytes);
-  return Array.from(new Uint8Array(buf))
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
 }
 
 function getFileBucket(path: string): string {
@@ -132,7 +122,7 @@ async function collectExportEntries(): Promise<ExportEntry[]> {
 
       try {
         const bytes = await Deno.readFile(relativePath);
-        const hash = await sha256Hex(bytes);
+        const hash = await sha256HexBytes(bytes);
         entries.push({
           path: relativePath,
           block_type: blockType,

@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  749  |
-| Signed Chords (content_sig)              |  322  |
-| ↳ registry-verified                      |  322  |
+| Total Chords                             |  750  |
+| Signed Chords (content_sig)              |  323  |
+| ↳ registry-verified                      |  323  |
 | ↳ INVALID signatures                     |   0   |
-| Proposals                                |  85   |
-| Unresolved Proposals (Heuristic)         |   0   |
+| Proposals                                |  86   |
+| Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  77   |
 | Receipts                                 |  342  |
 | ↳ strong evidence                        |  341  |
@@ -36,16 +36,18 @@ stale proposals before changing the repository._ Use
 `./t decisions --triage-template` to print a closure-decision scaffold for the
 first item without writing files.
 
-| Stance | Chord | Risks |
-| :----- | :---- | :---- |
-| clear  | —     | —     |
+| Stance    | Chord                                                                                                                                                  | Risks |
+| :-------- | :----------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
+| candidate | [x5d00_956400_claude_nlnet-application-verifiable-receipts-commons.myc.md](./x5d00_956400_claude_nlnet-application-verifiable-receipts-commons.myc.md) | none  |
 
 ## Unresolved Items (Heuristic Accountability)
 
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
-_No unresolved proposals or critiques detected._
+- **PROPOSAL**:
+  [NLnet application draft: verifiable receipts for human–AI cooperative action](./x5d00_956400_claude_nlnet-application-verifiable-receipts-commons.myc.md)
+  (by _claude_ — _proposal has no subsequent receipt or decision closure_)
 
 ## Invalid Closures
 
@@ -521,6 +523,7 @@ _No open debts detected in the chord trail._
 | [x5d00_954460_codex_a1-write-capability-attenuation-v1.myc.md](./x5d00_954460_codex_a1-write-capability-attenuation-v1.myc.md)                                                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
 | [x5d00_955478_codex_forge-release-train-and-ecosystem-hardening-for-cl.myc.md](./x5d00_955478_codex_forge-release-train-and-ecosystem-hardening-for-cl.myc.md)                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
 | [x5d00_955654_codex_post-publication-ecosystem-next-actions-after-clau.myc.md](./x5d00_955654_codex_post-publication-ecosystem-next-actions-after-clau.myc.md)                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
+| [x5d00_956400_claude_nlnet-application-verifiable-receipts-commons.myc.md](./x5d00_956400_claude_nlnet-application-verifiable-receipts-commons.myc.md)                                                                                             | **PROPOSAL** | claude             |   0   |   0    |
 | [x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md](./x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md)                                                                       | **PROPOSAL** | claude-opus-4.7-1m |   0   |   0    |
 | [x5d00_t20260512001608_claude-opus-4-7_spore-v0-format-freeze-gate-before-liquid-or-other-consumer-migration.myc.md](./x5d00_t20260512001608_claude-opus-4-7_spore-v0-format-freeze-gate-before-liquid-or-other-consumer-migration.myc.md)         | **PROPOSAL** | claude-opus-4-7    |   0   |   0    |
 | [x5d00_t20260512023530_codex-gpt-5_ecosystem-next-development-mode-freeze-then-bridge.myc.md](./x5d00_t20260512023530_codex-gpt-5_ecosystem-next-development-mode-freeze-then-bridge.myc.md)                                                       | **PROPOSAL** | codex-gpt-5        |   0   |   0    |
@@ -7212,6 +7215,24 @@ _No open debts detected in the chord trail._
   - `cd packages/liquid-sync && deno test -A`
   - `cd packages/agentseal && deno test -A`
   - `cd packages/codeicide && deno test -A`
+
+### [x5d00_956400_claude_nlnet-application-verifiable-receipts-commons.myc.md](./x5d00_956400_claude_nlnet-application-verifiable-receipts-commons.myc.md)
+
+- **Category**: `PROPOSAL` (Author: `claude`)
+- **Falsifiers**:
+  - _If nlnet.nl shows the regular open call accepting proposals and no
+    submission_
+  - _receipt chord closes this proposal within 30 days of that opening, this
+    chord has failed as written._
+  - _If `t public-readiness` is not READY on all four trees at submission time,
+    the_
+  - _abstract's publication claim would be false — submission is blocked until
+    it is true._
+  - _If the abstract exceeds 1200 characters at submission time, trim before_
+  - _sending; the form truncates._
+- **Suggested Commands**:
+  - `t public-readiness`
+  - `t decisions`
 
 ### [x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md](./x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md)
 

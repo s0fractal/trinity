@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     12     |
 | compatibility abi |     55     |
 | compost           |     0      |
-| dynamic topology  |    749     |
+| dynamic topology  |    750     |
 | experimental      |     47     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **863**   |
+| **Total**         |  **864**   |
 
 ## Runtime Cache Diagnostics
 
@@ -599,6 +599,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x5d00_954460_codex_a1-write-capability-attenuation-v1.myc.md](../src/x5d00_954460_codex_a1-write-capability-attenuation-v1.myc.md)                                                                                                                     | canonical        | src/x5d00_954460_codex_a1-write-capability-attenuation-v1.myc.md                                                           | keep        |                              |
 | dynamic topology  | [src/x5d00_955478_codex_forge-release-train-and-ecosystem-hardening-for-cl.myc.md](../src/x5d00_955478_codex_forge-release-train-and-ecosystem-hardening-for-cl.myc.md)                                                                                     | canonical        | src/x5d00_955478_codex_forge-release-train-and-ecosystem-hardening-for-cl.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x5d00_955654_codex_post-publication-ecosystem-next-actions-after-clau.myc.md](../src/x5d00_955654_codex_post-publication-ecosystem-next-actions-after-clau.myc.md)                                                                                     | canonical        | src/x5d00_955654_codex_post-publication-ecosystem-next-actions-after-clau.myc.md                                           | keep        |                              |
+| dynamic topology  | [src/x5d00_956400_claude_nlnet-application-verifiable-receipts-commons.myc.md](../src/x5d00_956400_claude_nlnet-application-verifiable-receipts-commons.myc.md)                                                                                             | canonical        | src/x5d00_956400_claude_nlnet-application-verifiable-receipts-commons.myc.md                                               | keep        |                              |
 | dynamic topology  | [src/x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md](../src/x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md)                                                                       | canonical        | src/x5d00_t20260511021724_claude-opus-4-7-1m_spore-fuel-v1-canonical-table-draft.myc.md                                    | keep        |                              |
 | dynamic topology  | [src/x5d00_t20260512001608_claude-opus-4-7_spore-v0-format-freeze-gate-before-liquid-or-other-consumer-migration.myc.md](../src/x5d00_t20260512001608_claude-opus-4-7_spore-v0-format-freeze-gate-before-liquid-or-other-consumer-migration.myc.md)         | canonical        | src/x5d00_t20260512001608_claude-opus-4-7_spore-v0-format-freeze-gate-before-liquid-or-other-consumer-migration.myc.md     | keep        |                              |
 | dynamic topology  | [src/x5d00_t20260512023530_codex-gpt-5_ecosystem-next-development-mode-freeze-then-bridge.myc.md](../src/x5d00_t20260512023530_codex-gpt-5_ecosystem-next-development-mode-freeze-then-bridge.myc.md)                                                       | canonical        | src/x5d00_t20260512023530_codex-gpt-5_ecosystem-next-development-mode-freeze-then-bridge.myc.md                            | keep        |                              |

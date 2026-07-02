@@ -5,9 +5,35 @@ import {
 import {
   blockHeightToISO,
   daysSinceTimestamp,
+  extractSectionFalsifiers,
   timestampFromFilename,
   triageProposal,
 } from "./x8B00_decisions_gen.ts";
+
+Deno.test("extractSectionFalsifiers — reads a '## Falsifier' section (prose + bullets), skips the scaffold stub", () => {
+  // Prose paragraph (the form real receipts use) — one falsifier.
+  const prose =
+    `# receipt\n\n## Falsifier\n\nIf \`senateVoteWeight\` ever takes a\ntime input again, the regression test must red.\n\n— claude, anchor block 955924.\n`;
+  assertEquals(extractSectionFalsifiers(prose), [
+    "If `senateVoteWeight` ever takes a time input again, the regression test must red.",
+  ]);
+
+  // Bullet list (the form the scaffold + codex use) — each bullet an entry.
+  const bullets =
+    `## Falsifiers\n\n- \`./t check\` is not green.\n- the mirror regressed.\n`;
+  assertEquals(extractSectionFalsifiers(bullets), [
+    "`./t check` is not green.",
+    "the mirror regressed.",
+  ]);
+
+  // The unfilled scaffold placeholder must NOT count as a real falsifier.
+  const stub =
+    `## Falsifiers\n\n- [if this command/check fails, this receipt is false]\n`;
+  assertEquals(extractSectionFalsifiers(stub), []);
+
+  // No section at all → empty.
+  assertEquals(extractSectionFalsifiers("# receipt\n\nbody only\n"), []);
+});
 
 // Coverage for the decisions ledger's pure governance logic — the risk→stance
 // classifier and timestamp resolution that feed the `next action` signal

@@ -598,7 +598,57 @@ function extractFalsifiers(text: string, fm: Record<string, any>): string[] {
     }
   }
 
+  // Also read a "## Falsifier(s)" markdown section — the convention the chord
+  // scaffold itself emits. The scans above only see a `falsifiers:` KEY, so
+  // receipts with a real, named `## Falsifier` section (prose OR bullets) read
+  // as ritual (substance=false, missing_falsifier). This closes that blindness.
+  for (const val of extractSectionFalsifiers(text)) {
+    if (!list.includes(val)) list.push(val);
+  }
+
   return [...new Set(list)];
+}
+
+// Pull falsifier claims out of a "## Falsifier(s)" markdown section. Handles
+// both bullet lists and prose paragraphs. Excludes the unfilled scaffold
+// placeholder ("[if this ...]") so a template stub never counts as substance.
+export function extractSectionFalsifiers(text: string): string[] {
+  const out: string[] = [];
+  const lines = text.split("\n");
+  let inSection = false;
+  let paragraph: string[] = [];
+  const flush = () => {
+    if (paragraph.length === 0) return;
+    const val = paragraph.join(" ").trim();
+    paragraph = [];
+    if (val && !/^\[.*\]$/.test(val)) out.push(val);
+  };
+  for (const line of lines) {
+    if (/^#{1,6}\s+Falsifiers?\b/i.test(line)) {
+      inSection = true;
+      continue;
+    }
+    if (!inSection) continue;
+    // End of section: next heading, or the trailing "— voice, anchor block" sig.
+    if (/^#{1,6}\s/.test(line) || /^\s*(?:—|--)\s/.test(line)) {
+      flush();
+      inSection = false;
+      continue;
+    }
+    const t = line.trim();
+    const bullet = t.match(/^[-*]\s+(.*)$/);
+    if (bullet) {
+      flush(); // a bullet ends any running prose paragraph
+      const val = bullet[1].trim();
+      if (val && !/^\[.*\]$/.test(val)) out.push(val);
+    } else if (t === "") {
+      flush(); // blank line ends a paragraph
+    } else {
+      paragraph.push(t);
+    }
+  }
+  flush();
+  return out;
 }
 
 function extractSuggestedCommands(

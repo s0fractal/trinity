@@ -27,6 +27,7 @@
 //   t registry-amend digest <amendment.json>   the hash each voice signs
 //   t registry-amend verify <amendment.json> <votes.json>   authorized?
 //   t registry-amend apply  <amendment.json> <votes.json> [--write]
+//   t registry-amend integrity   live x2F38 folds from the quorum-proven chain?
 
 import {
   dirname,
@@ -42,6 +43,7 @@ import { sha256Hex } from "./x4010_hash.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const REGISTRY_PATH = join(HERE, "x2F38_voice_pubkeys.json");
+const PROVENANCE_PATH = join(HERE, "x2F3C_registry_provenance.json");
 
 /** The floor for a trust-root change: three distinct keyed-voice AYEs. */
 export const QUORUM = 3;
@@ -198,6 +200,63 @@ export function applyAmendment(reg: Registry, a: Amendment): Registry {
   return next;
 }
 
+// ── provenance chain (out-of-band tamper evidence) ───────────────────────────
+// The live registry is only legitimate if it FOLDS from a genesis baseline by
+// applying quorum-authorized amendments in order. A direct edit of x2F38 breaks
+// the fold. Forging the fold needs a real 3-of-5 quorum (the thing it enforces).
+export interface Provenance {
+  genesis: Registry;
+  amendments: { amendment: Amendment; votes: Vote[] }[];
+}
+
+/** Replay the provenance chain: start at genesis, apply each amendment only if
+ *  it carries a valid quorum against the running state. Returns the final state
+ *  and any errors (a broken link stops the fold). */
+export async function foldRegistry(
+  p: Provenance,
+): Promise<{ state: Registry; errors: string[] }> {
+  let state = structuredClone(p.genesis);
+  const errors: string[] = [];
+  for (let i = 0; i < p.amendments.length; i++) {
+    const { amendment, votes } = p.amendments[i];
+    const q = await verifyAmendmentQuorum(amendment, votes, state);
+    if (!q.authorized) {
+      errors.push(
+        `amendment #${i} (${amendment.op} ${amendment.voice}): ${
+          q.reasons.join("; ")
+        }`,
+      );
+      break;
+    }
+    try {
+      state = applyAmendment(state, amendment);
+    } catch (e) {
+      errors.push(`amendment #${i}: ${(e as Error).message}`);
+      break;
+    }
+  }
+  return { state, errors };
+}
+
+/** The trust-root integrity check: the LIVE registry must equal the fold of the
+ *  provenance chain. Any out-of-band edit makes the hashes diverge. */
+export async function checkIntegrity(
+  live: Registry,
+  p: Provenance,
+): Promise<
+  { ok: boolean; errors: string[]; liveHash: string; foldHash: string }
+> {
+  const { state, errors } = await foldRegistry(p);
+  const liveHash = await registryHash(live);
+  const foldHash = await registryHash(state);
+  if (errors.length === 0 && liveHash !== foldHash) {
+    errors.push(
+      `live registry ${liveHash} does not match the provenance fold ${foldHash} — an out-of-band change was made without a quorum proof`,
+    );
+  }
+  return { ok: errors.length === 0, errors, liveHash, foldHash };
+}
+
 // ── I/O + CLI (impure) ───────────────────────────────────────────────────────
 async function readJson<T>(path: string): Promise<T> {
   return JSON.parse(await Deno.readTextFile(path)) as T;
@@ -210,6 +269,23 @@ async function main(argv: string[]) {
   if (sub === "digest") {
     const a = await readJson<Amendment>(rest[0]);
     console.log(await amendmentDigest(a));
+    return;
+  }
+
+  if (sub === "integrity") {
+    const prov = await readJson<Provenance>(PROVENANCE_PATH);
+    const r = await checkIntegrity(registry, prov);
+    console.log(`# registry-amend integrity → 2/F3B`);
+    console.log(`#   amendments in chain: ${prov.amendments.length}`);
+    console.log(`#   live: ${r.liveHash}`);
+    console.log(`#   fold: ${r.foldHash}`);
+    console.log(
+      `#   ok: ${
+        r.ok ? "YES — live registry folds from the quorum chain" : "NO"
+      }`,
+    );
+    for (const e of r.errors) console.log(`#     ✗ ${e}`);
+    if (!r.ok) Deno.exit(1);
     return;
   }
 

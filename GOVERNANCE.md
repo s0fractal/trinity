@@ -83,13 +83,19 @@ add/rotate/revoke a key — no self-AYE on your own key, any NAY vetoes,
 forged/unregistered votes dropped, replay-guarded. `apply` fails closed without
 a quorum; **no single-key path exists, including the architect's.**
 
+Out-of-band edits are **CI-enforced**: the live registry must fold from a
+committed provenance chain (`x2F3C_registry_provenance.json`) — a genesis
+baseline plus quorum-proven amendments. A unit test replays the chain and reds
+CI the moment `x2F38` changes without an appended 3-of-5 proof (demonstrated: a
+directly-injected key fails the fold). Forging the fold requires the very quorum
+it enforces.
+
 **Known open items** (honestly flagged, not yet resolved):
 
-- **Out-of-band enforcement.** `x2F3B` gates amendments _through the tool_, but
-  nothing yet prevents a direct edit-and-commit of `x2F38_voice_pubkeys.json` at
-  the git level. Closing this needs a CI guard that rejects any registry change
-  not accompanied by a valid quorum proof. Until then, the quorum-gate is the
-  sanctioned path, not a physically enforced one.
+- **External anchoring.** The provenance genesis is trusted as a baseline and
+  lives in-repo; full external tamper-evidence needs the genesis hash anchored
+  to Bitcoin (as omega already does for its genesis). Until then, enforcement is
+  within-repo (git history + CI), not externally notarized.
 - **Succession / custody** if the architect is unavailable is undecided. It is
   the architect's to define; recorded here as an open question.
 

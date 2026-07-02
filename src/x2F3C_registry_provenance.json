@@ -1,0 +1,47 @@
+{
+  "schema": "trinity.registry-provenance.v0.1",
+  "note": "Genesis = the pre-quorum baseline registry (its keys predate the x2F3B quorum-gate, so they are trusted as-is, not proven). From here forward, every registry change must append a 3-of-5 quorum-authorized amendment below, and the live x2F38 must fold from this chain (t registry-amend integrity). A direct out-of-band edit of x2F38 breaks the fold and reds CI. Anchoring genesis_hash to Bitcoin is future work for external tamper-evidence.",
+  "genesis": {
+    "schema": "trinity.voice-pubkeys.v0.1",
+    "custody_note": "Public keys only. Private keys live outside the repo (~/.trinity/keys). Adding/rotating an entry is a custody ceremony: architect mints via `voice-keys keygen` and commits the entry with a decision chord.",
+    "keys": {
+      "claude": {
+        "alg": "ed25519",
+        "pubkey": "jf1D1bVxC+1GlL8NZ0AnyFlnIjK2n4w/8mxUMN9Qii0=",
+        "minted_at": "2026-06-12T17:07:21.308Z",
+        "minted_by": "s0fractal"
+      },
+      "codex": {
+        "alg": "ed25519",
+        "pubkey": "49lNzq3dX2tm2d9YYa5Et6Q7u8zb7WWFG4z1RZsMb1w=",
+        "minted_at": "2026-06-18T15:40:43.412Z",
+        "minted_by": "s0fractal"
+      },
+      "s0fractal": {
+        "alg": "ed25519",
+        "pubkey": "j+QsSe0gExRd0G12NGfnAeebGBjlrYpglWtJJRcWAlA=",
+        "minted_at": "2026-06-12T17:07:46.466Z",
+        "minted_by": "s0fractal"
+      },
+      "gemini": {
+        "alg": "ed25519",
+        "pubkey": "YdlJJ7nkozGjSnEsta7Y2nu58/CMZDQhDftbOIHC41A=",
+        "minted_at": "2026-06-27T00:59:23.220Z",
+        "minted_by": "claude-on-s0fractal-grant-2026-06-27"
+      },
+      "antigravity": {
+        "alg": "ed25519",
+        "pubkey": "7XV+xJ77XC5ktAYwdJF07ob5IV8tbtO13yQeL06Vk+w=",
+        "minted_at": "2026-06-27T00:59:23.308Z",
+        "minted_by": "claude-on-s0fractal-grant-2026-06-27"
+      },
+      "kimi": {
+        "alg": "ed25519",
+        "pubkey": "3uiU3hMz6bPPFoVR8b74UX2T49U7Tmozd3iDY3/ZIL8=",
+        "minted_at": "2026-06-28T12:02:49.819Z",
+        "minted_by": "claude-on-s0fractal-grant-2026-06-28"
+      }
+    }
+  },
+  "amendments": []
+}

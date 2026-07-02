@@ -7,6 +7,7 @@ import {
   type Amendment,
   amendmentDigest,
   applyAmendment,
+  checkIntegrity,
   registryHash,
   verifyAmendmentQuorum,
   type Vote,
@@ -185,5 +186,74 @@ Deno.test("registry-amend — a vote cast over a DIFFERENT amendment digest is d
     q.dropped.some((x) =>
       x.includes("v3") && x.includes("not over this amendment")
     ),
+  );
+});
+
+Deno.test("registry-amend — checkIntegrity: an untouched registry folds from empty provenance", async () => {
+  const { reg } = await fixture();
+  const prov = { genesis: structuredClone(reg), amendments: [] };
+  const r = await checkIntegrity(reg, prov);
+  assert(r.ok, r.errors.join("; "));
+});
+
+Deno.test("registry-amend — checkIntegrity: an out-of-band edit breaks the fold (CI turns red)", async () => {
+  const { reg } = await fixture();
+  const prov = { genesis: structuredClone(reg), amendments: [] };
+  // attacker adds a key directly to the live registry, no proof appended
+  const tampered = structuredClone(reg);
+  tampered.keys.mallory = {
+    alg: "ed25519" as const,
+    pubkey: "AAAA",
+    minted_at: "",
+    minted_by: "attacker",
+  };
+  const r = await checkIntegrity(tampered, prov);
+  assert(!r.ok);
+  assert(r.errors.some((e) => e.includes("out-of-band")));
+});
+
+Deno.test("registry-amend — checkIntegrity: a valid proven amendment folds; an unproven one in the chain fails", async () => {
+  const { reg, priv } = await fixture();
+  const a = await revokeV5(reg);
+  const d = await amendmentDigest(a);
+  const votes = [
+    await vote("v1", "AYE", d, priv.v1),
+    await vote("v2", "AYE", d, priv.v2),
+    await vote("v3", "AYE", d, priv.v3),
+  ];
+  const live = applyAmendment(reg, a); // v5 removed, as the proof authorizes
+  const good = {
+    genesis: structuredClone(reg),
+    amendments: [{ amendment: a, votes }],
+  };
+  assert((await checkIntegrity(live, good)).ok);
+
+  // same live state, but the chain carries only 2 AYE → not authorized → fold fails
+  const bad = {
+    genesis: structuredClone(reg),
+    amendments: [{ amendment: a, votes: votes.slice(0, 2) }],
+  };
+  const r = await checkIntegrity(live, bad);
+  assert(!r.ok);
+  assert(r.errors.some((e) => e.includes("insufficient quorum")));
+});
+
+// THE CI ENFORCEMENT: this test reads the REAL committed registry + provenance.
+// It reds the moment anyone edits x2F38 without appending a quorum-proven
+// amendment to x2F3C — closing the out-of-band bypass at the test/CI gate.
+Deno.test("registry-amend — LIVE x2F38 folds from the committed provenance chain", async () => {
+  const HERE = new URL(".", import.meta.url).pathname;
+  const live = JSON.parse(
+    await Deno.readTextFile(HERE + "x2F38_voice_pubkeys.json"),
+  );
+  const prov = JSON.parse(
+    await Deno.readTextFile(HERE + "x2F3C_registry_provenance.json"),
+  );
+  const r = await checkIntegrity(live, prov);
+  assert(
+    r.ok,
+    "the live key registry does not fold from its quorum-proven provenance " +
+      "chain — an out-of-band change was made without a 3-of-5 proof: " +
+      r.errors.join("; "),
   );
 });

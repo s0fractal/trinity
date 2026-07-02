@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     12     |
 | compatibility abi |     54     |
 | compost           |     0      |
-| dynamic topology  |    725     |
+| dynamic topology  |    726     |
 | experimental      |     47     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **838**   |
+| **Total**         |  **839**   |
 
 ## Runtime Cache Diagnostics
 
@@ -412,6 +412,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x3300_956285_claude_finishing-the-audit-directions-verified-dispositions.myc.md](../src/x3300_956285_claude_finishing-the-audit-directions-verified-dispositions.myc.md)                                                                               | canonical        | src/x3300_956285_claude_finishing-the-audit-directions-verified-dispositions.myc.md                                        | keep        |                              |
 | dynamic topology  | [src/x3300_956290_claude_first-externally-verifiable-flow-a-stranger-replays-the-court.myc.md](../src/x3300_956290_claude_first-externally-verifiable-flow-a-stranger-replays-the-court.myc.md)                                                             | canonical        | src/x3300_956290_claude_first-externally-verifiable-flow-a-stranger-replays-the-court.myc.md                               | keep        |                              |
 | dynamic topology  | [src/x3300_956350_claude_attestation-is-a-voice-quorum-not-substrate-keys-the-key-model-decision.myc.md](../src/x3300_956350_claude_attestation-is-a-voice-quorum-not-substrate-keys-the-key-model-decision.myc.md)                                         | canonical        | src/x3300_956350_claude_attestation-is-a-voice-quorum-not-substrate-keys-the-key-model-decision.myc.md                     | keep        |                              |
+| dynamic topology  | [src/x3300_956400_fable5_liquid-review-four-pushbacks-closed-vdf-refusal-capture-zkbypass.myc.md](../src/x3300_956400_fable5_liquid-review-four-pushbacks-closed-vdf-refusal-capture-zkbypass.myc.md)                                                       | canonical        | src/x3300_956400_fable5_liquid-review-four-pushbacks-closed-vdf-refusal-capture-zkbypass.myc.md                            | keep        |                              |
 | dynamic topology  | [src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](../src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | canonical        | src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](../src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | canonical        | src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md                                              | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](../src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | canonical        | src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md                                                      | keep        |                              |

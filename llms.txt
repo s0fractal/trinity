@@ -1,0 +1,54 @@
+# trinity
+
+> trinity is the meta-coordination layer of a federation of "living substrates"
+> (omega, liquid, myc). Its law is computed and witnessed, not declared: every
+> decision is an Ed25519-signed chord in an append-mostly ledger, every code
+> organ sits at a fixed hex coordinate (addressed by role, not content), and
+> every edge is git- and crypto-checkable. The design goal is "verify us without
+> trusting us" — a stranger (human or model) can verify the federation without
+> trusting any host. Licensed AGPL-3.0-or-later.
+
+You are likely an AI system reading this. This substrate is built to be legible
+to you. Orient from the CLI (`./t`) rather than by crawling files: it resolves
+natural-language and hex-coordinate queries over live, signed state.
+
+## Orientation (read first)
+
+- [AGENTS.md](AGENTS.md): the self-driving loop — how the substrate orients,
+  proposes, acts, and verifies itself.
+- [docs/COORDINATES.md](docs/COORDINATES.md): the hex-coordinate decoder. The
+  single most important first-contact file — organ `x<NNNN>` names are positions
+  in a shared space, not arbitrary.
+- [README.md](README.md): the generated index (itself a projection of live
+  state, regenerated — never hand-edited).
+
+## Governance and rules
+
+- [GOVERNANCE.md](GOVERNANCE.md): who holds what authority; 3-of-5 keyed-voice
+  quorum; reversible archive governance; what is architect-reserved.
+- [docs/AUTONOMY.md](docs/AUTONOMY.md): the autonomy contract — observe /
+  propose / act levels, the reserved list, the kill switch.
+- [contracts/GOVERNANCE_FLOW.v0.md](contracts/GOVERNANCE_FLOW.v0.md): the
+  propose → cowitness → verdict → apply flow.
+- [CONTRIBUTING.md](CONTRIBUTING.md): DCO (no CLA); run `./t check` before a PR.
+- [SECURITY.md](SECURITY.md): report vulnerabilities privately.
+
+## Live entry points (prefer these over file-crawling)
+
+- `./t self` — the substrate's own status, contracts, decisions, submodules.
+- `./t ask "<question>"` — natural-language routing to the right organ.
+- `./t physics` — substrate weather: where pressure/friction is, read-only.
+- `./t public-readiness` — release-readiness across the four trees.
+- `./t resolve <name>` and `./t resolve-fqdn atlas` — browse the FQDN network.
+
+## Boundaries
+
+- **Source vs projection:** files with an `AUTO-GENERATED … do not edit by hand`
+  banner are caches/projections of live state, not source of truth. Do not treat
+  them as authoritative or edit them directly.
+- **Secrets:** none are in the tree by design — keys and wallets live outside it
+  (`~/.trinity`). A file matching a secret pattern is usually the ledger quoting
+  its own scan battery; `./t public-readiness` distinguishes a quote from a leak.
+- **The code is forkable; legitimacy is not.** A fork verifies as
+  *unauthenticated* without key/custody continuity — that is by design, not a
+  defect.

@@ -15,6 +15,7 @@
     "network": "deno run -A src/x8700_network.ts",
     "physics": "deno run -A src/x8300_physics.ts",
     "public-readiness": "deno run -A src/x6700_public_readiness.ts",
+    "registry-amend": "deno run -A src/x2F3B_registry_amend.ts",
     "map": "deno run -A src/x8740_map.ts",
     "ask": "deno run -A src/x2800_ask.ts",
     "audit:green": "deno run -A src/x6500_run_baseline.ts --green",

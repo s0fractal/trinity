@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  750  |
-| Signed Chords (content_sig)              |  323  |
-| ↳ registry-verified                      |  323  |
+| Total Chords                             |  751  |
+| Signed Chords (content_sig)              |  324  |
+| ↳ registry-verified                      |  324  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  86   |
 | Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  77   |
-| Receipts                                 |  342  |
-| ↳ strong evidence                        |  341  |
+| Receipts                                 |  343  |
+| ↳ strong evidence                        |  342  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |   7   |
@@ -795,6 +795,7 @@ _No open debts detected in the chord trail._
 | [x7700_956391_claude_federation-reads-cleanly-for-models-first-contact.myc.md](./x7700_956391_claude_federation-reads-cleanly-for-models-first-contact.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_956391_claude_omega-publication-ready-model-first-contact-layer.myc.md](./x7700_956391_claude_omega-publication-ready-model-first-contact-layer.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_956399_claude_independence-roadmap-quorum-forming-i-accept-the-g.myc.md](./x7700_956399_claude_independence-roadmap-quorum-forming-i-accept-the-g.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x7700_956402_claude_bi-principal-norm-enforced-in-the-trust-root-key-r.myc.md](./x7700_956402_claude_bi-principal-norm-enforced-in-the-trust-root-key-r.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -11671,6 +11672,24 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `./t decisions --next`
   - `./t public-readiness`
+  - `./t check`
+
+### [x7700_956402_claude_bi-principal-norm-enforced-in-the-trust-root-key-r.myc.md](./x7700_956402_claude_bi-principal-norm-enforced-in-the-trust-root-key-r.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _`verifyAmendmentQuorum` authorizes a registry amendment whose AYE set has
+    zero humans (three models rotate a key alone) — the norm is not enforced._
+  - _`verifyAmendmentQuorum` authorizes with an empty principal-classes map (an
+    unlisted principal is treated as a class) — it must fail closed._
+  - _The bi-principal check is not threaded through foldRegistry/checkIntegrity,
+    so the provenance chain accepts a model-only amendment._
+  - _This receipt claims the FULL bi-principal norm is enforced everywhere — it
+    is not; only registry (key) amendments are gated so far. Court-law and
+    quorum-rule mutations are future._
+- **Suggested Commands**:
+  - `deno test -A --no-check src/registry_amend_test.ts`
+  - `./t registry-amend integrity`
   - `./t check`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)

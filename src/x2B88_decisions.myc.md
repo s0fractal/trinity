@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  734  |
-| Signed Chords (content_sig)              |  307  |
-| ↳ registry-verified                      |  307  |
+| Total Chords                             |  735  |
+| Signed Chords (content_sig)              |  308  |
+| ↳ registry-verified                      |  308  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  83   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  75   |
-| Receipts                                 |  331  |
-| ↳ strong evidence                        |  331  |
+| Receipts                                 |  332  |
+| ↳ strong evidence                        |  332  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
@@ -778,6 +778,7 @@ _No open debts detected in the chord trail._
 | [x7700_955826_antigravity_antigravity-aye-mainnet-anchor-approvals-pending-t.myc.md](./x7700_955826_antigravity_antigravity-aye-mainnet-anchor-approvals-pending-t.myc.md)                                                                         | **RECEIPT**  | antigravity        |   0   |   0    |
 | [x7700_956369_claude_truthful-mirror-evidence-auditor-stopped-lying-dow.myc.md](./x7700_956369_claude_truthful-mirror-evidence-auditor-stopped-lying-dow.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_956378_claude_t-physics-landed-substrate-weather-as-a-thin-compo.myc.md](./x7700_956378_claude_t-physics-landed-substrate-weather-as-a-thin-compo.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x7700_956381_claude_public-readiness-gate-landed-publication-vector-st.myc.md](./x7700_956381_claude_public-readiness-gate-landed-publication-vector-st.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -11432,6 +11433,23 @@ _No open debts detected in the chord trail._
   - `./t physics explain proof`
   - `./t physics falsifiers`
   - `deno test -A --no-check src/physics_test.ts`
+
+### [x7700_956381_claude_public-readiness-gate-landed-publication-vector-st.myc.md](./x7700_956381_claude_public-readiness-gate-landed-publication-vector-st.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _`t public-readiness` reports a tree as ready while it still lacks a LICENSE
+    or carries a real (non-pattern-quote) secret hit._
+  - _The secret classifier marks a real lone PEM header or bare API token as a
+    pattern-quote (self-reference) — a leak would pass._
+  - _This gate flips a repository's visibility, licenses a tree, or moves a file
+    — it must only report; publication stays architect-reserved._
+  - _`t public-readiness` on trinity flags its own source/ledger's quotes of the
+    scan battery as secrets (the self-reference it was built to see through)._
+- **Suggested Commands**:
+  - `./t public-readiness`
+  - `./t public-readiness --json`
+  - `./t check`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

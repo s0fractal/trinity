@@ -41,7 +41,9 @@ interface ClaimEvidence {
     | "implemented"
     | "partially_implemented"
     | "prototype"
+    | "ratified"
     | "aspirational"
+    | "unlabeled"
     | "obsolete"
     | null;
   contract: string | null;
@@ -542,6 +544,12 @@ async function main() {
   const aspirational_contracts = contractsList.filter(
     (c) => c.implementation_status === "aspirational",
   ).length;
+  // Contracts with NO implementation_status field. Reported separately so the
+  // headline stops attributing them to "aspirational" (see x4F00 buildBaseEntry).
+  // A high count here is labeling-debt, not dead weight — most are shipped.
+  const unlabeled_contracts = contractsList.filter(
+    (c) => c.implementation_status === "unlabeled",
+  ).length;
 
   // Extract divergence metrics for antigravity
   const antigravityVoice = portraitData?.voices?.find(
@@ -852,6 +860,7 @@ async function main() {
     autonomous_voice_invocations: 0,
     executable_contracts,
     aspirational_contracts,
+    unlabeled_contracts,
     strict_mode: wantStrict,
     strict_ok,
     strict_failures,
@@ -867,8 +876,14 @@ async function main() {
       prototype: contractsList.filter((c) =>
         c.implementation_status === "prototype"
       ).map((c) => c.filename),
+      ratified: contractsList.filter((c) =>
+        c.implementation_status === "ratified"
+      ).map((c) => c.filename),
       aspirational: contractsList.filter((c) =>
         c.implementation_status === "aspirational"
+      ).map((c) => c.filename),
+      unlabeled: contractsList.filter((c) =>
+        c.implementation_status === "unlabeled"
       ).map((c) => c.filename),
       obsolete: contractsList.filter((c) =>
         c.implementation_status === "obsolete"
@@ -905,7 +920,10 @@ async function main() {
       `| Autonomous Voice Invocations | ${payload.autonomous_voice_invocations} |`,
     );
     lines.push(`| Executable Contracts | ${executable_contracts} |`);
-    lines.push(`| Aspirational Contracts | ${aspirational_contracts} |`);
+    lines.push(
+      `| Aspirational Contracts (declared) | ${aspirational_contracts} |`,
+    );
+    lines.push(`| Unlabeled Contracts (no status) | ${unlabeled_contracts} |`);
     lines.push(
       `| Strict Verification Status | ${strict_ok ? "PASS" : "FAIL"} |`,
     );
@@ -1022,7 +1040,10 @@ async function main() {
       `Executable contracts (implemented):   ${executable_contracts}`,
     );
     console.log(
-      `Aspirational contracts:              ${aspirational_contracts}`,
+      `Aspirational contracts (declared):   ${aspirational_contracts}`,
+    );
+    console.log(
+      `Unlabeled contracts (no status set): ${unlabeled_contracts} (labeling-debt; most are shipped)`,
     );
     console.log("─".repeat(80));
     console.log("");

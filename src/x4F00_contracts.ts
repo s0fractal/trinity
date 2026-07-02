@@ -71,7 +71,9 @@ export interface ContractEntry {
     | "implemented"
     | "partially_implemented"
     | "prototype"
+    | "ratified"
     | "aspirational"
+    | "unlabeled"
     | "obsolete";
   title: string;
   pinned: boolean;
@@ -317,6 +319,27 @@ function classifySunset(
   return "past-sunset";
 }
 
+// Normalize a raw frontmatter implementation_status into the known set.
+// A MISSING field is "unlabeled" — NOT "aspirational". Silently defaulting to
+// aspirational made the auditor lie downward: 29 contracts with no field
+// (FQDN, VOICES, RECEIPT_ENVELOPE — all shipped) were reported as aspirations.
+// Unlabeled is honest labeling-debt, not declared intent-without-implementation.
+export function normalizeImplStatus(
+  raw: string | number | undefined,
+): ContractEntry["implementation_status"] {
+  const s = String(raw ?? "unlabeled").toLowerCase().trim();
+  if (
+    s === "implemented" ||
+    s === "partially_implemented" ||
+    s === "prototype" ||
+    s === "ratified" ||
+    s === "aspirational" ||
+    s === "unlabeled" ||
+    s === "obsolete"
+  ) return s;
+  return "unlabeled";
+}
+
 // Build the base ContractEntry from filename + text + parsed frontmatter.
 // Enrichment fields (age, cowitness, load_bearing, sunset_status) filled
 // downstream by enricher functions.
@@ -325,20 +348,7 @@ function buildBaseEntry(
   text: string,
   fm: Record<string, string | number>,
 ): ContractEntry {
-  const statusStr = String(fm.implementation_status ?? "aspirational")
-    .toLowerCase()
-    .trim();
-  let implementation_status: ContractEntry["implementation_status"] =
-    "aspirational";
-  if (
-    statusStr === "implemented" ||
-    statusStr === "partially_implemented" ||
-    statusStr === "prototype" ||
-    statusStr === "aspirational" ||
-    statusStr === "obsolete"
-  ) {
-    implementation_status = statusStr;
-  }
+  const implementation_status = normalizeImplStatus(fm.implementation_status);
 
   const impl_evidence = parseImplEvidence(text);
 
@@ -666,9 +676,13 @@ function contractsReceipt(
         ).length,
       prototype:
         contracts.filter((c) => c.implementation_status === "prototype").length,
+      ratified:
+        contracts.filter((c) => c.implementation_status === "ratified").length,
       aspirational:
         contracts.filter((c) => c.implementation_status === "aspirational")
           .length,
+      unlabeled:
+        contracts.filter((c) => c.implementation_status === "unlabeled").length,
       obsolete:
         contracts.filter((c) => c.implementation_status === "obsolete").length,
     },

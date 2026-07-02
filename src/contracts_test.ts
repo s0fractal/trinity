@@ -5,8 +5,22 @@ import {
 import {
   type ContractEntry,
   lacksImplEvidence,
+  normalizeImplStatus,
   parseImplEvidence,
 } from "./x4F00_contracts.ts";
+
+Deno.test("contracts — a missing implementation_status is 'unlabeled', never silently 'aspirational'", () => {
+  // The downward-lie regression guard: an unlabeled contract must NOT be
+  // reported as a declared aspiration (29 shipped contracts had no field).
+  assertEquals(normalizeImplStatus(undefined), "unlabeled");
+  assertEquals(normalizeImplStatus(""), "unlabeled");
+  assertEquals(normalizeImplStatus("nonsense"), "unlabeled");
+  // declared statuses pass through, case/space-insensitive
+  assertEquals(normalizeImplStatus("aspirational"), "aspirational");
+  assertEquals(normalizeImplStatus(" Implemented "), "implemented");
+  // ratified is a recognized status (2 Bitcoin-anchored contracts use it)
+  assertEquals(normalizeImplStatus("ratified"), "ratified");
+});
 
 Deno.test("contracts P3 — parseImplEvidence reads the nested impl_evidence block", () => {
   const withEvidence = `---

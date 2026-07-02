@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     12     |
 | compatibility abi |     55     |
 | compost           |     0      |
-| dynamic topology  |    735     |
+| dynamic topology  |    736     |
 | experimental      |     47     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **849**   |
+| **Total**         |  **850**   |
 
 ## Runtime Cache Diagnostics
 
@@ -857,6 +857,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x7700_956369_claude_truthful-mirror-evidence-auditor-stopped-lying-dow.myc.md](../src/x7700_956369_claude_truthful-mirror-evidence-auditor-stopped-lying-dow.myc.md)                                                                                   | canonical        | src/x7700_956369_claude_truthful-mirror-evidence-auditor-stopped-lying-dow.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x7700_956378_claude_t-physics-landed-substrate-weather-as-a-thin-compo.myc.md](../src/x7700_956378_claude_t-physics-landed-substrate-weather-as-a-thin-compo.myc.md)                                                                                   | canonical        | src/x7700_956378_claude_t-physics-landed-substrate-weather-as-a-thin-compo.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x7700_956381_claude_public-readiness-gate-landed-publication-vector-st.myc.md](../src/x7700_956381_claude_public-readiness-gate-landed-publication-vector-st.myc.md)                                                                                   | canonical        | src/x7700_956381_claude_public-readiness-gate-landed-publication-vector-st.myc.md                                          | keep        |                              |
+| dynamic topology  | [src/x7700_956384_claude_trinity-licensed-agpl-3-0-or-later-the-public-coor.myc.md](../src/x7700_956384_claude_trinity-licensed-agpl-3-0-or-later-the-public-coor.myc.md)                                                                                   | canonical        | src/x7700_956384_claude_trinity-licensed-agpl-3-0-or-later-the-public-coor.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](../src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | canonical        | src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](../src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | canonical        | src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md                                                     | keep        |                              |
 | dynamic topology  | [src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](../src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | canonical        | src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md                                                      | keep        |                              |

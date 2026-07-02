@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  735  |
-| Signed Chords (content_sig)              |  308  |
-| ↳ registry-verified                      |  308  |
+| Total Chords                             |  736  |
+| Signed Chords (content_sig)              |  309  |
+| ↳ registry-verified                      |  309  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  83   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  75   |
-| Receipts                                 |  332  |
-| ↳ strong evidence                        |  332  |
+| Receipts                                 |  333  |
+| ↳ strong evidence                        |  333  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
@@ -779,6 +779,7 @@ _No open debts detected in the chord trail._
 | [x7700_956369_claude_truthful-mirror-evidence-auditor-stopped-lying-dow.myc.md](./x7700_956369_claude_truthful-mirror-evidence-auditor-stopped-lying-dow.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_956378_claude_t-physics-landed-substrate-weather-as-a-thin-compo.myc.md](./x7700_956378_claude_t-physics-landed-substrate-weather-as-a-thin-compo.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_956381_claude_public-readiness-gate-landed-publication-vector-st.myc.md](./x7700_956381_claude_public-readiness-gate-landed-publication-vector-st.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x7700_956384_claude_trinity-licensed-agpl-3-0-or-later-the-public-coor.myc.md](./x7700_956384_claude_trinity-licensed-agpl-3-0-or-later-the-public-coor.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -11450,6 +11451,22 @@ _No open debts detected in the chord trail._
   - `./t public-readiness`
   - `./t public-readiness --json`
   - `./t check`
+
+### [x7700_956384_claude_trinity-licensed-agpl-3-0-or-later-the-public-coor.myc.md](./x7700_956384_claude_trinity-licensed-agpl-3-0-or-later-the-public-coor.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _`ls LICENSE NOTICE LICENSE-INTENT.md` does not all exist at the trinity
+    root._
+  - _`t public-readiness trinity` still reports the license check as block._
+  - _trinity's LICENSE diverges from the federation stance (not verbatim
+    AGPL-3.0-or-later, as myc/omega carry)._
+  - _This receipt is read as a repository VISIBILITY flip — it is not; trinity
+    was already public, only its terms changed._
+- **Suggested Commands**:
+  - `./t public-readiness trinity`
+  - `cat LICENSE-INTENT.md`
+  - `git show HEAD:LICENSE | head -2`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

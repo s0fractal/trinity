@@ -14,12 +14,10 @@ jobs:
       - name: Checkout codebase
         uses: actions/checkout@v4
         with:
-          # Submodules (myc/genesis/liquid_architecture) are private and
-          # unreachable to the default Actions token, which aborts a recursive
-          # checkout. trinity-core CI is self-sufficient; submodule-dependent
-          # gates are skipped when absent. To restore full coverage, add a
-          # read-scoped PAT secret and pass `token:` here, then flip to
-          # `submodules: recursive`.
+          # This trinity-core job runs WITHOUT submodules — it is self-sufficient;
+          # submodule-dependent gates gate on `steps.subm.outputs.present`. Full
+          # cross-substrate coverage lives in the isolated `cross-substrate` job
+          # below. myc + genesis (omega) are now PUBLIC; only liquid is private.
           submodules: false
 
       - name: Detect submodules
@@ -295,38 +293,30 @@ jobs:
             src/x7B88_evidence_report.myc.md \
             src/x8F88_external_surfaces.myc.md
 
-  # Verifies the meta-repo's core thesis: that the three private substrates
-  # (myc / omega=genesis / liquid) actually check out and a cross-substrate
-  # computation runs green. Isolated from `verify` so a failure here never
-  # reddens trinity-core CI. Submodules are fetched over per-repo READ-ONLY SSH
-  # deploy keys (no third-party action; keys live only as repo secrets).
+  # Verifies the meta-repo's core thesis: that the substrates (myc / omega=genesis
+  # / liquid) actually check out and a cross-substrate computation runs green.
+  # Isolated from `verify` so a failure here never reddens trinity-core CI.
+  # myc + genesis (omega) are PUBLIC — fetched over anonymous HTTPS. Only liquid
+  # is private, over a READ-ONLY SSH deploy key. Secret surface: one key, not three.
   cross-substrate:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout codebase
         uses: actions/checkout@v4
         with:
-          submodules: false # initialized manually over SSH deploy keys below
+          submodules: false # initialized manually below (public HTTPS + liquid key)
 
-      - name: Set up read-only deploy keys for private submodules
+      - name: Set up read-only deploy key for the private liquid submodule
         env:
-          MYC_DEPLOY_KEY: ${{ secrets.MYC_DEPLOY_KEY }}
-          OMEGA_DEPLOY_KEY: ${{ secrets.OMEGA_DEPLOY_KEY }}
           LIQUID_DEPLOY_KEY: ${{ secrets.LIQUID_DEPLOY_KEY }}
         run: |
           mkdir -p ~/.ssh && chmod 700 ~/.ssh
-          printf '%s\n' "$MYC_DEPLOY_KEY"    > ~/.ssh/myc    && chmod 600 ~/.ssh/myc
-          printf '%s\n' "$OMEGA_DEPLOY_KEY"  > ~/.ssh/omega  && chmod 600 ~/.ssh/omega
           printf '%s\n' "$LIQUID_DEPLOY_KEY" > ~/.ssh/liquid && chmod 600 ~/.ssh/liquid
           ssh-keyscan -t ed25519,rsa github.com >> ~/.ssh/known_hosts 2>/dev/null
-          printf 'Host gh-myc\n  HostName github.com\n  User git\n  IdentityFile ~/.ssh/myc\n  IdentitiesOnly yes\n' >> ~/.ssh/config
-          printf 'Host gh-omega\n  HostName github.com\n  User git\n  IdentityFile ~/.ssh/omega\n  IdentitiesOnly yes\n' >> ~/.ssh/config
           printf 'Host gh-liquid\n  HostName github.com\n  User git\n  IdentityFile ~/.ssh/liquid\n  IdentitiesOnly yes\n' >> ~/.ssh/config
-          git config --global url."git@gh-myc:s0fractal/myc.git".insteadOf "https://github.com/s0fractal/myc.git"
-          git config --global url."git@gh-omega:s0fractal/genesis.git".insteadOf "https://github.com/s0fractal/genesis.git"
           git config --global url."git@gh-liquid:s0fractal/liquid_architecture.git".insteadOf "https://github.com/s0fractal/liquid_architecture.git"
 
-      - name: Initialize private submodules over SSH
+      - name: Initialize submodules (omega + myc public HTTPS, liquid over its key)
         run: |
           git submodule sync
           git submodule update --init

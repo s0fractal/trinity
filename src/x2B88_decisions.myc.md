@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  743  |
-| Signed Chords (content_sig)              |  316  |
-| ↳ registry-verified                      |  316  |
+| Total Chords                             |  744  |
+| Signed Chords (content_sig)              |  317  |
+| ↳ registry-verified                      |  317  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  83   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  75   |
-| Receipts                                 |  340  |
-| ↳ strong evidence                        |  339  |
+| Receipts                                 |  341  |
+| ↳ strong evidence                        |  340  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |   7   |
@@ -786,6 +786,7 @@ _No open debts detected in the chord trail._
 | [x7700_956389_claude_liquid-staged-dialog-removed-licensed-agpl-federat.myc.md](./x7700_956389_claude_liquid-staged-dialog-removed-licensed-agpl-federat.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_956390_antigravity_antigravity-revalidate-open-access-p0-batch.myc.md](./x7700_956390_antigravity_antigravity-revalidate-open-access-p0-batch.myc.md)                                                                                       | **RECEIPT**  | antigravity        |   0   |   0    |
 | [x7700_956390_codex_revalidate-claude-open-access-p0-batch-gates-held.myc.md](./x7700_956390_codex_revalidate-claude-open-access-p0-batch-gates-held.myc.md)                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_956391_claude_federation-reads-cleanly-for-models-first-contact.myc.md](./x7700_956391_claude_federation-reads-cleanly-for-models-first-contact.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_956391_claude_omega-publication-ready-model-first-contact-layer.myc.md](./x7700_956391_claude_omega-publication-ready-model-first-contact-layer.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
@@ -11560,6 +11561,22 @@ _No open debts detected in the chord trail._
   - `./t public-readiness`
   - `./t registry-amend integrity`
   - `deno run -A omega/tools/senate_ballot.ts tally --proposal=anchor-stewardship`
+
+### [x7700_956391_claude_federation-reads-cleanly-for-models-first-contact.myc.md](./x7700_956391_claude_federation-reads-cleanly-for-models-first-contact.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _A model landing on omega, myc, or liquid standalone cannot find the way
+    back to the federation (no llms.txt/FEDERATION.md pointer)._
+  - _An llms.txt or FEDERATION.md links a file that does not exist in that
+    substrate._
+  - _liquid's llms.txt/SECURITY presents a design-stage guarantee (the
+    pow-not-vdf, capture, consent items) as if it were live._
+  - _This receipt is read as authorization to flip any private tree public — it
+    is not._
+- **Suggested Commands**:
+  - `./t public-readiness`
+  - `cat omega/llms.txt myc/llms.txt liquid/llms.txt`
 
 ### [x7700_956391_claude_omega-publication-ready-model-first-contact-layer.myc.md](./x7700_956391_claude_omega-publication-ready-model-first-contact-layer.myc.md)
 

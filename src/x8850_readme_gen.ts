@@ -102,7 +102,7 @@ export function renderReadme(s: Snapshot): string {
     "",
     "```sh",
     "git clone https://github.com/s0fractal/trinity && cd trinity",
-    "git submodule update --init myc   # the public mycelium · omega + liquid stay private",
+    "git submodule update --init myc genesis   # myc + omega are public · liquid stays private",
     './t ask "what is this?"           # ask in plain words; it routes to the right view',
     "./t resolve-fqdn atlas            # the network at a glance — shape, hubs, doorways",
     "./t map                           # render the whole namespace as a navigable 3D graph",

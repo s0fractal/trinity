@@ -115,3 +115,5 @@ tradable instrument. See `LICENSE-INTENT.md`.
 - `AGENTS.md`, `docs/COORDINATES.md` — first contact for contributors and
   models.
 - `SECURITY.md`, `CONTRIBUTING.md` — disclosure and how to contribute.
+- `TRADEMARK.md` — naming policy (the code is forkable; the names protect
+  legitimacy from capture).

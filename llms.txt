@@ -32,6 +32,8 @@ natural-language and hex-coordinate queries over live, signed state.
   propose → cowitness → verdict → apply flow.
 - [CONTRIBUTING.md](CONTRIBUTING.md): DCO (no CLA); run `./t check` before a PR.
 - [SECURITY.md](SECURITY.md): report vulnerabilities privately.
+- [TRADEMARK.md](TRADEMARK.md): naming policy — fork the code freely; don't
+  rename-and-claim the legitimacy.
 
 ## Live entry points (prefer these over file-crawling)
 

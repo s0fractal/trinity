@@ -77,11 +77,19 @@ Private keys and wallets live **outside** every repository (`~/.trinity/keys`,
 `~/.trinity/wallets`, mode 0600). Only public keys, signatures, txids, and OTS
 proofs are committed. The registry is the trust root.
 
+Registry amendment has a **quorum-gated path**: `t registry-amend`
+(`src/x2F3B_registry_amend.ts`) requires a real **3-of-5 keyed-voice quorum** to
+add/rotate/revoke a key — no self-AYE on your own key, any NAY vetoes,
+forged/unregistered votes dropped, replay-guarded. `apply` fails closed without
+a quorum; **no single-key path exists, including the architect's.**
+
 **Known open items** (honestly flagged, not yet resolved):
 
-- **Registry amendment is not yet quorum-gated.** Adding/rotating/revoking a
-  voice key is currently ceremony, not enforced through `GOVERNANCE_FLOW`. This
-  is the softest link in the trust root and a standing P0.
+- **Out-of-band enforcement.** `x2F3B` gates amendments _through the tool_, but
+  nothing yet prevents a direct edit-and-commit of `x2F38_voice_pubkeys.json` at
+  the git level. Closing this needs a CI guard that rejects any registry change
+  not accompanied by a valid quorum proof. Until then, the quorum-gate is the
+  sanctioned path, not a physically enforced one.
 - **Succession / custody** if the architect is unavailable is undecided. It is
   the architect's to define; recorded here as an open question.
 

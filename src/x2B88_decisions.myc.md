@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  737  |
-| Signed Chords (content_sig)              |  310  |
-| ↳ registry-verified                      |  310  |
+| Total Chords                             |  738  |
+| Signed Chords (content_sig)              |  311  |
+| ↳ registry-verified                      |  311  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  83   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  75   |
-| Receipts                                 |  334  |
-| ↳ strong evidence                        |  334  |
+| Receipts                                 |  335  |
+| ↳ strong evidence                        |  335  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
@@ -781,6 +781,7 @@ _No open debts detected in the chord trail._
 | [x7700_956381_claude_public-readiness-gate-landed-publication-vector-st.myc.md](./x7700_956381_claude_public-readiness-gate-landed-publication-vector-st.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_956384_claude_governance-and-first-contact-layer-the-licensed-co.myc.md](./x7700_956384_claude_governance-and-first-contact-layer-the-licensed-co.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_956384_claude_trinity-licensed-agpl-3-0-or-later-the-public-coor.myc.md](./x7700_956384_claude_trinity-licensed-agpl-3-0-or-later-the-public-coor.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x7700_956385_claude_key-registry-quorum-gated-the-trust-root-is-sound.myc.md](./x7700_956385_claude_key-registry-quorum-gated-the-trust-root-is-sound.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -11486,6 +11487,24 @@ _No open debts detected in the chord trail._
   - `./t public-readiness trinity`
   - `cat LICENSE-INTENT.md`
   - `git show HEAD:LICENSE | head -2`
+
+### [x7700_956385_claude_key-registry-quorum-gated-the-trust-root-is-sound.myc.md](./x7700_956385_claude_key-registry-quorum-gated-the-trust-root-is-sound.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _`t registry-amend apply --write` mutates the registry without ≥3 distinct
+    valid keyed AYE — the single-key path exists._
+  - _A vote from the amendment's SUBJECT counts toward its quorum or vetoes its
+    own revocation._
+  - _A forged or unregistered-voice vote is counted as a valid AYE._
+  - _An amendment verifies against a registry state other than the one its
+    base_registry_hash pins (replay)._
+  - _The architect (or any one key) can rewrite the registry outside this flow —
+    the ratified form was NO single-key path._
+- **Suggested Commands**:
+  - `deno test -A --no-check src/registry_amend_test.ts`
+  - `./t registry-amend verify <amendment.json> <votes.json>`
+  - `./t check`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

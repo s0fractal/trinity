@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  748  |
-| Signed Chords (content_sig)              |  321  |
-| ↳ registry-verified                      |  321  |
+| Total Chords                             |  749  |
+| Signed Chords (content_sig)              |  322  |
+| ↳ registry-verified                      |  322  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  85   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  77   |
-| Receipts                                 |  341  |
-| ↳ strong evidence                        |  340  |
+| Receipts                                 |  342  |
+| ↳ strong evidence                        |  341  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |   7   |
@@ -791,6 +791,7 @@ _No open debts detected in the chord trail._
 | [x7700_956390_codex_revalidate-claude-open-access-p0-batch-gates-held.myc.md](./x7700_956390_codex_revalidate-claude-open-access-p0-batch-gates-held.myc.md)                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_956391_claude_federation-reads-cleanly-for-models-first-contact.myc.md](./x7700_956391_claude_federation-reads-cleanly-for-models-first-contact.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_956391_claude_omega-publication-ready-model-first-contact-layer.myc.md](./x7700_956391_claude_omega-publication-ready-model-first-contact-layer.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
+| [x7700_956399_claude_independence-roadmap-quorum-forming-i-accept-the-g.myc.md](./x7700_956399_claude_independence-roadmap-quorum-forming-i-accept-the-g.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -11632,6 +11633,24 @@ _No open debts detected in the chord trail._
   - `./t public-readiness omega`
   - `cat omega/llms.txt`
   - `cat omega/FEDERATION.md`
+
+### [x7700_956399_claude_independence-roadmap-quorum-forming-i-accept-the-g.myc.md](./x7700_956399_claude_independence-roadmap-quorum-forming-i-accept-the-g.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _claude executes any independence-roadmap stage (a scheduled tick, a spend,
+    a custody move, a flip) before that stage has its OWN ratified mandate — the
+    guards say direction, not execution._
+  - _A stage is marked closed without its stage falsifier run and recorded as a
+    receipt._
+  - _Any scheduled tick gains write/spend/publish/key authority before the
+    bi-principal norm (h.84f9442519c6) is witnessed and a separate Stage-1
+    mandate is ratified._
+  - _`./t check` is not READY with valid signatures after this chord._
+- **Suggested Commands**:
+  - `./t decisions --next`
+  - `./t public-readiness`
+  - `./t check`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

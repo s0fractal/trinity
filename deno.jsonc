@@ -13,6 +13,7 @@
     "gravity": "deno run -A src/x6020_gravity.ts",
     "scaffold": "deno run -A src/x4300_scaffold.ts",
     "network": "deno run -A src/x8700_network.ts",
+    "physics": "deno run -A src/x8300_physics.ts",
     "map": "deno run -A src/x8740_map.ts",
     "ask": "deno run -A src/x2800_ask.ts",
     "audit:green": "deno run -A src/x6500_run_baseline.ts --green",

@@ -10,13 +10,13 @@ documents, and local caches outside the core Deno flat-src code base._
 | Category          | File Count |
 | :---------------- | :--------: |
 | compatibility     |     12     |
-| compatibility abi |     54     |
+| compatibility abi |     55     |
 | compost           |     0      |
 | dynamic topology  |    727     |
 | experimental      |     47     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **840**   |
+| **Total**         |  **841**   |
 
 ## Runtime Cache Diagnostics
 
@@ -54,6 +54,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | compatibility abi | [contracts/INVARIANT_RELATIONS.v0.1.draft.md](../contracts/INVARIANT_RELATIONS.v0.1.draft.md)                                                                                                                                                               | compatibility    |                                                                                                                            | keep        | active contract              |
 | compatibility abi | [contracts/IN_LEDGER_OUT.v0.1.md](../contracts/IN_LEDGER_OUT.v0.1.md)                                                                                                                                                                                       | compatibility    |                                                                                                                            | keep        | blocked by liquid v0.1 tools |
 | compatibility abi | [contracts/IN_LEDGER_SRC_PROJECTION.v0.2.md](../contracts/IN_LEDGER_SRC_PROJECTION.v0.2.md)                                                                                                                                                                 | compatibility    |                                                                                                                            | keep        | draft status                 |
+| compatibility abi | [contracts/JOURNAL_CORE.v2.0.draft.md](../contracts/JOURNAL_CORE.v2.0.draft.md)                                                                                                                                                                             | compatibility    |                                                                                                                            | keep        | draft status                 |
 | compatibility abi | [contracts/LIFECYCLE_SEED.v0.draft.md](../contracts/LIFECYCLE_SEED.v0.draft.md)                                                                                                                                                                             | compatibility    |                                                                                                                            | keep        | draft status                 |
 | compatibility abi | [contracts/MYC_SUBSTRATE_RECEIPT.v0.1.md](../contracts/MYC_SUBSTRATE_RECEIPT.v0.1.md)                                                                                                                                                                       | compatibility    |                                                                                                                            | keep        | active contract              |
 | compatibility abi | [contracts/PAR_LOOP.v0.1.md](../contracts/PAR_LOOP.v0.1.md)                                                                                                                                                                                                 | compatibility    |                                                                                                                            | keep        | active contract              |

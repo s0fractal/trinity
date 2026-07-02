@@ -15,7 +15,44 @@ This page is for a human or an AI system evaluating whether to build on it. It
 describes the real primitives, the one thing you can verify right now without
 any of our secrets, and — honestly — what is mature versus early.
 
-## The loop
+## The on-ramp — one import, no host, cross-vendor
+
+The adopter surface is a published package, not our CLI:
+[`jsr:@s0fractal/agentseal`](https://jsr.io/@s0fractal/agentseal). It composes
+three real primitives — classify the action's blast radius (autonomy-kernel),
+content-address it (canonical-receipt), collect m-of-n co-signatures (witness) —
+and hands you a receipt anyone can verify **locally**.
+
+```ts
+import { seal, verifySeal } from "jsr:@s0fractal/agentseal";
+import { generateWitness } from "jsr:@s0fractal/witness";
+
+const seat = await generateWitness(); // your own key
+const receipt = await seal(
+  { verb: "fs.write", target: "summary.md", effects: ["source_change"] },
+  [seat],
+);
+// anyone, anywhere, with just your public key and the receipt bytes:
+const v = await verifySeal(receipt, [seat.publicKey], 1); // no host contacted
+// v.receiptIntact && v.ok  → the action happened and was authorized
+```
+
+Single-player value the day you install it: it classifies your own agent's
+actions (A0 observe → A4 sovereign) and **fails closed** on sovereign ones. As
+receipts spread, they become the thing a single vendor's logs can never be:
+
+**The wedge — cross-vendor, multi-hop, no shared IdP.** Two independent vendors'
+agents can act in a delegation chain, and a third party who trusts neither
+verifies the whole chain from public keys and bytes alone — no common identity
+provider, no OAuth, no trusted host. A forged delegation link is caught locally.
+This is proven, not claimed: run
+`deno run -A packages/agentseal/examples/cross_vendor.ts` (CI-enforced). It is
+the one thing a hyperscaler cannot hold, because holding it would mean being
+everyone's shared IdP — the opposite of the property.
+
+## The loop, in full
+
+Beneath the package, the federation runs the same shape at substrate scale:
 
 ```
 agent action
@@ -25,7 +62,8 @@ agent action
   → verify      a stranger re-derives the whole thing from raw bytes, no clone
 ```
 
-Each step is a real command:
+Each step is a real command (this is the federation-internal path; external
+adopters use `agentseal` above, not the CLI):
 
 - **capture** —
   `t myc capture --text '<receipt json>' --kind provenance-receipt` writes a
@@ -78,16 +116,21 @@ silently take is the legitimacy the receipts rest on:
 ## Honest maturity
 
 - **Proven:** the external court verifier works both ways — a valid attestation
-  verifies, a tampered one is rejected (demonstrated, not asserted). The
-  quorum-gated key registry and its bi-principal rule are enforced with tests.
-- **Real but early:** the capture → witness UX is CLI-first (v0); a smooth SDK
-  for an external agent system to emit receipts does not exist yet.
+  verifies, a tampered one is rejected (demonstrated, not asserted).
+  `agentseal`'s seal → verify, the A4-fail-closed guard, tamper-rejection, and
+  the cross-vendor delegation chain are all enforced by tests. The quorum-gated
+  key registry and its bi-principal rule are enforced with tests too.
+- **Real but early:** the adopter SDK (`agentseal` + `witness` +
+  `canonical-receipt`) is published on jsr and works today, single-vendor and
+  cross-vendor. What is early is _distribution_ — no ergonomic hosted service,
+  no language bindings beyond TypeScript/Deno yet.
 - **Not yet:** no external adopter has run this in production; a first
-  provenance-as-a-service pilot is the next milestone, and it depends on the
-  private substrates going public (an architect-reserved decision).
+  provenance-as-a-service pilot is the next milestone, and going fully public
+  (flipping the private substrates) is an architect-reserved decision.
 
 We would rather tell you exactly where the edge is than sell past it. The
-receipts are real; the on-ramp is still being paved.
+receipts are real and the on-ramp works today; what is still being paved is
+distribution and the first outside pilot.
 
 ## Pointers
 
@@ -97,3 +140,6 @@ receipts are real; the on-ramp is still being paved.
 - `probes/external-trust-verifier-v0/` — the verifier above, and its `SPEC.md`.
 - `contracts/RECEIPT_ENVELOPE.v1.0.md` — the receipt envelope the substrates
   share.
+- `packages/agentseal/` — the adopter SDK; `examples/seal.ts` (single-vendor)
+  and `examples/cross_vendor.ts` (the cross-vendor delegation-chain wedge).
+- `packages/QUICKSTART.md` — the full forge catalog.

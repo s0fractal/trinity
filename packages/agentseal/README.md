@@ -45,6 +45,11 @@ log, or trusted host. That cross-vendor, multi-hop, no-shared-root seam is
 exactly where centralized identity providers and single logs structurally cannot
 serve.
 
+Proven, not just claimed — run `deno run -A examples/cross_vendor.ts`: two
+independent vendors' keys, a delegation chain linked by content address,
+verified locally by a third party, and a forged link caught. It is CI-enforced
+(`examples/cross_vendor_test.ts`).
+
 ## Honest scope
 
 - This MVP uses `classifyIntent` (the lightweight blast-radius classifier), not

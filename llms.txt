@@ -38,6 +38,7 @@ natural-language and hex-coordinate queries over live, signed state.
 ## Live entry points (prefer these over file-crawling)
 
 - `./t self` — the substrate's own status, contracts, decisions, submodules.
+- `docs/PROVENANCE.md` — what the federation is FOR: provenance-as-a-service, and the one command to verify us without trusting us.
 - `./t ask "<question>"` — natural-language routing to the right organ.
 - `./t physics` — substrate weather: where pressure/friction is, read-only.
 - `./t public-readiness` — release-readiness across the four trees.

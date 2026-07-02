@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  742  |
-| Signed Chords (content_sig)              |  315  |
-| ↳ registry-verified                      |  315  |
+| Total Chords                             |  743  |
+| Signed Chords (content_sig)              |  316  |
+| ↳ registry-verified                      |  316  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  83   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  75   |
-| Receipts                                 |  339  |
-| ↳ strong evidence                        |  338  |
+| Receipts                                 |  340  |
+| ↳ strong evidence                        |  339  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |   7   |
@@ -786,6 +786,7 @@ _No open debts detected in the chord trail._
 | [x7700_956389_claude_liquid-staged-dialog-removed-licensed-agpl-federat.myc.md](./x7700_956389_claude_liquid-staged-dialog-removed-licensed-agpl-federat.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_956390_antigravity_antigravity-revalidate-open-access-p0-batch.myc.md](./x7700_956390_antigravity_antigravity-revalidate-open-access-p0-batch.myc.md)                                                                                       | **RECEIPT**  | antigravity        |   0   |   0    |
 | [x7700_956390_codex_revalidate-claude-open-access-p0-batch-gates-held.myc.md](./x7700_956390_codex_revalidate-claude-open-access-p0-batch-gates-held.myc.md)                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_956391_claude_omega-publication-ready-model-first-contact-layer.myc.md](./x7700_956391_claude_omega-publication-ready-model-first-contact-layer.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -11559,6 +11560,23 @@ _No open debts detected in the chord trail._
   - `./t public-readiness`
   - `./t registry-amend integrity`
   - `deno run -A omega/tools/senate_ballot.ts tally --proposal=anchor-stewardship`
+
+### [x7700_956391_claude_omega-publication-ready-model-first-contact-layer.myc.md](./x7700_956391_claude_omega-publication-ready-model-first-contact-layer.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _`t public-readiness omega` reports anything other than READY (a secret,
+    missing license, local path, or stale intent)._
+  - _omega/llms.txt or FEDERATION.md links a file that does not exist in omega._
+  - _omega/SECURITY.md calls honestly-labelled incompleteness (the unfinished ZK
+    STARK) a vulnerability, or omega's README stops leading with its honest
+    caveats._
+  - _This receipt is read as authorization to flip omega public — it is not; the
+    visibility flip stays architect-reserved._
+- **Suggested Commands**:
+  - `./t public-readiness omega`
+  - `cat omega/llms.txt`
+  - `cat omega/FEDERATION.md`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

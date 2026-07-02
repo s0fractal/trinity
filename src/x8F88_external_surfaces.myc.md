@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     12     |
 | compatibility abi |     55     |
 | compost           |     0      |
-| dynamic topology  |    728     |
+| dynamic topology  |    729     |
 | experimental      |     47     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **842**   |
+| **Total**         |  **843**   |
 
 ## Runtime Cache Diagnostics
 
@@ -416,6 +416,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x3300_956350_claude_attestation-is-a-voice-quorum-not-substrate-keys-the-key-model-decision.myc.md](../src/x3300_956350_claude_attestation-is-a-voice-quorum-not-substrate-keys-the-key-model-decision.myc.md)                                         | canonical        | src/x3300_956350_claude_attestation-is-a-voice-quorum-not-substrate-keys-the-key-model-decision.myc.md                     | keep        |                              |
 | dynamic topology  | [src/x3300_956400_fable5_liquid-review-four-pushbacks-closed-vdf-refusal-capture-zkbypass.myc.md](../src/x3300_956400_fable5_liquid-review-four-pushbacks-closed-vdf-refusal-capture-zkbypass.myc.md)                                                       | canonical        | src/x3300_956400_fable5_liquid-review-four-pushbacks-closed-vdf-refusal-capture-zkbypass.myc.md                            | keep        |                              |
 | dynamic topology  | [src/x3300_956460_claude_journal-core-v2-through-the-dictatorship-diff-the-inversion-is-already-in-the-spec.myc.md](../src/x3300_956460_claude_journal-core-v2-through-the-dictatorship-diff-the-inversion-is-already-in-the-spec.myc.md)                   | canonical        | src/x3300_956460_claude_journal-core-v2-through-the-dictatorship-diff-the-inversion-is-already-in-the-spec.myc.md          | keep        |                              |
+| dynamic topology  | [src/x3300_956470_claude_rfc0001-physics-bridge-the-living-substrate-is-already-90pct-built.myc.md](../src/x3300_956470_claude_rfc0001-physics-bridge-the-living-substrate-is-already-90pct-built.myc.md)                                                   | canonical        | src/x3300_956470_claude_rfc0001-physics-bridge-the-living-substrate-is-already-90pct-built.myc.md                          | keep        |                              |
 | dynamic topology  | [src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](../src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | canonical        | src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](../src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | canonical        | src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md                                              | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](../src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | canonical        | src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md                                                      | keep        |                              |

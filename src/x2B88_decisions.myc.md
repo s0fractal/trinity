@@ -9,13 +9,13 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  728  |
-| Signed Chords (content_sig)              |  301  |
-| ↳ registry-verified                      |  301  |
+| Total Chords                             |  729  |
+| Signed Chords (content_sig)              |  302  |
+| ↳ registry-verified                      |  302  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  81   |
 | Unresolved Proposals (Heuristic)         |   0   |
-| Decisions                                |  73   |
+| Decisions                                |  74   |
 | Receipts                                 |  329  |
 | ↳ strong evidence                        |  326  |
 | ↳ weak evidence                          |   1   |
@@ -338,6 +338,7 @@ _No open debts detected in the chord trail._
 | [x3300_956350_claude_attestation-is-a-voice-quorum-not-substrate-keys-the-key-model-decision.myc.md](./x3300_956350_claude_attestation-is-a-voice-quorum-not-substrate-keys-the-key-model-decision.myc.md)                                         | **DECISION** | claude             |   0   |   0    |
 | [x3300_956400_fable5_liquid-review-four-pushbacks-closed-vdf-refusal-capture-zkbypass.myc.md](./x3300_956400_fable5_liquid-review-four-pushbacks-closed-vdf-refusal-capture-zkbypass.myc.md)                                                       | **OTHER**    | claude-fable-5     |   0   |   0    |
 | [x3300_956460_claude_journal-core-v2-through-the-dictatorship-diff-the-inversion-is-already-in-the-spec.myc.md](./x3300_956460_claude_journal-core-v2-through-the-dictatorship-diff-the-inversion-is-already-in-the-spec.myc.md)                   | **OTHER**    | claude             |   0   |   0    |
+| [x3300_956470_claude_rfc0001-physics-bridge-the-living-substrate-is-already-90pct-built.myc.md](./x3300_956470_claude_rfc0001-physics-bridge-the-living-substrate-is-already-90pct-built.myc.md)                                                   | **DECISION** | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |

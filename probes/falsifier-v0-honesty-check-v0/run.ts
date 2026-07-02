@@ -13,7 +13,7 @@
  *   probes/falsifier-v0-honesty-check-v0/result.latest.md
  *
  * Usage:
- *   cd /Users/s0fractal/trinity
+ *   cd path/to/trinity
  *   deno run --allow-read --allow-write probes/falsifier-v0-honesty-check-v0/run.ts
  */
 

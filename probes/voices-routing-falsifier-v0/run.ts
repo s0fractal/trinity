@@ -6,7 +6,7 @@
  * better than 1D keyword/tag baseline on historical chord chains.
  *
  * Usage:
- *   cd /Users/s0fractal/trinity
+ *   cd path/to/trinity
  *   deno run --allow-read --allow-write probes/voices-routing-falsifier-v0/run.ts
  *   deno run --allow-read --allow-write probes/voices-routing-falsifier-v0/run.ts --all
  *   deno run --allow-read --allow-write probes/voices-routing-falsifier-v0/run.ts --limit 100

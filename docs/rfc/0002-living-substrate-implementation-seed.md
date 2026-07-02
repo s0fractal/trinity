@@ -1,25 +1,30 @@
 # RFC-0002: Living Substrate Implementation Seed
 
-**Status:** Draft Implementation Seed  
-**Date:** 2026-07-02  
-**Extends:** [RFC-0001: The Physics of the s0Fractal Living Substrate](0001-living-substrate-physics.md)  
-**Scope:** first executable bridge from living-substrate physics to repository work
+**Status:** Draft Implementation Seed\
+**Date:** 2026-07-02\
+**Extends:**
+[RFC-0001: The Physics of the s0Fractal Living Substrate](0001-living-substrate-physics.md)\
+**Scope:** first executable bridge from living-substrate physics to repository
+work
 
 ---
 
 ## 0. Purpose
 
-RFC-0001 defines the physics: conservation laws, energy, fields, organisms, capability morphogenesis, metabolism, ecology, memory, decay, and death.
+RFC-0001 defines the physics: conservation laws, energy, fields, organisms,
+capability morphogenesis, metabolism, ecology, memory, decay, and death.
 
 This document narrows that into the first buildable seed.
 
 It answers one practical question:
 
-> What is the smallest implementation that makes the substrate feel physically alive without violating Journal Core?
+> What is the smallest implementation that makes the substrate feel physically
+> alive without violating Journal Core?
 
 The answer is not a new agent framework.
 
-The answer is a deterministic projection layer that can be rebuilt from existing source state and later wired to journal events.
+The answer is a deterministic projection layer that can be rebuilt from existing
+source state and later wired to journal events.
 
 ---
 
@@ -61,23 +66,24 @@ export interface NodePhysicsRecord {
   path?: string;
   title?: string;
 
-  activation: number;        // recent perturbation / evidence of life
-  potential: number;         // likely future work implied by this node
-  entropy: number;           // ambiguity, contradiction, instability
-  coherence: number;         // local agreement with declared context
-  friction: number;          // blocked or unresolved pressure
-  momentum: number;          // consistent progress over time
+  activation: number; // recent perturbation / evidence of life
+  potential: number; // likely future work implied by this node
+  entropy: number; // ambiguity, contradiction, instability
+  coherence: number; // local agreement with declared context
+  friction: number; // blocked or unresolved pressure
+  momentum: number; // consistent progress over time
 
-  hotness: number;           // convenience scalar for UI/reporting
+  hotness: number; // convenience scalar for UI/reporting
   health: "cold" | "alive" | "hot" | "unstable" | "blocked" | "dormant";
 
-  source_hash: string;       // hash of source bytes / event range
+  source_hash: string; // hash of source bytes / event range
   projection_version: string;
   computed_at_hlc?: string;
 }
 ```
 
-The exact formulas may evolve. The record shape should stay stable enough for tools.
+The exact formulas may evolve. The record shape should stay stable enough for
+tools.
 
 ### 2.2 Organism Physics Record
 
@@ -132,7 +138,8 @@ First version should only recommend phase changes. It should not apply them.
 
 ## 3. Suggested File Outputs
 
-The first seed can write generated projections under a non-authoritative output path.
+The first seed can write generated projections under a non-authoritative output
+path.
 
 Suggested paths:
 
@@ -143,7 +150,8 @@ Suggested paths:
 .generated/physics/falsifiers.md
 ```
 
-If the repository already has a canonical generated-output convention, use that instead.
+If the repository already has a canonical generated-output convention, use that
+instead.
 
 The key invariant:
 
@@ -253,7 +261,8 @@ else if potential < 0.15 and activation < 0.10: dormant
 else cold
 ```
 
-These formulas are crude. That is acceptable. The first goal is to make pressure visible.
+These formulas are crude. That is acceptable. The first goal is to make pressure
+visible.
 
 ---
 
@@ -344,7 +353,8 @@ CYCLE_FAILED
 
 Important rule:
 
-> Recalculation events record that a projection was produced. They do not make the projection canonical truth.
+> Recalculation events record that a projection was produced. They do not make
+> the projection canonical truth.
 
 ---
 
@@ -415,23 +425,29 @@ An implementation of this seed is invalid if any of the following are true.
 
 ### Falsifier 1: Non-Reproducible Projection
 
-Running the same command twice on the same repository state produces different output bytes, ignoring explicitly allowed timestamp fields.
+Running the same command twice on the same repository state produces different
+output bytes, ignoring explicitly allowed timestamp fields.
 
 ### Falsifier 2: Source/Projection Boundary Failure
 
-A generated physics file is treated as source truth by another command without checking its source hash.
+A generated physics file is treated as source truth by another command without
+checking its source hash.
 
 ### Falsifier 3: No Explanation
 
-A node is marked `hot`, `blocked`, or `unstable`, but `./t physics explain <id>` cannot show the contributing signals.
+A node is marked `hot`, `blocked`, or `unstable`, but `./t physics explain <id>`
+cannot show the contributing signals.
 
 ### Falsifier 4: No Silence
 
-The physics cycle rewrites files even when the source manifest hash did not change.
+The physics cycle rewrites files even when the source manifest hash did not
+change.
 
 ### Falsifier 5: Authority Inflation
 
-A capability phase recommendation is applied automatically without a signed acceptance event or explicit policy allowing automatic transition for that risk class.
+A capability phase recommendation is applied automatically without a signed
+acceptance event or explicit policy allowing automatic transition for that risk
+class.
 
 ### Falsifier 6: LLM Dependency
 
@@ -504,7 +520,8 @@ src/x????_physics_report.ts          # markdown report
 src/x????_physics_cli.ts             # t command integration
 ```
 
-Coordinate names should follow the repository's existing organ convention. Do not invent final coordinates without checking current topology.
+Coordinate names should follow the repository's existing organ convention. Do
+not invent final coordinates without checking current topology.
 
 ---
 
@@ -555,7 +572,8 @@ This seed gives it teeth.
 
 It establishes a rule:
 
-> Before agents act, the substrate must be able to show where pressure is, why it exists, and what would falsify that interpretation.
+> Before agents act, the substrate must be able to show where pressure is, why
+> it exists, and what would falsify that interpretation.
 
 That is the bridge from metaphor to machinery.
 

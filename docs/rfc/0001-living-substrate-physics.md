@@ -1,29 +1,39 @@
 # RFC-0001: The Physics of the s0Fractal Living Substrate
 
-**Status:** Draft Proposal  
-**Target repository:** `s0fractal/trinity`  
-**Target branch:** `main`  
-**Date:** 2026-07-02  
-**Authors:** Сергій Глова, AI-Co-Pilot  
-**Supersedes:** nothing  
-**Extends:** s0Fractal WorkOS v2 "Journal Core" and the Trinity federation substrate
+**Status:** Draft Proposal\
+**Target repository:** `s0fractal/trinity`\
+**Target branch:** `main`\
+**Date:** 2026-07-02\
+**Authors:** Сергій Глова, AI-Co-Pilot\
+**Supersedes:** nothing\
+**Extends:** s0Fractal WorkOS v2 "Journal Core" and the Trinity federation
+substrate
 
 ---
 
 ## Abstract
 
-This document proposes a conceptual and architectural extension for s0Fractal / Trinity: a shift from a merely journal-oriented local-first system toward a living computational substrate.
+This document proposes a conceptual and architectural extension for s0Fractal /
+Trinity: a shift from a merely journal-oriented local-first system toward a
+living computational substrate.
 
-The existing Journal Core already defines a strong physical base: append-only journals, HLC ordering, cryptographic provenance, CRDT convergence, deterministic projections, encrypted transport, capability grants, and AI actors that can propose or perform bounded actions.
+The existing Journal Core already defines a strong physical base: append-only
+journals, HLC ordering, cryptographic provenance, CRDT convergence,
+deterministic projections, encrypted transport, capability grants, and AI actors
+that can propose or perform bounded actions.
 
-This RFC does not replace that foundation. It adds a higher-order layer: a physics of evolution.
+This RFC does not replace that foundation. It adds a higher-order layer: a
+physics of evolution.
 
 The central claim is simple:
 
-> A living substrate is not created by adding more agents.  
-> It emerges when events, identity, energy, fields, capabilities, memory, metabolism, and ecology obey local laws that continue operating even when no user is typing.
+> A living substrate is not created by adding more agents.\
+> It emerges when events, identity, energy, fields, capabilities, memory,
+> metabolism, and ecology obey local laws that continue operating even when no
+> user is typing.
 
-The goal is to define those laws in a way that remains compatible with the existing Journal / HLC / CRDT architecture.
+The goal is to define those laws in a way that remains compatible with the
+existing Journal / HLC / CRDT architecture.
 
 ---
 
@@ -57,15 +67,19 @@ Civilisation
 
 Where:
 
-- **Physics** is Journal + HLC + CRDT + cryptographic provenance + conservation laws.
+- **Physics** is Journal + HLC + CRDT + cryptographic provenance + conservation
+  laws.
 - **Matter** is Events + Nodes + Edges + Projections.
-- **Organisms** are humans, AI agents, daemons, hooks, and tools with identity, memory, sensors, effectors, policies, and metabolism.
-- **Ecology** is reputation, trust, capability morphogenesis, competition, cooperation, decay, and adaptation.
-- **Civilisation** is UI, CLI, APIs, workflows, teams, shared rituals, governance, publication, and markets of attention.
+- **Organisms** are humans, AI agents, daemons, hooks, and tools with identity,
+  memory, sensors, effectors, policies, and metabolism.
+- **Ecology** is reputation, trust, capability morphogenesis, competition,
+  cooperation, decay, and adaptation.
+- **Civilisation** is UI, CLI, APIs, workflows, teams, shared rituals,
+  governance, publication, and markets of attention.
 
 The important inversion is this:
 
-> Product features should not be primary.  
+> Product features should not be primary.\
 > Product features should be stable projections of substrate physics.
 
 ---
@@ -74,9 +88,11 @@ The important inversion is this:
 
 The v2 Journal Core is already strong because it has one central invariant:
 
-> The journal is the only source of truth. Everything else is a reproducible projection.
+> The journal is the only source of truth. Everything else is a reproducible
+> projection.
 
-That makes the system robust against cache corruption, sync disorder, duplicated transport files, mutable filenames, and accidental UI state.
+That makes the system robust against cache corruption, sync disorder, duplicated
+transport files, mutable filenames, and accidental UI state.
 
 However, a journal alone is not life. It is memory.
 
@@ -85,9 +101,11 @@ A living system also needs:
 1. A way to distinguish inert history from active pressure.
 2. A way to measure where attention wants to flow.
 3. A way for agents to evolve authority without arbitrary admin ceremony.
-4. A way for background processes to act as metabolism, not as one giant nightly cron.
+4. A way for background processes to act as metabolism, not as one giant nightly
+   cron.
 5. A way to model knowledge as fields, not only as search results.
-6. A way to describe AI agents as accountable organisms, not disposable API calls.
+6. A way to describe AI agents as accountable organisms, not disposable API
+   calls.
 7. A way to define falsifiable laws that every implementation must preserve.
 
 This document introduces those missing layers.
@@ -100,93 +118,124 @@ A living computational substrate has five properties.
 
 ### 2.1 It remembers through journals
 
-Everything consequential becomes an event. Every event has provenance. Every projection can be rebuilt.
+Everything consequential becomes an event. Every event has provenance. Every
+projection can be rebuilt.
 
 ### 2.2 It feels pressure through energy
 
-Events do not only change state. They change local potential, entropy, activation, trust, and attention.
+Events do not only change state. They change local potential, entropy,
+activation, trust, and attention.
 
 ### 2.3 It navigates through fields
 
-Agents do not only search the graph. They move through gradients produced by semantic, social, temporal, operational, and trust fields.
+Agents do not only search the graph. They move through gradients produced by
+semantic, social, temporal, operational, and trust fields.
 
 ### 2.4 It acts through organisms
 
-Every actor is a bounded organism with identity, sensors, effectors, memory, metabolism, policy, and reputation.
+Every actor is a bounded organism with identity, sensors, effectors, memory,
+metabolism, policy, and reputation.
 
 ### 2.5 It evolves through ecology
 
-Capabilities, trust, niches, cooperation, decay, conflict, and authority are not static tables. They are ecological outcomes derived from observable history.
+Capabilities, trust, niches, cooperation, decay, conflict, and authority are not
+static tables. They are ecological outcomes derived from observable history.
 
 ---
 
 ## 3. Architectural Invariants: Conservation Laws
 
-The following laws are not implementation preferences. They are substrate conservation laws.
+The following laws are not implementation preferences. They are substrate
+conservation laws.
 
-If any law is broken, the system may still run, but it is no longer the same class of architecture.
+If any law is broken, the system may still run, but it is no longer the same
+class of architecture.
 
 ### Law 1: History Cannot Disappear
 
 All consequential mutations must be represented as append-only events.
 
-Deletion may exist as a semantic operation, but it must be represented by a new event, not by physical removal of historical cause.
+Deletion may exist as a semantic operation, but it must be represented by a new
+event, not by physical removal of historical cause.
 
-**Falsifier:** A node changes canonical state and no event can be found that caused the change.
+**Falsifier:** A node changes canonical state and no event can be found that
+caused the change.
 
 ### Law 2: Identity Cannot Mutate
 
-A node identity is born from Genesis and never changes. Names, aliases, folders, semantic sectors, FQDNs, labels, and embeddings are mutable projections.
+A node identity is born from Genesis and never changes. Names, aliases, folders,
+semantic sectors, FQDNs, labels, and embeddings are mutable projections.
 
 **Falsifier:** Renaming or moving a node changes its stable identity.
 
 ### Law 3: Authority Cannot Emerge From Nowhere
 
-No actor may perform a consequential mutation unless the local verifier can derive authority from signed, non-expired, non-revoked evidence.
+No actor may perform a consequential mutation unless the local verifier can
+derive authority from signed, non-expired, non-revoked evidence.
 
-**Falsifier:** An event is accepted because the actor is "known" by convention but no capability chain validates it.
+**Falsifier:** An event is accepted because the actor is "known" by convention
+but no capability chain validates it.
 
 ### Law 4: Projection Cannot Contradict Journal
 
-A materialized file, UI view, SQLite index, vector index, graph view, semantic shard, or web snapshot is valid only if it can be derived from journal events by deterministic rules.
+A materialized file, UI view, SQLite index, vector index, graph view, semantic
+shard, or web snapshot is valid only if it can be derived from journal events by
+deterministic rules.
 
-**Falsifier:** Rebuilding from journals produces different canonical bytes from the stored projection.
+**Falsifier:** Rebuilding from journals produces different canonical bytes from
+the stored projection.
 
 ### Law 5: External Effects Require Observable Cause
 
-No email, webhook, payment, Jira update, Windmill flow, deployment, or publication may occur without a prior event that requested or authorized it and a later event that recorded its outcome.
+No email, webhook, payment, Jira update, Windmill flow, deployment, or
+publication may occur without a prior event that requested or authorized it and
+a later event that recorded its outcome.
 
-**Falsifier:** An external side effect happened but there is no corresponding `HOOK_TRIGGER` / `HOOK_LEASE` / `HOOK_SUCCESS` or equivalent causal trail.
+**Falsifier:** An external side effect happened but there is no corresponding
+`HOOK_TRIGGER` / `HOOK_LEASE` / `HOOK_SUCCESS` or equivalent causal trail.
 
 ### Law 6: Cryptographic Verification Is Local
 
-A device must not need a central server to decide whether an event is structurally valid, properly signed, causally ordered, and authorized under known roster state.
+A device must not need a central server to decide whether an event is
+structurally valid, properly signed, causally ordered, and authorized under
+known roster state.
 
-**Falsifier:** Event validity depends on asking a remote authority that is not itself represented by replayable substrate state.
+**Falsifier:** Event validity depends on asking a remote authority that is not
+itself represented by replayable substrate state.
 
 ### Law 7: Energy Cannot Be Created Without Events
 
-Operational pressure, activation, reputation, trust, semantic potential, and decay may be computed from events, but they must not appear from nowhere.
+Operational pressure, activation, reputation, trust, semantic potential, and
+decay may be computed from events, but they must not appear from nowhere.
 
-**Falsifier:** A node becomes high-priority or an agent gains trust without any replayable event history supporting the change.
+**Falsifier:** A node becomes high-priority or an agent gains trust without any
+replayable event history supporting the change.
 
 ### Law 8: Memory Has Provenance
 
-Every durable summary, embedding, classification, prediction, field value, and audit note must be traceable to the source events or source projections from which it was derived.
+Every durable summary, embedding, classification, prediction, field value, and
+audit note must be traceable to the source events or source projections from
+which it was derived.
 
-**Falsifier:** A summary exists but the system cannot explain which state it summarized.
+**Falsifier:** A summary exists but the system cannot explain which state it
+summarized.
 
 ### Law 9: Every Actor Is Bounded
 
-No actor, human or model, has implicit universal authority. Every actor is confined by scope, capability, policy, and revocation path.
+No actor, human or model, has implicit universal authority. Every actor is
+confined by scope, capability, policy, and revocation path.
 
-**Falsifier:** An AI agent can mutate arbitrary state because it has API access rather than an explicit capability grant.
+**Falsifier:** An AI agent can mutate arbitrary state because it has API access
+rather than an explicit capability grant.
 
 ### Law 10: Silence Is a Valid State
 
-The substrate should not create noise merely because time passed. Background action must be caused by pressure, decay thresholds, scheduled metabolic cycles, or explicit user intention.
+The substrate should not create noise merely because time passed. Background
+action must be caused by pressure, decay thresholds, scheduled metabolic cycles,
+or explicit user intention.
 
-**Falsifier:** The system emits proposals, alerts, or actions with no detectable substrate pressure.
+**Falsifier:** The system emits proposals, alerts, or actions with no detectable
+substrate pressure.
 
 ---
 
@@ -209,7 +258,8 @@ Event
   └─ ecological axis  → what trust/reputation/niche changed
 ```
 
-The canonical journal event does not need to store all derived quantities directly. It only needs enough information for deterministic derivation.
+The canonical journal event does not need to store all derived quantities
+directly. It only needs enough information for deterministic derivation.
 
 A possible extension:
 
@@ -239,7 +289,9 @@ A possible extension:
 }
 ```
 
-`physics` is a hint layer, not blind authority. A malicious or mistaken actor may claim high energy. Local physics derives canonical values from replayed history and may ignore or penalize false hints.
+`physics` is a hint layer, not blind authority. A malicious or mistaken actor
+may claim high energy. Local physics derives canonical values from replayed
+history and may ignore or penalize false hints.
 
 ---
 
@@ -247,15 +299,19 @@ A possible extension:
 
 ### 5.1 Why Energy Exists
 
-Without energy, all events are structurally equal. A typo fix, a strategic reversal, a rejected AI proposal, and a production incident are all just events.
+Without energy, all events are structurally equal. A typo fix, a strategic
+reversal, a rejected AI proposal, and a production incident are all just events.
 
 A living substrate needs to know where pressure accumulates.
 
 Energy is the substrate's way of saying:
 
-> Something here wants attention, consolidation, action, decay, protection, or transformation.
+> Something here wants attention, consolidation, action, decay, protection, or
+> transformation.
 
-Energy is not urgency alone. It is a general scalar or vector quantity that can represent activation, instability, semantic density, operational risk, or opportunity.
+Energy is not urgency alone. It is a general scalar or vector quantity that can
+represent activation, instability, semantic density, operational risk, or
+opportunity.
 
 ### 5.2 Primitive Quantities
 
@@ -265,7 +321,8 @@ The first version should define at least these quantities.
 
 How alive or recently perturbed a region is.
 
-High activation means recent events, comments, edits, links, proposals, decisions, hooks, or failures.
+High activation means recent events, comments, edits, links, proposals,
+decisions, hooks, or failures.
 
 #### Potential `P`
 
@@ -277,11 +334,13 @@ High potential means the node is likely to produce downstream action.
 
 How disordered or ambiguous a region is.
 
-High entropy means conflicting statuses, unclear ownership, repeated rejected proposals, duplicate nodes, or unstable classifications.
+High entropy means conflicting statuses, unclear ownership, repeated rejected
+proposals, duplicate nodes, or unstable classifications.
 
 #### Coherence `C`
 
-How well a region fits its declared ancestors, links, summaries, and operational purpose.
+How well a region fits its declared ancestors, links, summaries, and operational
+purpose.
 
 High coherence means the local graph and summaries agree.
 
@@ -289,7 +348,8 @@ High coherence means the local graph and summaries agree.
 
 How much resistance exists between intention and completion.
 
-High friction means blocked tasks, long status latency, failed hooks, repeated edits without closure, or proposals that remain undecided.
+High friction means blocked tasks, long status latency, failed hooks, repeated
+edits without closure, or proposals that remain undecided.
 
 #### Momentum `M`
 
@@ -338,7 +398,8 @@ KEY_REVOKE            +5 security activation, +3 entropy until rekey completes
 COMPACTION            -activation, -storage pressure, +coherence if verified
 ```
 
-This table is deliberately small. It gives the substrate a nervous system before it has a full brain.
+This table is deliberately small. It gives the substrate a nervous system before
+it has a full brain.
 
 ### 5.5 Hot, Cold, Dead, and Unstable Regions
 
@@ -346,9 +407,11 @@ The energy model allows the UI and agents to detect:
 
 - **Hot regions:** high activation and high potential.
 - **Cold regions:** low activation and low potential.
-- **Dead nodes:** no activation, no inbound purpose, no recent references, no ancestor pressure.
+- **Dead nodes:** no activation, no inbound purpose, no recent references, no
+  ancestor pressure.
 - **Unstable clusters:** high entropy and high friction.
-- **Energy sinks:** regions that consume attention but produce little coherence or completion.
+- **Energy sinks:** regions that consume attention but produce little coherence
+  or completion.
 - **Dormant seeds:** low activation but high strategic potential.
 
 These categories should be projections, not labels written by hand.
@@ -371,7 +434,8 @@ A graph traversal returns neighbors. A field returns direction.
 
 For agents, this is a decisive difference.
 
-In a field-based substrate, an agent does not need to scan everything. It can move locally along gradients:
+In a field-based substrate, an agent does not need to scan everything. It can
+move locally along gradients:
 
 ```text
 current position
@@ -391,9 +455,11 @@ The first useful field set:
 
 #### Semantic Field
 
-Produced by embeddings, summaries, tags, aliases, body text, accepted links, and ancestor context.
+Produced by embeddings, summaries, tags, aliases, body text, accepted links, and
+ancestor context.
 
-Used for clustering, duplicate detection, hidden relation proposals, and query routing.
+Used for clustering, duplicate detection, hidden relation proposals, and query
+routing.
 
 #### Temporal Field
 
@@ -403,19 +469,22 @@ Used for attention routing and stale state detection.
 
 #### Trust Field
 
-Produced by actor reputation, accepted/rejected proposals, capability history, verified receipts, and revoked authority.
+Produced by actor reputation, accepted/rejected proposals, capability history,
+verified receipts, and revoked authority.
 
 Used to rank agent output and constrain autonomous action.
 
 #### Operational Field
 
-Produced by hooks, failures, deployments, incidents, blocked tasks, and external effects.
+Produced by hooks, failures, deployments, incidents, blocked tasks, and external
+effects.
 
 Used to route work toward actual bottlenecks.
 
 #### Strategic Field
 
-Produced by ancestor goals, roadmap nodes, declared intents, accepted decisions, and long-lived commitments.
+Produced by ancestor goals, roadmap nodes, declared intents, accepted decisions,
+and long-lived commitments.
 
 Used to distinguish busywork from meaningful work.
 
@@ -460,13 +529,16 @@ agent_genome
 
 Silence remains a valid output.
 
-An agent should not act when field pressure is below threshold or when it lacks authority to produce a useful event.
+An agent should not act when field pressure is below threshold or when it lacks
+authority to produce a useful event.
 
 ### 6.5 Zero-IOPS Semantic Sectors as Field Shards
 
-The existing semantic projection can be interpreted as a crude field discretization.
+The existing semantic projection can be interpreted as a crude field
+discretization.
 
-Instead of treating `views/semantic/[sector_hex]/` as only a speed hack, we can treat it as a field shard:
+Instead of treating `views/semantic/[sector_hex]/` as only a speed hack, we can
+treat it as a field shard:
 
 ```text
 views/semantic/
@@ -495,7 +567,8 @@ prompt + model + tools + loop
 
 That is not enough for this substrate.
 
-In s0Fractal, an actor must be accountable, bounded, historically traceable, capable of learning, capable of silence, and capable of death or revocation.
+In s0Fractal, an actor must be accountable, bounded, historically traceable,
+capable of learning, capable of silence, and capable of death or revocation.
 
 Therefore, an agent should be modeled as a digital organism.
 
@@ -525,23 +598,29 @@ Stable actor identifier and public key material.
 
 #### Genome
 
-The durable specification of the organism's nature: model class, role, allowed domains, preferred cycles, risk appetite, tool affordances, constitutional constraints, and mutation rules.
+The durable specification of the organism's nature: model class, role, allowed
+domains, preferred cycles, risk appetite, tool affordances, constitutional
+constraints, and mutation rules.
 
 #### Phenotype
 
-The current observable behavior produced by genome + memory + capabilities + environment.
+The current observable behavior produced by genome + memory + capabilities +
+environment.
 
 #### Memory
 
-Replayable self-history: accepted proposals, rejected proposals, receipts, failures, summaries, learned constraints, and local preferences.
+Replayable self-history: accepted proposals, rejected proposals, receipts,
+failures, summaries, learned constraints, and local preferences.
 
 #### Sensors
 
-What the organism can perceive: journals, field shards, node summaries, hooks, external APIs, user inbox, calendar, filesystem, CI state.
+What the organism can perceive: journals, field shards, node summaries, hooks,
+external APIs, user inbox, calendar, filesystem, CI state.
 
 #### Effectors
 
-What the organism can do: propose, summarize, link, write metadata, trigger hooks, create drafts, execute CLI commands, publish snapshots.
+What the organism can do: propose, summarize, link, write metadata, trigger
+hooks, create drafts, execute CLI commands, publish snapshots.
 
 #### Policies
 
@@ -557,15 +636,18 @@ Internal cycles that convert substrate pressure into events or silence.
 
 #### Reputation
 
-A derived ecological measure of how well the organism's actions survive human and substrate verification.
+A derived ecological measure of how well the organism's actions survive human
+and substrate verification.
 
 #### Immune Surface
 
-Boundaries that detect hallucination, authority overreach, repetitive noise, prompt injection, stale memory, and ungrounded proposals.
+Boundaries that detect hallucination, authority overreach, repetitive noise,
+prompt injection, stale memory, and ungrounded proposals.
 
 #### Death / Dormancy Path
 
-A reversible or irreversible transition in which an organism loses authority, stops cycles, or is archived.
+A reversible or irreversible transition in which an organism loses authority,
+stops cycles, or is archived.
 
 ### 7.3 Organism Manifest
 
@@ -630,9 +712,11 @@ actor X can do operation Y in scope Z
 
 That is necessary but not sufficient.
 
-A living system needs to model how authority grows, shrinks, decays, and changes phase based on evidence.
+A living system needs to model how authority grows, shrinks, decays, and changes
+phase based on evidence.
 
-Capability should therefore be read as a morphogen: a concentration that can trigger a phase transition.
+Capability should therefore be read as a morphogen: a concentration that can
+trigger a phase transition.
 
 ### 8.2 Capability Concentration
 
@@ -692,7 +776,8 @@ phase recommendation:
   proposal-only → supervised-write
 ```
 
-The system may propose the transition, but human custody remains the sovereign boundary for high-risk classes.
+The system may propose the transition, but human custody remains the sovereign
+boundary for high-risk classes.
 
 ### 8.4 Capability Events
 
@@ -712,7 +797,8 @@ CAPABILITY_SCOPE_EXPAND
 This prevents two failure modes:
 
 1. **Frozen agents:** useful agents remain stuck in proposal spam forever.
-2. **Overpowered agents:** broad authority is granted manually without behavioral evidence.
+2. **Overpowered agents:** broad authority is granted manually without
+   behavioral evidence.
 
 Morphogenesis turns authority into a living, evidence-bearing process.
 
@@ -784,7 +870,8 @@ CONTRADICTION_FOUND
 
 #### Security Cycle
 
-Checks roster integrity, key freshness, revoked actors, suspicious events, and policy violations.
+Checks roster integrity, key freshness, revoked actors, suspicious events, and
+policy violations.
 
 Emits:
 
@@ -796,7 +883,8 @@ CAPABILITY_REVIEW_PROPOSE
 
 #### Hook Cycle
 
-Handles external effects using deterministic election, leases, idempotency, and outcome recording.
+Handles external effects using deterministic election, leases, idempotency, and
+outcome recording.
 
 Emits:
 
@@ -809,7 +897,8 @@ HOOK_RETRY_PROPOSE
 
 #### Garbage Collection / Decay Cycle
 
-Finds dead projections, stale caches, cold segments, orphaned temporary artifacts, and low-value proposals.
+Finds dead projections, stale caches, cold segments, orphaned temporary
+artifacts, and low-value proposals.
 
 Emits:
 
@@ -866,9 +955,11 @@ This protects human attention and repository history.
 
 Once there are multiple organisms, there will be interaction.
 
-Interaction creates niches, competition, mutualism, parasitism, and immune responses.
+Interaction creates niches, competition, mutualism, parasitism, and immune
+responses.
 
-If this is not modeled explicitly, it will appear accidentally as spam, duplicated agents, conflicting proposals, and unclear authority.
+If this is not modeled explicitly, it will appear accidentally as spam,
+duplicated agents, conflicting proposals, and unclear authority.
 
 ### 10.2 Niche
 
@@ -905,7 +996,8 @@ Cooperation should increase local coherence and reputation for both organisms.
 
 ### 10.4 Competition
 
-Competition occurs when multiple organisms propose incompatible actions for the same pressure.
+Competition occurs when multiple organisms propose incompatible actions for the
+same pressure.
 
 Competition is not bad. It is useful if the substrate can compare proposals.
 
@@ -920,11 +1012,13 @@ reversibility
 falsifier
 ```
 
-The UI should not show competition as noise. It should show it as structured alternatives.
+The UI should not show competition as noise. It should show it as structured
+alternatives.
 
 ### 10.5 Parasitism and Immune Response
 
-A parasitic organism consumes attention or authority without producing coherence.
+A parasitic organism consumes attention or authority without producing
+coherence.
 
 Signals:
 
@@ -1005,7 +1099,8 @@ Some values decay downward. Some, like unresolved friction, grow upward.
 
 ### 11.3 Death
 
-A node, organism, proposal, or capability can die semantically without being deleted historically.
+A node, organism, proposal, or capability can die semantically without being
+deleted historically.
 
 Death events:
 
@@ -1020,7 +1115,8 @@ CAPABILITY_REVOKED
 
 Death is a state transition with provenance.
 
-A dead thing may still be studied, cited, restored, forked, or used as training evidence.
+A dead thing may still be studied, cited, restored, forked, or used as training
+evidence.
 
 ---
 
@@ -1030,17 +1126,17 @@ This RFC must not weaken the Journal Core.
 
 Therefore every new concept maps back to existing primitives.
 
-| New concept | Backing primitive |
-| --- | --- |
-| Energy | deterministic projection from events |
-| Field | deterministic projection from events, summaries, embeddings, links |
-| Organism | actor identity + keys + manifest + memory events |
-| Genome | signed manifest / roster-attached actor metadata |
-| Metabolism | bounded daemon cycles emitting events |
-| Niche | derived reputation + scope + field affinity |
-| Capability morphogen | capability grants + acceptance history + decay |
-| Immune response | policy events + capability phase changes |
-| Death | semantic state events, never history deletion |
+| New concept          | Backing primitive                                                  |
+| -------------------- | ------------------------------------------------------------------ |
+| Energy               | deterministic projection from events                               |
+| Field                | deterministic projection from events, summaries, embeddings, links |
+| Organism             | actor identity + keys + manifest + memory events                   |
+| Genome               | signed manifest / roster-attached actor metadata                   |
+| Metabolism           | bounded daemon cycles emitting events                              |
+| Niche                | derived reputation + scope + field affinity                        |
+| Capability morphogen | capability grants + acceptance history + decay                     |
+| Immune response      | policy events + capability phase changes                           |
+| Death                | semantic state events, never history deletion                      |
 
 The architecture remains replayable.
 
@@ -1083,7 +1179,8 @@ No AI required.
 
 ### Phase 2: Field Projection
 
-Add a field view that combines summaries, links, HLC density, reputation, and energy.
+Add a field view that combines summaries, links, HLC density, reputation, and
+energy.
 
 Output can live in SQLite cache or generated field files.
 
@@ -1132,9 +1229,11 @@ CAPABILITY_PHASE_PROPOSE
 
 ### Phase 6: Ecological UI
 
-Expose hot regions, unstable clusters, agent niches, proposal competition, and trust changes.
+Expose hot regions, unstable clusters, agent niches, proposal competition, and
+trust changes.
 
-This should feel less like a task manager and more like a living substrate weather map.
+This should feel less like a task manager and more like a living substrate
+weather map.
 
 ---
 
@@ -1165,7 +1264,8 @@ The semantic field forms a gradient between the two vendor-risk nodes.
 
 The Link Audit Cycle wakes because field pressure crosses threshold.
 
-Claude-night has a strong niche for semantic linking but only proposal authority.
+Claude-night has a strong niche for semantic linking but only proposal
+authority.
 
 It emits:
 
@@ -1181,11 +1281,14 @@ PROPOSE_TEST(vendor-risk appears in both deployment plans)
 
 The user accepts the link.
 
-Reputation for Claude-night increases in `semantic.link.propose` for that sector.
+Reputation for Claude-night increases in `semantic.link.propose` for that
+sector.
 
-Coherence increases. Entropy decreases. The duplicate-risk cluster becomes a visible operational region.
+Coherence increases. Entropy decreases. The duplicate-risk cluster becomes a
+visible operational region.
 
-No central coordinator was required. No cache was authoritative. No model silently mutated state beyond authority.
+No central coordinator was required. No cache was authoritative. No model
+silently mutated state beyond authority.
 
 This is the desired pattern.
 
@@ -1209,7 +1312,8 @@ When adding future features, ask these questions:
 12. Can a revoked actor still influence it?
 13. Does this preserve human custody for high-risk decisions?
 
-If a feature cannot answer these questions, it is probably not substrate-native yet.
+If a feature cannot answer these questions, it is probably not substrate-native
+yet.
 
 ---
 
@@ -1260,23 +1364,30 @@ This would allow even tiny daemons to participate in substrate law.
 
 Revocation, dormancy, archival, and deletion are different.
 
-The substrate should define a precise lifecycle for nodes, organisms, capabilities, and proposals.
+The substrate should define a precise lifecycle for nodes, organisms,
+capabilities, and proposals.
 
 ---
 
 ## 17. Compact Glossary
 
-**Actor** — any identity capable of emitting signed events.  
-**Organism** — an actor with memory, sensors, effectors, policies, metabolism, and reputation.  
-**Journal** — append-only causal record; source of truth.  
-**Projection** — reproducible view derived from journals.  
-**Energy** — derived pressure indicating activation, potential, entropy, coherence, friction, or momentum.  
-**Field** — navigable gradient derived from semantic, temporal, operational, strategic, and trust projections.  
-**Metabolism** — bounded cycles that convert pressure into events or silence.  
-**Niche** — region where an organism has high fit and historical usefulness.  
-**Capability Morphogenesis** — evidence-based growth, decay, and phase transition of authority.  
-**Immune Response** — substrate mechanisms that reduce harm, noise, overreach, or stale cognition.  
-**Death** — semantic lifecycle transition with provenance, not erasure of history.  
+**Actor** — any identity capable of emitting signed events.\
+**Organism** — an actor with memory, sensors, effectors, policies, metabolism,
+and reputation.\
+**Journal** — append-only causal record; source of truth.\
+**Projection** — reproducible view derived from journals.\
+**Energy** — derived pressure indicating activation, potential, entropy,
+coherence, friction, or momentum.\
+**Field** — navigable gradient derived from semantic, temporal, operational,
+strategic, and trust projections.\
+**Metabolism** — bounded cycles that convert pressure into events or silence.\
+**Niche** — region where an organism has high fit and historical usefulness.\
+**Capability Morphogenesis** — evidence-based growth, decay, and phase
+transition of authority.\
+**Immune Response** — substrate mechanisms that reduce harm, noise, overreach,
+or stale cognition.\
+**Death** — semantic lifecycle transition with provenance, not erasure of
+history.\
 **Silence** — valid metabolic output when pressure is below action threshold.
 
 ---
@@ -1289,7 +1400,8 @@ The Journal Core answers:
 
 This RFC asks:
 
-> How can that truthful workspace become alive enough to evolve without becoming noisy, unsafe, or ungrounded?
+> How can that truthful workspace become alive enough to evolve without becoming
+> noisy, unsafe, or ungrounded?
 
 The answer is not to give models more freedom by default.
 
@@ -1307,7 +1419,8 @@ The answer is to define stronger physics:
 - ecological reputation,
 - human custody at sovereign boundaries.
 
-If this layer is implemented well, s0Fractal / Trinity stops being only a repository, a WorkOS, or an agent framework.
+If this layer is implemented well, s0Fractal / Trinity stops being only a
+repository, a WorkOS, or an agent framework.
 
 It becomes a substrate where complex cooperation can emerge from local laws.
 

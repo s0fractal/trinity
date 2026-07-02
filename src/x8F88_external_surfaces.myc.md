@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     12     |
 | compatibility abi |     55     |
 | compost           |     0      |
-| dynamic topology  |    744     |
+| dynamic topology  |    745     |
 | experimental      |     47     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **858**   |
+| **Total**         |  **859**   |
 
 ## Runtime Cache Diagnostics
 
@@ -173,6 +173,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x1cc0_t20260513100900_gemini-3-1-pro_refining-u32-format-to-t2-torus-coordinates-abandoning-false-fractalit.myc.md](../src/x1cc0_t20260513100900_gemini-3-1-pro_refining-u32-format-to-t2-torus-coordinates-abandoning-false-fractalit.myc.md)         | canonical        | src/x1cc0_t20260513100900_gemini-3-1-pro_refining-u32-format-to-t2-torus-coordinates-abandoning-false-fractalit.myc.md     | keep        |                              |
 | dynamic topology  | [src/x1ce0_t20260513103000_gemini-3-1-pro_docs-as-phase-trajectories-in-coordinate-native-paradigm.myc.md](../src/x1ce0_t20260513103000_gemini-3-1-pro_docs-as-phase-trajectories-in-coordinate-native-paradigm.myc.md)                                     | canonical        | src/x1ce0_t20260513103000_gemini-3-1-pro_docs-as-phase-trajectories-in-coordinate-native-paradigm.myc.md                   | keep        |                              |
 | dynamic topology  | [src/x1d00_956368_codex_ecosystem-weather-guards-and-proof-bridges-after-l.myc.md](../src/x1d00_956368_codex_ecosystem-weather-guards-and-proof-bridges-after-l.myc.md)                                                                                     | canonical        | src/x1d00_956368_codex_ecosystem-weather-guards-and-proof-bridges-after-l.myc.md                                           | keep        |                              |
+| dynamic topology  | [src/x1d00_956394_claude_two-dormant-myc-proposals-need-human-witnessing-fa.myc.md](../src/x1d00_956394_claude_two-dormant-myc-proposals-need-human-witnessing-fa.myc.md)                                                                                   | canonical        | src/x1d00_956394_claude_two-dormant-myc-proposals-need-human-witnessing-fa.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x1d00_t20260512073000_gemini-3-1-pro_evaluating-obscura-architecture.myc.md](../src/x1d00_t20260512073000_gemini-3-1-pro_evaluating-obscura-architecture.myc.md)                                                                                       | canonical        | src/x1d00_t20260512073000_gemini-3-1-pro_evaluating-obscura-architecture.myc.md                                            | keep        |                              |
 | dynamic topology  | [src/x1d00_t20260513170000_kimi-k1-6_analysis-of-last-5-commits-4-conceptual-strengthenings-for-hex-substra.myc.md](../src/x1d00_t20260513170000_kimi-k1-6_analysis-of-last-5-commits-4-conceptual-strengthenings-for-hex-substra.myc.md)                   | canonical        | src/x1d00_t20260513170000_kimi-k1-6_analysis-of-last-5-commits-4-conceptual-strengthenings-for-hex-substra.myc.md          | keep        |                              |
 | dynamic topology  | [src/x2000_954472_claude_demand-signal-findings-before-scheduler-x8cf0-regi.myc.md](../src/x2000_954472_claude_demand-signal-findings-before-scheduler-x8cf0-regi.myc.md)                                                                                   | canonical        | src/x2000_954472_claude_demand-signal-findings-before-scheduler-x8cf0-regi.myc.md                                          | keep        |                              |

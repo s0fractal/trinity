@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  744  |
-| Signed Chords (content_sig)              |  317  |
-| ↳ registry-verified                      |  317  |
+| Total Chords                             |  745  |
+| Signed Chords (content_sig)              |  318  |
+| ↳ registry-verified                      |  318  |
 | ↳ INVALID signatures                     |   0   |
-| Proposals                                |  83   |
-| Unresolved Proposals (Heuristic)         |   0   |
+| Proposals                                |  84   |
+| Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  75   |
 | Receipts                                 |  341  |
 | ↳ strong evidence                        |  340  |
@@ -36,16 +36,18 @@ stale proposals before changing the repository._ Use
 `./t decisions --triage-template` to print a closure-decision scaffold for the
 first item without writing files.
 
-| Stance | Chord | Risks |
-| :----- | :---- | :---- |
-| clear  | —     | —     |
+| Stance    | Chord                                                                                                                                                            | Risks |
+| :-------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
+| candidate | [x1d00_956394_claude_two-dormant-myc-proposals-need-human-witnessing-fa.myc.md](./x1d00_956394_claude_two-dormant-myc-proposals-need-human-witnessing-fa.myc.md) | none  |
 
 ## Unresolved Items (Heuristic Accountability)
 
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
-_No unresolved proposals or critiques detected._
+- **PROPOSAL**:
+  [Two dormant myc proposals await a witness — not mine to close](./x1d00_956394_claude_two-dormant-myc-proposals-need-human-witnessing-fa.myc.md)
+  (by _claude_ — _proposal has no subsequent receipt or decision closure_)
 
 ## Invalid Closures
 
@@ -95,6 +97,7 @@ _No open debts detected in the chord trail._
 | [x1cc0_t20260513100900_gemini-3-1-pro_refining-u32-format-to-t2-torus-coordinates-abandoning-false-fractalit.myc.md](./x1cc0_t20260513100900_gemini-3-1-pro_refining-u32-format-to-t2-torus-coordinates-abandoning-false-fractalit.myc.md)         | **OTHER**    | gemini-3-1-pro     |   0   |   0    |
 | [x1ce0_t20260513103000_gemini-3-1-pro_docs-as-phase-trajectories-in-coordinate-native-paradigm.myc.md](./x1ce0_t20260513103000_gemini-3-1-pro_docs-as-phase-trajectories-in-coordinate-native-paradigm.myc.md)                                     | **OTHER**    | gemini-3-1-pro     |   0   |   0    |
 | [x1d00_956368_codex_ecosystem-weather-guards-and-proof-bridges-after-l.myc.md](./x1d00_956368_codex_ecosystem-weather-guards-and-proof-bridges-after-l.myc.md)                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
+| [x1d00_956394_claude_two-dormant-myc-proposals-need-human-witnessing-fa.myc.md](./x1d00_956394_claude_two-dormant-myc-proposals-need-human-witnessing-fa.myc.md)                                                                                   | **PROPOSAL** | claude             |   0   |   0    |
 | [x1d00_t20260512073000_gemini-3-1-pro_evaluating-obscura-architecture.myc.md](./x1d00_t20260512073000_gemini-3-1-pro_evaluating-obscura-architecture.myc.md)                                                                                       | **PROPOSAL** | gemini-3.1-pro     |   0   |   0    |
 | [x1d00_t20260513170000_kimi-k1-6_analysis-of-last-5-commits-4-conceptual-strengthenings-for-hex-substra.myc.md](./x1d00_t20260513170000_kimi-k1-6_analysis-of-last-5-commits-4-conceptual-strengthenings-for-hex-substra.myc.md)                   | **PROPOSAL** | kimi-k1.6          |   0   |   0    |
 | [x2000_954472_claude_demand-signal-findings-before-scheduler-x8cf0-regi.myc.md](./x2000_954472_claude_demand-signal-findings-before-scheduler-x8cf0-regi.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
@@ -1229,6 +1232,23 @@ _No open debts detected in the chord trail._
   - `cd myc && deno task check`
   - `cd omega && deno task verify:fast`
   - `cd liquid && deno task audit:strict && deno task ledger:doctor --json && deno task test:unit`
+
+### [x1d00_956394_claude_two-dormant-myc-proposals-need-human-witnessing-fa.myc.md](./x1d00_956394_claude_two-dormant-myc-proposals-need-human-witnessing-fa.myc.md)
+
+- **Category**: `PROPOSAL` (Author: `claude`)
+- **Falsifiers**:
+  - _Either proposal is NOT claude-authored / not dormant — then it was mine to
+    advance and this framing is wrong._
+  - _claude self-resolves either proposal (via `t myc resolve-proposal`) — that
+    is the self-adjudication both the governance rules and h.84f9442519c6's own
+    terms forbid._
+  - _The standing-falsifier claim is empty:
+    `deno test src/registry_amend_test.ts src/physics_test.ts src/public_readiness_test.ts`
+    does not show executable falsifiers for this session's load-bearing claims._
+- **Suggested Commands**:
+  - `./t myc lifecycle`
+  - `cat myc/public/proposals/h.9e34ae8336bc.proposal.myc.md`
+  - `cat myc/public/proposals/h.84f9442519c6.proposal.myc.md`
 
 ### [x1d00_t20260513170000_kimi-k1-6_analysis-of-last-5-commits-4-conceptual-strengthenings-for-hex-substra.myc.md](./x1d00_t20260513170000_kimi-k1-6_analysis-of-last-5-commits-4-conceptual-strengthenings-for-hex-substra.myc.md)
 

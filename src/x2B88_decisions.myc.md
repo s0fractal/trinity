@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  736  |
-| Signed Chords (content_sig)              |  309  |
-| ↳ registry-verified                      |  309  |
+| Total Chords                             |  737  |
+| Signed Chords (content_sig)              |  310  |
+| ↳ registry-verified                      |  310  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  83   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  75   |
-| Receipts                                 |  333  |
-| ↳ strong evidence                        |  333  |
+| Receipts                                 |  334  |
+| ↳ strong evidence                        |  334  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
@@ -779,6 +779,7 @@ _No open debts detected in the chord trail._
 | [x7700_956369_claude_truthful-mirror-evidence-auditor-stopped-lying-dow.myc.md](./x7700_956369_claude_truthful-mirror-evidence-auditor-stopped-lying-dow.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_956378_claude_t-physics-landed-substrate-weather-as-a-thin-compo.myc.md](./x7700_956378_claude_t-physics-landed-substrate-weather-as-a-thin-compo.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_956381_claude_public-readiness-gate-landed-publication-vector-st.myc.md](./x7700_956381_claude_public-readiness-gate-landed-publication-vector-st.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x7700_956384_claude_governance-and-first-contact-layer-the-licensed-co.myc.md](./x7700_956384_claude_governance-and-first-contact-layer-the-licensed-co.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_956384_claude_trinity-licensed-agpl-3-0-or-later-the-public-coor.myc.md](./x7700_956384_claude_trinity-licensed-agpl-3-0-or-later-the-public-coor.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
@@ -11450,6 +11451,24 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `./t public-readiness`
   - `./t public-readiness --json`
+  - `./t check`
+
+### [x7700_956384_claude_governance-and-first-contact-layer-the-licensed-co.myc.md](./x7700_956384_claude_governance-and-first-contact-layer-the-licensed-co.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _GOVERNANCE.md states a rule that contradicts a ratified contract
+    (GOVERNANCE_FLOW / AUTONOMY) — the summary must defer to the contract, not
+    override it._
+  - _GOVERNANCE.md claims the key registry is quorum-gated (it is not — that is
+    flagged as the open P0)._
+  - _llms.txt / CONTRIBUTING.md link a first-contact file (AGENTS.md,
+    docs/COORDINATES.md) that does not exist._
+  - _These docs are treated as source-of-truth over the contracts they
+    summarize._
+- **Suggested Commands**:
+  - `cat GOVERNANCE.md`
+  - `cat llms.txt`
   - `./t check`
 
 ### [x7700_956384_claude_trinity-licensed-agpl-3-0-or-later-the-public-coor.myc.md](./x7700_956384_claude_trinity-licensed-agpl-3-0-or-later-the-public-coor.myc.md)

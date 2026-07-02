@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  739  |
-| Signed Chords (content_sig)              |  312  |
-| ↳ registry-verified                      |  312  |
+| Total Chords                             |  740  |
+| Signed Chords (content_sig)              |  313  |
+| ↳ registry-verified                      |  313  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  83   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  75   |
-| Receipts                                 |  336  |
-| ↳ strong evidence                        |  336  |
+| Receipts                                 |  337  |
+| ↳ strong evidence                        |  337  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
@@ -783,6 +783,7 @@ _No open debts detected in the chord trail._
 | [x7700_956384_claude_trinity-licensed-agpl-3-0-or-later-the-public-coor.myc.md](./x7700_956384_claude_trinity-licensed-agpl-3-0-or-later-the-public-coor.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_956385_claude_key-registry-quorum-gated-the-trust-root-is-sound.myc.md](./x7700_956385_claude_key-registry-quorum-gated-the-trust-root-is-sound.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_956387_claude_registry-out-of-band-bypass-ci-enforced-closed-the.myc.md](./x7700_956387_claude_registry-out-of-band-bypass-ci-enforced-closed-the.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x7700_956389_claude_liquid-staged-dialog-removed-licensed-agpl-federat.myc.md](./x7700_956389_claude_liquid-staged-dialog-removed-licensed-agpl-federat.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -11522,6 +11523,22 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `./t registry-amend integrity`
   - `deno test -A --no-check src/registry_amend_test.ts`
+
+### [x7700_956389_claude_liquid-staged-dialog-removed-licensed-agpl-federat.myc.md](./x7700_956389_claude_liquid-staged-dialog-removed-licensed-agpl-federat.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _`t public-readiness liquid` still reports the license check as block, or
+    reports a real secret hit._
+  - _liquid's unit suite is not green after dialog/ removal (a runtime
+    reader/writer broke)._
+  - _dialog/ removal is treated as a history scrub — it is not; git history
+    still contains it (a separate architect-reserved decision)._
+  - _This receipt claims liquid is public or ready to flip — it is not; liquid
+    stays PRIVATE, this is staging prep._
+- **Suggested Commands**:
+  - `./t public-readiness`
+  - `cd liquid && deno task test:unit`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

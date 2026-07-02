@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  731  |
-| Signed Chords (content_sig)              |  304  |
-| ↳ registry-verified                      |  304  |
+| Total Chords                             |  732  |
+| Signed Chords (content_sig)              |  305  |
+| ↳ registry-verified                      |  305  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  82   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  74   |
-| Receipts                                 |  330  |
-| ↳ strong evidence                        |  330  |
+| Receipts                                 |  331  |
+| ↳ strong evidence                        |  331  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
@@ -775,6 +775,7 @@ _No open debts detected in the chord trail._
 | [x7700_955819_codex_codex-aye-anchor-stewardship-pending-third-seat.myc.md](./x7700_955819_codex_codex-aye-anchor-stewardship-pending-third-seat.myc.md)                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_955826_antigravity_antigravity-aye-mainnet-anchor-approvals-pending-t.myc.md](./x7700_955826_antigravity_antigravity-aye-mainnet-anchor-approvals-pending-t.myc.md)                                                                         | **RECEIPT**  | antigravity        |   0   |   0    |
 | [x7700_956369_claude_truthful-mirror-evidence-auditor-stopped-lying-dow.myc.md](./x7700_956369_claude_truthful-mirror-evidence-auditor-stopped-lying-dow.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x7700_956378_claude_t-physics-landed-substrate-weather-as-a-thin-compo.myc.md](./x7700_956378_claude_t-physics-landed-substrate-weather-as-a-thin-compo.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -11367,6 +11368,26 @@ _No open debts detected in the chord trail._
   - `./t evidence`
   - `./t check`
   - `deno test -A --no-check src/contracts_test.ts`
+
+### [x7700_956378_claude_t-physics-landed-substrate-weather-as-a-thin-compo.myc.md](./x7700_956378_claude_t-physics-landed-substrate-weather-as-a-thin-compo.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _`t physics --stable` produces different bytes on the same repo state
+    (ignoring generated_at) — non-reproducible._
+  - _A region reads blocked/unstable/hot but `t physics explain <region>` shows
+    no contributing signal._
+  - _A future revision recomputes liquid/omega energy/metabolism independently
+    instead of reading their organs — the fork this receipt forbids._
+  - _The lens applies or recommends-as-applied any capability/phase change — it
+    must only report._
+  - _`src/x8300_physics.ts` imports a peer organ's internals to recompute a
+    signal instead of composing its CLI/JSON output._
+- **Suggested Commands**:
+  - `./t physics`
+  - `./t physics explain proof`
+  - `./t physics falsifiers`
+  - `deno test -A --no-check src/physics_test.ts`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

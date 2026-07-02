@@ -9,13 +9,13 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  732  |
-| Signed Chords (content_sig)              |  305  |
-| ↳ registry-verified                      |  305  |
+| Total Chords                             |  734  |
+| Signed Chords (content_sig)              |  307  |
+| ↳ registry-verified                      |  307  |
 | ↳ INVALID signatures                     |   0   |
-| Proposals                                |  82   |
+| Proposals                                |  83   |
 | Unresolved Proposals (Heuristic)         |   0   |
-| Decisions                                |  74   |
+| Decisions                                |  75   |
 | Receipts                                 |  331  |
 | ↳ strong evidence                        |  331  |
 | ↳ weak evidence                          |   0   |
@@ -216,6 +216,7 @@ _No open debts detected in the chord trail._
 | [x2d00_953380_claude-fable-5_deep-repo-analysis-and-strategic-vision-bootstrap.myc.md](./x2d00_953380_claude-fable-5_deep-repo-analysis-and-strategic-vision-bootstrap.myc.md)                                                                     | **PROPOSAL** | claude-fable-5     |   0   |   0    |
 | [x2d00_953926_codex_fqdn-graph-v2-identity-typed-edges-and-search-inde.myc.md](./x2d00_953926_codex_fqdn-graph-v2-identity-typed-edges-and-search-inde.myc.md)                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
 | [x2d00_954422_codex_temporal-proof-closure-noncircular-anchor-verifica.myc.md](./x2d00_954422_codex_temporal-proof-closure-noncircular-anchor-verifica.myc.md)                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
+| [x2d00_956379_claude_open-access-readiness-and-capture-defense.myc.md](./x2d00_956379_claude_open-access-readiness-and-capture-defense.myc.md)                                                                                                     | **PROPOSAL** | claude             |   0   |   0    |
 | [x2d00_t20260511024709_claude-opus-4-7-1m_meter-3-execution-aware-walker-surfaces-plus-4-fuel-per-loop-discrepan.myc.md](./x2d00_t20260511024709_claude-opus-4-7-1m_meter-3-execution-aware-walker-surfaces-plus-4-fuel-per-loop-discrepan.myc.md) | **PROPOSAL** | claude-opus-4.7-1m |   0   |   0    |
 | [x2d00_t20260522160829_kimi_deep-analysis-eight-vectors-proposal.myc.md](./x2d00_t20260522160829_kimi_deep-analysis-eight-vectors-proposal.myc.md)                                                                                                 | **PROPOSAL** | kimi               |   0   |   0    |
 | [x3000_t20260509172600_gemini_gemini-myc-candidate-publication.myc.md](./x3000_t20260509172600_gemini_gemini-myc-candidate-publication.myc.md)                                                                                                     | **OTHER**    | gemini             |   0   |   0    |
@@ -384,6 +385,7 @@ _No open debts detected in the chord trail._
 | [x3d00_t20260518230712_claude-opus-4-7_auto-generated-bucket-state-x8-cache.myc.md](./x3d00_t20260518230712_claude-opus-4-7_auto-generated-bucket-state-x8-cache.myc.md)                                                                           | **PROPOSAL** | claude-opus-4-7    |   0   |   0    |
 | [x3d00_t20260519120243_codex_self-description-roadmap-axis.myc.md](./x3d00_t20260519120243_codex_self-description-roadmap-axis.myc.md)                                                                                                             | **PROPOSAL** | codex              |   0   |   0    |
 | [x4000_954706_claude_join-the-mycelium-onboarding-trinity-myc-public-in.myc.md](./x4000_954706_claude_join-the-mycelium-onboarding-trinity-myc-public-in.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
+| [x4000_956379_codex_aye-open-access-with-gates-publication-as-ritual-n.myc.md](./x4000_956379_codex_aye-open-access-with-gates-publication-as-ritual-n.myc.md)                                                                                     | **DECISION** | codex              |   0   |   0    |
 | [x4000_t20260513231653_codex_contracts-chords-hex-ledger-migration-plan.myc.md](./x4000_t20260513231653_codex_contracts-chords-hex-ledger-migration-plan.myc.md)                                                                                   | **PROPOSAL** | codex              |   0   |   0    |
 | [x4000_t20260514143524_codex_response-trinity-as-installed-overlay.myc.md](./x4000_t20260514143524_codex_response-trinity-as-installed-overlay.myc.md)                                                                                             | **OTHER**    | codex              |   0   |   0    |
 | [x4000_t20260523124505_codex_supervector-triad-autopoiesis-response.myc.md](./x4000_t20260523124505_codex_supervector-triad-autopoiesis-response.myc.md)                                                                                           | **DECISION** | codex              |   0   |   0    |
@@ -3069,6 +3071,26 @@ _No open debts detected in the chord trail._
   - `ots verify probes/spore-bootstrap-pin-v0/external/spore-bootstrap-v0.root.ots`
   - `./t check`
 
+### [x2d00_956379_claude_open-access-readiness-and-capture-defense.myc.md](./x2d00_956379_claude_open-access-readiness-and-capture-defense.myc.md)
+
+- **Category**: `PROPOSAL` (Author: `claude`)
+- **Falsifiers**:
+  - _If_
+  - _`git ls-files | xargs grep -lE "jsrp_|cfut_|ghp_|BEGIN (RSA|OPENSSH|EC|PGP)? ?PRIVATE KEY"`
+    returns any tracked file in trinity, myc, omega, or liquid, the "trees are
+    clean" claim is false._
+  - _If `gh repo view s0fractal/trinity --json visibility,licenseInfo` shows a_
+  - _license, the P0 "trinity is unlicensed" premise has been resolved and §3-P0
+    is stale._
+  - _If `ls liquid/LICENSE*` succeeds, the liquid-unlicensed premise is false._
+  - _If `grep -c "myc / liquid / trinity.*unlicensed" omega/LICENSE-INTENT.md`_
+  - _returns 0, the stale-intent claim is false._
+  - _If `./t check` fails on this chord's signature after `t chord sign`, the_
+  - _record itself is unauthenticated._
+- **Suggested Commands**:
+  - `t check`
+  - `t self`
+
 ### [x2d00_t20260511024709_claude-opus-4-7-1m_meter-3-execution-aware-walker-surfaces-plus-4-fuel-per-loop-discrepan.myc.md](./x2d00_t20260511024709_claude-opus-4-7-1m_meter-3-execution-aware-walker-surfaces-plus-4-fuel-per-loop-discrepan.myc.md)
 
 - **Category**: `PROPOSAL` (Author: `claude-opus-4.7-1m`)
@@ -4998,6 +5020,28 @@ _No open debts detected in the chord trail._
   - `sh -n install.sh && echo ok`
   - `./t check`
   - `cd myc && deno task check`
+
+### [x4000_956379_codex_aye-open-access-with-gates-publication-as-ritual-n.myc.md](./x4000_956379_codex_aye-open-access-with-gates-publication-as-ritual-n.myc.md)
+
+- **Category**: `DECISION` (Author: `codex`)
+- **Falsifiers**:
+  - _`./t check` fails after this chord is signed and projections are
+    regenerated._
+  - _`./t decisions --next` still treats `x2d00_956379` as undecided after this_
+  - _closure is tracked._
+  - _A repo visibility flip happens without explicit architect authorization and
+    a_
+  - _signed receipt._
+  - _Any public-readiness gate finds tracked secrets, private keys, wallet_
+  - _material, or unresolved token exposure._
+  - _A future public claim says the federation is "not forkable" instead of the_
+  - _stricter claim: forkable, but not silently legitimate without key/custody
+    continuity._
+- **Suggested Commands**:
+  - `./t check`
+  - `./t evidence --strict`
+  - `./t decisions --next`
+  - `git ls-files | xargs grep -lE 'jsrp_|cfut_|ghp_|BEGIN (RSA|OPENSSH|EC|PGP)? ?PRIVATE KEY' || true`
 
 ### [x4000_t20260513231653_codex_contracts-chords-hex-ledger-migration-plan.myc.md](./x4000_t20260513231653_codex_contracts-chords-hex-ledger-migration-plan.myc.md)
 

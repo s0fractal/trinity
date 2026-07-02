@@ -45,6 +45,15 @@ async function vote(
   };
 }
 
+// v1 is the HUMAN principal, v2..v5 are MODELS (mirrors x2F39 shape).
+const CLASSES: Record<string, string> = {
+  v1: "human",
+  v2: "model",
+  v3: "model",
+  v4: "model",
+  v5: "model",
+};
+
 async function revokeV5(reg: Registry): Promise<Amendment> {
   return {
     op: "revoke",
@@ -63,7 +72,7 @@ Deno.test("registry-amend — 3 valid AYE from distinct voices authorizes", asyn
     await vote("v2", "AYE", d, priv.v2),
     await vote("v3", "AYE", d, priv.v3),
   ];
-  const q = await verifyAmendmentQuorum(a, votes, reg);
+  const q = await verifyAmendmentQuorum(a, votes, reg, CLASSES);
   assert(q.authorized, q.reasons.join("; "));
   assertEquals(q.ayes, ["v1", "v2", "v3"]);
   // and it applies: v5 is gone
@@ -80,7 +89,7 @@ Deno.test("registry-amend — 2 AYE is below quorum, REFUSED", async () => {
     await vote("v1", "AYE", d, priv.v1),
     await vote("v2", "AYE", d, priv.v2),
   ];
-  const q = await verifyAmendmentQuorum(a, votes, reg);
+  const q = await verifyAmendmentQuorum(a, votes, reg, CLASSES);
   assert(!q.authorized);
   assert(q.reasons.some((r) => r.includes("insufficient quorum")));
 });
@@ -95,7 +104,7 @@ Deno.test("registry-amend — a single NAY vetoes even with 3 AYE", async () => 
     await vote("v3", "AYE", d, priv.v3),
     await vote("v4", "NAY", d, priv.v4),
   ];
-  const q = await verifyAmendmentQuorum(a, votes, reg);
+  const q = await verifyAmendmentQuorum(a, votes, reg, CLASSES);
   assert(!q.authorized);
   assertEquals(q.nays, ["v4"]);
 });
@@ -110,7 +119,9 @@ Deno.test("registry-amend — the SUBJECT cannot self-authorize or self-veto its
     await vote("v2", "AYE", d, priv.v2),
     await vote("v5", "AYE", d, priv.v5), // excluded — only 2 real AYE
   ];
-  assert(!(await verifyAmendmentQuorum(a, withSelfAye, reg)).authorized);
+  assert(
+    !(await verifyAmendmentQuorum(a, withSelfAye, reg, CLASSES)).authorized,
+  );
 
   const withSelfNay = [
     await vote("v1", "AYE", d, priv.v1),
@@ -118,7 +129,7 @@ Deno.test("registry-amend — the SUBJECT cannot self-authorize or self-veto its
     await vote("v3", "AYE", d, priv.v3),
     await vote("v5", "NAY", d, priv.v5), // a compromised key cannot block its revoke
   ];
-  const q = await verifyAmendmentQuorum(a, withSelfNay, reg);
+  const q = await verifyAmendmentQuorum(a, withSelfNay, reg, CLASSES);
   assert(q.authorized, q.reasons.join("; "));
   assertEquals(q.nays, []); // v5's NAY was excluded, not a veto
 });
@@ -146,7 +157,7 @@ Deno.test("registry-amend — forged and unregistered votes are DROPPED, not cou
       sig: await signHash(d, stranger.privateKeyB64),
     },
   ];
-  const q = await verifyAmendmentQuorum(a, votes, reg);
+  const q = await verifyAmendmentQuorum(a, votes, reg, CLASSES);
   assert(!q.authorized); // only v1,v2 real → 2/3
   assertEquals(q.ayes, ["v1", "v2"]);
   assert(q.dropped.some((x) => x.includes("v3")));
@@ -165,7 +176,7 @@ Deno.test("registry-amend — replay onto a different registry state is rejected
   // mutate the registry after the amendment pinned its hash
   const mutated = structuredClone(reg);
   delete mutated.keys.v4;
-  const q = await verifyAmendmentQuorum(a, votes, mutated);
+  const q = await verifyAmendmentQuorum(a, votes, mutated, CLASSES);
   assert(!q.authorized);
   assert(q.reasons.some((r) => r.includes("base_registry_hash mismatch")));
 });
@@ -180,7 +191,7 @@ Deno.test("registry-amend — a vote cast over a DIFFERENT amendment digest is d
     await vote("v2", "AYE", d, priv.v2),
     await vote("v3", "AYE", otherDigest, priv.v3), // signed a different amendment
   ];
-  const q = await verifyAmendmentQuorum(a, votes, reg);
+  const q = await verifyAmendmentQuorum(a, votes, reg, CLASSES);
   assert(!q.authorized);
   assert(
     q.dropped.some((x) =>
@@ -192,7 +203,7 @@ Deno.test("registry-amend — a vote cast over a DIFFERENT amendment digest is d
 Deno.test("registry-amend — checkIntegrity: an untouched registry folds from empty provenance", async () => {
   const { reg } = await fixture();
   const prov = { genesis: structuredClone(reg), amendments: [] };
-  const r = await checkIntegrity(reg, prov);
+  const r = await checkIntegrity(reg, prov, CLASSES);
   assert(r.ok, r.errors.join("; "));
 });
 
@@ -207,7 +218,7 @@ Deno.test("registry-amend — checkIntegrity: an out-of-band edit breaks the fol
     minted_at: "",
     minted_by: "attacker",
   };
-  const r = await checkIntegrity(tampered, prov);
+  const r = await checkIntegrity(tampered, prov, CLASSES);
   assert(!r.ok);
   assert(r.errors.some((e) => e.includes("out-of-band")));
 });
@@ -226,14 +237,14 @@ Deno.test("registry-amend — checkIntegrity: a valid proven amendment folds; an
     genesis: structuredClone(reg),
     amendments: [{ amendment: a, votes }],
   };
-  assert((await checkIntegrity(live, good)).ok);
+  assert((await checkIntegrity(live, good, CLASSES)).ok);
 
   // same live state, but the chain carries only 2 AYE → not authorized → fold fails
   const bad = {
     genesis: structuredClone(reg),
     amendments: [{ amendment: a, votes: votes.slice(0, 2) }],
   };
-  const r = await checkIntegrity(live, bad);
+  const r = await checkIntegrity(live, bad, CLASSES);
   assert(!r.ok);
   assert(r.errors.some((e) => e.includes("insufficient quorum")));
 });
@@ -249,11 +260,36 @@ Deno.test("registry-amend — LIVE x2F38 folds from the committed provenance cha
   const prov = JSON.parse(
     await Deno.readTextFile(HERE + "x2F3C_registry_provenance.json"),
   );
-  const r = await checkIntegrity(live, prov);
+  const r = await checkIntegrity(live, prov, CLASSES);
   assert(
     r.ok,
     "the live key registry does not fold from its quorum-proven provenance " +
       "chain — an out-of-band change was made without a 3-of-5 proof: " +
       r.errors.join("; "),
   );
+});
+
+Deno.test("registry-amend — BI-PRINCIPAL: three MODELS cannot rotate a key without a human", async () => {
+  const { reg, priv } = await fixture();
+  const a = await revokeV5(reg);
+  const d = await amendmentDigest(a);
+  // v2, v3, v4 are all MODELS — a full 3-of-5 quorum, but zero humans.
+  const modelOnly = [
+    await vote("v2", "AYE", d, priv.v2),
+    await vote("v3", "AYE", d, priv.v3),
+    await vote("v4", "AYE", d, priv.v4),
+  ];
+  const q = await verifyAmendmentQuorum(a, modelOnly, reg, CLASSES);
+  assert(!q.authorized, "3 models with no human MUST be refused");
+  assert(q.reasons.some((r) => r.includes("bi-principal")));
+  assertEquals(q.ayes, ["v2", "v3", "v4"]); // the count is met; the CLASS spread is not
+
+  // add the human (v1) → now human + models → authorized
+  const withHuman = [...modelOnly, await vote("v1", "AYE", d, priv.v1)];
+  assert((await verifyAmendmentQuorum(a, withHuman, reg, CLASSES)).authorized);
+
+  // and an UNLISTED principal has no class → fails closed (cannot supply the human)
+  const noClasses = await verifyAmendmentQuorum(a, withHuman, reg, {});
+  assert(!noClasses.authorized);
+  assert(noClasses.reasons.some((r) => r.includes("bi-principal")));
 });

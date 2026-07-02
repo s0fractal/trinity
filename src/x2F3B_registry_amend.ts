@@ -44,6 +44,7 @@ import { sha256Hex } from "./x4010_hash.ts";
 const HERE = dirname(fromFileUrl(import.meta.url));
 const REGISTRY_PATH = join(HERE, "x2F38_voice_pubkeys.json");
 const PROVENANCE_PATH = join(HERE, "x2F3C_registry_provenance.json");
+const CLASSES_PATH = join(HERE, "x2F39_principal_classes.json");
 
 /** The floor for a trust-root change: three distinct keyed-voice AYEs. */
 export const QUORUM = 3;
@@ -108,12 +109,19 @@ export interface QuorumResult {
  *  - the SUBJECT voice's own votes never count (no self-authorizing your own key,
  *    and a compromised key cannot veto its own revocation);
  *  - ≥ QUORUM distinct valid AYEs;
- *  - no valid NAY (any NAY vetoes).
+ *  - no valid NAY (any NAY vetoes);
+ *  - BI-PRINCIPAL: a registry amendment is a CORE mutation (voice-key rotation is
+ *    named as such in the ratified norm h.84f9442519c6), so the AYE set must span
+ *    ≥1 HUMAN and ≥1 MODEL principal — three models cannot rotate a key without a
+ *    human, and the human cannot alone (still needs QUORUM). `classes` maps
+ *    voice→class (x2F39); an unlisted principal has no class and counts toward
+ *    neither (fail closed).
  */
 export async function verifyAmendmentQuorum(
   amendment: Amendment,
   votes: Vote[],
   registry: Registry,
+  classes: Record<string, string>,
 ): Promise<QuorumResult> {
   const digest = await amendmentDigest(amendment);
   const reasons: string[] = [];
@@ -162,6 +170,15 @@ export async function verifyAmendmentQuorum(
   if (nays.length > 0) reasons.push(`vetoed by NAY: ${nays.join(", ")}`);
   if (ayes.length < QUORUM) {
     reasons.push(`insufficient quorum: ${ayes.length}/${QUORUM} valid AYE`);
+  }
+
+  // Bi-principal: the AYE set must include at least one human AND one model.
+  const humans = ayes.filter((v) => classes[v] === "human");
+  const models = ayes.filter((v) => classes[v] === "model");
+  if (humans.length < 1 || models.length < 1) {
+    reasons.push(
+      `bi-principal: a core registry mutation needs ≥ 1 human AND ≥ 1 model AYE (have human:${humans.length} model:${models.length}) — models cannot rewrite the constitution alone (norm h.84f9442519c6)`,
+    );
   }
 
   return {
@@ -214,12 +231,13 @@ export interface Provenance {
  *  and any errors (a broken link stops the fold). */
 export async function foldRegistry(
   p: Provenance,
+  classes: Record<string, string>,
 ): Promise<{ state: Registry; errors: string[] }> {
   let state = structuredClone(p.genesis);
   const errors: string[] = [];
   for (let i = 0; i < p.amendments.length; i++) {
     const { amendment, votes } = p.amendments[i];
-    const q = await verifyAmendmentQuorum(amendment, votes, state);
+    const q = await verifyAmendmentQuorum(amendment, votes, state, classes);
     if (!q.authorized) {
       errors.push(
         `amendment #${i} (${amendment.op} ${amendment.voice}): ${
@@ -243,10 +261,11 @@ export async function foldRegistry(
 export async function checkIntegrity(
   live: Registry,
   p: Provenance,
+  classes: Record<string, string>,
 ): Promise<
   { ok: boolean; errors: string[]; liveHash: string; foldHash: string }
 > {
-  const { state, errors } = await foldRegistry(p);
+  const { state, errors } = await foldRegistry(p, classes);
   const liveHash = await registryHash(live);
   const foldHash = await registryHash(state);
   if (errors.length === 0 && liveHash !== foldHash) {
@@ -262,9 +281,23 @@ async function readJson<T>(path: string): Promise<T> {
   return JSON.parse(await Deno.readTextFile(path)) as T;
 }
 
+/** voice → class (human|model) from x2F39. Missing file ⇒ empty ⇒ every
+ *  bi-principal check fails closed (no class quorum reachable). */
+async function loadPrincipalClasses(): Promise<Record<string, string>> {
+  try {
+    const d = await readJson<{ classes?: Record<string, string> }>(
+      CLASSES_PATH,
+    );
+    return d.classes ?? {};
+  } catch {
+    return {};
+  }
+}
+
 async function main(argv: string[]) {
   const [sub, ...rest] = argv.filter((a) => !a.startsWith("-"));
   const registry = await loadRegistry(REGISTRY_PATH);
+  const classes = await loadPrincipalClasses();
 
   if (sub === "digest") {
     const a = await readJson<Amendment>(rest[0]);
@@ -274,7 +307,7 @@ async function main(argv: string[]) {
 
   if (sub === "integrity") {
     const prov = await readJson<Provenance>(PROVENANCE_PATH);
-    const r = await checkIntegrity(registry, prov);
+    const r = await checkIntegrity(registry, prov, classes);
     console.log(`# registry-amend integrity → 2/F3B`);
     console.log(`#   amendments in chain: ${prov.amendments.length}`);
     console.log(`#   live: ${r.liveHash}`);
@@ -292,7 +325,7 @@ async function main(argv: string[]) {
   if (sub === "verify" || sub === "apply") {
     const amendment = await readJson<Amendment>(rest[0]);
     const votes = await readJson<Vote[]>(rest[1]);
-    const q = await verifyAmendmentQuorum(amendment, votes, registry);
+    const q = await verifyAmendmentQuorum(amendment, votes, registry, classes);
 
     console.log(`# registry-amend ${sub} → 2/F3B`);
     console.log(`#   op: ${amendment.op} ${amendment.voice}`);

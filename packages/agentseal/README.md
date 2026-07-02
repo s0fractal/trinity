@@ -50,11 +50,18 @@ independent vendors' keys, a delegation chain linked by content address,
 verified locally by a third party, and a forged link caught. It is CI-enforced
 (`examples/cross_vendor_test.ts`).
 
+## Two authority levels
+
+- `seal` classifies an action's **blast radius** (A0..A4) and fails closed on
+  sovereign — the lightweight path, single-import.
+- `sealAdmitted` runs the kernel's fail-closed `admit` against a ratified
+  **mandate** and binds the mandate's commitment _into_ the receipt's content
+  address — the full **who-did-what-under-which-mandate** claim. Re-pointing a
+  receipt at a different mandate breaks the address, so the authorization cannot
+  be forged after the fact. Verify with `verifyAdmittedSeal`.
+
 ## Honest scope
 
-- This MVP uses `classifyIntent` (the lightweight blast-radius classifier), not
-  the full mandate-gated `admit` — that fuller authority path is a clean next
-  step.
 - It depends on the three packages above, resolved as **published `jsr:`
   specifiers** (see this package's import map). All three are live on jsr, so
   the composition installs and runs from the registry — not only in-repo.

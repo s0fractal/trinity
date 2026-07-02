@@ -38,8 +38,12 @@ const v = await verifySeal(receipt, [seat.publicKey], 1); // no host contacted
 ```
 
 Single-player value the day you install it: it classifies your own agent's
-actions (A0 observe → A4 sovereign) and **fails closed** on sovereign ones. As
-receipts spread, they become the thing a single vendor's logs can never be:
+actions (A0 observe → A4 sovereign) and **fails closed** on sovereign ones. And
+with `sealAdmitted`, the receipt records not just _what_ class an action was but
+that a specific ratified **mandate authorized it** — the mandate's commitment is
+bound into the content address, so "who-did-what-under-which-mandate" cannot be
+re-pointed at a different mandate after the fact. As receipts spread, they
+become the thing a single vendor's logs can never be:
 
 **The wedge — cross-vendor, multi-hop, no shared IdP.** Two independent vendors'
 agents can act in a delegation chain, and a third party who trusts neither

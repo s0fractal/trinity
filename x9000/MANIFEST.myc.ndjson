@@ -154,12 +154,12 @@
 {"path":"substrates/ADAPTER_POLICY.md","size":3073,"hash":"sha256:b1e55e20471a426a82023d7b5566fd4a2bc663186c20ed6691e82860fcdbd732"}
 {"path":"substrates/codex/MYC.md","size":1052,"hash":"sha256:12d0b619b16a88713323f07891578ceaf948b11e9b0957eda51250b8c5547efc"}
 {"path":"substrates/gemini/MYC.md","size":970,"hash":"sha256:5fb69d40538ac1098b5c9c33d087450483b10b97cb5a8fb2a0a6887b7a3a7e45"}
-{"path":"substrates/genesis/MYC.md","size":1486,"hash":"sha256:5a054119fd9957580b8a99b5092b72310b0384935dca5e3f78ba5034cd88945c"}
+{"path":"substrates/genesis/MYC.md","size":1471,"hash":"sha256:e93817ac23796f6e9261a3ff369797556d74aaffe3f3a2273dd8dafddab5c91a"}
 {"path":"substrates/liquid/MYC_SUBSTRATE_RECEIPT.v0.1.md","size":922,"hash":"sha256:a88aae254220c1ed8696d8211d205a844ed48e5e114ce807298d636a12a639e3"}
-{"path":"substrates/liquid/MYC.md","size":1411,"hash":"sha256:ae11cf795458b01c274062ff765fee49a275d5efb4b22f58bb8af09fee99ae9e"}
+{"path":"substrates/liquid/MYC.md","size":1396,"hash":"sha256:aa0a21b3d751a31789745e49f298d9ad9a249c14a060c00bdb63652c86959226"}
 {"path":"substrates/liquid/PHI_RECEIPT.v0.1.md","size":707,"hash":"sha256:e7f6bcd6531d883c3ea51216b22054e5ef900231f5d7c0ec859f7b68a58ff9c5"}
 {"path":"substrates/liquid/PN_CAD_DESCRIPTOR.v0.1.md","size":722,"hash":"sha256:371a2a07360698fb38777f85b234d5c41aaff2a2dc2ad5bfcfffa7c58b4c5860"}
 {"path":"substrates/liquid/receipts/receipt.57b246e1de5a.myc.md","size":668,"hash":"sha256:57b246e1de5a290ad1e51ade0119217ccae16ad723ce6483e153d0cd9d8837d2"}
 {"path":"substrates/liquid/receipts/receipt.9a24f228f21e.myc.md","size":668,"hash":"sha256:57b246e1de5a290ad1e51ade0119217ccae16ad723ce6483e153d0cd9d8837d2"}
-{"path":"substrates/spore/MYC.md","size":1221,"hash":"sha256:71a64c9964c58a5bfd765b60c7e02b14517875f8f83a70a07c35328d68e811cb"}
+{"path":"substrates/spore/MYC.md","size":1206,"hash":"sha256:761cc154b722f758800a8eb9cc860939bc8d7e853b56d03fae65eb9d81c92155"}
 {"path":"substrates/spore/receipts/receipt.14b5a247729c.myc.md","size":1815,"hash":"sha256:2b9fe46da984e06c9318990a691431614349569099c22c96083f84d1c72da30d"}

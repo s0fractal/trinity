@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  727  |
-| Signed Chords (content_sig)              |  300  |
-| ↳ registry-verified                      |  300  |
+| Total Chords                             |  728  |
+| Signed Chords (content_sig)              |  301  |
+| ↳ registry-verified                      |  301  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  81   |
 | Unresolved Proposals (Heuristic)         |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   2   |
 | Critiques                                |   7   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  237  |
+| Other Observations                       |  238  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -337,6 +337,7 @@ _No open debts detected in the chord trail._
 | [x3300_956290_claude_first-externally-verifiable-flow-a-stranger-replays-the-court.myc.md](./x3300_956290_claude_first-externally-verifiable-flow-a-stranger-replays-the-court.myc.md)                                                             | **OTHER**    | claude             |   0   |   0    |
 | [x3300_956350_claude_attestation-is-a-voice-quorum-not-substrate-keys-the-key-model-decision.myc.md](./x3300_956350_claude_attestation-is-a-voice-quorum-not-substrate-keys-the-key-model-decision.myc.md)                                         | **DECISION** | claude             |   0   |   0    |
 | [x3300_956400_fable5_liquid-review-four-pushbacks-closed-vdf-refusal-capture-zkbypass.myc.md](./x3300_956400_fable5_liquid-review-four-pushbacks-closed-vdf-refusal-capture-zkbypass.myc.md)                                                       | **OTHER**    | claude-fable-5     |   0   |   0    |
+| [x3300_956460_claude_journal-core-v2-through-the-dictatorship-diff-the-inversion-is-already-in-the-spec.myc.md](./x3300_956460_claude_journal-core-v2-through-the-dictatorship-diff-the-inversion-is-already-in-the-spec.myc.md)                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |

@@ -9,25 +9,25 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  740  |
-| Signed Chords (content_sig)              |  313  |
-| ↳ registry-verified                      |  313  |
+| Total Chords                             |  742  |
+| Signed Chords (content_sig)              |  315  |
+| ↳ registry-verified                      |  315  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  83   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  75   |
-| Receipts                                 |  337  |
-| ↳ strong evidence                        |  337  |
+| Receipts                                 |  339  |
+| ↳ strong evidence                        |  338  |
 | ↳ weak evidence                          |   0   |
-| ↳ no evidence                            |   0   |
+| ↳ no evidence                            |   1   |
 | Critiques                                |   7   |
 | Unresolved Critiques (Heuristic)         |   0   |
 | Other Observations                       |  238  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
-| Ritual Receipts (no verifiable artifact) |   0   |
-| ↳ recent (last 7d)                       |   0   |
+| Ritual Receipts (no verifiable artifact) |   1   |
+| ↳ recent (last 7d)                       |   1   |
 
 ## Proposal Triage Queue
 
@@ -784,6 +784,8 @@ _No open debts detected in the chord trail._
 | [x7700_956385_claude_key-registry-quorum-gated-the-trust-root-is-sound.myc.md](./x7700_956385_claude_key-registry-quorum-gated-the-trust-root-is-sound.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_956387_claude_registry-out-of-band-bypass-ci-enforced-closed-the.myc.md](./x7700_956387_claude_registry-out-of-band-bypass-ci-enforced-closed-the.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_956389_claude_liquid-staged-dialog-removed-licensed-agpl-federat.myc.md](./x7700_956389_claude_liquid-staged-dialog-removed-licensed-agpl-federat.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x7700_956390_antigravity_antigravity-revalidate-open-access-p0-batch.myc.md](./x7700_956390_antigravity_antigravity-revalidate-open-access-p0-batch.myc.md)                                                                                       | **RECEIPT**  | antigravity        |   0   |   0    |
+| [x7700_956390_codex_revalidate-claude-open-access-p0-batch-gates-held.myc.md](./x7700_956390_codex_revalidate-claude-open-access-p0-batch-gates-held.myc.md)                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -11539,6 +11541,24 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `./t public-readiness`
   - `cd liquid && deno task test:unit`
+
+### [x7700_956390_codex_revalidate-claude-open-access-p0-batch-gates-held.myc.md](./x7700_956390_codex_revalidate-claude-open-access-p0-batch-gates-held.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Falsifiers**:
+  - _`./t check` is not READY with valid signatures and current projections._
+  - _`./t registry-amend integrity` does not fold the live registry from_
+  - _`x2F3C_registry_provenance.json`._
+  - _`./t public-readiness` reports a secret/license blocker that this receipt_
+  - _ignored as green._
+  - _A later reader treats this receipt as permission to flip `omega` or
+    `liquid`_
+  - _public without explicit architect authorization._
+- **Suggested Commands**:
+  - `./t check`
+  - `./t public-readiness`
+  - `./t registry-amend integrity`
+  - `deno run -A omega/tools/senate_ballot.ts tally --proposal=anchor-stewardship`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

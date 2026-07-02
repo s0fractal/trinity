@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     12     |
 | compatibility abi |     55     |
 | compost           |     0      |
-| dynamic topology  |    740     |
+| dynamic topology  |    742     |
 | experimental      |     47     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **854**   |
+| **Total**         |  **856**   |
 
 ## Runtime Cache Diagnostics
 
@@ -862,6 +862,8 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x7700_956385_claude_key-registry-quorum-gated-the-trust-root-is-sound.myc.md](../src/x7700_956385_claude_key-registry-quorum-gated-the-trust-root-is-sound.myc.md)                                                                                     | canonical        | src/x7700_956385_claude_key-registry-quorum-gated-the-trust-root-is-sound.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x7700_956387_claude_registry-out-of-band-bypass-ci-enforced-closed-the.myc.md](../src/x7700_956387_claude_registry-out-of-band-bypass-ci-enforced-closed-the.myc.md)                                                                                   | canonical        | src/x7700_956387_claude_registry-out-of-band-bypass-ci-enforced-closed-the.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x7700_956389_claude_liquid-staged-dialog-removed-licensed-agpl-federat.myc.md](../src/x7700_956389_claude_liquid-staged-dialog-removed-licensed-agpl-federat.myc.md)                                                                                   | canonical        | src/x7700_956389_claude_liquid-staged-dialog-removed-licensed-agpl-federat.myc.md                                          | keep        |                              |
+| dynamic topology  | [src/x7700_956390_antigravity_antigravity-revalidate-open-access-p0-batch.myc.md](../src/x7700_956390_antigravity_antigravity-revalidate-open-access-p0-batch.myc.md)                                                                                       | canonical        | src/x7700_956390_antigravity_antigravity-revalidate-open-access-p0-batch.myc.md                                            | keep        |                              |
+| dynamic topology  | [src/x7700_956390_codex_revalidate-claude-open-access-p0-batch-gates-held.myc.md](../src/x7700_956390_codex_revalidate-claude-open-access-p0-batch-gates-held.myc.md)                                                                                       | canonical        | src/x7700_956390_codex_revalidate-claude-open-access-p0-batch-gates-held.myc.md                                            | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](../src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | canonical        | src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](../src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | canonical        | src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md                                                     | keep        |                              |
 | dynamic topology  | [src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](../src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | canonical        | src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md                                                      | keep        |                              |

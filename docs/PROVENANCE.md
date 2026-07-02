@@ -145,5 +145,6 @@ distribution and the first outside pilot.
 - `contracts/RECEIPT_ENVELOPE.v1.0.md` — the receipt envelope the substrates
   share.
 - `packages/agentseal/` — the adopter SDK; `examples/seal.ts` (single-vendor)
-  and `examples/cross_vendor.ts` (the cross-vendor delegation-chain wedge).
+  and `examples/mandated.ts` (under-which-mandate), and
+  `examples/cross_vendor.ts` (the cross-vendor delegation-chain wedge).
 - `packages/QUICKSTART.md` — the full forge catalog.

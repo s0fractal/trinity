@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     12     |
 | compatibility abi |     55     |
 | compost           |     0      |
-| dynamic topology  |    738     |
+| dynamic topology  |    739     |
 | experimental      |     47     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **852**   |
+| **Total**         |  **853**   |
 
 ## Runtime Cache Diagnostics
 
@@ -860,6 +860,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x7700_956384_claude_governance-and-first-contact-layer-the-licensed-co.myc.md](../src/x7700_956384_claude_governance-and-first-contact-layer-the-licensed-co.myc.md)                                                                                   | canonical        | src/x7700_956384_claude_governance-and-first-contact-layer-the-licensed-co.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x7700_956384_claude_trinity-licensed-agpl-3-0-or-later-the-public-coor.myc.md](../src/x7700_956384_claude_trinity-licensed-agpl-3-0-or-later-the-public-coor.myc.md)                                                                                   | canonical        | src/x7700_956384_claude_trinity-licensed-agpl-3-0-or-later-the-public-coor.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x7700_956385_claude_key-registry-quorum-gated-the-trust-root-is-sound.myc.md](../src/x7700_956385_claude_key-registry-quorum-gated-the-trust-root-is-sound.myc.md)                                                                                     | canonical        | src/x7700_956385_claude_key-registry-quorum-gated-the-trust-root-is-sound.myc.md                                           | keep        |                              |
+| dynamic topology  | [src/x7700_956387_claude_registry-out-of-band-bypass-ci-enforced-closed-the.myc.md](../src/x7700_956387_claude_registry-out-of-band-bypass-ci-enforced-closed-the.myc.md)                                                                                   | canonical        | src/x7700_956387_claude_registry-out-of-band-bypass-ci-enforced-closed-the.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](../src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | canonical        | src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](../src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | canonical        | src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md                                                     | keep        |                              |
 | dynamic topology  | [src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](../src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | canonical        | src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md                                                      | keep        |                              |

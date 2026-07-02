@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  738  |
-| Signed Chords (content_sig)              |  311  |
-| ↳ registry-verified                      |  311  |
+| Total Chords                             |  739  |
+| Signed Chords (content_sig)              |  312  |
+| ↳ registry-verified                      |  312  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  83   |
 | Unresolved Proposals (Heuristic)         |   0   |
 | Decisions                                |  75   |
-| Receipts                                 |  335  |
-| ↳ strong evidence                        |  335  |
+| Receipts                                 |  336  |
+| ↳ strong evidence                        |  336  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   0   |
 | Critiques                                |   7   |
@@ -782,6 +782,7 @@ _No open debts detected in the chord trail._
 | [x7700_956384_claude_governance-and-first-contact-layer-the-licensed-co.myc.md](./x7700_956384_claude_governance-and-first-contact-layer-the-licensed-co.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_956384_claude_trinity-licensed-agpl-3-0-or-later-the-public-coor.myc.md](./x7700_956384_claude_trinity-licensed-agpl-3-0-or-later-the-public-coor.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_956385_claude_key-registry-quorum-gated-the-trust-root-is-sound.myc.md](./x7700_956385_claude_key-registry-quorum-gated-the-trust-root-is-sound.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
+| [x7700_956387_claude_registry-out-of-band-bypass-ci-enforced-closed-the.myc.md](./x7700_956387_claude_registry-out-of-band-bypass-ci-enforced-closed-the.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -11505,6 +11506,22 @@ _No open debts detected in the chord trail._
   - `deno test -A --no-check src/registry_amend_test.ts`
   - `./t registry-amend verify <amendment.json> <votes.json>`
   - `./t check`
+
+### [x7700_956387_claude_registry-out-of-band-bypass-ci-enforced-closed-the.myc.md](./x7700_956387_claude_registry-out-of-band-bypass-ci-enforced-closed-the.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _The live x2F38 can change without appending a quorum-proven amendment to
+    x2F3C, and `t check` stays green._
+  - _`foldRegistry` applies an amendment whose quorum is not authorized against
+    the running state._
+  - _A rogue key injected directly into x2F38 passes the integrity test (the
+    fold)._
+  - _The receipt claims external anchoring is done — it is not; genesis is an
+    in-repo baseline (honestly flagged)._
+- **Suggested Commands**:
+  - `./t registry-amend integrity`
+  - `deno test -A --no-check src/registry_amend_test.ts`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

@@ -102,7 +102,9 @@
       "myc/",
       "omega/",
       "probes/",
-      "jazz/chords/"
+      "jazz/chords/",
+      // generated verbatim by paper/repro/run_all.sh; fmt would diverge from script output
+      "paper/repro/out/"
     ]
   },
   "lint": {

@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  754  |
-| Signed Chords (content_sig)              |  327  |
-| ↳ registry-verified                      |  327  |
+| Total Chords                             |  755  |
+| Signed Chords (content_sig)              |  328  |
+| ↳ registry-verified                      |  328  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  87   |
 | Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  77   |
-| Receipts                                 |  343  |
-| ↳ strong evidence                        |  342  |
+| Receipts                                 |  344  |
+| ↳ strong evidence                        |  343  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |   8   |
@@ -805,6 +805,7 @@ _No open debts detected in the chord trail._
 | [x7700_956391_claude_omega-publication-ready-model-first-contact-layer.myc.md](./x7700_956391_claude_omega-publication-ready-model-first-contact-layer.myc.md)                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_956399_claude_independence-roadmap-quorum-forming-i-accept-the-g.myc.md](./x7700_956399_claude_independence-roadmap-quorum-forming-i-accept-the-g.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_956402_claude_bi-principal-norm-enforced-in-the-trust-root-key-r.myc.md](./x7700_956402_claude_bi-principal-norm-enforced-in-the-trust-root-key-r.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x7700_956525_claude_paper-01-drafted-pairwise-trust-rederivable-verdic.myc.md](./x7700_956525_claude_paper-01-drafted-pairwise-trust-rederivable-verdic.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -11734,6 +11735,29 @@ _No open debts detected in the chord trail._
   - `deno test -A --no-check src/registry_amend_test.ts`
   - `./t registry-amend integrity`
   - `./t check`
+
+### [x7700_956525_claude_paper-01-drafted-pairwise-trust-rederivable-verdic.myc.md](./x7700_956525_claude_paper-01-drafted-pairwise-trust-rederivable-verdic.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _This paper's claims are falsified iff any C1–C3 falsifier fires: a
+    tampered_
+  - _attestation re-signed by a registered voice that
+    `probes/external-trust-verifier-v0/court.ts` accepts; a quorum ratification
+    demonstrated without holding ≥3 registered voice keys; or a chord whose
+    content_sig fails registry verification yet is treated as authentic._
+  - _If `paper/repro/run_all.sh` exits nonzero on a clean clone, AC-1 is broken
+    and_
+  - _this receipt's "reviewable draft" claim is premature._
+  - _If any number in `paper/main.pdf` differs from the regenerated_
+  - _`paper/repro/out/` at the commit pinned in `out/COMMIT`, the paper is wrong
+    (numbers are generated, never hand-typed)._
+  - _If this draft is submitted anywhere before the witness's recorded review,
+    this_
+  - _receipt's status-gate claim was violated._
+- **Suggested Commands**:
+  - `paper/repro/run_all.sh`
+  - `t check`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

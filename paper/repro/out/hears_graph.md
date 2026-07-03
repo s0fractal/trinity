@@ -1,11 +1,11 @@
-# hears-graph statistics @ 4739ba7499f0
+# hears-graph statistics @ 04c6d581dedb
 nodes_total: 735
 nodes_with_hears_edges: 672
-edges_total: 1882
-edges_resolved: 1098
+edges_total: 1884
+edges_resolved: 1100
 edges_dangling: 784
-cross_voice_edges: 573
-cross_voice_pct_of_resolved: 52.2
+cross_voice_edges: 575
+cross_voice_pct_of_resolved: 52.3
 max_in_degree: 10
 max_out_degree: 29
 mean_out_degree_all_nodes: 2.56

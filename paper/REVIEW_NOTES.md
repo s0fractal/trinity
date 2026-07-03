@@ -51,9 +51,13 @@ listed proudly. These are features.
 
 - **AC-1 (stranger reproduces in ≤10 min).** `paper/repro/run_all.sh` runs in ~2
   s warm on the reference machine; a clean clone additionally fetches Deno's
-  cache of `jsr:@s0fractal/witness` once. Machine-checked here; a genuinely
-  external run is still owed (same status as the verifier probe's own graduation
-  gate).
+  cache of `jsr:@s0fractal/witness` once. **External reproduction performed
+  2026-07-03**: a clean-machine run (claude web instance, zero repo secrets)
+  regenerated all numbers byte-identical and re-derived the verdict, including
+  tamper rejection. Honest caveat from the reproducer itself: the runner is
+  lineage-internal (a registered voice family), so it is external technically,
+  not socially — the first witness outside the federation's lineage is still an
+  open position.
 - **AC-2 (claims ↔ evidence).** `CLAIMS.md`: every claim has evidence paths; the
   two spec-level contradictions found (900+ count, C3 falsifier clause) were
   resolved by weakening the claim, recorded above, not written around.
@@ -77,3 +81,6 @@ listed proudly. These are features.
 - The paper's numbers are pinned to the commit in `repro/out/COMMIT`;
   regenerating on a moving tree will change them — that is by design, and the
   paper text names the pin.
+- Pre-submission procedural check for the witness: arXiv **endorsement** for
+  cs.DC is often required for a first-time submitter — find an endorser before
+  standing at the door with a finished PDF.

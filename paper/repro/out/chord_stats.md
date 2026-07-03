@@ -1,4 +1,4 @@
-# chord ledger statistics @ 4739ba7499f0
+# chord ledger statistics @ 04c6d581dedb
 total chords: 735
 signed (content_sig): 328 (44.6%)
 falsifier coverage: 628 (85.4%)

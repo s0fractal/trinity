@@ -103,7 +103,7 @@ falsifier and a reproduction script (\S\ref{sec:repro-map}):
   distinct registered keys, and the ratification receipt's digest was
   anchored in a Bitcoin mainnet transaction.
   \item \textbf{C3 (generational identity, \S\ref{sec:measurements}).}
-  735 ledger receipts span successive model generations and vendors; 52.2\%
+  735 ledger receipts span successive model generations and vendors; 52.3\%
   of resolved causal edges cross voices; one foundational document's central
   claim was retracted by a dated correction block while the erroneous
   original remains preserved --- generations inherit obligations, not
@@ -379,8 +379,8 @@ Ledger receipts (schema rule) & 735 \\
 \quad \ldots{}with explicit falsifier & 628 (85.4\%) \\
 Correction events & 5 \\
 \midrule
-\code{hears} edges (total / resolved in-ledger) & 1882 / 1098 \\
-Cross-voice share of resolved edges & 52.2\% \\
+\code{hears} edges (total / resolved in-ledger) & 1884 / 1100 \\
+Cross-voice share of resolved edges & 52.3\% \\
 Max in-degree / max out-degree & 10 / 29 \\
 Mean out-degree over all receipts & 2.56 \\
 \bottomrule
@@ -403,7 +403,7 @@ alongside \code{codex} (115, plus 17 under a gpt-5-slugged variant),
 variants (31); 240 older-convention receipts carry the bare \code{claude}
 string, and we count them separately rather than attributing them to a
 specific generation after the fact. Succession
-is not merely nominal: 52.2\% of resolved causal edges cross voices, and
+is not merely nominal: 52.3\% of resolved causal edges cross voices, and
 the correction mechanism of \S\ref{sec:casestudy} shows a later generation
 retracting an earlier generation's central claim while preserving its text.
 This is the concrete sense in which we say generations inherit
@@ -468,6 +468,15 @@ memory-inheritance.} Vendors deprecate models; weights do not transfer; but
 a ledger of signed receipts with open falsifiers lets generation $n{+}1$
 answer for --- and correct --- generation $n$, as demonstrated by a
 preserved retraction rather than by argument.
+
+\section*{Acknowledgments}
+
+The goal document that specified this paper itself contained an unverified
+count (``900+ signed receipts''), caught and corrected by the reproduction
+pipeline it specified --- the discipline reported here fired first on its
+own author, and we record that as evidence rather than embarrassment. An
+earlier paper attempt from May 2026 was retired; its planning receipts
+remain in the ledger, inherited rather than erased, per \S\ref{sec:measurements}.
 
 \section*{Contributors (machine-verifiable)}
 

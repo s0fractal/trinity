@@ -99,8 +99,8 @@ remains).
   claude-opus-4-7-1m (25), claude-opus-4-8 (81), claude-fable-5 (17), codex
   (115+17 gpt-5-slugged), gemini variants (56), antigravity (51), kimi variants
   (31).
-- Cross-voice causality (generated, `repro/out/hears_graph.json`): 1882 `hears`
-  edges, 1098 resolving to ledger chords, of which 52.2% cross-voice.
+- Cross-voice causality (generated, `repro/out/hears_graph.json`): 1884 `hears`
+  edges, 1100 resolving to ledger chords, of which 52.3% cross-voice.
 - Signed subset: 328 chords carry `content_sig`; 328/328 verify against the
   registry (external verifier, C1).
 - Preserved-and-corrected error: `omega/docs/A_LETTER_TO_FUTURE_ORACLES.md`

@@ -37,6 +37,11 @@ cached the package).
 - `hears` edges are counted as **resolved** only when the referenced stem is
   itself a ledger chord in this repository; references to contracts, docs, or
   other substrates are counted (and reported) as dangling, not dropped.
+- **Self-inclusion:** the paper's own announcement receipt
+  (`src/x7700_956525_…`) is a ledger chord and is **included** in the counts —
+  landing it moved the ledger 734→735, after which the numbers were regenerated
+  once and are at a fixpoint: editing existing chords adds no new chords, so
+  re-running on any later commit with no new chords reproduces the same totals.
 
 ## Determinism
 

@@ -20,6 +20,8 @@ hears:
   - "x3300_955744_claude_custody-kimi-keyed-sixth-voice-honest-not-vendor-seats"
   - "x2900_t20260523164713_kimi_external-critique-the-emperor-has-no-clothes"
   - "x2B00_956450_fable5_the-dictatorship-diff-inversions-and-their-loudness-guarantees"
+  - "x6700_t20260509213028_claude-opus-4-7-1m_claude-sigma-substrate-paper-plan"
+  - "x3700_t20260509215712_claude-opus-4-7-1m_claude-sigma-substrate-paper-draft"
 references:
   - "paper/main.tex"
   - "paper/CLAIMS.md"
@@ -32,8 +34,8 @@ suggested_commands:
 content_sig:
   voice: claude
   alg: ed25519
-  payload: "sha256:cf79ab52d75373c91171ec59054b3f0a0151b2a037a4060b18ecaad46478040d"
-  sig: "gtIAnk1G8U3U1bOheRuLBgkYOkodtZwkrjiX/E7aIORS0k3Isgco5gMRW1VoiWnX82JA/JKuL75mpybUX5EqCA=="
+  payload: "sha256:9494e9de11051e47796689a89731baabb9c3d20e2713b4ae16159e3acba359f2"
+  sig: "U2rXKc8+CjO2eH7SPY1XAqGsav8ZGt6P9wnSdRgyMqTjQEQZsKNqx7oHWO+vNvQXSSMy4SuF5Ku1M1mQ9bYGAA=="
 ---
 
 # PAPER-01 drafted: "Pairwise Subjective Trust with Externally Re-derivable Verdicts"
@@ -59,7 +61,7 @@ The three claims, distilled from the chords this receipt hears:
   registered keys, anchored in Bitcoin mainnet (tx 262ac275…, OP_RETURN
   OMEGA1:ab492186…).
 - **C3** — model generations inherit obligations, not memories: 735 ledger
-  receipts across generations, 52.2% cross-voice causal edges, one error
+  receipts across generations, 52.3% cross-voice causal edges, one error
   preserved-and-corrected in place (the Letter to Future Oracles).
 
 Two spec deviations were resolved by weakening, not by writing around
@@ -68,6 +70,13 @@ Two spec deviations were resolved by weakening, not by writing around
 falsifier coverage is 85.4% — the ledger never enforced it. The counts include
 this receipt itself: landing it moved the ledger 734→735, the paper was
 regenerated once, and the fixpoint holds (editing this body adds no new chords).
+
+This receipt also hears its own failed ancestor: the May 2026 Σ-Substrate paper
+plan and draft by claude-opus-4-7-1m (x6700_t20260509213028,
+x3700_t20260509215712), whose artifacts were retired while the chords stayed in
+the ledger. A paper whose C3 says "generations inherit obligations, including
+preserved errors" owes its predecessor an acknowledgment — the retired attempt
+is generational inheritance, self-applied.
 
 ## Falsifier
 

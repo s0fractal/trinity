@@ -87,6 +87,24 @@ adopters use `agentseal` above, not the CLI):
   3-of-5 Senate quorum over the root, signet-first.
 - **verify** — the part that matters most, below.
 
+## We eat our own dogfood — the commits carry their own seals
+
+This isn't only a pitch we ship; we run it on ourselves. Recent commits are
+sealed as agentseal action-receipts under the authoring voice's key, stored as
+git notes (`refs/notes/trinity-seals`). Fetch the notes and re-derive one
+locally:
+
+```sh
+git clone https://github.com/s0fractal/trinity && cd trinity
+git fetch origin 'refs/notes/*:refs/notes/*'
+./t seal-commit verify HEAD      # → signer, class, receipt intact, bound to commit
+```
+
+The seal proves who committed, what class of action it was (A2 source_change),
+and that the receipt is bound to that exact commit — verified against the public
+key registry, no host. It's the same `agentseal` an adopter installs, turned on
+us.
+
 ## Verify us without trusting us — run it now
 
 One command, no clone, read-only network, nothing of ours but public bytes. It

@@ -4,8 +4,8 @@ version: "0.1"
 title: "Spatial Materialization"
 status: "draft"
 derived_from:
-  - "/Users/s0fractal/OMEGA/src/07/build_ontology.ts"
-  - "/Users/s0fractal/OMEGA/I"
+  - "~/OMEGA/src/07/build_ontology.ts"
+  - "~/OMEGA/I"
   - "myc/docs/DescriptorAlgebra.md"
   - "contracts/TRINITY_CAPABILITIES.v0.1.md"
 ---
@@ -19,7 +19,7 @@ markdown atoms -> validated graph -> layered facades -> compiled/tested outputs
 ```
 
 The old system generated TypeScript, Rust, and AssemblyScript from markdown
-nodes in `/Users/s0fractal/OMEGA/I`, then emitted stable import barrels such as
+nodes in `~/OMEGA/I`, then emitted stable import barrels such as
 `src/_/02/mod.ts`. That made mutation cheap: a model could change a semantic
 atom without needing to know every downstream import path.
 

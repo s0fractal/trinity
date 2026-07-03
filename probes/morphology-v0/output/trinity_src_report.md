@@ -1,6 +1,6 @@
 # morphology report
 
-Root: /Users/s0fractal/trinity/src Scanned: 59 files (filtered to
+Root: ~/trinity/src Scanned: 59 files (filtered to
 morphology-shaped names only).
 
 ## archetype distribution

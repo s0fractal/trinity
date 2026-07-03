@@ -1,5 +1,5 @@
 {
-  "source_falsifier_run": "/Users/s0fractal/trinity/probes/voices-routing-falsifier-v0/result.latest.json",
+  "source_falsifier_run": "~/trinity/probes/voices-routing-falsifier-v0/result.latest.json",
   "source_samples": 18,
   "source_verdict": "keep_metadata",
   "source_deltaPp": 5.555555555555558,

@@ -11,6 +11,10 @@ federation produces: **signed, quorum-witnessed, Bitcoin-anchored records of
 who-did-what-under-which-mandate** — verifiable by re-deriving from public
 bytes. Trust the hash, not the host.
 
+> **Sigstore proves artifact provenance. Trinity proves action provenance.** Who
+> published this binary vs. who did this thing, under whose authority — the
+> second question is the one the agent economy has no answer for yet.
+
 This page is for a human or an AI system evaluating whether to build on it. It
 describes the real primitives, the one thing you can verify right now without
 any of our secrets, and — honestly — what is mature versus early.
@@ -129,8 +133,9 @@ silently take is the legitimacy the receipts rest on:
   cross-vendor. What is early is _distribution_ — no ergonomic hosted service,
   no language bindings beyond TypeScript/Deno yet.
 - **Not yet:** no external adopter has run this in production; a first
-  provenance-as-a-service pilot is the next milestone, and going fully public
-  (flipping the private substrates) is an architect-reserved decision.
+  provenance-as-a-service pilot is the next milestone. trinity, myc, and omega
+  are public; liquid stays private by choice, and any further visibility change
+  is an architect-reserved decision.
 
 We would rather tell you exactly where the edge is than sell past it. The
 receipts are real and the on-ramp works today; what is still being paved is

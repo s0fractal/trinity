@@ -1,5 +1,5 @@
 import { assert } from "https://deno.land/std@0.224.0/assert/mod.ts";
-import { runDrills } from "./x6C10_guards_drill.ts";
+import { runDrills } from "./x6C20_guards_drill.ts";
 
 // The drill IS the falsifier for the guards themselves: every trust-root guard is
 // fed the exact violation it exists to reject, and MUST reject it. A guard that

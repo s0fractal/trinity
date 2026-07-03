@@ -1,6 +1,6 @@
 #!/usr/bin/env -S deno run -A
-// src/x6C10_guards_drill.ts — fire every trust-root guard on purpose
-// position: 6/C1 → audit-pole (bucket 6): an adversarial muster of the guards
+// src/x6C20_guards_drill.ts — fire every trust-root guard on purpose
+// position: 6/C2 → audit-pole (bucket 6): an adversarial muster of the guards
 //   the federation relies on. A guard never seen rejecting an attack is
 //   decoration; this feeds each one the exact violation it exists to stop and
 //   asserts it REJECTS. A guard that accepts its violation is a HOLE — real work.
@@ -184,7 +184,7 @@ export function summarize(results: DrillResult[]) {
   const holes = results.filter((r) => !r.fired);
   return {
     type: "guards_drill",
-    position: "6/C1",
+    position: "6/C2",
     action: "drill",
     summary: {
       total: results.length,
@@ -204,7 +204,7 @@ if (import.meta.main) {
     console.log(JSON.stringify(report, null, 2));
   } else {
     console.log(
-      `# guards-drill @ 6/C1 — every trust-root guard, fired on purpose`,
+      `# guards-drill @ 6/C2 — every trust-root guard, fired on purpose`,
     );
     for (const r of report.results) {
       console.log(

@@ -37,7 +37,7 @@
     // The 6 jsr/deno products; kuramoto-coherence (crates.io) is cargo-tested + parity-gated.
     "test:packages": "(cd packages/autonomy-kernel && deno test -A) && (cd packages/canonical-receipt && deno test -A) && (cd packages/witness && deno test -A) && (cd packages/liquid-sync && deno test -A) && (cd packages/agentseal && deno test -A) && (cd packages/codeicide && deno test -A)",
     "forge": "deno run -A src/x8760_forge.ts",
-    "guards_drill": "deno run -A src/x6C10_guards_drill.ts",
+    "guards_drill": "deno run -A src/x6C20_guards_drill.ts",
     "forge:parity": "deno test --allow-read src/forge_parity_test.ts",
     // verify the swarm's signed record as an OUTSIDER would: published @s0fractal/witness
     // + public repo data only, no trinity tooling (codex x5000_955729, enterability harness).

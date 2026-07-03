@@ -15,6 +15,7 @@ on:
       - "probes/external-trust-verifier-v0/**"
       - "src/x2F38_voice_pubkeys.json"
       - "src/**/*.myc.md"
+      - "packages/agentseal/deno.json"
       - ".github/workflows/verify-external.yml"
 
 jobs:
@@ -38,3 +39,8 @@ jobs:
           if deno run --no-config --allow-read --allow-net --minimum-dependency-age=0 probes/external-trust-verifier-v0/court.ts probes/external-trust-verifier-v0/court-attestation.tampered.json; then
             echo "FALSIFIER FAILED: court.ts accepted a tampered attestation"; exit 1
           else echo "court.ts correctly rejected the tampered attestation"; fi
+      # The PRODUCT, proven from outside: consume the PUBLISHED @s0fractal/agentseal@0.2.0
+      # straight from jsr (--no-config, so nothing resolves from this repo) and exercise
+      # seal → verify → tamper-catch → the 0.2.0 mandate-gated surface. This turns "0.2.0 is
+      # publish-ready" into "0.2.0 is a real, installable, working artifact a stranger can run."
+      - run: deno run --no-config --allow-net --minimum-dependency-age=0 probes/external-trust-verifier-v0/consume-agentseal.ts

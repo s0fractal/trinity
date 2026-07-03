@@ -1,4 +1,4 @@
-# hears-graph statistics @ faf2f26b5388
+# hears-graph statistics @ 4739ba7499f0
 nodes_total: 735
 nodes_with_hears_edges: 672
 edges_total: 1882

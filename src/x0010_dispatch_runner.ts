@@ -103,6 +103,7 @@ export const POSITION_TO_FILE: Record<string, string> = {
   "7/B": "x7B00_evidence.ts",
   "7/C": "x7C00_author.ts",
   "7/D": "x7D00_verdict.ts",
+  "7/2": "x7200_seal_commit.ts",
   "7/E": "x7E00_anchor_prep.ts",
   "7/F": "x7F00_daemon.ts",
   "8/3": "x8300_physics.ts",

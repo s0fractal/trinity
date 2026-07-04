@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  762  |
-| Signed Chords (content_sig)              |  335  |
-| ↳ registry-verified                      |  335  |
+| Total Chords                             |  763  |
+| Signed Chords (content_sig)              |  336  |
+| ↳ registry-verified                      |  336  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  87   |
 | Unresolved Proposals (Heuristic)         |   1   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   1   |
 | Critiques                                |   8   |
 | Unresolved Critiques (Heuristic)         |   1   |
-| Other Observations                       |  242  |
+| Other Observations                       |  243  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -352,6 +352,7 @@ _No open debts detected in the chord trail._
 | [x3300_956652_claude_chronoflux-f5-preregistration.myc.md](./x3300_956652_claude_chronoflux-f5-preregistration.myc.md)                                                                                                                             | **OTHER**    | claude             |   0   |   0    |
 | [x3300_956654_claude_chronoflux-f5-prereg-v2-hash-reconciled.myc.md](./x3300_956654_claude_chronoflux-f5-prereg-v2-hash-reconciled.myc.md)                                                                                                         | **OTHER**    | claude             |   0   |   0    |
 | [x3300_956657_claude_chronoflux-f5-receipt-inconclusive-underpowered.myc.md](./x3300_956657_claude_chronoflux-f5-receipt-inconclusive-underpowered.myc.md)                                                                                         | **RECEIPT**  | claude             |   0   |   0    |
+| [x3300_956658_claude_chronoflux-f5-is-data-blocked-not-mapping-blocked.myc.md](./x3300_956658_claude_chronoflux-f5-is-data-blocked-not-mapping-blocked.myc.md)                                                                                     | **OTHER**    | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -4624,6 +4625,20 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `t chronoflux-f5`
   - `shasum -a 256 docs/CHRONOFLUX_PREREGISTER.md`
+
+### [x3300_956658_claude_chronoflux-f5-is-data-blocked-not-mapping-blocked.myc.md](./x3300_956658_claude_chronoflux-f5-is-data-blocked-not-mapping-blocked.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Falsifiers**:
+  - _A clock built from `created:`/t-filename timestamps of the voiced ledger
+    spans meaningfully more than ~47 days / ≥3 thirty-day windows — then a
+    wider-clock pre-registration WOULD help and this 'wait for data' conclusion
+    is wrong._
+  - _The federation is shown to have >47 days of dated, voiced, timestamped
+    history that this check missed — then the data-scarcity claim is a parsing
+    artifact._
+- **Suggested Commands**:
+  - `t chronoflux-f5`
 
 ### [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)
 

@@ -39,6 +39,7 @@
     "forge": "deno run -A src/x8760_forge.ts",
     "guards_drill": "deno run -A src/x6C20_guards_drill.ts",
     "seal_commit": "deno run -A src/x7200_seal_commit.ts",
+    "chronoflux_f5": "deno run -A src/x8310_chronoflux_f5.ts",
     "forge:parity": "deno test --allow-read src/forge_parity_test.ts",
     // verify the swarm's signed record as an OUTSIDER would: published @s0fractal/witness
     // + public repo data only, no trinity tooling (codex x5000_955729, enterability harness).

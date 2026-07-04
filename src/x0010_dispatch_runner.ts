@@ -106,6 +106,7 @@ export const POSITION_TO_FILE: Record<string, string> = {
   "7/2": "x7200_seal_commit.ts",
   "7/E": "x7E00_anchor_prep.ts",
   "7/F": "x7F00_daemon.ts",
+  "8/31": "x8310_chronoflux_f5.ts",
   "8/3": "x8300_physics.ts",
   "8/7": "x8700_network.ts",
   "8/74": "x8740_map.ts",

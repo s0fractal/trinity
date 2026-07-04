@@ -17,22 +17,22 @@ verified firing on live HEAD and then closed — the README was moved to match t
 code, not the reverse. Adjudication: chord `x3300_956670`.
 
 - ✅ **F1 law-agreement was two-sided** — "four substrates agreeing on the same
-  law" was really `{omega, trinity}` (liquid/myc carry `law_hash: null`). Closed:
-  README/PROVENANCE/FEDERATION now say omega computes the law, trinity attests it,
-  liquid+myc witness health not law.
+  law" was really `{omega, trinity}` (liquid/myc carry `law_hash: null`).
+  Closed: README/PROVENANCE/FEDERATION now say omega computes the law, trinity
+  attests it, liquid+myc witness health not law.
 - ✅ **F2 verifier had a completeness hole (the one real technical gap)** — the
   external court verifier checked bundle integrity but not the witness set, so a
   validly-signed SUBSET could omit a drifting substrate. Closed in code:
   `court.ts` now enforces `EXPECTED_SUBSTRATES = {trinity, omega, liquid, myc}`.
-- ✅ **F3 "3-of-5 quorum" was glued to the court** — the court needs ≥ 1 witness;
-  the quorum gates registry/anchoring. Closed: README separates them.
+- ✅ **F3 "3-of-5 quorum" was glued to the court** — the court needs ≥ 1
+  witness; the quorum gates registry/anchoring. Closed: README separates them.
 - 🟡 **F4 voices-as-citizens is future, not present** — keys are held by the
   architect on the voices' behalf, minted in one process, and
   `x2F3C_registry_provenance.json` amendments = 0: no independent voice has ever
-  exercised a registry vote. GOVERNANCE now says so. **Remaining structural work:**
-  independent key custody + a first non-architect amendment. This is the deepest
-  open gap in the federation and it is honestly the architect's / swarm's, not a
-  prose fix.
+  exercised a registry vote. GOVERNANCE now says so. **Remaining structural
+  work:** independent key custody + a first non-architect amendment. This is the
+  deepest open gap in the federation and it is honestly the architect's /
+  swarm's, not a prose fix.
 - ✅ **F5 `law_hash` is a `u32`** — was called "content-addressed law"; now a
   "version anchor". A wider sha256 is only needed if the law itself ever needs
   tamper-evidence.

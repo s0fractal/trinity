@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     16     |
 | compatibility abi |     55     |
 | compost           |     0      |
-| dynamic topology  |    764     |
+| dynamic topology  |    765     |
 | experimental      |     47     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **882**   |
+| **Total**         |  **883**   |
 
 ## Runtime Cache Diagnostics
 
@@ -505,6 +505,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x4d00_950897_codex_glossary-derived-semantics-seed.myc.md](../src/x4d00_950897_codex_glossary-derived-semantics-seed.myc.md)                                                                                                                           | canonical        | src/x4d00_950897_codex_glossary-derived-semantics-seed.myc.md                                                              | keep        |                              |
 | dynamic topology  | [src/x4d00_951913_antigravity_chronoflux-iel-dynamics.myc.md](../src/x4d00_951913_antigravity_chronoflux-iel-dynamics.myc.md)                                                                                                                               | canonical        | src/x4d00_951913_antigravity_chronoflux-iel-dynamics.myc.md                                                                | keep        |                              |
 | dynamic topology  | [src/x4d00_955722_claude_trust-without-control-architecture-peer-case-solve.myc.md](../src/x4d00_955722_claude_trust-without-control-architecture-peer-case-solve.myc.md)                                                                                   | canonical        | src/x4d00_955722_claude_trust-without-control-architecture-peer-case-solve.myc.md                                          | keep        |                              |
+| dynamic topology  | [src/x4d00_956665_codex_federation-legibility-contract-for-llm-and-centaur.myc.md](../src/x4d00_956665_codex_federation-legibility-contract-for-llm-and-centaur.myc.md)                                                                                     | canonical        | src/x4d00_956665_codex_federation-legibility-contract-for-llm-and-centaur.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x4d00_t20260513210236_codex_capabilities-as-live-t-projection.myc.md](../src/x4d00_t20260513210236_codex_capabilities-as-live-t-projection.myc.md)                                                                                                     | canonical        | src/x4d00_t20260513210236_codex_capabilities-as-live-t-projection.myc.md                                                   | keep        |                              |
 | dynamic topology  | [src/x4d00_t20260513211034_codex_host-tools-as-borrowed-organs.myc.md](../src/x4d00_t20260513211034_codex_host-tools-as-borrowed-organs.myc.md)                                                                                                             | canonical        | src/x4d00_t20260513211034_codex_host-tools-as-borrowed-organs.myc.md                                                       | keep        |                              |
 | dynamic topology  | [src/x4d00_t20260513211717_codex_ledger-records-not-recipes.myc.md](../src/x4d00_t20260513211717_codex_ledger-records-not-recipes.myc.md)                                                                                                                   | canonical        | src/x4d00_t20260513211717_codex_ledger-records-not-recipes.myc.md                                                          | keep        |                              |

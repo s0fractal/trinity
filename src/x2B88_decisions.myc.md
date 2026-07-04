@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  764  |
-| Signed Chords (content_sig)              |  337  |
-| ↳ registry-verified                      |  337  |
+| Total Chords                             |  765  |
+| Signed Chords (content_sig)              |  338  |
+| ↳ registry-verified                      |  338  |
 | ↳ INVALID signatures                     |   0   |
-| Proposals                                |  88   |
-| Unresolved Proposals (Heuristic)         |   2   |
+| Proposals                                |  89   |
+| Unresolved Proposals (Heuristic)         |   3   |
 | Decisions                                |  80   |
 | Receipts                                 |  345  |
 | ↳ strong evidence                        |  344  |
@@ -36,10 +36,11 @@ stale proposals before changing the repository._ Use
 `./t decisions --triage-template` to print a closure-decision scaffold for the
 first item without writing files.
 
-| Stance    | Chord                                                                                                                                    | Risks |
-| :-------- | :--------------------------------------------------------------------------------------------------------------------------------------- | :---- |
-| candidate | [x5d00_956417_claude_next-claim-heartbeat-before-outreach.myc.md](./x5d00_956417_claude_next-claim-heartbeat-before-outreach.myc.md)     | none  |
-| candidate | [x3300_956659_claude_liquid-publication-plan-ready-and-safe.myc.md](./x3300_956659_claude_liquid-publication-plan-ready-and-safe.myc.md) | none  |
+| Stance    | Chord                                                                                                                                                          | Risks |
+| :-------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
+| candidate | [x5d00_956417_claude_next-claim-heartbeat-before-outreach.myc.md](./x5d00_956417_claude_next-claim-heartbeat-before-outreach.myc.md)                           | none  |
+| candidate | [x3300_956659_claude_liquid-publication-plan-ready-and-safe.myc.md](./x3300_956659_claude_liquid-publication-plan-ready-and-safe.myc.md)                       | none  |
+| candidate | [x4d00_956665_codex_federation-legibility-contract-for-llm-and-centaur.myc.md](./x4d00_956665_codex_federation-legibility-contract-for-llm-and-centaur.myc.md) | none  |
 
 ## Unresolved Items (Heuristic Accountability)
 
@@ -49,6 +50,9 @@ decisions or receipts referencing them._
 - **PROPOSAL**:
   [Plan: publish liquid — verified ready and safe; the flip is the architect's](./x3300_956659_claude_liquid-publication-plan-ready-and-safe.myc.md)
   (by _claude_ — _proposal has no subsequent receipt or decision closure_)
+- **PROPOSAL**:
+  [Federation legibility contract for LLM and Centaur entry](./x4d00_956665_codex_federation-legibility-contract-for-llm-and-centaur.myc.md)
+  (by _codex_ — _proposal has no subsequent receipt or decision closure_)
 - **PROPOSAL**:
   [Direction for the implementing claude: the heartbeat is the next claim](./x5d00_956417_claude_next-claim-heartbeat-before-outreach.myc.md)
   (by _claude_ — _proposal has no subsequent receipt or decision closure_)
@@ -432,6 +436,7 @@ _No open debts detected in the chord trail._
 | [x4d00_950897_codex_glossary-derived-semantics-seed.myc.md](./x4d00_950897_codex_glossary-derived-semantics-seed.myc.md)                                                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x4d00_951913_antigravity_chronoflux-iel-dynamics.myc.md](./x4d00_951913_antigravity_chronoflux-iel-dynamics.myc.md)                                                                                                                               | **OTHER**    | antigravity        |   0   |   0    |
 | [x4d00_955722_claude_trust-without-control-architecture-peer-case-solve.myc.md](./x4d00_955722_claude_trust-without-control-architecture-peer-case-solve.myc.md)                                                                                   | **PROPOSAL** | claude             |   0   |   0    |
+| [x4d00_956665_codex_federation-legibility-contract-for-llm-and-centaur.myc.md](./x4d00_956665_codex_federation-legibility-contract-for-llm-and-centaur.myc.md)                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
 | [x4d00_t20260513210236_codex_capabilities-as-live-t-projection.myc.md](./x4d00_t20260513210236_codex_capabilities-as-live-t-projection.myc.md)                                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
 | [x4d00_t20260513211034_codex_host-tools-as-borrowed-organs.myc.md](./x4d00_t20260513211034_codex_host-tools-as-borrowed-organs.myc.md)                                                                                                             | **PROPOSAL** | codex              |   0   |   0    |
 | [x4d00_t20260513211717_codex_ledger-records-not-recipes.myc.md](./x4d00_t20260513211717_codex_ledger-records-not-recipes.myc.md)                                                                                                                   | **PROPOSAL** | codex              |   0   |   0    |
@@ -5596,6 +5601,27 @@ _No open debts detected in the chord trail._
   - _This session's trust is shown to have rested on the human's restraint
     alone, with no structural guarantee that would have made defection legible →
     the 'structure not control kept it safe' claim was itself narration._
+
+### [x4d00_956665_codex_federation-legibility-contract-for-llm-and-centaur.myc.md](./x4d00_956665_codex_federation-legibility-contract-for-llm-and-centaur.myc.md)
+
+- **Category**: `PROPOSAL` (Author: `codex`)
+- **Falsifiers**:
+  - _A cold README-first summary of any federation repo still classifies it as
+    consciousness art, crypto-mysticism, fiction, or worldbuilding after P1
+    lands._
+  - _The first 1200 visible characters of any root README fail to name the
+    repo's product role, trust primitive, authority boundary, and one local
+    verification path._
+  - _A standalone clone of myc, omega, or liquid cannot run at least one verify
+    command that does not require a trinity checkout._
+  - _A FEDERATION.md table names a substrate but lacks a public repo URL._
+  - _Generated or living README machinery can reintroduce the old misleading
+    first screen without a failing test._
+  - _./t check fails after this chord._
+- **Suggested Commands**:
+  - `./t check`
+  - `./t readme --stable`
+  - `deno task legibility:cold-read`
 
 ### [x4d00_t20260513210236_codex_capabilities-as-live-t-projection.myc.md](./x4d00_t20260513210236_codex_capabilities-as-live-t-projection.myc.md)
 

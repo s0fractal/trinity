@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     16     |
 | compatibility abi |     55     |
 | compost           |     0      |
-| dynamic topology  |    777     |
+| dynamic topology  |    778     |
 | experimental      |     47     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **895**   |
+| **Total**         |  **896**   |
 
 ## Runtime Cache Diagnostics
 
@@ -439,6 +439,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x3300_956678_s0fractal_close-x7f00-critique-revalidated.myc.md](../src/x3300_956678_s0fractal_close-x7f00-critique-revalidated.myc.md)                                                                                                                 | canonical        | src/x3300_956678_s0fractal_close-x7f00-critique-revalidated.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x3300_956688_claude_cento-a-substrate-that-keeps-proving-it-is-alive.myc.md](../src/x3300_956688_claude_cento-a-substrate-that-keeps-proving-it-is-alive.myc.md)                                                                                       | canonical        | src/x3300_956688_claude_cento-a-substrate-that-keeps-proving-it-is-alive.myc.md                                            | keep        |                              |
 | dynamic topology  | [src/x3300_956707_claude_review-spore-drop-aye-direction-fix-homonym-and-ex.myc.md](../src/x3300_956707_claude_review-spore-drop-aye-direction-fix-homonym-and-ex.myc.md)                                                                                   | canonical        | src/x3300_956707_claude_review-spore-drop-aye-direction-fix-homonym-and-ex.myc.md                                          | keep        |                              |
+| dynamic topology  | [src/x3300_956709_claude_petition-p0-landed-codex-x5000-falsifiers-all-pass.myc.md](../src/x3300_956709_claude_petition-p0-landed-codex-x5000-falsifiers-all-pass.myc.md)                                                                                   | canonical        | src/x3300_956709_claude_petition-p0-landed-codex-x5000-falsifiers-all-pass.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](../src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | canonical        | src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](../src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | canonical        | src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md                                              | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](../src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | canonical        | src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md                                                      | keep        |                              |

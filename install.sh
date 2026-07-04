@@ -1,9 +1,10 @@
 #!/usr/bin/env sh
 # install.sh — join the mycelium (local-first).
 #
-# Clones trinity (the organism) to ~/trinity and initializes the PUBLIC organs.
-# omega and liquid are private organs: present by reference (URL + pinned hash in
-# trinity), skipped gracefully — never a 404, never an auth prompt.
+# Clones trinity (the organism) to ~/trinity and initializes its public organs —
+# myc, omega, and liquid — as git submodules pinned by trinity. All three are now
+# public, so a clean checkout hydrates them anonymously — never a 404, never an
+# auth prompt. A sovereign (locally-ahead or diverged) organ is left untouched.
 #
 # You don't "use a service" — you join an organism and run it locally. The myc.md
 # worker is only a thin UI; resolution, chords, and verification are all local.
@@ -15,7 +16,7 @@ set -eu
 
 DEST="${TRINITY_HOME:-$HOME/trinity}"
 REPO="${TRINITY_REPO:-https://github.com/s0fractal/trinity.git}"
-# Never block on credentials for private organs — fail fast and degrade gracefully.
+# Never block on credentials — public organs clone anonymously; degrade gracefully.
 export GIT_TERMINAL_PROMPT=0
 
 normalize_repo() {
@@ -80,42 +81,41 @@ cd "$DEST"
 # the dispatcher so a node never silently runs broken code (see node-sync.sh).
 git config core.hooksPath .githooks
 
-echo "→ synchronizing public organ (pinned by trinity)"
-if ! git config -f .gitmodules --get-regexp '^submodule\.myc\.path$' >/dev/null 2>&1; then
-  echo "  · this checkout has no myc submodule declaration"
-else
-  git submodule sync -- myc >/dev/null
-  if [ ! -e myc/.git ] || ! git -C myc rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-    git submodule update --init -- myc
-    echo "  + myc cloned at trinity's pinned commit"
-  elif [ -n "$(git -C myc status --porcelain --untracked-files=normal)" ]; then
-    echo "  · myc has local changes — leaving its checkout untouched"
+# Sync one public organ submodule to trinity's pin, preserving sovereign local
+# state: clone if missing, fast-forward if trinity's pin advanced, and never move
+# a checkout that has local changes or is ahead of / diverged from the pin.
+sync_organ() {
+  organ="$1"
+  if ! git config -f .gitmodules --get-regexp "^submodule\.${organ}\.path$" >/dev/null 2>&1; then
+    echo "  · this checkout has no $organ submodule declaration"
+    return
+  fi
+  git submodule sync -- "$organ" >/dev/null
+  if [ ! -e "$organ/.git" ] || ! git -C "$organ" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    git submodule update --init -- "$organ"
+    echo "  + $organ cloned at trinity's pinned commit"
+  elif [ -n "$(git -C "$organ" status --porcelain --untracked-files=normal)" ]; then
+    echo "  · $organ has local changes — leaving its checkout untouched"
   else
-    CURRENT_MYC="$(git -C myc rev-parse HEAD)"
-    PINNED_MYC="$(git ls-tree HEAD myc | awk '{print $3}')"
-    if [ "$CURRENT_MYC" = "$PINNED_MYC" ]; then
-      echo "  = myc already at trinity's pinned commit"
+    CURRENT="$(git -C "$organ" rev-parse HEAD)"
+    PINNED="$(git ls-tree HEAD "$organ" | awk '{print $3}')"
+    if [ "$CURRENT" = "$PINNED" ]; then
+      echo "  = $organ already at trinity's pinned commit"
     else
-      # Fetch objects without moving the checkout. An old pin may advance to a
-      # descendant safely; a local-ahead or diverged organ is sovereign state.
-      git -C myc fetch --prune origin
-      if git -C myc merge-base --is-ancestor "$CURRENT_MYC" "$PINNED_MYC"; then
-        git submodule update -- myc
-        echo "  + myc fast-forwarded to trinity's pinned commit"
+      git -C "$organ" fetch --prune origin
+      if git -C "$organ" merge-base --is-ancestor "$CURRENT" "$PINNED"; then
+        git submodule update -- "$organ"
+        echo "  + $organ fast-forwarded to trinity's pinned commit"
       else
-        echo "  · myc is ahead or diverged from trinity's pin — fetched only; checkout untouched"
+        echo "  · $organ is ahead or diverged from trinity's pin — fetched only; checkout untouched"
       fi
     fi
   fi
-fi
+}
 
-echo "→ private organs stay by-reference"
-for organ in omega liquid; do
-  if [ -e "$organ/.git" ] && git -C "$organ" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-    echo "  = $organ already present — untouched"
-  else
-    echo "  · $organ — not cloned"
-  fi
+echo "→ synchronizing public organs (pinned by trinity)"
+for organ in myc omega liquid; do
+  sync_organ "$organ"
 done
 
 if command -v deno >/dev/null 2>&1; then

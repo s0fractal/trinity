@@ -14,6 +14,10 @@ natural-language and hex-coordinate queries over live, signed state.
 
 ## Orientation (read first)
 
+- [ORIENTATION.md](ORIENTATION.md): how *not* to misread this repository — a
+  ledger-native research substrate, not a SaaS product. Why there are no GitHub
+  Releases/Issues, the three doors in, and the debts named openly. One page,
+  before any ontology.
 - [AGENTS.md](AGENTS.md): the self-driving loop — how the substrate orients,
   proposes, acts, and verifies itself.
 - [docs/COORDINATES.md](docs/COORDINATES.md): the hex-coordinate decoder. The

@@ -9,14 +9,14 @@ documents, and local caches outside the core Deno flat-src code base._
 
 | Category          | File Count |
 | :---------------- | :--------: |
-| compatibility     |     13     |
+| compatibility     |     14     |
 | compatibility abi |     55     |
 | compost           |     0      |
 | dynamic topology  |    756     |
 | experimental      |     47     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **871**   |
+| **Total**         |  **872**   |
 
 ## Runtime Cache Diagnostics
 
@@ -94,6 +94,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | compatibility     | [docs/PROVENANCE.md](../docs/PROVENANCE.md)                                                                                                                                                                                                                 | migration_input  |                                                                                                                            | keep        |                              |
 | compatibility     | [docs/PUBLIC_PROCESS_TRACE.md](../docs/PUBLIC_PROCESS_TRACE.md)                                                                                                                                                                                             | compatibility    | src/x8F11_public_process_trace.myc.md                                                                                      | keep        | symlink shim                 |
 | compatibility     | [docs/README.md](../docs/README.md)                                                                                                                                                                                                                         | compatibility    |                                                                                                                            | keep        | directory index              |
+| compatibility     | [docs/chronoflax_IEL.md](../docs/chronoflax_IEL.md)                                                                                                                                                                                                         | migration_input  |                                                                                                                            | keep        |                              |
 | experimental      | [fixtures/canon-vectors.json](../fixtures/canon-vectors.json)                                                                                                                                                                                               | experimental     |                                                                                                                            | keep        | test fixture                 |
 | experimental      | [fixtures/phi/README.md](../fixtures/phi/README.md)                                                                                                                                                                                                         | experimental     |                                                                                                                            | keep        | test fixture                 |
 | experimental      | [fixtures/phi/ROUNDTRIP.md](../fixtures/phi/ROUNDTRIP.md)                                                                                                                                                                                                   | experimental     |                                                                                                                            | keep        | test fixture                 |

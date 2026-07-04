@@ -17,9 +17,9 @@
 //   omega/liquid energy organs (xA017/xA036/xA204) — READ, never recompute.
 // skill_tag: physics
 // skill_safe: yes-with-care
-//   default run is read-only; --stable writes one tracked projection
-//   (src/x8388_physics.latest.myc.md) — a benign, idempotent, deterministic regen,
-//   maintained like every other stable projection.
+//   default run is read-only; --stable writes one gitignored local cache
+//   (src/x8388_physics.latest.myc.md, not committed) — a benign, idempotent,
+//   deterministic regen you can reproduce and diff any time.
 //
 // intent: make substrate PRESSURE legible in one glance. This is a LENS, NOT an
 //   engine: it recomputes nothing. It composes the ALREADY-COMPUTED outputs of
@@ -236,6 +236,71 @@ export function cognitionRegion(field: any): Region {
   };
 }
 
+/** Open severity-tagged entries in docs/KNOWN_GAPS.md. A gap line is a list item
+ *  led by a status emoji; ✅ = closed, so 🔴/🟡/🟢 = open. The convention line and
+ *  inline mentions are not list-led, so they are not counted. */
+export function parseKnownGaps(
+  text: string,
+): { blocking: number; incomplete: number; nice: number } {
+  const count = (emoji: string) =>
+    (text.match(new RegExp(`^\\s*-\\s*${emoji}`, "gmu")) ?? []).length;
+  return {
+    blocking: count("🔴"),
+    incomplete: count("🟡"),
+    nice: count("🟢"),
+  };
+}
+
+/** Declared-but-undone debt from the substrate's OWN honest ledgers: open
+ *  KNOWN_GAPS entries (severity-tagged) plus tests that exist but are muted
+ *  (never run). This is the one thing `t decisions` / `t evidence` do not see —
+ *  what we have openly deferred to ourselves. Both inputs are static in-tree
+ *  facts (trinity's own tree), so the region is deterministic for `--stable` and
+ *  never forks on submodule checkout. A DESCRIPTOR: it names debt, never ranks work. */
+export function debtRegion(
+  gaps: { blocking: number; incomplete: number; nice: number },
+  mutedTests: number,
+): Region {
+  const signals: Signal[] = [
+    {
+      label: "gaps.blocking",
+      value: String(gaps.blocking),
+      level: gaps.blocking > 0 ? "block" : "ok",
+      note: "🔴 open KNOWN_GAPS entries that block a real claim",
+    },
+    {
+      label: "gaps.incomplete",
+      value: String(gaps.incomplete),
+      level: gaps.incomplete > 0 ? "watch" : "ok",
+      note: "🟡 open KNOWN_GAPS entries — works but incomplete",
+    },
+    {
+      label: "muted_tests",
+      value: String(mutedTests),
+      level: mutedTests > 0 ? "watch" : "ok",
+      note: "trinity tests that exist but are ignored/skipped (never run)",
+    },
+    {
+      label: "gaps.nice_to_have",
+      value: String(gaps.nice),
+      level: "ok",
+      note: "🟢 open KNOWN_GAPS entries — nice-to-have",
+    },
+  ];
+  const activity = gaps.blocking + gaps.incomplete + gaps.nice + mutedTests > 0;
+  const { health, pressure } = classify(signals, activity);
+  return {
+    region: "debt",
+    source: "docs/KNOWN_GAPS.md + muted tests",
+    health,
+    pressure,
+    headline:
+      `${gaps.blocking}🔴 · ${gaps.incomplete}🟡 · ${gaps.nice}🟢 gaps · ` +
+      `${mutedTests} muted tests`,
+    signals,
+  };
+}
+
 // ── weather assembly ─────────────────────────────────────────────────────────
 export interface Weather {
   regions: Region[];
@@ -272,6 +337,7 @@ export const FALSIFIERS: string[] = [
   "Authority inflation: this lens applies or recommends-as-applied any capability/phase change (it must only report).",
   "Fork: a future revision recomputes liquid/omega energy/metabolism independently instead of reading their organs.",
   "LLM dependency: the projection cannot be produced without an LLM call.",
+  "Debt drift: the `debt` region's counts differ from a direct read — open 🔴/🟡/🟢 list items in docs/KNOWN_GAPS.md, or `Deno.test.ignore`/`ignore: true` occurrences in src/*_test.ts.",
 ];
 
 function pressureBar(p: number): string {
@@ -297,7 +363,8 @@ export function renderWeather(
   L.push("");
   L.push(
     "A read-only LENS: it composes what the organs already compute " +
-      "(`t decisions`, `t evidence`, the cognition field) into pressure. " +
+      "(`t decisions`, `t evidence`, the cognition field) plus the substrate's " +
+      "own declared debt (`docs/KNOWN_GAPS.md` + muted tests) into pressure. " +
       "It recomputes nothing and forks no physics.",
   );
   L.push("");
@@ -371,16 +438,34 @@ async function readSidecar(path: string): Promise<any> {
   }
 }
 
+const KNOWN_GAPS = join(HERE, "..", "docs", "KNOWN_GAPS.md");
+
+/** Count trinity's own muted tests — those that exist but never run. Scoped to
+ *  trinity's flat src/ (always present) so the count is deterministic regardless
+ *  of submodule checkout. (omega's #[ignore]d ZK proof is surfaced deterministically
+ *  elsewhere, via the court's proof_readiness — not re-scanned here.) */
+function countMutedTests(): number {
+  let n = 0;
+  for (const e of Deno.readDirSync(HERE)) {
+    if (!e.isFile || !e.name.endsWith("_test.ts")) continue;
+    const t = Deno.readTextFileSync(join(HERE, e.name));
+    n += (t.match(/Deno\.test\.ignore|ignore:\s*true/g) ?? []).length;
+  }
+  return n;
+}
+
 async function gatherRegions(): Promise<Region[]> {
-  const [decisions, evidence, field] = await Promise.all([
+  const [decisions, evidence, field, knownGaps] = await Promise.all([
     callJson(["decisions", "--json"]).catch(() => null),
     callJson(["evidence", "--json"]).catch(() => null),
     readSidecar(COGNITION_FIELD),
+    Deno.readTextFile(KNOWN_GAPS).catch(() => ""),
   ]);
   return [
     governanceRegion(decisions),
     proofRegion(evidence),
     cognitionRegion(field),
+    debtRegion(parseKnownGaps(knownGaps), countMutedTests()),
   ];
 }
 

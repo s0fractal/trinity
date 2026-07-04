@@ -6,7 +6,9 @@ import {
   assembleWeather,
   classify,
   cognitionRegion,
+  debtRegion,
   governanceRegion,
+  parseKnownGaps,
   proofRegion,
   renderWeather,
   type Signal,
@@ -118,4 +120,48 @@ Deno.test("physics renderWeather — deterministic given regions (Falsifier 1)",
   const md = renderWeather(w, meta);
   for (const r of regions) assert(md.includes(r.region));
   assert(md.includes("Falsifiers"));
+});
+
+Deno.test("physics parseKnownGaps — counts open severity-tagged list items only", () => {
+  const md = [
+    "# gaps",
+    "Convention: 🔴 blocks · 🟡 incomplete · 🟢 nice-to-have.", // NOT a list item → ignored
+    "- ✅ **done thing** — closed",
+    "- 🔴 **blocker** — a real claim is blocked",
+    "- 🟡 **partial** — works but incomplete",
+    "  - 🟡 **nested partial** — still counts",
+    "- 🟢 **someday** — nice to have (✅ inline mention must not recount)",
+  ].join("\n");
+  const g = parseKnownGaps(md);
+  assertEquals(g.blocking, 1, "one 🔴 list item");
+  assertEquals(g.incomplete, 2, "two 🟡 list items incl. nested");
+  assertEquals(
+    g.nice,
+    1,
+    "one 🟢 list item; the convention line + inline ✅ are not counted",
+  );
+});
+
+Deno.test("physics debtRegion — blocker blocks, incomplete/muted watch, nice is a note (descriptor)", () => {
+  const blocked = debtRegion({ blocking: 1, incomplete: 3, nice: 2 }, 0);
+  assertEquals(blocked.health, "blocked", "any 🔴 open gap blocks the region");
+  assert(
+    blocked.headline.includes("1🔴"),
+    "headline reports the counts verbatim",
+  );
+
+  const watch = debtRegion({ blocking: 0, incomplete: 0, nice: 0 }, 2);
+  assertEquals(
+    watch.health,
+    "hot",
+    "muted tests alone are a single watch → hot",
+  );
+
+  const clean = debtRegion({ blocking: 0, incomplete: 0, nice: 0 }, 0);
+  assertEquals(
+    clean.health,
+    "dormant",
+    "no debt, no muted tests → dormant, not alive",
+  );
+  assertEquals(clean.pressure, 0, "no pressure when nothing is deferred");
 });

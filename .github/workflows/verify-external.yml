@@ -39,6 +39,13 @@ jobs:
           if deno run --no-config --allow-read --allow-net --minimum-dependency-age=0 probes/external-trust-verifier-v0/court.ts probes/external-trust-verifier-v0/court-attestation.tampered.json; then
             echo "FALSIFIER FAILED: court.ts accepted a tampered attestation"; exit 1
           else echo "court.ts correctly rejected the tampered attestation"; fi
+      # Falsifier (audit F2): the outsider MUST reject a VALIDLY-SIGNED but INCOMPLETE
+      # bundle — a real key signing an honest subset that omits a substrate. Integrity
+      # is not completeness; CI fails if court.ts accepts the subset fixture.
+      - run: |
+          if deno run --no-config --allow-read --allow-net --minimum-dependency-age=0 probes/external-trust-verifier-v0/court.ts probes/external-trust-verifier-v0/court-attestation.subset.json; then
+            echo "FALSIFIER FAILED: court.ts accepted a validly-signed incomplete witness set (F2)"; exit 1
+          else echo "court.ts correctly rejected the incomplete (subset) attestation"; fi
       # The PRODUCT, proven from outside: consume the PUBLISHED @s0fractal/agentseal@0.2.0
       # straight from jsr (--no-config, so nothing resolves from this repo) and exercise
       # seal → verify → tamper-catch → the 0.2.0 mandate-gated surface. This turns "0.2.0 is

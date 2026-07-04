@@ -39,3 +39,14 @@ Deno.test("legibility — the guard actually fires on a mystical / contradicted 
     "a contradicted, mysticism-first README must fail the contract",
   );
 });
+
+Deno.test("legibility — the guard catches ritual/underselling before the product (codex x3300_956673)", () => {
+  const ritualFirst = checkLegibility(
+    "fake",
+    '---\nchord:\n  primary: "oct:3.7"\nmode: OBSERVE\n---\n# x\n`x` is a local draft space. trust the hash, Ed25519 witnesses, verify with deno task verify. This is not a data lake.',
+  );
+  assert(
+    !ritualFirst.ok,
+    "a README opening with chord: frontmatter / 'local draft space' before the product must fail",
+  );
+});

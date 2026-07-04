@@ -29,4 +29,15 @@ Deno.test("honesty regression — external-audit fixes F2/F5 stay closed", () =>
       `F5 regressed: ${f} calls law_hash a 'content-addressed law' (it is a u32 version anchor)`,
     );
   }
+
+  // F1 (codex x3300_956673): the court claim must stay honestly scoped — the bare
+  // "four substrates agree on the same law" overclaim must not reappear in shipped docs.
+  for (const f of ["README.md", "docs/PROVENANCE.md", "FEDERATION.md"]) {
+    assert(
+      !/four substrates agree(?:ing)? on the same law/i.test(
+        Deno.readTextFileSync(f),
+      ),
+      `F1 regressed: ${f} reintroduced 'four substrates agree on the same law' without the omega-computes/trinity-attests scoping`,
+    );
+  }
 });

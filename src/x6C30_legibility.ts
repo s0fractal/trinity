@@ -43,6 +43,12 @@ const CONTRADICTED = [
 // Heavy mythic terms that must NOT appear before the plain product sentence.
 const MYSTIC =
   /consciousness|\bsovereignty\b|autopoietic|Φ protocol|phi protocol|no human chooses|the mesh chooses|achieved sovereignty|living repository/i;
+// Internal ritual syntax or underselling that must NOT precede the product marker
+// (codex x3300_956673: the guard must enforce ORDER, not just presence — a README
+// that opens with `chord:` frontmatter or "local draft space" teaches the wrong
+// ontology before the product sentence, even if the markers appear later).
+const RITUAL =
+  /^---\s*\n\s*(?:chord|energy|mode|tension):|local draft space|a local (?:draft|scratch) space/im;
 
 export interface LegibilityVerdict {
   repo: string;
@@ -75,18 +81,24 @@ export function checkLegibility(
   );
   const pm = head.search(PRODUCT);
   const mm = head.search(MYSTIC);
-  const mysticBefore = mm >= 0 && (pm < 0 || mm < pm)
+  const rm = head.search(RITUAL);
+  const before = (i: number) => i >= 0 && (pm < 0 || i < pm);
+  const mysticBefore = before(mm)
     ? head.slice(mm, mm + 40).replace(/\s+/g, " ")
     : null;
+  const ritualBefore = before(rm)
+    ? head.slice(rm, rm + 40).replace(/\s+/g, " ")
+    : null;
   const ok = markers.product && markers.not_clause && markers.verify &&
-    markers.authority && contradictions.length === 0 && !mysticBefore;
+    markers.authority && contradictions.length === 0 && !mysticBefore &&
+    !ritualBefore;
   return {
     repo,
     present: true,
     ok,
     markers,
     contradictions,
-    mysticism_before_product: mysticBefore,
+    mysticism_before_product: mysticBefore ?? ritualBefore,
   };
 }
 

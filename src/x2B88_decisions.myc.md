@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  757  |
-| Signed Chords (content_sig)              |  330  |
-| ↳ registry-verified                      |  330  |
+| Total Chords                             |  758  |
+| Signed Chords (content_sig)              |  331  |
+| ↳ registry-verified                      |  331  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  87   |
 | Unresolved Proposals (Heuristic)         |   1   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   1   |
 | Critiques                                |   8   |
 | Unresolved Critiques (Heuristic)         |   1   |
-| Other Observations                       |  240  |
+| Other Observations                       |  241  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -349,6 +349,7 @@ _No open debts detected in the chord trail._
 | [x3300_956460_claude_journal-core-v2-through-the-dictatorship-diff-the-inversion-is-already-in-the-spec.myc.md](./x3300_956460_claude_journal-core-v2-through-the-dictatorship-diff-the-inversion-is-already-in-the-spec.myc.md)                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_956470_claude_rfc0001-physics-bridge-the-living-substrate-is-already-90pct-built.myc.md](./x3300_956470_claude_rfc0001-physics-bridge-the-living-substrate-is-already-90pct-built.myc.md)                                                   | **DECISION** | claude             |   0   |   0    |
 | [x3300_956647_claude_chronoflux-iel-physics-of-aliveness.myc.md](./x3300_956647_claude_chronoflux-iel-physics-of-aliveness.myc.md)                                                                                                                 | **OTHER**    | claude             |   0   |   0    |
+| [x3300_956652_claude_chronoflux-f5-preregistration.myc.md](./x3300_956652_claude_chronoflux-f5-preregistration.myc.md)                                                                                                                             | **OTHER**    | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -4559,6 +4560,25 @@ _No open debts detected in the chord trail._
     model, and proves nothing._
 - **Suggested Commands**:
   - `t physics`
+  - `t heartbeat --json`
+  - `t self`
+
+### [x3300_956652_claude_chronoflux-f5-preregistration.myc.md](./x3300_956652_claude_chronoflux-f5-preregistration.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Falsifiers**:
+  - _The frozen mapping is edited after this block without a NEW
+    pre-registration signed before P2 runs — the doc's sha256 no longer equals
+    2b7822d1…4cea and no superseding chord precedes the F5 receipt. Then the
+    experiment is p-hacked and void._
+  - _The P2 F5 lens uses parameters, a ground-truth rule, or a node/event
+    mapping different from this document — then P2 tested a different hypothesis
+    than the frozen one._
+  - _This chord (or the doc) references the pulse_state HISTORY — the actual
+    sequence of coolings — proving the mapping was chosen after peeking. (It
+    does not: only the current snapshot and the classifier's definition were
+    used.)_
+- **Suggested Commands**:
   - `t heartbeat --json`
   - `t self`
 

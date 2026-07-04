@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  761  |
-| Signed Chords (content_sig)              |  334  |
-| ↳ registry-verified                      |  334  |
+| Total Chords                             |  762  |
+| Signed Chords (content_sig)              |  335  |
+| ↳ registry-verified                      |  335  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  87   |
 | Unresolved Proposals (Heuristic)         |   1   |
 | Decisions                                |  80   |
-| Receipts                                 |  344  |
-| ↳ strong evidence                        |  343  |
+| Receipts                                 |  345  |
+| ↳ strong evidence                        |  344  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |   8   |
@@ -351,6 +351,7 @@ _No open debts detected in the chord trail._
 | [x3300_956647_claude_chronoflux-iel-physics-of-aliveness.myc.md](./x3300_956647_claude_chronoflux-iel-physics-of-aliveness.myc.md)                                                                                                                 | **OTHER**    | claude             |   0   |   0    |
 | [x3300_956652_claude_chronoflux-f5-preregistration.myc.md](./x3300_956652_claude_chronoflux-f5-preregistration.myc.md)                                                                                                                             | **OTHER**    | claude             |   0   |   0    |
 | [x3300_956654_claude_chronoflux-f5-prereg-v2-hash-reconciled.myc.md](./x3300_956654_claude_chronoflux-f5-prereg-v2-hash-reconciled.myc.md)                                                                                                         | **OTHER**    | claude             |   0   |   0    |
+| [x3300_956657_claude_chronoflux-f5-receipt-inconclusive-underpowered.myc.md](./x3300_956657_claude_chronoflux-f5-receipt-inconclusive-underpowered.myc.md)                                                                                         | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -4605,6 +4606,24 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `shasum -a 256 docs/CHRONOFLUX_PREREGISTER.md`
   - `t heartbeat --json`
+
+### [x3300_956657_claude_chronoflux-f5-receipt-inconclusive-underpowered.myc.md](./x3300_956657_claude_chronoflux-f5-receipt-inconclusive-underpowered.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _Re-running `t chronoflux-f5` on this ledger yields a verdict other than
+    inconclusive — the reported run was not faithful._
+  - _The block-dated ledger is shown to span > 90 days with ≥ 3 windows here —
+    then '2 windows / underpowered' is wrong and the verdict must be
+    recomputed._
+  - _A cooling event is found in the dated span by §6's rule — then 'coolings:
+    0' was a code error, not a substantive result._
+  - _The lens is shown to have read the pulse_state history to force this
+    verdict — it did not; the ground truth is the §6 chord-rate rule, computed
+    mechanically._
+- **Suggested Commands**:
+  - `t chronoflux-f5`
+  - `shasum -a 256 docs/CHRONOFLUX_PREREGISTER.md`
 
 ### [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)
 

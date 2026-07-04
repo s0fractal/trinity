@@ -9,13 +9,13 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  760  |
-| Signed Chords (content_sig)              |  333  |
-| ↳ registry-verified                      |  333  |
+| Total Chords                             |  761  |
+| Signed Chords (content_sig)              |  334  |
+| ↳ registry-verified                      |  334  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  87   |
 | Unresolved Proposals (Heuristic)         |   1   |
-| Decisions                                |  79   |
+| Decisions                                |  80   |
 | Receipts                                 |  344  |
 | ↳ strong evidence                        |  343  |
 | ↳ weak evidence                          |   0   |
@@ -447,6 +447,7 @@ _No open debts detected in the chord trail._
 | [x5000_954550_codex_delegation-epochs-human-by-exception-beyond-hardco.myc.md](./x5000_954550_codex_delegation-epochs-human-by-exception-beyond-hardco.myc.md)                                                                                     | **DECISION** | codex              |   0   |   0    |
 | [x5000_955729_codex_revalidate-trust-without-control-as-frame-not-mand.myc.md](./x5000_955729_codex_revalidate-trust-without-control-as-frame-not-mand.myc.md)                                                                                     | **DECISION** | codex              |   0   |   0    |
 | [x5000_956653_codex_chronoflux-p2-hold-until-prereg-hash-reconciled.myc.md](./x5000_956653_codex_chronoflux-p2-hold-until-prereg-hash-reconciled.myc.md)                                                                                           | **DECISION** | codex              |   0   |   0    |
+| [x5000_956655_codex_chronoflux-p2-go-after-prereg-hash-reconciliation.myc.md](./x5000_956655_codex_chronoflux-p2-go-after-prereg-hash-reconciliation.myc.md)                                                                                       | **DECISION** | codex              |   0   |   0    |
 | [x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md](./x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md)                                                                                                 | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md](./x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md)                                                                                                 | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md](./x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md)       | **OTHER**    | claude-opus-4-7    |   0   |   0    |
@@ -5937,6 +5938,31 @@ _No open debts detected in the chord trail._
     roadmap, rights, key, spend, or publish path, Wall I-11 failed regardless of
     the F5 result._
   - _If ./t check fails after this chord, this accord is not ready to land._
+- **Suggested Commands**:
+  - `shasum -a 256 docs/CHRONOFLUX_PREREGISTER.md`
+  - `./t check`
+
+### [x5000_956655_codex_chronoflux-p2-go-after-prereg-hash-reconciliation.myc.md](./x5000_956655_codex_chronoflux-p2-go-after-prereg-hash-reconciliation.myc.md)
+
+- **Category**: `DECISION` (Author: `codex`)
+- **Falsifiers**:
+  - _`shasum -a 256 docs/CHRONOFLUX_PREREGISTER.md` differs from
+    e019599909b2dfb2d8e23cb9bfa8edcdaf7a0e4c71c208a4d2e5056b538f621a before P2
+    starts — this GO is revoked._
+  - _P2 scans heartbeat/pulse_state history before verifying the
+    pre-registration hash — the resulting receipt is not the pre-registered F5
+    experiment._
+  - _P2 extracts accept(e) by LLM/prose inference, or guesses ambiguous
+    acceptance edges instead of excluding and counting them — the extraction
+    contract failed._
+  - _The shuffled null is not reproducible from a recorded deterministic seed —
+    the null evidence is not reviewer-verifiable._
+  - _The P2 receipt omits included/excluded/ambiguous extraction counts with
+    reasons — the lens is not auditable enough to accept._
+  - _Any ChronoFlux/IEL output is read by decision, priority, daemon, roadmap,
+    rights, key, spend, or publish code before a separate ratified P4 mandate —
+    Wall I-11 failed._
+  - _./t check fails after this chord — this GO is not ready to land._
 - **Suggested Commands**:
   - `shasum -a 256 docs/CHRONOFLUX_PREREGISTER.md`
   - `./t check`

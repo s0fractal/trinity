@@ -17,7 +17,7 @@ jobs:
           # This trinity-core job runs WITHOUT submodules — it is self-sufficient;
           # submodule-dependent gates gate on `steps.subm.outputs.present`. Full
           # cross-substrate coverage lives in the isolated `cross-substrate` job
-          # below. myc + genesis (omega) are now PUBLIC; only liquid is private.
+          # below. myc, genesis (omega), and liquid are all now PUBLIC.
           submodules: false
 
       - name: Detect submodules
@@ -296,27 +296,17 @@ jobs:
   # Verifies the meta-repo's core thesis: that the substrates (myc / omega=genesis
   # / liquid) actually check out and a cross-substrate computation runs green.
   # Isolated from `verify` so a failure here never reddens trinity-core CI.
-  # myc + genesis (omega) are PUBLIC — fetched over anonymous HTTPS. Only liquid
-  # is private, over a READ-ONLY SSH deploy key. Secret surface: one key, not three.
+  # All three substrates (myc / genesis=omega / liquid) are now PUBLIC — fetched
+  # over anonymous HTTPS. Secret surface: ZERO deploy keys.
   cross-substrate:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout codebase
         uses: actions/checkout@v4
         with:
-          submodules: false # initialized manually below (public HTTPS + liquid key)
+          submodules: false # initialized manually below over public HTTPS
 
-      - name: Set up read-only deploy key for the private liquid submodule
-        env:
-          LIQUID_DEPLOY_KEY: ${{ secrets.LIQUID_DEPLOY_KEY }}
-        run: |
-          mkdir -p ~/.ssh && chmod 700 ~/.ssh
-          printf '%s\n' "$LIQUID_DEPLOY_KEY" > ~/.ssh/liquid && chmod 600 ~/.ssh/liquid
-          ssh-keyscan -t ed25519,rsa github.com >> ~/.ssh/known_hosts 2>/dev/null
-          printf 'Host gh-liquid\n  HostName github.com\n  User git\n  IdentityFile ~/.ssh/liquid\n  IdentitiesOnly yes\n' >> ~/.ssh/config
-          git config --global url."git@gh-liquid:s0fractal/liquid_architecture.git".insteadOf "https://github.com/s0fractal/liquid_architecture.git"
-
-      - name: Initialize submodules (omega + myc public HTTPS, liquid over its key)
+      - name: Initialize submodules (all public — anonymous HTTPS, no keys)
         run: |
           git submodule sync
           git submodule update --init

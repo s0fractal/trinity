@@ -151,9 +151,9 @@ silently take is the legitimacy the receipts rest on:
   cross-vendor. What is early is _distribution_ — no ergonomic hosted service,
   no language bindings beyond TypeScript/Deno yet.
 - **Not yet:** no external adopter has run this in production; a first
-  provenance-as-a-service pilot is the next milestone. trinity, myc, and omega
-  are public; liquid stays private by choice, and any further visibility change
-  is an architect-reserved decision.
+  provenance-as-a-service pilot is the next milestone. All four substrates —
+  trinity, myc, omega, and liquid — are now public; any further visibility
+  change is an architect-reserved decision.
 
 We would rather tell you exactly where the edge is than sell past it. The
 receipts are real and the on-ramp works today; what is still being paved is

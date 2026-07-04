@@ -94,6 +94,7 @@ export const POSITION_TO_FILE: Record<string, string> = {
   "6/B": "x6B00_reconcile.ts",
   "6/C": "x6C00_audit.ts",
   "6/C2": "x6C20_guards_drill.ts",
+  "6/C3": "x6C30_legibility.ts",
   "6/D": "x6D00_cowitness.ts",
   "6/E": "x6E00_court.ts",
   "6/E1": "x6E10_skeleton.ts",

@@ -38,6 +38,8 @@
     "test:packages": "(cd packages/autonomy-kernel && deno test -A) && (cd packages/canonical-receipt && deno test -A) && (cd packages/witness && deno test -A) && (cd packages/liquid-sync && deno test -A) && (cd packages/agentseal && deno test -A) && (cd packages/codeicide && deno test -A)",
     "forge": "deno run -A src/x8760_forge.ts",
     "guards_drill": "deno run -A src/x6C20_guards_drill.ts",
+    "legibility": "deno run -A src/x6C30_legibility.ts",
+    "legibility:cold-read": "deno run -A src/x6C30_legibility.ts",
     "seal_commit": "deno run -A src/x7200_seal_commit.ts",
     "chronoflux_f5": "deno run -A src/x8310_chronoflux_f5.ts",
     "forge:parity": "deno test --allow-read src/forge_parity_test.ts",

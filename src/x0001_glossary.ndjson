@@ -238,3 +238,4 @@
 {"11":"00 00 00 00 00 00 59 00","00":"5","02":["guards_drill","guards-drill","drill"],"04":"6/C2","09":"adversarial muster: feed each trust-root guard its exact violation and assert it REJECTS; a guard that accepts is a HOLE"}
 {"11":"00 00 00 00 00 00 00 59","00":"5","02":["seal_commit","seal-commit","verify-commit"],"04":"7/2","09":"seal a git commit as a verifiable agentseal action receipt (git note); verify re-derives it locally against the public registry"}
 {"11":"59 00 00 33 00 00 00 00","00":"5","02":["chronoflux_f5","chronoflux-f5"],"04":"8/31","09":"P2 read-only F5 lens: runs the frozen ChronoFlux-IEL mapping over the ledger, emits passed/failed/inconclusive vs a shuffled null (FIELD-DIAGNOSTIC)"}
+{"11":"00 00 00 00 00 00 59 00","00":"5","02":["legibility","cold-read"],"04":"6/C3","09":"first-screen legibility contract: each root README must name product/trust/authority/verify before any myth; guards cold human+LLM comprehension (codex x4d00)"}

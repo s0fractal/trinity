@@ -5470,6 +5470,18 @@
           ]
         }
       }
+    },
+    "links": {
+      "jsr:@s0fractal/agentseal@0.2.0": {
+        "dependencies": [
+          "jsr:@s0fractal/autonomy-kernel@0.4",
+          "jsr:@s0fractal/canonical-receipt@0.1",
+          "jsr:@s0fractal/witness@0.1"
+        ]
+      },
+      "jsr:@s0fractal/autonomy-kernel@0.4.1": {},
+      "jsr:@s0fractal/canonical-receipt@0.1.0": {},
+      "jsr:@s0fractal/witness@0.1.0": {}
     }
   }
 }

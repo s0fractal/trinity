@@ -50,6 +50,48 @@ const MYSTIC =
 const RITUAL =
   /^---\s*\n\s*(?:chord|energy|mode|tension):|local draft space|a local (?:draft|scratch) space/im;
 
+// P1b (codex x3300_956673): solo-verify must be REAL, not lexical. Each repo declares
+// its self-contained verify command; the guard asserts the README references it AND
+// its target task/file actually exists — so a README can't pass with a dead verify path.
+function fileExists(p: string): boolean {
+  try {
+    Deno.statSync(p);
+    return true;
+  } catch {
+    return false;
+  }
+}
+function taskExists(dir: string, task: string): boolean {
+  try {
+    return new RegExp(`"${task}"\\s*:`).test(
+      Deno.readTextFileSync(join(dir, "deno.jsonc")),
+    );
+  } catch {
+    return false;
+  }
+}
+const VERIFY_SPEC: Record<
+  string,
+  { ref: RegExp; target: (root: string) => boolean }
+> = {
+  trinity: {
+    ref: /\bt court\b/i,
+    target: (r) => fileExists(join(r, "src", "x6E00_court.ts")),
+  },
+  myc: {
+    ref: /deno task myc verify/i,
+    target: (r) => taskExists(join(r, "myc"), "myc"),
+  },
+  omega: {
+    ref: /genesis_print/i,
+    target: (r) => fileExists(join(r, "omega", "omega_v2", "Cargo.toml")),
+  },
+  liquid: {
+    ref: /deno task test:unit/i,
+    target: (r) => taskExists(join(r, "liquid"), "test:unit"),
+  },
+};
+
 export interface LegibilityVerdict {
   repo: string;
   present: boolean;
@@ -62,12 +104,15 @@ export interface LegibilityVerdict {
   };
   contradictions: string[];
   mysticism_before_product: string | null;
+  verify_command_real: boolean;
 }
 
-/** Pure: does this README's first screen satisfy the contract? */
+/** Does this README's first screen satisfy the contract? Pure over `readme`; if
+ *  `root` is given, additionally verifies the repo's solo-verify command is real. */
 export function checkLegibility(
   repo: string,
   readme: string,
+  root?: string,
 ): LegibilityVerdict {
   const head = readme.slice(0, FIRST_SCREEN);
   const markers = {
@@ -89,9 +134,12 @@ export function checkLegibility(
   const ritualBefore = before(rm)
     ? head.slice(rm, rm + 40).replace(/\s+/g, " ")
     : null;
+  const spec = root ? VERIFY_SPEC[repo] : undefined;
+  const verify_command_real = !spec ||
+    (spec.ref.test(head) && spec.target(root!));
   const ok = markers.product && markers.not_clause && markers.verify &&
     markers.authority && contradictions.length === 0 && !mysticBefore &&
-    !ritualBefore;
+    !ritualBefore && verify_command_real;
   return {
     repo,
     present: true,
@@ -99,6 +147,7 @@ export function checkLegibility(
     markers,
     contradictions,
     mysticism_before_product: mysticBefore ?? ritualBefore,
+    verify_command_real,
   };
 }
 
@@ -128,10 +177,11 @@ export function auditAll(): LegibilityVerdict[] {
         },
         contradictions: [],
         mysticism_before_product: null,
+        verify_command_real: true,
       });
       continue;
     }
-    out.push(checkLegibility(repo, text));
+    out.push(checkLegibility(repo, text, ROOT));
   }
   return out;
 }
@@ -174,6 +224,7 @@ if (import.meta.main) {
         ...r.contradictions.map((c) => `contradicts-tree(${c})`),
         r.mysticism_before_product &&
         `myth-first("${r.mysticism_before_product}")`,
+        !r.verify_command_real && "dead-verify-command",
       ].filter(Boolean).join(", ");
       console.log(
         `  ${r.ok ? "✅" : "⛔"} ${r.repo}${

@@ -50,3 +50,19 @@ Deno.test("legibility — the guard catches ritual/underselling before the produ
     "a README opening with chord: frontmatter / 'local draft space' before the product must fail",
   );
 });
+
+Deno.test("legibility — a dead verify command fails (codex P1b, x3300_956673)", () => {
+  const v = checkLegibility(
+    "liquid",
+    "> liquid — latent-intent substrate; trust the hash, Ed25519 signatures. **This is not** a conscious organism. Verify: `deno task nonexistent`.",
+    "/tmp/no-such-root",
+  );
+  assert(
+    !v.verify_command_real,
+    "a declared verify command with no real target must be flagged",
+  );
+  assert(
+    !v.ok,
+    "a README whose solo-verify path is dead must fail the contract",
+  );
+});

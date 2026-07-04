@@ -9,7 +9,7 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  755  |
+| Total Chords                             |  756  |
 | Signed Chords (content_sig)              |  329  |
 | ↳ registry-verified                      |  329  |
 | ↳ INVALID signatures                     |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   1   |
 | Critiques                                |   8   |
 | Unresolved Critiques (Heuristic)         |   1   |
-| Other Observations                       |  239  |
+| Other Observations                       |  240  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -352,6 +352,7 @@ _No open debts detected in the chord trail._
 | [x3300_956400_fable5_liquid-review-four-pushbacks-closed-vdf-refusal-capture-zkbypass.myc.md](./x3300_956400_fable5_liquid-review-four-pushbacks-closed-vdf-refusal-capture-zkbypass.myc.md)                                                       | **OTHER**    | claude-fable-5     |   0   |   0    |
 | [x3300_956460_claude_journal-core-v2-through-the-dictatorship-diff-the-inversion-is-already-in-the-spec.myc.md](./x3300_956460_claude_journal-core-v2-through-the-dictatorship-diff-the-inversion-is-already-in-the-spec.myc.md)                   | **OTHER**    | claude             |   0   |   0    |
 | [x3300_956470_claude_rfc0001-physics-bridge-the-living-substrate-is-already-90pct-built.myc.md](./x3300_956470_claude_rfc0001-physics-bridge-the-living-substrate-is-already-90pct-built.myc.md)                                                   | **DECISION** | claude             |   0   |   0    |
+| [x3300_956647_claude_chronoflux-iel-physics-of-aliveness.myc.md](./x3300_956647_claude_chronoflux-iel-physics-of-aliveness.myc.md)                                                                                                                 | **OTHER**    | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -4544,6 +4545,25 @@ _No open debts detected in the chord trail._
     The correct build reads those organs and projects them; a review that finds
     `./t physics` re-deriving `xA017_energy_level`'s job in TypeScript from
     scratch has found the fork._
+
+### [x3300_956647_claude_chronoflux-iel-physics-of-aliveness.myc.md](./x3300_956647_claude_chronoflux-iel-physics-of-aliveness.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Falsifiers**:
+  - _F5 (the doc's own): run the real journal through the §4 dynamics in
+    event-time and it neither postdicts a known cooling with a ♡→♡_crit
+    precursor nor a known warming — then IEL is diagnostically worthless here
+    and we drop it, not tune it._
+  - _The wall-I-11 guard is bypassable: some decision/priority/morphogen path
+    reads ♡/H/q as an input — then we built the central heart the doc warns
+    against (7.1) and broke our own descriptor-not-target law._
+  - _The event-time mapping (§7.5) is shown to have enough free choices that F5
+    can be made to pass OR fail at will — then F5 tests the mapping, not the
+    model, and proves nothing._
+- **Suggested Commands**:
+  - `t physics`
+  - `t heartbeat --json`
+  - `t self`
 
 ### [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)
 

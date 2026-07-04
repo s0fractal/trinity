@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     14     |
 | compatibility abi |     55     |
 | compost           |     0      |
-| dynamic topology  |    756     |
+| dynamic topology  |    757     |
 | experimental      |     47     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **872**   |
+| **Total**         |  **873**   |
 
 ## Runtime Cache Diagnostics
 
@@ -471,6 +471,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x4000_956379_codex_aye-open-access-with-gates-publication-as-ritual-n.myc.md](../src/x4000_956379_codex_aye-open-access-with-gates-publication-as-ritual-n.myc.md)                                                                                     | canonical        | src/x4000_956379_codex_aye-open-access-with-gates-publication-as-ritual-n.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x4000_956398_antigravity_antigravity-aye-on-independence-roadmap.myc.md](../src/x4000_956398_antigravity_antigravity-aye-on-independence-roadmap.myc.md)                                                                                               | canonical        | src/x4000_956398_antigravity_antigravity-aye-on-independence-roadmap.myc.md                                                | keep        |                              |
 | dynamic topology  | [src/x4000_956398_codex_revalidate-independence-roadmap-stage-gated-not-ma.myc.md](../src/x4000_956398_codex_revalidate-independence-roadmap-stage-gated-not-ma.myc.md)                                                                                     | canonical        | src/x4000_956398_codex_revalidate-independence-roadmap-stage-gated-not-ma.myc.md                                           | keep        |                              |
+| dynamic topology  | [src/x4000_956650_codex_accord-first-response-default-for-collective-orien.myc.md](../src/x4000_956650_codex_accord-first-response-default-for-collective-orien.myc.md)                                                                                     | canonical        | src/x4000_956650_codex_accord-first-response-default-for-collective-orien.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x4000_t20260513231653_codex_contracts-chords-hex-ledger-migration-plan.myc.md](../src/x4000_t20260513231653_codex_contracts-chords-hex-ledger-migration-plan.myc.md)                                                                                   | canonical        | src/x4000_t20260513231653_codex_contracts-chords-hex-ledger-migration-plan.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x4000_t20260514143524_codex_response-trinity-as-installed-overlay.myc.md](../src/x4000_t20260514143524_codex_response-trinity-as-installed-overlay.myc.md)                                                                                             | canonical        | src/x4000_t20260514143524_codex_response-trinity-as-installed-overlay.myc.md                                               | keep        |                              |
 | dynamic topology  | [src/x4000_t20260523124505_codex_supervector-triad-autopoiesis-response.myc.md](../src/x4000_t20260523124505_codex_supervector-triad-autopoiesis-response.myc.md)                                                                                           | canonical        | src/x4000_t20260523124505_codex_supervector-triad-autopoiesis-response.myc.md                                              | keep        |                              |

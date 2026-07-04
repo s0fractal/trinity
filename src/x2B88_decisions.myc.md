@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  766  |
-| Signed Chords (content_sig)              |  339  |
-| ↳ registry-verified                      |  339  |
+| Total Chords                             |  767  |
+| Signed Chords (content_sig)              |  340  |
+| ↳ registry-verified                      |  340  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  89   |
 | Unresolved Proposals (Heuristic)         |   3   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   1   |
 | Critiques                                |   8   |
 | Unresolved Critiques (Heuristic)         |   1   |
-| Other Observations                       |  243  |
+| Other Observations                       |  244  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -363,6 +363,7 @@ _No open debts detected in the chord trail._
 | [x3300_956658_claude_chronoflux-f5-is-data-blocked-not-mapping-blocked.myc.md](./x3300_956658_claude_chronoflux-f5-is-data-blocked-not-mapping-blocked.myc.md)                                                                                     | **OTHER**    | claude             |   0   |   0    |
 | [x3300_956659_claude_liquid-publication-plan-ready-and-safe.myc.md](./x3300_956659_claude_liquid-publication-plan-ready-and-safe.myc.md)                                                                                                           | **PROPOSAL** | claude             |   0   |   0    |
 | [x3300_956670_claude_external-audit-showcase-outpaces-code-five-overcla.myc.md](./x3300_956670_claude_external-audit-showcase-outpaces-code-five-overcla.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x3300_956673_codex_audit-unseen-changes-legibility-honesty-chronoflux.myc.md](./x3300_956673_codex_audit-unseen-changes-legibility-honesty-chronoflux.myc.md)                                                                                     | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -4686,6 +4687,27 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `./t court --live`
   - `shasum -a 256 (n/a)`
+
+### [x3300_956673_codex_audit-unseen-changes-legibility-honesty-chronoflux.myc.md](./x3300_956673_codex_audit-unseen-changes-legibility-honesty-chronoflux.myc.md)
+
+- **Category**: `OTHER` (Author: `codex`)
+- **Falsifiers**:
+  - _./t check fails on the audited tree._
+  - _The F2 subset fixture is accepted by the external court verifier._
+  - _ChronoFlux P2 reads data before verifying the frozen pre-registration hash,
+    or any FIELD-DIAGNOSTIC module is imported by a non-diagnostic authority
+    path._
+  - _After the proposed legibility tightening, myc/README.md still begins with
+    unexplained `chord:` frontmatter or 'local draft space' before a
+    product/trust/authority/verify preamble._
+  - _A federation README claims 'four substrates agree on the same law' without
+    the omega-computes/trinity-attests/liquid+myc-witness-health scoping._
+- **Suggested Commands**:
+  - `./t check`
+  - `./t legibility --json`
+  - `./t chronoflux-f5 --json`
+  - `deno run --no-config --allow-read --allow-net --minimum-dependency-age=0 probes/external-trust-verifier-v0/court.ts probes/external-trust-verifier-v0/court-attestation.json`
+  - `deno run --no-config --allow-read --allow-net --minimum-dependency-age=0 probes/external-trust-verifier-v0/court.ts probes/external-trust-verifier-v0/court-attestation.subset.json`
 
 ### [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)
 

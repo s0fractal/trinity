@@ -1,4 +1,9 @@
 #!/usr/bin/env -S deno run -A
+// WALL-I-11: FIELD-DIAGNOSTIC — this module's outputs (weather / pressure, and any
+//   ♡/H/q/θ field quantity) are DIAGNOSTIC ONLY. No decision, priority, right,
+//   morphogen, daemon action, roadmap ranking, or key/spend/publish path may read
+//   them as an input. Enforced by field_wall_test.ts + the guards-drill. See the
+//   reflection x3300_956647 (ChronoFlux-IEL) for why the wall precedes the model.
 // src/x8300_physics.ts — physics / substrate-weather (a read-only LENS)
 // position: 8/3 → projection(8) × observation(3) = a projection that OBSERVES
 //   substrate pressure without acting on it ("the first living sign is not

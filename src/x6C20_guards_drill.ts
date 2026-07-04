@@ -38,6 +38,34 @@ export interface DrillResult {
   detail: string;
 }
 
+export interface ModuleImports {
+  name: string;
+  imports: string[];
+}
+
+/** Wall I-11 (ChronoFlux-IEL x3300_956647): a FIELD-DIAGNOSTIC module (♡/H/q/θ,
+ *  substrate weather) may only be imported by declared diagnostic consumers. Any
+ *  other importer is a potential authority leak — the field becoming a steering
+ *  input — and must be surfaced. Pure over its inputs. */
+export function fieldWallViolations(
+  modules: ModuleImports[],
+  fieldModules: Set<string>,
+  allowlist: Set<string>,
+): string[] {
+  const violations: string[] = [];
+  for (const m of modules) {
+    if (fieldModules.has(m.name) || allowlist.has(m.name)) continue;
+    for (const imp of m.imports) {
+      if (fieldModules.has(imp)) {
+        violations.push(
+          `${m.name} reads field-diagnostic ${imp} without being an allowlisted diagnostic consumer (wall I-11)`,
+        );
+      }
+    }
+  }
+  return violations;
+}
+
 /** A throwaway 5-voice registry — these keys exist only for this drill, so no
  *  real quorum can ever be manufactured from here. v1 is the human. */
 async function ephemeral() {
@@ -174,6 +202,32 @@ export async function runDrills(): Promise<DrillResult[]> {
       attack: "normalize an absent implementation status",
       fired: norm !== "aspirational",
       detail: `absent → "${norm}" (must not be "aspirational")`,
+    });
+  }
+
+  // 6. Wall I-11: a field diagnostic must never be read by a non-diagnostic surface.
+  {
+    const fieldModules = new Set(["x8300_physics"]);
+    const allowlist = new Set(["physics_test"]);
+    const clean = fieldWallViolations(
+      [{ name: "physics_test", imports: ["x8300_physics"] }],
+      fieldModules,
+      allowlist,
+    );
+    const attack = fieldWallViolations(
+      [{ name: "x2F3B_registry_amend", imports: ["x8300_physics"] }],
+      fieldModules,
+      allowlist,
+    );
+    results.push({
+      guard: "wall-I-11",
+      protects:
+        "a field diagnostic (♡/H/q/θ, weather) can never be read by a decision/authority surface",
+      attack: "an authority surface imports a field-diagnostic module",
+      fired: attack.length > 0 && clean.length === 0,
+      detail: attack.length > 0
+        ? attack[0]
+        : "authority-imports-field NOT flagged — hole",
     });
   }
 

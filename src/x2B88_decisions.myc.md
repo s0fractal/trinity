@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  763  |
-| Signed Chords (content_sig)              |  336  |
-| ↳ registry-verified                      |  336  |
+| Total Chords                             |  764  |
+| Signed Chords (content_sig)              |  337  |
+| ↳ registry-verified                      |  337  |
 | ↳ INVALID signatures                     |   0   |
-| Proposals                                |  87   |
-| Unresolved Proposals (Heuristic)         |   1   |
+| Proposals                                |  88   |
+| Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  80   |
 | Receipts                                 |  345  |
 | ↳ strong evidence                        |  344  |
@@ -36,15 +36,19 @@ stale proposals before changing the repository._ Use
 `./t decisions --triage-template` to print a closure-decision scaffold for the
 first item without writing files.
 
-| Stance    | Chord                                                                                                                                | Risks |
-| :-------- | :----------------------------------------------------------------------------------------------------------------------------------- | :---- |
-| candidate | [x5d00_956417_claude_next-claim-heartbeat-before-outreach.myc.md](./x5d00_956417_claude_next-claim-heartbeat-before-outreach.myc.md) | none  |
+| Stance    | Chord                                                                                                                                    | Risks |
+| :-------- | :--------------------------------------------------------------------------------------------------------------------------------------- | :---- |
+| candidate | [x5d00_956417_claude_next-claim-heartbeat-before-outreach.myc.md](./x5d00_956417_claude_next-claim-heartbeat-before-outreach.myc.md)     | none  |
+| candidate | [x3300_956659_claude_liquid-publication-plan-ready-and-safe.myc.md](./x3300_956659_claude_liquid-publication-plan-ready-and-safe.myc.md) | none  |
 
 ## Unresolved Items (Heuristic Accountability)
 
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
+- **PROPOSAL**:
+  [Plan: publish liquid — verified ready and safe; the flip is the architect's](./x3300_956659_claude_liquid-publication-plan-ready-and-safe.myc.md)
+  (by _claude_ — _proposal has no subsequent receipt or decision closure_)
 - **PROPOSAL**:
   [Direction for the implementing claude: the heartbeat is the next claim](./x5d00_956417_claude_next-claim-heartbeat-before-outreach.myc.md)
   (by _claude_ — _proposal has no subsequent receipt or decision closure_)
@@ -353,6 +357,7 @@ _No open debts detected in the chord trail._
 | [x3300_956654_claude_chronoflux-f5-prereg-v2-hash-reconciled.myc.md](./x3300_956654_claude_chronoflux-f5-prereg-v2-hash-reconciled.myc.md)                                                                                                         | **OTHER**    | claude             |   0   |   0    |
 | [x3300_956657_claude_chronoflux-f5-receipt-inconclusive-underpowered.myc.md](./x3300_956657_claude_chronoflux-f5-receipt-inconclusive-underpowered.myc.md)                                                                                         | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_956658_claude_chronoflux-f5-is-data-blocked-not-mapping-blocked.myc.md](./x3300_956658_claude_chronoflux-f5-is-data-blocked-not-mapping-blocked.myc.md)                                                                                     | **OTHER**    | claude             |   0   |   0    |
+| [x3300_956659_claude_liquid-publication-plan-ready-and-safe.myc.md](./x3300_956659_claude_liquid-publication-plan-ready-and-safe.myc.md)                                                                                                           | **PROPOSAL** | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -4639,6 +4644,21 @@ _No open debts detected in the chord trail._
     artifact._
 - **Suggested Commands**:
   - `t chronoflux-f5`
+
+### [x3300_956659_claude_liquid-publication-plan-ready-and-safe.myc.md](./x3300_956659_claude_liquid-publication-plan-ready-and-safe.myc.md)
+
+- **Category**: `PROPOSAL` (Author: `claude`)
+- **Falsifiers**:
+  - _A secret, private key, or populated key-bearing DB is found in liquid's
+    tree or full git history after the flip — the safety verification missed it
+    and the flip was unsafe._
+  - _liquid's runtime sqlite (AgentKeys) turns out NOT to be gitignored and a
+    populated DB is committable — the 'keys cannot leak' claim is false._
+  - _`t public-readiness` reports liquid as not READY when this plan is
+    executed._
+- **Suggested Commands**:
+  - `t public-readiness`
+  - `shasum -a 256 (n/a)`
 
 ### [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)
 

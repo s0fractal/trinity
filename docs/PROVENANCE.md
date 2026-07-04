@@ -109,8 +109,11 @@ us.
 
 One command, no clone, read-only network, nothing of ours but public bytes. It
 fetches a signed attestation, the public key registry, and a canonical encoder,
-recomputes every body hash from the raw bodies itself, and re-derives the four
-substrates' agreement on the same law:
+recomputes every body hash from the raw bodies itself, and re-derives the
+substrates' agreement. Honestly scoped: **omega computes the `law_hash`, trinity
+attests it, and liquid + myc witness health, not law** — so law-agreement is
+between omega and trinity; the verifier enforces the full four-substrate witness
+set so no substrate can be silently omitted (audit F1/F2):
 
 ```sh
 deno run --allow-net \

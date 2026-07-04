@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  765  |
-| Signed Chords (content_sig)              |  338  |
-| ↳ registry-verified                      |  338  |
+| Total Chords                             |  766  |
+| Signed Chords (content_sig)              |  339  |
+| ↳ registry-verified                      |  339  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  89   |
 | Unresolved Proposals (Heuristic)         |   3   |
 | Decisions                                |  80   |
-| Receipts                                 |  345  |
-| ↳ strong evidence                        |  344  |
+| Receipts                                 |  346  |
+| ↳ strong evidence                        |  345  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |   8   |
@@ -362,6 +362,7 @@ _No open debts detected in the chord trail._
 | [x3300_956657_claude_chronoflux-f5-receipt-inconclusive-underpowered.myc.md](./x3300_956657_claude_chronoflux-f5-receipt-inconclusive-underpowered.myc.md)                                                                                         | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_956658_claude_chronoflux-f5-is-data-blocked-not-mapping-blocked.myc.md](./x3300_956658_claude_chronoflux-f5-is-data-blocked-not-mapping-blocked.myc.md)                                                                                     | **OTHER**    | claude             |   0   |   0    |
 | [x3300_956659_claude_liquid-publication-plan-ready-and-safe.myc.md](./x3300_956659_claude_liquid-publication-plan-ready-and-safe.myc.md)                                                                                                           | **PROPOSAL** | claude             |   0   |   0    |
+| [x3300_956670_claude_external-audit-showcase-outpaces-code-five-overcla.myc.md](./x3300_956670_claude_external-audit-showcase-outpaces-code-five-overcla.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -4663,6 +4664,27 @@ _No open debts detected in the chord trail._
     executed._
 - **Suggested Commands**:
   - `t public-readiness`
+  - `shasum -a 256 (n/a)`
+
+### [x3300_956670_claude_external-audit-showcase-outpaces-code-five-overcla.myc.md](./x3300_956670_claude_external-audit-showcase-outpaces-code-five-overcla.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Falsifiers**:
+  - _F2 not closed:
+    `grep -qE 'incomplete witness set' probes/external-trust-verifier-v0/court.ts`
+    fails — the completeness check is not present._
+  - _The README/PROVENANCE/FEDERATION still say 'four substrates agreeing on the
+    same law' without the omega-computes/trinity-attests scoping — F1 prose not
+    aligned._
+  - _GOVERNANCE still says 'voices are citizens: they propose, witness, and
+    vote' without the 'keys held by architect, amendments = 0, future work'
+    scoping — F4 not aligned._
+  - _The README first screen still calls law_hash 'content-addressed law' or
+    lists '3-of-5 quorum' as the court's property — F3/F5 not aligned._
+  - _These findings were parked in KNOWN_GAPS while the README kept the loud
+    line — the exact failure the audit's meta-warning names._
+- **Suggested Commands**:
+  - `./t court --live`
   - `shasum -a 256 (n/a)`
 
 ### [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)

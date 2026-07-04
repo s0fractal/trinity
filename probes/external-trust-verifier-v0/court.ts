@@ -76,6 +76,23 @@ for (const env of envelopes) {
   lawHashes[env.substrate_tag] = (env.law_hash ?? null) as string | null;
 }
 
+// 2b. COMPLETENESS (external audit F2). A signature guarantees the integrity of the
+//     bundle it covers, not the honesty of WHAT was included. A registered key whose
+//     omega is drifting could withhold the drifting envelope and sign an honest
+//     SUBSET; a verifier that only checks the present set would say "agreement". So
+//     we enforce a fixed expected witness set — every substrate must be present, or
+//     the bundle fails regardless of a valid signature.
+const EXPECTED_SUBSTRATES = ["trinity", "omega", "liquid", "myc"];
+const presentSubstrates = new Set(
+  (envelopes as { substrate_tag: string }[]).map((e) => e.substrate_tag),
+);
+const missingSubstrates = EXPECTED_SUBSTRATES.filter((s) => !presentSubstrates.has(s));
+if (missingSubstrates.length > 0) {
+  fail.push(
+    `incomplete witness set: missing ${missingSubstrates.join(", ")} — a signed subset cannot omit a substrate (audit F2)`,
+  );
+}
+
 // 3. RE-DERIVE THE COURT'S CONCLUSION from what we recomputed — do not trust the
 //    verdict's own agreement bit; compute our own and require it to match.
 const nonNullLaws = Object.values(lawHashes).filter((h): h is string => h != null);

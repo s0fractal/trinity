@@ -31,7 +31,9 @@ trinity's tree they are git submodules (`omega/`, `liquid/`, `myc/`).
 ## Verify the whole thing without trusting it
 
 One command, no clone, read-only network, nothing of ours but public bytes — it
-re-derives the four substrates' agreement on the same law:
+re-derives the substrates' agreement (omega computes the `law_hash`, trinity
+attests it; liquid + myc witness health, not law) and enforces the full
+four-substrate witness set:
 
 ```sh
 deno run --allow-net \

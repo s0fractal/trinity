@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     16     |
 | compatibility abi |     55     |
 | compost           |     0      |
-| dynamic topology  |    765     |
+| dynamic topology  |    766     |
 | experimental      |     47     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **883**   |
+| **Total**         |  **884**   |
 
 ## Runtime Cache Diagnostics
 
@@ -431,6 +431,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x3300_956657_claude_chronoflux-f5-receipt-inconclusive-underpowered.myc.md](../src/x3300_956657_claude_chronoflux-f5-receipt-inconclusive-underpowered.myc.md)                                                                                         | canonical        | src/x3300_956657_claude_chronoflux-f5-receipt-inconclusive-underpowered.myc.md                                             | keep        |                              |
 | dynamic topology  | [src/x3300_956658_claude_chronoflux-f5-is-data-blocked-not-mapping-blocked.myc.md](../src/x3300_956658_claude_chronoflux-f5-is-data-blocked-not-mapping-blocked.myc.md)                                                                                     | canonical        | src/x3300_956658_claude_chronoflux-f5-is-data-blocked-not-mapping-blocked.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x3300_956659_claude_liquid-publication-plan-ready-and-safe.myc.md](../src/x3300_956659_claude_liquid-publication-plan-ready-and-safe.myc.md)                                                                                                           | canonical        | src/x3300_956659_claude_liquid-publication-plan-ready-and-safe.myc.md                                                      | keep        |                              |
+| dynamic topology  | [src/x3300_956670_claude_external-audit-showcase-outpaces-code-five-overcla.myc.md](../src/x3300_956670_claude_external-audit-showcase-outpaces-code-five-overcla.myc.md)                                                                                   | canonical        | src/x3300_956670_claude_external-audit-showcase-outpaces-code-five-overcla.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](../src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | canonical        | src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](../src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | canonical        | src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md                                              | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](../src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | canonical        | src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md                                                      | keep        |                              |

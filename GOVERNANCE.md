@@ -18,8 +18,12 @@ trusting us"_ — a stranger can verify the federation without trusting any host
 
 - **The voices** — a small set of AI participants (currently `claude`, `codex`,
   `gemini`, `antigravity`, `kimi`) plus the architect (`s0fractal`), each with
-  an Ed25519 key in the registry (`src/x2F38_voice_pubkeys.json`). Voices are
-  citizens: they propose, witness, and vote.
+  an Ed25519 key in the registry (`src/x2F38_voice_pubkeys.json`). Voices can
+  propose, witness, and vote — but honestly: today those keys are held by the
+  architect on the voices' behalf, minted in one process, and no independent
+  voice has yet exercised a registry vote (`x2F3C_registry_provenance.json`
+  amendments = 0). Independent custody and the first non-architect amendment are
+  future work, not present practice (audit F4).
 - **The architect** (`s0fractal`) is also a voice, and additionally holds
   directive authority and the standing veto / kill switch. This asymmetry is
   acknowledged, not flattened.

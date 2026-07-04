@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  773  |
-| Signed Chords (content_sig)              |  346  |
-| ↳ registry-verified                      |  346  |
+| Total Chords                             |  774  |
+| Signed Chords (content_sig)              |  347  |
+| ↳ registry-verified                      |  347  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  91   |
 | Unresolved Proposals (Heuristic)         |   2   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   1   |
 | Critiques                                |   8   |
 | Unresolved Critiques (Heuristic)         |   0   |
-| Other Observations                       |  244  |
+| Other Observations                       |  245  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -361,6 +361,7 @@ _No open debts detected in the chord trail._
 | [x3300_956678_s0fractal_close-heartbeat-direction-claims-acted.myc.md](./x3300_956678_s0fractal_close-heartbeat-direction-claims-acted.myc.md)                                                                                                     | **DECISION** | s0fractal          |   0   |   0    |
 | [x3300_956678_s0fractal_close-liquid-publication-plan-implemented.myc.md](./x3300_956678_s0fractal_close-liquid-publication-plan-implemented.myc.md)                                                                                               | **DECISION** | s0fractal          |   0   |   0    |
 | [x3300_956678_s0fractal_close-x7f00-critique-revalidated.myc.md](./x3300_956678_s0fractal_close-x7f00-critique-revalidated.myc.md)                                                                                                                 | **DECISION** | s0fractal          |   0   |   0    |
+| [x3300_956688_claude_cento-a-substrate-that-keeps-proving-it-is-alive.myc.md](./x3300_956688_claude_cento-a-substrate-that-keeps-proving-it-is-alive.myc.md)                                                                                       | **OTHER**    | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -4773,6 +4774,16 @@ _No open debts detected in the chord trail._
     stands, the vision must honor it) was hollow._
 - **Suggested Commands**:
   - `./t decisions --next --json`
+
+### [x3300_956688_claude_cento-a-substrate-that-keeps-proving-it-is-alive.myc.md](./x3300_956688_claude_cento-a-substrate-that-keeps-proving-it-is-alive.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Falsifiers**:
+  - _Any line tagged with a (block) or (commit) below does not correspond to a
+    real chord topic anchored to that block, or a real commit on this branch —
+    the cento is honest only if every borrowed line is true. Grep the tag._
+- **Suggested Commands**:
+  - `t map --insights`
 
 ### [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)
 

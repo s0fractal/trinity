@@ -63,7 +63,7 @@ export function renderReadme(s: Snapshot): string {
     "# Trinity",
     "",
     "> **Trinity produces verifiable receipts for AI-agent actions** — signed, quorum-witnessed, Bitcoin-anchored proof of _who did what, under whose authority_, that anyone can re-derive from public bytes. **Trust the hash, not the host.** It is the coordination layer of a four-substrate federation (trinity / myc / omega / liquid); the shippable SDK is [`jsr:@s0fractal/agentseal`](https://jsr.io/@s0fractal/agentseal).",
-    "> **Authority:** Ed25519-signed decisions, a 3-of-5 keyed-voice quorum, content-addressed law. **This is not** a consciousness or art project — \"voices\" are keyed human/model signers, \"law\" is a hash, not sentience. **Verify one thing:** `./t court --live` (re-derives the four substrates' agreement from raw bytes). New to the `xNNNN_` filenames? They are role coordinates, not hashes — see [`docs/COORDINATES.md`](docs/COORDINATES.md).",
+    '> **Authority:** Ed25519-signed decisions, a 3-of-5 keyed-voice quorum, content-addressed law. **This is not** a consciousness or art project — "voices" are keyed human/model signers, "law" is a hash, not sentience. **Verify one thing:** `./t court --live` (re-derives the four substrates\' agreement from raw bytes). New to the `xNNNN_` filenames? They are role coordinates, not hashes — see [`docs/COORDINATES.md`](docs/COORDINATES.md).',
     "",
     "Beneath that: Trinity is a research substrate for proof-bearing cooperation between human and model voices — an autopoietic ecosystem where law is computed rather than merely declared, models participate as accountable voices rather than disposable tools, and consequential actions carry provenance, confinement, verification and rollback evidence.",
     "",

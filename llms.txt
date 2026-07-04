@@ -20,6 +20,8 @@ natural-language and hex-coordinate queries over live, signed state.
   before any ontology.
 - [AGENTS.md](AGENTS.md): the self-driving loop — how the substrate orients,
   proposes, acts, and verifies itself.
+- [AUTONOMY_STATUS.md](AUTONOMY_STATUS.md): what actually acts on its own vs. what
+  stays human/quorum-reserved — the honest boundary, with real receipts.
 - [docs/COORDINATES.md](docs/COORDINATES.md): the hex-coordinate decoder. The
   single most important first-contact file — organ `x<NNNN>` names are positions
   in a shared space, not arbitrary.

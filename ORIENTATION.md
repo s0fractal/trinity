@@ -46,7 +46,8 @@ verify door below actually re-derives the verdict. Grade _those_.
    set) is still rejected.
 3. **Governance participation** — [`GOVERNANCE.md`](GOVERNANCE.md) +
    `./t chord ...`: how voices propose, witness, and decide, and who holds which
-   authority.
+   authority. See [`AUTONOMY_STATUS.md`](AUTONOMY_STATUS.md) for exactly what
+   acts on its own and what stays human-reserved.
 
 ## Debts we name ourselves
 

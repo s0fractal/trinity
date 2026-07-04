@@ -2,7 +2,7 @@ import {
   assert,
   assertEquals,
 } from "https://deno.land/std@0.224.0/assert/mod.ts";
-import { buildGraph, insights } from "./x8740_map.ts";
+import { buildGraph, insights, renderHtml } from "./x8740_map.ts";
 
 Deno.test("buildGraph - draws supersession lineage (kind:proposal evidence)", () => {
   const g = buildGraph(
@@ -127,4 +127,29 @@ Deno.test("buildGraph - weaves the MYC ledger: proposal node, derived state, cro
       e.source === "P|h.abc123.proposal.myc.md" && e.target.startsWith("x5700")
     ),
   );
+});
+
+Deno.test("renderHtml - the generated in-page script is syntactically valid JS (no template-escaping breakage)", () => {
+  // Regression for antigravity x3d00_956685: a Ukrainian apostrophe written as \'
+  // inside the renderHtml backtick template collapsed to a bare ' in a single-quoted
+  // JS string, breaking the WHOLE <script> parse — invisible to buildGraph tests.
+  // Feed data that exercises the string-building paths (apostrophes, quotes, unicode).
+  const g = buildGraph([
+    {
+      name: "x3d00_956685_antigravity_mycelium-map.myc.md",
+      content:
+        '---\nvoice: "antigravity"\ntopic: зв\'язки та "лапки"\ncontent_sig:\n  sig: "x"\n---\nbody',
+    },
+    {
+      name: "x0001_955000_claude_plain.myc.md",
+      content: '---\nvoice: "claude"\ntopic: plain\n---\nbody',
+    },
+  ]);
+  const html = renderHtml(g);
+  const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)]
+    .map((m) => m[1]).filter((s) => s.includes("ForceGraph3D"));
+  const app = scripts[scripts.length - 1];
+  assert(app, "the app <script> block must be present in the generated HTML");
+  // new Function parses the full body — throws on any syntax/escaping error.
+  new Function(app);
 });

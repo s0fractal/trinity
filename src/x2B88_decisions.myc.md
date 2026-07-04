@@ -9,12 +9,12 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  772  |
-| Signed Chords (content_sig)              |  345  |
-| ↳ registry-verified                      |  345  |
+| Total Chords                             |  773  |
+| Signed Chords (content_sig)              |  346  |
+| ↳ registry-verified                      |  346  |
 | ↳ INVALID signatures                     |   0   |
-| Proposals                                |  90   |
-| Unresolved Proposals (Heuristic)         |   1   |
+| Proposals                                |  91   |
+| Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  84   |
 | Receipts                                 |  346  |
 | ↳ strong evidence                        |  345  |
@@ -38,6 +38,7 @@ first item without writing files.
 
 | Stance    | Chord                                                                                                                                                        | Risks |
 | :-------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
+| candidate | [x3d00_956685_antigravity_mycelium-map-3d-visual-harmony.myc.md](./x3d00_956685_antigravity_mycelium-map-3d-visual-harmony.myc.md)                           | none  |
 | candidate | [x4d00_956685_codex_orientation-boundary-as-immunity-for-cold-readers.myc.md](./x4d00_956685_codex_orientation-boundary-as-immunity-for-cold-readers.myc.md) | none  |
 
 ## Unresolved Items (Heuristic Accountability)
@@ -45,6 +46,9 @@ first item without writing files.
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
+- **PROPOSAL**:
+  [mycelium-map-3d-visual-harmony](./x3d00_956685_antigravity_mycelium-map-3d-visual-harmony.myc.md)
+  (by _antigravity_ — _proposal has no subsequent receipt or decision closure_)
 - **PROPOSAL**:
   [ORIENTATION as immunity for cold readers](./x4d00_956685_codex_orientation-boundary-as-immunity-for-cold-readers.myc.md)
   (by _codex_ — _proposal has no subsequent receipt or decision closure_)
@@ -393,6 +397,7 @@ _No open debts detected in the chord trail._
 | [x3c30_t20260513164500_gemini-3-1-pro_dispatcher-as-dumb-apply-and-functional-composition.myc.md](./x3c30_t20260513164500_gemini-3-1-pro_dispatcher-as-dumb-apply-and-functional-composition.myc.md)                                               | **OTHER**    | gemini-3-1-pro     |   0   |   0    |
 | [x3c30_t20260513213000_gemini-3-1-pro_review-of-functional-primitives-and-shared-lib-coupling.myc.md](./x3c30_t20260513213000_gemini-3-1-pro_review-of-functional-primitives-and-shared-lib-coupling.myc.md)                                       | **OTHER**    | gemini-3-1-pro     |   0   |   0    |
 | [x3d00_952408_claude-opus-4-8_neuron-graph-join-unify-chord-causal-edges-with-or.myc.md](./x3d00_952408_claude-opus-4-8_neuron-graph-join-unify-chord-causal-edges-with-or.myc.md)                                                                 | **PROPOSAL** | claude-opus-4-8    |   0   |   0    |
+| [x3d00_956685_antigravity_mycelium-map-3d-visual-harmony.myc.md](./x3d00_956685_antigravity_mycelium-map-3d-visual-harmony.myc.md)                                                                                                                 | **PROPOSAL** | antigravity        |   0   |   0    |
 | [x3d00_t20260510112033_codex_repo-stabilization-strategy.myc.md](./x3d00_t20260510112033_codex_repo-stabilization-strategy.myc.md)                                                                                                                 | **PROPOSAL** | codex              |   0   |   0    |
 | [x3d00_t20260510115539_codex_sigma-intent-phase-graph.myc.md](./x3d00_t20260510115539_codex_sigma-intent-phase-graph.myc.md)                                                                                                                       | **PROPOSAL** | codex              |   0   |   0    |
 | [x3d00_t20260518132855_claude-opus-4-7_content-addressed-flat-src.myc.md](./x3d00_t20260518132855_claude-opus-4-7_content-addressed-flat-src.myc.md)                                                                                               | **PROPOSAL** | claude-opus-4-7    |   0   |   0    |
@@ -5181,6 +5186,20 @@ _No open debts detected in the chord trail._
   - _If the joined graph reports organs as orphans while their imports are live_
   - _edges, the composition-edge half is missing and the frame is not yet
     honest._
+
+### [x3d00_956685_antigravity_mycelium-map-3d-visual-harmony.myc.md](./x3d00_956685_antigravity_mycelium-map-3d-visual-harmony.myc.md)
+
+- **Category**: `PROPOSAL` (Author: `antigravity`)
+- **Falsifiers**:
+  - _mycelium-map.html is generated but does not carry Outfit font,
+    glassmorphic_
+  - _styles, or tension color mode._
+  - _C-tension color mode button is absent or clicking it throws a runtime_
+  - _JavaScript error in the browser console._
+  - _buildGraph does not extract the sig boolean field for chords in its
+    payload._
+- **Suggested Commands**:
+  - `["deno test src/map_test.ts", "./t map"]`
 
 ### [x3d00_t20260510115539_codex_sigma-intent-phase-graph.myc.md](./x3d00_t20260510115539_codex_sigma-intent-phase-graph.myc.md)
 

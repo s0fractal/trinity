@@ -78,6 +78,7 @@ export function buildGraph(
     bucket: string;
     voice: string;
     deg: number;
+    sig: boolean;
   };
   const leaves = new Map<string, Leaf>();
   const semKey = new Set<string>();
@@ -90,6 +91,7 @@ export function buildGraph(
     const voice = (stem.match(/^x[0-9A-Fa-f]+_[^_]+_([a-z0-9-]+)_/)?.[1] ??
       fm.match(/voice:\s*"?([a-z0-9-]+)/i)?.[1] ?? "?").split("-")[0];
     const topic = fm.match(/topic:\s*(.+)/)?.[1]?.trim() ?? stem;
+    const isSigned = fm.includes("content_sig:") || fm.includes("provenance:");
     if (!leaves.has(stem)) {
       leaves.set(stem, {
         id: stem,
@@ -98,6 +100,7 @@ export function buildGraph(
         bucket: coord[0],
         voice,
         deg: 0,
+        sig: isSigned,
       });
     }
     const closes = fm.match(/path_hint:\s*(\S+)/)?.[1];
@@ -160,6 +163,7 @@ export function buildGraph(
     voice: l.voice,
     val: 1 + Math.sqrt(l.deg) * 1.8,
     leaf: true,
+    sig: l.sig,
   }));
   const groupArr = [...groups.values()].map((x) => ({
     id: x.id,
@@ -245,25 +249,69 @@ export function buildGraph(
   return { leaves: leafArr, groups: groupArr, ledger, semantic, tree };
 }
 
-function renderHtml(p: Payload): string {
+export function renderHtml(p: Payload): string {
   return `<!doctype html>
 <html><head><meta charset="utf-8"><title>mycelium — living map</title>
 <style>
- body{margin:0;background:#05060a;color:#9fb;font:13px/1.4 ui-monospace,monospace;overflow:hidden}
+ @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@400;600;800&display=swap');
+ body{margin:0;background:#030508;color:#e2e8f0;font-family:'Outfit',sans-serif;overflow:hidden}
  #graph{position:fixed;inset:0}
- #ui{position:fixed;top:10px;left:12px;z-index:10;display:flex;gap:14px;flex-wrap:wrap;align-items:center}
- .grp{background:#0b0f18cc;border:1px solid #1c2738;border-radius:7px;padding:5px 8px}
- .grp b{color:#cfe} button{background:#13202e;color:#9cf;border:1px solid #244;border-radius:5px;padding:3px 8px;cursor:pointer;font:inherit}
- button.on{background:#2a4a66;color:#dff;border-color:#5af}
- input{background:#0b0f18;border:1px solid #244;color:#cfe;border-radius:5px;padding:3px 7px;font:inherit;width:170px}
- #info{position:fixed;bottom:10px;left:12px;right:12px;z-index:10;color:#9cd;white-space:pre-wrap;
-   max-height:24vh;overflow:auto;background:#0b0f18dd;padding:8px 10px;border-radius:7px;display:none;border:1px solid #1c2738}
- #legend{position:fixed;top:10px;right:12px;z-index:10;color:#789;font-size:11px;text-align:right;background:#0b0f18aa;padding:4px 8px;border-radius:6px}
+ #ui{position:fixed;top:16px;left:16px;z-index:10;display:flex;flex-direction:column;gap:12px;max-width:320px}
+ .grp{background:rgba(10,17,30,0.7);border:1px solid rgba(56,189,248,0.15);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:10px;padding:12px 16px;box-shadow:0 4px 30px rgba(0,0,0,0.4)}
+ .grp-title{font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:#64748b;margin-bottom:8px;font-weight:800}
+ .btn-group{display:flex;gap:6px;flex-wrap:wrap}
+ button{background:rgba(15,23,42,0.8);color:#94a3b8;border:1px solid rgba(148,163,184,0.2);border-radius:6px;padding:5px 10px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;transition:all 0.2s ease}
+ button:hover{background:rgba(30,41,59,0.8);border-color:rgba(56,189,248,0.4);color:#f1f5f9}
+ button.on{background:rgba(14,165,233,0.2);color:#38bdf8;border-color:#0ea5e9;box-shadow:0 0 10px rgba(14,165,233,0.3)}
+ input{background:rgba(7,10,17,0.85);border:1px solid rgba(148,163,184,0.2);color:#f1f5f9;border-radius:6px;padding:6px 12px;font-family:inherit;font-size:13px;width:100%;box-sizing:border-box;transition:all 0.2s ease}
+ input:focus{outline:none;border-color:#38bdf8;box-shadow:0 0 8px rgba(56,189,248,0.3)}
+ #legend{position:fixed;bottom:16px;left:16px;z-index:10;background:rgba(10,17,30,0.7);border:1px solid rgba(56,189,248,0.15);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:12px 16px;border-radius:10px;color:#94a3b8;font-size:11px;max-width:280px;box-shadow:0 4px 30px rgba(0,0,0,0.4)}
+ #info{position:fixed;top:16px;right:-380px;bottom:16px;width:340px;z-index:100;background:rgba(8,14,25,0.85);border:1px solid rgba(56,189,248,0.15);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:12px;padding:20px;box-shadow:-5px 0 30px rgba(0,0,0,0.6);overflow-y:auto;transition:right 0.4s cubic-bezier(0.16,1,0.3,1);color:#e2e8f0}
+ #info.open{right:16px}
+ .drawer-header{position:relative;border-bottom:1px solid rgba(148,163,184,0.1);padding-bottom:14px;margin-bottom:16px}
+ .drawer-header h2{margin:0 0 6px 0;font-size:20px;font-weight:800;letter-spacing:-0.02em;color:#f1f5f9}
+ .close-btn{position:absolute;top:-8px;right:-8px;background:none;border:none;font-size:24px;color:#64748b;cursor:pointer;padding:4px}
+ .close-btn:hover{color:#f1f5f9}
+ .title-block{display:flex;align-items:center;gap:8px}
+ .badge{font-size:10px;font-weight:700;text-transform:uppercase;padding:2px 6px;border-radius:4px;letter-spacing:0.05em}
+ .badge.verified{background:rgba(52,211,153,0.2);color:#34d399}
+ .badge.unsigned{background:rgba(245,158,11,0.2);color:#fbbf24}
+ .badge.state-proposed{background:rgba(59,130,246,0.2);color:#60a5fa}
+ .badge.state-implemented{background:rgba(16,185,129,0.2);color:#34d399}
+ .badge.state-terminal{background:rgba(244,63,94,0.2);color:#fb7185}
+ .badge.group{background:rgba(100,116,139,0.2);color:#94a3b8}
+ .coord-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:#38bdf8;background:rgba(56,189,248,0.1);padding:2px 5px;border-radius:4px}
+ .meta-section{background:rgba(15,23,42,0.4);border-radius:8px;padding:12px;border:1px solid rgba(255,255,255,0.03);margin-bottom:20px}
+ .meta-row{display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px}
+ .meta-row:last-child{margin-bottom:0}
+ .meta-row strong{color:#64748b}
+ .node-id{font-family:'JetBrains Mono',monospace;font-size:12px;color:#94a3b8;word-break:break-all;max-width:70%;text-align:right}
+ .connections-section h3{font-size:12px;text-transform:uppercase;color:#64748b;letter-spacing:0.05em;margin:16px 0 8px 0;font-weight:700}
+ .link-list{display:flex;flex-direction:column;gap:4px}
+ .link-btn{background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.05);border-radius:6px;color:#e2e8f0;text-align:left;padding:6px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+ .link-btn:hover{background:rgba(30,41,59,0.7);border-color:rgba(56,189,248,0.3);color:#38bdf8}
+ .empty-list{color:#475569;font-size:12px;font-style:italic;padding:4px}
 </style></head><body>
 <div id="ui">
- <div class="grp"><b>розкладка</b> <button id="L-force" class="on">сила</button><button id="L-tree">згортка</button></div>
- <div class="grp"><b>колір</b> <button id="C-coord" class="on">координата</button><button id="C-voice">голос</button><button id="C-bucket">октет</button></div>
- <div class="grp"><input id="q" placeholder="пошук вузла…"></div>
+ <div class="grp">
+  <div class="grp-title">розкладка</div>
+  <div class="btn-group">
+   <button id="L-force" class="on">сила</button>
+   <button id="L-tree">згортка</button>
+  </div>
+ </div>
+ <div class="grp">
+  <div class="grp-title">колір</div>
+  <div class="btn-group">
+   <button id="C-coord" class="on">координата</button>
+   <button id="C-voice">голос</button>
+   <button id="C-bucket">октет</button>
+   <button id="C-tension">напруга</button>
+  </div>
+ </div>
+ <div class="grp">
+  <input id="q" placeholder="пошук вузла…">
+ </div>
 </div>
 <div id="legend"></div>
 <div id="info"></div>
@@ -272,31 +320,121 @@ function renderHtml(p: Payload): string {
 <script>
 const P = ${JSON.stringify(p)};
 const VOICE = {claude:'#4fc3f7',codex:'#81c784',gemini:'#ba68c8',antigravity:'#ffb74d',kimi:'#f06292',s0fractal:'#fff176',fable:'#a1887f','?':'#607d8b'};
-// the substrate's 8-axis dipole language as a colour WHEEL; mirror pairs (N↔N+8) share the hue, darker
 const OCTET = ['void∞','first·penult','mirror·apex','triangle','foundation','action','harmony','completion'];
+
+const degMap = {};
+P.semantic.forEach(e => {
+  degMap[e.source] = degMap[e.source] || { in: 0, out: 0 };
+  degMap[e.target] = degMap[e.target] || { in: 0, out: 0 };
+  degMap[e.source].out++;
+  degMap[e.target].in++;
+});
+
 function coordColor(n){ if(!n.leaf) return '#33425a'; const c=n.coord||'0000'; return '#'+c.slice(0,2)+c.slice(2,4)+'a0'; }
 function voiceColor(n){ if(!n.leaf) return '#33425a'; return VOICE[n.voice]||'#607d8b'; }
 function octetColor(n){ if(!n.leaf) return '#33425a'; const b=parseInt(n.bucket||'0',16); return 'hsl('+((b%8)*45)+',66%,'+(b<8?58:38)+'%)'; }
-const COLOR = {coord:coordColor, voice:voiceColor, bucket:octetColor};
+function tensionColor(n) {
+  if (n.ledger) {
+    const d = degMap[n.id] || { in: 0, out: 0 };
+    if (d.in > 0 && d.out > 0) return '#10b981';
+    if (d.out === 0) return '#f43f5e';
+    return '#fbbf24';
+  }
+  if (!n.leaf) return '#33425a';
+  return n.sig ? '#34d399' : '#f59e0b';
+}
+const COLOR = {coord:coordColor, voice:voiceColor, bucket:octetColor, tension:tensionColor};
 const STATE = {proposed:'#3aa0ff', implemented:'#2ecc71', terminal:'#c0392b'};
 let colorMode='coord', layout='force', HL=null;
+
 const G = ForceGraph3D()(document.getElementById('graph'))
-  .backgroundColor('#05060a')
-  .nodeLabel(n => '<div style="background:#000c;padding:3px 6px;border-radius:4px;color:#cfe;font:12px monospace">'+(n.ledger? ('▷ '+n.state+' · '+n.label+' — '+(n.topic||'')) : (n.leaf? (n.label+'  ·  '+(n.topic||'')) : n.label))+'</div>')
+  .backgroundColor('#030508')
+  .nodeLabel(n => '<div style="background:#000c;padding:4px 8px;border-radius:6px;color:#cfe;font:12px monospace;border:1px solid rgba(56,189,248,0.2)">'+(n.ledger? ('▷ '+n.state+' · '+n.label+' — '+(n.topic||'')) : (n.leaf? (n.label+'  ·  '+(n.topic||'')) : n.label))+'</div>')
   .nodeVal('val').nodeOpacity(0.92)
-  .linkColor(()=> 'rgba(120,160,200,0.15)').linkWidth(0.4)
+  .linkColor(link => {
+    const sId = typeof link.source === 'object' ? link.source.id : link.source;
+    const tId = typeof link.target === 'object' ? link.target.id : link.target;
+    if (sId.startsWith('P|') || tId.startsWith('P|')) return 'rgba(244,63,94,0.35)';
+    return 'rgba(56,189,248,0.18)';
+  })
+  .linkWidth(link => {
+    const sId = typeof link.source === 'object' ? link.source.id : link.source;
+    const tId = typeof link.target === 'object' ? link.target.id : link.target;
+    if (sId.startsWith('P|') || tId.startsWith('P|')) return 0.8;
+    return 0.45;
+  })
   .onNodeClick(n => {
-    const info=document.getElementById('info'); info.style.display='block';
-    info.textContent = n.ledger ? ('▷ пропозиція ['+n.state+']\\n'+n.label+'\\n'+(n.topic||''))
-                      : n.leaf ? (n.label+'\\n'+(n.topic||'')+'\\n\\nголос: '+n.voice+'   координата: x'+n.coord+'   зв\\'язків: '+Math.round(((n.val-1)/1.8)**2))
-                              : ('▣ '+n.level+': '+n.label);
+    const info=document.getElementById('info');
+    info.classList.add('open');
+    
+    const incoming = [];
+    const outgoing = [];
+    P.semantic.forEach(e => {
+      if (e.source === n.id) outgoing.push(e.target);
+      if (e.target === n.id) incoming.push(e.source);
+    });
+    
+    let badge = '';
+    if (n.ledger) {
+      badge = '<span class="badge state-' + n.state + '">' + n.state + '</span>';
+    } else if (n.leaf) {
+      badge = n.sig ? '<span class="badge verified">🔐 signed</span>' : '<span class="badge unsigned">📜 unsigned</span>';
+    } else {
+      badge = '<span class="badge group">' + n.level + '</span>';
+    }
+    
+    const formatName = id => id.startsWith('P|') ? id.slice(2) : id.split('_').pop();
+    
+    info.innerHTML = \`
+      <div class="drawer-header">
+        <button class="close-btn" onclick="document.getElementById('info').classList.remove('open')">×</button>
+        <h2>\${n.ledger ? 'Пропозиція' : n.leaf ? 'Акорд' : 'Група'}</h2>
+        <div class="title-block">
+          \${badge}
+          \${n.coord ? '<code class="coord-label">x' + n.coord + '</code>' : ''}
+        </div>
+      </div>
+      <div class="drawer-body">
+        <div class="meta-section">
+          <div class="meta-row"><strong>ID:</strong> <code class="node-id">\${n.label || n.id}</code></div>
+          \${n.topic ? \`<div class="meta-row"><strong>Тема:</strong> <span>\${n.topic}</span></div>\` : ''}
+          \${n.voice ? \`<div class="meta-row"><strong>Голос:</strong> <span style="color:\${VOICE[n.voice] || '#fff'}">\${n.voice}</span></div>\` : ''}
+        </div>
+        
+        <div class="connections-section">
+          <h3>Вхідні зв'язки (\${incoming.length})</h3>
+          <div class="link-list">
+            \${incoming.length === 0 ? '<div class="empty-list">немає вхідних зв\\'язків</div>' : incoming.map(id => \`<button onclick="focusNode('\${id}')" class="link-btn" title="\${id}">\${formatName(id)}</button>\`).join('')}
+          </div>
+          
+          <h3>Вихідні зв'язки (\${outgoing.length})</h3>
+          <div class="link-list">
+            \${outgoing.length === 0 ? '<div class="empty-list">немає вихідних зв\\'язків</div>' : outgoing.map(id => \`<button onclick="focusNode('\${id}')" class="link-btn" title="\${id}">\${formatName(id)}</button>\`).join('')}
+          </div>
+        </div>
+      </div>
+    \`;
     const r=1+220/Math.hypot(n.x||1,n.y||1,n.z||1);
     G.cameraPosition({x:n.x*r,y:n.y*r,z:n.z*r},{x:n.x,y:n.y,z:n.z},700);
   });
+
+window.focusNode = function(id) {
+  const data = G.graphData();
+  const node = data.nodes.find(n => n.id === id);
+  if (node) {
+    G.onNodeClick()(node);
+  }
+};
+
 function updateLegend(){
   const L=document.getElementById('legend');
   if(colorMode==='bucket'){
-    L.innerHTML = '<b style="color:#9cd">октет-вісь</b><br>'+OCTET.map((nm,i)=>'<span style="color:hsl('+(i*45)+',66%,60%)">●</span> '+nm).join('<br>')+'<br><span style="color:#567">8–F = дзеркало (темніше)</span>';
+    L.innerHTML = '<b style="color:#38bdf8">октет-вісь</b><br>'+OCTET.map((nm,i)=>'<span style="color:hsl('+(i*45)+',66%,60%)">●</span> '+nm).join('<br>')+'<br><span style="color:#64748b">8–F = дзеркало (темніше)</span>';
+  } else if (colorMode==='tension') {
+    L.innerHTML = '<b style="color:#38bdf8">напруга / здоров\\'я</b><br>' +
+      '<span style="color:#10b981">●</span> verified / complete<br>' +
+      '<span style="color:#fbbf24">●</span> partial / unsigned<br>' +
+      '<span style="color:#f43f5e">●</span> gap / unevidenced';
   } else {
     L.innerHTML = (layout==='force' ? P.leaves.length+' акордів · '+(P.ledger?P.ledger.length:0)+' пропозицій · <span style="color:#3aa0ff">●</span>proposed <span style="color:#2ecc71">●</span>implemented <span style="color:#c0392b">●</span>terminal' : 'згортка: октет → координата → голос → думка');
   }
@@ -314,6 +452,7 @@ $('L-tree').onclick =()=>{layout='tree'; setBtns('L-','L-tree'); apply()};
 $('C-coord').onclick =()=>{colorMode='coord'; setBtns('C-','C-coord'); recolor()};
 $('C-voice').onclick =()=>{colorMode='voice'; setBtns('C-','C-voice'); recolor()};
 $('C-bucket').onclick=()=>{colorMode='bucket';setBtns('C-','C-bucket');recolor()};
+$('C-tension').onclick=()=>{colorMode='tension';setBtns('C-','C-tension');recolor()};
 $('q').oninput = (e)=>{
   const v=e.target.value.toLowerCase().trim(); const data=G.graphData();
   if(!v){ HL=null; data.nodes.forEach(n=>n.__m=false); recolor(); return; }

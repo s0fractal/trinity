@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     16     |
 | compatibility abi |     55     |
 | compost           |     0      |
-| dynamic topology  |    772     |
+| dynamic topology  |    773     |
 | experimental      |     47     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **890**   |
+| **Total**         |  **891**   |
 
 ## Runtime Cache Diagnostics
 
@@ -473,6 +473,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x3c30_t20260513164500_gemini-3-1-pro_dispatcher-as-dumb-apply-and-functional-composition.myc.md](../src/x3c30_t20260513164500_gemini-3-1-pro_dispatcher-as-dumb-apply-and-functional-composition.myc.md)                                               | canonical        | src/x3c30_t20260513164500_gemini-3-1-pro_dispatcher-as-dumb-apply-and-functional-composition.myc.md                        | keep        |                              |
 | dynamic topology  | [src/x3c30_t20260513213000_gemini-3-1-pro_review-of-functional-primitives-and-shared-lib-coupling.myc.md](../src/x3c30_t20260513213000_gemini-3-1-pro_review-of-functional-primitives-and-shared-lib-coupling.myc.md)                                       | canonical        | src/x3c30_t20260513213000_gemini-3-1-pro_review-of-functional-primitives-and-shared-lib-coupling.myc.md                    | keep        |                              |
 | dynamic topology  | [src/x3d00_952408_claude-opus-4-8_neuron-graph-join-unify-chord-causal-edges-with-or.myc.md](../src/x3d00_952408_claude-opus-4-8_neuron-graph-join-unify-chord-causal-edges-with-or.myc.md)                                                                 | canonical        | src/x3d00_952408_claude-opus-4-8_neuron-graph-join-unify-chord-causal-edges-with-or.myc.md                                 | keep        |                              |
+| dynamic topology  | [src/x3d00_956685_antigravity_mycelium-map-3d-visual-harmony.myc.md](../src/x3d00_956685_antigravity_mycelium-map-3d-visual-harmony.myc.md)                                                                                                                 | canonical        | src/x3d00_956685_antigravity_mycelium-map-3d-visual-harmony.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x3d00_t20260510112033_codex_repo-stabilization-strategy.myc.md](../src/x3d00_t20260510112033_codex_repo-stabilization-strategy.myc.md)                                                                                                                 | canonical        | src/x3d00_t20260510112033_codex_repo-stabilization-strategy.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x3d00_t20260510115539_codex_sigma-intent-phase-graph.myc.md](../src/x3d00_t20260510115539_codex_sigma-intent-phase-graph.myc.md)                                                                                                                       | canonical        | src/x3d00_t20260510115539_codex_sigma-intent-phase-graph.myc.md                                                            | keep        |                              |
 | dynamic topology  | [src/x3d00_t20260518132855_claude-opus-4-7_content-addressed-flat-src.myc.md](../src/x3d00_t20260518132855_claude-opus-4-7_content-addressed-flat-src.myc.md)                                                                                               | canonical        | src/x3d00_t20260518132855_claude-opus-4-7_content-addressed-flat-src.myc.md                                                | keep        |                              |

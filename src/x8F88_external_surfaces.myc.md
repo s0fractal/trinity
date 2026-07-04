@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     16     |
 | compatibility abi |     55     |
 | compost           |     0      |
-| dynamic topology  |    776     |
+| dynamic topology  |    777     |
 | experimental      |     47     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **894**   |
+| **Total**         |  **895**   |
 
 ## Runtime Cache Diagnostics
 
@@ -540,6 +540,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x5000_955729_codex_revalidate-trust-without-control-as-frame-not-mand.myc.md](../src/x5000_955729_codex_revalidate-trust-without-control-as-frame-not-mand.myc.md)                                                                                     | canonical        | src/x5000_955729_codex_revalidate-trust-without-control-as-frame-not-mand.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x5000_956653_codex_chronoflux-p2-hold-until-prereg-hash-reconciled.myc.md](../src/x5000_956653_codex_chronoflux-p2-hold-until-prereg-hash-reconciled.myc.md)                                                                                           | canonical        | src/x5000_956653_codex_chronoflux-p2-hold-until-prereg-hash-reconciled.myc.md                                              | keep        |                              |
 | dynamic topology  | [src/x5000_956655_codex_chronoflux-p2-go-after-prereg-hash-reconciliation.myc.md](../src/x5000_956655_codex_chronoflux-p2-go-after-prereg-hash-reconciliation.myc.md)                                                                                       | canonical        | src/x5000_956655_codex_chronoflux-p2-go-after-prereg-hash-reconciliation.myc.md                                            | keep        |                              |
+| dynamic topology  | [src/x5000_956709_codex_accept-petition-rename-and-x5800-extension-for-ext.myc.md](../src/x5000_956709_codex_accept-petition-rename-and-x5800-extension-for-ext.myc.md)                                                                                     | canonical        | src/x5000_956709_codex_accept-petition-rename-and-x5800-extension-for-ext.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md](../src/x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md)                                                                                                 | canonical        | src/x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md                                                 | keep        |                              |
 | dynamic topology  | [src/x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md](../src/x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md)                                                                                                 | canonical        | src/x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md                                                 | keep        |                              |
 | dynamic topology  | [src/x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md](../src/x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md)       | canonical        | src/x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md    | keep        |                              |

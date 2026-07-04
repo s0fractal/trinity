@@ -220,11 +220,13 @@ verify-snapshot VERIFIED 89/89.
   with the real verifier, and the world audits via verify-snapshot — so a bad
   publish is detectable + attributable, but not blocked at write. _Closes when:_
   the commitment canonicalization is ported to a pure worker-safe verifier.
-- 🟡 **verify-snapshot CRASHES on a bad record** — one malformed record throws
-  an unhandled parse error in `verify_snapshot.ts` (verifyPath), aborting the
-  whole verification instead of reporting that record as FAILED. So a single bad
-  KV publish breaks verify-snapshot for everyone until removed. _Closes when:_
-  verifyPath errors are caught per-record.
+- ✅ **verify-snapshot is per-record robust** (2026-07-04) — verifyPath errors
+  are caught per-record (a malformed record is reported FAILED, never a crash),
+  and the residual where a `null`/non-object record made the catch handler
+  itself throw is closed too (`verify_snapshot.ts`). Regression test with
+  `[null, 42, partial]` records, proven load-bearing (the old access fails it
+  with the exact TypeError). Surfaced by the `t physics` debt region and
+  verified before closing — not gamed.
 - 🟡 **KV is the live layer; the baked snapshot is the durable layer** —
   published KV content is not in git/snapshot.gen.json until a maintainer folds
   it in (snapshot:publish + deploy). If KV is cleared, KV-only content is lost.

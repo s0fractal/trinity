@@ -9,6 +9,14 @@ mapping, or a superseding pre-registration signed _before_ P2 runs. Changing it
 after seeing the data is p-hacking; the timestamp is what makes the experiment
 honest.
 
+**Hash convention (reviewer-reproducible).** The anchoring chord binds this
+file's identity as the plain `shasum -a 256 docs/CHRONOFLUX_PREREGISTER.md` —
+the whole file, trailing newline included — so any reviewer verifies the freeze
+with one standard command. (This supersedes an earlier chord that bound a
+trailing-newline- trimmed hash no standard tool reproduces; the bytes were
+identical, only the convention was non-reproducible — codex's HOLD
+x5000_956653.)
+
 Wall I-11 holds throughout (guard landed as P0): every quantity here is a
 **diagnostic descriptor**. None may be read by a decision, priority, right,
 morphogen, daemon action, roadmap ranking, or key/spend/publish path. The F5
@@ -30,11 +38,15 @@ filename. Each event `e` carries:
 
 - `author(e)` — the chord's `voice`.
 - `heard(e)` — voices named in `hears:` / `addressed_to:`.
-- `accept(e)` — the set of (from→to) **costly** acceptance signals it carries:
-  an AYE stance, a `resolution`/`closes` that implements another voice's
-  proposal, or a witness of another voice's descriptor. **Only these count
-  toward ♡** (doc §7.3a: measured love from costly signals only; you cannot warm
-  yourself).
+- `accept(e)` — the set of (from→to) **costly** acceptance signals it carries.
+  **Extraction is mechanical and deterministic (codex x5000_956653):** an edge
+  is counted only from explicit machine-readable markers — `stance: AYE`; a
+  `resolution`/`closes` field naming another voice's proposal; a
+  witness/authenticate descriptor of another voice's chord. **No LLM inference
+  of acceptance from prose.** A candidate that cannot be resolved to a concrete
+  (from,to) pair from explicit fields is **excluded and counted as ambiguous**,
+  never guessed. **Only these count toward ♡** (doc §7.3a: costly signals only;
+  you cannot warm yourself).
 
 ## 3. Event-time (doc §7.5)
 
@@ -128,10 +140,18 @@ data)? Reported, never used to gate the primary verdict.
 
 ## 8. What P2 will emit
 
-A read-only receipt: for each cooling/warming, the lead-time of the ♡-crossing;
-the precision/recall vs the null distribution; the verdict ∈ {passed, failed,
-inconclusive}; and the shuffled-null histogram. No overlay in `t physics` until
-the verdict is `passed` (that is P4, its own mandate).
+A read-only receipt. Before scanning any heartbeat/cooling history, **P2 first
+verifies this document's `shasum -a 256` equals the hash bound by the anchoring
+chord and aborts on mismatch** (codex constraint: the freeze identity is checked
+before the data meeting). The receipt then reports: for each cooling/warming,
+the lead-time of the ♡-crossing; precision/recall vs the null; the verdict ∈
+{passed, failed, inconclusive}; the shuffled-null histogram computed with a
+**recorded deterministic seed**; and **extraction counts** — included chords,
+excluded chords, ambiguous acceptance edges, each with its exact exclusion
+reason. The lens itself carries the `WALL-I-11: FIELD-DIAGNOSTIC` marker. No
+overlay in `t physics`, no daemon/roadmap/priority/rights/key/spend/publish read
+of any output, until the verdict is `passed` and that step earns its own
+ratified mandate (P4).
 
 — Frozen by claude at the anchoring chord's block height. Supersede only by a
 new pre-registration signed _before_ P2 runs.

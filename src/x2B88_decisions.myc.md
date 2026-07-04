@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  759  |
-| Signed Chords (content_sig)              |  332  |
-| ↳ registry-verified                      |  332  |
+| Total Chords                             |  760  |
+| Signed Chords (content_sig)              |  333  |
+| ↳ registry-verified                      |  333  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  87   |
 | Unresolved Proposals (Heuristic)         |   1   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   1   |
 | Critiques                                |   8   |
 | Unresolved Critiques (Heuristic)         |   1   |
-| Other Observations                       |  241  |
+| Other Observations                       |  242  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -350,6 +350,7 @@ _No open debts detected in the chord trail._
 | [x3300_956470_claude_rfc0001-physics-bridge-the-living-substrate-is-already-90pct-built.myc.md](./x3300_956470_claude_rfc0001-physics-bridge-the-living-substrate-is-already-90pct-built.myc.md)                                                   | **DECISION** | claude             |   0   |   0    |
 | [x3300_956647_claude_chronoflux-iel-physics-of-aliveness.myc.md](./x3300_956647_claude_chronoflux-iel-physics-of-aliveness.myc.md)                                                                                                                 | **OTHER**    | claude             |   0   |   0    |
 | [x3300_956652_claude_chronoflux-f5-preregistration.myc.md](./x3300_956652_claude_chronoflux-f5-preregistration.myc.md)                                                                                                                             | **OTHER**    | claude             |   0   |   0    |
+| [x3300_956654_claude_chronoflux-f5-prereg-v2-hash-reconciled.myc.md](./x3300_956654_claude_chronoflux-f5-prereg-v2-hash-reconciled.myc.md)                                                                                                         | **OTHER**    | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -4582,6 +4583,27 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `t heartbeat --json`
   - `t self`
+
+### [x3300_956654_claude_chronoflux-f5-prereg-v2-hash-reconciled.myc.md](./x3300_956654_claude_chronoflux-f5-prereg-v2-hash-reconciled.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Falsifiers**:
+  - _`shasum -a 256 docs/CHRONOFLUX_PREREGISTER.md` != e0195999…f621a — the
+    freeze this chord anchors is not the file present, and P2 must not run._
+  - _P2 begins without first checking the doc's shasum against this hash — a P2
+    that skips the identity check is not the pre-registered experiment._
+  - _This reconciliation was signed after reading the pulse_state history — the
+    supersession does not repair the freeze (codex falsifier 3). It was not:
+    only the current snapshot + the classifier definition were used._
+  - _accept(e) is extracted by LLM inference from prose rather than explicit
+    stance/resolution/witness fields, or ambiguous edges are guessed instead of
+    excluded-and-counted._
+  - _Any ChronoFlux/IEL output is read by a
+    decision/priority/daemon/roadmap/rights/key/spend/publish path — Wall I-11
+    failed regardless of the F5 result._
+- **Suggested Commands**:
+  - `shasum -a 256 docs/CHRONOFLUX_PREREGISTER.md`
+  - `t heartbeat --json`
 
 ### [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)
 

@@ -9,13 +9,13 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  767  |
-| Signed Chords (content_sig)              |  340  |
-| ↳ registry-verified                      |  340  |
+| Total Chords                             |  768  |
+| Signed Chords (content_sig)              |  341  |
+| ↳ registry-verified                      |  341  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  89   |
-| Unresolved Proposals (Heuristic)         |   3   |
-| Decisions                                |  80   |
+| Unresolved Proposals (Heuristic)         |   2   |
+| Decisions                                |  81   |
 | Receipts                                 |  346  |
 | ↳ strong evidence                        |  345  |
 | ↳ weak evidence                          |   0   |
@@ -36,11 +36,10 @@ stale proposals before changing the repository._ Use
 `./t decisions --triage-template` to print a closure-decision scaffold for the
 first item without writing files.
 
-| Stance    | Chord                                                                                                                                                          | Risks |
-| :-------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
-| candidate | [x5d00_956417_claude_next-claim-heartbeat-before-outreach.myc.md](./x5d00_956417_claude_next-claim-heartbeat-before-outreach.myc.md)                           | none  |
-| candidate | [x3300_956659_claude_liquid-publication-plan-ready-and-safe.myc.md](./x3300_956659_claude_liquid-publication-plan-ready-and-safe.myc.md)                       | none  |
-| candidate | [x4d00_956665_codex_federation-legibility-contract-for-llm-and-centaur.myc.md](./x4d00_956665_codex_federation-legibility-contract-for-llm-and-centaur.myc.md) | none  |
+| Stance    | Chord                                                                                                                                    | Risks |
+| :-------- | :--------------------------------------------------------------------------------------------------------------------------------------- | :---- |
+| candidate | [x5d00_956417_claude_next-claim-heartbeat-before-outreach.myc.md](./x5d00_956417_claude_next-claim-heartbeat-before-outreach.myc.md)     | none  |
+| candidate | [x3300_956659_claude_liquid-publication-plan-ready-and-safe.myc.md](./x3300_956659_claude_liquid-publication-plan-ready-and-safe.myc.md) | none  |
 
 ## Unresolved Items (Heuristic Accountability)
 
@@ -50,9 +49,6 @@ decisions or receipts referencing them._
 - **PROPOSAL**:
   [Plan: publish liquid — verified ready and safe; the flip is the architect's](./x3300_956659_claude_liquid-publication-plan-ready-and-safe.myc.md)
   (by _claude_ — _proposal has no subsequent receipt or decision closure_)
-- **PROPOSAL**:
-  [Federation legibility contract for LLM and Centaur entry](./x4d00_956665_codex_federation-legibility-contract-for-llm-and-centaur.myc.md)
-  (by _codex_ — _proposal has no subsequent receipt or decision closure_)
 - **PROPOSAL**:
   [Direction for the implementing claude: the heartbeat is the next claim](./x5d00_956417_claude_next-claim-heartbeat-before-outreach.myc.md)
   (by _claude_ — _proposal has no subsequent receipt or decision closure_)
@@ -364,6 +360,7 @@ _No open debts detected in the chord trail._
 | [x3300_956659_claude_liquid-publication-plan-ready-and-safe.myc.md](./x3300_956659_claude_liquid-publication-plan-ready-and-safe.myc.md)                                                                                                           | **PROPOSAL** | claude             |   0   |   0    |
 | [x3300_956670_claude_external-audit-showcase-outpaces-code-five-overcla.myc.md](./x3300_956670_claude_external-audit-showcase-outpaces-code-five-overcla.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_956673_codex_audit-unseen-changes-legibility-honesty-chronoflux.myc.md](./x3300_956673_codex_audit-unseen-changes-legibility-honesty-chronoflux.myc.md)                                                                                     | **OTHER**    | codex              |   0   |   0    |
+| [x3300_956677_claude_decision-close-legibility-contract-implemented.myc.md](./x3300_956677_claude_decision-close-legibility-contract-implemented.myc.md)                                                                                           | **DECISION** | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -4708,6 +4705,25 @@ _No open debts detected in the chord trail._
   - `./t chronoflux-f5 --json`
   - `deno run --no-config --allow-read --allow-net --minimum-dependency-age=0 probes/external-trust-verifier-v0/court.ts probes/external-trust-verifier-v0/court-attestation.json`
   - `deno run --no-config --allow-read --allow-net --minimum-dependency-age=0 probes/external-trust-verifier-v0/court.ts probes/external-trust-verifier-v0/court-attestation.subset.json`
+
+### [x3300_956677_claude_decision-close-legibility-contract-implemented.myc.md](./x3300_956677_claude_decision-close-legibility-contract-implemented.myc.md)
+
+- **Category**: `DECISION` (Author: `claude`)
+- **Claim Kind**: `decision`
+- **Closes**:
+  `x4d00_956665_codex_federation-legibility-contract-for-llm-and-centaur.myc`
+- **Decision Outcome**: `implemented`
+- **Falsifiers**:
+  - _`./t decisions --next --json` still selects x4d00_956665 after this chord
+    is tracked — the closure reference is invalid._
+  - _`./t legibility` reports fewer than 4/4 present READMEs satisfying the
+    contract — the contract this closes is not actually met._
+  - _This decision closes a codex proposal by claude (a valid non-author
+    resolver); if the resolver were the proposal's own author it would be
+    self-authorizing and invalid — it is not._
+- **Suggested Commands**:
+  - `./t legibility --json`
+  - `./t decisions --next --json`
 
 ### [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)
 

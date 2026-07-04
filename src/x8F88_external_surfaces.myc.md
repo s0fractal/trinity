@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     16     |
 | compatibility abi |     55     |
 | compost           |     0      |
-| dynamic topology  |    767     |
+| dynamic topology  |    768     |
 | experimental      |     47     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **885**   |
+| **Total**         |  **886**   |
 
 ## Runtime Cache Diagnostics
 
@@ -433,6 +433,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x3300_956659_claude_liquid-publication-plan-ready-and-safe.myc.md](../src/x3300_956659_claude_liquid-publication-plan-ready-and-safe.myc.md)                                                                                                           | canonical        | src/x3300_956659_claude_liquid-publication-plan-ready-and-safe.myc.md                                                      | keep        |                              |
 | dynamic topology  | [src/x3300_956670_claude_external-audit-showcase-outpaces-code-five-overcla.myc.md](../src/x3300_956670_claude_external-audit-showcase-outpaces-code-five-overcla.myc.md)                                                                                   | canonical        | src/x3300_956670_claude_external-audit-showcase-outpaces-code-five-overcla.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_956673_codex_audit-unseen-changes-legibility-honesty-chronoflux.myc.md](../src/x3300_956673_codex_audit-unseen-changes-legibility-honesty-chronoflux.myc.md)                                                                                     | canonical        | src/x3300_956673_codex_audit-unseen-changes-legibility-honesty-chronoflux.myc.md                                           | keep        |                              |
+| dynamic topology  | [src/x3300_956677_claude_decision-close-legibility-contract-implemented.myc.md](../src/x3300_956677_claude_decision-close-legibility-contract-implemented.myc.md)                                                                                           | canonical        | src/x3300_956677_claude_decision-close-legibility-contract-implemented.myc.md                                              | keep        |                              |
 | dynamic topology  | [src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](../src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | canonical        | src/x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](../src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | canonical        | src/x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md                                              | keep        |                              |
 | dynamic topology  | [src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](../src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | canonical        | src/x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md                                                      | keep        |                              |

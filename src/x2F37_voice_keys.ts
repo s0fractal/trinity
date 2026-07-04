@@ -276,13 +276,35 @@ export function voiceFamily(voice: string): string {
 /** Try to sign a chord's content with the authoring voice's local key.
  *  Returns frontmatter lines to insert, or null when no key / no permission —
  *  unsigned chords stay legal (keyless-mode discipline). */
+/** Is this voice a HUMAN principal (per x2F39)? A key on disk is not permission to
+ *  act as the human — an agent must never auto-sign the architect's authority. */
+export function isHumanVoice(family: string): boolean {
+  try {
+    const classes = (JSON.parse(
+      Deno.readTextFileSync(join(HERE, "x2F39_principal_classes.json")),
+    ).classes ?? {}) as Record<string, string>;
+    return classes[family] === "human";
+  } catch {
+    return false;
+  }
+}
+
 export async function signChordContent(
   voice: string,
   filename: string,
   fullContent: string,
+  allowHuman = false,
 ): Promise<string[] | null> {
   try {
     const family = voiceFamily(voice);
+    if (!allowHuman && isHumanVoice(family)) {
+      console.error(
+        `refusing to auto-sign as HUMAN principal '${family}': a key on disk is ` +
+          `not permission to act as the human. A human signature must be a ` +
+          `deliberate act — pass --human to 'chord sign'.`,
+      );
+      return null;
+    }
     const home = Deno.env.get("HOME") ?? ".";
     const keyPath = join(home, ".trinity", "keys", `${family}.ed25519.json`);
     const stored = JSON.parse(await Deno.readTextFile(keyPath));
@@ -308,6 +330,7 @@ export async function signChordContent(
  *  verify reports exactly that). */
 export async function resignChordFile(
   path: string,
+  allowHuman = false,
 ): Promise<{ ok: boolean; voice: string | null; reason?: string }> {
   let content = await Deno.readTextFile(path);
   const fmMatch = content.match(/^---\n([\s\S]*?)\n---\n?/);
@@ -322,12 +345,16 @@ export async function resignChordFile(
   content = `---\n${cleanedFm}\n---\n` + content.slice(fmMatch[0].length);
 
   const filename = path.split("/").pop()!;
-  const sigLines = await signChordContent(voice, filename, content);
+  const sigLines = await signChordContent(voice, filename, content, allowHuman);
   if (!sigLines) {
     return {
       ok: false,
       voice,
-      reason: `no local key for ${voiceFamily(voice)}`,
+      reason: isHumanVoice(voiceFamily(voice)) && !allowHuman
+        ? `${
+          voiceFamily(voice)
+        } is a HUMAN principal — pass --human to sign deliberately`
+        : `no local key for ${voiceFamily(voice)}`,
     };
   }
   const closing = content.indexOf("\n---\n", 4);

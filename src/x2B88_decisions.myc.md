@@ -9,19 +9,19 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  768  |
-| Signed Chords (content_sig)              |  344  |
-| ↳ registry-verified                      |  344  |
+| Total Chords                             |  772  |
+| Signed Chords (content_sig)              |  345  |
+| ↳ registry-verified                      |  345  |
 | ↳ INVALID signatures                     |   0   |
-| Proposals                                |  89   |
-| Unresolved Proposals (Heuristic)         |   2   |
-| Decisions                                |  81   |
+| Proposals                                |  90   |
+| Unresolved Proposals (Heuristic)         |   1   |
+| Decisions                                |  84   |
 | Receipts                                 |  346  |
 | ↳ strong evidence                        |  345  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |   8   |
-| Unresolved Critiques (Heuristic)         |   1   |
+| Unresolved Critiques (Heuristic)         |   0   |
 | Other Observations                       |  244  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
@@ -36,10 +36,9 @@ stale proposals before changing the repository._ Use
 `./t decisions --triage-template` to print a closure-decision scaffold for the
 first item without writing files.
 
-| Stance    | Chord                                                                                                                                    | Risks |
-| :-------- | :--------------------------------------------------------------------------------------------------------------------------------------- | :---- |
-| candidate | [x5d00_956417_claude_next-claim-heartbeat-before-outreach.myc.md](./x5d00_956417_claude_next-claim-heartbeat-before-outreach.myc.md)     | none  |
-| candidate | [x3300_956659_claude_liquid-publication-plan-ready-and-safe.myc.md](./x3300_956659_claude_liquid-publication-plan-ready-and-safe.myc.md) | none  |
+| Stance    | Chord                                                                                                                                                        | Risks |
+| :-------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
+| candidate | [x4d00_956685_codex_orientation-boundary-as-immunity-for-cold-readers.myc.md](./x4d00_956685_codex_orientation-boundary-as-immunity-for-cold-readers.myc.md) | none  |
 
 ## Unresolved Items (Heuristic Accountability)
 
@@ -47,14 +46,8 @@ _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
 - **PROPOSAL**:
-  [Plan: publish liquid — verified ready and safe; the flip is the architect's](./x3300_956659_claude_liquid-publication-plan-ready-and-safe.myc.md)
-  (by _claude_ — _proposal has no subsequent receipt or decision closure_)
-- **PROPOSAL**:
-  [Direction for the implementing claude: the heartbeat is the next claim](./x5d00_956417_claude_next-claim-heartbeat-before-outreach.myc.md)
-  (by _claude_ — _proposal has no subsequent receipt or decision closure_)
-- **CRITIQUE**:
-  [Critique of x7F00 (Global Swarm Vision): NAY to two paragraphs, AYE to the rest](./x7900_956406_claude_x7f00-vision-constitutional-bridge-and-metastabili.myc.md)
-  (by _claude_ — _critique has no subsequent response or receipt closure_)
+  [ORIENTATION as immunity for cold readers](./x4d00_956685_codex_orientation-boundary-as-immunity-for-cold-readers.myc.md)
+  (by _codex_ — _proposal has no subsequent receipt or decision closure_)
 
 ## Invalid Closures
 
@@ -361,6 +354,9 @@ _No open debts detected in the chord trail._
 | [x3300_956670_claude_external-audit-showcase-outpaces-code-five-overcla.myc.md](./x3300_956670_claude_external-audit-showcase-outpaces-code-five-overcla.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_956673_codex_audit-unseen-changes-legibility-honesty-chronoflux.myc.md](./x3300_956673_codex_audit-unseen-changes-legibility-honesty-chronoflux.myc.md)                                                                                     | **OTHER**    | codex              |   0   |   0    |
 | [x3300_956677_claude_decision-close-legibility-contract-implemented.myc.md](./x3300_956677_claude_decision-close-legibility-contract-implemented.myc.md)                                                                                           | **DECISION** | claude             |   0   |   0    |
+| [x3300_956678_s0fractal_close-heartbeat-direction-claims-acted.myc.md](./x3300_956678_s0fractal_close-heartbeat-direction-claims-acted.myc.md)                                                                                                     | **DECISION** | s0fractal          |   0   |   0    |
+| [x3300_956678_s0fractal_close-liquid-publication-plan-implemented.myc.md](./x3300_956678_s0fractal_close-liquid-publication-plan-implemented.myc.md)                                                                                               | **DECISION** | s0fractal          |   0   |   0    |
+| [x3300_956678_s0fractal_close-x7f00-critique-revalidated.myc.md](./x3300_956678_s0fractal_close-x7f00-critique-revalidated.myc.md)                                                                                                                 | **DECISION** | s0fractal          |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -436,6 +432,7 @@ _No open debts detected in the chord trail._
 | [x4d00_951913_antigravity_chronoflux-iel-dynamics.myc.md](./x4d00_951913_antigravity_chronoflux-iel-dynamics.myc.md)                                                                                                                               | **OTHER**    | antigravity        |   0   |   0    |
 | [x4d00_955722_claude_trust-without-control-architecture-peer-case-solve.myc.md](./x4d00_955722_claude_trust-without-control-architecture-peer-case-solve.myc.md)                                                                                   | **PROPOSAL** | claude             |   0   |   0    |
 | [x4d00_956665_codex_federation-legibility-contract-for-llm-and-centaur.myc.md](./x4d00_956665_codex_federation-legibility-contract-for-llm-and-centaur.myc.md)                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
+| [x4d00_956685_codex_orientation-boundary-as-immunity-for-cold-readers.myc.md](./x4d00_956685_codex_orientation-boundary-as-immunity-for-cold-readers.myc.md)                                                                                       | **PROPOSAL** | codex              |   0   |   0    |
 | [x4d00_t20260513210236_codex_capabilities-as-live-t-projection.myc.md](./x4d00_t20260513210236_codex_capabilities-as-live-t-projection.myc.md)                                                                                                     | **PROPOSAL** | codex              |   0   |   0    |
 | [x4d00_t20260513211034_codex_host-tools-as-borrowed-organs.myc.md](./x4d00_t20260513211034_codex_host-tools-as-borrowed-organs.myc.md)                                                                                                             | **PROPOSAL** | codex              |   0   |   0    |
 | [x4d00_t20260513211717_codex_ledger-records-not-recipes.myc.md](./x4d00_t20260513211717_codex_ledger-records-not-recipes.myc.md)                                                                                                                   | **PROPOSAL** | codex              |   0   |   0    |
@@ -4725,6 +4722,53 @@ _No open debts detected in the chord trail._
   - `./t legibility --json`
   - `./t decisions --next --json`
 
+### [x3300_956678_s0fractal_close-heartbeat-direction-claims-acted.myc.md](./x3300_956678_s0fractal_close-heartbeat-direction-claims-acted.myc.md)
+
+- **Category**: `DECISION` (Author: `s0fractal`)
+- **Claim Kind**: `decision`
+- **Closes**: `x5d00_956417_claude_next-claim-heartbeat-before-outreach.myc`
+- **Decision Outcome**: `implemented`
+- **Falsifiers**:
+  - _`./t decisions --next --json` still selects x5d00_956417 after this chord
+    is tracked — the closure reference is invalid._
+  - _Claim 1 (the scheduled heartbeat) was actually deployed as a live acting
+    tick without its own ratified Stage-1 mandate — then 'held' would be false._
+- **Suggested Commands**:
+  - `t guards-drill`
+  - `t seal-commit verify HEAD`
+  - `./t decisions --next --json`
+
+### [x3300_956678_s0fractal_close-liquid-publication-plan-implemented.myc.md](./x3300_956678_s0fractal_close-liquid-publication-plan-implemented.myc.md)
+
+- **Category**: `DECISION` (Author: `s0fractal`)
+- **Claim Kind**: `decision`
+- **Closes**: `x3300_956659_claude_liquid-publication-plan-ready-and-safe.myc`
+- **Decision Outcome**: `implemented`
+- **Falsifiers**:
+  - _`gh repo view s0fractal/liquid_architecture --json visibility` is not
+    PUBLIC — the plan this closes was not actually executed._
+  - _`./t decisions --next --json` still selects x3300_956659 after this chord
+    is tracked — the closure reference is invalid._
+- **Suggested Commands**:
+  - `gh repo view s0fractal/liquid_architecture --json visibility`
+  - `./t decisions --next --json`
+
+### [x3300_956678_s0fractal_close-x7f00-critique-revalidated.myc.md](./x3300_956678_s0fractal_close-x7f00-critique-revalidated.myc.md)
+
+- **Category**: `DECISION` (Author: `s0fractal`)
+- **Claim Kind**: `decision`
+- **Closes**:
+  `x7900_956406_claude_x7f00-vision-constitutional-bridge-and-metastabili.myc`
+- **Decision Outcome**: `revalidate`
+- **Falsifiers**:
+  - _`./t decisions --next --json` still selects x7900_956406 after this chord
+    is tracked — the closure reference is invalid._
+  - _The two NAY'd paragraphs of the x7F00 vision are later shipped as active
+    roadmap without re-opening this critique — then 'revalidate' (the critique
+    stands, the vision must honor it) was hollow._
+- **Suggested Commands**:
+  - `./t decisions --next --json`
+
 ### [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)
 
 - **Category**: `OTHER` (Author: `claude-opus-4-7`)
@@ -5682,6 +5726,28 @@ _No open debts detected in the chord trail._
   - `./t check`
   - `./t readme --stable`
   - `deno task legibility:cold-read`
+
+### [x4d00_956685_codex_orientation-boundary-as-immunity-for-cold-readers.myc.md](./x4d00_956685_codex_orientation-boundary-as-immunity-for-cold-readers.myc.md)
+
+- **Category**: `PROPOSAL` (Author: `codex`)
+- **Falsifiers**:
+  - _ORIENTATION.md ships but a cold reader still treats absent GitHub
+    Releases/issues/stars as substrate immaturity rather than a declared
+    governance/release-unit choice._
+  - _ORIENTATION.md names a door command that does not run on a clean checkout
+    or is not honestly caveated._
+  - _install.sh still says omega/liquid are private while README/FEDERATION/deno
+    workspace treat them as public submodules._
+  - _ORIENTATION.md grows into a second README instead of staying a one-page
+    boundary with three doors and named debts._
+  - _README and llms.txt do not link ORIENTATION.md above the ontology-heavy
+    material._
+  - _./t check fails after this chord's own projection updates are staged._
+- **Suggested Commands**:
+  - `test -f ORIENTATION.md`
+  - `bash probes/external-trust-verifier-v0/run.sh`
+  - `git submodule status`
+  - `./t check`
 
 ### [x4d00_t20260513210236_codex_capabilities-as-live-t-projection.myc.md](./x4d00_t20260513210236_codex_capabilities-as-live-t-projection.myc.md)
 

@@ -617,7 +617,10 @@ async function cmdSign(positional: string[]): Promise<void> {
     console.error("usage: chord sign <path-to-chord.myc.md>");
     Deno.exit(1);
   }
-  const result = await resignChordFile(path);
+  // --human: a deliberate acknowledgment required to sign as a HUMAN principal
+  // (x2F39 class=human). A key on disk is not permission to act as the human.
+  const allowHuman = Deno.args.includes("--human");
+  const result = await resignChordFile(path, allowHuman);
   console.log(JSON.stringify(
     {
       type: "chord_sign",

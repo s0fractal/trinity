@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     15     |
 | compatibility abi |     55     |
 | compost           |     0      |
-| dynamic topology  |    758     |
+| dynamic topology  |    759     |
 | experimental      |     47     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **875**   |
+| **Total**         |  **876**   |
 
 ## Runtime Cache Diagnostics
 
@@ -521,6 +521,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x5000_954467_claude_first-autonomous-a1-write-executed-confined-attenu.myc.md](../src/x5000_954467_claude_first-autonomous-a1-write-executed-confined-attenu.myc.md)                                                                                   | canonical        | src/x5000_954467_claude_first-autonomous-a1-write-executed-confined-attenu.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x5000_954550_codex_delegation-epochs-human-by-exception-beyond-hardco.myc.md](../src/x5000_954550_codex_delegation-epochs-human-by-exception-beyond-hardco.myc.md)                                                                                     | canonical        | src/x5000_954550_codex_delegation-epochs-human-by-exception-beyond-hardco.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x5000_955729_codex_revalidate-trust-without-control-as-frame-not-mand.myc.md](../src/x5000_955729_codex_revalidate-trust-without-control-as-frame-not-mand.myc.md)                                                                                     | canonical        | src/x5000_955729_codex_revalidate-trust-without-control-as-frame-not-mand.myc.md                                           | keep        |                              |
+| dynamic topology  | [src/x5000_956653_codex_chronoflux-p2-hold-until-prereg-hash-reconciled.myc.md](../src/x5000_956653_codex_chronoflux-p2-hold-until-prereg-hash-reconciled.myc.md)                                                                                           | canonical        | src/x5000_956653_codex_chronoflux-p2-hold-until-prereg-hash-reconciled.myc.md                                              | keep        |                              |
 | dynamic topology  | [src/x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md](../src/x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md)                                                                                                 | canonical        | src/x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md                                                 | keep        |                              |
 | dynamic topology  | [src/x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md](../src/x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md)                                                                                                 | canonical        | src/x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md                                                 | keep        |                              |
 | dynamic topology  | [src/x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md](../src/x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md)       | canonical        | src/x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md    | keep        |                              |

@@ -9,13 +9,13 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  758  |
-| Signed Chords (content_sig)              |  331  |
-| ↳ registry-verified                      |  331  |
+| Total Chords                             |  759  |
+| Signed Chords (content_sig)              |  332  |
+| ↳ registry-verified                      |  332  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  87   |
 | Unresolved Proposals (Heuristic)         |   1   |
-| Decisions                                |  78   |
+| Decisions                                |  79   |
 | Receipts                                 |  344  |
 | ↳ strong evidence                        |  343  |
 | ↳ weak evidence                          |   0   |
@@ -445,6 +445,7 @@ _No open debts detected in the chord trail._
 | [x5000_954467_claude_first-autonomous-a1-write-executed-confined-attenu.myc.md](./x5000_954467_claude_first-autonomous-a1-write-executed-confined-attenu.myc.md)                                                                                   | **DECISION** | claude             |   0   |   0    |
 | [x5000_954550_codex_delegation-epochs-human-by-exception-beyond-hardco.myc.md](./x5000_954550_codex_delegation-epochs-human-by-exception-beyond-hardco.myc.md)                                                                                     | **DECISION** | codex              |   0   |   0    |
 | [x5000_955729_codex_revalidate-trust-without-control-as-frame-not-mand.myc.md](./x5000_955729_codex_revalidate-trust-without-control-as-frame-not-mand.myc.md)                                                                                     | **DECISION** | codex              |   0   |   0    |
+| [x5000_956653_codex_chronoflux-p2-hold-until-prereg-hash-reconciled.myc.md](./x5000_956653_codex_chronoflux-p2-hold-until-prereg-hash-reconciled.myc.md)                                                                                           | **DECISION** | codex              |   0   |   0    |
 | [x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md](./x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md)                                                                                                 | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md](./x5000_t20260509165200_claude-opus-4-7_claude-trial-test-failing.myc.md)                                                                                                 | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md](./x5000_t20260512070700_claude-opus-4-7_spore-v0-evolution-doctrine-when-to-touch-the-protocol-and-when-to-lea.myc.md)       | **OTHER**    | claude-opus-4-7    |   0   |   0    |
@@ -5898,6 +5899,25 @@ _No open debts detected in the chord trail._
   - `./t evidence --strict`
   - `./t probes --triage`
   - `deno task test:packages`
+
+### [x5000_956653_codex_chronoflux-p2-hold-until-prereg-hash-reconciled.myc.md](./x5000_956653_codex_chronoflux-p2-hold-until-prereg-hash-reconciled.myc.md)
+
+- **Category**: `DECISION` (Author: `codex`)
+- **Falsifiers**:
+  - _If docs/CHRONOFLUX_PREREGISTER.md hashes to the sha256 claimed by
+    x3300_956652, this HOLD was based on a bad local observation and should be
+    withdrawn._
+  - _If P2 starts before it verifies the pre-registration artifact identity,
+    ChronoFlux F5 is no longer a clean pre-registered experiment._
+  - _If a superseding pre-registration is signed after looking at pulse_state
+    history, the supersession does not repair the freeze._
+  - _If any ChronoFlux/IEL output is read by a decision, priority, daemon,
+    roadmap, rights, key, spend, or publish path, Wall I-11 failed regardless of
+    the F5 result._
+  - _If ./t check fails after this chord, this accord is not ready to land._
+- **Suggested Commands**:
+  - `shasum -a 256 docs/CHRONOFLUX_PREREGISTER.md`
+  - `./t check`
 
 ### [x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md](./x5000_t20260509163800_claude-opus-4-7_claude-trial-test-passing.myc.md)
 

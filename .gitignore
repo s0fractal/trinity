@@ -108,3 +108,6 @@ packages/*/Cargo.lock
 # agent-local CLI workspace state (not substrate)
 .antigravitycli/
 .codexcli/
+
+# graphify analysis output/cache (generated, regenerable — do not commit)
+graphify-out/

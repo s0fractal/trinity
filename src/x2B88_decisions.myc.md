@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  788  |
+| Total Chords                             |  789  |
 | Signed Chords (content_sig)              |  351  |
 | ↳ registry-verified                      |  351  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  92   |
 | Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  85   |
-| Receipts                                 |  357  |
-| ↳ strong evidence                        |  356  |
+| Receipts                                 |  358  |
+| ↳ strong evidence                        |  357  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |   9   |
@@ -835,6 +835,7 @@ _No open debts detected in the chord trail._
 | [x7700_958440_codex_myc-path-policy-descriptor-index-slice.myc.md](./x7700_958440_codex_myc-path-policy-descriptor-index-slice.myc.md)                                                                                                             | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958441_codex_myc-deterministic-projection-engine-slice.myc.md](./x7700_958441_codex_myc-deterministic-projection-engine-slice.myc.md)                                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958441_codex_myc-lineage-explanation-engine-slice.myc.md](./x7700_958441_codex_myc-lineage-explanation-engine-slice.myc.md)                                                                                                                 | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_958441_codex_myc-resolver-http-transport-slice.myc.md](./x7700_958441_codex_myc-resolver-http-transport-slice.myc.md)                                                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -12413,6 +12414,24 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `cd myc && deno task check`
   - `cd myc && deno test --no-config --allow-read --allow-write --allow-env --allow-run src/x0180_lineage_test.ts src/x0100_myc_test.ts`
+  - `cd myc && wc -l src/x0100_myc.ts`
+  - `./t check`
+
+### [x7700_958441_codex_myc-resolver-http-transport-slice.myc.md](./x7700_958441_codex_myc-resolver-http-transport-slice.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Falsifiers**:
+  - _The compatibility facade changes endpoint status, body, or CORS behavior._
+  - _HTTP transport imports or depends on the CLI facade._
+  - _Domain-only routes bypass the explicit resolver service contract._
+  - _Audit output exposes request query payloads._
+  - _POST proposal ingress signs, witnesses, or germinates a proposal._
+  - _Any command in `suggested_commands` fails on this tree._
+  - _Existing resolver consumers observe an endpoint or audit contract change._
+  - _The transport boundary acquires hidden lifecycle or consensus authority._
+- **Suggested Commands**:
+  - `cd myc && deno task check`
+  - `cd myc && deno test --no-config --allow-read --allow-write --allow-env --allow-run src/x0190_http_test.ts src/x0100_myc_test.ts`
   - `cd myc && wc -l src/x0100_myc.ts`
   - `./t check`
 

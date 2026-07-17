@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     16     |
 | compatibility abi |     55     |
 | compost           |     0      |
-| dynamic topology  |    797     |
+| dynamic topology  |    798     |
 | experimental      |     47     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **915**   |
+| **Total**         |  **916**   |
 
 ## Runtime Cache Diagnostics
 
@@ -921,6 +921,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x7700_958451_codex_myc-publish-route-disambiguation.myc.md](../src/x7700_958451_codex_myc-publish-route-disambiguation.myc.md)                                                                                                                         | canonical        | src/x7700_958451_codex_myc-publish-route-disambiguation.myc.md                                                             | keep        |                              |
 | dynamic topology  | [src/x7700_958451_codex_myc-registry-derived-command-effects.myc.md](../src/x7700_958451_codex_myc-registry-derived-command-effects.myc.md)                                                                                                                 | canonical        | src/x7700_958451_codex_myc-registry-derived-command-effects.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x7700_958451_codex_myc-typed-local-command-registry-slice.myc.md](../src/x7700_958451_codex_myc-typed-local-command-registry-slice.myc.md)                                                                                                             | canonical        | src/x7700_958451_codex_myc-typed-local-command-registry-slice.myc.md                                                       | keep        |                              |
+| dynamic topology  | [src/x7700_958452_codex_myc-registry-generated-cli-help.myc.md](../src/x7700_958452_codex_myc-registry-generated-cli-help.myc.md)                                                                                                                           | canonical        | src/x7700_958452_codex_myc-registry-generated-cli-help.myc.md                                                              | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](../src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | canonical        | src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](../src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | canonical        | src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md                                                     | keep        |                              |
 | dynamic topology  | [src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](../src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | canonical        | src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md                                                      | keep        |                              |

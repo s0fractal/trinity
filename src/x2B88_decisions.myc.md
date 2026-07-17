@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  797  |
+| Total Chords                             |  798  |
 | Signed Chords (content_sig)              |  351  |
 | ↳ registry-verified                      |  351  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  92   |
 | Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  85   |
-| Receipts                                 |  366  |
-| ↳ strong evidence                        |  365  |
+| Receipts                                 |  367  |
+| ↳ strong evidence                        |  366  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |   9   |
@@ -844,6 +844,7 @@ _No open debts detected in the chord trail._
 | [x7700_958451_codex_myc-publish-route-disambiguation.myc.md](./x7700_958451_codex_myc-publish-route-disambiguation.myc.md)                                                                                                                         | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958451_codex_myc-registry-derived-command-effects.myc.md](./x7700_958451_codex_myc-registry-derived-command-effects.myc.md)                                                                                                                 | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958451_codex_myc-typed-local-command-registry-slice.myc.md](./x7700_958451_codex_myc-typed-local-command-registry-slice.myc.md)                                                                                                             | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_958452_codex_myc-registry-generated-cli-help.myc.md](./x7700_958452_codex_myc-registry-generated-cli-help.myc.md)                                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -12587,6 +12588,25 @@ _No open debts detected in the chord trail._
   - `cd myc && deno task check`
   - `cd myc && deno test --no-config --allow-read --allow-write --allow-env --allow-run src/x01E0_cli_test.ts src/x01F0_local_commands_test.ts src/capture_human_test.ts src/x0100_myc_test.ts`
   - `cd myc && wc -l src/x01E0_cli.ts src/x01F0_local_commands.ts src/x0100_myc.ts`
+  - `./t check`
+
+### [x7700_958452_codex_myc-registry-generated-cli-help.myc.md](./x7700_958452_codex_myc-registry-generated-cli-help.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Falsifiers**:
+  - _A registered command is absent from generated help._
+  - _A command form appears more than once in generated help._
+  - _Local PublishDescriptor and live membrane publish forms collapse together._
+  - _Changing a handler or shell command still requires editing a manual help
+    list._
+  - _Any command in `suggested_commands` fails on this tree._
+  - _Adding a command without usage metadata type-checks successfully._
+  - _Generated help omits either publish contract or merges their routing
+    meaning._
+- **Suggested Commands**:
+  - `cd myc && deno task check`
+  - `cd myc && deno test --no-config --allow-read --allow-write --allow-env --allow-run src/x01E0_cli_test.ts src/x01F0_local_commands_test.ts src/x4A10_verb_effects_test.ts`
+  - `cd myc && deno eval 'import { helpText } from \"./src/x01E0_cli.ts\"; console.log(helpText())'`
   - `./t check`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)

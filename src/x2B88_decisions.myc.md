@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  784  |
+| Total Chords                             |  785  |
 | Signed Chords (content_sig)              |  351  |
 | ↳ registry-verified                      |  351  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  92   |
 | Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  85   |
-| Receipts                                 |  353  |
-| ↳ strong evidence                        |  352  |
+| Receipts                                 |  354  |
+| ↳ strong evidence                        |  353  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |   9   |
@@ -831,6 +831,7 @@ _No open debts detected in the chord trail._
 | [x7700_958439_codex_myc-descriptor-core-strangler-slice.myc.md](./x7700_958439_codex_myc-descriptor-core-strangler-slice.myc.md)                                                                                                                   | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958439_codex_myc-pure-descriptor-parser-verifier-slice.myc.md](./x7700_958439_codex_myc-pure-descriptor-parser-verifier-slice.myc.md)                                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958440_codex_myc-derived-nutrition-pure-projection-slice.myc.md](./x7700_958440_codex_myc-derived-nutrition-pure-projection-slice.myc.md)                                                                                                   | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_958440_codex_myc-path-policy-descriptor-index-slice.myc.md](./x7700_958440_codex_myc-path-policy-descriptor-index-slice.myc.md)                                                                                                             | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -12336,6 +12337,23 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `cd myc && deno task check`
   - `cd myc && deno test --allow-read --allow-write --allow-env --allow-run src/x0130_nutrition_test.ts src/x0100_myc_test.ts`
+  - `cd myc && wc -l src/x0100_myc.ts`
+  - `./t check`
+
+### [x7700_958440_codex_myc-path-policy-descriptor-index-slice.myc.md](./x7700_958440_codex_myc-path-policy-descriptor-index-slice.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Falsifiers**:
+  - _The x0100 façade exposes different path/index bindings._
+  - _Canonical, immutable, or output FQDN aliases stop resolving._
+  - _Schema fixtures or empty-content fossils enter the descriptor index._
+  - _A missing optional scan surface crashes discovery._
+  - _Any command in `suggested_commands` fails on this tree._
+  - _Existing x0100 scanner/resolver consumers observe an API/result change._
+  - _Discovery widens beyond the established six read-only surfaces._
+- **Suggested Commands**:
+  - `cd myc && deno task check`
+  - `cd myc && deno test --allow-read --allow-write --allow-env --allow-run src/x0140_paths_test.ts src/x0150_descriptor_index_test.ts src/x0100_myc_test.ts`
   - `cd myc && wc -l src/x0100_myc.ts`
   - `./t check`
 

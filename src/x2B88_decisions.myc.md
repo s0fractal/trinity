@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  796  |
+| Total Chords                             |  797  |
 | Signed Chords (content_sig)              |  351  |
 | ↳ registry-verified                      |  351  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  92   |
 | Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  85   |
-| Receipts                                 |  365  |
-| ↳ strong evidence                        |  364  |
+| Receipts                                 |  366  |
+| ↳ strong evidence                        |  365  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |   9   |
@@ -842,6 +842,7 @@ _No open debts detected in the chord trail._
 | [x7700_958444_codex_myc-thin-facade-cli-dispatcher-slice.myc.md](./x7700_958444_codex_myc-thin-facade-cli-dispatcher-slice.myc.md)                                                                                                                 | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958449_codex_myc-declarative-shell-command-registry-slice.myc.md](./x7700_958449_codex_myc-declarative-shell-command-registry-slice.myc.md)                                                                                                 | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958451_codex_myc-publish-route-disambiguation.myc.md](./x7700_958451_codex_myc-publish-route-disambiguation.myc.md)                                                                                                                         | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_958451_codex_myc-registry-derived-command-effects.myc.md](./x7700_958451_codex_myc-registry-derived-command-effects.myc.md)                                                                                                                 | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958451_codex_myc-typed-local-command-registry-slice.myc.md](./x7700_958451_codex_myc-typed-local-command-registry-slice.myc.md)                                                                                                             | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
@@ -12552,6 +12553,22 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `cd myc && deno task check`
   - `cd myc && deno test --no-config --allow-read --allow-write --allow-env --allow-run src/x01E0_cli_test.ts src/x01F0_local_commands_test.ts`
+  - `./t check`
+
+### [x7700_958451_codex_myc-registry-derived-command-effects.myc.md](./x7700_958451_codex_myc-registry-derived-command-effects.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Falsifiers**:
+  - _An executable MYC command is absent from the effect projection._
+  - _Shell and local registries assign conflicting effects to publish._
+  - _Trinity's submodule-independent mirror omits or invents an effectful verb._
+  - _Unknown commands gain authority instead of failing closed to read._
+  - _Any command in `suggested_commands` fails on this tree._
+  - _`t myc effects --json` reports a verb not backed by a registry or `help`._
+  - _Adding a command without an effect remains invisible to tests._
+- **Suggested Commands**:
+  - `cd myc && deno task check`
+  - `deno test --allow-read --allow-write --allow-env --allow-run src/dispatch_myc_caps_test.ts`
   - `./t check`
 
 ### [x7700_958451_codex_myc-typed-local-command-registry-slice.myc.md](./x7700_958451_codex_myc-typed-local-command-registry-slice.myc.md)

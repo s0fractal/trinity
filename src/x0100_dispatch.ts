@@ -53,18 +53,24 @@ const MAX_CONTINUATION_DEPTH = 10;
 // Used to grant the MINIMUM permission set per `t myc <verb>` (codex review
 // x3300_954205). Unknown verbs fail closed to read.
 export const MYC_EFFECTFUL = new Set([
-  "propose",
-  "resolve-proposal",
   "authenticate",
   "capture",
-  "publish",
-  "witness",
-  "review",
-  "import",
-  "reproject",
-  "index",
-  "graph",
   "demo",
+  "graph",
+  "import",
+  "import-snapshot",
+  "index",
+  "petition",
+  "propose",
+  "publish",
+  "reconcile-published",
+  "reproject",
+  "resolve-proposal",
+  "review",
+  "snapshot",
+  "temporal-sign",
+  "verify-snapshot",
+  "witness",
 ]);
 
 export function classifyMycVerb(

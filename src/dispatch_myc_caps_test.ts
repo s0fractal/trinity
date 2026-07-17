@@ -45,6 +45,15 @@ Deno.test("classifyMycVerb — PARITY with myc x4A10 (skipped when submodule abs
       `mirror drift: trinity classifies '${verb}' differently than myc x4A10`,
     );
   }
+  const authoritativeEffects = Object.entries(myc.VERB_EFFECTS)
+    .filter(([, effect]) => effect === "effect")
+    .map(([verb]) => verb)
+    .sort();
+  assertEquals(
+    [...MYC_EFFECTFUL].sort(),
+    authoritativeEffects,
+    "trinity effect mirror has missing or ghost verbs",
+  );
   // the flag-sensitive case must agree too
   assertEquals(
     classifyMycVerb("coord", ["--stamp"]),

@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     16     |
 | compatibility abi |     55     |
 | compost           |     0      |
-| dynamic topology  |    802     |
+| dynamic topology  |    803     |
 | experimental      |     47     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **920**   |
+| **Total**         |  **921**   |
 
 ## Runtime Cache Diagnostics
 
@@ -926,6 +926,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x7700_958454_codex_myc-capability-split-local-handlers.myc.md](../src/x7700_958454_codex_myc-capability-split-local-handlers.myc.md)                                                                                                                   | canonical        | src/x7700_958454_codex_myc-capability-split-local-handlers.myc.md                                                          | keep        |                              |
 | dynamic topology  | [src/x7700_958455_codex_myc-extracted-shell-command-registry.myc.md](../src/x7700_958455_codex_myc-extracted-shell-command-registry.myc.md)                                                                                                                 | canonical        | src/x7700_958455_codex_myc-extracted-shell-command-registry.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x7700_958457_codex_myc-centralized-command-registry-projections.myc.md](../src/x7700_958457_codex_myc-centralized-command-registry-projections.myc.md)                                                                                                 | canonical        | src/x7700_958457_codex_myc-centralized-command-registry-projections.myc.md                                                 | keep        |                              |
+| dynamic topology  | [src/x7700_958457_codex_myc-fail-closed-serve-port-validation.myc.md](../src/x7700_958457_codex_myc-fail-closed-serve-port-validation.myc.md)                                                                                                               | canonical        | src/x7700_958457_codex_myc-fail-closed-serve-port-validation.myc.md                                                        | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](../src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | canonical        | src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](../src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | canonical        | src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md                                                     | keep        |                              |
 | dynamic topology  | [src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](../src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | canonical        | src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md                                                      | keep        |                              |

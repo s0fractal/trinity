@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  782  |
+| Total Chords                             |  783  |
 | Signed Chords (content_sig)              |  351  |
 | ↳ registry-verified                      |  351  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  92   |
 | Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  85   |
-| Receipts                                 |  351  |
-| ↳ strong evidence                        |  350  |
+| Receipts                                 |  352  |
+| ↳ strong evidence                        |  351  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |   9   |
@@ -829,6 +829,7 @@ _No open debts detected in the chord trail._
 | [x7700_958438_codex_bounded-context-firewall-for-model-work.myc.md](./x7700_958438_codex_bounded-context-firewall-for-model-work.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958439_codex_myc-canonical-core-and-complete-test-discovery.myc.md](./x7700_958439_codex_myc-canonical-core-and-complete-test-discovery.myc.md)                                                                                             | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958439_codex_myc-descriptor-core-strangler-slice.myc.md](./x7700_958439_codex_myc-descriptor-core-strangler-slice.myc.md)                                                                                                                   | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_958439_codex_myc-pure-descriptor-parser-verifier-slice.myc.md](./x7700_958439_codex_myc-pure-descriptor-parser-verifier-slice.myc.md)                                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -12300,6 +12301,23 @@ _No open debts detected in the chord trail._
   - `cd myc && deno task check`
   - `cd myc && deno test --allow-read --allow-write --allow-env --allow-run src/x0110_descriptor_core_test.ts src/x0100_myc_test.ts`
   - `cd myc && wc -l src/x0100_myc.ts src/x0110_descriptor_core.ts`
+  - `./t check`
+
+### [x7700_958439_codex_myc-pure-descriptor-parser-verifier-slice.myc.md](./x7700_958439_codex_myc-pure-descriptor-parser-verifier-slice.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Falsifiers**:
+  - _Pure parsing requires Deno, filesystem, network, or process permission._
+  - _parseDescriptorFile differs from parseDescriptorText for identical bytes._
+  - _Malformed descriptors or forged artifact formulas verify successfully._
+  - _The x0100 verifyDescriptor export is not the x0120 implementation binding._
+  - _Any command in `suggested_commands` fails on this tree._
+  - _A pure parser/verifier import gains ambient runtime authority._
+  - _Existing x0100 consumers observe an API or verification-result change._
+- **Suggested Commands**:
+  - `cd myc && deno task check`
+  - `cd myc && deno test --allow-read --allow-write --allow-env --allow-run src/x0120_descriptor_verify_test.ts src/x0100_myc_test.ts`
+  - `cd myc && wc -l src/x0100_myc.ts`
   - `./t check`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)

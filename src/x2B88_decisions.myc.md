@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  790  |
+| Total Chords                             |  791  |
 | Signed Chords (content_sig)              |  351  |
 | ↳ registry-verified                      |  351  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  92   |
 | Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  85   |
-| Receipts                                 |  359  |
-| ↳ strong evidence                        |  358  |
+| Receipts                                 |  360  |
+| ↳ strong evidence                        |  359  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |   9   |
@@ -837,6 +837,7 @@ _No open debts detected in the chord trail._
 | [x7700_958441_codex_myc-lineage-explanation-engine-slice.myc.md](./x7700_958441_codex_myc-lineage-explanation-engine-slice.myc.md)                                                                                                                 | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958441_codex_myc-read-only-policy-services-slice.myc.md](./x7700_958441_codex_myc-read-only-policy-services-slice.myc.md)                                                                                                                   | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958441_codex_myc-resolver-http-transport-slice.myc.md](./x7700_958441_codex_myc-resolver-http-transport-slice.myc.md)                                                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_958442_codex_myc-mutation-lifecycle-boundary-slice.myc.md](./x7700_958442_codex_myc-mutation-lifecycle-boundary-slice.myc.md)                                                                                                               | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -12451,6 +12452,25 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `cd myc && deno task check`
   - `cd myc && deno test --no-config --allow-read --allow-write --allow-env --allow-run src/x0190_http_test.ts src/x0100_myc_test.ts`
+  - `cd myc && wc -l src/x0100_myc.ts`
+  - `./t check`
+
+### [x7700_958442_codex_myc-mutation-lifecycle-boundary-slice.myc.md](./x7700_958442_codex_myc-mutation-lifecycle-boundary-slice.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Falsifiers**:
+  - _The x0100 facade exposes different lifecycle bindings._
+  - _A forged import commitment writes a descriptor._
+  - _Witness accepts a target other than a structurally valid
+    PublishDescriptor._
+  - _Review accepts an invalid rating or unsupported target type._
+  - _Descriptor persistence changes fqdn or commitment identity._
+  - _Any command in `suggested_commands` fails on this tree._
+  - _Publish exports reintroduce private payload or local path leakage._
+  - _Mutation writes bypass commitment or projection verification._
+- **Suggested Commands**:
+  - `cd myc && deno task check`
+  - `cd myc && deno test --no-config --allow-read --allow-write --allow-env --allow-run src/x01C0_mutation_lifecycle_test.ts src/consensus_loop_test.ts src/x0100_myc_test.ts`
   - `cd myc && wc -l src/x0100_myc.ts`
   - `./t check`
 

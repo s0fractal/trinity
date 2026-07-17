@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     16     |
 | compatibility abi |     55     |
 | compost           |     0      |
-| dynamic topology  |    783     |
+| dynamic topology  |    784     |
 | experimental      |     47     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **901**   |
+| **Total**         |  **902**   |
 
 ## Runtime Cache Diagnostics
 
@@ -907,6 +907,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x7700_958439_codex_myc-canonical-core-and-complete-test-discovery.myc.md](../src/x7700_958439_codex_myc-canonical-core-and-complete-test-discovery.myc.md)                                                                                             | canonical        | src/x7700_958439_codex_myc-canonical-core-and-complete-test-discovery.myc.md                                               | keep        |                              |
 | dynamic topology  | [src/x7700_958439_codex_myc-descriptor-core-strangler-slice.myc.md](../src/x7700_958439_codex_myc-descriptor-core-strangler-slice.myc.md)                                                                                                                   | canonical        | src/x7700_958439_codex_myc-descriptor-core-strangler-slice.myc.md                                                          | keep        |                              |
 | dynamic topology  | [src/x7700_958439_codex_myc-pure-descriptor-parser-verifier-slice.myc.md](../src/x7700_958439_codex_myc-pure-descriptor-parser-verifier-slice.myc.md)                                                                                                       | canonical        | src/x7700_958439_codex_myc-pure-descriptor-parser-verifier-slice.myc.md                                                    | keep        |                              |
+| dynamic topology  | [src/x7700_958440_codex_myc-derived-nutrition-pure-projection-slice.myc.md](../src/x7700_958440_codex_myc-derived-nutrition-pure-projection-slice.myc.md)                                                                                                   | canonical        | src/x7700_958440_codex_myc-derived-nutrition-pure-projection-slice.myc.md                                                  | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](../src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | canonical        | src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](../src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | canonical        | src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md                                                     | keep        |                              |
 | dynamic topology  | [src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](../src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | canonical        | src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md                                                      | keep        |                              |

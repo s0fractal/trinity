@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  783  |
+| Total Chords                             |  784  |
 | Signed Chords (content_sig)              |  351  |
 | ↳ registry-verified                      |  351  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  92   |
 | Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  85   |
-| Receipts                                 |  352  |
-| ↳ strong evidence                        |  351  |
+| Receipts                                 |  353  |
+| ↳ strong evidence                        |  352  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |   9   |
@@ -830,6 +830,7 @@ _No open debts detected in the chord trail._
 | [x7700_958439_codex_myc-canonical-core-and-complete-test-discovery.myc.md](./x7700_958439_codex_myc-canonical-core-and-complete-test-discovery.myc.md)                                                                                             | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958439_codex_myc-descriptor-core-strangler-slice.myc.md](./x7700_958439_codex_myc-descriptor-core-strangler-slice.myc.md)                                                                                                                   | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958439_codex_myc-pure-descriptor-parser-verifier-slice.myc.md](./x7700_958439_codex_myc-pure-descriptor-parser-verifier-slice.myc.md)                                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_958440_codex_myc-derived-nutrition-pure-projection-slice.myc.md](./x7700_958440_codex_myc-derived-nutrition-pure-projection-slice.myc.md)                                                                                                   | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -12317,6 +12318,24 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `cd myc && deno task check`
   - `cd myc && deno test --allow-read --allow-write --allow-env --allow-run src/x0120_descriptor_verify_test.ts src/x0100_myc_test.ts`
+  - `cd myc && wc -l src/x0100_myc.ts`
+  - `./t check`
+
+### [x7700_958440_codex_myc-derived-nutrition-pure-projection-slice.myc.md](./x7700_958440_codex_myc-derived-nutrition-pure-projection-slice.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Falsifiers**:
+  - _Computing nutrition mutates descriptor bytes or commitment identity._
+  - _Availability and nutrition derive different payload states._
+  - _Expiry or low-confidence classification stops being visible in
+    reasons/status._
+  - _The pure projection gains filesystem, network, or process authority._
+  - _Any command in `suggested_commands` fails on this tree._
+  - _Derived labels become authority or enter descriptor commitment identity._
+  - _Existing x0100 nutrition consumers observe an API/result change._
+- **Suggested Commands**:
+  - `cd myc && deno task check`
+  - `cd myc && deno test --allow-read --allow-write --allow-env --allow-run src/x0130_nutrition_test.ts src/x0100_myc_test.ts`
   - `cd myc && wc -l src/x0100_myc.ts`
   - `./t check`
 

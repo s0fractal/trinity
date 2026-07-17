@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  791  |
+| Total Chords                             |  792  |
 | Signed Chords (content_sig)              |  351  |
 | ↳ registry-verified                      |  351  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  92   |
 | Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  85   |
-| Receipts                                 |  360  |
-| ↳ strong evidence                        |  359  |
+| Receipts                                 |  361  |
+| ↳ strong evidence                        |  360  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |   9   |
@@ -838,6 +838,7 @@ _No open debts detected in the chord trail._
 | [x7700_958441_codex_myc-read-only-policy-services-slice.myc.md](./x7700_958441_codex_myc-read-only-policy-services-slice.myc.md)                                                                                                                   | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958441_codex_myc-resolver-http-transport-slice.myc.md](./x7700_958441_codex_myc-resolver-http-transport-slice.myc.md)                                                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958442_codex_myc-mutation-lifecycle-boundary-slice.myc.md](./x7700_958442_codex_myc-mutation-lifecycle-boundary-slice.myc.md)                                                                                                               | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_958443_codex_myc-capture-pipeline-slice.myc.md](./x7700_958443_codex_myc-capture-pipeline-slice.myc.md)                                                                                                                                     | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -12471,6 +12472,25 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `cd myc && deno task check`
   - `cd myc && deno test --no-config --allow-read --allow-write --allow-env --allow-run src/x01C0_mutation_lifecycle_test.ts src/consensus_loop_test.ts src/x0100_myc_test.ts`
+  - `cd myc && wc -l src/x0100_myc.ts`
+  - `./t check`
+
+### [x7700_958443_codex_myc-capture-pipeline-slice.myc.md](./x7700_958443_codex_myc-capture-pipeline-slice.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Falsifiers**:
+  - _The x0100 facade exposes different capture pipeline bindings._
+  - _Missing or mismatched private payload bytes verify successfully._
+  - _Unproved or forged published records become durable._
+  - _Capture changes descriptor commitments, FQDNs, or graph projections._
+  - _Reprojection accepts a non-RawDescriptor target._
+  - _Any command in `suggested_commands` fails on this tree._
+  - _Capture or reconciliation leaks private payload bytes into public
+    surfaces._
+  - _Existing callers observe an API or result-shape change._
+- **Suggested Commands**:
+  - `cd myc && deno task check`
+  - `cd myc && deno test --no-config --allow-read --allow-write --allow-env --allow-run src/x01D0_capture_pipeline_test.ts src/reconcile_published_test.ts src/x0100_myc_test.ts`
   - `cd myc && wc -l src/x0100_myc.ts`
   - `./t check`
 

@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  780  |
+| Total Chords                             |  781  |
 | Signed Chords (content_sig)              |  351  |
 | ↳ registry-verified                      |  351  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  92   |
 | Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  85   |
-| Receipts                                 |  349  |
-| ↳ strong evidence                        |  348  |
+| Receipts                                 |  350  |
+| ↳ strong evidence                        |  349  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |   9   |
@@ -827,6 +827,7 @@ _No open debts detected in the chord trail._
 | [x7700_956525_claude_paper-01-drafted-pairwise-trust-rederivable-verdic.myc.md](./x7700_956525_claude_paper-01-drafted-pairwise-trust-rederivable-verdic.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_958432_codex_agentseal-warrant-bridge-fail-closed.myc.md](./x7700_958432_codex_agentseal-warrant-bridge-fail-closed.myc.md)                                                                                                                 | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958438_codex_bounded-context-firewall-for-model-work.myc.md](./x7700_958438_codex_bounded-context-firewall-for-model-work.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_958439_codex_myc-canonical-core-and-complete-test-discovery.myc.md](./x7700_958439_codex_myc-canonical-core-and-complete-test-discovery.myc.md)                                                                                             | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -12256,6 +12257,29 @@ _No open debts detected in the chord trail._
   - `deno test --allow-read --allow-write src/context_test.ts src/dispatch_routing_test.ts`
   - `deno test --allow-read --allow-write --allow-env --allow-run src/dispatch_test.ts src/dispatch_routing_test.ts src/context_test.ts`
   - `./t capabilities validate --json | jq -e '.summary.unclassified_schema_types == 0'`
+  - `./t check`
+
+### [x7700_958439_codex_myc-canonical-core-and-complete-test-discovery.myc.md](./x7700_958439_codex_myc-canonical-core-and-complete-test-discovery.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Falsifiers**:
+  - _Any production module outside verify_core.ts defines its own
+    stableStringify or SHA-256 hex helper._
+  - _Adding a root-level MYC test file does not make deno task test discover it
+    automatically._
+  - _Canonical JSON bytes or the fixed SHA-256 vector change without an explicit
+    protocol migration._
+  - _The root repository pins a MYC commit that is not reachable from its
+    configured remote._
+  - _Any command in `suggested_commands` fails on this tree._
+  - _A production commitment consumer bypasses `verify_core.ts` with a local
+    copy._
+  - _A newly added root MYC test can remain green while never executing._
+  - _`x0100_myc.ts` consumers lose the existing hash/canonicalization exports._
+- **Suggested Commands**:
+  - `cd myc && deno task check`
+  - `cd myc && rg -n 'function (stableStringify|sha256Hex)' src sites/myc.md --glob '*.ts' --glob '!**/*_test.ts'`
+  - `git submodule status myc`
   - `./t check`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)

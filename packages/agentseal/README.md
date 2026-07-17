@@ -60,6 +60,26 @@ verified locally by a third party, and a forged link caught. It is CI-enforced
   receipt at a different mandate breaks the address, so the authorization cannot
   be forged after the fact. Verify with `verifyAdmittedSeal`.
 
+## Bridge to Warrant records
+
+`seal_to_warrant.ts` maps an agentseal receipt into the field values of a
+[Warrant](https://github.com/s0fractal/warrant) record, carrying the full
+receipt as **evidence**. An agent that classifies + witnesses with agentseal
+thereby produces a Warrant-verifiable evidence pack: `warrant verify` checks the
+record (integrity, pinned policy, settled chain), and agentseal's `verifySeal`
+re-checks the m-of-n quorum straight from the pack's evidence blob
+(`deserializeReceipt` → `verifySeal`) — each layer verified by its own tool,
+from the bytes, no host. Neither reimplements the other's cryptography
+(agentseal's canonical-CBOR digest vs Warrant's JCS WarrantID); `sealToWarrant`
+is pure, and the `warrant` CLI does the signing/filing.
+
+```bash
+WARRANT_BIN=warrant deno run -A examples/seal_to_warrant.ts   # needs `pipx install warrant-verify`
+```
+
+The end-to-end run: `sealAdmitted` (A0 admitted, 1 witness) → `sealToWarrant` →
+`warrant … accept` → `warrant verify` = 0 errors.
+
 ## Honest scope
 
 - It depends on the three packages above, resolved as **published `jsr:`

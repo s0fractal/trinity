@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  801  |
+| Total Chords                             |  802  |
 | Signed Chords (content_sig)              |  351  |
 | ↳ registry-verified                      |  351  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  92   |
 | Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  85   |
-| Receipts                                 |  370  |
-| ↳ strong evidence                        |  369  |
+| Receipts                                 |  371  |
+| ↳ strong evidence                        |  370  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |   9   |
@@ -848,6 +848,7 @@ _No open debts detected in the chord trail._
 | [x7700_958453_codex_myc-centralized-cli-argument-contracts.myc.md](./x7700_958453_codex_myc-centralized-cli-argument-contracts.myc.md)                                                                                                             | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958454_codex_myc-capability-split-local-handlers.myc.md](./x7700_958454_codex_myc-capability-split-local-handlers.myc.md)                                                                                                                   | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958455_codex_myc-extracted-shell-command-registry.myc.md](./x7700_958455_codex_myc-extracted-shell-command-registry.myc.md)                                                                                                                 | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_958457_codex_myc-centralized-command-registry-projections.myc.md](./x7700_958457_codex_myc-centralized-command-registry-projections.myc.md)                                                                                                 | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -12664,6 +12665,25 @@ _No open debts detected in the chord trail._
   - `cd myc && deno task check`
   - `cd myc && deno test --no-config --allow-read --allow-write --allow-env --allow-run src/x01E0_cli_test.ts src/x01EA_shell_commands_test.ts src/x01F0_local_commands_test.ts src/x4A10_verb_effects_test.ts`
   - `cd myc && wc -l src/x01E0_cli.ts src/x01E0_cli_test.ts src/x01EA_shell_commands.ts src/x01EA_shell_commands_test.ts`
+  - `./t check`
+
+### [x7700_958457_codex_myc-centralized-command-registry-projections.myc.md](./x7700_958457_codex_myc-centralized-command-registry-projections.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Falsifiers**:
+  - _Shell and local registries derive names, effects, or help differently._
+  - _A command projection depends on declaration order rather than command
+    name._
+  - _Mutating a returned projection changes a later projection or registry
+    state._
+  - _Command metadata changes without propagating to effect and help surfaces._
+  - _Any command in `suggested_commands` fails on this tree._
+  - _Shell and local command catalogs expose different projection semantics._
+  - _Caller mutation leaks into a subsequent projection._
+- **Suggested Commands**:
+  - `cd myc && deno task check`
+  - `cd myc && deno test --no-config --allow-read --allow-write --allow-env --allow-run src/x01E8_command_contract_test.ts src/x01EA_shell_commands_test.ts src/x01F0_local_commands_test.ts src/x4A10_verb_effects_test.ts`
+  - `cd myc && wc -l src/x01E8_command_contract.ts src/x01EA_shell_commands.ts src/x01F0_local_commands.ts`
   - `./t check`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)

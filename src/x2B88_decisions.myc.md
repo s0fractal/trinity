@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  798  |
+| Total Chords                             |  799  |
 | Signed Chords (content_sig)              |  351  |
 | ↳ registry-verified                      |  351  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  92   |
 | Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  85   |
-| Receipts                                 |  367  |
-| ↳ strong evidence                        |  366  |
+| Receipts                                 |  368  |
+| ↳ strong evidence                        |  367  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |   9   |
@@ -845,6 +845,7 @@ _No open debts detected in the chord trail._
 | [x7700_958451_codex_myc-registry-derived-command-effects.myc.md](./x7700_958451_codex_myc-registry-derived-command-effects.myc.md)                                                                                                                 | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958451_codex_myc-typed-local-command-registry-slice.myc.md](./x7700_958451_codex_myc-typed-local-command-registry-slice.myc.md)                                                                                                             | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958452_codex_myc-registry-generated-cli-help.myc.md](./x7700_958452_codex_myc-registry-generated-cli-help.myc.md)                                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_958453_codex_myc-centralized-cli-argument-contracts.myc.md](./x7700_958453_codex_myc-centralized-cli-argument-contracts.myc.md)                                                                                                             | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -12607,6 +12608,24 @@ _No open debts detected in the chord trail._
   - `cd myc && deno task check`
   - `cd myc && deno test --no-config --allow-read --allow-write --allow-env --allow-run src/x01E0_cli_test.ts src/x01F0_local_commands_test.ts src/x4A10_verb_effects_test.ts`
   - `cd myc && deno eval 'import { helpText } from \"./src/x01E0_cli.ts\"; console.log(helpText())'`
+  - `./t check`
+
+### [x7700_958453_codex_myc-centralized-cli-argument-contracts.myc.md](./x7700_958453_codex_myc-centralized-cli-argument-contracts.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Falsifiers**:
+  - _Dispatcher and local handlers retain independent flag parsing semantics._
+  - _Arguments after a bare -- are still interpreted as flags._
+  - _A literal --witness after -- activates the live publish subprocess._
+  - _Required argument validation stops failing closed._
+  - _Any command in `suggested_commands` fails on this tree._
+  - _Parsing the same flag yields different values in dispatcher and handler
+    code._
+  - _`publish -- --witness` is claimed by the live shell route._
+- **Suggested Commands**:
+  - `cd myc && deno task check`
+  - `cd myc && deno test --no-config --allow-read --allow-write --allow-env --allow-run src/x01E0_cli_test.ts src/x01E8_command_contract_test.ts src/x01F0_local_commands_test.ts`
+  - `cd myc && wc -l src/x01E0_cli.ts src/x01E8_command_contract.ts src/x01F0_local_commands.ts`
   - `./t check`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)

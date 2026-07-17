@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  786  |
+| Total Chords                             |  787  |
 | Signed Chords (content_sig)              |  351  |
 | ↳ registry-verified                      |  351  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  92   |
 | Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  85   |
-| Receipts                                 |  355  |
-| ↳ strong evidence                        |  354  |
+| Receipts                                 |  356  |
+| ↳ strong evidence                        |  355  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |   9   |
@@ -833,6 +833,7 @@ _No open debts detected in the chord trail._
 | [x7700_958440_codex_myc-derived-nutrition-pure-projection-slice.myc.md](./x7700_958440_codex_myc-derived-nutrition-pure-projection-slice.myc.md)                                                                                                   | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958440_codex_myc-descriptor-graph-engine-slice.myc.md](./x7700_958440_codex_myc-descriptor-graph-engine-slice.myc.md)                                                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958440_codex_myc-path-policy-descriptor-index-slice.myc.md](./x7700_958440_codex_myc-path-policy-descriptor-index-slice.myc.md)                                                                                                             | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_958441_codex_myc-deterministic-projection-engine-slice.myc.md](./x7700_958441_codex_myc-deterministic-projection-engine-slice.myc.md)                                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -12374,6 +12375,25 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `cd myc && deno task check`
   - `cd myc && deno test --allow-read --allow-write --allow-env --allow-run src/x0140_paths_test.ts src/x0150_descriptor_index_test.ts src/x0100_myc_test.ts`
+  - `cd myc && wc -l src/x0100_myc.ts`
+  - `./t check`
+
+### [x7700_958441_codex_myc-deterministic-projection-engine-slice.myc.md](./x7700_958441_codex_myc-deterministic-projection-engine-slice.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Falsifiers**:
+  - _Index verification becomes sensitive to valid NDJSON row ordering._
+  - _Canonical, immutable, or output aliases disappear from rebuilt indexes._
+  - _Missing or stale index content verifies successfully._
+  - _The x0100 facade exports different projection engine bindings._
+  - _Index rebuild callers reintroduce redundant graph writes._
+  - _Any command in `suggested_commands` fails on this tree._
+  - _Existing projection consumers observe an API, content, or path-policy
+    change._
+  - _Verification accepts missing aliases or stale descriptor commitments._
+- **Suggested Commands**:
+  - `cd myc && deno task check`
+  - `cd myc && deno test --allow-read --allow-write --allow-env --allow-run src/x0170_projections_test.ts src/x0100_myc_test.ts src/proposal_visibility_test.ts`
   - `cd myc && wc -l src/x0100_myc.ts`
   - `./t check`
 

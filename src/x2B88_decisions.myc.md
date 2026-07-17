@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  793  |
+| Total Chords                             |  794  |
 | Signed Chords (content_sig)              |  351  |
 | ↳ registry-verified                      |  351  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  92   |
 | Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  85   |
-| Receipts                                 |  362  |
-| ↳ strong evidence                        |  361  |
+| Receipts                                 |  363  |
+| ↳ strong evidence                        |  362  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |   9   |
@@ -840,6 +840,7 @@ _No open debts detected in the chord trail._
 | [x7700_958442_codex_myc-mutation-lifecycle-boundary-slice.myc.md](./x7700_958442_codex_myc-mutation-lifecycle-boundary-slice.myc.md)                                                                                                               | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958443_codex_myc-capture-pipeline-slice.myc.md](./x7700_958443_codex_myc-capture-pipeline-slice.myc.md)                                                                                                                                     | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958444_codex_myc-thin-facade-cli-dispatcher-slice.myc.md](./x7700_958444_codex_myc-thin-facade-cli-dispatcher-slice.myc.md)                                                                                                                 | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_958449_codex_myc-declarative-shell-command-registry-slice.myc.md](./x7700_958449_codex_myc-declarative-shell-command-registry-slice.myc.md)                                                                                                 | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -12510,6 +12511,28 @@ _No open debts detected in the chord trail._
   - `cd myc && deno task check`
   - `cd myc && deno test --no-config --allow-read --allow-write --allow-env --allow-run src/x01E0_cli_test.ts src/capture_human_test.ts src/x0100_myc_test.ts`
   - `cd myc && wc -l src/x0100_myc.ts`
+  - `./t check`
+
+### [x7700_958449_codex_myc-declarative-shell-command-registry-slice.myc.md](./x7700_958449_codex_myc-declarative-shell-command-registry-slice.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Falsifiers**:
+  - _A registered shell command gains filesystem, network, run, or env
+    authority._
+  - _Alias commands resolve to different scripts from their canonical command._
+  - _Standing stops forwarding its command token or other verbs stop forwarding
+    tails._
+  - _Any command besides petition, propose, and resolve-proposal triggers
+    reindexing._
+  - _Subprocess failures stop propagating their exit code._
+  - _Any command in `suggested_commands` fails on this tree._
+  - _Registry conversion changes a command's script, permissions, arguments, or_
+  - _exit status._
+  - _Adding a shell command can bypass the auditable registry boundary._
+- **Suggested Commands**:
+  - `cd myc && deno task check`
+  - `cd myc && deno test --no-config --allow-read --allow-write --allow-env --allow-run src/x01E0_cli_test.ts src/x4A10_verb_effects_test.ts src/x0100_myc_test.ts`
+  - `cd myc && wc -l src/x01E0_cli.ts src/x0100_myc.ts`
   - `./t check`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)

@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  789  |
+| Total Chords                             |  790  |
 | Signed Chords (content_sig)              |  351  |
 | ↳ registry-verified                      |  351  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  92   |
 | Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  85   |
-| Receipts                                 |  358  |
-| ↳ strong evidence                        |  357  |
+| Receipts                                 |  359  |
+| ↳ strong evidence                        |  358  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |   9   |
@@ -835,6 +835,7 @@ _No open debts detected in the chord trail._
 | [x7700_958440_codex_myc-path-policy-descriptor-index-slice.myc.md](./x7700_958440_codex_myc-path-policy-descriptor-index-slice.myc.md)                                                                                                             | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958441_codex_myc-deterministic-projection-engine-slice.myc.md](./x7700_958441_codex_myc-deterministic-projection-engine-slice.myc.md)                                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958441_codex_myc-lineage-explanation-engine-slice.myc.md](./x7700_958441_codex_myc-lineage-explanation-engine-slice.myc.md)                                                                                                                 | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_958441_codex_myc-read-only-policy-services-slice.myc.md](./x7700_958441_codex_myc-read-only-policy-services-slice.myc.md)                                                                                                                   | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958441_codex_myc-resolver-http-transport-slice.myc.md](./x7700_958441_codex_myc-resolver-http-transport-slice.myc.md)                                                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
@@ -12414,6 +12415,24 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `cd myc && deno task check`
   - `cd myc && deno test --no-config --allow-read --allow-write --allow-env --allow-run src/x0180_lineage_test.ts src/x0100_myc_test.ts`
+  - `cd myc && wc -l src/x0100_myc.ts`
+  - `./t check`
+
+### [x7700_958441_codex_myc-read-only-policy-services-slice.myc.md](./x7700_958441_codex_myc-read-only-policy-services-slice.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Falsifiers**:
+  - _The x0100 facade exposes different policy service bindings._
+  - _Adapter dry-run can enable execution or mutate substrate state._
+  - _A missing descriptor invents payload availability or recipe success._
+  - _Verification discovery includes non-markdown files or unstable ordering._
+  - _Policy services acquire capture, publication, or consensus authority._
+  - _Any command in `suggested_commands` fails on this tree._
+  - _Existing CLI or HTTP policy consumers observe a response contract change._
+  - _A dry-run produces side effects beyond reading declared policy._
+- **Suggested Commands**:
+  - `cd myc && deno task check`
+  - `cd myc && deno test --no-config --allow-read --allow-write --allow-env --allow-run src/x01A0_policy_services_test.ts src/x0190_http_test.ts src/x0100_myc_test.ts`
   - `cd myc && wc -l src/x0100_myc.ts`
   - `./t check`
 

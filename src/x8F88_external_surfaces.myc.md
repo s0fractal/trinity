@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     16     |
 | compatibility abi |     55     |
 | compost           |     0      |
-| dynamic topology  |    789     |
+| dynamic topology  |    790     |
 | experimental      |     47     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **907**   |
+| **Total**         |  **908**   |
 
 ## Runtime Cache Diagnostics
 
@@ -912,6 +912,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x7700_958440_codex_myc-path-policy-descriptor-index-slice.myc.md](../src/x7700_958440_codex_myc-path-policy-descriptor-index-slice.myc.md)                                                                                                             | canonical        | src/x7700_958440_codex_myc-path-policy-descriptor-index-slice.myc.md                                                       | keep        |                              |
 | dynamic topology  | [src/x7700_958441_codex_myc-deterministic-projection-engine-slice.myc.md](../src/x7700_958441_codex_myc-deterministic-projection-engine-slice.myc.md)                                                                                                       | canonical        | src/x7700_958441_codex_myc-deterministic-projection-engine-slice.myc.md                                                    | keep        |                              |
 | dynamic topology  | [src/x7700_958441_codex_myc-lineage-explanation-engine-slice.myc.md](../src/x7700_958441_codex_myc-lineage-explanation-engine-slice.myc.md)                                                                                                                 | canonical        | src/x7700_958441_codex_myc-lineage-explanation-engine-slice.myc.md                                                         | keep        |                              |
+| dynamic topology  | [src/x7700_958441_codex_myc-read-only-policy-services-slice.myc.md](../src/x7700_958441_codex_myc-read-only-policy-services-slice.myc.md)                                                                                                                   | canonical        | src/x7700_958441_codex_myc-read-only-policy-services-slice.myc.md                                                          | keep        |                              |
 | dynamic topology  | [src/x7700_958441_codex_myc-resolver-http-transport-slice.myc.md](../src/x7700_958441_codex_myc-resolver-http-transport-slice.myc.md)                                                                                                                       | canonical        | src/x7700_958441_codex_myc-resolver-http-transport-slice.myc.md                                                            | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](../src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | canonical        | src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](../src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | canonical        | src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md                                                     | keep        |                              |

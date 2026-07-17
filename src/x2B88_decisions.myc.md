@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  794  |
+| Total Chords                             |  795  |
 | Signed Chords (content_sig)              |  351  |
 | ↳ registry-verified                      |  351  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  92   |
 | Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  85   |
-| Receipts                                 |  363  |
-| ↳ strong evidence                        |  362  |
+| Receipts                                 |  364  |
+| ↳ strong evidence                        |  363  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |   9   |
@@ -841,6 +841,7 @@ _No open debts detected in the chord trail._
 | [x7700_958443_codex_myc-capture-pipeline-slice.myc.md](./x7700_958443_codex_myc-capture-pipeline-slice.myc.md)                                                                                                                                     | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958444_codex_myc-thin-facade-cli-dispatcher-slice.myc.md](./x7700_958444_codex_myc-thin-facade-cli-dispatcher-slice.myc.md)                                                                                                                 | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958449_codex_myc-declarative-shell-command-registry-slice.myc.md](./x7700_958449_codex_myc-declarative-shell-command-registry-slice.myc.md)                                                                                                 | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_958451_codex_myc-typed-local-command-registry-slice.myc.md](./x7700_958451_codex_myc-typed-local-command-registry-slice.myc.md)                                                                                                             | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -12533,6 +12534,24 @@ _No open debts detected in the chord trail._
   - `cd myc && deno task check`
   - `cd myc && deno test --no-config --allow-read --allow-write --allow-env --allow-run src/x01E0_cli_test.ts src/x4A10_verb_effects_test.ts src/x0100_myc_test.ts`
   - `cd myc && wc -l src/x01E0_cli.ts src/x0100_myc.ts`
+  - `./t check`
+
+### [x7700_958451_codex_myc-typed-local-command-registry-slice.myc.md](./x7700_958451_codex_myc-typed-local-command-registry-slice.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Falsifiers**:
+  - _The local registry omits or silently claims an unknown command._
+  - _A handler performs effects before validating its required arguments._
+  - _Local handlers import the CLI dispatcher or compatibility facade._
+  - _HTTP serve wiring changes resolver services or audit behavior._
+  - _Human and JSON output contracts drift from established CLI behavior._
+  - _Any command in `suggested_commands` fails on this tree._
+  - _Registry conversion changes command results, output, or exit status._
+  - _A local handler bypasses its dedicated domain module boundary._
+- **Suggested Commands**:
+  - `cd myc && deno task check`
+  - `cd myc && deno test --no-config --allow-read --allow-write --allow-env --allow-run src/x01E0_cli_test.ts src/x01F0_local_commands_test.ts src/capture_human_test.ts src/x0100_myc_test.ts`
+  - `cd myc && wc -l src/x01E0_cli.ts src/x01F0_local_commands.ts src/x0100_myc.ts`
   - `./t check`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)

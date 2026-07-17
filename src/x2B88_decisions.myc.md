@@ -27,7 +27,6 @@ tasks extracted from dynamic chord surfaces._
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
 | Ritual Receipts (no verifiable artifact) |   1   |
-| ↳ recent (last 7d)                       |   1   |
 
 ## Proposal Triage Queue
 

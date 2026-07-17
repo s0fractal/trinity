@@ -12,7 +12,7 @@
 // the most-privileged capability it can exercise. The single source of truth
 // for "what can this organ do" — consumers must import it, never re-derive it.
 
-import ts from "npm:typescript";
+import ts from "npm:typescript@^5";
 import {
   dirname,
   join,

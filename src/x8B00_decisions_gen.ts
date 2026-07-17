@@ -1453,9 +1453,11 @@ async function main() {
   lines.push(
     `| Ritual Receipts (no verifiable artifact) | ${summary.ritual_receipts} |`,
   );
-  lines.push(
-    `| ↳ recent (last 7d) | ${summary.ritual_receipts_recent_7d} |`,
-  );
+  // NB: `ritual_receipts_recent_7d` is intentionally NOT rendered in this stable
+  // ledger — a "last 7 days" count is time-relative and would make this committed
+  // artifact drift as days pass, breaking the CI stable-generation diff for no
+  // code change. It remains in the JSON summary (`./t decisions --json`), which is
+  // regenerated fresh on each invocation and never diff-checked.
   lines.push(``);
 
   if (summary.provenance.invalid > 0) {

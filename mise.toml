@@ -1,0 +1,7 @@
+# Pinned toolchain for trinity — run `mise install` to get deno + rust matching
+# what CI uses (.github/workflows/ci.yml: denoland/setup-deno v2.x, rust stable).
+# A single source of truth for tool versions, so local == CI and a floating
+# toolchain (or a drifting npm dependency) can't silently change build behaviour.
+[tools]
+deno = "2.9.2"
+rust = "stable"

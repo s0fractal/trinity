@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  787  |
+| Total Chords                             |  788  |
 | Signed Chords (content_sig)              |  351  |
 | ↳ registry-verified                      |  351  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  92   |
 | Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  85   |
-| Receipts                                 |  356  |
-| ↳ strong evidence                        |  355  |
+| Receipts                                 |  357  |
+| ↳ strong evidence                        |  356  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |   9   |
@@ -834,6 +834,7 @@ _No open debts detected in the chord trail._
 | [x7700_958440_codex_myc-descriptor-graph-engine-slice.myc.md](./x7700_958440_codex_myc-descriptor-graph-engine-slice.myc.md)                                                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958440_codex_myc-path-policy-descriptor-index-slice.myc.md](./x7700_958440_codex_myc-path-policy-descriptor-index-slice.myc.md)                                                                                                             | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958441_codex_myc-deterministic-projection-engine-slice.myc.md](./x7700_958441_codex_myc-deterministic-projection-engine-slice.myc.md)                                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_958441_codex_myc-lineage-explanation-engine-slice.myc.md](./x7700_958441_codex_myc-lineage-explanation-engine-slice.myc.md)                                                                                                                 | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -12394,6 +12395,24 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `cd myc && deno task check`
   - `cd myc && deno test --allow-read --allow-write --allow-env --allow-run src/x0170_projections_test.ts src/x0100_myc_test.ts src/proposal_visibility_test.ts`
+  - `cd myc && wc -l src/x0100_myc.ts`
+  - `./t check`
+
+### [x7700_958441_codex_myc-lineage-explanation-engine-slice.myc.md](./x7700_958441_codex_myc-lineage-explanation-engine-slice.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Falsifiers**:
+  - _The x0100 facade exposes different resolve, lineage, or explain bindings._
+  - _An unknown target yields a successful lineage or explanation._
+  - _Repeated graph edges inflate unique transformation counts._
+  - _Lineage summaries stop deriving nutrition from descriptor state._
+  - _The lineage engine imports or depends on the CLI facade._
+  - _Any command in `suggested_commands` fails on this tree._
+  - _Existing lineage consumers observe an API, traversal, or summary change._
+  - _Graph traversal escapes its established depth and deduplication bounds._
+- **Suggested Commands**:
+  - `cd myc && deno task check`
+  - `cd myc && deno test --no-config --allow-read --allow-write --allow-env --allow-run src/x0180_lineage_test.ts src/x0100_myc_test.ts`
   - `cd myc && wc -l src/x0100_myc.ts`
   - `./t check`
 

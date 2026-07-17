@@ -6,22 +6,16 @@
 // Importable from any organ; the convention "no imports between executables" was retired
 // when all infrastructure moved into src/ with explicit coordinates.
 
-import {
-  dirname,
-  fromFileUrl,
-  join,
-} from "https://deno.land/std@0.224.0/path/mod.ts";
+import { dirname, fromFileUrl, join } from "@std/path";
 
 function getGlossaryPath(): string {
   return join(dirname(fromFileUrl(import.meta.url)), "x0001_glossary.ndjson");
 }
 
 export interface WordRecord {
-  word: string;
+  primary: string;
+  handles: string[];
   position: string;
-  synonyms: Record<string, string>;
-  dipole: string;
-  note: string;
 }
 
 export interface SubstrateMapping {
@@ -37,34 +31,59 @@ export interface SchemaRecord {
   fields: string[];
 }
 
-async function* readGlossaryLines(): AsyncGenerator<any, void, unknown> {
+async function* readGlossaryLines(): AsyncGenerator<
+  Record<string, unknown>,
+  void,
+  unknown
+> {
   try {
     const text = await Deno.readTextFile(getGlossaryPath());
     for (const line of text.trim().split("\n")) {
       try {
-        yield JSON.parse(line);
+        const value: unknown = JSON.parse(line);
+        if (value && typeof value === "object" && !Array.isArray(value)) {
+          yield value as Record<string, unknown>;
+        }
       } catch { /* skip bad lines */ }
     }
   } catch { /* glossary missing — yield nothing */ }
+}
+
+/** Load command handles once in the shape shared by the dispatcher and
+ * composition organs. File order is preserved because it is the deterministic
+ * tie-break for equal non-primary handles. */
+export async function loadWordRecords(): Promise<WordRecord[]> {
+  const records: WordRecord[] = [];
+  for await (const r of readGlossaryLines()) {
+    if (r["00"] !== "5") continue;
+    if (!Array.isArray(r["02"]) || typeof r["04"] !== "string") continue;
+    const handles = r["02"].filter((value: unknown): value is string =>
+      typeof value === "string"
+    );
+    records.push({
+      primary: handles[0] ?? "",
+      handles,
+      position: r["04"],
+    });
+  }
+  return records;
+}
+
+/** Resolve against an already-loaded registry. Primary names win; otherwise
+ * the first equal handle in glossary order wins. */
+export function resolveWordRecord(
+  word: string,
+  records: WordRecord[],
+): WordRecord | null {
+  return records.find((record) => record.primary === word) ??
+    records.find((record) => record.handles.includes(word)) ?? null;
 }
 
 /** Resolve any handle (in any language) to its hex position.
  *  Two-pass: primary-handle match first, then any equal handle.
  *  Reads kind:5 records (topological form). */
 export async function resolveWord(word: string): Promise<string | null> {
-  const primaryMatches: string[] = [];
-  const anyMatches: string[] = [];
-  for await (const r of readGlossaryLines()) {
-    if (r["00"] !== "5") continue;
-    const handles = Array.isArray(r["02"]) ? r["02"] : [];
-    const position = r["04"];
-    if (typeof position !== "string") continue;
-    if (handles[0] === word) primaryMatches.push(position);
-    if (handles.includes(word)) anyMatches.push(position);
-  }
-  if (primaryMatches.length > 0) return primaryMatches[0];
-  if (anyMatches.length > 0) return anyMatches[0];
-  return null;
+  return resolveWordRecord(word, await loadWordRecords())?.position ?? null;
 }
 
 /** Load substrate mappings for a given position.
@@ -106,13 +125,17 @@ export async function loadSchemas(): Promise<Map<string, string[]>> {
 
 /** Validate a payload against a loaded schema. */
 export function validatePayload(
-  payload: any,
+  payload: unknown,
   type: string,
   schemas: Map<string, string[]>,
 ): { ok: boolean; missing: string[]; actual: string[] } {
   const required = schemas.get(type);
   if (!required) return { ok: true, missing: [], actual: [] };
-  const actual = Object.keys(payload || {});
+  const record =
+    payload && typeof payload === "object" && !Array.isArray(payload)
+      ? payload as Record<string, unknown>
+      : {};
+  const actual = Object.keys(record);
   const missing = required.filter((f) => !actual.includes(f));
   return { ok: missing.length === 0, missing, actual };
 }

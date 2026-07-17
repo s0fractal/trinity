@@ -16,7 +16,12 @@
 // so there is no second Warrant signing implementation to keep in sync.
 
 import { sha256, toHex } from "@s0fractal/witness";
-import type { AdmittedSeal, SealedAction } from "./agentseal.ts";
+import {
+  type AdmittedSeal,
+  type SealedAction,
+  verifyAdmittedSeal,
+  verifySeal,
+} from "./agentseal.ts";
 
 /** A content-addressed blob: its SHA-256 (hex) and the exact bytes. */
 export interface Blob {
@@ -40,7 +45,17 @@ export interface WarrantRecordFields {
 export interface BridgeOptions {
   actor: string; // required: the Warrant actor id of the acting agent
   prior?: string[]; // optional: prior WarrantIDs (the session chain)
-  ts?: number; // optional: overrides the seal's `at` (else required if no `at`)
+  /** Unix seconds for Warrant's `ts`. Agentseal's `at` may be a Bitcoin block
+   *  height or logical clock, so it is evidence and MUST NOT be reused here. */
+  ts: number;
+  /** The independently trusted witness roster and threshold. Required for an
+   *  allowed seal; pinned into the basis blob for offline re-verification. */
+  witnessPolicy?: WitnessPolicy;
+}
+
+export interface WitnessPolicy {
+  authorized: Uint8Array[];
+  threshold: number;
 }
 
 /** Deterministic, sorted-key JSON bytes — the content-addressed blob encoding. */
@@ -66,7 +81,18 @@ function isAdmitted(s: SealedAction | AdmittedSeal): s is AdmittedSeal {
   return "mandateCommitment" in s;
 }
 
-function fromHex(hex: string): Uint8Array {
+function fromHex(hex: string, bytes?: number): Uint8Array {
+  if (
+    typeof hex !== "string" || hex.length % 2 !== 0 ||
+    !/^[0-9a-f]*$/.test(hex) ||
+    (bytes !== undefined && hex.length !== bytes * 2)
+  ) {
+    throw new Error(
+      `deserializeReceipt: expected ${
+        bytes ?? "whole-byte"
+      } lowercase hex bytes`,
+    );
+  }
   const out = new Uint8Array(hex.length / 2);
   for (let i = 0; i < out.length; i++) {
     out[i] = parseInt(hex.slice(i * 2, i * 2 + 2), 16);
@@ -93,17 +119,66 @@ export function serializeReceipt(
  *  `verifyAdmittedSeal`. This is how a verifier re-checks the m-of-n quorum
  *  straight from a Warrant evidence pack, no host contacted. */
 export function deserializeReceipt(
-  json: Record<string, unknown>,
+  json: unknown,
 ): SealedAction | AdmittedSeal {
-  const cosigs =
-    (json.coSignatures as Array<{ publicKey: string; signature: string }>)
-      .map((c) => ({
-        publicKey: fromHex(c.publicKey),
-        signature: fromHex(c.signature),
-      }));
-  return { ...json, coSignatures: cosigs } as unknown as
+  if (json === null || typeof json !== "object" || Array.isArray(json)) {
+    throw new Error("deserializeReceipt: receipt must be an object");
+  }
+  const receipt = json as Record<string, unknown>;
+  if (!Array.isArray(receipt.coSignatures)) {
+    throw new Error("deserializeReceipt: coSignatures must be an array");
+  }
+  if (
+    typeof receipt.receiptDigest !== "string" ||
+    !/^[0-9a-f]{64}$/.test(receipt.receiptDigest)
+  ) {
+    throw new Error(
+      "deserializeReceipt: receiptDigest must be lowercase hex64",
+    );
+  }
+  const cosigs = receipt.coSignatures.map((value) => {
+    if (value === null || typeof value !== "object" || Array.isArray(value)) {
+      throw new Error("deserializeReceipt: co-signature must be an object");
+    }
+    const c = value as Record<string, unknown>;
+    return {
+      publicKey: fromHex(c.publicKey as string, 32),
+      signature: fromHex(c.signature as string, 64),
+    };
+  });
+  return { ...receipt, coSignatures: cosigs } as unknown as
     | SealedAction
     | AdmittedSeal;
+}
+
+function normalizeWitnessPolicy(policy: WitnessPolicy | undefined): {
+  authorized: Uint8Array[];
+  authorizedKeys: string[];
+  threshold: number;
+} {
+  if (!policy) {
+    throw new Error("sealToWarrant: allowed seal requires opts.witnessPolicy");
+  }
+  if (
+    !Number.isSafeInteger(policy.threshold) || policy.threshold < 1 ||
+    policy.threshold > policy.authorized.length
+  ) {
+    throw new Error(
+      "sealToWarrant: witness threshold must be an integer in 1..authorized.length",
+    );
+  }
+  if (policy.authorized.some((key) => key.length !== 32)) {
+    throw new Error("sealToWarrant: authorized witness keys must be 32 bytes");
+  }
+  const authorizedKeys = policy.authorized.map(toHex).sort();
+  if (new Set(authorizedKeys).size !== authorizedKeys.length) {
+    throw new Error("sealToWarrant: authorized witness keys must be unique");
+  }
+  return {
+    authorized: policy.authorized,
+    authorizedKeys,
+    threshold: policy.threshold,
+  };
 }
 
 /**
@@ -124,20 +199,55 @@ export async function sealToWarrant(
   sealed: SealedAction | AdmittedSeal,
   opts: BridgeOptions,
 ): Promise<WarrantRecordFields> {
-  if (!opts.actor) throw new Error("sealToWarrant: opts.actor is required");
-  const ts = sealed.at ?? opts.ts;
-  if (ts === undefined) {
-    throw new Error(
-      "sealToWarrant: no timestamp (seal has no `at`; pass opts.ts)",
-    );
+  if (!opts.actor?.trim()) {
+    throw new Error("sealToWarrant: opts.actor is required");
+  }
+  if (!Number.isSafeInteger(opts.ts) || opts.ts < 0) {
+    throw new Error("sealToWarrant: opts.ts must be non-negative Unix seconds");
+  }
+  const prior = opts.prior ?? [];
+  if (prior.some((wid) => !/^[0-9a-f]{64}$/.test(wid))) {
+    throw new Error("sealToWarrant: every prior must be a lowercase WarrantID");
   }
 
   const admitted = isAdmitted(sealed);
+  const witnessPolicy = sealed.allowed
+    ? normalizeWitnessPolicy(opts.witnessPolicy)
+    : undefined;
+  const verification = admitted
+    ? await verifyAdmittedSeal(
+      sealed,
+      witnessPolicy?.authorized ?? [],
+      witnessPolicy?.threshold ?? 1,
+    )
+    : await verifySeal(
+      sealed,
+      witnessPolicy?.authorized ?? [],
+      witnessPolicy?.threshold ?? 1,
+    );
+  if (!verification.receiptIntact) {
+    throw new Error("sealToWarrant: receipt digest does not match its body");
+  }
+  if (sealed.allowed && !verification.ok) {
+    throw new Error("sealToWarrant: receipt does not satisfy witness policy");
+  }
+  if (!sealed.allowed && sealed.coSignatures.length !== 0) {
+    throw new Error(
+      "sealToWarrant: refused receipt must not carry authorizing witnesses",
+    );
+  }
+
   const basisValue: Record<string, unknown> = {
     kind: "agentseal-basis",
     cls: sealed.cls,
     effects: sealed.intent.effects,
   };
+  if (witnessPolicy) {
+    basisValue.witness_policy = {
+      authorized_keys: witnessPolicy.authorizedKeys,
+      threshold: witnessPolicy.threshold,
+    };
+  }
   if (admitted) {
     basisValue.mandate_commitment = sealed.mandateCommitment;
     basisValue.reason_code = sealed.reasonCode;
@@ -165,8 +275,8 @@ export async function sealToWarrant(
     evidence: [receiptBlob.hash],
     reason,
     actor: opts.actor,
-    prior: opts.prior ?? [],
-    ts,
+    prior,
+    ts: opts.ts,
     blobs: { subject: subjectBlob, basis: basisBlob, receipt: receiptBlob },
   };
 }

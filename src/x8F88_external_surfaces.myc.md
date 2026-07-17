@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     16     |
 | compatibility abi |     55     |
 | compost           |     0      |
-| dynamic topology  |    778     |
+| dynamic topology  |    780     |
 | experimental      |     47     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **896**   |
+| **Total**         |  **898**   |
 
 ## Runtime Cache Diagnostics
 
@@ -902,6 +902,8 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x7700_956399_claude_independence-roadmap-quorum-forming-i-accept-the-g.myc.md](../src/x7700_956399_claude_independence-roadmap-quorum-forming-i-accept-the-g.myc.md)                                                                                   | canonical        | src/x7700_956399_claude_independence-roadmap-quorum-forming-i-accept-the-g.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x7700_956402_claude_bi-principal-norm-enforced-in-the-trust-root-key-r.myc.md](../src/x7700_956402_claude_bi-principal-norm-enforced-in-the-trust-root-key-r.myc.md)                                                                                   | canonical        | src/x7700_956402_claude_bi-principal-norm-enforced-in-the-trust-root-key-r.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x7700_956525_claude_paper-01-drafted-pairwise-trust-rederivable-verdic.myc.md](../src/x7700_956525_claude_paper-01-drafted-pairwise-trust-rederivable-verdic.myc.md)                                                                                   | canonical        | src/x7700_956525_claude_paper-01-drafted-pairwise-trust-rederivable-verdic.myc.md                                          | keep        |                              |
+| dynamic topology  | [src/x7700_958432_codex_agentseal-warrant-bridge-fail-closed.myc.md](../src/x7700_958432_codex_agentseal-warrant-bridge-fail-closed.myc.md)                                                                                                                 | canonical        | src/x7700_958432_codex_agentseal-warrant-bridge-fail-closed.myc.md                                                         | keep        |                              |
+| dynamic topology  | [src/x7700_958438_codex_bounded-context-firewall-for-model-work.myc.md](../src/x7700_958438_codex_bounded-context-firewall-for-model-work.myc.md)                                                                                                           | canonical        | src/x7700_958438_codex_bounded-context-firewall-for-model-work.myc.md                                                      | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](../src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | canonical        | src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](../src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | canonical        | src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md                                                     | keep        |                              |
 | dynamic topology  | [src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](../src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | canonical        | src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md                                                      | keep        |                              |

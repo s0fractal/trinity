@@ -2,7 +2,7 @@
 // The stdio loop itself is integration-tested by piping into `./t rpc`; here we
 // lock the pure request-parsing, payload-extraction, and response shapes.
 
-import { assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
+import { assertEquals } from "@std/assert";
 import {
   extractJsonPayload,
   parseRpcRequest,
@@ -189,6 +189,17 @@ import {
   safeHandleList,
 } from "./x0100_dispatch.ts";
 import type { Capability } from "./x0013_capability.ts";
+import { resolveWordRecord } from "./x0011_glossary_parser.ts";
+
+Deno.test("shared glossary resolver — primary handle wins before equal aliases", () => {
+  const records = [
+    { primary: "alpha", handles: ["alpha", "shared"], position: "1/A" },
+    { primary: "shared", handles: ["shared", "beta"], position: "2/B" },
+  ];
+  assertEquals(resolveWordRecord("shared", records)?.position, "2/B");
+  assertEquals(resolveWordRecord("beta", records)?.position, "2/B");
+  assertEquals(resolveWordRecord("missing", records), null);
+});
 
 Deno.test("planStats - counts depth, nodes, leaves, parallel width, handles", () => {
   // ["pipe", ["all", ["a"], ["b"], ["c"]], ["d"]]

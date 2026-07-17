@@ -12,3 +12,4 @@
 // own agent); cross-vendor provenance as the receipts spread.
 
 export * from "./agentseal.ts";
+export * from "./seal_to_warrant.ts";

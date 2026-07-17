@@ -62,7 +62,7 @@ verified locally by a third party, and a forged link caught. It is CI-enforced
 
 ## Bridge to Warrant records
 
-`seal_to_warrant.ts` maps an agentseal receipt into the field values of a
+`sealToWarrant` maps an agentseal receipt into the field values of a
 [Warrant](https://github.com/s0fractal/warrant) record, carrying the full
 receipt as **evidence**. An agent that classifies + witnesses with agentseal
 thereby produces a Warrant-verifiable evidence pack: `warrant verify` checks the
@@ -72,6 +72,22 @@ re-checks the m-of-n quorum straight from the pack's evidence blob
 from the bytes, no host. Neither reimplements the other's cryptography
 (agentseal's canonical-CBOR digest vs Warrant's JCS WarrantID); `sealToWarrant`
 is pure, and the `warrant` CLI does the signing/filing.
+
+The bridge fails closed before producing an `accept`: the caller supplies the
+trusted witness roster + threshold, the receipt is re-verified against it, and
+that policy is pinned into the Warrant `under` blob. Warrant's `ts` is supplied
+separately as Unix seconds; agentseal's `at` remains intact in evidence because
+it may be a Bitcoin height or another logical clock.
+
+```ts
+import { sealToWarrant } from "jsr:@s0fractal/agentseal";
+
+const fields = await sealToWarrant(sealed, {
+  actor: "agent@acme",
+  ts: 1_784_249_600,
+  witnessPolicy: { authorized: seats, threshold: 2 },
+});
+```
 
 ```bash
 WARRANT_BIN=warrant deno run -A examples/seal_to_warrant.ts   # needs `pipx install warrant-verify`

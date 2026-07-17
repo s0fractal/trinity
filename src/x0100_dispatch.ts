@@ -22,17 +22,20 @@
 //   1. canonical match (record's 01 field)
 //   2. multilingual search (record's 10 field, '/' delimited per language)
 
-import {
-  dirname,
-  fromFileUrl,
-  join,
-} from "https://deno.land/std@0.224.0/path/mod.ts";
+import { dirname, fromFileUrl, join } from "@std/path";
 import {
   permissionFlags,
   type PermissionProfile,
   positionToPath as libPositionToPath,
   runOrgan,
 } from "./x0010_dispatch_runner.ts";
+import {
+  loadSchemas,
+  loadWordRecords,
+  resolveWordRecord,
+  validatePayload,
+  type WordRecord,
+} from "./x0011_glossary_parser.ts";
 // Type-only: the runtime classifier (which pulls npm:typescript) is dynamically
 // imported inside the --safe path so it never loads on the dispatch hot path.
 // x0013 is a library helper (no main) — gravity-law exempt for any bucket.
@@ -40,7 +43,6 @@ import type { Capability } from "./x0013_capability.ts";
 
 const HERE = dirname(fromFileUrl(import.meta.url));
 const SUBSTRATE_ROOT = dirname(HERE);
-const GLOSSARY_PATH = join(SUBSTRATE_ROOT, "src", "x0001_glossary.ndjson");
 const MAX_CONTINUATION_DEPTH = 10;
 
 // myc verb capability classes — a MIRROR of the authoritative typed map in
@@ -77,61 +79,6 @@ export function classifyMycVerb(
 // Schema registry (type:07 records from glossary)
 let SCHEMAS: Map<string, string[]> = new Map();
 
-interface WordRec {
-  /** First handle, used for fs-readable diagnostic. NOT "canonical" status. */
-  primary: string;
-  /** All equal handles in any language: synonyms and translations
-   *  flattened to a single array with no priority among them. */
-  handles: string[];
-  /** Hex position this entity materializes at. */
-  position: string;
-}
-
-async function fn_load_words(): Promise<WordRec[]> {
-  // Reads kind:5 records. Per architect 2026-05-14: 0xN/M is an
-  // interference pattern (M-in-context-N), and synonyms and translations
-  // are equal handles, not priority list.
-  //   00 (void)        kind marker "5"
-  //   02 (mirror)      handles array — multilingual equal projections
-  //   04 (foundation)  position — where this word materializes
-  const text = await Deno.readTextFile(GLOSSARY_PATH);
-  const out: WordRec[] = [];
-  for (const line of text.trim().split("\n")) {
-    try {
-      const r = JSON.parse(line);
-      if (r["00"] !== "5") continue;
-      if (!Array.isArray(r["02"]) || typeof r["04"] !== "string") continue;
-      const handles = (r["02"] as string[]).filter((s) =>
-        typeof s === "string"
-      );
-      out.push({
-        primary: handles[0] ?? "",
-        handles,
-        position: r["04"],
-      });
-    } catch { /* skip */ }
-  }
-  return out;
-}
-
-async function fn_load_schemas(): Promise<Map<string, string[]>> {
-  const map = new Map<string, string[]>();
-  try {
-    const text = await Deno.readTextFile(GLOSSARY_PATH);
-    for (const line of text.trim().split("\n")) {
-      try {
-        const r = JSON.parse(line);
-        if (r["00"] === "07" && r["01"] && r["02"]) {
-          const required = String(r["02"]).split(",").map((s) => s.trim())
-            .filter(Boolean);
-          map.set(r["01"], required);
-        }
-      } catch { /* skip bad lines */ }
-    }
-  } catch { /* glossary missing — schemas empty */ }
-  return map;
-}
-
 function fn_validate_payload(
   payload: any,
 ): { valid: boolean; missing?: string[]; type?: string } {
@@ -140,33 +87,10 @@ function fn_validate_payload(
   }
   const t = payload.type;
   if (!t) return { valid: false, missing: ["type field missing"] };
-  const required = SCHEMAS.get(t);
-  if (!required) return { valid: true }; // no schema known — permissive
-  const missing: string[] = [];
-  for (const field of required) {
-    if (!(field in payload)) missing.push(field);
-  }
-  return missing.length === 0
+  const validation = validatePayload(payload, t, SCHEMAS);
+  return validation.ok
     ? { valid: true }
-    : { valid: false, missing, type: t };
-}
-
-function fn_resolve_word(input: string, records: WordRec[]): WordRec | null {
-  // Two-pass resolution. Languages are equal, but "preferred name" matters:
-  //  Pass 1: input matches a record's primary handle (its preferred name).
-  //          Soft hierarchy — when you call a thing by its own name, you
-  //          get that thing.
-  //  Pass 2: input matches any equal handle (synonym in any language).
-  //          File order decides among multiple records sharing a handle.
-  // This honors topological equality of handles while resolving naming
-  // collisions deterministically.
-  for (const r of records) {
-    if (r.primary === input) return r;
-  }
-  for (const r of records) {
-    if (r.handles.includes(input)) return r;
-  }
-  return null;
+    : { valid: false, missing: validation.missing, type: t };
 }
 
 function fn_position_to_path(pos: string): string {
@@ -643,7 +567,7 @@ function fn_render_any(p: any): void {
 }
 
 async function fn_list(): Promise<void> {
-  const records = await fn_load_words();
+  const records = await loadWordRecords();
   const payload = {
     type: "help",
     mode: "list",
@@ -679,8 +603,8 @@ async function fn_dispatch_word(word: string, rest: string[]): Promise<number> {
   }
 
   // Word resolution via glossary — any handle in any language matches
-  const records = await fn_load_words();
-  const found = fn_resolve_word(word, records);
+  const records = await loadWordRecords();
+  const found = resolveWordRecord(word, records);
   if (!found) {
     console.error(`# unknown word: ${word}`);
     console.error(
@@ -815,7 +739,7 @@ async function fn_capture_at_position(
  *  null for a notification (no id → no response, per JSON-RPC). */
 async function fn_handle_rpc(
   req: RpcRequest,
-  records: WordRec[],
+  records: WordRecord[],
 ): Promise<string | null> {
   // `eval` is the composition method: params[0] is a LISP-shaped AST evaluated
   // over the command space (T4 over the sovereign channel). Lets an agent submit
@@ -846,7 +770,7 @@ async function fn_handle_rpc(
       );
     }
   }
-  const found = fn_resolve_word(req.method, records);
+  const found = resolveWordRecord(req.method, records);
   if (!found) {
     return req.isNotification
       ? null
@@ -869,7 +793,7 @@ async function fn_handle_rpc(
 
 /** stdio JSON-RPC loop: read newline-delimited requests, write responses. */
 async function fn_rpc_loop(): Promise<void> {
-  const records = await fn_load_words();
+  const records = await loadWordRecords();
   const decoder = new TextDecoder();
   const encoder = new TextEncoder();
   let buf = "";
@@ -1152,13 +1076,13 @@ function fn_make_reader(): (path: string) => Promise<string | null> {
  *  paid only when --safe is actually used, never on the normal dispatch path. */
 async function fn_safe_budget(
   ast: unknown,
-  records: WordRec[],
+  records: WordRecord[],
 ): Promise<ExecutionBudget> {
   const { analyzeTransitive } = await import("./x0013_capability.ts");
   const read = fn_make_reader();
   const cache = new Map<string, Capability | null>();
   const classify = async (handle: string): Promise<Capability | null> => {
-    const found = fn_resolve_word(handle, records);
+    const found = resolveWordRecord(handle, records);
     if (!found) return null; // unresolved handle ⇒ inadmissible (fail-closed)
     const path = fn_position_to_path(found.position);
     if (!(await fn_exists(path))) return null;
@@ -1175,7 +1099,7 @@ async function fn_safe_budget(
  *  via the Phase E registry — classifier dynamically imported, same as the
  *  budget path. */
 async function fn_eval_list_safe(): Promise<number> {
-  const records = await fn_load_words();
+  const records = await loadWordRecords();
   const { analyzeTransitive } = await import("./x0013_capability.ts");
   const read = fn_make_reader();
   const byPos = new Map<string, Capability | null>();
@@ -1214,8 +1138,8 @@ async function fn_eval_list_safe(): Promise<number> {
  *  args, the organ's own content hash, and every transitive dependency's hash —
  *  so a safe-admission decision is auditable and pinned to the exact code. */
 async function fn_eval_explain(handle: string): Promise<number> {
-  const records = await fn_load_words();
-  const found = fn_resolve_word(handle, records);
+  const records = await loadWordRecords();
+  const found = resolveWordRecord(handle, records);
   if (!found) {
     console.error(`# eval: unknown handle '${handle}'`);
     return 1;
@@ -1264,11 +1188,11 @@ async function fn_eval_explain(handle: string): Promise<number> {
  *  `profile` confines the leaf's Deno permissions (codex Phase C); the safe path
  *  passes `read-local`. */
 async function fn_eval_leaf(
-  records: WordRec[],
+  records: WordRecord[],
   profile: PermissionProfile = "privileged",
 ): Promise<LeafExec> {
   return async (handle: string, args: string[]) => {
-    const found = fn_resolve_word(handle, records);
+    const found = resolveWordRecord(handle, records);
     if (!found) throw new Error(`eval: unknown handle '${handle}'`);
     const { code, stdout, stderr } = await fn_capture_at_position(
       found.position,
@@ -1290,7 +1214,7 @@ async function fn_eval(astJson: string, safe = false): Promise<number> {
     console.error(`# eval: argument is not valid JSON`);
     return 1;
   }
-  const records = await fn_load_words();
+  const records = await loadWordRecords();
   // Safe leaves run confined (read-local); unrestricted eval keeps privileged.
   const exec = await fn_eval_leaf(records, safe ? "read-local" : "privileged");
   const budget = safe ? await fn_safe_budget(ast, records) : DEFAULT_BUDGET;
@@ -1305,7 +1229,7 @@ async function fn_eval(astJson: string, safe = false): Promise<number> {
 }
 
 if (import.meta.main) {
-  SCHEMAS = await fn_load_schemas();
+  SCHEMAS = await loadSchemas();
   const [word, ...rest] = Deno.args;
   if (!word) {
     await fn_list();

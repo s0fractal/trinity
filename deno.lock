@@ -6,6 +6,7 @@
     "jsr:@s0fractal/witness@*": "0.1.0",
     "jsr:@std/assert@*": "1.0.19",
     "jsr:@std/assert@1": "1.0.19",
+    "jsr:@std/assert@^1.0.19": "1.0.19",
     "jsr:@std/async@1": "1.4.0",
     "jsr:@std/cli@1.0.13": "1.0.13",
     "jsr:@std/crypto@*": "1.1.0",
@@ -5436,6 +5437,10 @@
     "https://esm.sh/@noble/ed25519@2.1.0": "96df62f1311d9b8cf8f0a451cc478f806d6c60503a9a1c799337c78df465294e"
   },
   "workspace": {
+    "dependencies": [
+      "jsr:@std/assert@^1.0.19",
+      "jsr:@std/path@^1.1.4"
+    ],
     "members": {
       "omega": {
         "dependencies": [
@@ -5472,7 +5477,7 @@
       }
     },
     "links": {
-      "jsr:@s0fractal/agentseal@0.2.0": {
+      "jsr:@s0fractal/agentseal@0.3.0": {
         "dependencies": [
           "jsr:@s0fractal/autonomy-kernel@0.4",
           "jsr:@s0fractal/canonical-receipt@0.1",

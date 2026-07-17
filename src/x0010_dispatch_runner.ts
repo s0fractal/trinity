@@ -46,6 +46,7 @@ export const POSITION_TO_FILE: Record<string, string> = {
   "2/D": "x2D00_inbox.ts",
   "2/E": "x2E00_status.ts",
   "2/F": "x2F00_self.ts",
+  "2/F1": "x2F10_context.ts",
   "2/F3": "x2F30_fqdn_resolver.ts",
   "2/F37": "x2F37_voice_keys.ts",
   "2/F3B": "x2F3B_registry_amend.ts",

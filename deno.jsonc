@@ -18,6 +18,7 @@
     "registry-amend": "deno run -A src/x2F3B_registry_amend.ts",
     "map": "deno run -A src/x8740_map.ts",
     "ask": "deno run -A src/x2800_ask.ts",
+    "context": "deno run --allow-read src/x2F10_context.ts",
     "audit:green": "deno run -A src/x6500_run_baseline.ts --green",
     "audit:strict": "deno run -A src/x6500_run_baseline.ts --strict",
     "fixture:phi": "deno run -A src/x6420_phi_roundtrip.ts",
@@ -94,6 +95,8 @@
   // Inert until something actually imports under `myc.md/`.
   "imports": {
     "myc.md/": "http://myc.md/",
+    "@std/assert": "jsr:@std/assert@^1.0.19",
+    "@std/path": "jsr:@std/path@^1.1.4",
     "@s0fractal/agentseal": "./packages/agentseal/mod.ts",
     "@s0fractal/witness": "./packages/witness/mod.ts",
     "@s0fractal/canonical-receipt": "./packages/canonical-receipt/mod.ts",

@@ -1,6 +1,6 @@
 {
   "name": "@s0fractal/agentseal",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "exports": "./mod.ts",
   "imports": {
     "@s0fractal/autonomy-kernel": "jsr:@s0fractal/autonomy-kernel@^0.4.0",

@@ -1,7 +1,12 @@
 import { assert, assertEquals } from "jsr:@std/assert@^1";
 import { generateWitness, sha256, toHex } from "@s0fractal/witness";
-import { seal, sealAdmitted, verifySeal } from "./agentseal.ts";
-import { deserializeReceipt, sealToWarrant } from "./seal_to_warrant.ts";
+import {
+  deserializeReceipt,
+  seal,
+  sealAdmitted,
+  sealToWarrant,
+  verifySeal,
+} from "./mod.ts";
 
 const HEX64 = /^[0-9a-f]{64}$/;
 
@@ -15,11 +20,18 @@ Deno.test("bridge — an allowed action maps to an `accept` Warrant record", asy
     [alice, bob],
     { at: 955000 },
   );
-  const rec = await sealToWarrant(sealed, { actor: "coding-agent@acme" });
+  const rec = await sealToWarrant(sealed, {
+    actor: "coding-agent@acme",
+    ts: 1_784_249_600,
+    witnessPolicy: {
+      authorized: [alice.publicKey, bob.publicKey],
+      threshold: 2,
+    },
+  });
 
   assertEquals(rec.decision, "accept");
   assertEquals(rec.actor, "coding-agent@acme");
-  assertEquals(rec.ts, 955000, "the seal's anchor becomes the Warrant ts");
+  assertEquals(rec.ts, 1_784_249_600, "Warrant ts is explicit Unix seconds");
   assert(HEX64.test(rec.subject), "subject is a resolvable hash");
   assert(HEX64.test(rec.under), "under (basis) is a resolvable hash");
   assertEquals(rec.evidence.length, 1);
@@ -40,7 +52,10 @@ Deno.test("bridge — a refused (A4) action maps to a `reject` Warrant record", 
     { at: 1 },
   );
   assert(!sealed.allowed);
-  const rec = await sealToWarrant(sealed, { actor: "agent@x" });
+  const rec = await sealToWarrant(sealed, {
+    actor: "agent@x",
+    ts: 1_784_249_600,
+  });
   assertEquals(rec.decision, "reject");
   assert(
     rec.reason.includes("refused"),
@@ -55,7 +70,11 @@ Deno.test("bridge — blobs are content-addressed (sha256(bytes) == hash)", asyn
     [alice],
     { at: 5 },
   );
-  const rec = await sealToWarrant(sealed, { actor: "a@b" });
+  const rec = await sealToWarrant(sealed, {
+    actor: "a@b",
+    ts: 1_784_249_600,
+    witnessPolicy: { authorized: [alice.publicKey], threshold: 1 },
+  });
   for (const [name, b] of Object.entries(rec.blobs)) {
     assertEquals(
       toHex(await sha256(b.bytes)),
@@ -79,7 +98,11 @@ Deno.test("bridge — the quorum survives inside the evidence blob (agentseal re
     [alice, bob],
     { at: 10 },
   );
-  const rec = await sealToWarrant(sealed, { actor: "a@b" });
+  const rec = await sealToWarrant(sealed, {
+    actor: "a@b",
+    ts: 1_784_249_600,
+    witnessPolicy: { authorized, threshold: 2 },
+  });
 
   // A verifier extracts the receipt from the pack's evidence blob and re-checks
   // the m-of-n quorum with agentseal — no host, from the bytes alone.
@@ -87,7 +110,21 @@ Deno.test("bridge — the quorum survives inside the evidence blob (agentseal re
     new TextDecoder().decode(rec.blobs.receipt.bytes),
   );
   const receipt = deserializeReceipt(receiptJson);
-  const v = await verifySeal(receipt, authorized, 2);
+  const basis = JSON.parse(new TextDecoder().decode(rec.blobs.basis.bytes));
+  assertEquals(basis.witness_policy.threshold, 2);
+  assertEquals(
+    basis.witness_policy.authorized_keys,
+    authorized.map(toHex).sort(),
+    "the basis pins the independently trusted roster",
+  );
+  const pinnedAuthorized = basis.witness_policy.authorized_keys.map(
+    (hex: string) => Uint8Array.fromHex(hex),
+  );
+  const v = await verifySeal(
+    receipt,
+    pinnedAuthorized,
+    basis.witness_policy.threshold,
+  );
   assert(v.receiptIntact, "the embedded receipt still hashes to its digest");
   assert(v.ok, "the 2-of-2 quorum re-verifies from the evidence blob");
 });
@@ -126,7 +163,11 @@ Deno.test("bridge — a mandate-gated seal records the mandate binding in the ba
     [seat],
     context,
   );
-  const rec = await sealToWarrant(sealed, { actor: "reader@acme" });
+  const rec = await sealToWarrant(sealed, {
+    actor: "reader@acme",
+    ts: 1_784_249_600,
+    witnessPolicy: { authorized: [seat.publicKey], threshold: 1 },
+  });
   const basis = JSON.parse(new TextDecoder().decode(rec.blobs.basis.bytes));
   assertEquals(basis.kind, "agentseal-basis");
   assert(
@@ -136,17 +177,78 @@ Deno.test("bridge — a mandate-gated seal records the mandate binding in the ba
   assert(rec.reason.includes("mandate"), "reason records the mandate binding");
 });
 
-Deno.test("bridge — refuses to fabricate a timestamp when the seal has none", async () => {
+Deno.test("bridge — never mistakes an agentseal anchor for Warrant Unix time", async () => {
   const alice = await generateWitness();
-  const sealed = await seal({ verb: "read", target: "x", effects: ["read"] }, [
-    alice,
-  ]);
-  // `seal` without `at` leaves the receipt anchorless; the bridge must not invent one.
+  const sealed = await seal(
+    { verb: "read", target: "x", effects: ["read"] },
+    [alice],
+    { at: 955_000 },
+  );
   let threw = false;
   try {
-    await sealToWarrant(sealed, { actor: "a@b" });
+    await sealToWarrant(sealed, {
+      actor: "a@b",
+      witnessPolicy: { authorized: [alice.publicKey], threshold: 1 },
+    } as never);
   } catch {
     threw = true;
   }
-  assert(threw, "no anchor and no opts.ts → error, not a fabricated timestamp");
+  assert(threw, "a Bitcoin height cannot silently become Warrant ts");
+});
+
+Deno.test("bridge — rejects a tampered or unauthorized allowed receipt", async () => {
+  const [alice, mallory] = await Promise.all([
+    generateWitness(),
+    generateWitness(),
+  ]);
+  const sealed = await seal(
+    { verb: "fs.write", target: "safe.md", effects: ["source_change"] },
+    [alice],
+    { at: 10 },
+  );
+  const common = { actor: "a@b", ts: 1_784_249_600 };
+
+  let unauthorized = false;
+  try {
+    await sealToWarrant(sealed, {
+      ...common,
+      witnessPolicy: { authorized: [mallory.publicKey], threshold: 1 },
+    });
+  } catch {
+    unauthorized = true;
+  }
+  assert(
+    unauthorized,
+    "a self-selected signer outside the trusted roster fails",
+  );
+
+  let tampered = false;
+  try {
+    await sealToWarrant(
+      { ...sealed, intent: { ...sealed.intent, target: "secrets.env" } },
+      {
+        ...common,
+        witnessPolicy: { authorized: [alice.publicKey], threshold: 1 },
+      },
+    );
+  } catch {
+    tampered = true;
+  }
+  assert(tampered, "receipt body tampering fails before Warrant fields exist");
+});
+
+Deno.test("bridge — malformed signature hex is rejected, never coerced", () => {
+  let threw = false;
+  try {
+    deserializeReceipt({
+      receiptDigest: "0".repeat(64),
+      coSignatures: [{
+        publicKey: "zz".repeat(32),
+        signature: "0".repeat(128),
+      }],
+    });
+  } catch {
+    threw = true;
+  }
+  assert(threw, "invalid hex must not decode as zero bytes");
 });

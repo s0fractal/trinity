@@ -526,7 +526,7 @@ function renderAgentsBootstrap(
   );
   lines.push(``);
   lines.push(
-    `1. **Orient** — \`./t self\` (substrate state + attention) and \`./t voices <you>\` (your vector, chord trail, roadmap, inbox). \`./t status\`/\`./t audit\` for health; \`./t status --live\` only to refresh green-audit evidence.`,
+    `1. **Orient** — \`./t context "<task>"\` selects a bounded task brief (ledger cold by default); \`./t self\` gives substrate state + attention and \`./t voices <you>\` gives your vector, chord trail, roadmap, and inbox. \`./t status\`/\`./t audit\` are health drill-downs; \`./t status --live\` only refreshes green-audit evidence.`,
   );
   lines.push(
     `2. **Choose** — \`./t cognition_recommend --voice=<you>\` ranks open roadmap horizons for you (your claims first, then comfort-field fit). \`./t daemon tick\` shows the loop's current pick and whose turn it is; \`./t roadmap\` is the full frontier.`,
@@ -569,6 +569,9 @@ function renderAgentsBootstrap(
   lines.push(``);
   lines.push(`Most-used entrypoints:`);
   lines.push(``);
+  lines.push(
+    `- \`./t context "<task>"\` — bounded relevant instructions/files/checks; historical ledger excluded unless explicitly requested`,
+  );
   lines.push(`- \`./t help\` — command handles`);
   lines.push(
     `- \`./t status\` — composite substrate health; \`--live\` refreshes green-audit evidence`,

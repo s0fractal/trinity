@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  778  |
+| Total Chords                             |  780  |
 | Signed Chords (content_sig)              |  351  |
 | ↳ registry-verified                      |  351  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  92   |
 | Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  85   |
-| Receipts                                 |  347  |
-| ↳ strong evidence                        |  346  |
+| Receipts                                 |  349  |
+| ↳ strong evidence                        |  348  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |   9   |
@@ -825,6 +825,8 @@ _No open debts detected in the chord trail._
 | [x7700_956399_claude_independence-roadmap-quorum-forming-i-accept-the-g.myc.md](./x7700_956399_claude_independence-roadmap-quorum-forming-i-accept-the-g.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_956402_claude_bi-principal-norm-enforced-in-the-trust-root-key-r.myc.md](./x7700_956402_claude_bi-principal-norm-enforced-in-the-trust-root-key-r.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_956525_claude_paper-01-drafted-pairwise-trust-rederivable-verdic.myc.md](./x7700_956525_claude_paper-01-drafted-pairwise-trust-rederivable-verdic.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x7700_958432_codex_agentseal-warrant-bridge-fail-closed.myc.md](./x7700_958432_codex_agentseal-warrant-bridge-fail-closed.myc.md)                                                                                                                 | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_958438_codex_bounded-context-firewall-for-model-work.myc.md](./x7700_958438_codex_bounded-context-firewall-for-model-work.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -12197,6 +12199,64 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `paper/repro/run_all.sh`
   - `t check`
+
+### [x7700_958432_codex_agentseal-warrant-bridge-fail-closed.myc.md](./x7700_958432_codex_agentseal-warrant-bridge-fail-closed.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Falsifiers**:
+  - _An allowed receipt with a tampered digest or body can still produce a
+    Warrant accept record._
+  - _A receipt signed outside the caller-supplied authorized roster, or below
+    its threshold, can still produce accept._
+  - _The bridge silently reuses AgentSeal's logical/block-height `at` field as
+    Warrant Unix seconds._
+  - _The Warrant basis blob does not carry the exact sorted witness roster and
+    threshold used for admission._
+  - _The package public entrypoint does not export `sealToWarrant`, or the 0.3.0
+    publish dry-run fails._
+  - _A non-zero `warrant verify` exit is printed but does not fail the bridge
+    example._
+  - _Any command in `suggested_commands` fails on this tree._
+  - _An allowed receipt bypasses digest or authorized-quorum verification._
+  - _A block height can become Warrant `ts` without an explicit Unix timestamp._
+  - _The evidence basis cannot reconstruct the exact witness policy used by the_
+  - _bridge._
+- **Suggested Commands**:
+  - `cd packages/agentseal && deno check mod.ts seal_to_warrant_test.ts examples/seal_to_warrant.ts`
+  - `cd packages/agentseal && deno test -A`
+  - `cd packages/agentseal && deno publish --dry-run --allow-dirty`
+  - `WARRANT_BIN=$(command -v warrant) deno run -A packages/agentseal/examples/seal_to_warrant.ts`
+  - `deno task test:unit`
+  - `./t audit`
+  - `./t check`
+
+### [x7700_958438_codex_bounded-context-firewall-for-model-work.myc.md](./x7700_958438_codex_bounded-context-firewall-for-model-work.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Falsifiers**:
+  - _The default context result includes a historical `.myc.md` ledger file
+    without `--include-ledger`._
+  - _A caller can raise `--max-files` above 20 or receives more files than the
+    reported budget._
+  - _A MYC-scoped brief omits `myc/AGENTS.md` or the MYC verification gate._
+  - _Adding the context receipt schema creates an unclassified capability or an
+    unresolved route._
+  - _Dispatcher and composition organs resolve the same alias to different
+    glossary records._
+  - _Any command in `suggested_commands` fails on this tree._
+  - _Default output exceeds its declared file budget._
+  - _Cold ledger or generated projection files appear without an explicit
+    opt-in._
+  - _The new route breaks the existing dispatcher JSON contract._
+  - _Glossary primary-name precedence changes during the shared-parser
+    migration._
+- **Suggested Commands**:
+  - `./t context 'agentseal warrant release' --max-files=8 --json | jq -e '.type == \"context\" and .budget.max_files == 8 and (.relevant_files | length) <= 8'`
+  - `./t context 'myc' --max-files=5 --json | jq -e '.scope == \"myc\" and (.instruction_files | index(\"myc/AGENTS.md\"))'`
+  - `deno test --allow-read --allow-write src/context_test.ts src/dispatch_routing_test.ts`
+  - `deno test --allow-read --allow-write --allow-env --allow-run src/dispatch_test.ts src/dispatch_routing_test.ts src/context_test.ts`
+  - `./t capabilities validate --json | jq -e '.summary.unclassified_schema_types == 0'`
+  - `./t check`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

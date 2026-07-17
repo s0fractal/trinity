@@ -160,6 +160,9 @@ jobs:
       - name: Verify self attention summary
         run: ./t self --json | jq -e '(.attention.level | IN("clear", "watch", "act")) and (.attention.score | type) == "number" and (.attention.reasons | type) == "array" and (.attention.next_actions | type) == "array" and (.audit_boundaries.import_warnings == 0) and (.audit_boundaries.boundary_imports | type) == "number" and (.audit_boundaries.registry_warnings == 0) and (.capabilities_validation.valid == true) and (.capabilities_validation.unclassified_schema_types == 0) and (.capabilities_schema_classes.linked_command | type) == "number" and (.decisions.unresolved_proposals | type) == "number" and (.decisions.proposal_triage.review | type) == "number" and ((.decision_next_action == null) or (.decision_next_action.kind | type) == "string")'
 
+      - name: Verify bounded task context
+        run: ./t context "agentseal warrant release" --max-files=8 --json | jq -e '.type == "context" and .schema == "trinity.context-brief.v0.1" and .budget.max_files == 8 and (.relevant_files | length) <= 8 and (.relevant_files | length) > 0 and all(.relevant_files[]; (.path | endswith(".myc.md") | not))'
+
       - name: Verify MYC x9 shadow status
         if: steps.subm.outputs.present == 'true'
         run: ./t myc-status-shadow --json | jq -e '.type == "myc_status_shadow" and .position == "9/2E" and .shadow == true and .summary.overall == "healthy"'

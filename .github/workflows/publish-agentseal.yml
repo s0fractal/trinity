@@ -25,12 +25,24 @@ jobs:
       - uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
 
       - name: stage standalone (escape the trinity workspace)
         run: cp -r packages/agentseal /tmp/agentseal
 
       - name: tests must pass (fail-closed)
         run: cd /tmp/agentseal && deno test -A
+
+      # This is intentionally pinned: the bridge claims interoperability with a
+      # concrete Warrant contract, not an unbounded future CLI. Unlike the unit
+      # tests, this files, signs, and verifies a real evidence pack end to end.
+      - name: Warrant 0.4 interoperability must pass (fail-closed)
+        run: |
+          python -m pip install warrant-verify==0.4.0
+          cd /tmp/agentseal
+          WARRANT_BIN="$(command -v warrant)" deno run -A examples/seal_to_warrant.ts
 
       - name: is this version already on jsr?
         id: v

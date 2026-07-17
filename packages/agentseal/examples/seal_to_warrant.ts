@@ -15,25 +15,11 @@
 import { generateWitness } from "@s0fractal/witness";
 import { sealAdmitted } from "../mod.ts";
 import { sealToWarrant } from "../seal_to_warrant.ts";
+import { runWarrant } from "./warrant_cli.ts";
 
 const WARRANT = Deno.env.get("WARRANT_BIN") ?? "warrant";
-
-async function warrant(store: string, args: string[]): Promise<string> {
-  const cmd = new Deno.Command(WARRANT, {
-    args: ["--store", store, ...args],
-    stdout: "piped",
-    stderr: "piped",
-  });
-  const { code, stdout, stderr } = await cmd.output();
-  const out = new TextDecoder().decode(stdout).trim();
-  const err = new TextDecoder().decode(stderr).trim();
-  if (code !== 0 && !args.includes("verify")) {
-    throw new Error(
-      `warrant ${args.join(" ")} failed (${code}): ${err || out}`,
-    );
-  }
-  return out || err;
-}
+const warrant = (store: string, args: string[]) =>
+  runWarrant(WARRANT, store, args);
 
 // 1) An agent, under a read-only mandate, reads a file — admitted, classified, witnessed.
 const seat = await generateWitness();
@@ -58,7 +44,7 @@ const context = {
     type: "capability_receipt" as const,
     subject_verb: "fs.read",
     subject_target: "report.md",
-    capability: "readonly",
+    capability: "readonly" as const,
     verdict_hash: "h",
     organ_hash: "o",
     semantic_effects: ["read"],
@@ -86,7 +72,13 @@ console.log(
 );
 
 // 2) Bridge the receipt into Warrant record fields + content-addressed blobs.
-const rec = await sealToWarrant(sealed, { actor: "reader-agent@acme" });
+const rec = await sealToWarrant(sealed, {
+  actor: "reader-agent@acme",
+  // Warrant `ts` is Unix seconds. The receipt separately retains Bitcoin block
+  // 955_000 as its causal anchor; conflating those clocks would lie to Warrant.
+  ts: 1_784_249_600,
+  witnessPolicy: { authorized: [seat.publicKey], threshold: 1 },
+});
 
 // 3) Build a Warrant evidence pack: init the store, drop the blobs, file the record.
 const pack = await Deno.makeTempDir({ prefix: "agentseal-warrant-" });

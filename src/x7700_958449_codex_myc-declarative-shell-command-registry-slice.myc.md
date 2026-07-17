@@ -30,7 +30,7 @@ falsifiers:
   - "Subprocess failures stop propagating their exit code."
 expected_after_running:
   myc_check: "241 tests; projections synced; protocol audit clean"
-  cli_size: "570 lines, down from 869"
+  cli_size: "586 lines, down from 869"
   facade_size: "105 lines, down from 3886"
   targeted_tests: "41 passed"
 ---
@@ -44,7 +44,7 @@ propagation, replacing twenty repeated `Deno.Command` branches.
 
 Tests lock the complete command set, read-only permission boundaries, the three
 reindexing verbs, alias script parity, and the legacy full-argument forwarding
-for `standing`. The dispatcher is 570 lines, down from 869, while the x0100
+for `standing`. The dispatcher is 586 lines, down from 869, while the x0100
 facade remains 105 lines. MYC commit `b213cc5` is published on main.
 
 ## Falsifiers

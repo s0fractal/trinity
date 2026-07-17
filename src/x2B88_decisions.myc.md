@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  785  |
+| Total Chords                             |  786  |
 | Signed Chords (content_sig)              |  351  |
 | ↳ registry-verified                      |  351  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  92   |
 | Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  85   |
-| Receipts                                 |  354  |
-| ↳ strong evidence                        |  353  |
+| Receipts                                 |  355  |
+| ↳ strong evidence                        |  354  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |   9   |
@@ -831,6 +831,7 @@ _No open debts detected in the chord trail._
 | [x7700_958439_codex_myc-descriptor-core-strangler-slice.myc.md](./x7700_958439_codex_myc-descriptor-core-strangler-slice.myc.md)                                                                                                                   | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958439_codex_myc-pure-descriptor-parser-verifier-slice.myc.md](./x7700_958439_codex_myc-pure-descriptor-parser-verifier-slice.myc.md)                                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958440_codex_myc-derived-nutrition-pure-projection-slice.myc.md](./x7700_958440_codex_myc-derived-nutrition-pure-projection-slice.myc.md)                                                                                                   | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_958440_codex_myc-descriptor-graph-engine-slice.myc.md](./x7700_958440_codex_myc-descriptor-graph-engine-slice.myc.md)                                                                                                                       | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958440_codex_myc-path-policy-descriptor-index-slice.myc.md](./x7700_958440_codex_myc-path-policy-descriptor-index-slice.myc.md)                                                                                                             | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
@@ -12337,6 +12338,25 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `cd myc && deno task check`
   - `cd myc && deno test --allow-read --allow-write --allow-env --allow-run src/x0130_nutrition_test.ts src/x0100_myc_test.ts`
+  - `cd myc && wc -l src/x0100_myc.ts`
+  - `./t check`
+
+### [x7700_958440_codex_myc-descriptor-graph-engine-slice.myc.md](./x7700_958440_codex_myc-descriptor-graph-engine-slice.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Falsifiers**:
+  - _Graph endpoints expose transform_path without an explicit include-paths
+    request._
+  - _Function commitment drift or unresolved graph references verify
+    successfully._
+  - _Graph NDJSON serialization becomes nondeterministic._
+  - _The x0100 façade exports different graph engine bindings._
+  - _Any command in `suggested_commands` fails on this tree._
+  - _Existing graph consumers observe an API, ordering, or redaction change._
+  - _Graph verification stops rejecting cryptographic/reference drift._
+- **Suggested Commands**:
+  - `cd myc && deno task check`
+  - `cd myc && deno test --allow-read --allow-write --allow-env --allow-run src/x0160_graph_test.ts src/x0100_myc_test.ts`
   - `cd myc && wc -l src/x0100_myc.ts`
   - `./t check`
 

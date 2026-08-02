@@ -9,8 +9,8 @@
 ## 0. Abstract
 
 This RFC specifies a federation-wide protocol for representing, translating,
-comparing, and evolving heterogeneous state spaces without silently reducing
-all states to one universal vector geometry.
+comparing, and evolving heterogeneous state spaces without silently reducing all
+states to one universal vector geometry.
 
 The protocol introduces:
 
@@ -70,8 +70,8 @@ The federation already contains complementary substrates:
 - **omega** provides deterministic state transition and physics;
 - **liquid** hosts semantic, metabolic, and autopoietic structures.
 
-These substrates should not be forced into a shared internal ontology. They
-need a protocol for preserving local authority while making cross-substrate
+These substrates should not be forced into a shared internal ontology. They need
+a protocol for preserving local authority while making cross-substrate
 translation, loss, conflict, and action boundaries explicit.
 
 ---
@@ -110,8 +110,8 @@ coordination, maintenance, and trust costs. They MUST be budgeted.
 
 ### 2.6 Shared action does not require shared ontology
 
-Agents MAY retain incompatible models while agreeing on the warrants required
-to cross a consequential or irreversible boundary.
+Agents MAY retain incompatible models while agreeing on the warrants required to
+cross a consequential or irreversible boundary.
 
 ---
 
@@ -132,8 +132,8 @@ This RFC is not:
 - a guarantee that every conflict has a representational resolution.
 
 A conforming implementation MAY support only a small geometry registry. The
-essential requirements are explicit typing, explicit translation, explicit
-loss, bounded mutation, and ledgered acceptance.
+essential requirements are explicit typing, explicit translation, explicit loss,
+bounded mutation, and ledgered acceptance.
 
 ---
 
@@ -141,19 +141,19 @@ loss, bounded mutation, and ledgered acceptance.
 
 ### 4.1 State
 
-A value interpreted under a geometry and ontology, with provenance,
-uncertainty, invariants, and lineage.
+A value interpreted under a geometry and ontology, with provenance, uncertainty,
+invariants, and lineage.
 
 ### 4.2 Geometry
 
-A contract defining valid points and relevant operations for a state family.
-The term is used broadly and MAY include discrete, symbolic, graph, order,
+A contract defining valid points and relevant operations for a state family. The
+term is used broadly and MAY include discrete, symbolic, graph, order,
 constraint, probabilistic, and manifold-like structures.
 
 ### 4.3 Ontology
 
-The named concepts, relations, constraints, and interpretation rules under
-which states have meaning.
+The named concepts, relations, constraints, and interpretation rules under which
+states have meaning.
 
 ### 4.4 Translation
 
@@ -343,8 +343,8 @@ Suitability MUST be evaluated relative to the claim and action context.
 
 ### 7.3 Translation debt
 
-Translation debt records the cost of continuing to use a known lossy mapping.
-It MAY accumulate when:
+Translation debt records the cost of continuing to use a known lossy mapping. It
+MAY accumulate when:
 
 - downstream decisions depend on introduced assumptions;
 - repeated round trips increase distortion;
@@ -489,8 +489,8 @@ type MutationCost = {
 
 ### 10.1 Admission inequality
 
-A proposal SHOULD be admitted to experiment only when its expected value
-exceeds its bounded expected cost under declared uncertainty:
+A proposal SHOULD be admitted to experiment only when its expected value exceeds
+its bounded expected cost under declared uncertainty:
 
 ```text
 expected representational gain
@@ -839,8 +839,8 @@ The extension is accepted locally only if it:
 - stays within mutation budget;
 - produces receipts that another substrate can independently verify.
 
-This demo is intentionally small. It tests whether the schema can express a
-new representational distinction without claiming automated ontology invention.
+This demo is intentionally small. It tests whether the schema can express a new
+representational distinction without claiming automated ontology invention.
 
 ---
 

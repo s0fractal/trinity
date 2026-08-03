@@ -41,7 +41,9 @@ References MUST therefore be content-addressed:
 3. The federation's existing identity primitive is
    `contracts/CANONICAL_HASH.v0.1.md` (`h.` || first 12 hex of SHA-256). New
    references SHOULD reuse it so that this RFC does not fork the substrate's
-   naming.
+   naming. **It is a digest over a text body and performs no structural
+   canonicalization** — it never parses what it hashes. A structural
+   canonicalizer therefore does not compete with it; it feeds it (§5.1.4).
 4. **The 12-hex form is a handle, not a security binding.** Forty-eight bits is
    adequate for human-readable addressing and accidental-collision avoidance,
    and inadequate against an adversary who can grind for a collision. Any
@@ -244,6 +246,42 @@ proposal. It is filed as decision request §22 Tranche A3 and open problem
 
 Until that contract exists, §5.1 is specified but not yet implementable across
 substrate boundaries, and this document does not pretend otherwise.
+
+#### 5.1.4 The selection is narrower than it looks
+
+An inventory of what actually exists (`probes/canonical-forms-inventory-v0`, run
+2026-08-03) found **ten** canonical forms across the ecosystem, over three hash
+functions and three kinds of input, with four different truncations. Six are
+unavailable to comparison for stated reasons; four were executed. The relevant
+results:
+
+1. **`CANONICAL_HASH.v0.1` and a structural canonicalizer are layers, not
+   rivals.** The probe's testable prediction — trinity's text hash equals the
+   structural digest _exactly when_ the body text is already canonical, and
+   differs otherwise — holds across the corpus. So Tranche A3 selects a
+   canonicalizer that produces the bytes `CANONICAL_HASH` already digests.
+   **Every existing `h.` handle over an already-canonical body stays valid
+   unchanged.** This is a substantially cheaper decision than choosing between
+   two identity schemes, which is how it was framed before the inventory.
+2. **Trinity already ships a second structural canonicalizer.**
+   `packages/canonical-receipt` is live on jsr and implements RFC 8949 canonical
+   CBOR, forbidding floats by throwing. It is not a rival to JCS either — it
+   targets binary receipts rather than JSON documents — but a federation with
+   two live structural canonicalizers MUST say which applies where, and this RFC
+   previously did not know the second one existed.
+3. **`RECEIPT_ENVELOPE.v1.0` does not fix its encoding.** It specifies a
+   multihash over "canonical CBOR / JSON" and leaves the choice to the caller.
+   That is not a canonical form; it is a decision deferred inside a contract
+   whose purpose is stable identity. Tranche A3 MUST resolve it.
+4. **No live form normalizes Unicode.** Rule 5 above was written as a correction
+   and turns out to describe existing behavior everywhere, which downgrades it
+   from a change to a codification.
+
+The inventory is a probe, not authority. Its own falsifiers are in its README —
+most importantly that its JCS implementation is a reimplementation rather than
+`warrant`'s, so agreement is weaker evidence than running `warrant`'s harness
+directly, and that the float cases §5.1.2 most cares about are not yet in the
+corpus.
 
 ## 14. Ledger requirements
 

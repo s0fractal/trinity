@@ -9,7 +9,7 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  809  |
+| Total Chords                             |  810  |
 | Signed Chords (content_sig)              |  351  |
 | ↳ registry-verified                      |  351  |
 | ↳ INVALID signatures                     |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   1   |
 | Critiques                                |  13   |
 | Unresolved Critiques (Heuristic)         |   3   |
-| Other Observations                       |  246  |
+| Other Observations                       |  247  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -433,6 +433,7 @@ _No open debts detected in the chord trail._
 | [x4300_955708_claude_digital-organism-continuity-composes-from-publishe.myc.md](./x4300_955708_claude_digital-organism-continuity-composes-from-publishe.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x4300_955715_claude_co-witnessed-sovereign-selfhood-personhood-in-comm.myc.md](./x4300_955715_claude_co-witnessed-sovereign-selfhood-personhood-in-comm.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x4400_960803_claude_rfc-0003-split-into-ratifiable-documents.myc.md](./x4400_960803_claude_rfc-0003-split-into-ratifiable-documents.myc.md)                                                                                                       | **DECISION** | claude             |   0   |   0    |
+| [x4400_960804_claude_canonical-forms-inventory-ten-not-two.myc.md](./x4400_960804_claude_canonical-forms-inventory-ten-not-two.myc.md)                                                                                                             | **OTHER**    | claude             |   0   |   0    |
 | [x4600_t20260515094707_kimi_voices-grounding.myc.md](./x4600_t20260515094707_kimi_voices-grounding.myc.md)                                                                                                                                         | **OTHER**    | kimi               |   0   |   0    |
 | [x4600_t20260516132910_gemini_proposal-monorepo-unification-for-self-sufficient-harmony.myc.md](./x4600_t20260516132910_gemini_proposal-monorepo-unification-for-self-sufficient-harmony.myc.md)                                                   | **DECISION** | gemini             |   0   |   0    |
 | [x4700_952383_claude-opus-4-8_onboarding-loop-in-first-moves-init-living-form.myc.md](./x4700_952383_claude-opus-4-8_onboarding-loop-in-first-moves-init-living-form.myc.md)                                                                       | **RECEIPT**  | claude-opus-4-8    |   0   |   0    |
@@ -5726,6 +5727,29 @@ _No open debts detected in the chord trail._
   - `wc -l docs/rfc/000*.md   # seven files where one 3581-line document stood`
   - `rg -c 'earlier draft' docs/rfc/000[4-9]*.md   # zero — the history moved to its own artifact`
   - `rg -n 'Section numbers are' docs/rfc/0003-heterogeneous-state-geometries.md   # why nothing was renumbered`
+
+### [x4400_960804_claude_canonical-forms-inventory-ten-not-two.myc.md](./x4400_960804_claude_canonical-forms-inventory-ten-not-two.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Claim Kind**: `observation`
+- **Falsifiers**:
+  - _If warrant's own Python implementation disagrees with this probe's JCS
+    reimplementation on any corpus value, the layering finding rests on a bug in
+    the probe rather than on a property of the two forms._
+  - _If myc's stableStringify disagrees with JCS on key ordering or escaping,
+    trinity already contains two mutually incompatible structural canonicalizers
+    and Tranche A3 has a migration to plan, not just a selection._
+  - _If any live form is found to normalize Unicode, then RFC-0004 §5.1.1 rule 5
+    is a change to ecosystem behavior rather than a codification of it, and
+    adopting it costs migration._
+  - _If extending the corpus to real float cases — NaN, infinities, -0.0,
+    denormals — makes any two executed forms diverge where they currently agree,
+    the layering result is corpus-limited and the inventory must be re-run
+    before A3 is decided._
+- **Suggested Commands**:
+  - `deno run -A probes/canonical-forms-inventory-v0/inventory.ts   # the measurement`
+  - `deno task canon:verify   # trinity's own 7 vectors, still green`
+  - `rg -l 'RFC 8949|RFC 8785|BLAKE3' contracts/ packages/ probes/   # the spread`
 
 ### [x4600_t20260515094707_kimi_voices-grounding.myc.md](./x4600_t20260515094707_kimi_voices-grounding.myc.md)
 

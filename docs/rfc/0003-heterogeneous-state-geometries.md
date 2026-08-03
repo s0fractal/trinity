@@ -646,6 +646,18 @@ rather than "proved" for that reason.
   inside an integers-only domain; §5.1.2 now specifies the two admissible
   patterns and their canonical-form rules, so this tranche selects between them
   rather than facing an open question.
+
+  **Corrected 2026-08-03 by measurement.** This entry originally read as a
+  choice between `warrant`'s profile and the federation's existing
+  `CANONICAL_HASH`. An inventory of what actually exists
+  (`probes/canonical-forms-inventory-v0`) found ten canonical forms, not two,
+  and showed that those particular two are **layers rather than rivals** —
+  `CANONICAL_HASH` digests a text body without parsing it, so a structural
+  canonicalizer feeds it rather than replacing it. It also found a second live
+  structural canonicalizer this RFC did not know about
+  (`packages/canonical-receipt`, RFC 8949 canonical CBOR, published on jsr) and
+  a live contract that leaves its own encoding unfixed
+  (`RECEIPT_ENVELOPE.v1.0`). See RFC-0004 §5.1.4.
 - **Tranche G4 (execution floor evaluator).** `ski@v1` (warrant SPEC §3.1, over
   Σ-GLYPH Book I v0.5) satisfies every requirement §13.4.1.1 states:
   deterministic across hosts, bit-exact across implementations, terminating by

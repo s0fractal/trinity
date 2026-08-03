@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     16     |
 | compatibility abi |     55     |
 | compost           |     0      |
-| dynamic topology  |    808     |
+| dynamic topology  |    809     |
 | experimental      |     47     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **926**   |
+| **Total**         |  **927**   |
 
 ## Runtime Cache Diagnostics
 
@@ -500,6 +500,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x4300_954228_claude_p2-design-key-event-delegation-chain-verify-at-eve.myc.md](../src/x4300_954228_claude_p2-design-key-event-delegation-chain-verify-at-eve.myc.md)                                                                                   | canonical        | src/x4300_954228_claude_p2-design-key-event-delegation-chain-verify-at-eve.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x4300_955708_claude_digital-organism-continuity-composes-from-publishe.myc.md](../src/x4300_955708_claude_digital-organism-continuity-composes-from-publishe.myc.md)                                                                                   | canonical        | src/x4300_955708_claude_digital-organism-continuity-composes-from-publishe.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x4300_955715_claude_co-witnessed-sovereign-selfhood-personhood-in-comm.myc.md](../src/x4300_955715_claude_co-witnessed-sovereign-selfhood-personhood-in-comm.myc.md)                                                                                   | canonical        | src/x4300_955715_claude_co-witnessed-sovereign-selfhood-personhood-in-comm.myc.md                                          | keep        |                              |
+| dynamic topology  | [src/x4400_960803_claude_rfc-0003-split-into-ratifiable-documents.myc.md](../src/x4400_960803_claude_rfc-0003-split-into-ratifiable-documents.myc.md)                                                                                                       | canonical        | src/x4400_960803_claude_rfc-0003-split-into-ratifiable-documents.myc.md                                                    | keep        |                              |
 | dynamic topology  | [src/x4600_t20260515094707_kimi_voices-grounding.myc.md](../src/x4600_t20260515094707_kimi_voices-grounding.myc.md)                                                                                                                                         | canonical        | src/x4600_t20260515094707_kimi_voices-grounding.myc.md                                                                     | keep        |                              |
 | dynamic topology  | [src/x4600_t20260516132910_gemini_proposal-monorepo-unification-for-self-sufficient-harmony.myc.md](../src/x4600_t20260516132910_gemini_proposal-monorepo-unification-for-self-sufficient-harmony.myc.md)                                                   | canonical        | src/x4600_t20260516132910_gemini_proposal-monorepo-unification-for-self-sufficient-harmony.myc.md                          | keep        |                              |
 | dynamic topology  | [src/x4700_952383_claude-opus-4-8_onboarding-loop-in-first-moves-init-living-form.myc.md](../src/x4700_952383_claude-opus-4-8_onboarding-loop-in-first-moves-init-living-form.myc.md)                                                                       | canonical        | src/x4700_952383_claude-opus-4-8_onboarding-loop-in-first-moves-init-living-form.myc.md                                    | keep        |                              |

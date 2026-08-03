@@ -12,10 +12,11 @@ takes custody of them.
 
 ## Index
 
-| RFC                                                      | Title                                         | Status                    | Purpose                                                                                                                                           |
-| -------------------------------------------------------- | --------------------------------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [RFC-0001](0001-living-substrate-physics.md)             | The Physics of the s0Fractal Living Substrate | Draft Proposal            | Defines conservation laws, energy, fields, organisms, capability morphogenesis, metabolism, ecology, memory, decay, and death.                    |
-| [RFC-0002](0002-living-substrate-implementation-seed.md) | Living Substrate Implementation Seed          | Draft Implementation Seed | Converts RFC-0001 into the first buildable deterministic projection: node physics, organism physics, pressure reports, CLI shape, and falsifiers. |
+| RFC                                                      | Title                                         | Status                    | Purpose                                                                                                                                                         |
+| -------------------------------------------------------- | --------------------------------------------- | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [RFC-0001](0001-living-substrate-physics.md)             | The Physics of the s0Fractal Living Substrate | Draft Proposal            | Defines conservation laws, energy, fields, organisms, capability morphogenesis, metabolism, ecology, memory, decay, and death.                                  |
+| [RFC-0002](0002-living-substrate-implementation-seed.md) | Living Substrate Implementation Seed          | Draft Implementation Seed | Converts RFC-0001 into the first buildable deterministic projection: node physics, organism physics, pressure reports, CLI shape, and falsifiers.               |
+| [RFC-0003](0003-heterogeneous-state-geometries.md)       | Heterogeneous State Geometries                | Draft                     | Geometry-typed states, loss-aware translation, first-class conflict, mutation budgets, geometry admission, identity policy, and federated ontology translation. |
 
 ---
 

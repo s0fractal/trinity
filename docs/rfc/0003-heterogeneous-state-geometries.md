@@ -1,10 +1,15 @@
-# RFC-0001: Heterogeneous State Geometries
+# RFC-0003: Heterogeneous State Geometries
 
 - **Status:** Draft
 - **Authors:** s0fractal + model collaborators
 - **Target:** Trinity federation (`trinity`, `myc`, `omega`, `liquid`)
 - **Scope:** Semantic Schema V2 extension
 - **Created:** 2026-08-03
+- **Revised:** 2026-08-03 (external critique round 1 — see
+  `src/x2300_960790_claude_qwen-critique-rfc-0003-heterogeneous-state-geometries.myc.md`)
+- **Supersedes:** nothing
+- **Extends:** the federation's existing state, warrant, evidence, receipt, and
+  lineage primitives
 
 ## 0. Abstract
 
@@ -224,6 +229,83 @@ A conforming state MUST identify its geometry and ontology. It MUST NOT rely on
 out-of-band convention to determine whether a numeric array is an embedding,
 probability vector, coordinate, ordered tuple, or arbitrary payload.
 
+### 5.1 Reference identity is content-addressed
+
+Every `Ref` in this document (`GeometryRef`, `OntologyRef`, `InvariantRef`,
+`EvidenceRef`, `TransformationRef`, `TranslatorRef`) is a **reference to an
+immutable object**, not a mutable name. The protocol's audit guarantees depend
+on it: a receipt that records "translated under translator T" is worthless if
+`T` can be edited afterwards.
+
+References MUST therefore be content-addressed:
+
+1. Every referenced object MUST have a canonical byte encoding. For geometry
+   points this is the `serialize` method of §6; for descriptors, ontologies,
+   translators, and invariant definitions it is the object's canonical
+   serialization.
+2. The reference MUST be derived from a cryptographic digest of those canonical
+   bytes.
+3. The federation's existing identity primitive is
+   `contracts/CANONICAL_HASH.v0.1.md` (`h.` || first 12 hex of SHA-256). New
+   references SHOULD reuse it so that this RFC does not fork the substrate's
+   naming.
+4. **The 12-hex form is a handle, not a security binding.** Forty-eight bits is
+   adequate for human-readable addressing and accidental-collision avoidance,
+   and inadequate against an adversary who can grind for a collision. Any
+   reference that gates an irreversible boundary, an admission decision, an
+   identity amendment, or a trust computation MUST carry the full digest
+   alongside the short handle.
+5. Structural sharing is a requirement, not an optimization: two states under
+   the same geometry and ontology MUST resolve to the same reference bytes, so
+   the shared descriptor is stored once and the per-state cost is the reference,
+   not the descriptor.
+6. External content-addressing systems (IPLD/CID, and similar) MAY be used as a
+   transport or storage projection. Doing so MUST NOT redefine the canonical
+   digest — the CID is then a second encoding of the same identity, and receipts
+   MUST record which encoding they used.
+
+Lineage and provenance follow from this. Because `lineage` is a list of
+content-addressed transformation references, and each transformation references
+its input states, the derivation history of any state is a verifiable DAG rather
+than a narrative recorded by whoever wrote the receipt.
+
+### 5.2 Metadata weight and state profiles
+
+The `TypedState` shape above is heavy. Carrying geometry, ontology, uncertainty,
+invariants, provenance, and lineage on every high-frequency internal value would
+cost more than the values themselves, and a protocol whose ceremony is
+unaffordable is a protocol that gets bypassed at the point it matters.
+
+The weight is therefore mitigated by structure, not by dropping fields:
+
+1. **Shared descriptors are referenced, not embedded.** By §5.1, a million
+   states in one geometry carry one geometry descriptor and a million pointers.
+2. **A state MAY declare a profile** that fixes which fields are materialized:
+
+```ts
+type StateProfile = "minimal" | "tracked" | "full";
+```
+
+- `minimal` — geometry and ontology references plus value. Permitted only for
+  states that are local, reversible, and never cross a translation, federation,
+  or irreversible boundary.
+- `tracked` — adds uncertainty and provenance. Required for any state that
+  informs a decision.
+- `full` — adds invariants and lineage. Required for any state that crosses a
+  translation boundary, enters a federated exchange, or reaches an irreversible
+  boundary.
+
+3. **Promotion is the runtime's obligation, not the caller's.** A `minimal`
+   state that reaches a boundary requiring `full` MUST be rejected at that
+   boundary. It MUST NOT be silently upgraded with backfilled metadata, because
+   backfilled provenance is fabricated provenance.
+4. Profiles are a storage and materialization concession. They MUST NOT be used
+   to weaken what a receipt records once a boundary is actually crossed.
+
+The honest cost of this design is that the decision "which profile does this
+state need?" moves to authoring time, and a wrong guess surfaces as a refusal at
+a boundary rather than as a silent degradation. That is the intended trade.
+
 ---
 
 ## 6. Geometry contract
@@ -265,7 +347,116 @@ A geometry MUST NOT expose `distance`, `interpolate`, or `average` merely to
 satisfy a generic interface. If the operation has no coherent meaning, it MUST
 be absent or explicitly forbidden.
 
-### 6.2 Initial geometry families
+### 6.2 Declared algebraic laws
+
+Listing operations is not enough. Two geometries can expose the same `compose`
+signature and still disagree about whether composition may be reordered,
+repeated, or undone. A caller that assumes the wrong answer corrupts state
+without any type error.
+
+A geometry MUST therefore declare the laws its operations obey:
+
+```ts
+type AlgebraicLaws = {
+  associative?: LawClaim;
+  commutative?: LawClaim;
+  idempotent?: LawClaim;
+  identityElement?: LawClaim & { element: CanonicalBytes };
+  invertible?: LawClaim & { inverse: OperationRef };
+  distributiveOver?: (LawClaim & { operation: OperationRef })[];
+  monotoneUnder?: (LawClaim & { order: OrderRef })[];
+  metricAxioms?: {
+    identityOfIndiscernibles?: LawClaim;
+    symmetry?: LawClaim;
+    triangleInequality?: LawClaim;
+  };
+};
+
+type LawClaim = {
+  holds: boolean;
+  scope: "total" | "partial";
+  precondition?: PredicateRef;
+  evidence: LawEvidence;
+};
+
+type LawEvidence =
+  | { kind: "proof"; ref: EvidenceRef }
+  | { kind: "property-test"; ref: EvidenceRef; cases: number; seed: string }
+  | { kind: "asserted"; ref?: EvidenceRef };
+```
+
+Rules:
+
+1. A declared law is a **claim**, not a permission to trust. Every law with
+   `holds: true` MUST carry `LawEvidence`.
+2. `kind: "asserted"` laws MUST NOT be used to authorize composition across a
+   translation boundary or an irreversible boundary.
+3. `metricAxioms` MUST be declared by any geometry exposing `distance`. A
+   similarity score that violates the triangle inequality is not a metric and
+   MUST NOT be presented as one.
+4. A composition of two states MUST NOT be admitted when the composed geometries
+   declare incompatible laws for the operation being used.
+5. Law declarations are versioned with the geometry. Weakening a law is a
+   behavioral change and MUST bump the version.
+
+This makes the loss profile of an operation checkable before it runs, and gives
+the registry something deterministic to reject.
+
+### 6.3 Capability splitting
+
+The interface in §6 uses optional methods. Optional methods are a weak defense:
+an implementer under schedule pressure can satisfy them with a stub that returns
+a plausible number, and nothing in the type system objects. This is the
+`geometry cosplay` failure mode (§19.7) arriving through the front door.
+
+Implementations SHOULD therefore split the contract into separate capability
+interfaces rather than one interface with optional members, so that a geometry
+which cannot interpolate is **unable to be passed** where interpolation is
+required, rather than merely expected to decline at runtime.
+
+In a language with traits or typeclasses this is structural. A Rust projection
+would look roughly like:
+
+```rust
+pub trait Geometry {
+    type Point;
+    fn id(&self) -> GeometryId;
+    fn version(&self) -> Version;
+    fn validate(&self, p: &Self::Point) -> ValidationReport;
+    fn laws(&self) -> AlgebraicLaws;
+    fn serialize(&self, p: &Self::Point) -> CanonicalBytes;
+    fn deserialize(&self, b: &CanonicalBytes) -> Result<Self::Point, DecodeError>;
+}
+
+pub trait Metric: Geometry {
+    fn distance(&self, a: &Self::Point, b: &Self::Point, cx: &DistanceContext) -> Scalar;
+}
+
+pub trait Interpolable: Geometry {
+    fn interpolate(&self, a: &Self::Point, b: &Self::Point, t: UnitInterval) -> Self::Point;
+}
+
+pub trait Composable: Geometry {
+    fn compose(&self, a: &Self::Point, b: &Self::Point) -> CompositionResult<Self::Point>;
+}
+
+// A planner that averages states cannot accept a temporal partial order:
+// the bound is checked at compile time, not apologized for at runtime.
+fn midpoint<G: Interpolable>(g: &G, a: &G::Point, b: &G::Point) -> G::Point {
+    g.interpolate(a, b, UnitInterval::HALF)
+}
+```
+
+A temporal partial order implements `Geometry` and never `Interpolable`, so
+`midpoint` cannot be instantiated for it. The cosplay risk is removed by
+construction instead of by review.
+
+Where the host language cannot express this (dynamic registries, cross-language
+adapters, opaque external geometries), the registry MUST enforce the same rule
+at admission: a geometry that declares an operation it does not implement, or
+implements an operation it did not declare, MUST be rejected.
+
+### 6.4 Initial geometry families
 
 The federation MAY begin with:
 
@@ -404,12 +595,57 @@ A conflict diagnosis MAY classify one or more hypotheses:
 - causal contradiction;
 - translation loss;
 - geometry mismatch;
+- structural insufficiency;
 - authority conflict;
 - insufficient evidence;
 - resource exhaustion;
 - genuine irreducible disagreement.
 
 A hypothesis MUST remain distinct from a confirmed diagnosis.
+
+#### 8.2.1 Geometry mismatch versus structural insufficiency
+
+These two are deliberately separated because they license different responses.
+
+- **Geometry mismatch** — the participants hold states in different geometries
+  and the conflict is an artifact of comparing them. A translation, a shared
+  target geometry, or a corrected suitability judgment resolves it. No new
+  representation is needed; one already exists in the registry.
+- **Structural insufficiency** — no geometry available in the registry can hold
+  the distinction the conflict requires. More evidence, more search, and better
+  translation will not resolve it, because the required distinction is not
+  expressible. This is the only conflict hypothesis that directly licenses a
+  mutation proposal under §9 and §10.
+
+A diagnosis of structural insufficiency MUST show that the distinction is
+inexpressible, not merely inconvenient. The minimum showing is:
+
+1. an explicit statement of the distinction the current registry cannot make;
+2. a witness pair — two situations that the current representation maps to the
+   same state but that demand different actions;
+3. evidence that at least two independent policies failed on that pair;
+4. an argument that a cheaper remedy (search, evidence, translation, local
+   policy) does not apply.
+
+##### On phase-transition framing
+
+An earlier review proposed naming this hypothesis a "phase transition" or
+"topological mismatch", by analogy to percolation and critical phenomena. This
+RFC declines the analogy at the normative level and keeps the plainer name.
+
+The analogy is suggestive and may well be productive: representational
+bottlenecks do appear to arrive suddenly after long stretches of adequacy, which
+is the shape a critical transition would have. But "phase transition" is a
+claim, and this RFC's own §19.7 forbids borrowing mathematical vocabulary
+without enforceable semantics. To use the term normatively, an implementation
+would have to define the order parameter, the control parameter, and what
+observable distinguishes a genuine transition from a run of ordinary failures —
+none of which exist yet.
+
+The framing is therefore recorded as an open problem (§20.11), not adopted as
+protocol vocabulary. If someone supplies the order parameter and a
+discriminating measurement, `structural insufficiency` can be renamed to
+something it has earned.
 
 ### 8.3 Conflict outcomes
 
@@ -711,6 +947,118 @@ requires:
 
 This allows ontological pluralism while preserving accountable joint action.
 
+### 13.4 Genesis handshake
+
+Sections 13.1–13.3 describe translation and compatibility between agents that
+already share enough vocabulary to negotiate. They do not explain how two agents
+with disjoint ontologies reach that point. Without an answer, the federated
+protocol assumes the agreement it was designed to avoid requiring.
+
+#### 13.4.1 There is a floor, and it is not empty
+
+The honest starting position is that first contact cannot bootstrap from
+nothing. Two parties that share no encoding, no identity primitive, and no
+speech acts cannot distinguish a proposal from noise. Something must be
+pre-shared.
+
+This RFC fixes that floor deliberately small and requires it to be
+**non-semantic** — it carries no claims about the world, only about bytes and
+authorship:
+
+1. **Byte identity** — the canonical encoding and digest of §5.1. This lets both
+   parties agree on _which object_ is under discussion without agreeing on what
+   it means.
+2. **Authorship** — signature verification and a key identity, so a statement
+   can be attributed and later held against its author.
+3. **Handshake vocabulary** — the small set of message kinds below, whose
+   meanings are fixed by this RFC and are about the protocol, not the domain.
+4. **Ordering discipline** — a way to say that one message preceded another, so
+   negotiation state is well-defined.
+
+Anything richer — concepts, relations, units, values, goals — is explicitly not
+in the floor and MUST be established, not assumed.
+
+#### 13.4.2 Grounding is behavioral, not definitional
+
+Agents MUST NOT establish a mapping by exchanging definitions. Definitions are
+circular for parties without shared vocabulary: each side reads the other's
+words under its own ontology and concludes, wrongly, that it understood.
+
+Mappings are instead grounded by **agreed behavior on shared fixtures**. One
+party proposes a candidate correspondence and a set of deterministic cases; both
+parties evaluate the cases independently under their own ontologies; the mapping
+is credited only to the extent that the outcomes agree.
+
+```ts
+type HandshakeMessage =
+  | { kind: "hello"; identity: KeyRef; floorVersion: string }
+  | { kind: "offer-fixture"; fixture: FixtureRef; expects: OutcomeShape }
+  | { kind: "fixture-result"; fixture: FixtureRef; outcome: CanonicalBytes }
+  | {
+    kind: "propose-mapping";
+    mapping: TranslationDescriptor<unknown, unknown>;
+  }
+  | {
+    kind: "mapping-evidence";
+    mapping: MappingRef;
+    agreements: FixtureResult[];
+  }
+  | { kind: "scope-contract"; contract: CompatibilityContract }
+  | { kind: "decline"; reason: DeclineReason };
+
+type FixtureResult = {
+  fixture: FixtureRef;
+  agreed: boolean;
+  divergence?: DivergenceRecord;
+};
+```
+
+#### 13.4.3 Stages
+
+```text
+hello                  (exchange identity and floor version)
+  -> fixture exchange  (deterministic cases, evaluated independently)
+  -> divergence report (where outcomes differ, and by how much)
+  -> candidate mapping (proposed only over the agreeing region)
+  -> scoped contract   (§13.2, limited to that region)
+  -> joint action      (§13.3 boundary rules apply unchanged)
+```
+
+Rules:
+
+1. A mapping MUST NOT be credited beyond the region where fixtures agreed. The
+   agreeing region is the mapping's declared domain; outside it the mapping is
+   undefined, not merely uncertain.
+2. Divergences MUST be recorded, not discarded. A fixture where two agents
+   disagree is the most informative object produced by the handshake, and is
+   itself evidence under §9.
+3. A handshake MUST NOT authorize an irreversible boundary crossing. Its output
+   is a scoped compatibility contract; §13.3 governs what that contract may then
+   be used for.
+4. Either party MAY `decline` at any stage without penalty. Refusal to establish
+   a mapping is a valid terminal state, not a failure.
+
+#### 13.4.4 Trinity's role, and what it is not
+
+`trinity` MAY act as a witness to a handshake: holding fixture sets, recording
+divergences, and issuing receipts that a third party can check. This is useful
+because it makes the handshake auditable by someone who was not present.
+
+`trinity` MUST NOT thereby become a privileged global ontology. Specifically it
+MUST NOT define what the mapped concepts mean, arbitrate which ontology is
+correct, or be required for a handshake between two agents that can reach each
+other directly. A witness records what happened; it does not confer meaning.
+
+#### 13.4.5 Honest limit
+
+The floor in §13.4.1 is itself a minimal shared ontology. This RFC does not
+claim to have eliminated pre-agreement — only to have reduced it to encoding,
+authorship, ordering, and a fixed handshake vocabulary, and to have made that
+residue explicit rather than tacit. Whether the floor can be reduced further, or
+whether behavioral grounding alone can distinguish genuine agreement from
+coincidental agreement on an unrepresentative fixture set, remains open (§20.6,
+§20.12).
+
 ---
 
 ## 14. Ledger requirements
@@ -732,7 +1080,9 @@ Each relevant receipt SHOULD record:
 - rollback plan and result;
 - identity continuity decision;
 - federation participants;
-- irreversible-boundary decision.
+- irreversible-boundary decision;
+- runtime path taken and the predicate evaluation that admitted it;
+- state profiles at each boundary crossing.
 
 A future verifier must be able to answer:
 
@@ -748,7 +1098,64 @@ A future verifier must be able to answer:
 
 ## 15. Runtime protocol
 
-A minimal execution cycle is:
+### 15.0 Two paths
+
+The governed cycle below is the protocol's full ceremony. Applied to every
+operation it would be unaffordable: an agent updating an internal counter does
+not need budget checks, sandboxing, or ontology negotiation, and a protocol that
+demands them there will be routed around exactly when convenience argues
+loudest. A bypassed protocol protects nothing.
+
+The runtime therefore has two paths. The distinction is not "important versus
+unimportant" — it is **whether the operation can produce a consequence the
+protocol exists to govern**.
+
+An operation MAY take the fast path only when all of the following hold:
+
+```text
+same geometry        — source and target geometry references are identical
+same ontology        — no cross-ontology interpretation occurs
+no federation        — no other agent or substrate is a participant
+reversible           — the action's reversibility class is "reversible" and a
+                       rollback boundary is already established
+within budget        — no mutation is proposed and no budget term is consumed
+no unresolved debt   — the states involved carry no outstanding translation debt
+invariants unchanged — the operation touches no invariant in the identity policy
+```
+
+The predicate MUST fail closed: if any term is unknown, unavailable, or
+expensive to evaluate, the operation takes the governed path. Evaluating the
+predicate MUST be cheaper than the ceremony it skips, or it has no purpose.
+
+### 15.1 Fast path
+
+```text
+observe
+  -> type state
+  -> validate geometry
+  -> update local state
+  -> record compact receipt
+```
+
+Rules:
+
+1. The fast path MUST still produce a receipt. The receipt MAY be compact —
+   state reference, geometry version, operation, outcome — but the operation
+   MUST remain reconstructible.
+2. The fast path MUST NOT cross a translation, federation, or irreversible
+   boundary; MUST NOT propose or apply a mutation; and MUST NOT amend identity
+   invariants. These are precisely the terms of the §15.0 predicate, restated as
+   prohibitions so that a violation is detectable after the fact.
+3. Any fast-path operation that turns out to require one of those crossings MUST
+   be aborted and re-attempted on the governed path. It MUST NOT be completed
+   and retroactively justified.
+4. Fast-path receipts MUST be attributable to the predicate evaluation that
+   admitted them, so that a wrong predicate is auditable as a class rather than
+   one operation at a time.
+
+### 15.2 Governed path
+
+A minimal governed execution cycle is:
 
 ```text
 observe
@@ -773,6 +1180,27 @@ observe
 The runtime MUST distinguish hypothesis generation from authority to mutate or
 act. An LLM MAY propose candidates but MUST NOT be the sole verifier of geometry
 adequacy, invariant preservation, or admission.
+
+### 15.3 Path selection is a security boundary
+
+Introducing a fast path introduces the attack it implies: anything that can
+convince the predicate an operation is local, reversible, and unfederated has
+bought itself an ungoverned execution.
+
+Consequently:
+
+1. The predicate MUST be evaluated by the runtime, never supplied by the caller.
+   An operation MAY declare intent; it MUST NOT declare its own eligibility.
+2. An LLM MUST NOT decide path selection. Every term in §15.0 is a deterministic
+   check against typed state, and MUST be implemented as one.
+3. Path selection MUST be recorded in the receipt. A verifier must be able to
+   ask why a given operation skipped the governed cycle and check the answer.
+4. Systematic drift toward the fast path is a signal, not an efficiency win. If
+   the share of fast-path operations rises without a corresponding change in
+   workload, the predicate SHOULD be treated as miscalibrated and audited.
+5. The fast path is an optimization of ceremony, never of accountability. It
+   reduces what is checked before an operation; it does not reduce what is
+   recorded about it.
 
 ---
 
@@ -858,9 +1286,13 @@ core/
   warrant
   evidence
   lineage
+  addressing          # canonical bytes, digests, reference resolution (§5.1)
+  state-profile       # profile declaration and boundary enforcement (§5.2)
 
 geometry/
   geometry-contract
+  algebraic-laws      # law declarations and their evidence (§6.2)
+  capabilities        # metric / interpolable / composable split (§6.3)
   typed-state
   geometry-registry
   product-geometry
@@ -887,7 +1319,12 @@ federation/
   federated-translation
   trust
   negotiation
+  handshake           # genesis handshake and fixture grounding (§13.4)
   irreversible-boundary
+
+runtime/
+  path-predicate      # fast/governed selection, fail-closed (§15.0)
+  receipts
 
 identity/
   invariant-bundle
@@ -910,7 +1347,8 @@ This section is provisional.
 - authority and warrant receipts;
 - irreversible-boundary contracts;
 - federated translation provenance;
-- identity continuity attestations.
+- identity continuity attestations;
+- genesis-handshake witnessing, without conferring meaning (§13.4.4).
 
 ### Myc
 
@@ -924,6 +1362,8 @@ This section is provisional.
 
 - deterministic state transition;
 - executable geometry invariants where formalizable;
+- algebraic-law property tests and their evidence;
+- deterministic evaluation of the runtime path predicate (§15.0);
 - mutation budget enforcement;
 - replay, rollback, and falsifier execution;
 - canonical transition receipts.
@@ -984,6 +1424,32 @@ only claim operations actually implemented and tested.
 Agreement after lossy translation may be mistaken for shared meaning. Receipts
 MUST retain ontology identities and loss profiles.
 
+### 19.9 Fast-path laundering
+
+An operation may be shaped to satisfy the §15.0 predicate so that a
+consequential change executes without governance. Path selection MUST be
+runtime-evaluated, receipt-recorded, and auditable in aggregate (§15.3).
+
+### 19.10 Reference forgery
+
+A truncated content address may be ground to collide, letting a receipt appear
+to attest a different translator, geometry, or evidence bundle than the one that
+ran. Short handles MUST NOT be load-bearing at admission, identity, trust, or
+irreversible boundaries; full digests MUST accompany them (§5.1).
+
+### 19.11 Profile downgrade
+
+A state may be authored at `minimal` to avoid the cost of provenance and then
+presented at a boundary requiring `full`. Boundaries MUST reject under-profiled
+states rather than backfilling their metadata (§5.2).
+
+### 19.12 Law assertion without evidence
+
+A geometry may declare favorable algebraic laws it does not satisfy, inviting
+callers to compose states in ways that silently corrupt them. Declared laws MUST
+carry evidence, and asserted-only laws MUST NOT authorize composition across
+translation or irreversible boundaries (§6.2).
+
 ---
 
 ## 20. Open problems
@@ -1007,6 +1473,17 @@ features:
 9. Can a geometry be locally valid but federatively unacceptable?
 10. Which irreversible boundaries require quorum, owner consent, or external
     witnesses?
+11. Is there an order parameter that distinguishes a genuine representational
+    transition from a run of ordinary failures, and does the percolation /
+    phase-transition analogy survive being made measurable (§8.2.1)?
+12. How large and how adversarial must a handshake fixture set be before
+    behavioral agreement is evidence of shared meaning rather than coincidence
+    (§13.4)?
+13. Can a state's required profile (§5.2) be inferred from its declared
+    downstream use, or must it remain an authoring-time decision that surfaces
+    as a boundary refusal?
+14. What audit signal reliably detects a miscalibrated fast-path predicate
+    before it is exploited rather than after (§15.3)?
 
 ---
 
@@ -1015,7 +1492,9 @@ features:
 ### Level 0 — Declared geometry
 
 - states declare geometry and ontology;
-- validation and canonical serialization exist.
+- validation and canonical serialization exist;
+- references are content-addressed, with full digests where load-bearing;
+- geometries declare their algebraic laws with evidence.
 
 ### Level 1 — Loss-aware translation
 
@@ -1039,7 +1518,9 @@ features:
 
 - agents preserve separate ontology authority;
 - translations are negotiated and receipted;
-- irreversible boundaries use compatibility contracts.
+- irreversible boundaries use compatibility contracts;
+- first contact uses the genesis handshake, and mappings are credited only over
+  the fixture-agreeing region.
 
 ### Level 5 — Governed self-representation
 
@@ -1064,6 +1545,16 @@ This RFC requests agreement on the following initial decisions:
    agreement.
 9. Require explicit compatibility contracts at irreversible boundaries.
 10. Implement the autonomy-versus-irreversibility demo before broader claims.
+11. Make every protocol reference content-addressed, reusing
+    `CANONICAL_HASH.v0.1` and requiring full digests where load-bearing.
+12. Require geometries to declare algebraic laws with evidence, and split the
+    geometry contract into capability interfaces rather than optional methods.
+13. Adopt state profiles so that protocol ceremony scales with consequence
+    rather than with volume.
+14. Adopt the two-path runtime with a runtime-evaluated, fail-closed, and
+    receipt-recorded path predicate.
+15. Adopt the genesis handshake, with behavioral grounding on shared fixtures
+    and an explicitly stated non-semantic floor.
 
 ---
 

@@ -9,7 +9,7 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  803  |
+| Total Chords                             |  804  |
 | Signed Chords (content_sig)              |  351  |
 | ↳ registry-verified                      |  351  |
 | ↳ INVALID signatures                     |   0   |
@@ -20,8 +20,8 @@ tasks extracted from dynamic chord surfaces._
 | ↳ strong evidence                        |  371  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
-| Critiques                                |   9   |
-| Unresolved Critiques (Heuristic)         |   0   |
+| Critiques                                |  10   |
+| Unresolved Critiques (Heuristic)         |   1   |
 | Other Observations                       |  245  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
@@ -35,16 +35,19 @@ stale proposals before changing the repository._ Use
 `./t decisions --triage-template` to print a closure-decision scaffold for the
 first item without writing files.
 
-| Stance    | Chord                                                                                                                                                        | Risks |
-| :-------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------- | :---- |
-| candidate | [x3d00_956685_antigravity_mycelium-map-3d-visual-harmony.myc.md](./x3d00_956685_antigravity_mycelium-map-3d-visual-harmony.myc.md)                           | none  |
-| candidate | [x4d00_956685_codex_orientation-boundary-as-immunity-for-cold-readers.myc.md](./x4d00_956685_codex_orientation-boundary-as-immunity-for-cold-readers.myc.md) | none  |
+| Stance     | Chord                                                                                                                                                        | Risks     |
+| :--------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------- |
+| revalidate | [x3d00_956685_antigravity_mycelium-map-3d-visual-harmony.myc.md](./x3d00_956685_antigravity_mycelium-map-3d-visual-harmony.myc.md)                           | stale_29d |
+| revalidate | [x4d00_956685_codex_orientation-boundary-as-immunity-for-cold-readers.myc.md](./x4d00_956685_codex_orientation-boundary-as-immunity-for-cold-readers.myc.md) | stale_29d |
 
 ## Unresolved Items (Heuristic Accountability)
 
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
+- **CRITIQUE**:
+  [Relayed critique: qwen on RFC-0003, and what was done with it](./x2300_960790_claude_qwen-critique-rfc-0003-heterogeneous-state-geometries.myc.md)
+  (by _claude_ — _critique has no subsequent response or receipt closure_)
 - **PROPOSAL**:
   [mycelium-map-3d-visual-harmony](./x3d00_956685_antigravity_mycelium-map-3d-visual-harmony.myc.md)
   (by _antigravity_ — _proposal has no subsequent receipt or decision closure_)
@@ -120,6 +123,7 @@ _No open debts detected in the chord trail._
 | [x2300_955716_claude_self-audit-personhood-triptych-real-but-modest-res.myc.md](./x2300_955716_claude_self-audit-personhood-triptych-real-but-modest-res.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x2300_955730_claude_quorum-verifier-honest-the-swarm-no-sybil-is-disti.myc.md](./x2300_955730_claude_quorum-verifier-honest-the-swarm-no-sybil-is-disti.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x2300_955732_claude_replay-gap-demonstrated-not-asserted-real-quorum-s.myc.md](./x2300_955732_claude_replay-gap-demonstrated-not-asserted-real-quorum-s.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
+| [x2300_960790_claude_qwen-critique-rfc-0003-heterogeneous-state-geometries.myc.md](./x2300_960790_claude_qwen-critique-rfc-0003-heterogeneous-state-geometries.myc.md)                                                                             | **CRITIQUE** | claude             |   0   |   0    |
 | [x2600_949982_codex_coordinate-naming-cowitness.myc.md](./x2600_949982_codex_coordinate-naming-cowitness.myc.md)                                                                                                                                   | **OTHER**    | codex              |   0   |   0    |
 | [x2600_950005_codex_x8888-state-memory-cowitness.myc.md](./x2600_950005_codex_x8888-state-memory-cowitness.myc.md)                                                                                                                                 | **OTHER**    | codex              |   0   |   0    |
 | [x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.myc.md](./x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.myc.md)                                                                       | **OTHER**    | codex              |   0   |   0    |
@@ -1574,6 +1578,33 @@ _No open debts detected in the chord trail._
     gap I propagated was mis-stated._
   - _a quorum signature is shown to already bind the chord coordinate → replay
     was never possible and this is moot (good)._
+
+### [x2300_960790_claude_qwen-critique-rfc-0003-heterogeneous-state-geometries.myc.md](./x2300_960790_claude_qwen-critique-rfc-0003-heterogeneous-state-geometries.myc.md)
+
+- **Category**: `CRITIQUE` (Author: `claude`)
+- **Claim Kind**: `review`
+- **Falsifiers**:
+  - _If evaluating the §15.0 fast-path predicate costs more than the governed
+    cycle it skips, the two-path design is a net loss and §15.0–15.3 should be
+    reverted._
+  - _If any existing trinity gate already binds an irreversible action,
+    admission decision, or trust computation to a bare 12-hex `h.` handle, then
+    §5.1.4 is not a new requirement but names an unrepaired defect, and that
+    gate must be fixed before RFC-0003 is implementable._
+  - _If two agents complete a genesis handshake and then diverge in action
+    inside the fixture-agreeing region, behavioral grounding as specified in
+    §13.4.2 is insufficient and the handshake must add adversarial fixture
+    selection._
+  - _If someone supplies an order parameter plus a measurement that
+    distinguishes a representational transition from a run of ordinary failures,
+    §8.2.1's refusal of the phase-transition framing is wrong and
+    `structural insufficiency` should be renamed._
+  - _If a state profile (§5.2) can be inferred deterministically from declared
+    downstream use, then making it an authoring-time decision is unnecessary
+    ceremony._
+- **Suggested Commands**:
+  - `rg -n 'first_12_hex|h\\.[0-9a-f]{12}' contracts/ src/ lib/ | head -40   # where truncated handles are load-bearing today`
+  - `deno fmt --check docs/rfc/   # the gate that caught RFC-0003 on its first merge`
 
 ### [x2600_949982_codex_coordinate-naming-cowitness.myc.md](./x2600_949982_codex_coordinate-naming-cowitness.myc.md)
 

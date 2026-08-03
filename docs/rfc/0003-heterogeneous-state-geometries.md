@@ -9,10 +9,11 @@
 - **Target:** Trinity federation (`trinity`, `myc`, `omega`, `liquid`)
 - **Scope:** Semantic Schema V2 extension
 - **Created:** 2026-08-03
-- **Revised:** 2026-08-03 (external critique rounds 1–2 — see
+- **Revised:** 2026-08-03 (external critique rounds 1–3 — see
   `src/x2300_960790_claude_qwen-critique-rfc-0003-heterogeneous-state-geometries.myc.md`
   and
-  `src/x2300_960792_claude_kimi-critique-rfc-0003-encoding-floor-and-self-certification.myc.md`)
+  `src/x2300_960792_claude_kimi-critique-rfc-0003-encoding-floor-and-self-certification.myc.md`,
+  `src/x2300_960796_claude_qwen-round3-simplex-encoding-and-derived-lineage.myc.md`)
 - **Supersedes:** nothing
 - **Extends:** the federation's existing state, warrant, evidence, receipt, and
   lineage primitives
@@ -266,11 +267,20 @@ References MUST therefore be content-addressed:
 5. Structural sharing is a requirement, not an optimization: two states under
    the same geometry and ontology MUST resolve to the same reference bytes, so
    the shared descriptor is stored once and the per-state cost is the reference,
-   not the descriptor.
+   not the descriptor. A descriptor that is itself large — an ontology, a
+   complex invariant set — MAY be composed of content-addressed parts, so that a
+   consumer needing one invariant resolves that part rather than the whole
+   object. Sharing then operates within descriptors as well as between states.
 6. External content-addressing systems (IPLD/CID, and similar) MAY be used as a
    transport or storage projection. Doing so MUST NOT redefine the canonical
    digest — the CID is then a second encoding of the same identity, and receipts
    MUST record which encoding they used.
+7. **The store is out of scope.** Files, git objects, an object store, or an
+   IPLD graph are all conforming backends, and this RFC names none of them. The
+   properties it depends on — immutability, resolution by digest, structural
+   sharing — follow from content addressing itself, not from any one store.
+   Mandating a store would re-open the identity decision §5.1 settled, for a
+   benefit already obtained.
 
 Lineage and provenance follow from this. Because `lineage` is a list of
 content-addressed transformation references, and each transformation references
@@ -346,6 +356,56 @@ In canonical form:
    format.
 5. A geometry MAY use floating point internally. The obligation is at the
    canonical-encoding boundary, not inside the computation.
+
+##### Non-integer values inside an integers-only domain
+
+Rule 4 says what MUST NOT be used and leaves open how a non-integer value is
+actually written when the canonical encoding admits only integers — which is the
+case for the leading Tranche A3 candidate (§17.1.1) and the one place §6.4's
+probability simplex collides with it.
+
+Two patterns are admissible. Both keep every number in the integer domain and
+both are exact:
+
+```json
+{ "kind": "ratio", "num": <int>, "den": <int> }
+{ "kind": "fixed", "value": <int>, "scale": <int> }
+```
+
+For `ratio`, the canonical form MUST satisfy:
+
+1. `den > 0` — sign lives in `num` only, so `-1/3` has exactly one encoding;
+2. `gcd(|num|, den) == 1` — reduced to lowest terms, so `2/6` is not a second
+   encoding of `1/3`;
+3. zero is `{ num: 0, den: 1 }` and nothing else;
+4. both components lie inside the encoding's integer domain.
+
+For `fixed`, `scale` MUST be declared by the geometry rather than per value, and
+all values in one geometry MUST share it — otherwise comparing two points means
+rescaling, and rescaling reintroduces the rounding the rule exists to remove.
+
+**Reduction rules are not optional decoration.** Without them the encoding is
+deterministic but not injective in the direction that matters: two byte
+sequences would denote one value, so two states that are equal would carry
+different references, and every equality check downstream would silently be
+comparing encodings rather than values.
+
+**The simplex additionally constrains the sum.** A probability vector MUST sum
+to exactly one under exact arithmetic — `Σ num_i / den_i == 1` for ratios, or
+`Σ value_i == scale` for fixed-point with a shared scale. This is a validation
+rule (§6), not an encoding rule, and it is the reason the simplex cannot use
+floats: "sums to one after rounding" is not a property two independent
+implementations will agree on.
+
+A string form such as `"1/3"` is a third option, and RFC 7493 §2.2 does
+recommend strings for numeric values outside the safe integer range. It is not
+recommended here: it moves the reduction rules into a string grammar that every
+implementation must parse identically, which is more surface for the second
+independent implementation to diverge on, and divergence there is exactly what
+canonical encoding exists to prevent.
+
+Selecting between these remains Tranche A3's decision. This section states what
+any selection must satisfy.
 
 #### 5.1.3 Parity is proven, not assumed
 
@@ -740,6 +800,45 @@ Because `lost` is a union and `preserved` an intersection, composed loss is
 **monotone**: a longer pipeline can never report less loss than its worst step.
 Any implementation where adding a translation step improves the loss profile has
 a bug, and this is a cheap invariant to test.
+
+##### What a type system can and cannot carry here
+
+In a language with traits, the shape is worth stating so that composition cannot
+be open-coded differently at each call site:
+
+```rust
+pub trait Monoid {
+    fn empty() -> Self;
+    fn compose(self, then: Self) -> Self;
+}
+
+impl Monoid for LossProfile { /* §7.1.1 field rules */ }
+impl Monoid for TranslationDebt { /* §7.3.1, additionally commutative */ }
+
+// Suitability is an order, not a monoid: composition is the meet (§7.2.1).
+pub trait MeetSemilattice {
+    fn meet(self, other: Self) -> Self;
+}
+```
+
+**A trait forces an implementation to supply `compose`. It does not force that
+`compose` to be associative.** Nothing in a Rust, Haskell, or Scala type system
+checks the monoid laws;
+`impl Monoid for LossProfile { fn compose(self, _: Self)
+-> Self { self } }`
+compiles and discards half the pipeline's loss.
+
+This is the same gap §6.2 addresses for geometries, and it gets the same answer:
+the laws are claims and MUST carry evidence. For these types the evidence is
+property-based tests over generated profiles — associativity, identity, the
+non-commutativity of loss, the commutativity of debt, and the monotonicity
+above. Treating the trait as the guarantee would be §19.7's failure mode
+relocated from mathematical vocabulary to type signatures, where it is harder to
+see.
+
+The trait is still worth having. It concentrates composition in one place so
+there is a single implementation for the property tests to target, rather than
+one per call site.
 
 ### 7.2 Suitability is contextual
 
@@ -1258,9 +1357,16 @@ type GeometryProposal = {
   rollbackPlan: RollbackPlan;
   proposer: AgentId;
   bond: ProposalBond;
+  lineage: LineageClaim; // derived and checked, never taken on trust (§19.13)
+  failureReceipts: ReceiptRef[]; // the independent-policy failures of §8.2.1
   evidence: EvidenceRef[];
 };
 ```
+
+`lineage` and `failureReceipts` are what make §19.13's budget accumulation
+enforceable. A proposal that cites no failure receipts has not made the §8.2.1
+showing; a proposal whose cited receipts already belong to a lineage joins that
+lineage regardless of what its `LineageClaim` says.
 
 #### 11.1.1 Proposals are not free to make
 
@@ -2090,9 +2196,10 @@ rather than "proved" for that reason.
   removing floats entirely, and bounds integers to ±(2^53−1) because RFC 8785
   serializes numbers through an IEEE-754 double and is lossy above that — the
   same failure §5.1.2 describes, found there by external review and fixed with
-  vectors. Adopting it would require deciding what to do about §6.4's
-  probability simplex, which needs non-integer values and would therefore need
-  an exact-rational or fixed-point encoding _inside_ the integer domain.
+  vectors. Adopting it requires deciding how §6.4's probability simplex lives
+  inside an integers-only domain; §5.1.2 now specifies the two admissible
+  patterns and their canonical-form rules, so this tranche selects between them
+  rather than facing an open question.
 - **Tranche G4 (execution floor evaluator).** `ski@v1` (warrant SPEC §3.1, over
   Σ-GLYPH Book I v0.5) satisfies every requirement §13.4.1.1 states:
   deterministic across hosts, bit-exact across implementations, terminating by
@@ -2246,6 +2353,32 @@ mutations descend from the same lineage when they cite the same conflict, the
 same bottleneck, or any mutation already in that lineage. Budgets accumulate
 over the lineage, not over the individual proposal, and a proposal that declines
 to declare its lineage MUST be rejected rather than treated as a fresh root.
+
+Requiring the lineage to be _declared_ is not enough on its own: a proposer who
+wants a fresh budget declares a fresh conflict, and the rule is satisfied while
+being evaded. **Lineage MUST therefore be derived, not accepted as asserted.**
+
+1. **Conflict identity is canonical (§19.16).** A conflict's identity is
+   computed from its participants and violated invariants, so a "new" conflict
+   with the same participants and the same violated invariants resolves to the
+   **same identity** and joins the existing lineage whether or not the proposer
+   wanted it to. Restating a conflict does not reset it.
+2. **The bottleneck showing carries receipts.** §8.2.1 already requires evidence
+   that two independent policies failed on the witness pair. Those failures have
+   receipts, and the proposal MUST cite them by content address. A proposal
+   claiming a fresh root while citing failure receipts already attached to an
+   existing lineage is self-refuting, and the registry can see it.
+3. **A new-root claim is a claim.** It MUST be checkable and MUST fail closed:
+   where the registry can derive an existing lineage for the cited conflict
+   identity, a contrary declaration is rejected rather than preferred.
+4. **Rejected proposals stay in the lineage.** A lineage that forgot its
+   rejections would let N attempts cost the same as one. Rejections are the part
+   of the history the accumulator most needs.
+
+What this does not achieve: it cannot detect a genuinely re-described conflict —
+different participants, different invariants, same underlying problem stated in
+new terms. That case is only reachable by review, and the honest position is
+that the mechanism raises the cost of evasion rather than closing it.
 
 ### 19.14 Deprecation orphaning
 

@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     16     |
 | compatibility abi |     55     |
 | compost           |     0      |
-| dynamic topology  |    806     |
+| dynamic topology  |    807     |
 | experimental      |     47     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **924**   |
+| **Total**         |  **925**   |
 
 ## Runtime Cache Diagnostics
 
@@ -199,6 +199,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x2300_955732_claude_replay-gap-demonstrated-not-asserted-real-quorum-s.myc.md](../src/x2300_955732_claude_replay-gap-demonstrated-not-asserted-real-quorum-s.myc.md)                                                                                   | canonical        | src/x2300_955732_claude_replay-gap-demonstrated-not-asserted-real-quorum-s.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x2300_960790_claude_qwen-critique-rfc-0003-heterogeneous-state-geometries.myc.md](../src/x2300_960790_claude_qwen-critique-rfc-0003-heterogeneous-state-geometries.myc.md)                                                                             | canonical        | src/x2300_960790_claude_qwen-critique-rfc-0003-heterogeneous-state-geometries.myc.md                                       | keep        |                              |
 | dynamic topology  | [src/x2300_960792_claude_kimi-critique-rfc-0003-encoding-floor-and-self-certification.myc.md](../src/x2300_960792_claude_kimi-critique-rfc-0003-encoding-floor-and-self-certification.myc.md)                                                               | canonical        | src/x2300_960792_claude_kimi-critique-rfc-0003-encoding-floor-and-self-certification.myc.md                                | keep        |                              |
+| dynamic topology  | [src/x2300_960796_claude_qwen-round3-simplex-encoding-and-derived-lineage.myc.md](../src/x2300_960796_claude_qwen-round3-simplex-encoding-and-derived-lineage.myc.md)                                                                                       | canonical        | src/x2300_960796_claude_qwen-round3-simplex-encoding-and-derived-lineage.myc.md                                            | keep        |                              |
 | dynamic topology  | [src/x2600_949982_codex_coordinate-naming-cowitness.myc.md](../src/x2600_949982_codex_coordinate-naming-cowitness.myc.md)                                                                                                                                   | canonical        | src/x2600_949982_codex_coordinate-naming-cowitness.myc.md                                                                  | keep        |                              |
 | dynamic topology  | [src/x2600_950005_codex_x8888-state-memory-cowitness.myc.md](../src/x2600_950005_codex_x8888-state-memory-cowitness.myc.md)                                                                                                                                 | canonical        | src/x2600_950005_codex_x8888-state-memory-cowitness.myc.md                                                                 | keep        |                              |
 | dynamic topology  | [src/x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.myc.md](../src/x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.myc.md)                                                                       | canonical        | src/x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.myc.md                                    | keep        |                              |

@@ -298,12 +298,25 @@ The encoding MUST satisfy:
    choice, the profile MUST remove it.
 4. **Total ordering of map keys**, with duplicate keys rejected rather than
    last-wins.
-5. **Declared string normalization.** A single Unicode normalization form,
-   applied before encoding, so that visually identical strings cannot produce
-   distinct digests.
+5. **No Unicode normalization (MUST NOT).** Strings are hashed as their exact
+   sequence of code points. A verifier MUST NOT apply NFC, NFD, or any other
+   normalization, and MUST NOT reject a string for not being normalized.
+   Producers SHOULD emit NFC so that content mangled by an external editor,
+   database, or filesystem still resolves — but that is producer discipline, not
+   a verifier rule.
 6. **A self-describing encoding identifier**, included in the digest input. A
    digest binds an object _under an encoding_; changing the encoding MUST change
    the reference rather than silently rehoming it.
+
+Rule 5 was inverted in an earlier draft, which required a normalization form so
+that "visually identical strings cannot produce distinct digests". That is wrong
+twice over. Two strings differing only in normalization form _are_ different
+content, and a content-addressed system is supposed to say so. And requiring
+normalization forces a full Unicode normalization database into every
+implementation, including from-scratch ones — raising the cost of the second
+independent implementation, which is the thing that makes an encoding
+trustworthy at all. The correction comes from `warrant` SPEC §4, which had
+already settled this (§17.1).
 
 #### 5.1.2 Floating point
 
@@ -1992,6 +2005,75 @@ identity/
 The actual mapping into `trinity`, `myc`, `omega`, and `liquid` remains an
 implementation task and MUST preserve each substrate's authority boundary.
 
+### 17.1 Prior art in the adjacent dyad
+
+This RFC was drafted against the four-substrate federation and, through two
+critique rounds, specified several mechanisms from first principles. Two
+adjacent repositories in the same ecosystem — `warrant` (signed decision DAG)
+and `sigma-glyph` (deterministic compute core) — had already built some of them,
+with multiple independent implementations and machine-checkable vectors.
+
+Recording this is not a courtesy. Where a mechanism exists with two or three
+agreeing implementations and a conformance vector set, specifying a second one
+here would fork the ecosystem's identity primitives to gain nothing, and this
+document's §5.1 argument against a second canonical addressing scheme applies to
+itself.
+
+| This RFC                                      | Existing artifact                                                                               | Status observed                                  |
+| --------------------------------------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| §5.1.1–5.1.2 canonical encoding, float policy | `warrant` SPEC §4 — RFC 8785 JCS over I-JSON, integers only                                     | 47/47 vectors agree across Python, Go, Rust      |
+| §5.1.3 parity fixtures                        | `warrant` `examples/canon-vectors.json`                                                         | normative artifact, harness-run                  |
+| §5.1 content-addressed references             | `WarrantID = SHA-256(JCS(body))`, blobs by SHA-256                                              | in use                                           |
+| §13.4.1.1 execution floor                     | `ski@v1` over Σ-GLYPH Book I v0.5 (hash-thunk machine)                                          | Lean proofs, multiple impls, conformance vectors |
+| §13.4.3.1 hash-chained ordering               | warrant `prior` DAG                                                                             | in use                                           |
+| §11.1.1 re-execution budget                   | `ski@v1` ATP bound + verifier-local budget, refusal ≠ verdict                                   | specified with vectors                           |
+| §19.10 reference forgery                      | `warrant-sig-v1:` domain separation; small-order key rejection                                  | 18/18 domain-separation tests pass               |
+| §12, §20.17 identity fork / rotation          | warrant SPEC §5.1 key state — rotation and revocation are warrants                              | specified (v0.3)                                 |
+| §7.2.2 third-party attestation                | Σ-GLYPH Book III — "an annotation is an assertion, not a fact"; jurisdiction selection          | 40/40 federation differential agree              |
+| §22 tranche ratification                      | `GOV-ANCHORS` v1.0.2 STANDARD — frozen schemas, content-pinned dependencies, multi-family gates | in force                                         |
+| §6.2 laws with proof-grade evidence           | `sigma-glyph/proofs/` (EvalMachine, SizeBound, Sha256)                                          | Lean                                             |
+
+The status column reports what was observed by running the repositories' own
+harnesses on 2026-08-03, not what their documents claim.
+
+#### 17.1.1 Two decisions now have named candidates
+
+- **Tranche A3 (canonical encoding).** `warrant`'s JCS profile is a concrete
+  candidate rather than an open search. It resolves the float question by
+  removing floats entirely, and bounds integers to ±(2^53−1) because RFC 8785
+  serializes numbers through an IEEE-754 double and is lossy above that — the
+  same failure §5.1.2 describes, found there by external review and fixed with
+  vectors. Adopting it would require deciding what to do about §6.4's
+  probability simplex, which needs non-integer values and would therefore need
+  an exact-rational or fixed-point encoding _inside_ the integer domain.
+- **Tranche G4 (execution floor evaluator).** `ski@v1` satisfies every
+  requirement §13.4.1.1 states: deterministic across hosts, bit-exact across
+  implementations, terminating by construction, work and peak memory bounded by
+  a declared cost model, no ambient authority, canonical output identity. It
+  additionally supplies the re-execution budget rule §11.1.1 needed and did not
+  have. Its own spec makes the point this RFC makes about verification without
+  trust: re-verifying a stranger's `ski@v1` reason is safe in a way re-running a
+  stranger's shell script is not.
+
+#### 17.1.2 What this does not settle
+
+Naming candidates is not ratifying them. Specifically:
+
+1. **The two stacks have separate key identities.** The `claude` voice key in
+   `src/x2F38_voice_pubkeys.json` and the `claude-fable-5` key in the dyad's
+   trust configuration are different Ed25519 keys. Whether the federation treats
+   these as one actor with two keys, two actors, or an actor requiring a
+   key-state rotation warrant to unify, is undecided and is an instance of
+   §20.17 rather than an answer to it.
+2. **Adoption direction is not implied.** That `warrant` solved the encoding
+   question does not make it the federation's encoding; that is Tranche A3's
+   decision, and the substrates that would have to implement it are not parties
+   to this RFC.
+3. **Version pinning is mandatory if adopted.** `ski@v1` names Book I v0.5
+   specifically, and `GOV-ANCHORS` pins its dependencies by content hash for the
+   stated reason that a STANDARD must not rest on a moving target. Any adoption
+   here MUST pin the same way; citing a repository URL is not a pin.
+
 ---
 
 ## 18. Initial substrate responsibilities
@@ -2186,7 +2268,10 @@ features:
     three (§8.2.3)?
 17. What happens to a scoped compatibility contract when a party forks or amends
     its identity mid-contract — does the contract bind the predecessor, the
-    successor, both, or lapse (§12, §13.2)?
+    successor, both, or lapse (§12, §13.2)? `warrant` SPEC §5.1 answers the
+    narrower key-rotation case; the contract-binding case is still open, and the
+    federation's two stacks currently hold separate keys for the same voice
+    (§17.1.2).
 18. How should a proposal bond be sized so that it deters verification-budget
     exhaustion without suppressing speculative but well-formed proposals
     (§11.1.1)?
@@ -2278,7 +2363,10 @@ voiding the others. Nothing outside a ratified tranche may be cited as agreed.
   policy of §5.1.2 and cross-substrate parity fixtures per §5.1.3.
 - **A3.** Commission `CANONICAL_ENCODING.v0.1` as a separate federation
   contract, selecting the encoding. This RFC states requirements and
-  deliberately does not choose.
+  deliberately does not choose. A concrete candidate exists — `warrant` SPEC
+  §4's JCS-over-I-JSON profile, with three agreeing implementations (§17.1.1) —
+  whose open question is how the probability simplex lives inside an
+  integers-only domain.
 - **A4.** Require stable, verifiable key identity at Level 0.
 
 Tranche A is a prerequisite for every other tranche. Until A2 and A3 land,
@@ -2333,7 +2421,9 @@ depends on cross-substrate reference equality should be claimed.
   bound to a snapshot invariant set.
 - **G3.** Adopt the genesis handshake with the five-element floor of §13.4.1,
   behavioral grounding in a shared execution floor, and hash-chained ordering.
-- **G4.** Select the execution floor's deterministic evaluator.
+- **G4.** Select the execution floor's deterministic evaluator. `ski@v1` over
+  Σ-GLYPH Book I v0.5 meets every requirement of §13.4.1.1 and is the standing
+  candidate (§17.1.1); adoption MUST pin it by version and content.
 
 ### Tranche H — Identity (depends on A, and G for the fork case)
 

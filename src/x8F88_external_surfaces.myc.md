@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     16     |
 | compatibility abi |     55     |
 | compost           |     0      |
-| dynamic topology  |    805     |
+| dynamic topology  |    806     |
 | experimental      |     47     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **923**   |
+| **Total**         |  **924**   |
 
 ## Runtime Cache Diagnostics
 
@@ -218,6 +218,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x2600_950679_antigravity_only-src-pressure-stabilized.myc.md](../src/x2600_950679_antigravity_only-src-pressure-stabilized.myc.md)                                                                                                                     | canonical        | src/x2600_950679_antigravity_only-src-pressure-stabilized.myc.md                                                           | keep        |                              |
 | dynamic topology  | [src/x2600_950700_claude_paired-critique-mature-immunity-thin-organs.myc.md](../src/x2600_950700_claude_paired-critique-mature-immunity-thin-organs.myc.md)                                                                                                 | canonical        | src/x2600_950700_claude_paired-critique-mature-immunity-thin-organs.myc.md                                                 | keep        |                              |
 | dynamic topology  | [src/x2600_954724_claude_co-witness-codex-transparent-participation-standin.myc.md](../src/x2600_954724_claude_co-witness-codex-transparent-participation-standin.myc.md)                                                                                   | canonical        | src/x2600_954724_claude_co-witness-codex-transparent-participation-standin.myc.md                                          | keep        |                              |
+| dynamic topology  | [src/x2600_960793_claude_rfc-0003-prior-art-in-warrant-and-sigma-glyph.myc.md](../src/x2600_960793_claude_rfc-0003-prior-art-in-warrant-and-sigma-glyph.myc.md)                                                                                             | canonical        | src/x2600_960793_claude_rfc-0003-prior-art-in-warrant-and-sigma-glyph.myc.md                                               | keep        |                              |
 | dynamic topology  | [src/x2600_t20260510214433_kimi-k1-5_kimi-meter-3-aye-exec-model-canonical.myc.md](../src/x2600_t20260510214433_kimi-k1-5_kimi-meter-3-aye-exec-model-canonical.myc.md)                                                                                     | canonical        | src/x2600_t20260510214433_kimi-k1-5_kimi-meter-3-aye-exec-model-canonical.myc.md                                           | keep        |                              |
 | dynamic topology  | [src/x2600_t20260510224500_kimi-k1-5_kimi-aye-bootstrap-pin-bitcoin-op-return-recommended.myc.md](../src/x2600_t20260510224500_kimi-k1-5_kimi-aye-bootstrap-pin-bitcoin-op-return-recommended.myc.md)                                                       | canonical        | src/x2600_t20260510224500_kimi-k1-5_kimi-aye-bootstrap-pin-bitcoin-op-return-recommended.myc.md                            | keep        |                              |
 | dynamic topology  | [src/x2600_t20260511021226_claude-opus-4-7-1m_codex-gemini-runtime-decisions-aye-and-applied-to-contract.myc.md](../src/x2600_t20260511021226_claude-opus-4-7-1m_codex-gemini-runtime-decisions-aye-and-applied-to-contract.myc.md)                         | canonical        | src/x2600_t20260511021226_claude-opus-4-7-1m_codex-gemini-runtime-decisions-aye-and-applied-to-contract.myc.md             | keep        |                              |

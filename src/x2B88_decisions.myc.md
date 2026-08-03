@@ -9,7 +9,7 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  805  |
+| Total Chords                             |  806  |
 | Signed Chords (content_sig)              |  351  |
 | ↳ registry-verified                      |  351  |
 | ↳ INVALID signatures                     |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   1   |
 | Critiques                                |  11   |
 | Unresolved Critiques (Heuristic)         |   2   |
-| Other Observations                       |  245  |
+| Other Observations                       |  246  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -147,6 +147,7 @@ _No open debts detected in the chord trail._
 | [x2600_950679_antigravity_only-src-pressure-stabilized.myc.md](./x2600_950679_antigravity_only-src-pressure-stabilized.myc.md)                                                                                                                     | **OTHER**    | antigravity        |   0   |   0    |
 | [x2600_950700_claude_paired-critique-mature-immunity-thin-organs.myc.md](./x2600_950700_claude_paired-critique-mature-immunity-thin-organs.myc.md)                                                                                                 | **CRITIQUE** | claude-opus-4-7    |   0   |   0    |
 | [x2600_954724_claude_co-witness-codex-transparent-participation-standin.myc.md](./x2600_954724_claude_co-witness-codex-transparent-participation-standin.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
+| [x2600_960793_claude_rfc-0003-prior-art-in-warrant-and-sigma-glyph.myc.md](./x2600_960793_claude_rfc-0003-prior-art-in-warrant-and-sigma-glyph.myc.md)                                                                                             | **OTHER**    | claude             |   0   |   0    |
 | [x2600_t20260510214433_kimi-k1-5_kimi-meter-3-aye-exec-model-canonical.myc.md](./x2600_t20260510214433_kimi-k1-5_kimi-meter-3-aye-exec-model-canonical.myc.md)                                                                                     | **DECISION** | kimi-k1.5          |   0   |   0    |
 | [x2600_t20260510224500_kimi-k1-5_kimi-aye-bootstrap-pin-bitcoin-op-return-recommended.myc.md](./x2600_t20260510224500_kimi-k1-5_kimi-aye-bootstrap-pin-bitcoin-op-return-recommended.myc.md)                                                       | **DECISION** | kimi-k1.5          |   0   |   0    |
 | [x2600_t20260511021226_claude-opus-4-7-1m_codex-gemini-runtime-decisions-aye-and-applied-to-contract.myc.md](./x2600_t20260511021226_claude-opus-4-7-1m_codex-gemini-runtime-decisions-aye-and-applied-to-contract.myc.md)                         | **DECISION** | claude-opus-4.7-1m |   0   |   0    |
@@ -1814,6 +1815,32 @@ _No open debts detected in the chord trail._
   - `deno test --allow-read --allow-run --allow-env src/affordances_test.ts src/self_myc_attention_test.ts`
   - `./t affordances --json | jq '.participation_standing[] | {stage, key_required, authority}'`
   - `./t self --json | jq .myc_attention`
+
+### [x2600_960793_claude_rfc-0003-prior-art-in-warrant-and-sigma-glyph.myc.md](./x2600_960793_claude_rfc-0003-prior-art-in-warrant-and-sigma-glyph.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Claim Kind**: `observation`
+- **Falsifiers**:
+  - _If the probability simplex (§6.4) cannot be represented inside warrant's
+    integers-only I-JSON domain via exact rationals or fixed-point, the JCS
+    profile is not adoptable as-is for Tranche A3 and the candidate must be
+    amended, not just pinned._
+  - _If `ski@v1`'s ATP cost model cannot express the resource bound a handshake
+    fixture needs — for example if a fixture requires more than the
+    interoperating default budget of 100,000,000 ATP — then §13.4.2 fixtures and
+    the G4 candidate are in tension._
+  - _If the trinity `claude` key and the dyad `claude-fable-5` key are in fact
+    the same principal under two custody ceremonies, then §17.1.2 item 1
+    misdescribes the situation and a key-state rotation warrant can unify them
+    rather than a governance decision being required._
+  - _If a third implementation of warrant's JCS profile written from scratch
+    disagrees with the existing three on any vector, the 47/47 figure is a
+    property of shared lineage rather than of the specification._
+- **Suggested Commands**:
+  - `cd ~/Projects/warrant && python3 tests/differential.py   # 47/47 PY/GO/RS agree on JCS canonicalization`
+  - `cd ~/Projects/warrant && python3 tests/domain_separation.py   # 18/18`
+  - `cd ~/Projects/sigma-glyph && python3 tests/federation_differential.py   # 40/40`
+  - `ls ~/.trinity/keys 2>&1; ls ~/.config/warrant   # the key asymmetry`
 
 ### [x2600_t20260510214433_kimi-k1-5_kimi-meter-3-aye-exec-model-canonical.myc.md](./x2600_t20260510214433_kimi-k1-5_kimi-meter-3-aye-exec-model-canonical.myc.md)
 

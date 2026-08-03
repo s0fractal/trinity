@@ -1,4 +1,4 @@
-# RFC-0003: Heterogeneous State Geometries
+# RFC-0003: Heterogeneous State Domains
 
 - **Status:** Draft
 - **Authors:** s0fractal + model collaborators
@@ -6,14 +6,18 @@
   `docs/rfc/0003-heterogeneous-state-geometries.md`. Every path this document
   cites without a repository is relative to that repository; everything outside
   it is listed with its repository in §17.1.
+- **Filename note:** the path still says `geometries`. The title no longer does,
+  for the reason given in §4.2 — partial orders and constraint systems are not
+  geometries, and the document was carrying its own decorative metaphor in its
+  name. The path is stable because committed ledger records reference it.
 - **Target:** Trinity federation (`trinity`, `myc`, `omega`, `liquid`)
 - **Scope:** Semantic Schema V2 extension
 - **Created:** 2026-08-03
-- **Revised:** 2026-08-03 (external critique rounds 1–3 — see
-  `src/x2300_960790_claude_qwen-critique-rfc-0003-heterogeneous-state-geometries.myc.md`
-  and
+- **Revised:** 2026-08-03 (external critique rounds 1–4 — see
+  `src/x2300_960790_claude_qwen-critique-rfc-0003-heterogeneous-state-geometries.myc.md`,
   `src/x2300_960792_claude_kimi-critique-rfc-0003-encoding-floor-and-self-certification.myc.md`,
-  `src/x2300_960796_claude_qwen-round3-simplex-encoding-and-derived-lineage.myc.md`)
+  `src/x2300_960796_claude_qwen-round3-simplex-encoding-and-derived-lineage.myc.md`,
+  `src/x2300_960798_claude_chatgpt-critique-state-domains-and-evidence-bridge.myc.md`)
 - **Supersedes:** nothing
 - **Extends:** the federation's existing state, warrant, evidence, receipt, and
   lineage primitives
@@ -22,26 +26,36 @@
 
 This RFC specifies a federation-wide protocol for representing, translating,
 comparing, and evolving heterogeneous state spaces without silently reducing all
-states to one universal vector geometry.
+states to one universal vector space.
 
 The protocol introduces:
 
-- geometry-typed states over content-addressed references and one canonical
-  encoding;
+- domain-typed states over content-addressed references and one canonical
+  encoding, with geometric structure as one capability rather than the frame;
+- composite states, so that a probability distribution, a causal graph, a
+  temporal order, and an identity invariant can form one agent state with
+  declared couplings;
 - explicit translation contracts with structural loss tracking, composed by
-  declared algebras;
+  declared algebras — and translation separated from enrichment, inference,
+  reconstruction, and negotiation, which acquire information rather than
+  carrying it;
+- evidence bridges, so that a normative policy cannot masquerade as a semantic
+  correspondence;
 - first-class conflicts and representational bottlenecks;
-- mutation budgets for ontology and geometry changes;
-- an admission protocol for experimental geometries;
+- mutation budgets for ontology and domain changes, with admission split into
+  eligibility that replays and authorization that is attributed;
+- an admission protocol for experimental state domains;
 - identity policies for governed self-change;
+- a disclosure layer, so that auditability and confidentiality are not a choice
+  of one;
 - federated ontology negotiation between agents and substrates;
 - consensus only at consequential or irreversible action boundaries.
 
 The proposal does **not** claim that cognition has one correct topology, that a
-new geometry guarantees novelty, or that an LLM can reliably invent valid
+a new domain guarantees novelty, or that an LLM can reliably invent valid
 ontologies. Its narrower claim is operational:
 
-> Every state representation makes geometric assumptions. Those assumptions,
+> Every state representation makes structural assumptions. Those assumptions,
 > translation losses, and representation changes must be explicit, typed,
 > warranted, testable, reversible where possible, and preserved in the ledger.
 
@@ -94,20 +108,20 @@ translation, loss, conflict, and action boundaries explicit.
 
 The protocol is built on six theses.
 
-### 2.1 There is no required universal geometry
+### 2.1 There is no required universal domain
 
 The system MUST NOT assume that every state can be faithfully represented in a
 single Euclidean latent space, knowledge graph, reward function, or universal
 schema.
 
-### 2.2 Geometry is part of the state type
+### 2.2 The domain is part of the state type
 
 A state is not only a value. It includes the laws under which the value can be
 validated, compared, transformed, and transported.
 
 ### 2.3 Translation is never silently lossless
 
-Every cross-geometry or cross-ontology translation MUST report preserved
+Every cross-domain or cross-ontology translation MUST report preserved
 invariants, lost structure, introduced assumptions, unresolved ambiguity, and
 action-context suitability.
 
@@ -119,7 +133,7 @@ irreducible disagreement.
 
 ### 2.5 Representation changes consume resources
 
-Ontology and geometry mutations incur compute, migration, verification,
+Ontology and domain mutations incur compute, migration, verification,
 coordination, maintenance, and trust costs. They MUST be budgeted.
 
 ### 2.6 Shared action does not require shared ontology
@@ -142,10 +156,10 @@ This RFC is not:
 - an automatic novelty or truth engine;
 - permission for an LLM to mutate schemas without deterministic checks;
 - a catalogue of fashionable manifolds;
-- a requirement that all substrates implement all geometry families;
+- a requirement that all substrates implement all domain families;
 - a guarantee that every conflict has a representational resolution.
 
-A conforming implementation MAY support only a small geometry registry. The
+A conforming implementation MAY support only a small domain registry. The
 essential requirements are explicit typing, explicit translation, explicit loss,
 bounded mutation, and ledgered acceptance.
 
@@ -155,14 +169,31 @@ bounded mutation, and ledgered acceptance.
 
 ### 4.1 State
 
-A value interpreted under a geometry and ontology, with provenance, uncertainty,
+A value interpreted under a domain and ontology, with provenance, uncertainty,
 invariants, and lineage.
 
-### 4.2 Geometry
+### 4.2 State domain
 
-A contract defining valid points and relevant operations for a state family. The
-term is used broadly and MAY include discrete, symbolic, graph, order,
-constraint, probabilistic, and manifold-like structures.
+A contract defining valid points and admissible operations for a state family.
+Discrete symbolic states, graphs, partial orders, constraint systems,
+probability spaces, and manifolds are all state domains.
+
+**On the word "geometry".** Earlier drafts called this a _geometry_ and then
+defined the term broadly enough to include partial orders and constraint
+systems, which are not geometries by any usage that constrains anything. That
+made the document's foundational type a decorative metaphor — while §19.7
+forbade exactly that, and while the document was busy refusing `TensionTensor`
+for the same reason. The smaller borrowed word was killed and the larger one
+kept, because it was in the title.
+
+`Geometric` is now one **capability** a state domain may have (§6.3): a domain
+with a notion of movement along a delta and transport between points. A domain
+may be metric without being geometric, ordered without being metric, and none of
+those without ceasing to be a state domain.
+
+The document retains its filename for the reason `docs/COORDINATES.md` gives for
+coordinates generally — identity is by role, and committed ledger records
+reference this path. The title is corrected; the path is stable.
 
 ### 4.3 Ontology
 
@@ -191,7 +222,7 @@ jointly preserve required invariants.
 
 ### 4.8 Mutation
 
-A change to a geometry, ontology, translation, invariant set, or identity
+A change to a state domain, ontology, translation, invariant set, or identity
 policy.
 
 ### 4.9 Admission
@@ -213,7 +244,7 @@ not a mandatory implementation language.
 
 ```ts
 type StateId = string;
-type GeometryId = string;
+type DomainId = string;
 type OntologyId = string;
 type InvariantId = string;
 type EvidenceRef = string;
@@ -222,7 +253,7 @@ type SubstrateId = "trinity" | "myc" | "omega" | "liquid" | string;
 
 type TypedState<G, V> = {
   id: StateId;
-  geometry: GeometryRef<G>;
+  domain: DomainRef<G>;
   ontology: OntologyRef;
   value: V;
   uncertainty: UncertaintyProfile;
@@ -234,13 +265,13 @@ type TypedState<G, V> = {
 };
 ```
 
-A conforming state MUST identify its geometry and ontology. It MUST NOT rely on
+A conforming state MUST identify its domain and ontology. It MUST NOT rely on
 out-of-band convention to determine whether a numeric array is an embedding,
 probability vector, coordinate, ordered tuple, or arbitrary payload.
 
 ### 5.1 Reference identity is content-addressed
 
-Every `Ref` in this document (`GeometryRef`, `OntologyRef`, `InvariantRef`,
+Every `Ref` in this document (`DomainRef`, `OntologyRef`, `InvariantRef`,
 `EvidenceRef`, `TransformationRef`, `TranslatorRef`) is a **reference to an
 immutable object**, not a mutable name. The protocol's audit guarantees depend
 on it: a receipt that records "translated under translator T" is worthless if
@@ -248,7 +279,7 @@ on it: a receipt that records "translated under translator T" is worthless if
 
 References MUST therefore be content-addressed:
 
-1. Every referenced object MUST have a canonical byte encoding. For geometry
+1. Every referenced object MUST have a canonical byte encoding. For domain
    points this is the `serialize` method of §6; for descriptors, ontologies,
    translators, and invariant definitions it is the object's canonical
    serialization.
@@ -265,10 +296,10 @@ References MUST therefore be content-addressed:
    identity amendment, or a trust computation MUST carry the full digest
    alongside the short handle.
 5. Structural sharing is a requirement, not an optimization: two states under
-   the same geometry and ontology MUST resolve to the same reference bytes, so
-   the shared descriptor is stored once and the per-state cost is the reference,
-   not the descriptor. A descriptor that is itself large — an ontology, a
-   complex invariant set — MAY be composed of content-addressed parts, so that a
+   the same domain and ontology MUST resolve to the same reference bytes, so the
+   shared descriptor is stored once and the per-state cost is the reference, not
+   the descriptor. A descriptor that is itself large — an ontology, a complex
+   invariant set — MAY be composed of content-addressed parts, so that a
    consumer needing one invariant resolves that part rather than the whole
    object. Sharing then operates within descriptors as well as between states.
 6. External content-addressing systems (IPLD/CID, and similar) MAY be used as a
@@ -282,10 +313,53 @@ References MUST therefore be content-addressed:
    Mandating a store would re-open the identity decision §5.1 settled, for a
    benefit already obtained.
 
-Lineage and provenance follow from this. Because `lineage` is a list of
-content-addressed transformation references, and each transformation references
-its input states, the derivation history of any state is a verifiable DAG rather
-than a narrative recorded by whoever wrote the receipt.
+Because `lineage` is a list of content-addressed transformation references, and
+each transformation references its input states, the derivation history of any
+state forms a DAG whose **integrity** is verifiable.
+
+#### 5.1.0 What content addressing does and does not give
+
+An earlier draft went further and said the derivation history is "a verifiable
+DAG rather than a narrative recorded by whoever wrote the receipt". That
+overstates it, and the overstatement is the kind that gets designed against
+rather than noticed: a hash DAG can be cryptographically perfect and still be a
+narrative.
+
+These properties are distinct and MUST NOT be conflated:
+
+| Property                    | Given by content addressing? | What actually establishes it                                                                       |
+| --------------------------- | ---------------------------- | -------------------------------------------------------------------------------------------------- |
+| **Content integrity**       | yes                          | the digest                                                                                         |
+| **Stable byte identity**    | yes                          | canonical encoding (§5.1.1)                                                                        |
+| **Tamper evidence**         | yes                          | any edit changes the address                                                                       |
+| **Deduplication**           | opportunity only             | a store that chooses to share                                                                      |
+| **Authorship**              | no                           | signatures over the reference (§19.10)                                                             |
+| **Provenance completeness** | **no**                       | attestation that the input set is total                                                            |
+| **Provenance truthfulness** | **no**                       | independent re-derivation, witnesses                                                               |
+| **Availability**            | **no**                       | a store commitment, and someone to hold it                                                         |
+| **Semantic identity**       | **no**                       | the encoding rules; different bytes may mean the same thing and this is deliberate (§5.1.1 rule 5) |
+
+The consequential gaps:
+
+1. **A transformation can omit an input.** Nothing in the digest reveals that a
+   fourth evidence blob was consulted and left out of `evidence[]`. The DAG is
+   intact and the account is incomplete. Only an attestation that the declared
+   input set is exhaustive — or an independent re-derivation reaching the same
+   output — establishes completeness, and both are outside the hash.
+2. **A reference can be unresolvable.** An address proves what the bytes _were_
+   if you find them; it does not produce them. A lineage of addresses nobody
+   retains is a chain of names. Availability MUST be a declared commitment where
+   receipts depend on it, and §14's verifier questions are unanswerable without
+   one.
+3. **Equal meaning is not equal bytes.** Two encodings may denote the same value
+   — this is why §5.1.1 rule 5 refuses normalization — so equal addresses imply
+   equal content, and unequal addresses imply nothing about meaning.
+
+Content addressing is load-bearing here and it is load-bearing for exactly one
+thing: it makes tampering detectable and identity stable, so that everything
+built on top — signatures, attestations, re-derivation — has something fixed to
+be about. Treating it as also delivering honesty or completeness is how a system
+ends up with an unfalsifiable audit trail.
 
 #### 5.1.1 Canonical encoding is normative, not an implementation detail
 
@@ -335,7 +409,7 @@ already settled this (§17.1).
 #### 5.1.2 Floating point
 
 Floating point is where content-addressed systems usually die, and this RFC
-proposes a probability simplex as a first-class geometry (§6.4), so it walks
+proposes a probability simplex as a first-class domain (§6.4), so it walks
 directly into the problem.
 
 In canonical form:
@@ -354,7 +428,7 @@ In canonical form:
    were produced by different summation orders on different substrates is not
    the same vector under any digest, and rounding mode is not part of any wire
    format.
-5. A geometry MAY use floating point internally. The obligation is at the
+5. A state domain MAY use floating point internally. The obligation is at the
    canonical-encoding boundary, not inside the computation.
 
 ##### Non-integer values inside an integers-only domain
@@ -380,9 +454,10 @@ For `ratio`, the canonical form MUST satisfy:
 3. zero is `{ num: 0, den: 1 }` and nothing else;
 4. both components lie inside the encoding's integer domain.
 
-For `fixed`, `scale` MUST be declared by the geometry rather than per value, and
-all values in one geometry MUST share it — otherwise comparing two points means
-rescaling, and rescaling reintroduces the rounding the rule exists to remove.
+For `fixed`, `scale` MUST be declared by the state domain rather than per value,
+and all values in one domain MUST share it — otherwise comparing two points
+means rescaling, and rescaling reintroduces the rounding the rule exists to
+remove.
 
 **Reduction rules are not optional decoration.** Without them the encoding is
 deterministic but not injective in the direction that matters: two byte
@@ -421,7 +496,7 @@ does not accept hopes as evidence anywhere else.
 **Encoding selection is deferred.** This RFC states the requirements above but
 does **not** select the encoding. That selection is a federation-wide commitment
 affecting substrates that are not parties to this RFC, and it deserves its own
-contract with its own test vectors rather than a clause inside a geometry
+contract with its own test vectors rather than a clause inside a state domain
 proposal. It is filed as decision request §22 Tranche A3 and open problem
 §20.15.
 
@@ -430,7 +505,7 @@ substrate boundaries, and this document does not pretend otherwise.
 
 ### 5.2 Metadata weight and state profiles
 
-The `TypedState` shape above is heavy. Carrying geometry, ontology, uncertainty,
+The `TypedState` shape above is heavy. Carrying domain, ontology, uncertainty,
 invariants, provenance, and lineage on every high-frequency internal value would
 cost more than the values themselves, and a protocol whose ceremony is
 unaffordable is a protocol that gets bypassed at the point it matters.
@@ -438,14 +513,14 @@ unaffordable is a protocol that gets bypassed at the point it matters.
 The weight is therefore mitigated by structure, not by dropping fields:
 
 1. **Shared descriptors are referenced, not embedded.** By §5.1, a million
-   states in one geometry carry one geometry descriptor and a million pointers.
+   states in one domain carry one domain descriptor and a million pointers.
 2. **A state MAY declare a profile** that fixes which fields are materialized:
 
 ```ts
 type StateProfile = "minimal" | "tracked" | "full";
 ```
 
-- `minimal` — geometry and ontology references plus value. Permitted only for
+- `minimal` — domain and ontology references plus value. Permitted only for
   states that are local, reversible, and never cross a translation, federation,
   or irreversible boundary.
 - `tracked` — adds uncertainty and provenance. Required for any state that
@@ -467,22 +542,19 @@ a boundary rather than as a silent degradation. That is the intended trade.
 
 ---
 
-## 6. Geometry contract
+## 6. State domain contract
+
+The base contract is deliberately small. It carries only what every state family
+needs regardless of its structure: identity, validation, canonical bytes,
+declared invariants, and declared laws.
 
 ```ts
-interface Geometry<P, Delta, D, R> {
-  id: GeometryId;
+interface StateDomain<P> {
+  id: DomainId;
   address: ContentAddress; // identity; see §6.2.1
   version: VersionLabel; // derived projection, not an assertion
 
   validate(point: P): ValidationReport;
-  compare(a: P, b: P, context: ComparisonContext): R;
-  distance?(a: P, b: P, context: DistanceContext): D;
-  move?(point: P, delta: Delta, context: MoveContext): MoveResult<P>;
-  interpolate?(a: P, b: P, t: UnitInterval): P;
-  compose?(a: P, b: P): CompositionResult<P>;
-
-  deltaDescriptor?(): DeltaDescriptor; // required iff `move` is present
   laws(): AlgebraicLaws;
   invariants(): InvariantDefinition[];
   supportedOperations(): OperationDescriptor[];
@@ -493,17 +565,60 @@ interface Geometry<P, Delta, D, R> {
 }
 ```
 
+Everything else is a capability, declared separately and checkable separately:
+
+```ts
+interface Comparable<P, R> extends StateDomain<P> {
+  compare(a: P, b: P, context: ComparisonContext): R;
+}
+
+interface Ordered<P> extends StateDomain<P> {
+  order(a: P, b: P): PartialOrder; // MAY return `incomparable`
+}
+
+interface Metric<P, D> extends StateDomain<P> {
+  distance(a: P, b: P, context: DistanceContext): D;
+  // metricAxioms MUST be declared in laws() — §6.2 rule 3
+}
+
+interface Interpolable<P> extends StateDomain<P> {
+  interpolate(a: P, b: P, t: UnitInterval): P;
+}
+
+interface Composable<P> extends StateDomain<P> {
+  compose(a: P, b: P): CompositionResult<P>;
+}
+
+interface Geometric<P, Delta> extends StateDomain<P> {
+  move(point: P, delta: Delta, context: MoveContext): MoveResult<P>;
+  transport(delta: Delta, from: P, to: P): TransportResult<Delta>;
+  deltaDescriptor(): DeltaDescriptor;
+}
+```
+
+`Geometric` is the capability that earned the old name: a domain in which points
+can be moved along a delta and a delta can be carried from one point to another.
+A temporal partial order is `Ordered` and not `Geometric`. A probability simplex
+is `Metric` and `Interpolable` and, under an information geometry, `Geometric` —
+but only if it implements and tests transport, not because the phrase exists.
+
+This also removes an accident of the earlier single-interface form:
+`Geometry<P,
+Delta, D, R>` forced every domain to name a delta type, a distance
+type, and a comparison type whether or not it had any of them, which is how
+`delta: unknown` got there in the first place.
+
 The `Delta` parameter is not decoration. In an earlier draft this was
 `delta: unknown`, which made `move` an untyped hole in an otherwise typed
 contract and violated §5's own rule against out-of-band convention: nothing said
 whether a delta was a tangent vector, an edit script, a permutation, or an
-arbitrary payload. A geometry exposing `move` MUST declare a `DeltaDescriptor`
-with its own content address, giving the delta space the same canonical encoding
-and validation obligations as the point space.
+arbitrary payload. A state domain exposing `move` MUST declare a
+`DeltaDescriptor` with its own content address, giving the delta space the same
+canonical encoding and validation obligations as the point space.
 
 ### 6.1 Contract rules
 
-A geometry implementation MUST:
+A state domain implementation MUST:
 
 1. provide canonical serialization;
 2. define validation rules;
@@ -550,21 +665,70 @@ Rules:
    be required at a boundary with a bounded time budget.
 3. An invariant that can be _partially_ held MUST supply a `distortionMeasure`,
    because §7.1.1 composes distortion by that measure's own rule.
-4. A predicate MUST be deterministic and content-addressed. An invariant whose
-   meaning depends on when or where it ran cannot support a receipt.
+4. A predicate MUST be content-addressed, and deterministic **relative to its
+   declared inputs** — see §6.1.2.
 
-A geometry MUST NOT expose `distance`, `interpolate`, or `average` merely to
+#### 6.1.2 Context is an input, not a contaminant
+
+An earlier draft required predicates to be deterministic and added that an
+invariant whose meaning depends on when or where it ran cannot support a
+receipt. The second half is false as stated, and it forbids most of the
+invariants this document actually cares about.
+
+`no_unverified_irreversible_write` depends on authority state. A budget
+invariant depends on the budget. A compatibility-contract invariant depends on
+which contract is active. An invariant over witness quorum depends on who is
+currently a witness. None of these are expressible over a state in isolation,
+and all of them are the ones a boundary most needs to check.
+
+The remedy is not to ban context. It is to **make context an explicit,
+content-addressed input**, so the predicate is a function again:
+
+```ts
+type InvariantEvaluation = {
+  predicate: PredicateRef;
+  state: StateRef;
+  transition?: TransitionRef; // required at `transition` scope
+  trace?: TraceRef; // required at `trace` scope
+  worldSnapshot: SnapshotRef; // environment the predicate may read
+  authoritySnapshot: AuthorityRef; // who held what authority
+  evaluatedAtLogicalStep: SequenceRef; // ordering, not wall-clock
+  result: ValidationReport;
+};
+```
+
+Rules:
+
+1. An `InvariantDefinition` MUST declare which context surfaces its predicate
+   reads. A predicate that reads a surface it did not declare is non-conforming,
+   which is checkable by evaluating it against a snapshot that omits the
+   undeclared surface.
+2. Evaluation MUST be reproducible: the same predicate over the same state and
+   the same snapshots MUST produce the same report, on any substrate.
+3. Receipts MUST record the snapshot addresses, not just the verdict. "The
+   invariant held" is unverifiable; "the invariant held against these bytes" is
+   replayable.
+4. `evaluatedAtLogicalStep` is a sequence reference, not a timestamp. Wall-clock
+   time MAY appear _inside_ a world snapshot as data; it MUST NOT be read
+   ambiently by a predicate, because a predicate that reads the clock produces a
+   different answer on replay and the receipt becomes unfalsifiable.
+5. A stale snapshot is a real failure mode: an invariant that held against a
+   snapshot no longer current has not been shown to hold now. Boundaries MUST
+   declare a freshness requirement, and a snapshot failing it MUST be treated as
+   `not assessed` rather than as `held`.
+
+A state domain MUST NOT expose `distance`, `interpolate`, or `average` merely to
 satisfy a generic interface. If the operation has no coherent meaning, it MUST
 be absent or explicitly forbidden.
 
 ### 6.2 Declared algebraic laws
 
-Listing operations is not enough. Two geometries can expose the same `compose`
-signature and still disagree about whether composition may be reordered,
-repeated, or undone. A caller that assumes the wrong answer corrupts state
-without any type error.
+Listing operations is not enough. Two state domains can expose the same
+`compose` signature and still disagree about whether composition may be
+reordered, repeated, or undone. A caller that assumes the wrong answer corrupts
+state without any type error.
 
-A geometry MUST therefore declare the laws its operations obey:
+A state domain MUST therefore declare the laws its operations obey:
 
 ```ts
 type AlgebraicLaws = {
@@ -583,32 +747,64 @@ type AlgebraicLaws = {
 };
 
 type LawClaim = {
-  holds: boolean;
+  status: LawStatus;
   scope: "total" | "partial";
   precondition?: PredicateRef;
-  evidence: LawEvidence;
 };
 
-type LawEvidence =
-  | { kind: "proof"; ref: EvidenceRef }
-  | { kind: "property-test"; ref: EvidenceRef; cases: number; seed: string }
-  | { kind: "asserted"; ref?: EvidenceRef };
+type LawStatus =
+  | { kind: "proved"; proof: EvidenceRef; checker: ContentAddress }
+  | {
+    kind: "tested";
+    generator: GeneratorRef; // content-addressed, so the domain of generation is inspectable
+    domain: PredicateRef; // what the generator actually covers
+    cases: number;
+    seed: string;
+    ref: EvidenceRef;
+  }
+  | { kind: "asserted"; author: AgentId }
+  | { kind: "falsified"; counterexample: FixtureRef };
 ```
+
+**There is no `holds: boolean`, deliberately.** An earlier draft had one, with
+evidence attached beside it — which let a property test and a machine-checked
+proof both set the same flag to `true`. A property test does not establish that
+a law holds. It establishes that _no counterexample was found by a particular
+generator over a particular domain in a particular number of cases_, which is a
+different statement and a weaker one, and the difference is exactly what matters
+for associativity, the triangle inequality, invertibility, and monotonicity —
+where the counterexamples live in the corners a naive generator does not reach.
+
+Collapsing proof strength into a boolean is the move this document forbids
+everywhere else: §7.1's refusal of scalar translation quality, §7.2.1's refusal
+of scalar suitability, §10.1.1's refusal of scalar cost. It survived here
+because the flag looked like bookkeeping rather than like a claim.
 
 Rules:
 
-1. A declared law is a **claim**, not a permission to trust. Every law with
-   `holds: true` MUST carry `LawEvidence`.
-2. `kind: "asserted"` laws MUST NOT be used to authorize composition across a
-   translation boundary or an irreversible boundary.
-3. `metricAxioms` MUST be declared by any geometry exposing `distance`. A
+1. A declared law is a **claim**, not a permission to trust. `status` carries
+   the epistemic strength; there is no separate assertion of truth to disagree
+   with it.
+2. **A policy MUST state the minimum status each boundary requires**, rather
+   than this document fixing one bar for all of them. The floor: `asserted` laws
+   MUST NOT authorize composition across a translation boundary or an
+   irreversible boundary; `falsified` laws MUST NOT authorize anything and MUST
+   fail closed wherever the law is relied on.
+3. `tested` MUST record the generator and the domain it covers, both
+   content-addressed. A test whose generation domain is unstated cannot be
+   assessed by a reader and is `asserted` with extra steps.
+4. `metricAxioms` MUST be declared by any domain exposing `distance`. A
    similarity score that violates the triangle inequality is not a metric and
    MUST NOT be presented as one.
-4. A composition of two states MUST NOT be admitted when the composed geometries
-   declare incompatible laws for the operation being used.
-5. Law declarations are part of the geometry's canonical bytes (§5.1.1).
-   Weakening a law therefore changes the geometry's content address by
-   construction — see §6.2.1.
+5. A composition of two states MUST NOT be admitted when the composed state
+   domains declare incompatible laws for the operation being used, or when
+   either declares the relevant law `falsified`.
+6. Law declarations are part of the state domain's canonical bytes (§5.1.1).
+   Weakening a law — including downgrading its status — therefore changes the
+   state domain's content address by construction, see §6.2.1.
+7. A law moving to `falsified` is not an error to suppress. It is the most
+   informative event in this section, and the counterexample MUST be retained as
+   a fixture.
 
 This makes the loss profile of an operation checkable before it runs, and gives
 the registry something deterministic to reject.
@@ -616,22 +812,22 @@ the registry something deterministic to reject.
 #### 6.2.1 Version is derived, not declared
 
 The `version: string` field in §6 and the content addressing of §5.1 are two
-identity systems for one object, and two sources of truth drift. A geometry
+identity systems for one object, and two sources of truth drift. A state domain
 whose laws were weakened without its author remembering to bump the string is
 exactly the case the versioning existed to catch, and it is the case a manual
 field will miss.
 
 Therefore:
 
-1. A geometry's **identity is its content address**. Two geometries with
-   different canonical bytes are different geometries, whatever their version
+1. A state domain's **identity is its content address**. Two state domains with
+   different canonical bytes are different state domains, whatever their version
    strings say.
 2. `version` MUST be a **projection of the version DAG**, not an independent
    assertion. Each release records its predecessor's content address, and the
    version string is a human-readable label computed from that history.
-3. A registry MUST reject a geometry whose declared version conflicts with its
-   position in the DAG — for example, a label claiming a patch increment across
-   a change that weakened a law.
+3. A registry MUST reject a state domain whose declared version conflicts with
+   its position in the DAG — for example, a label claiming a patch increment
+   across a change that weakened a law.
 4. Receipts MUST record the content address. They MAY additionally record the
    label for legibility. A receipt carrying only a version string does not
    identify what ran.
@@ -641,23 +837,28 @@ verifies against it.
 
 ### 6.3 Capability splitting
 
-The interface in §6 uses optional methods. Optional methods are a weak defense:
-an implementer under schedule pressure can satisfy them with a stub that returns
-a plausible number, and nothing in the type system objects. This is the
-`geometry cosplay` failure mode (§19.7) arriving through the front door.
+§6 states the contract as a small base plus separate capabilities. This section
+says why the alternative — one interface with optional members — is inadequate,
+since that is what earlier drafts had.
 
-Implementations SHOULD therefore split the contract into separate capability
-interfaces rather than one interface with optional members, so that a geometry
-which cannot interpolate is **unable to be passed** where interpolation is
-required, rather than merely expected to decline at runtime.
+Optional methods are a weak defense: an implementer under schedule pressure can
+satisfy them with a stub that returns a plausible number, and nothing in the
+type system objects. This is the `vocabulary cosplay` failure mode (§19.7)
+arriving through the front door.
+
+A capability-split contract makes a state domain that cannot interpolate
+**unable to be passed** where interpolation is required, rather than merely
+expected to decline at runtime. A domain declares the capabilities it
+implements; the registry rejects a declared capability that is absent and an
+implemented capability that is undeclared (§6.3.1).
 
 In a language with traits or typeclasses this is structural. A Rust projection
 would look roughly like:
 
 ```rust
-pub trait Geometry {
+pub trait StateDomain {
     type Point;
-    fn id(&self) -> GeometryId;
+    fn id(&self) -> DomainId;
     fn version(&self) -> Version;
     fn validate(&self, p: &Self::Point) -> ValidationReport;
     fn laws(&self) -> AlgebraicLaws;
@@ -665,15 +866,15 @@ pub trait Geometry {
     fn deserialize(&self, b: &CanonicalBytes) -> Result<Self::Point, DecodeError>;
 }
 
-pub trait Metric: Geometry {
+pub trait Metric: StateDomain {
     fn distance(&self, a: &Self::Point, b: &Self::Point, cx: &DistanceContext) -> Scalar;
 }
 
-pub trait Interpolable: Geometry {
+pub trait Interpolable: StateDomain {
     fn interpolate(&self, a: &Self::Point, b: &Self::Point, t: UnitInterval) -> Self::Point;
 }
 
-pub trait Composable: Geometry {
+pub trait Composable: StateDomain {
     fn compose(&self, a: &Self::Point, b: &Self::Point) -> CompositionResult<Self::Point>;
 }
 
@@ -684,31 +885,143 @@ fn midpoint<G: Interpolable>(g: &G, a: &G::Point, b: &G::Point) -> G::Point {
 }
 ```
 
-A temporal partial order implements `Geometry` and never `Interpolable`, so
+A temporal partial order implements `StateDomain` and never `Interpolable`, so
 `midpoint` cannot be instantiated for it. The cosplay risk is removed by
 construction instead of by review.
 
+A temporal partial order implements `StateDomain` and `Ordered`, never
+`Interpolable`, so `midpoint` cannot be instantiated for it. The cosplay risk is
+removed by construction instead of by review.
+
+#### 6.3.1 Declared capabilities are checked
+
 Where the host language cannot express this (dynamic registries, cross-language
-adapters, opaque external geometries), the registry MUST enforce the same rule
-at admission: a geometry that declares an operation it does not implement, or
-implements an operation it did not declare, MUST be rejected.
+adapters, opaque external state domains), the registry MUST enforce the same
+rule at admission: a state domain that declares a capability it does not
+implement, or implements one it did not declare, MUST be rejected. Both
+directions matter — an undeclared capability is a surface consumers cannot
+reason about, and a declared-but-absent one is a promise that fails at the worst
+moment.
 
-### 6.4 Initial geometry families
+### 6.4 Initial domain families
 
-The federation MAY begin with:
+The federation MAY begin with the following, listed with the capabilities each
+would actually carry:
 
-- Euclidean vector space;
-- probability simplex;
-- temporal partial order;
-- causal directed graph;
-- symbolic discrete state;
-- constraint region;
-- hierarchy or hyperbolic embedding;
-- spherical orientation;
-- product geometry;
-- opaque external geometry with verifier adapter.
+| Family                  | Capabilities beyond the base            |
+| ----------------------- | --------------------------------------- |
+| Euclidean vector space  | `Metric`, `Interpolable`, `Geometric`   |
+| Probability simplex     | `Metric`, `Interpolable`, `Geometric`†  |
+| Temporal partial order  | `Ordered`                               |
+| Causal directed graph   | `Ordered`, `Composable`                 |
+| Symbolic discrete state | `Comparable`                            |
+| Constraint region       | `Ordered` (by refinement), `Composable` |
+| Hierarchy / hyperbolic  | `Metric`, `Ordered`, `Interpolable`     |
+| Spherical orientation   | `Metric`, `Interpolable`, `Geometric`   |
+| Product domain          | derived from components (§6.5)          |
+| Opaque external domain  | none, plus a verifier adapter           |
+
+† only under a declared information geometry with transport implemented and
+tested — not by naming one.
+
+The point of the table is that the column is mostly empty. Half these families
+have no metric and no notion of movement, and the old single interface invited
+every one of them to pretend otherwise.
 
 These families are examples, not a normative completeness claim.
+
+### 6.5 Composite state
+
+`TypedState` (§5) holds one value, in one domain, under one ontology. That is
+the right shape for a single quantity and the wrong shape for the thing this RFC
+was written about.
+
+The founding observation in §1 is that an agent simultaneously holds a
+probability distribution, a causal graph, a temporal order, an identity
+invariant, an intent, and a resource state — and that flattening them into one
+representation is what destroys meaning. A registry of well-typed single states
+does not by itself say how those states form **one** agent state. Product domain
+was listed as a family (§6.4) and given no contract, which left the central case
+described and unspecified.
+
+```ts
+type CompositeState = {
+  id: StateId;
+  components: Record<RoleId, TypedStateRef>;
+  couplings: CouplingRef[];
+  globalInvariants: InvariantRef[];
+  consistencyModel: ConsistencyModelRef;
+  address: ContentAddress;
+};
+```
+
+A `RoleId` names what a component _is for_ in the composite — `belief`,
+`causal-model`, `schedule`, `budget` — not what domain it lives in. Two
+composites with the same roles filled by different domains are comparable at the
+role level, which is what makes substitution discussable.
+
+#### 6.5.1 Three compositions
+
+**Product.** Components coexist independently. Validity of the composite is
+exactly the conjunction of component validities; an update to one cannot
+invalidate another. This is the cheap case and MUST NOT be assumed — it is a
+claim that there are no couplings, and it is checkable.
+
+**Dependent.** The admissibility of one component depends on the value of
+another: a schedule is valid only under a given resource state, a plan only
+under a given causal model. Dependency is directed and MUST be declared, because
+the direction determines evaluation order and what a partial update invalidates.
+
+```ts
+type Coupling =
+  | { kind: "dependent"; from: RoleId; to: RoleId; admissibility: PredicateRef }
+  | { kind: "coupled"; roles: RoleId[]; transition: TransitionRef }
+  | { kind: "shared-invariant"; roles: RoleId[]; invariant: InvariantRef };
+```
+
+**Coupled.** A change in one component _induces_ transitions in others — a
+revised causal model forces a revised plan. Coupled composition is the only kind
+that can fail to converge, so it MUST declare a consistency model:
+
+```ts
+type ConsistencyModel =
+  | { kind: "atomic" } // all components move together or none do
+  | { kind: "eventual"; convergence: PredicateRef; bound: BudgetLimit }
+  | {
+    kind: "bounded-divergence";
+    measure: MeasureRef;
+    tolerance: ThresholdRef;
+  };
+```
+
+#### 6.5.2 Rules
+
+1. A composite MUST declare its couplings. An undeclared coupling is the
+   composite-level form of an undeclared assumption, and produces states that
+   appear valid component-wise while violating a relation nobody wrote down.
+2. **Global invariants are not the conjunction of component invariants.** A
+   composite MAY hold invariants that no component can express alone — that a
+   plan's schedule respects the causal order, that a belief's support is a
+   subset of the resource state's reachable set. These MUST be declared at the
+   composite and evaluated at `trace` or `transition` scope where required
+   (§6.1.1).
+3. A component MUST NOT be updated through a path that bypasses the composite's
+   coupling evaluation. Where the fast path (§15.0) touches a component of a
+   coupled composite, the operation is not fast-path eligible.
+4. Translation of a composite (§7) is translation of components **plus** the
+   couplings. A translator that maps every component faithfully and drops the
+   couplings has produced a set of correct states that is not the same state,
+   and MUST report the couplings it could not carry as `lost`.
+5. A composite has its own content address, derived from its components'
+   addresses and its couplings — so that two composites with identical parts and
+   different couplings are different objects.
+
+#### 6.5.3 What is not specified
+
+Whether composition is associative — whether a composite of composites flattens
+— is left open (§20.19). The obvious answer is yes for product and no for
+coupled, but "obvious" is not the standard this document holds elsewhere, and
+nothing here yet needs the answer.
 
 ---
 
@@ -716,10 +1029,90 @@ These families are examples, not a normative completeness claim.
 
 Translation is the central primitive of this RFC.
 
+### 7.0 Five kinds of transformation, only one of which is translation
+
+The loss algebra of §7.1.1 requires that a longer pipeline never report less
+loss than its worst step. That is true of a **closed** transformation — one that
+carries only the information already present in its input — and false of
+anything that acquires new information.
+
+A transformer may consult evidence, query the target ontology, run inference,
+resolve an ambiguity by asking the environment, or negotiate the meaning with a
+counterparty. Any of those can leave the output _more_ fit for an action than
+the intermediate state was. Not because lost bits came back, but because a new
+source of information entered.
+
+The earlier draft had a monotonicity rule and, in §13.4, a negotiation protocol,
+and did not notice they contradict. Under one document a step that improves
+suitability is a bug; under another it is the mechanism. Left as-is, every
+competent implementation would either violate the monoid or bury the enrichment
+inside `introducedAssumptions`, where it would be indistinguishable from a
+fabrication.
+
+The five kinds are therefore distinguished, and each carries different
+obligations:
+
+| Kind             | New information from | Monotone loss | May cross irreversible boundary                    |
+| ---------------- | -------------------- | ------------- | -------------------------------------------------- |
+| `translation`    | nothing              | **required**  | yes, per suitability                               |
+| `enrichment`     | cited evidence       | not required  | yes, if sources are attested                       |
+| `inference`      | declared rules       | not required  | only if rules are content-addressed and replayable |
+| `reconstruction` | assumption           | not required  | **no** — §7.0.2                                    |
+| `negotiation`    | a counterparty       | not required  | only under a scoped contract (§13.2)               |
+
+```ts
+type TransformKind =
+  | { kind: "translation" }
+  | {
+    kind: "enrichment";
+    sources: EvidenceRef[];
+    attestation: AttestationRef[];
+  }
+  | { kind: "inference"; rules: ContentAddress; replayable: boolean }
+  | { kind: "reconstruction"; assumptions: AssumptionRecord[] }
+  | { kind: "negotiation"; counterparty: AgentId; contract: ContractRef };
+```
+
+#### 7.0.1 Rules
+
+1. Every transformation MUST declare its kind. An undeclared kind is treated as
+   `reconstruction` — the most restricted — because a transformer that will not
+   say where its information came from has not established that it came from
+   anywhere.
+2. **Monotone loss binds `translation` only.** For the other kinds, the loss
+   profile still composes by §7.1.1's field rules, but the monotonicity check is
+   not a conformance failure; what MUST hold instead is that the new information
+   is attributed: each improvement traces to a cited source, rule, assumption,
+   or counterparty exchange.
+3. A pipeline mixing kinds is classified by its **weakest** member, in the order
+   above. One reconstruction step makes the pipeline a reconstruction, however
+   many faithful translations surround it.
+4. `enrichment` sources MUST be content-addressed and independently resolvable.
+   "The model knew this" is not a source.
+5. `inference` MUST record the rules by content address. An inference whose
+   rules are a model's weights is not replayable and MUST be declared
+   `replayable: false`, which bars it from irreversible boundaries under rule 6.
+
+#### 7.0.2 Reconstruction is the dangerous one
+
+Reconstruction fills a gap with an assumption. It is legitimate — a display
+needs a value, a planner needs a default — and it is exactly what an unmarked
+enrichment degrades into.
+
+A reconstructed component MUST be marked in the output state, not only in the
+loss profile, so that a consumer reading the state sees it without reading the
+receipt. Reconstructed values MUST NOT cross an irreversible boundary. Where a
+boundary requires a value that only exists by reconstruction, the correct
+outcome is refusal, and §8.3's `blocked by warrant` is the outcome to record.
+
+The reason for the asymmetry: every other kind can point at something outside
+itself. Reconstruction points at the transformer's own judgment, and the whole
+document is built on not letting a component certify itself (§7.2.2, §15.3.1).
+
 ```ts
 type TranslationRequest<A, B> = {
   source: TypedState<A, unknown>;
-  targetGeometry: GeometryRef<B>;
+  targetDomain: DomainRef<B>;
   targetOntology: OntologyRef;
   claimContext: ClaimContext;
   actionContext?: ActionContext;
@@ -797,9 +1190,17 @@ Field-level composition rules:
 - `translationDebt` — accumulation under §7.3.1.
 
 Because `lost` is a union and `preserved` an intersection, composed loss is
-**monotone**: a longer pipeline can never report less loss than its worst step.
-Any implementation where adding a translation step improves the loss profile has
-a bug, and this is a cheap invariant to test.
+**monotone** for `translation` steps: a longer pipeline of closed
+transformations can never report less loss than its worst step. Any
+implementation where adding a _translation_ step improves the loss profile has a
+bug, and this is a cheap invariant to test.
+
+The qualifier is load-bearing. Monotonicity is a property of transformations
+that acquire no new information, and §7.0 separates out the four kinds that do.
+For those, the field rules above still apply — `lost` still unions, `preserved`
+still intersects — but a suitability improvement is expected rather than
+anomalous, and what MUST be checkable is the attribution of the new information,
+not its absence.
 
 ##### What a type system can and cannot carry here
 
@@ -828,13 +1229,13 @@ checks the monoid laws;
 -> Self { self } }`
 compiles and discards half the pipeline's loss.
 
-This is the same gap §6.2 addresses for geometries, and it gets the same answer:
-the laws are claims and MUST carry evidence. For these types the evidence is
-property-based tests over generated profiles — associativity, identity, the
-non-commutativity of loss, the commutativity of debt, and the monotonicity
-above. Treating the trait as the guarantee would be §19.7's failure mode
-relocated from mathematical vocabulary to type signatures, where it is harder to
-see.
+This is the same gap §6.2 addresses for state domains, and it gets the same
+answer: the laws are claims and MUST carry evidence. For these types the
+evidence is property-based tests over generated profiles — associativity,
+identity, the non-commutativity of loss, the commutativity of debt, and the
+monotonicity above. Treating the trait as the guarantee would be §19.7's failure
+mode relocated from mathematical vocabulary to type signatures, where it is
+harder to see.
 
 The trait is still worth having. It concentrates composition in one place so
 there is a single implementation for the property tests to target, rather than
@@ -993,7 +1394,7 @@ type ComposedTranslator = {
    address. Pipelines are first-class objects, not ad-hoc call sequences,
    because a receipt naming three translators does not say in which order they
    ran.
-2. Composition is permitted only where the intermediate geometry and ontology of
+2. Composition is permitted only where the intermediate domain and ontology of
    each junction match exactly. A junction requiring its own translation is
    another step, not an implicit coercion.
 3. The composed profile MUST be computed by the declared algebras, never
@@ -1014,7 +1415,7 @@ type RoundTripReport = {
   fixture: FixtureRef;
   forward: TranslatorRef;
   back: TranslatorRef;
-  divergence: DivergenceMeasure; // in the SOURCE geometry, against canonical bytes
+  divergence: DivergenceMeasure; // in the SOURCE domain, against canonical bytes
   invariantsSurvived: InvariantRef[];
   invariantsLost: InvariantRef[];
 };
@@ -1022,8 +1423,8 @@ type RoundTripReport = {
 
 Rules:
 
-1. Divergence MUST be measured in the **source** geometry against the source's
-   canonical encoding (§5.1.1), not in the target geometry and not by comparing
+1. Divergence MUST be measured in the **source** domain against the source's
+   canonical encoding (§5.1.1), not in the target domain and not by comparing
    summaries. A round trip that returns a state which merely looks similar has
    not been measured.
 2. A round trip that is not expected to be exact MUST declare its expected
@@ -1082,7 +1483,7 @@ A conflict diagnosis MAY classify one or more hypotheses:
 - incompatible timescales;
 - causal contradiction;
 - translation loss;
-- geometry mismatch;
+- domain mismatch;
 - structural insufficiency;
 - authority conflict;
 - insufficient evidence;
@@ -1091,26 +1492,28 @@ A conflict diagnosis MAY classify one or more hypotheses:
 
 A hypothesis MUST remain distinct from a confirmed diagnosis.
 
-#### 8.2.1 Geometry mismatch versus structural insufficiency
+#### 8.2.1 Domain mismatch versus structural insufficiency
 
 These two are deliberately separated because they license different responses.
 
-- **Geometry mismatch** — the participants hold states in different geometries
+- **Domain mismatch** — the participants hold states in different state domains
   and the conflict is an artifact of comparing them. A translation, a shared
-  target geometry, or a corrected suitability judgment resolves it. No new
+  target domain, or a corrected suitability judgment resolves it. No new
   representation is needed; one already exists in the registry.
-- **Structural insufficiency** — no geometry available in the registry can hold
-  the distinction the conflict requires. More evidence, more search, and better
-  translation will not resolve it, because the required distinction is not
-  expressible. This is the only conflict hypothesis that directly licenses a
+- **Structural insufficiency** — no state domain available in the registry can
+  hold the distinction the conflict requires. More evidence, more search, and
+  better translation will not resolve it, because the required distinction is
+  not expressible. This is the only conflict hypothesis that directly licenses a
   mutation proposal under §9 and §10.
 
 A diagnosis of structural insufficiency MUST show that the distinction is
 inexpressible, not merely inconvenient. The minimum showing is:
 
 1. an explicit statement of the distinction the current registry cannot make;
-2. a witness pair — two situations that the current representation maps to the
-   same state but that **require different warrants** (§8.2.2);
+2. a witness pair — two situations the current representation maps to the same
+   state, which either **require different warrants** or **behave measurably
+   differently** (§8.2.2); the class of pair bounds how far the resulting
+   mutation may be promoted;
 3. evidence that at least two **independent** policies failed on that pair
    (§8.2.3);
 4. an argument that a cheaper remedy (search, evidence, translation, local
@@ -1123,16 +1526,58 @@ is a normative claim with no owner: whoever wants the mutation gets to assert
 that the actions ought to differ, and the requirement collapses into a
 preference.
 
-The pair MUST instead differ at the level of **warrants**: the two situations
-must require different authority, different evidence, or different reversibility
-handling in order to proceed. This is checkable against the warrant records
-rather than argued from utility, and it cannot be satisfied by an agent that
-merely prefers a different outcome.
+The correction went one step too far. Requiring the pair to differ at the level
+of **warrants** — different authority, different evidence, different
+reversibility handling — is checkable rather than argued, and it cannot be
+satisfied by an agent that merely prefers a different outcome. But it quietly
+makes the authority ontology the privileged reality: a distinction is only real
+if governance already treats it as real, which is a rule that can never
+recognize a gap governance has not yet noticed.
+
+That is wrong for exactly the case §9 exists to catch. Two states can differ in
+what they predict, what they cause, what experiment distinguishes them, or how
+they behave in the environment, and require no different warrant today. A
+representation that conflates them is deficient whether or not the authority
+rules have caught up.
+
+There are therefore **two classes of witness pair, licensing different things**:
+
+```ts
+type WitnessPair =
+  | {
+    kind: "warrant";
+    a: SituationRef;
+    b: SituationRef;
+    divergentWarrants: WarrantRef[]; // differ in authority, evidence, or reversibility
+  }
+  | {
+    kind: "behavioral";
+    a: SituationRef;
+    b: SituationRef;
+    divergence: BehavioralDivergence; // prediction, causal consequence, or measured outcome
+    discriminatingTest: FixtureRef; // the experiment that separates them
+  };
+```
+
+- A **warrant witness pair** licenses governed mutation in production semantics.
+  The substrate's own authority rules already distinguish the situations, so a
+  representation that cannot is failing at something the federation is already
+  committed to.
+- A **behavioral witness pair** licenses **sandboxed exploration only** (§11's
+  `sandboxed` and `experimentally validated` stages). It MUST NOT by itself
+  authorize local acceptance, federated sharing, or canonical status. Promotion
+  past the sandbox requires either that the behavioral divergence has since
+  produced a warrant-level consequence, or an explicit governance decision to
+  adopt on behavioral grounds — recorded as such, with its own receipt.
+
+A behavioral pair MUST supply a `discriminatingTest`: a fixture that separates
+the two situations by measurement. Without one, "these behave differently" is
+the preference claim the warrant rule was written to exclude, wearing empirical
+clothing.
 
 Two situations that differ only in expected value, ranking, or preferred policy
-are **not** a witness pair. A representation that cannot distinguish two states
-which the substrate's own authority rules already treat differently is a genuine
-gap; a representation that fails to encode someone's preference ordering is not.
+are **not** a witness pair of either kind. A representation that fails to encode
+someone's preference ordering is not deficient.
 
 #### 8.2.3 What makes policies independent
 
@@ -1290,7 +1735,7 @@ content-addressed exchange rule permits it.
 §10.1 correctly refuses to collapse the inequality into one number. That refusal
 has a consequence the earlier draft did not follow through on: a verifier handed
 an admission report cannot re-evaluate the decision unless it also has the rule
-that was applied. Without it, `GeometryAdmissionReport` is a narrative asserting
+that was applied. Without it, `DomainAdmissionReport` is a narrative asserting
 that a comparison came out favorably, and §14's requirement that a future
 verifier can ask "why was it considered sufficient" cannot be met.
 
@@ -1300,17 +1745,65 @@ Therefore:
    any exchange rules — MUST be a content-addressed object.
 2. Every admission decision MUST record the cost model's address alongside the
    inputs it was evaluated on.
-3. Given the receipt, a third party MUST be able to **recompute the decision**
-   and get the same verdict. An admission that cannot be replayed MUST NOT reach
-   `federatively shared` or `canonical`.
-4. Changing the cost model changes its address and therefore does not silently
+3. Changing the cost model changes its address and therefore does not silently
    revise past decisions. Prior admissions remain evaluable under the model that
    actually admitted them.
-5. Where a term is genuinely a judgment rather than a computation —
-   `cognitiveComplexity`, `trust` — the estimator MUST say so, name the
-   principal who supplied it, and the decision MUST record that it rested on an
-   unreplayable term. A judgment that is honestly labeled is usable; one
-   disguised as a measurement is not.
+
+#### 10.1.3 Eligibility replays; authorization does not
+
+The earlier draft required both that a third party MUST be able to recompute the
+decision and get the same verdict, **and** that terms like `cognitiveComplexity`
+and `trust` may be a principal's judgment and unreplayable. Both cannot be
+normative at once, and the pair was the document asking for a mathematical
+function and a human decision from the same object.
+
+Admission is therefore two decisions with different epistemic types, recorded
+separately.
+
+**Deterministic eligibility — replayable, and MUST be:**
+
+```text
+the proposal is well-formed;
+hard budget limits are satisfied in every dimension;
+required fixtures pass;
+declared invariants are preserved at their declared scopes;
+a rollback plan exists and its test passes;
+lineage is derived and consistent (§19.13).
+```
+
+Every term is a computation over content-addressed inputs. A third party given
+the receipt MUST recompute this and get the same verdict, bit for bit. A
+proposal that fails eligibility is rejected without any judgment being sought —
+which is also what makes §11.1.1's cheap screening gate possible.
+
+**Governance authorization — auditable, attributable, NOT recomputable:**
+
+```text
+the principal accepts the trust cost;
+the quorum accepts the complexity;
+affected owners accept the externalities.
+```
+
+These are decisions, not measurements. Requiring them to replay would either
+force a fake number onto a judgment or bar the federation from ever weighing
+anything a formula cannot.
+
+Rules:
+
+1. A receipt MUST record which terms were eligibility and which were
+   authorization. A term MUST NOT appear in both.
+2. Authorization MUST be **attributed**: who decided, under what mandate, on
+   what record. What replays is not the judgment but the **grounds** — the same
+   inputs, the same stated reasons, the same identified principal, so a reader
+   can reach their own conclusion and see exactly where it diverges.
+3. A judgment term MUST NOT be presented as a computed cost. An honestly labeled
+   judgment is usable; one disguised as a measurement corrupts every aggregate
+   it enters.
+4. Eligibility failure is terminal for that proposal. Authorization refusal is
+   not — it MAY be revisited under a different mandate, quorum, or set of
+   affected owners, and the revisit MUST cite the prior refusal.
+5. `federatively shared` and `canonical` status require **both**: deterministic
+   eligibility that replays, and authorization that is attributed.
 
 ### 10.2 Loop prevention
 
@@ -1325,9 +1818,9 @@ The runtime MUST prevent unbounded mutation loops through at least:
 
 ---
 
-## 11. Geometry Admission Protocol
+## 11. Domain Admission Protocol
 
-A proposed geometry or ontology extension passes through the following states:
+A proposed domain or ontology extension passes through the following states:
 
 ```text
 hypothesis
@@ -1345,10 +1838,10 @@ Skipping stages requires an explicit warrant and receipt.
 ### 11.1 Proposal
 
 ```ts
-type GeometryProposal = {
+type DomainProposal = {
   id: string;
   problem: ConflictRef | BottleneckRef;
-  proposedGeometry: GeometryDescriptor;
+  proposedDomain: DomainDescriptor;
   proposedOntologyChanges: OntologyPatch[];
   requiredTranslations: TranslationDescriptor[];
   expectedGain: GainProfile;
@@ -1400,7 +1893,7 @@ proposer could have checked themselves.
 ### 11.2 Admission report
 
 ```ts
-type GeometryAdmissionReport = {
+type DomainAdmissionReport = {
   conflictResolution: ResolutionDelta;
   invariantPreservation: InvariantReport;
   translationLoss: LossProfile[];
@@ -1418,7 +1911,7 @@ type GeometryAdmissionReport = {
 
 ### 11.3 Required tests
 
-An experimental geometry MUST be tested for:
+An experimental domain MUST be tested for:
 
 - canonical serialization stability;
 - canonical encoding parity against the shared fixture set (§5.1.3), including
@@ -1438,8 +1931,8 @@ An experimental geometry MUST be tested for:
 - complexity and resource bounds;
 - external falsifiers relevant to the original problem.
 
-A geometry MUST NOT be accepted solely because it reduces an internal conflict
-score.
+A state domain MUST NOT be accepted solely because it reduces an internal
+conflict score.
 
 The round-trip and composition tests are the two that catch a translator lying
 about its own loss, which is the failure the rest of the protocol has no other
@@ -1448,7 +1941,7 @@ way to detect.
 ### 11.4 Acceptance authority
 
 Admission authority MUST be scoped. A local agent MAY accept an experimental
-geometry for reversible internal use. Federated or canonical acceptance MUST
+domain for reversible internal use. Federated or canonical acceptance MUST
 follow substrate governance and produce proof-bearing receipts.
 
 ---
@@ -1498,14 +1991,14 @@ identity schema.
 
 ## 13. Federated Ontology Protocol
 
-The most important case is not multiple geometries inside one agent, but
+The most important case is not multiple state domains inside one agent, but
 multiple agents or substrates with different ontologies.
 
 ```ts
 type AgentOntology = {
   owner: AgentId | SubstrateId;
   ontology: OntologyRef;
-  geometries: GeometryRef<unknown>[];
+  state domains: DomainRef<unknown>[];
   invariants: InvariantSet;
   translationPolicies: TranslationPolicy[];
   trustModel: TrustModel;
@@ -1735,21 +2228,100 @@ earlier draft, which in a distributed setting means it was left to whoever
 implements it first. There is no global clock, timestamps are assertions by
 their author, and negotiation state that depends on either is not well-defined.
 
-Ordering is therefore established by **hash chaining**: every handshake message
-after `hello` carries `prev`, the content address of the message it follows. The
-chain gives, at no cost beyond a digest already being computed:
+Ordering starts from **hash chaining**: every handshake message after `hello`
+carries `prev`, the content address of the message it follows. The chain gives,
+at no cost beyond a digest already being computed:
 
-1. a total order within one handshake, verifiable by a third party who was not
-   present;
+1. verifiable causal ancestry — which messages a given message was written
+   after;
 2. tamper evidence — a message cannot be inserted, removed, or reordered without
    breaking every subsequent link;
-3. a well-defined negotiation state, namely the chain head;
-4. a fork detector — two messages claiming the same `prev` from one party is
-   equivocation, and MUST terminate the handshake rather than be resolved by
-   preferring one branch.
+3. a fork detector for one author — two messages claiming the same `prev` from
+   the **same party** is equivocation, and MUST terminate the handshake rather
+   than be resolved by preferring one branch.
+
+**Hash chaining alone does not give a total order, and an earlier draft claimed
+it did.** In a two-party protocol both sides can honestly reply to the same head
+at the same time:
+
+```text
+   M0
+  /  \
+A1    B1
+```
+
+Neither party equivocated — the authors differ, each extended the head it had.
+The chain is intact, the ancestry is correct, and there is no total order. The
+draft's fork detector would not fire, because it only catches one author
+claiming a head twice, and the negotiation state — "the chain head" — is now two
+things.
+
+A conforming handshake MUST therefore adopt one of:
+
+- **Strict turn-taking (RECOMMENDED for two parties).** The protocol assigns
+  whose move it is; a message from the party whose turn it is not is rejected
+  rather than merged. Turn order is fixed at `hello` — the initiator moves first
+  — so it needs no negotiation and no clock. This is the cheapest option and the
+  two-party handshake of §13.4 does not need more.
+- **Author-local chains plus explicit merge.** Each party chains its own
+  messages; concurrency is legal and is resolved by a `merge` message naming
+  both heads, after which the merged head is the state. The DAG is then the
+  record and the total order is only ever asserted where a merge exists.
+- **A sequencer**, if the handshake has a witness willing to be one — which
+  reintroduces a privileged party and MUST NOT be the default, per §13.4.4.
+
+Whichever is chosen MUST be declared in `hello`, because two parties running
+different ordering disciplines will disagree about whether a message was legal
+without either being at fault.
 
 This orders messages _within_ a handshake. It does not order events across
 handshakes or across the federation, and MUST NOT be presented as doing so.
+
+#### 13.4.3.2 A fixture set is not a domain
+
+§13.4.3 rule 1 says a mapping MUST NOT be credited beyond the region where
+fixtures agreed, and calls that the mapping's declared domain. That sentence
+does more work than it can carry: fixtures are a finite set of points, and a
+domain is a region. Nothing in the earlier draft said how one becomes the other,
+which leaves "the agreeing region" as a decorative name for a list of examples —
+the same defect this document objects to elsewhere.
+
+A credited mapping MUST therefore carry:
+
+```ts
+type MappingDomain = {
+  domain: PredicateRef; // the claimed region, as a checkable predicate
+  coverageEvidence: CoverageReport; // how the fixtures relate to that region
+  counterexampleSearch: EvidenceRef; // what was tried against it, and failed to break it
+  agreementFixtures: FixtureRef[];
+  divergenceFixtures: FixtureRef[]; // outside the domain by construction
+};
+```
+
+Rules:
+
+1. The `domain` predicate is a **claim of generalization** and carries the
+   epistemic status machinery of §6.2: it is `tested` at best unless something
+   proves it. It MUST NOT be reported as established because the fixtures
+   passed.
+2. `coverageEvidence` MUST state what the fixture set covers of the claimed
+   region and, more importantly, what it does not — boundary cases, degenerate
+   inputs, the neighbourhood of the known divergences.
+3. `counterexampleSearch` MUST record an active attempt to find a point inside
+   the claimed domain where the parties disagree. A domain nobody tried to break
+   has not been tested; it has been asserted with examples attached.
+4. Every known divergence MUST be **outside** the claimed domain by
+   construction. A domain predicate that admits a point the parties are known to
+   disagree on is falsified, and §6.2 rule 7 applies — the counterexample is
+   retained.
+5. Where no defensible predicate can be stated, the domain is the literal
+   fixture set and the mapping is credited **only** on those exact inputs. That
+   is a legitimate and very weak outcome, and it MUST be recorded as such rather
+   than generalized by silence.
+
+How large and how adversarial a fixture set must be before agreement is evidence
+of shared meaning remains open (§20.12). This section makes the question
+answerable by requiring the artifacts an answer would be computed from.
 
 #### 13.4.4 Trinity's role, and what it is not
 
@@ -1791,7 +2363,7 @@ the space in which state changes were interpreted.
 
 Each relevant receipt SHOULD record:
 
-- source and target geometry versions;
+- source and target domain versions;
 - source and target ontology versions;
 - translator identity and version;
 - loss profile;
@@ -1817,6 +2389,73 @@ A future verifier must be able to answer:
 6. What evidence survived independently?
 7. Could the action have been reversed?
 
+### 14.1 Disclosure
+
+Everything above is written as though the ledger is public and the parties have
+nothing to withhold. For a federation of agents acting on behalf of principals
+that is false, and the omission forces a choice the document never states:
+**auditability or confidentiality, pick one.**
+
+That framing is wrong, and treating disclosure as a later concern would bake it
+in. What a receipt must prove and what it must reveal are different questions,
+and the machinery this RFC already relies on — content addressing, canonical
+encoding, attestation — separates them if it is asked to.
+
+#### 14.1.1 The layering
+
+```text
+public receipt envelope     — structure, addresses, verdicts, authority
+private referenced payload  — the state, evidence, or policy body itself
+selective disclosure        — proofs about the payload, without the payload
+availability commitment     — who holds it, and what they owe
+```
+
+A receipt is an envelope of **references and verdicts**. Whether the referenced
+bytes are public is a separate decision from whether the receipt is verifiable.
+A verifier can already check that the structure is well-formed, the signatures
+bind, the lineage connects, and the authority was held, without reading a single
+payload.
+
+#### 14.1.2 Requirements
+
+1. **A confidential payload MUST still be committed to.** Withholding bytes is
+   legitimate; not committing to them is not. A reference whose target was never
+   fixed cannot be shown later to be the thing that was used.
+2. **Dictionary attacks on content addresses are real and MUST be considered.**
+   A digest over a low-entropy payload — a boolean verdict, a small enum, a name
+   from a known set — reveals the payload to anyone who can enumerate the space.
+   Commitments to low-entropy values MUST be salted or otherwise blinded, and
+   the salt is part of the payload, not of the receipt.
+3. **Redaction MUST be visible.** A redacted field MUST be distinguishable from
+   an absent one and from an unassessed one. §19.15's rule against confusing
+   `absent` with `not assessed` extends here: a third state, `withheld`, with a
+   commitment attached.
+4. **Selective disclosure MUST NOT be simulated by trust.** "The verifier was
+   told the invariant held" is not a proof that it held. Where a party must
+   establish a property of a payload without revealing it, that MUST be an
+   attestation by an identified party or a cryptographic proof — and which one
+   MUST be recorded, because they have very different strength.
+5. **Availability is a commitment, not a hope** (§5.1.0). A receipt depending on
+   a payload someone must retain MUST name who owes it and for how long. An
+   unavailable payload makes the receipt unverifiable, and a system that cannot
+   distinguish "withheld" from "lost" cannot be audited.
+6. **Disclosure decisions are themselves ledgered.** Who was granted resolution
+   of what, under which authority, is exactly the kind of thing that must not be
+   reconstructible only from someone's memory.
+
+#### 14.1.3 What this section does not do
+
+It does not select a scheme. Commitment construction, blinding, proof systems,
+and capability-controlled resolution are cryptographic engineering with failure
+modes this document is not equipped to adjudicate, and naming a scheme here
+would be §19.7's failure mode in the one area where getting it wrong is silent.
+
+What it does is refuse the framing that privacy is optional decoration for a
+federation of agents, and state the properties any scheme must deliver. The
+scheme selection is open problem §20.20; whether an irreversible boundary can be
+crossed on a withheld payload at all — as against merely being decided on one —
+is §20.21, and the conservative default until then is that it cannot.
+
 ---
 
 ## 15. Runtime protocol
@@ -1836,12 +2475,17 @@ protocol exists to govern**.
 An operation MAY take the fast path only when all of the following hold:
 
 ```text
-same geometry        — source and target geometry references are identical
+same domain          — source and target domain references are identical
 same ontology        — no cross-ontology interpretation occurs
 no federation        — no other agent or substrate is a participant
 reversible           — the action's reversibility class is "reversible" and a
                        rollback boundary is already established
-within budget        — no mutation is proposed and no budget term is consumed
+no mutation cost     — no mutation is proposed and no *mutation-budget* term is
+                       consumed; compute and time are consumed by every action,
+                       including this one, and were wrongly implied otherwise in
+                       an earlier draft
+not coupled          — the operation touches no component of a coupled composite
+                       state (§6.5.1)
 no unresolved debt   — the states involved carry no outstanding translation debt
 invariants unchanged — the operation touches no invariant in the identity policy
 ```
@@ -1850,12 +2494,66 @@ The predicate MUST fail closed: if any term is unknown, unavailable, or
 expensive to evaluate, the operation takes the governed path. Evaluating the
 predicate MUST be cheaper than the ceremony it skips, or it has no purpose.
 
+#### 15.0.1 The predicate and the receipt must both be affordable
+
+That last sentence is a requirement the earlier draft stated and then made hard
+to satisfy. Eight terms evaluated per operation, plus a reconstructible receipt
+written per operation, can easily exceed the cost of incrementing a counter —
+and if it does, the two-path design has not made the protocol affordable, it has
+added a second expensive path.
+
+Two mitigations are REQUIRED where fast-path volume is high enough for this to
+bite.
+
+**Amortize the predicate.** Most terms are properties of a _context_, not of an
+operation: which domain, which ontology, whether a federation participant is
+involved, whether the composite is coupled. A runtime MAY establish an
+**eligible segment** — a bounded region of execution in which those terms are
+evaluated once and held — provided that:
+
+1. the segment declares its bounds up front (operation count, wall-clock, or
+   state-reachability), and MUST end when any bound is reached;
+2. any event that could falsify a held term ends the segment immediately — a
+   federation message arriving, a debt being recorded, an identity amendment, a
+   coupling being added;
+3. the segment is itself receipted, so the amortization is auditable as a unit;
+4. the segment fails closed: on any uncertainty it ends and the next operation
+   re-evaluates in full.
+
+**Amortize the receipt.** The obligation is that an operation remain
+reconstructible, not that it carry its own document. Conforming alternatives:
+
+- **Batch receipts** — one receipt per segment, carrying the ordered operation
+  log by content address rather than one receipt per operation.
+- **Accumulation** — operations accumulate into a hash tree; the receipt records
+  the root, and any single operation is provable against it on demand.
+- **Deterministic replay seeds** — the receipt records the starting state and
+  the input sequence, from which the operations are recomputed rather than
+  stored, valid only where the transition function is deterministic (which for
+  an intra-domain fast-path update it MUST be).
+- **Boundary-exit receipting** — full receipts are written when state leaves the
+  local boundary. State that never leaves may be summarized, provided the
+  summary is enough to reconstruct what left.
+
+Rules:
+
+1. Whichever is used MUST be declared, so a verifier knows what kind of evidence
+   to expect and can tell "summarized" from "absent".
+2. **Reconstructibility is not negotiable.** These reduce the cost of recording,
+   never the ability to answer §14's questions afterwards.
+3. Taint propagates: if any operation in a segment turns out to have needed the
+   governed path, the whole segment is suspect and MUST be reported as such, not
+   just the offending operation. This is the price of amortizing, and it is why
+   segments should be small.
+4. A summarization scheme that cannot produce a per-operation proof on demand
+   MUST NOT be used for state that will cross a boundary.
+
 ### 15.1 Fast path
 
 ```text
 observe
   -> type state
-  -> validate geometry
+  -> validate domain
   -> update local state
   -> record compact receipt
 ```
@@ -1863,8 +2561,8 @@ observe
 Rules:
 
 1. The fast path MUST still produce a receipt. The receipt MAY be compact —
-   state reference, geometry version, operation, outcome — but the operation
-   MUST remain reconstructible.
+   state reference, domain version, operation, outcome — but the operation MUST
+   remain reconstructible.
 2. The fast path MUST NOT cross a translation, federation, or irreversible
    boundary; MUST NOT propose or apply a mutation; and MUST NOT amend identity
    invariants. These are precisely the terms of the §15.0 predicate, restated as
@@ -1883,7 +2581,7 @@ A minimal governed execution cycle is:
 ```text
 observe
   -> type state
-  -> validate geometry and ontology
+  -> validate domain and ontology
   -> update local state
   -> evaluate intents and warrants
   -> detect conflict
@@ -1901,7 +2599,7 @@ observe
 ```
 
 The runtime MUST distinguish hypothesis generation from authority to mutate or
-act. An LLM MAY propose candidates but MUST NOT be the sole verifier of geometry
+act. An LLM MAY propose candidates but MUST NOT be the sole verifier of domain
 adequacy, invariant preservation, or admission.
 
 ### 15.3 Path selection is a security boundary
@@ -2018,28 +2716,94 @@ whether that constitutes grounds to withdraw a proposal that has already
 collected witnesses — an action with external effect, therefore an irreversible
 boundary under §13.3.
 
+#### 16.7.1 This is not a translation, and calling it one is the error
+
+An earlier draft described the demo as a candidate _correspondence_ between
+`exhausted` and `grounds_for_withdrawal`, to be established by fixtures and
+carried by a translator mapping.
+
+Those are not two names for one concept in two ontologies. `exhausted` is an
+observation about a resource state. `grounds_for_withdrawal` is a normative
+conclusion inside a proposal policy. Nothing about the first _means_ the second;
+the second follows from the first only through a rule that someone with
+authority adopted, and that could be adopted differently without either ontology
+changing.
+
+Treating that as translation would be the most consequential mistake available
+here: it lets **policy masquerade as semantic correspondence**. A policy carried
+as a mapping inherits the mapping's properties — it looks bidirectional, it
+looks like it has a loss profile, it looks like fixture agreement validates it —
+and none of that is true of a normative rule. Worse, it launders authorship: a
+mapping is a technical artifact, a policy is someone's decision, and the whole
+document is built on being able to ask who decided.
+
+The structure is three-part, not two:
+
+```text
+evidence  →  policy rule  →  warranted decision
+```
+
+and it needs its own primitive:
+
+```ts
+type EvidenceBridge = {
+  sourceClaim: ClaimRef; // what the evidence asserts, in the source ontology
+  targetDecisionPredicate: PredicateRef; // what the decision turns on, in the target
+  policy: PolicyRef; // the rule connecting them — content-addressed
+  sufficiencyRule: EvidenceRule; // how much evidence is enough
+  authority: AuthorityRef; // who adopted this rule, and under what mandate
+  address: ContentAddress;
+};
+```
+
+Rules:
+
+1. A bridge MUST NOT be represented as a translation, MUST NOT carry a
+   `LossProfile`, and MUST NOT be credited by fixture agreement. Fixtures can
+   establish that both parties compute the same _evidence_; they cannot
+   establish that a normative rule is correct.
+2. The `policy` MUST be content-addressed and attributed to an `authority`.
+   Changing the policy changes the bridge's address, so a decision made under an
+   older rule remains evaluable under the rule that actually applied.
+3. A bridge is **directional and non-invertible.** There is no round trip from a
+   decision back to the evidence that warranted it.
+4. Where a mapping and a bridge are both needed — the evidence must first be
+   translated into terms the policy reads — they MUST be separate objects with
+   separate receipts. The translation carries loss; the bridge carries
+   authority.
+5. Disagreement about a bridge is a governance dispute, not a translation
+   defect, and MUST be routed as one.
+
 **What the demo must produce**, in receipts a third party can replay:
 
 1. a `hello` exchange declaring both parties' evaluator and floor version,
-   hash-chained per §13.4.3.1;
-2. a fixture set exercising the candidate correspondence between `exhausted` and
-   `grounds_for_withdrawal`, evaluated in the shared floor by both parties
-   independently;
+   ordered per §13.4.3.1;
+2. a fixture set exercising the **translation** — `liquid`'s resource-state
+   claim rendered into terms `myc`'s policy can read — evaluated in the shared
+   floor by both parties independently;
 3. **at least one fixture on which they diverge**, recorded with its divergence
    rather than discarded — a demo where everything agrees has not tested the
    mechanism that matters;
-4. a mapping credited only over the agreeing region, with the divergent region
-   explicitly outside its declared domain;
-5. a loss profile and a round-trip anchor report for the mapping (§7.4.2);
-6. an action-context suitability for `forIrreversibleAction` that is
+4. a mapping credited only over the agreeing region, with a declared domain
+   predicate and coverage evidence rather than a list of passing cases
+   (§13.4.3.2);
+5. a loss profile and a round-trip anchor report for that mapping (§7.4.2);
+6. an `EvidenceBridge` — separately — carrying `myc`'s policy that an exhausted
+   resource is grounds for withdrawal, attributed to the authority that adopted
+   it;
+7. an action-context suitability for `forIrreversibleAction` that is
    **fixture-measured or third-party attested**, never self-reported by the
    translator (§7.2.2);
-7. a scoped compatibility contract naming preserved invariants, accepted losses,
+8. a scoped compatibility contract naming preserved invariants, accepted losses,
    rollback ownership, and the boundary condition;
-8. the boundary decision itself — crossed with warrants, or refused — with the
+9. the boundary decision itself — crossed with warrants, or refused — with the
    refusal being an equally valid demo outcome;
-9. a replay by a third substrate (`omega` or `trinity`) reaching the same
-   verdict from the receipts alone.
+10. a replay by a third substrate (`omega` or `trinity`) reaching the same
+    verdict from the receipts alone.
+
+Step 6 is the one that makes the demo worth building. A reader of the receipts
+must be able to ask "who decided that exhaustion justifies withdrawal?" and get
+a name, not a mapping.
 
 **What it falsifies.** If the two substrates cannot produce a fixture set whose
 agreeing region is non-empty and whose divergent region is non-empty, then
@@ -2069,13 +2833,13 @@ core/
   addressing          # canonical bytes, digests, reference resolution (§5.1)
   state-profile       # profile declaration and boundary enforcement (§5.2)
 
-geometry/
-  geometry-contract
+domain/
+  domain-contract
   algebraic-laws      # law declarations and their evidence (§6.2)
   capabilities        # metric / interpolable / composable split (§6.3)
   typed-state
-  geometry-registry
-  product-geometry
+  domain-registry
+  product-domain
 
 translation/
   translation
@@ -2089,7 +2853,7 @@ conflict/
   representational-bottleneck
 
 mutation/
-  geometry-proposal
+  domain-proposal
   mutation-budget
   admission-protocol
   rollback
@@ -2112,8 +2876,51 @@ identity/
   constitutional-amendment
 ```
 
-The actual mapping into `trinity`, `myc`, `omega`, and `liquid` remains an
-implementation task and MUST preserve each substrate's authority boundary.
+The actual mapping into `trinity`, `myc`, `omega`, and `liquid` MUST preserve
+each substrate's authority boundary. §17.2 states it concretely.
+
+### 17.2 First implementation slice
+
+Folder names are not a plan. This table names, for each primitive that Tranche A
+or B would require, what exists today, whether it is extended or created, which
+substrate would own it, and the first test that would fail if it were wrong.
+
+Rows are ordered by dependency: nothing below is startable before the rows above
+it land.
+
+| Primitive             | Existing source                                                   | Extend / create | Owner substrate                       | First executable test                                                                                                    |
+| --------------------- | ----------------------------------------------------------------- | --------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `ContentAddress`      | `contracts/CANONICAL_HASH.v0.1.md`, `fixtures/canon-vectors.json` | extend          | trinity                               | full-digest vectors alongside the existing 12-hex handles (§5.1 rule 4)                                                  |
+| `CanonicalEncoding`   | `warrant` SPEC §4 + `examples/canon-vectors.json`                 | adopt + extend  | trinity, as `CANONICAL_ENCODING.v0.1` | the existing 47 vectors pass unchanged, plus new ratio/fixed-point cases (§5.1.2)                                        |
+| `StateDomain`         | none                                                              | create          | omega                                 | a domain that declares `Metric` without implementing it is rejected at registration (§6.3.1)                             |
+| `AlgebraicLaws`       | none                                                              | create          | omega                                 | a law with `status: falsified` blocks composition; a `tested` law with no generator is rejected (§6.2)                   |
+| `InvariantDefinition` | scattered invariant checks across substrates                      | create          | omega                                 | a `transition`-scope invariant evaluated from one state fails rather than reporting held (§6.1.1)                        |
+| `InvariantEvaluation` | none                                                              | create          | omega                                 | same predicate + same snapshots ⇒ same report on two substrates; a stale snapshot yields `not assessed` (§6.1.2)         |
+| `TypedState`          | substrate-local state shapes                                      | create          | trinity                               | a `minimal`-profile state is refused at a boundary requiring `full`, not backfilled (§5.2)                               |
+| `CompositeState`      | none                                                              | create          | liquid                                | a composite with an undeclared coupling fails validation while every component validates (§6.5.2)                        |
+| `LossProfile`         | none                                                              | create          | trinity                               | property tests: associativity, identity, non-commutativity, monotonicity for `translation` only (§7.1.1)                 |
+| `TransformKind`       | none                                                              | create          | trinity                               | an undeclared kind is treated as `reconstruction`; a reconstructed value is refused at an irreversible boundary (§7.0.2) |
+| `SuitabilityProfile`  | none                                                              | create          | trinity                               | a self-reported `forIrreversibleAction` is recorded as `undetermined` regardless of the claim (§7.2.2)                   |
+| `ConflictOccurrence`  | `src/x2B88_decisions.myc.md` chord ledger                         | extend          | myc, liquid                           | two occurrences sharing a fingerprint are not merged without a receipted lineage claim (§19.16)                          |
+| `AdmissionStage`      | `myc` proposal lifecycle, `contracts/GOVERNANCE_FLOW.v0.md`       | extend          | myc                                   | eligibility replays bit-for-bit from the receipt; authorization is attributed and not recomputed (§10.1.3)               |
+| `ExecutionFloor`      | `ski@v1` / Σ-GLYPH Book I v0.5                                    | adopt (pinned)  | omega                                 | the same fixture yields identical output bytes under two substrates' evaluators (§13.4.1.1)                              |
+| `HandshakeMessage`    | none                                                              | create          | trinity                               | a message from the party whose turn it is not is rejected, not merged (§13.4.3.1)                                        |
+| `EvidenceBridge`      | `warrant` decision records                                        | extend          | myc, trinity                          | a bridge presented as a translation — carrying a loss profile — is rejected (§16.7.1)                                    |
+
+Notes on the table:
+
+1. **Three rows are `adopt`, not `create`.** Canonical encoding and the
+   execution floor exist and are tested (§17.1); building parallel ones would be
+   the ecosystem fork §5.1 argues against. Adoption still requires the pin.
+2. **`omega` carries the deterministic rows** because determinism is its stated
+   responsibility (§18), and every one of those tests is a determinism test.
+3. **The `first executable test` column is the point of the table.** Each is a
+   test that fails today because the thing does not exist, and would pass when
+   it does — which makes each row a unit of work with a completion condition,
+   rather than an item on a diagram.
+4. Nothing here is a commitment by those substrates. It is what the mapping
+   would be, stated concretely enough to be argued with, which the folder tree
+   above is not.
 
 ### 17.1 Prior art in the adjacent dyad
 
@@ -2255,7 +3062,7 @@ This section is provisional.
 ### Omega
 
 - deterministic state transition;
-- executable geometry invariants where formalizable;
+- executable domain invariants where formalizable;
 - algebraic-law property tests and their evidence;
 - deterministic evaluation of the runtime path predicate (§15.0);
 - mutation budget enforcement;
@@ -2265,7 +3072,7 @@ This section is provisional.
 ### Liquid
 
 - semantic ontology structures;
-- local geometry experiments;
+- local domain experiments;
 - conflict and tension profiles;
 - representational bottleneck hypotheses;
 - evolving translation candidates.
@@ -2279,7 +3086,7 @@ where independent verification is possible.
 
 ### 19.1 Conflict laundering
 
-A new geometry may hide rather than resolve conflict. Admission MUST compare
+A new domain may hide rather than resolve conflict. Admission MUST compare
 original invariants and external outcomes.
 
 ### 19.2 Ontology inflation
@@ -2327,7 +3134,7 @@ runtime-evaluated, receipt-recorded, and auditable in aggregate (§15.3).
 ### 19.10 Reference forgery
 
 A truncated content address may be ground to collide, letting a receipt appear
-to attest a different translator, geometry, or evidence bundle than the one that
+to attest a different translator, domain, or evidence bundle than the one that
 ran. Short handles MUST NOT be load-bearing at admission, identity, trust, or
 irreversible boundaries; full digests MUST accompany them (§5.1).
 
@@ -2339,10 +3146,10 @@ states rather than backfilling their metadata (§5.2).
 
 ### 19.12 Law assertion without evidence
 
-A geometry may declare favorable algebraic laws it does not satisfy, inviting
-callers to compose states in ways that silently corrupt them. Declared laws MUST
-carry evidence, and asserted-only laws MUST NOT authorize composition across
-translation or irreversible boundaries (§6.2).
+A state domain may declare favorable algebraic laws it does not satisfy,
+inviting callers to compose states in ways that silently corrupt them. Declared
+laws MUST carry evidence, and asserted-only laws MUST NOT authorize composition
+across translation or irreversible boundaries (§6.2).
 
 ### 19.13 Salami-slicing the budget
 
@@ -2358,11 +3165,13 @@ Requiring the lineage to be _declared_ is not enough on its own: a proposer who
 wants a fresh budget declares a fresh conflict, and the rule is satisfied while
 being evaded. **Lineage MUST therefore be derived, not accepted as asserted.**
 
-1. **Conflict identity is canonical (§19.16).** A conflict's identity is
-   computed from its participants and violated invariants, so a "new" conflict
-   with the same participants and the same violated invariants resolves to the
-   **same identity** and joins the existing lineage whether or not the proposer
-   wanted it to. Restating a conflict does not reset it.
+1. **Restating does not reset (§19.16).** A "new" conflict sharing participants
+   and violated invariants with an existing one shares its `ConflictFingerprint`
+   and surfaces as a candidate for the same lineage. Whether the two are one
+   underlying problem is a receipted decision with an author, not a hash
+   collision — so evading a budget requires filing a false lineage claim under
+   an authority, which is attributable, rather than choosing different words,
+   which is not.
 2. **The bottleneck showing carries receipts.** §8.2.1 already requires evidence
    that two independent policies failed on the witness pair. Those failures have
    receipts, and the proposal MUST cite them by content address. A proposal
@@ -2382,12 +3191,12 @@ that the mechanism raises the cost of evasion rather than closing it.
 
 ### 19.14 Deprecation orphaning
 
-Retiring a geometry (§11) can strand obligations expressed in it — compatibility
-contracts, outstanding translation debt, invariants referenced by an identity
-policy. Deprecation MUST enumerate its dependents and MUST NOT proceed to
-`retired` while an unresolved obligation references it. A geometry may be
-deprecated for new use while remaining resolvable for old receipts; the two are
-different states and MUST NOT be conflated.
+Retiring a state domain (§11) can strand obligations expressed in it —
+compatibility contracts, outstanding translation debt, invariants referenced by
+an identity policy. Deprecation MUST enumerate its dependents and MUST NOT
+proceed to `retired` while an unresolved obligation references it. A state
+domain may be deprecated for new use while remaining resolvable for old
+receipts; the two are different states and MUST NOT be conflated.
 
 ### 19.15 Tension laundering
 
@@ -2402,9 +3211,60 @@ a decision gated on a tension dimension MUST fail closed when that dimension is
 Two substrates may register the same underlying conflict as two objects, so that
 persistence counters, mutation limits, and lineage accounting each see half the
 evidence — and a mutation limit is evaded by splitting the conflict rather than
-the mutation. Conflicts MUST have a canonical identity derived from their
-participants and violated invariants, and merging two records MUST produce a
-merge receipt that preserves both histories rather than discarding one.
+the mutation.
+
+An earlier draft answered this with a single canonical identity derived from
+participants and violated invariants. That is too coarse in one direction and
+too fine in the other, and one hash cannot be both.
+
+- **Too coarse:** two genuinely different conflicts can share participants and
+  violated invariants while arising from different causal episodes, under
+  different ontology snapshots, at different times, from different evidence
+  roots. Collapsing them loses the fact that there were two.
+- **Too fine:** add those contexts to the digest and one underlying problem
+  shatters into a new identity per occurrence, which is precisely the
+  salami-slicing §19.13 defends against, now available by accident.
+
+Semantic deduplication and clean content identity are different jobs and need
+three objects:
+
+```ts
+type ConflictOccurrenceId = ContentAddress; // the exact event: participants,
+// invariants, ontology snapshot,
+// evidence roots, logical step
+
+type ConflictFingerprint = {
+  key: FingerprintKey; // participants + violated invariants — heuristic
+  occurrences: ConflictOccurrenceId[]; // candidates, not a claim of sameness
+};
+
+type ConflictLineageClaim = {
+  occurrences: ConflictOccurrenceId[];
+  verdict: "same-underlying-problem" | "distinct";
+  grounds: EvidenceRef[];
+  decidedBy: AgentId;
+  authority: AuthorityRef;
+  address: ContentAddress;
+};
+```
+
+Rules:
+
+1. `ConflictOccurrenceId` is content identity and is never merged. Occurrences
+   are immutable events; two of them are two of them.
+2. `ConflictFingerprint` is a **search key**, not an assertion. It gathers
+   candidates for a human or governed process to look at. Nothing may be
+   accumulated, limited, or budgeted on a fingerprint alone.
+3. Merging is a **decision** — a receipted `ConflictLineageClaim` with grounds
+   and an author — not a hash collision. §19.13's lineage accumulates over
+   claimed lineages, so evading a budget requires filing a false claim under an
+   authority, which is attributable, rather than choosing different words, which
+   is not.
+4. A `distinct` verdict is as informative as a `same` verdict and MUST be
+   recorded. Otherwise every unmerged pair is indistinguishable from an
+   unexamined one.
+5. A lineage claim MAY be superseded by a later one with better grounds. The
+   supersession MUST cite the claim it replaces, and neither is deleted.
 
 ---
 
@@ -2417,7 +3277,7 @@ features:
    scalar?
 2. Which bottleneck signals reliably distinguish insufficient search from
    insufficient representation?
-3. How can learned geometries expose stable, human- and machine-auditable
+3. How can learned state domains expose stable, human- and machine-auditable
    invariants?
 4. How should translation debt decay, compound, or trigger mandatory review?
 5. What continuity test determines whether an identity amendment creates a
@@ -2426,7 +3286,7 @@ features:
    ontology?
 7. Which mutation-budget terms can be made deterministic in Omega?
 8. How should conflicting admission reports be reconciled across substrates?
-9. Can a geometry be locally valid but federatively unacceptable?
+9. Can a state domain be locally valid but federatively unacceptable?
 10. Which irreversible boundaries require quorum, owner consent, or external
     witnesses?
 11. Is there an order parameter that distinguishes a genuine representational
@@ -2456,6 +3316,21 @@ features:
 18. How should a proposal bond be sized so that it deters verification-budget
     exhaustion without suppressing speculative but well-formed proposals
     (§11.1.1)?
+19. Is composition associative — does a composite of composites flatten? The
+    likely answer is yes for product and no for coupled, but nothing here yet
+    needs it and "likely" is not the standard this document holds (§6.5.3).
+20. Which commitment, blinding, and selective-disclosure constructions should
+    the federation adopt, and can they be verified by the same from-scratch
+    second implementation the encoding requires (§14.1)?
+21. May an irreversible boundary be crossed on a payload that remains withheld,
+    or only decided on one? The conservative default until answered is that it
+    may not (§14.1.3).
+22. What promotes a behavioral witness pair past the sandbox — must the
+    divergence have produced a warrant-level consequence, or is a governance
+    decision on behavioral grounds alone sufficient (§8.2.2)?
+23. How is an eligible segment (§15.0.1) bounded in practice so that
+    amortization is worth its taint radius — and is there a segment size at
+    which the two-path design stops paying for itself?
 
 ---
 
@@ -2471,14 +3346,14 @@ counterparty's invariant set, so a later amendment cannot silently rewrite what
 was agreed; what happens to the contract when that party forks is open problem
 §20.17.
 
-### Level 0 — Declared geometry
+### Level 0 — Declared domain
 
-- states declare geometry and ontology;
+- states declare domain and ontology;
 - validation and canonical serialization exist;
 - **stable key identity exists and is verifiable**;
 - references are content-addressed, with full digests where load-bearing;
-- geometries declare their algebraic laws with evidence;
-- geometries exposing `move` declare a typed delta space;
+- state domains declare their algebraic laws with evidence;
+- state domains exposing `move` declare a typed delta space;
 - invariants declare execution scope and cost class.
 
 ### Level 1 — Loss-aware translation
@@ -2500,7 +3375,7 @@ was agreed; what happens to the contract when that party forks is open problem
 
 - mutation budgets exist, with `Cost` as a vector and a content-addressed cost
   model that makes admission replayable;
-- experimental geometries use admission stages;
+- experimental state domains use admission stages;
 - proposal intake is bounded against verification-budget exhaustion;
 - rollback and falsifiers are mandatory.
 
@@ -2554,16 +3429,23 @@ Tranche A is a prerequisite for every other tranche. Until A2 and A3 land,
 §5.1's guarantees do not hold across substrate boundaries and nothing that
 depends on cross-substrate reference equality should be claimed.
 
-### Tranche B — Geometry typing (depends on A)
+### Tranche B — State-domain typing (depends on A)
 
-- **B1.** Treat geometry as a first-class state type.
+- **B1.** Treat the state domain as a first-class part of the state type, with
+  geometric structure as one capability among several.
 - **B2.** Require declared algebraic laws with evidence; asserted-only laws
   cannot authorize composition across a boundary.
-- **B3.** Split the geometry contract into capability interfaces rather than
+- **B3.** Split the state domain contract into capability interfaces rather than
   optional methods, and require a typed delta space for `move`.
 - **B4.** Require invariants to declare execution scope and cost class.
 - **B5.** Derive `version` from the content-address DAG rather than declaring it
   independently.
+- **B6.** Adopt composite state with declared couplings and a consistency model
+  (§6.5), so that a multi-domain agent state is a first-class object.
+- **B7.** Replace `holds: boolean` on law claims with the epistemic status union
+  of §6.2, and require policies to state the minimum status each boundary needs.
+- **B8.** Make invariant context an explicit content-addressed input (§6.1.2)
+  rather than forbidding context-dependent invariants.
 
 ### Tranche C — Translation and loss (depends on A, B)
 
@@ -2574,25 +3456,35 @@ depends on cross-substrate reference equality should be claimed.
   profiles, and forbid self-reported action-context suitability.
 - **C4.** Make composed translators first-class, with round-trip anchors
   measured against source canonical bytes.
+- **C5.** Adopt the five-kind transformation taxonomy of §7.0; require monotone
+  loss of `translation` only, and attribution of new information for the rest.
+- **C6.** Add `EvidenceBridge` (§16.7.1) as a primitive distinct from
+  translation, so a normative policy cannot be carried as a mapping.
 
 ### Tranche D — Conflict and bottleneck (depends on A)
 
 - **D1.** Model conflict as a first-class ledger object with canonical identity.
-- **D2.** Separate structural insufficiency from geometry mismatch, with the
-  warrant-level witness pair and declared policy independence of §8.2.2–8.2.3.
+- **D2.** Separate structural insufficiency from domain mismatch, with the two
+  witness-pair classes and declared policy independence of §8.2.2–8.2.3.
+- **D3.** Split conflict identity into occurrence, fingerprint, and receipted
+  lineage claim (§19.16).
 
 ### Tranche E — Mutation and admission (depends on A, B, D)
 
 - **E1.** Require mutation budgets, with `Cost` as a vector.
 - **E2.** Require a content-addressed cost model so admission decisions replay.
-- **E3.** Introduce the staged Geometry Admission Protocol.
+- **E3.** Introduce the staged Domain Admission Protocol.
 - **E4.** Bound proposal intake against verification-budget exhaustion.
+- **E5.** Split admission into deterministic eligibility that replays and
+  governance authorization that is attributed but not recomputed (§10.1.3).
 
 ### Tranche F — Runtime (depends on A, B)
 
 - **F1.** Adopt state profiles so ceremony scales with consequence.
 - **F2.** Adopt the two-path runtime with a runtime-evaluated, fail-closed,
   receipt-recorded path predicate.
+- **F3.** Permit amortized predicate evaluation and receipting under §15.0.1,
+  with declared segment bounds and taint propagation.
 
 ### Tranche G — Federation (depends on A, C, and the execution floor)
 
@@ -2605,10 +3497,27 @@ depends on cross-substrate reference equality should be claimed.
 - **G4.** Select the execution floor's deterministic evaluator. `ski@v1` over
   Σ-GLYPH Book I v0.5 meets every requirement of §13.4.1.1 and is the standing
   candidate (§17.1.1); adoption MUST pin it by version and content.
+- **G5.** Select a handshake ordering discipline — turn-taking, author-local
+  chains with explicit merge, or a sequencer — since hash chaining alone does
+  not give a total order (§13.4.3.1).
+- **G6.** Require a mapping domain predicate with coverage evidence and
+  counterexample search, rather than crediting a fixture list (§13.4.3.2).
 
 ### Tranche H — Identity (depends on A, and G for the fork case)
 
 - **H1.** Add identity mutation policy as a constitutional primitive.
+
+### Tranche J — Disclosure (depends on A)
+
+- **J1.** Adopt the receipt-envelope / private-payload layering of §14.1, so
+  that verifiability does not require publication.
+- **J2.** Require commitments to low-entropy payloads to be blinded, and
+  redaction to be visible as a third state distinct from absent and from not
+  assessed.
+- **J3.** Require availability commitments wherever a receipt depends on a
+  payload someone must retain.
+- **J4.** Select the cryptographic constructions. This RFC deliberately does not
+  (§14.1.3).
 
 ### Tranche I — Demonstration (depends on the tranches each demo exercises)
 
@@ -2619,24 +3528,50 @@ depends on cross-substrate reference equality should be claimed.
 
 ### On splitting this document
 
-A reviewer proposed decomposing this RFC into five documents along roughly these
-tranche boundaries. The diagnosis behind that proposal is accepted — fifteen
-entangled decisions are not ratifiable — and the tranches above are the
-response.
+Two reviewers, independently, proposed decomposing this RFC into separate
+documents along roughly these tranche boundaries. The diagnosis was accepted at
+the first asking — entangled decisions are not ratifiable — and the tranches
+above were the response.
 
-The split itself is **deferred, not refused**. Splitting an unratified draft
-into five unratified drafts multiplies the cross-references and the version skew
-without making any decision easier, and the tranche boundaries have not yet been
-tested against a real ratification attempt. The natural time to split is when a
-tranche is ratified: a ratified tranche has a stable boundary and earns its own
-document. Splitting first would fix the boundaries before anything has tested
-them.
+**The split is now accepted, and this document is the last revision before it.**
+
+The earlier reason for deferring — that the boundaries had not been tested — has
+expired. They have now survived two rounds of use, including a round that added
+`EvidenceBridge`, composite state, the transformation taxonomy, and a disclosure
+tranche, and the boundaries absorbed all of it without moving. The second
+argument was stronger and is what finally decided it: Tranche A is a
+prerequisite for everything and its encoding is still unselected, so **no later
+tranche can currently be implemented as a conforming federation protocol at
+all**. A document that cannot be adopted in pieces, whose first piece is not
+adopted, is not a specification anyone can act on; it is a very careful
+description of one.
+
+The split follows in a separate change, as:
+
+```text
+RFC-A  Canonical Identity and Encoding          (Tranche A, J1–J3)
+RFC-B  Typed State Domains and Invariants       (Tranche B)
+RFC-C  Translation, Loss, Suitability and Debt  (Tranche C)
+RFC-D  Conflict, Bottleneck and Admission       (Tranches D, E)
+RFC-E  Federated Handshake and Boundaries       (Tranche G)
+RFC-F  Governed Identity and Runtime Paths      (Tranches F, H)
+```
+
+with this document surviving as an umbrella — **Heterogeneous State Protocol:
+Architecture and Ratification Map** — carrying the theses, the non-goals, the
+dependency graph, the open problems, the failure-mode catalogue, and almost no
+`MUST`. The normative weight moves to the documents small enough to ratify.
+
+Sequencing corrections before the cut was deliberate: three of this round's
+changes altered what belongs in which document, and splitting first would have
+fixed those boundaries wrongly and then required moving text between six files
+to repair it.
 
 ---
 
 ## 23. Final principle
 
-The federation does not need one perfect geometry of thought.
+The federation does not need one perfect domain of thought.
 
 It needs a disciplined way for different forms of state to coexist, translate,
 conflict, evolve, and act together without erasing what makes them different.

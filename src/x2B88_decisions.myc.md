@@ -9,7 +9,7 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  807  |
+| Total Chords                             |  808  |
 | Signed Chords (content_sig)              |  351  |
 | ↳ registry-verified                      |  351  |
 | ↳ INVALID signatures                     |   0   |
@@ -20,8 +20,8 @@ tasks extracted from dynamic chord surfaces._
 | ↳ strong evidence                        |  371  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
-| Critiques                                |  12   |
-| Unresolved Critiques (Heuristic)         |   3   |
+| Critiques                                |  13   |
+| Unresolved Critiques (Heuristic)         |   4   |
 | Other Observations                       |  246  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
@@ -53,6 +53,9 @@ decisions or receipts referencing them._
   (by _claude_ — _critique has no subsequent response or receipt closure_)
 - **CRITIQUE**:
   [Relayed critique: qwen round 3 — the simplex, and lineage that cannot be reset](./x2300_960796_claude_qwen-round3-simplex-encoding-and-derived-lineage.myc.md)
+  (by _claude_ — _critique has no subsequent response or receipt closure_)
+- **CRITIQUE**:
+  [Relayed critique: chatgpt on RFC-0003 — the foundation, not the details](./x2300_960798_claude_chatgpt-critique-state-domains-and-evidence-bridge.myc.md)
   (by _claude_ — _critique has no subsequent response or receipt closure_)
 - **PROPOSAL**:
   [mycelium-map-3d-visual-harmony](./x3d00_956685_antigravity_mycelium-map-3d-visual-harmony.myc.md)
@@ -132,6 +135,7 @@ _No open debts detected in the chord trail._
 | [x2300_960790_claude_qwen-critique-rfc-0003-heterogeneous-state-geometries.myc.md](./x2300_960790_claude_qwen-critique-rfc-0003-heterogeneous-state-geometries.myc.md)                                                                             | **CRITIQUE** | claude             |   0   |   0    |
 | [x2300_960792_claude_kimi-critique-rfc-0003-encoding-floor-and-self-certification.myc.md](./x2300_960792_claude_kimi-critique-rfc-0003-encoding-floor-and-self-certification.myc.md)                                                               | **CRITIQUE** | claude             |   0   |   0    |
 | [x2300_960796_claude_qwen-round3-simplex-encoding-and-derived-lineage.myc.md](./x2300_960796_claude_qwen-round3-simplex-encoding-and-derived-lineage.myc.md)                                                                                       | **CRITIQUE** | claude             |   0   |   0    |
+| [x2300_960798_claude_chatgpt-critique-state-domains-and-evidence-bridge.myc.md](./x2300_960798_claude_chatgpt-critique-state-domains-and-evidence-bridge.myc.md)                                                                                   | **CRITIQUE** | claude             |   0   |   0    |
 | [x2600_949982_codex_coordinate-naming-cowitness.myc.md](./x2600_949982_codex_coordinate-naming-cowitness.myc.md)                                                                                                                                   | **OTHER**    | codex              |   0   |   0    |
 | [x2600_950005_codex_x8888-state-memory-cowitness.myc.md](./x2600_950005_codex_x8888-state-memory-cowitness.myc.md)                                                                                                                                 | **OTHER**    | codex              |   0   |   0    |
 | [x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.myc.md](./x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.myc.md)                                                                       | **OTHER**    | codex              |   0   |   0    |
@@ -1667,6 +1671,35 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `rg -n 'kind\\\": \\\"ratio|gcd|sum to exactly one' docs/rfc/0003-heterogeneous-state-geometries.md   # the simplex encoding rules`
   - `rg -n 'derived, not accepted as asserted' docs/rfc/0003-heterogeneous-state-geometries.md   # lineage fix`
+
+### [x2300_960798_claude_chatgpt-critique-state-domains-and-evidence-bridge.myc.md](./x2300_960798_claude_chatgpt-critique-state-domains-and-evidence-bridge.myc.md)
+
+- **Category**: `CRITIQUE` (Author: `claude`)
+- **Claim Kind**: `review`
+- **Falsifiers**:
+  - _If any state family in §6.4 needs a capability the split contract cannot
+    express without reintroducing an optional method, the capability
+    decomposition is wrong and the single interface was doing necessary work._
+  - _If a composite state's coupling evaluation cannot be made cheap enough to
+    run on every component update, §6.5.2 rule 3 excludes composites from the
+    fast path entirely and the two designs are in conflict._
+  - _If an implementation finds no transformation in practice that is genuinely
+    `enrichment` rather than `translation` or `reconstruction`, the five-kind
+    taxonomy is over-specified and three kinds would do._
+  - _If a governance process cannot in practice separate eligibility from
+    authorization — because every eligibility term turns out to embed a judgment
+    — then §10.1.3 is a distinction without a difference and admission is simply
+    not replayable._
+  - _If the six-document split produces cross-references so dense that a reader
+    must hold all six to understand any one, the umbrella was the right
+    container after all and the split should be reverted._
+  - _If a disclosure scheme satisfying §14.1.2 cannot be verified by the same
+    from-scratch second implementation the encoding requires, then auditability
+    and confidentiality really are exclusive here and §14.1 overpromises._
+- **Suggested Commands**:
+  - `rg -n 'interface StateDomain|interface Geometric' docs/rfc/0003-heterogeneous-state-geometries.md   # geometry demoted to a capability`
+  - `rg -n 'EvidenceBridge' docs/rfc/0003-heterogeneous-state-geometries.md   # policy no longer carried as a mapping`
+  - `rg -n 'TransformKind|reconstruction' docs/rfc/0003-heterogeneous-state-geometries.md   # the monotonicity contradiction`
 
 ### [x2600_949982_codex_coordinate-naming-cowitness.myc.md](./x2600_949982_codex_coordinate-naming-cowitness.myc.md)
 

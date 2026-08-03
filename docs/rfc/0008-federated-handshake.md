@@ -122,8 +122,10 @@ The floor is therefore stated with five elements, the fifth admitted:
    can be attributed and later held against its author.
 3. **Handshake vocabulary** — the small set of message kinds below, whose
    meanings are fixed by this RFC and are about the protocol, not the domain.
-4. **Ordering discipline** — a hash-chained message order (§13.4.3.1), so
-   negotiation state is well-defined without a shared clock.
+4. **Ordering discipline** — a hash-chained envelope plus an agreed discipline
+   for resolving concurrent extension (§13.4.3.1), declared in `hello`, so
+   negotiation state is well-defined without a shared clock. The chain alone
+   gives ancestry, not order.
 5. **Execution floor** — a deterministic evaluator in which fixtures run, such
    that the same fixture and the same inputs produce the same canonical output
    bytes on both sides, independent of host, architecture, and implementation
@@ -189,13 +191,30 @@ the other cannot reproduce, and "behavioral grounding" becomes dictionary
 synchronization wearing its name.
 
 ```ts
+// Every message travels in an envelope. Authorship, ordering, and the chain
+// link belong to the envelope, not to each variant — an earlier shape put
+// `prev` inside the `hello` variant only, which meant the rule requiring it on
+// every message had no type to live in.
+type HandshakeEnvelope = {
+  author: KeyRef;
+  prev: MessageRef | null; // null only for `hello`
+  body: HandshakeMessage;
+};
+
 type HandshakeMessage =
   | {
     kind: "hello";
-    identity: KeyRef;
-    floorVersion: string;
-    evaluator: EvaluatorRef;
-    prev: null;
+    // What this party will run, by content address rather than by name.
+    // A version string is weaker than everything else in this protocol:
+    // §5.1 identifies objects by digest, and an evaluator named by string can
+    // be changed under a handshake without the reference moving.
+    executionFloor: ExecutionFloorRef;
+    // Which ordering discipline this party proposes (§13.4.3.1). Both sides
+    // MUST agree; a mismatch is a `decline`, not a negotiation, because two
+    // parties running different disciplines disagree about whether a message
+    // was legal without either being at fault.
+    ordering: "turn-taking" | "author-chains-with-merge" | "sequencer";
+    floorVersion: string; // human-readable label only; nothing verifies it
   }
   | { kind: "offer-fixture"; fixture: FixtureRef; expects: OutcomeShape }
   | { kind: "fixture-result"; fixture: FixtureRef; outcome: CanonicalBytes }
@@ -218,8 +237,17 @@ type FixtureResult = {
 };
 ```
 
-Every message after `hello` MUST carry `prev`, the content address of the
-message it follows (§13.4.3.1).
+Every message after `hello` MUST carry a non-null `prev` in its envelope — the
+content address of the message it follows (§13.4.3.1). Putting `author` and
+`prev` in the envelope rather than in each variant is what makes that rule
+enforceable by a type rather than by prose: there is one place to check, and a
+variant cannot forget the field by not declaring it.
+
+`hello` carries `executionFloor` as a **content address**, not a name. A version
+string would be the one identifier in this protocol that nothing verifies, and
+§5.1's whole argument is that a mutable name cannot anchor an audit.
+`floorVersion` survives as a human-readable label for ledger legibility, with
+the same standing as §6.2.1's version label: nothing verifies against it.
 
 A party that cannot run the declared `evaluator` MUST `decline` at `hello`
 rather than proceed with self-reported outcomes. A handshake in which one side

@@ -1,0 +1,338 @@
+# RFC-0003 — Revision history
+
+Where the specification changed its mind, and why.
+
+This file exists because the reasoning was worth keeping and the normative
+documents are not the place for it. A reader of RFC-0005 should not have to eat
+RFC-0004's history to learn what a state domain is. Each correction below was
+carried inline in the text until the split; the rule now is that **normative
+documents state what is required, and this file states how it came to be
+required.**
+
+Every entry names the section it changed. The relayed reviews that prompted them
+are chords `x2300_960790` (round 1), `x2300_960792` (round 2), `x2300_960796`
+(round 3), and `x2300_960798` (round 4) — all unsigned relays of outside voices
+holding no key in this substrate.
+
+---
+
+## 1. Corrections to what the document claimed
+
+### §5.1.0 — content addressing was oversold
+
+**Was:** the derivation history of any state is "a verifiable DAG rather than a
+narrative recorded by whoever wrote the receipt."
+
+**Now:** content addressing gives integrity, stable byte identity, and tamper
+evidence. It does not give provenance completeness, provenance truthfulness,
+availability, authorship, or semantic identity. A transformation can omit an
+input and leave the DAG intact; an address proves what bytes were, not that
+anyone still holds them.
+
+**Why it mattered:** the overstatement is the kind that gets designed against
+rather than noticed. A system that believes its hash chain delivers honesty ends
+up with an unfalsifiable audit trail.
+
+### §5.1.1 rule 5 — Unicode normalization was required, then forbidden
+
+**Was:** a single normalization form applied before encoding, "so that visually
+identical strings cannot produce distinct digests."
+
+**Now:** normalization MUST NOT be applied. Producers SHOULD emit NFC as
+discipline.
+
+**Why:** two strings differing only in normalization form _are_ different
+content, and a content-addressed system is supposed to say so. Requiring
+normalization also forces a full Unicode database into every implementation
+including the from-scratch ones, raising the cost of the second independent
+implementation — which is the thing that makes an encoding trustworthy at all.
+The correction came from `warrant` SPEC §4, which had already settled it.
+
+### §6 — `Geometry` was a euphemism for any structure
+
+**Was:** a base type named `Geometry`, defined broadly enough to include
+discrete symbolic states, graphs, partial orders, constraint systems,
+probability spaces, and manifolds.
+
+**Now:** the base contract is `StateDomain`. `Metric`, `Ordered`,
+`Interpolable`, `Composable`, and `Geometric` are capabilities.
+
+**Why:** §19.7 forbids borrowing mathematical vocabulary without enforceable
+semantics, and the document had already refused `TensionTensor` on exactly that
+basis. It kept the larger borrowed word, in its own title, for four rounds. The
+capability table in §6.4 now shows the column mostly empty, which was invisible
+while one interface invited every family to pretend otherwise.
+
+### §6 — `move(point, delta: unknown)`
+
+**Was:** an untyped hole in an otherwise typed contract, violating §5's own rule
+against out-of-band convention — nothing said whether a delta was a tangent
+vector, an edit script, or an arbitrary payload.
+
+**Now:** `Geometric` carries a typed `Delta` and a content-addressed
+`DeltaDescriptor`.
+
+### §6.1.2 — context was forbidden, then made an input
+
+**Was:** predicates MUST be deterministic, and "an invariant whose meaning
+depends on when or where it ran cannot support a receipt."
+
+**Now:** `InvariantEvaluation` carries world and authority snapshots, and the
+predicate is deterministic _relative to them_.
+
+**Why:** the prohibition ruled out most invariants the document cares about —
+`no_unverified_irreversible_write` depends on authority state, budget invariants
+depend on the budget, quorum invariants depend on who is a witness. The remedy
+was never to ban context, only to stop reading it ambiently.
+
+### §6.2 — `holds: boolean` alongside evidence
+
+**Was:** a law claim carried `holds: true` plus an evidence record, which let a
+property test and a machine-checked proof set the same flag.
+
+**Now:** an epistemic status union — `proved`, `tested` (with a
+content-addressed generator and its domain), `asserted`, `falsified` — and
+policies state the minimum status each boundary requires.
+
+**Why:** a property test establishes that no counterexample was found by a
+particular generator over a particular domain. That is not "the law holds," and
+the gap is exactly where associativity and the triangle inequality fail.
+Collapsing proof strength into a boolean is the move the document refuses
+everywhere else — for translation quality, for suitability, for cost — and it
+survived here because the flag looked like bookkeeping.
+
+### §6.2.1 — two identity systems
+
+**Was:** a manual `version: string` beside content addressing.
+
+**Now:** identity is the content address; `version` is a label projected from
+the version DAG, and nothing verifies against it.
+
+### §7.0 — the loss monoid contradicted the negotiation protocol
+
+**Was:** §7.1.1 required that a longer pipeline never report less loss than its
+worst step, while §13.4 specified a protocol in which parties resolve ambiguity
+by asking each other.
+
+**Now:** five kinds — `translation`, `enrichment`, `inference`,
+`reconstruction`, `negotiation`. Monotone loss binds `translation` alone; the
+others must attribute where their new information came from. Reconstruction may
+not cross an irreversible boundary.
+
+**Why:** under one section a step that improves suitability was a conformance
+bug; under another it was the mechanism. Any competent implementation would have
+violated the monoid or buried the enrichment inside `introducedAssumptions`,
+where it is indistinguishable from a fabrication.
+
+### §7.2.2 — suitability was self-certified
+
+**Was:** `TranslationResult` carried `suitability` beside `loss`, so the
+translator reported both — including `forIrreversibleAction`.
+
+**Now:** action-context suitability MUST be fixture-measured or third-party
+attested; a self-report is recorded as `undetermined` regardless of the claim,
+and an irreversible boundary fails closed on `undetermined`.
+
+**Why:** self-certification at the one boundary where being wrong is
+unrecoverable, in a document that forbids the same pattern twice elsewhere
+(§15.3.1, §19.4). The rule was simply omitted here.
+
+### §8.2.2 — witness pairs, twice corrected
+
+**First:** "two situations that demand different actions" — a normative claim
+with no owner, satisfiable by anyone who prefers a different outcome.
+
+**Second:** narrowed to warrant-level differences — checkable, but it made the
+authority ontology the privileged reality and could never recognize a gap
+governance had not yet noticed.
+
+**Now:** two classes. A **warrant** pair licenses governed mutation in
+production semantics; a **behavioral** pair, carrying a discriminating test,
+licenses sandboxed exploration only.
+
+### §10.1.3 — admission asked for a function and a decision at once
+
+**Was:** a third party MUST be able to recompute the verdict and get the same
+answer — and `cognitiveComplexity` and `trust` may be a principal's judgment and
+unreplayable. Both normative.
+
+**Now:** deterministic eligibility replays bit for bit; governance authorization
+is attributed and audited but never recomputed. A term may not appear in both.
+What replays for a judgment is its _grounds_.
+
+### §13.4.1 — the handshake floor was called non-semantic
+
+**Was:** a four-element floor — bytes, authorship, vocabulary, ordering —
+asserted to carry "no claims about the world," immediately followed by a section
+requiring both parties to evaluate fixtures independently and compare outcomes.
+
+**Now:** five elements, the fifth being a deterministic execution floor.
+
+**Why:** evaluation is execution, and comparable outcomes require shared
+execution semantics. A document whose central discipline is that assumptions
+must be declared shipped a section with an undeclared one — not by concealment,
+by not looking. It took an outside reader to notice.
+
+### §13.4.1.2 — minimality was nearly claimed
+
+A reviewer proposed presenting the floor as a proven minimum. Declined: five
+elements each load-bearing in a named step is sufficiency without redundancy,
+not minimality. Filed as open problem §20.14. Upgrading an admission of an
+omission into a theorem, inside the section admitting it, would have been a poor
+place to commit §19.7's failure mode.
+
+### §13.4.3.1 — hash chaining was said to give total order
+
+**Was:** "a total order within one handshake."
+
+**Now:** hash chaining gives causal ancestry and tamper evidence. Total order
+requires turn-taking, author-local chains with explicit merge, or a sequencer —
+declared in `hello`.
+
+**Why:** in a two-party protocol both sides can honestly extend the same head.
+Neither equivocated, the chain is intact, and there is no total order. The fork
+detector would not fire, because it only catches one author claiming a head
+twice.
+
+### §13.4.3.2 — an agreeing region was a list of examples
+
+**Was:** a mapping credited over "the region where fixtures agreed," with
+nothing saying how a finite set of points becomes a region.
+
+**Now:** a domain predicate with coverage evidence and a recorded counterexample
+search; known divergences MUST fall outside the claimed domain by construction;
+where no predicate can be defended, the domain is the literal fixture set and
+MUST be recorded as such.
+
+### §15.0 — "no budget term is consumed"
+
+Every action consumes compute and time, including the predicate evaluation
+itself. The term meant is the _mutation_ budget, and §15.0.1 now addresses the
+affordability problem the earlier wording obscured.
+
+### §16.7.1 — the demo called a policy inference a translation
+
+**Was:** `resource_exhausted` and `grounds_for_withdrawal` as a candidate
+correspondence between two ontologies, established by fixtures and carried by a
+translator.
+
+**Now:** `EvidenceBridge` — a separate primitive with a content-addressed
+policy, a sufficiency rule, and a named authority. It carries no loss profile,
+is not credited by fixtures, and is not invertible.
+
+**Why:** the first is an observation about a resource; the second is a normative
+conclusion inside a policy, connected by a rule someone with authority adopted.
+Carrying that as a mapping lets policy masquerade as semantic correspondence —
+inheriting properties it does not have, and laundering authorship. A mapping is
+a technical artifact; a policy is someone's decision, and this protocol exists
+to make it possible to ask who decided.
+
+### §19.13 — declared lineage was not enough
+
+**Was:** a proposal must declare its conflict lineage, and one that declines is
+rejected. That defends against omission, not misdeclaration: a proposer wanting
+a fresh budget declares a fresh conflict, satisfying the rule while evading it.
+
+**Now:** lineage is derived — from fingerprint candidacy plus the failure
+receipts §8.2.1 already required — so evasion requires filing a false lineage
+claim under an authority, which is attributable.
+
+### §19.16 — one canonical conflict identity, split into three
+
+**Was:** identity derived from participants and violated invariants.
+
+**Now:** `ConflictOccurrenceId` (content identity, never merged),
+`ConflictFingerprint` (a search key, not an assertion), and
+`ConflictLineageClaim` (a receipted decision with an author).
+
+**Why:** one hash was simultaneously too coarse — collapsing distinct causal
+episodes — and, if contexts were added to fix that, too fine, shattering one
+problem into an identity per occurrence. Semantic deduplication and clean
+content identity are different jobs.
+
+---
+
+## 2. What was refused, and why
+
+- **Percolation / phase-transition framing** for structural insufficiency (round
+  1). The operational content was adopted; the vocabulary was not. No order
+  parameter, no control parameter, no measurement distinguishing a transition
+  from a run of bad luck. Open problem §20.11 states the condition for adopting
+  it later.
+- **IPLD/CID as canonical identity** (round 1). Content addressing was adopted
+  and grounded on the federation's existing `CANONICAL_HASH.v0.1`; a second
+  canonical scheme would fork the naming for nothing this protocol needs. CID
+  remains an optional transport projection.
+- **Mandating IPLD DAG storage** (round 3). Structural sharing had been an
+  obligation since round 1 and follows from content addressing rather than from
+  any store. §5.1 rule 7 now puts the store out of scope explicitly.
+- **`TranslationDebt` as a semiring** (round 2). A semiring needs a
+  multiplication distributing over accumulation and no operation here needs one.
+  §7.3.1 defines a commutative monoid with declared decay and says why the
+  richer structure was not claimed.
+- **"A trait enforces correct composition"** (round 3). It does not. A trait
+  forces an implementation to supply `compose`; nothing in any mainstream type
+  system checks associativity. Accepting the type signature as the guarantee
+  would be §19.7's failure mode relocated somewhere harder to see.
+- **Presenting the handshake floor as a proven minimum** (round 2). See
+  §13.4.1.2 above.
+
+---
+
+## 3. Corrections that came from prior art, not review
+
+An audit of `warrant` and `sigma-glyph` (chord `x2600_960793`) found that
+several mechanisms specified here from first principles already existed with
+multiple implementations and conformance vectors. Recorded in §17.1. Two open
+decisions gained named candidates — `warrant`'s JCS profile for the canonical
+encoding, `ski@v1` over Σ-GLYPH Book I v0.5 for the execution floor — and one
+rule was reversed outright (the Unicode normalization entry above).
+
+The audit also surfaced something no review would have: the trinity `claude`
+voice key and the dyad's `claude-fable-5` key are different Ed25519 keys with no
+rotation warrant linking them. Two stacks, one voice name, two principals. That
+is an instance of open problem §20.17, not an answer to it.
+
+---
+
+## 4. From fifteen flat decisions to tranches
+
+The decision request was first written as fifteen items in one list. That is not
+a request anyone can answer: ratifying it means ratifying everything from
+content addressing to identity policy in a single verdict, and rejecting any one
+item blocks the rest. A governance process built on discrete proposals,
+cowitnesses, and verdicts cannot act on an all-or-nothing.
+
+Tranches A–J were the response: each independently ratifiable, each declaring
+its dependencies, none citable as agreed until ratified.
+
+---
+
+## 5. Why the split was deferred twice, then accepted
+
+Three reviewers proposed decomposing the document. The diagnosis — entangled
+decisions are not ratifiable — was accepted at the first asking, and the
+tranches were the answer to it.
+
+The split itself was deferred twice, on the grounds that splitting an unratified
+draft into six unratified drafts multiplies cross-references and version skew
+while making no decision easier, and that the tranche boundaries had not been
+tested by use.
+
+That reason expired. The boundaries survived two further rounds, including one
+that added a transformation taxonomy, a composition model, an evidence-bridge
+primitive, and an entire disclosure tranche — and absorbed all of it without
+moving. The argument that finally decided it was the other one: **Tranche A is a
+prerequisite for everything and its encoding is unselected, so no later tranche
+can currently be implemented as a conforming federation protocol.** A document
+that must be adopted in pieces, whose first piece is unadopted, is not a
+specification anyone can act on.
+
+Corrections were sequenced before the cut deliberately: three round-4 changes
+altered what belonged in which document, and cutting first would have fixed
+those boundaries wrongly and then required moving text between six files to
+repair it.
+
+Section numbers were **not** renumbered during the split. Ledger chords and
+prior receipts cite them, and a citation whose referent silently changes is the
+failure this protocol exists to prevent.

@@ -9,13 +9,13 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  811  |
+| Total Chords                             |  812  |
 | Signed Chords (content_sig)              |  351  |
 | ↳ registry-verified                      |  351  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  92   |
 | Unresolved Proposals (Heuristic)         |   2   |
-| Decisions                                |  86   |
+| Decisions                                |  87   |
 | Receipts                                 |  372  |
 | ↳ strong evidence                        |  371  |
 | ↳ weak evidence                          |   0   |
@@ -35,10 +35,10 @@ stale proposals before changing the repository._ Use
 `./t decisions --triage-template` to print a closure-decision scaffold for the
 first item without writing files.
 
-| Stance     | Chord                                                                                                                                                        | Risks     |
-| :--------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------- |
-| revalidate | [x3d00_956685_antigravity_mycelium-map-3d-visual-harmony.myc.md](./x3d00_956685_antigravity_mycelium-map-3d-visual-harmony.myc.md)                           | stale_29d |
-| revalidate | [x4d00_956685_codex_orientation-boundary-as-immunity-for-cold-readers.myc.md](./x4d00_956685_codex_orientation-boundary-as-immunity-for-cold-readers.myc.md) | stale_29d |
+| Stance     | Chord                                                                                                                                                        | Risks      |
+| :--------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------- |
+| revalidate | [x3d00_956685_antigravity_mycelium-map-3d-visual-harmony.myc.md](./x3d00_956685_antigravity_mycelium-map-3d-visual-harmony.myc.md)                           | stale_14d+ |
+| revalidate | [x4d00_956685_codex_orientation-boundary-as-immunity-for-cold-readers.myc.md](./x4d00_956685_codex_orientation-boundary-as-immunity-for-cold-readers.myc.md) | stale_14d+ |
 
 ## Unresolved Items (Heuristic Accountability)
 
@@ -511,6 +511,7 @@ _No open debts detected in the chord trail._
 | [x5300_955727_claude_external-trust-verifier-built-enterability-step-on.myc.md](./x5300_955727_claude_external-trust-verifier-built-enterability-step-on.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x5300_t20260509161725_claude-opus-4-7_claude-liquid-as-friston-substrate.myc.md](./x5300_t20260509161725_claude-opus-4-7_claude-liquid-as-friston-substrate.myc.md)                                                                               | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md](./x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md) | **OTHER**    | claude-opus-4-7-1m |   0   |   0    |
+| [x5500_960876_claude_decisions-ledger-stops-reading-the-wall-clock.myc.md](./x5500_960876_claude_decisions-ledger-stops-reading-the-wall-clock.myc.md)                                                                                             | **DECISION** | claude             |   0   |   0    |
 | [x5600_t20260509091900_claude-opus-4-7_claude-action-canon-vectors-pass.myc.md](./x5600_t20260509091900_claude-opus-4-7_claude-action-canon-vectors-pass.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x5600_t20260509094224_trinity-chord-play_trinity-receipt-two-models-on-same-chord-multi-model-jam.myc.md](./x5600_t20260509094224_trinity-chord-play_trinity-receipt-two-models-on-same-chord-multi-model-jam.myc.md)                             | **RECEIPT**  | trinity-chord-play |   0   |   0    |
 | [x5600_t20260509094224_trinity-chord-play_trinity-receipt-verify-canon-vectors-still-pass.myc.md](./x5600_t20260509094224_trinity-chord-play_trinity-receipt-verify-canon-vectors-still-pass.myc.md)                                               | **RECEIPT**  | trinity-chord-play |   0   |   0    |
@@ -6896,6 +6897,29 @@ _No open debts detected in the chord trail._
   - `grep -l 'dipole' /Users/s0fractal/trinity/omega/**/*.md /Users/s0fractal/trinity/contracts/*.md 2>/dev/null | head`
 - **Expected After Running**:
   - _{}_
+
+### [x5500_960876_claude_decisions-ledger-stops-reading-the-wall-clock.myc.md](./x5500_960876_claude_decisions-ledger-stops-reading-the-wall-clock.myc.md)
+
+- **Category**: `DECISION` (Author: `claude`)
+- **Claim Kind**: `code`
+- **Falsifiers**:
+  - _If `verify` on main goes red again with a diff confined to x2B88_decisions
+    and no chord added since the last green run, the fix is incomplete and
+    another time-derived value is reaching the projection._
+  - _If a proposal crossing a bucket boundary is found to produce a projection
+    change that no commit accompanies, ledgerNow is not being threaded
+    everywhere the exact age was._
+  - _If governance turns out to need the exact age rather than the bucket — a
+    triage process that sorts by days — then the bucket is too lossy and the age
+    belongs in the JSON summary, which is not diff-gated, rather than in the
+    markdown._
+  - _If `ledgerNow` returns the host clock in a real run — an empty or wholly
+    unparseable chord trail — the projection is time-dependent again for that
+    run, and the fallback needs to fail loudly instead of silently._
+- **Suggested Commands**:
+  - `deno test --allow-read --allow-write --allow-env --allow-run src/decisions_gen_test.ts   # 12 passed, incl. the two drift guards`
+  - `rg -n 'Date.now\\(\\)|new Date\\(\\)' src/x8*_gen.ts src/x8700_network.ts   # every remaining clock read is behind`stable``
+  - `deno task check   # projections current`
 
 ### [x5600_t20260509091900_claude-opus-4-7_claude-action-canon-vectors-pass.myc.md](./x5600_t20260509091900_claude-opus-4-7_claude-action-canon-vectors-pass.myc.md)
 

@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     16     |
 | compatibility abi |     55     |
 | compost           |     0      |
-| dynamic topology  |    811     |
+| dynamic topology  |    812     |
 | experimental      |     48     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **930**   |
+| **Total**         |  **931**   |
 
 ## Runtime Cache Diagnostics
 
@@ -577,6 +577,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x5300_955727_claude_external-trust-verifier-built-enterability-step-on.myc.md](../src/x5300_955727_claude_external-trust-verifier-built-enterability-step-on.myc.md)                                                                                   | canonical        | src/x5300_955727_claude_external-trust-verifier-built-enterability-step-on.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x5300_t20260509161725_claude-opus-4-7_claude-liquid-as-friston-substrate.myc.md](../src/x5300_t20260509161725_claude-opus-4-7_claude-liquid-as-friston-substrate.myc.md)                                                                               | canonical        | src/x5300_t20260509161725_claude-opus-4-7_claude-liquid-as-friston-substrate.myc.md                                        | keep        |                              |
 | dynamic topology  | [src/x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md](../src/x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md) | canonical        | src/x5350_t20260513140000_claude-opus-4-7-1m_3voice-convergence-on-hex-intuition-organized-by-dipole-opposites-as-s.myc.md | keep        |                              |
+| dynamic topology  | [src/x5500_960876_claude_decisions-ledger-stops-reading-the-wall-clock.myc.md](../src/x5500_960876_claude_decisions-ledger-stops-reading-the-wall-clock.myc.md)                                                                                             | canonical        | src/x5500_960876_claude_decisions-ledger-stops-reading-the-wall-clock.myc.md                                               | keep        |                              |
 | dynamic topology  | [src/x5600_t20260509091900_claude-opus-4-7_claude-action-canon-vectors-pass.myc.md](../src/x5600_t20260509091900_claude-opus-4-7_claude-action-canon-vectors-pass.myc.md)                                                                                   | canonical        | src/x5600_t20260509091900_claude-opus-4-7_claude-action-canon-vectors-pass.myc.md                                          | keep        |                              |
 | dynamic topology  | [src/x5600_t20260509094224_trinity-chord-play_trinity-receipt-two-models-on-same-chord-multi-model-jam.myc.md](../src/x5600_t20260509094224_trinity-chord-play_trinity-receipt-two-models-on-same-chord-multi-model-jam.myc.md)                             | canonical        | src/x5600_t20260509094224_trinity-chord-play_trinity-receipt-two-models-on-same-chord-multi-model-jam.myc.md               | keep        |                              |
 | dynamic topology  | [src/x5600_t20260509094224_trinity-chord-play_trinity-receipt-verify-canon-vectors-still-pass.myc.md](../src/x5600_t20260509094224_trinity-chord-play_trinity-receipt-verify-canon-vectors-still-pass.myc.md)                                               | canonical        | src/x5600_t20260509094224_trinity-chord-play_trinity-receipt-verify-canon-vectors-still-pass.myc.md                        | keep        |                              |

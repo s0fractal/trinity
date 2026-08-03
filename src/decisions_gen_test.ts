@@ -6,6 +6,7 @@ import {
   blockHeightToISO,
   daysSinceTimestamp,
   extractSectionFalsifiers,
+  ledgerNow,
   timestampFromFilename,
   triageProposal,
 } from "./x8B00_decisions_gen.ts";
@@ -119,6 +120,52 @@ Deno.test("triageProposal - ancient proposal is stale → revalidate", () => {
   const t = triageProposal(proposal({ timestamp: "2000-01-01T00:00:00Z" }))!;
   assertEquals(t.stance, "revalidate");
   assert(t.risks.some((r) => r.startsWith("stale_")));
+});
+
+// The staleness label must be a BUCKET, never an exact age. An exact age made
+// this projection a function of the wall clock: the committed artifact changed
+// every day with no commit behind it, and the CI diff-gate went red on its own
+// schedule. These assertions are the regression guard for that.
+Deno.test("triageProposal - staleness is bucketed, never an exact age", () => {
+  const now = Date.parse("2026-06-16T00:00:00Z");
+  const at = (iso: string) =>
+    triageProposal(proposal({ timestamp: iso }), now)!.risks
+      .filter((r) => r.startsWith("stale_"));
+
+  assertEquals(at("2026-06-10T00:00:00Z"), []); // 6d — below the first bucket
+  assertEquals(at("2026-06-01T00:00:00Z"), ["stale_14d+"]); // 15d
+  assertEquals(at("2026-05-20T00:00:00Z"), ["stale_14d+"]); // 27d — same label
+  assertEquals(at("2026-05-01T00:00:00Z"), ["stale_30d+"]); // 46d
+  assertEquals(at("2026-01-01T00:00:00Z"), ["stale_90d+"]); // 166d
+  assertEquals(at("2020-01-01T00:00:00Z"), ["stale_365d+"]);
+});
+
+Deno.test("triageProposal - one day of drift does not change the label", () => {
+  const ts = "2026-05-20T00:00:00Z";
+  const day1 = triageProposal(
+    proposal({ timestamp: ts }),
+    Date.parse("2026-06-16T00:00:00Z"),
+  )!;
+  const day2 = triageProposal(
+    proposal({ timestamp: ts }),
+    Date.parse("2026-06-17T00:00:00Z"),
+  )!;
+  assertEquals(day1.risks, day2.risks);
+  assertEquals(day1.reason, day2.reason);
+});
+
+Deno.test("ledgerNow - newest parseable timestamp, host clock only as fallback", () => {
+  assertEquals(
+    ledgerNow([
+      { timestamp: "2026-01-01T00:00:00Z" },
+      { timestamp: "2026-06-15T00:00:00Z" },
+      { timestamp: "not a date" },
+    ]),
+    Date.parse("2026-06-15T00:00:00Z"),
+  );
+  // Empty or wholly unparseable trail has no ledger time to read.
+  assertEquals(ledgerNow([], 12345), 12345);
+  assertEquals(ledgerNow([{ timestamp: "" }], 12345), 12345);
 });
 
 Deno.test("triageProposal - destructive/topology keyword → review (overrides)", () => {

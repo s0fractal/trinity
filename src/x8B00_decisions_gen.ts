@@ -173,26 +173,73 @@ export function daysSinceTimestamp(
   return Math.max(0, Math.floor((nowMs - t) / 86_400_000));
 }
 
+/** The ledger's own "now": the newest parseable timestamp in the chord trail.
+ *
+ *  A generated projection MUST be a function of committed content, or the
+ *  diff-gate that guards it reports drift nobody authored. Reading the host
+ *  clock breaks that property — the file changes while the repository does
+ *  not. Using the newest chord instead makes the substrate's sense of time
+ *  advance only when someone commits, which is also when a projection should
+ *  change and when there is an author to attribute the change to.
+ *
+ *  Falls back to the host clock only for an empty or wholly unparseable trail,
+ *  where there is no ledger time to read. */
+export function ledgerNow(
+  entries: { timestamp: string }[],
+  fallbackMs = Date.now(),
+): number {
+  let newest = Number.NEGATIVE_INFINITY;
+  for (const e of entries) {
+    const t = new Date(e.timestamp).getTime();
+    if (Number.isFinite(t) && t > newest) newest = t;
+  }
+  return Number.isFinite(newest) ? newest : fallbackMs;
+}
+
 // Exported for the unit test: the risk→stance classifier + timestamp helpers
 // drive the decisions ledger's `next action` governance signal (consumed by
 // roadmap/recommend). The CI diff-gate catches drift, not a wrong classifier.
-export function triageProposal(entry: {
-  category: DecisionEntry["category"];
-  is_unresolved: boolean;
-  filename: string;
-  title: string;
-  timestamp: string;
-  has_falsifier: boolean;
-  has_suggested_commands: boolean;
-}): ProposalTriage | null {
+/** Staleness buckets, in days. A proposal's risk label reports the highest
+ *  bucket it has crossed, never its exact age.
+ *
+ *  Exact ages made this projection a function of the wall clock: any proposal
+ *  older than the first threshold produced a different `stale_NNd` string every
+ *  single day, so the committed artifact drifted with no commit behind it and
+ *  the CI diff-gate went red on its own schedule. Buckets change a handful of
+ *  times per proposal instead of daily. */
+const STALE_BUCKETS_DAYS = [365, 90, 30, 14] as const;
+
+function staleLabel(ageDays: number): string | null {
+  for (const b of STALE_BUCKETS_DAYS) {
+    if (ageDays >= b) return `stale_${b}d+`;
+  }
+  return null;
+}
+
+export function triageProposal(
+  entry: {
+    category: DecisionEntry["category"];
+    is_unresolved: boolean;
+    filename: string;
+    title: string;
+    timestamp: string;
+    has_falsifier: boolean;
+    has_suggested_commands: boolean;
+  },
+  /** The ledger's own notion of "now" — the newest timestamp in the chord
+   *  trail, not the host clock. Passing wall-clock time here reintroduces the
+   *  drift the buckets exist to bound; see `ledgerNow`. */
+  nowMs?: number,
+): ProposalTriage | null {
   if (entry.category !== "proposal" || !entry.is_unresolved) return null;
 
   const risks: string[] = [];
   const lower = `${entry.filename} ${entry.title}`.toLowerCase();
-  const ageDays = daysSinceTimestamp(entry.timestamp);
+  const ageDays = daysSinceTimestamp(entry.timestamp, nowMs);
 
-  if (ageDays !== null && ageDays >= 14) {
-    risks.push(`stale_${ageDays}d`);
+  if (ageDays !== null) {
+    const label = staleLabel(ageDays);
+    if (label) risks.push(label);
   }
   if (!entry.has_falsifier) risks.push("missing_falsifier");
   if (!entry.has_suggested_commands) risks.push("missing_suggested_commands");
@@ -1070,6 +1117,10 @@ export async function collectDecisions(stable: boolean): Promise<{
   }
 
   rawEntries.sort((a, b) => a.filename.localeCompare(b.filename));
+
+  // Staleness is measured against the ledger's own clock, not the host's, so
+  // this projection stays a pure function of committed content (see ledgerNow).
+  const nowMs = ledgerNow(rawEntries);
   const chordIdSet = new Set(
     rawEntries.flatMap((r) => [
       r.filename,
@@ -1192,7 +1243,7 @@ export async function collectDecisions(stable: boolean): Promise<{
       timestamp: raw.timestamp,
       has_falsifier: raw.falsifiers.length > 0,
       has_suggested_commands: raw.suggested_commands.length > 0,
-    });
+    }, nowMs);
     const evidence_markers = receiptEvidenceMarkers(raw);
     const evidence_strength = receiptEvidenceStrength(
       raw.category,

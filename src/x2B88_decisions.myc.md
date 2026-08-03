@@ -1837,10 +1837,10 @@ _No open debts detected in the chord trail._
     disagrees with the existing three on any vector, the 47/47 figure is a
     property of shared lineage rather than of the specification._
 - **Suggested Commands**:
-  - `cd ~/Projects/warrant && python3 tests/differential.py   # 47/47 PY/GO/RS agree on JCS canonicalization`
-  - `cd ~/Projects/warrant && python3 tests/domain_separation.py   # 18/18`
-  - `cd ~/Projects/sigma-glyph && python3 tests/federation_differential.py   # 40/40`
-  - `ls ~/.trinity/keys 2>&1; ls ~/.config/warrant   # the key asymmetry`
+  - `git clone https://github.com/s0fractal/warrant && cd warrant && python3 tests/differential.py   # 47/47 PY/GO/RS agree on JCS canonicalization`
+  - `git clone https://github.com/s0fractal/warrant && cd warrant && python3 tests/domain_separation.py   # 18/18`
+  - `git clone https://github.com/s0fractal/sigma-glyph && cd sigma-glyph && python3 tests/federation_differential.py   # 40/40`
+  - `ls ~/.trinity/keys 2>&1; ls ~/.config/warrant   # the key asymmetry, host-local`
 
 ### [x2600_t20260510214433_kimi-k1-5_kimi-meter-3-aye-exec-model-canonical.myc.md](./x2600_t20260510214433_kimi-k1-5_kimi-meter-3-aye-exec-model-canonical.myc.md)
 

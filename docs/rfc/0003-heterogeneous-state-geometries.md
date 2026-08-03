@@ -2,6 +2,10 @@
 
 - **Status:** Draft
 - **Authors:** s0fractal + model collaborators
+- **Home:** https://github.com/s0fractal/trinity —
+  `docs/rfc/0003-heterogeneous-state-geometries.md`. Every path this document
+  cites without a repository is relative to that repository; everything outside
+  it is listed with its repository in §17.1.
 - **Target:** Trinity federation (`trinity`, `myc`, `omega`, `liquid`)
 - **Scope:** Semantic Schema V2 extension
 - **Created:** 2026-08-03
@@ -2013,6 +2017,36 @@ adjacent repositories in the same ecosystem — `warrant` (signed decision DAG)
 and `sigma-glyph` (deterministic compute core) — had already built some of them,
 with multiple independent implementations and machine-checkable vectors.
 
+#### Where the cited documents live
+
+This RFC is a single file and may be read as one. Everything it cites outside
+the `trinity` repository is therefore resolvable from here:
+
+| Cited                           | Repository                               | Path                                  |
+| ------------------------------- | ---------------------------------------- | ------------------------------------- |
+| Warrant SPEC (§4, §5, §5.1, §7) | https://github.com/s0fractal/warrant     | `SPEC.md`                             |
+| JCS parity vectors              | https://github.com/s0fractal/warrant     | `examples/canon-vectors.json`         |
+| Signature vectors               | https://github.com/s0fractal/warrant     | `examples/signature-vectors.json`     |
+| `ski@v1` runtime                | https://github.com/s0fractal/warrant     | `SPEC.md` §3.1                        |
+| Σ-GLYPH Book I (TRUTH)          | https://github.com/s0fractal/sigma-glyph | `spec/book-1-truth.md` (en: `.en.md`) |
+| Σ-GLYPH Book III (FEDERATION)   | https://github.com/s0fractal/sigma-glyph | `spec/book-3-federation.md`           |
+| GOV-ANCHORS                     | https://github.com/s0fractal/sigma-glyph | `spec/GOV-anchors.md`                 |
+| Anchored spec set               | https://github.com/s0fractal/sigma-glyph | `spec/ANCHORS.txt`                    |
+| Lean proofs                     | https://github.com/s0fractal/sigma-glyph | `proofs/`                             |
+| Canonical hash contract         | this repository                          | `contracts/CANONICAL_HASH.v0.1.md`    |
+| Voice public keys               | this repository                          | `src/x2F38_voice_pubkeys.json`        |
+
+Both repositories maintain a generated `MAP.md` answering the narrower question
+of which **ref** holds a cited document, since a branch is not the trunk and
+"present on a branch" is not "in force".
+
+**A URL is a convenience, not a trust anchor.** This is `warrant` SPEC §3.1's
+own rule and it binds anything adopted here: an implementation MUST pin the
+ruleset it evaluates against by version and content — a vendored oracle or a
+pinned document hash — so that semantics cannot be changed under it by an edit
+or a force-push. Read the links to find the documents; do not treat them as
+identifying which bytes are in force.
+
 Recording this is not a courtesy. Where a mechanism exists with two or three
 agreeing implementations and a conformance vector set, specifying a second one
 here would fork the ecosystem's identity primitives to gain nothing, and this
@@ -2034,7 +2068,20 @@ itself.
 | §6.2 laws with proof-grade evidence           | `sigma-glyph/proofs/` (EvalMachine, SizeBound, Sha256)                                          | Lean                                             |
 
 The status column reports what was observed by running the repositories' own
-harnesses on 2026-08-03, not what their documents claim.
+harnesses on 2026-08-03, not what their documents claim. Reproducible from a
+clean clone:
+
+```sh
+git clone https://github.com/s0fractal/warrant && cd warrant
+python3 tests/differential.py        # DIFFERENTIAL: ALL AGREE (47/47 vectors)
+python3 tests/domain_separation.py   # DOMAIN-SEPARATION: ALL PASS (18/18)
+
+git clone https://github.com/s0fractal/sigma-glyph && cd sigma-glyph
+python3 tests/federation_differential.py   # FEDERATION-DIFFERENTIAL: ALL AGREE (40/40)
+```
+
+The Lean proofs were not rebuilt. The `sigma-glyph/proofs/` row says "Lean"
+rather than "proved" for that reason.
 
 #### 17.1.1 Two decisions now have named candidates
 
@@ -2046,14 +2093,15 @@ harnesses on 2026-08-03, not what their documents claim.
   vectors. Adopting it would require deciding what to do about §6.4's
   probability simplex, which needs non-integer values and would therefore need
   an exact-rational or fixed-point encoding _inside_ the integer domain.
-- **Tranche G4 (execution floor evaluator).** `ski@v1` satisfies every
-  requirement §13.4.1.1 states: deterministic across hosts, bit-exact across
-  implementations, terminating by construction, work and peak memory bounded by
-  a declared cost model, no ambient authority, canonical output identity. It
-  additionally supplies the re-execution budget rule §11.1.1 needed and did not
-  have. Its own spec makes the point this RFC makes about verification without
-  trust: re-verifying a stranger's `ski@v1` reason is safe in a way re-running a
-  stranger's shell script is not.
+- **Tranche G4 (execution floor evaluator).** `ski@v1` (warrant SPEC §3.1, over
+  Σ-GLYPH Book I v0.5) satisfies every requirement §13.4.1.1 states:
+  deterministic across hosts, bit-exact across implementations, terminating by
+  construction, work and peak memory bounded by a declared cost model, no
+  ambient authority, canonical output identity. It additionally supplies the
+  re-execution budget rule §11.1.1 needed and did not have. Its own spec makes
+  the point this RFC makes about verification without trust: re-verifying a
+  stranger's `ski@v1` reason is safe in a way re-running a stranger's shell
+  script is not.
 
 #### 17.1.2 What this does not settle
 

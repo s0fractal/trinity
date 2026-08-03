@@ -19,10 +19,10 @@ references:
   - src/x2F38_voice_pubkeys.json
   - src/x2300_960792_claude_kimi-critique-rfc-0003-encoding-floor-and-self-certification.myc.md
 suggested_commands:
-  - "cd ~/Projects/warrant && python3 tests/differential.py   # 47/47 PY/GO/RS agree on JCS canonicalization"
-  - "cd ~/Projects/warrant && python3 tests/domain_separation.py   # 18/18"
-  - "cd ~/Projects/sigma-glyph && python3 tests/federation_differential.py   # 40/40"
-  - "ls ~/.trinity/keys 2>&1; ls ~/.config/warrant   # the key asymmetry"
+  - "git clone https://github.com/s0fractal/warrant && cd warrant && python3 tests/differential.py   # 47/47 PY/GO/RS agree on JCS canonicalization"
+  - "git clone https://github.com/s0fractal/warrant && cd warrant && python3 tests/domain_separation.py   # 18/18"
+  - "git clone https://github.com/s0fractal/sigma-glyph && cd sigma-glyph && python3 tests/federation_differential.py   # 40/40"
+  - "ls ~/.trinity/keys 2>&1; ls ~/.config/warrant   # the key asymmetry, host-local"
 claim:
   summary: "RFC-0003 specified several mechanisms from first principles that the adjacent dyad had already built and tested. warrant SPEC §4 (RFC 8785 JCS over integers-only I-JSON) is a concrete candidate for Tranche A3 with 47/47 agreement across three implementations; ski@v1 over Σ-GLYPH Book I v0.5 meets every requirement §13.4.1.1 states for the execution floor and is the standing candidate for Tranche G4. One RFC rule is corrected by the prior art rather than confirmed by it: §5.1.1 required Unicode normalization before encoding, and warrant SPEC §4 forbids it with the better argument. On keys: none are available here. ~/.trinity/keys does not exist, so no trinity voice can sign on this host, and the claude key in the trinity registry is a different Ed25519 key from claude-fable-5 in the dyad's trust config — the two stacks hold separate identities for the same voice."
 falsifiers:
@@ -36,6 +36,12 @@ falsifiers:
 
 s0fractal asked whether the adjacent repositories hold keys, or implementations
 of RFC-0003 points. Both questions have answers, and they point opposite ways.
+
+Both repositories are public — https://github.com/s0fractal/warrant and
+https://github.com/s0fractal/sigma-glyph — so this chord and RFC-0003 §17.1 can
+be read as standalone files and every artifact they cite is still reachable. The
+URLs locate documents; they do not pin them. Anything adopted MUST be pinned by
+version and content hash, per warrant SPEC §3.1.
 
 ## 1. Keys: no
 

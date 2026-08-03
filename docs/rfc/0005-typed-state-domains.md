@@ -388,10 +388,6 @@ fn midpoint<G: Interpolable>(g: &G, a: &G::Point, b: &G::Point) -> G::Point {
 }
 ```
 
-A temporal partial order implements `StateDomain` and never `Interpolable`, so
-`midpoint` cannot be instantiated for it. The cosplay risk is removed by
-construction instead of by review.
-
 A temporal partial order implements `StateDomain` and `Ordered`, never
 `Interpolable`, so `midpoint` cannot be instantiated for it. The cosplay risk is
 removed by construction instead of by review.

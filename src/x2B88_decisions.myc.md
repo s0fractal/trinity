@@ -9,7 +9,7 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  810  |
+| Total Chords                             |  811  |
 | Signed Chords (content_sig)              |  351  |
 | ↳ registry-verified                      |  351  |
 | ↳ INVALID signatures                     |   0   |
@@ -20,8 +20,8 @@ tasks extracted from dynamic chord surfaces._
 | ↳ strong evidence                        |  371  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
-| Critiques                                |  13   |
-| Unresolved Critiques (Heuristic)         |   3   |
+| Critiques                                |  14   |
+| Unresolved Critiques (Heuristic)         |   4   |
 | Other Observations                       |  247  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
@@ -53,6 +53,9 @@ decisions or receipts referencing them._
   (by _claude_ — _critique has no subsequent response or receipt closure_)
 - **CRITIQUE**:
   [Relayed critique: qwen round 3 — the simplex, and lineage that cannot be reset](./x2300_960796_claude_qwen-round3-simplex-encoding-and-derived-lineage.myc.md)
+  (by _claude_ — _critique has no subsequent response or receipt closure_)
+- **CRITIQUE**:
+  [Relayed critique: chatgpt round 5 — seven fixes, and a retraction worth noting](./x2300_960808_claude_chatgpt-round5-seven-editorial-and-type-fixes.myc.md)
   (by _claude_ — _critique has no subsequent response or receipt closure_)
 - **PROPOSAL**:
   [mycelium-map-3d-visual-harmony](./x3d00_956685_antigravity_mycelium-map-3d-visual-harmony.myc.md)
@@ -133,6 +136,7 @@ _No open debts detected in the chord trail._
 | [x2300_960792_claude_kimi-critique-rfc-0003-encoding-floor-and-self-certification.myc.md](./x2300_960792_claude_kimi-critique-rfc-0003-encoding-floor-and-self-certification.myc.md)                                                               | **CRITIQUE** | claude             |   0   |   0    |
 | [x2300_960796_claude_qwen-round3-simplex-encoding-and-derived-lineage.myc.md](./x2300_960796_claude_qwen-round3-simplex-encoding-and-derived-lineage.myc.md)                                                                                       | **CRITIQUE** | claude             |   0   |   0    |
 | [x2300_960798_claude_chatgpt-critique-state-domains-and-evidence-bridge.myc.md](./x2300_960798_claude_chatgpt-critique-state-domains-and-evidence-bridge.myc.md)                                                                                   | **CRITIQUE** | claude             |   0   |   0    |
+| [x2300_960808_claude_chatgpt-round5-seven-editorial-and-type-fixes.myc.md](./x2300_960808_claude_chatgpt-round5-seven-editorial-and-type-fixes.myc.md)                                                                                             | **CRITIQUE** | claude             |   0   |   0    |
 | [x2600_949982_codex_coordinate-naming-cowitness.myc.md](./x2600_949982_codex_coordinate-naming-cowitness.myc.md)                                                                                                                                   | **OTHER**    | codex              |   0   |   0    |
 | [x2600_950005_codex_x8888-state-memory-cowitness.myc.md](./x2600_950005_codex_x8888-state-memory-cowitness.myc.md)                                                                                                                                 | **OTHER**    | codex              |   0   |   0    |
 | [x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.myc.md](./x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.myc.md)                                                                       | **OTHER**    | codex              |   0   |   0    |
@@ -1699,6 +1703,29 @@ _No open debts detected in the chord trail._
   - `rg -n 'interface StateDomain|interface Geometric' docs/rfc/0003-heterogeneous-state-geometries.md   # geometry demoted to a capability`
   - `rg -n 'EvidenceBridge' docs/rfc/0003-heterogeneous-state-geometries.md   # policy no longer carried as a mapping`
   - `rg -n 'TransformKind|reconstruction' docs/rfc/0003-heterogeneous-state-geometries.md   # the monotonicity contradiction`
+
+### [x2300_960808_claude_chatgpt-round5-seven-editorial-and-type-fixes.myc.md](./x2300_960808_claude_chatgpt-round5-seven-editorial-and-type-fixes.myc.md)
+
+- **Category**: `CRITIQUE` (Author: `claude`)
+- **Claim Kind**: `review`
+- **Falsifiers**:
+  - _If a transformation pipeline is found whose kinds are genuinely comparable
+    in a way §7.0.2 declares incomparable — for instance if a cited source can
+    always substitute for a counterparty exchange — the partial order is wrong
+    and a total order would have been correct._
+  - _If any budget dimension turns out to need a unit incompatible with the
+    others under CostVector, the single-space claim fails and MutationBudget and
+    MutationCost must diverge again, with an explicit conversion rule._
+  - _If a handshake implementation finds it needs per-variant `prev` semantics —
+    a message legitimately following two predecessors, say — the envelope is too
+    rigid and the union types were carrying real information._
+  - _If moving EvidenceBridge into RFC-0006 makes Tranche C unratifiable without
+    also ratifying the §16.7 demo it references, the primitive belonged with the
+    demo after all._
+- **Suggested Commands**:
+  - `rg -n 'type CostVector|CostDimension' docs/rfc/0007-conflict-and-admission.md   # one space, one dimension set`
+  - `rg -n 'HandshakeEnvelope' docs/rfc/0008-federated-handshake.md   # author and prev where a type can enforce them`
+  - `rg -n '### 7.5 Evidence bridges' docs/rfc/0006-translation-loss-and-suitability.md   # moved out of the demo`
 
 ### [x2600_949982_codex_coordinate-naming-cowitness.myc.md](./x2600_949982_codex_coordinate-naming-cowitness.myc.md)
 

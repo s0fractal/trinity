@@ -54,7 +54,7 @@ obligations:
 | `translation`    | nothing              | **required**  | yes, per suitability                               |
 | `enrichment`     | cited evidence       | not required  | yes, if sources are attested                       |
 | `inference`      | declared rules       | not required  | only if rules are content-addressed and replayable |
-| `reconstruction` | assumption           | not required  | **no** — §7.0.2                                    |
+| `reconstruction` | assumption           | not required  | **no** — §7.0.3                                    |
 | `negotiation`    | a counterparty       | not required  | only under a scoped contract (§13.2)               |
 
 ```ts
@@ -81,16 +81,64 @@ type TransformKind =
    not a conformance failure; what MUST hold instead is that the new information
    is attributed: each improvement traces to a cited source, rule, assumption,
    or counterparty exchange.
-3. A pipeline mixing kinds is classified by its **weakest** member, in the order
-   above. One reconstruction step makes the pipeline a reconstruction, however
-   many faithful translations surround it.
+3. A pipeline mixing kinds is classified by the **join** of its members under
+   the order in §7.0.2 — not by "the order above", which is a table's row order
+   and defines nothing. One reconstruction step makes the pipeline a
+   reconstruction, however many faithful translations surround it.
 4. `enrichment` sources MUST be content-addressed and independently resolvable.
    "The model knew this" is not a source.
 5. `inference` MUST record the rules by content address. An inference whose
    rules are a model's weights is not replayable and MUST be declared
    `replayable: false`, which bars it from irreversible boundaries under rule 6.
 
-#### 7.0.2 Reconstruction is the dangerous one
+#### 7.0.2 The order on transformation kinds
+
+Rule 3 needs an actual order, and the table in §7.0 does not supply one — its
+rows are in reading order, which would put `negotiation` after `reconstruction`
+and so imply that negotiating is worse than assuming. It is not.
+
+The kinds form a **partial order by what a consumer must trust**, and a pipeline
+takes the **join** (least upper bound) of its steps:
+
+```text
+              reconstruction
+              (trust the transformer's own judgment)
+                   │
+      ┌────────────┼────────────┐
+      │            │            │
+ inference    negotiation   enrichment
+(trust the   (trust a      (trust a cited
+ rules)       counterparty) source)
+      └────────────┼────────────┘
+                   │
+              translation
+              (trust nothing beyond the input)
+```
+
+- `translation` is the bottom: it introduces no external dependency.
+- `enrichment`, `inference`, and `negotiation` are **mutually incomparable**.
+  Each adds exactly one kind of external dependency, and they are not
+  substitutable — a cited source is not a counterparty, and neither is a rule. A
+  pipeline containing two of them is at least as demanding as either, and its
+  join is recorded as the set rather than collapsed into a ranking.
+- `reconstruction` is the top, and it is the top for a stated reason: every
+  other kind can point at something outside the transformer. Reconstruction
+  points at the transformer's own judgment, which is the pattern this protocol
+  forbids everywhere it can (§7.2.2, §15.3.1).
+
+Consequences for a mixed pipeline:
+
+1. The join determines which obligations apply. A pipeline joining `enrichment`
+   and `inference` MUST satisfy both rule 4 and rule 5 — the requirements
+   accumulate; they do not merge into a weaker single rule.
+2. Monotone loss is required only if the join is exactly `translation`.
+3. If the join is `reconstruction`, §7.0.3's boundary prohibition applies to the
+   whole pipeline.
+4. A pipeline's declared kind MUST be its computed join. Declaring a lower kind
+   than the join is a conformance failure, and it is detectable, because the
+   steps are content-addressed and each declares its own kind.
+
+#### 7.0.3 Reconstruction is the dangerous one
 
 Reconstruction fills a gap with an assumption. It is legitimate — a display
 needs a value, a planner needs a default — and it is exactly what an unmarked
@@ -433,3 +481,69 @@ Rules:
    measurement is then `undetermined` (§7.2.1).
 
 ---
+
+### 7.5 Evidence bridges
+
+Translation moves a value from one representation to another. It does **not**
+turn an observation into a decision, and the two are routinely confused because
+both look like "getting from A to B".
+
+`liquid` reporting that a resource is exhausted, and `myc` concluding that this
+constitutes grounds to withdraw a proposal, is not a correspondence between two
+ontologies. The first is an observation about a resource state; the second is a
+normative conclusion inside a policy. Nothing about the first _means_ the second
+— it follows only through a rule someone with authority adopted, and that rule
+could be adopted differently without either ontology changing.
+
+Carrying that as a translation is the most consequential confusion available in
+this protocol. A policy carried as a mapping inherits properties it does not
+have: it looks bidirectional, it looks like it has a loss profile, it looks like
+fixture agreement validates it. Worse, it **launders authorship** — a mapping is
+a technical artifact, a policy is someone's decision, and the ability to ask who
+decided is what the rest of this document exists to protect.
+
+The structure is three-part, not two:
+
+```text
+evidence  →  policy rule  →  warranted decision
+```
+
+```ts
+type EvidenceBridge = {
+  sourceClaim: ClaimRef; // what the evidence asserts, in the source ontology
+  targetDecisionPredicate: PredicateRef; // what the decision turns on, in the target
+  policy: PolicyRef; // the rule connecting them — content-addressed
+  sufficiencyRule: EvidenceRule; // how much evidence is enough
+  authority: AuthorityRef; // who adopted this rule, and under what mandate
+  address: ContentAddress;
+};
+```
+
+Rules:
+
+1. A bridge MUST NOT be represented as a translation, MUST NOT carry a
+   `LossProfile`, and MUST NOT be credited by fixture agreement. Fixtures can
+   establish that both parties compute the same _evidence_; they cannot
+   establish that a normative rule is correct.
+2. The `policy` MUST be content-addressed and attributed to an `authority`.
+   Changing the policy changes the bridge's address, so a decision made under an
+   older rule remains evaluable under the rule that actually applied.
+3. A bridge is **directional and non-invertible.** There is no round trip from a
+   decision back to the evidence that warranted it, and §7.4.2's round-trip
+   anchors therefore do not apply to bridges.
+4. Where a mapping and a bridge are both needed — the evidence must first be
+   translated into terms the policy reads — they MUST be separate objects with
+   separate receipts. The translation carries loss; the bridge carries
+   authority.
+5. Disagreement about a bridge is a **governance dispute**, not a translation
+   defect, and MUST be routed as one. A counter-warrant is the response; a
+   better mapping is not.
+6. A bridge is not a transformation kind under §7.0 and MUST NOT be declared as
+   one. The kinds classify how a _value_ was produced; a bridge classifies how a
+   _decision_ was authorized, and joining them would put an authority into the
+   loss algebra.
+
+§16.7 (RFC-0003) exercises this: the federated demo must produce a bridge
+separately from its mapping, so that a reader of the receipts can ask who
+decided that exhaustion justifies withdrawal and get a name rather than a
+mapping.

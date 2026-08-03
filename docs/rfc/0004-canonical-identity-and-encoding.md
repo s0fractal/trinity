@@ -50,13 +50,18 @@ References MUST therefore be content-addressed:
    reference that gates an irreversible boundary, an admission decision, an
    identity amendment, or a trust computation MUST carry the full digest
    alongside the short handle.
-5. Structural sharing is a requirement, not an optimization: two states under
-   the same domain and ontology MUST resolve to the same reference bytes, so the
-   shared descriptor is stored once and the per-state cost is the reference, not
-   the descriptor. A descriptor that is itself large — an ontology, a complex
-   invariant set — MAY be composed of content-addressed parts, so that a
+5. **Shared reference is a protocol requirement; shared storage is not.** Two
+   states under the same domain and ontology MUST resolve to the same reference
+   bytes — that is a property of the encoding and this document requires it. It
+   does **not** follow that the descriptor is physically stored once: §5.1.0
+   lists deduplication as an _opportunity_ content addressing creates, and
+   whether a store takes it belongs to the store layer, which rule 7 puts out of
+   scope. The protocol guarantee is that a million states in one domain carry
+   one reference each rather than one descriptor each; making that cheap on disk
+   is a backend's business. A descriptor that is itself large — an ontology, a
+   complex invariant set — MAY be composed of content-addressed parts, so that a
    consumer needing one invariant resolves that part rather than the whole
-   object. Sharing then operates within descriptors as well as between states.
+   object. That too is a protocol affordance, not a storage mandate.
 6. External content-addressing systems (IPLD/CID, and similar) MAY be used as a
    transport or storage projection. Doing so MUST NOT redefine the canonical
    digest — the CID is then a second encoding of the same identity, and receipts

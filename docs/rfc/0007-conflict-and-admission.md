@@ -243,28 +243,44 @@ reversible.
 Representation mutation is not free.
 
 ```ts
-type MutationBudget = {
-  compute: BudgetLimit;
-  migration: BudgetLimit;
-  verification: BudgetLimit;
-  coordination: BudgetLimit;
-  complexity: BudgetLimit;
-  maintenance: BudgetLimit;
-  trust: BudgetLimit;
-  time: BudgetLimit;
+// A budget and a cost are a bound and a quantity in the SAME space. Earlier
+// drafts spelled them as two independent records with different coordinate
+// names — `migration` against `stateMigration`, `trust` and `time` present in
+// one and absent from the other, `irreversibilityRisk` present only in the
+// other. Two records that cannot be compared dimension-by-dimension cannot
+// support §10.1.1's rule that a budget check fails if ANY dimension is
+// exceeded, because there is no shared set of dimensions to iterate.
+//
+// One vector, one dimension set, two uses.
+type CostDimension =
+  | "compute"
+  | "time"
+  | "stateMigration"
+  | "translatorCreation"
+  | "verification"
+  | "federationCoordination"
+  | "cognitiveComplexity"
+  | "longTermMaintenance"
+  | "trust"
+  | "irreversibilityRisk";
+
+type CostVector = {
+  // Sparse by construction: an absent dimension is UNASSESSED, not zero.
+  // Conflating the two is §19.15's failure mode in the budget layer.
+  [D in CostDimension]?: Quantity;
 };
 
-type MutationCost = {
-  compute: Cost;
-  stateMigration: Cost;
-  translatorCreation: Cost;
-  verification: Cost;
-  federationCoordination: Cost;
-  cognitiveComplexity: Cost;
-  longTermMaintenance: Cost;
-  irreversibilityRisk: Cost;
-};
+type MutationCost = CostVector; // what a mutation is estimated or measured to cost
+type MutationBudget = CostVector; // the bound it must stay within
 ```
+
+Because both are the same shape, a budget check is a dimension-wise comparison
+over the union of their declared dimensions. A dimension present in the cost and
+absent from the budget is **unbudgeted**, and MUST fail closed rather than pass
+by omission — a mutation cannot buy itself room by inventing a cost nobody
+bounded. A dimension present in the budget and absent from the cost is
+**unassessed**, and MUST likewise fail closed at any boundary requiring that
+dimension.
 
 ### 10.1 Admission inequality
 

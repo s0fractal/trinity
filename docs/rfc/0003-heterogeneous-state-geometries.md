@@ -355,26 +355,18 @@ whether that constitutes grounds to withdraw a proposal that has already
 collected witnesses — an action with external effect, therefore an irreversible
 boundary under §13.3.
 
-#### 16.7.1 This is not a translation, and calling it one is the error
+#### 16.7.1 This is not a translation
 
-An earlier draft described the demo as a candidate _correspondence_ between
-`exhausted` and `grounds_for_withdrawal`, to be established by fixtures and
-carried by a translator mapping.
-
-Those are not two names for one concept in two ontologies. `exhausted` is an
-observation about a resource state. `grounds_for_withdrawal` is a normative
-conclusion inside a proposal policy. Nothing about the first _means_ the second;
-the second follows from the first only through a rule that someone with
-authority adopted, and that could be adopted differently without either ontology
+`exhausted` is an observation about a resource state. `grounds_for_withdrawal`
+is a normative conclusion inside a proposal policy. Nothing about the first
+_means_ the second; the second follows only through a rule someone with
+authority adopted, and could be adopted differently without either ontology
 changing.
 
-Treating that as translation would be the most consequential mistake available
-here: it lets **policy masquerade as semantic correspondence**. A policy carried
-as a mapping inherits the mapping's properties — it looks bidirectional, it
-looks like it has a loss profile, it looks like fixture agreement validates it —
-and none of that is true of a normative rule. Worse, it launders authorship: a
-mapping is a technical artifact, a policy is someone's decision, and the whole
-document is built on being able to ask who decided.
+Carrying that as a translation would let **policy masquerade as semantic
+correspondence** — inheriting properties a normative rule does not have
+(bidirectionality, a loss profile, validation by fixture agreement) and
+laundering authorship, when the whole point is to be able to ask who decided.
 
 The structure is three-part, not two:
 
@@ -382,36 +374,9 @@ The structure is three-part, not two:
 evidence  →  policy rule  →  warranted decision
 ```
 
-and it needs its own primitive:
-
-```ts
-type EvidenceBridge = {
-  sourceClaim: ClaimRef; // what the evidence asserts, in the source ontology
-  targetDecisionPredicate: PredicateRef; // what the decision turns on, in the target
-  policy: PolicyRef; // the rule connecting them — content-addressed
-  sufficiencyRule: EvidenceRule; // how much evidence is enough
-  authority: AuthorityRef; // who adopted this rule, and under what mandate
-  address: ContentAddress;
-};
-```
-
-Rules:
-
-1. A bridge MUST NOT be represented as a translation, MUST NOT carry a
-   `LossProfile`, and MUST NOT be credited by fixture agreement. Fixtures can
-   establish that both parties compute the same _evidence_; they cannot
-   establish that a normative rule is correct.
-2. The `policy` MUST be content-addressed and attributed to an `authority`.
-   Changing the policy changes the bridge's address, so a decision made under an
-   older rule remains evaluable under the rule that actually applied.
-3. A bridge is **directional and non-invertible.** There is no round trip from a
-   decision back to the evidence that warranted it.
-4. Where a mapping and a bridge are both needed — the evidence must first be
-   translated into terms the policy reads — they MUST be separate objects with
-   separate receipts. The translation carries loss; the bridge carries
-   authority.
-5. Disagreement about a bridge is a governance dispute, not a translation
-   defect, and MUST be routed as one.
+The normative definition of `EvidenceBridge` is **§7.5, in RFC-0006** — it is a
+translation-layer primitive, not a property of this demo. This section only
+records why the demo needs one.
 
 **What the demo must produce**, in receipts a third party can replay:
 
@@ -538,13 +503,13 @@ it land.
 | `TypedState`          | substrate-local state shapes                                      | create          | trinity                               | a `minimal`-profile state is refused at a boundary requiring `full`, not backfilled (§5.2)                               |
 | `CompositeState`      | none                                                              | create          | liquid                                | a composite with an undeclared coupling fails validation while every component validates (§6.5.2)                        |
 | `LossProfile`         | none                                                              | create          | trinity                               | property tests: associativity, identity, non-commutativity, monotonicity for `translation` only (§7.1.1)                 |
-| `TransformKind`       | none                                                              | create          | trinity                               | an undeclared kind is treated as `reconstruction`; a reconstructed value is refused at an irreversible boundary (§7.0.2) |
+| `TransformKind`       | none                                                              | create          | trinity                               | an undeclared kind is treated as `reconstruction`; a reconstructed value is refused at an irreversible boundary (§7.0.3) |
 | `SuitabilityProfile`  | none                                                              | create          | trinity                               | a self-reported `forIrreversibleAction` is recorded as `undetermined` regardless of the claim (§7.2.2)                   |
 | `ConflictOccurrence`  | `src/x2B88_decisions.myc.md` chord ledger                         | extend          | myc, liquid                           | two occurrences sharing a fingerprint are not merged without a receipted lineage claim (§19.16)                          |
 | `AdmissionStage`      | `myc` proposal lifecycle, `contracts/GOVERNANCE_FLOW.v0.md`       | extend          | myc                                   | eligibility replays bit-for-bit from the receipt; authorization is attributed and not recomputed (§10.1.3)               |
 | `ExecutionFloor`      | `ski@v1` / Σ-GLYPH Book I v0.5                                    | adopt (pinned)  | omega                                 | the same fixture yields identical output bytes under two substrates' evaluators (§13.4.1.1)                              |
 | `HandshakeMessage`    | none                                                              | create          | trinity                               | a message from the party whose turn it is not is rejected, not merged (§13.4.3.1)                                        |
-| `EvidenceBridge`      | `warrant` decision records                                        | extend          | myc, trinity                          | a bridge presented as a translation — carrying a loss profile — is rejected (§16.7.1)                                    |
+| `EvidenceBridge`      | `warrant` decision records                                        | extend          | myc, trinity                          | a bridge presented as a translation — carrying a loss profile — is rejected (§7.5)                                       |
 
 Notes on the table:
 
@@ -1121,8 +1086,8 @@ depends on cross-substrate reference equality should be claimed.
   measured against source canonical bytes.
 - **C5.** Adopt the five-kind transformation taxonomy of §7.0; require monotone
   loss of `translation` only, and attribution of new information for the rest.
-- **C6.** Add `EvidenceBridge` (§16.7.1) as a primitive distinct from
-  translation, so a normative policy cannot be carried as a mapping.
+- **C6.** Add `EvidenceBridge` (§7.5) as a primitive distinct from translation,
+  so a normative policy cannot be carried as a mapping.
 
 ### Tranche D — Conflict and bottleneck (depends on A)
 

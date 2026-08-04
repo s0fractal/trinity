@@ -211,12 +211,12 @@ const FORMS: Form[] = [
     id: "RECEIPT_ENVELOPE.v1.0 body_hash",
     where: "contracts/RECEIPT_ENVELOPE.v1.0.md",
     inputKind: "structure",
-    hash: "multihash",
+    hash: "SHA-256 multihash",
     truncation: "none",
     floatPolicy: "unstated",
     status: "live",
     unavailable:
-      "the contract says `canonical CBOR / JSON` and does not fix which — so it is not one form but a choice left to the caller, which is itself the finding",
+      "the envelope's own canonical form IS fixed — deterministic CBOR per RFC 8949 4.2.1, with JSON explicitly demoted to a debug projection, two impls verified byte-identical 2026-05-14. It is unavailable here only because this probe does not construct envelopes. A first pass of this probe recorded it as an unfixed choice; that was a misread of a YAML comment about BODY bytes, which the body_kind's own contract owns by design.",
   },
 ];
 

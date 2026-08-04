@@ -274,10 +274,24 @@ results:
    targets binary receipts rather than JSON documents — but a federation with
    two live structural canonicalizers MUST say which applies where, and this RFC
    previously did not know the second one existed.
-3. **`RECEIPT_ENVELOPE.v1.0` does not fix its encoding.** It specifies a
-   multihash over "canonical CBOR / JSON" and leaves the choice to the caller.
-   That is not a canonical form; it is a decision deferred inside a contract
-   whose purpose is stable identity. Tranche A3 MUST resolve it.
+3. **`RECEIPT_ENVELOPE.v1.0` fixes its encoding, and models the pattern this RFC
+   asks for.** An earlier revision of this section claimed the contract left its
+   encoding unfixed. That was a misreading, corrected here: the contract's
+   "Canonical serialization" section states that for `envelope_id` and
+   `body_hash` the canonical form is **CBOR with deterministic encoding (RFC
+   8949 §4.2.1)**, forbids floats, sorts map keys by encoded form, and rules
+   that "JSON form is the human/debug projection, NOT the canonical form —
+   verifiers MUST hash CBOR." Two implementations (TypeScript and Python, in
+   `probes/receipt-envelope-encoder-v0/`) were verified byte-identical on
+   2026-05-14.
+
+   What the misread comment actually says is that **body bytes** are serialized
+   by whichever schema the `body_kind` declares — the envelope is opaque to its
+   body by design and does not own the body's protocol. That is delegation, not
+   ambiguity, and it is precisely the per-family declaration §5.1.1 rule 6 calls
+   for: the envelope fixes its own form, the body declares its own, and the
+   reference records which. Prior art for this RFC rather than a defect in it.
+
 4. **No live form normalizes Unicode.** Rule 5 above was written as a correction
    and turns out to describe existing behavior everywhere, which downgrades it
    from a change to a codification.

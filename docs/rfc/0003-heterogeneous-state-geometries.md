@@ -620,9 +620,11 @@ rather than "proved" for that reason.
   `CANONICAL_HASH` digests a text body without parsing it, so a structural
   canonicalizer feeds it rather than replacing it. It also found a second live
   structural canonicalizer this RFC did not know about
-  (`packages/canonical-receipt`, RFC 8949 canonical CBOR, published on jsr) and
-  a live contract that leaves its own encoding unfixed
-  (`RECEIPT_ENVELOPE.v1.0`). See RFC-0004 §5.1.4.
+  (`packages/canonical-receipt`, RFC 8949 canonical CBOR, published on jsr). A
+  further claim made in that pass — that `RECEIPT_ENVELOPE.v1.0` leaves its own
+  encoding unfixed — was itself wrong and is retracted in RFC-0004 §5.1.4: the
+  contract fixes deterministic CBOR explicitly and models the per-family
+  declaration §5.1.1 rule 6 asks for. See RFC-0004 §5.1.4.
 - **Tranche G4 (execution floor evaluator).** `ski@v1` (warrant SPEC §3.1, over
   Σ-GLYPH Book I v0.5) satisfies every requirement §13.4.1.1 states:
   deterministic across hosts, bit-exact across implementations, terminating by

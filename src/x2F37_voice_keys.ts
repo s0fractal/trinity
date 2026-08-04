@@ -39,6 +39,11 @@
 //                               replayed onto another chord quoting the claim
 //   quorum-verify --voice=N --claim=... --chord=xNNNN --sig=S
 //   registry                    Print the committed registry state
+//   check [--voice=N]           Custody check: prove the local private key
+//                               corresponds to the registry's public key, by
+//                               signing a probe and verifying it. Exits 1 on
+//                               MISMATCH — a present-but-wrong key produces
+//                               signatures that verify for nobody.
 //
 // Glossary words: voice-keys, ключі, підпис, signature
 
@@ -120,6 +125,31 @@ export async function signHash(
     new TextEncoder().encode(contentHash),
   );
   return b64(sig);
+}
+
+/** Does this private key correspond to this registered public key?
+ *
+ *  Answered by signing a fixed probe and verifying it against the pubkey, so
+ *  the private half is never derived, printed, or persisted. The property it
+ *  establishes is the only one custody cares about: **signatures made with
+ *  this key will verify for anyone holding the registry.**
+ *
+ *  A present-but-wrong key is worse than an absent one — it produces
+ *  signatures that look authentic and verify for nobody — so this is checked
+ *  rather than assumed after a key is restored, copied between hosts, or
+ *  rotated. */
+export const CUSTODY_PROBE = "voice-keys-custody-check-v1";
+
+export async function keyMatchesRegistry(
+  privateKeyB64: string,
+  pubkeyB64: string,
+): Promise<boolean> {
+  try {
+    const sig = await signHash(CUSTODY_PROBE, privateKeyB64);
+    return await verifySig(CUSTODY_PROBE, sig, pubkeyB64);
+  } catch {
+    return false; // unusable key material is a failed check, not a crash
+  }
 }
 
 export async function verifySig(
@@ -589,6 +619,70 @@ async function main() {
     }
     case "registry": {
       out({ type: "voice_registry", ...await loadRegistry() });
+      break;
+    }
+    case "check": {
+      // Custody check: does the private key on this host actually correspond
+      // to the public key the registry committed for that voice?
+      //
+      // The question this answers is not "is a file present" but "will
+      // signatures made here verify for anyone reading the registry" — which
+      // is the only property that matters, and the one a key restored from
+      // backup, copied from another machine, or minted before a rotation can
+      // silently fail. It is checked by signing a fixed probe string and
+      // verifying it against the committed pubkey, so the private half is
+      // never derived, printed, or written anywhere.
+      const reg = await loadRegistry();
+      const only = flagValue(rest, "voice");
+      const voices = only ? [only] : Object.keys(reg.keys).sort();
+      const home = Deno.env.get("HOME") ?? ".";
+      const results = [];
+      for (const voice of voices) {
+        const entry = reg.keys[voice];
+        const keyPath = join(home, ".trinity", "keys", `${voice}.ed25519.json`);
+        if (!entry) {
+          results.push({ voice, state: "not-in-registry", key_path: keyPath });
+          continue;
+        }
+        let stored: { private_key_pkcs8?: string } | null = null;
+        try {
+          stored = JSON.parse(await Deno.readTextFile(keyPath));
+        } catch {
+          results.push({
+            voice,
+            state: "no-local-key",
+            key_path: keyPath,
+            registry_pubkey: entry.pubkey,
+          });
+          continue;
+        }
+        const state = await keyMatchesRegistry(
+            stored!.private_key_pkcs8 ?? "",
+            entry.pubkey,
+          )
+          ? "match"
+          : "MISMATCH";
+        results.push({
+          voice,
+          state,
+          key_path: keyPath,
+          registry_pubkey: entry.pubkey,
+          minted_at: entry.minted_at ?? null,
+        });
+      }
+      const bad = results.filter((r) => r.state === "MISMATCH");
+      out({
+        type: "voice_key_check",
+        checked: results.length,
+        signable: results.filter((r) => r.state === "match").length,
+        results,
+        note: bad.length > 0
+          ? "a MISMATCH means signatures made here will NOT verify against the committed registry — the local key is not the registered one (stale backup, wrong host, or a rotation the registry has not recorded)"
+          : "voices reported `match` can sign chords that any reader of the registry can verify",
+      });
+      // A present-but-wrong key is worse than an absent one: it produces
+      // signatures that look authentic and verify for nobody.
+      Deno.exit(bad.length > 0 ? 1 : 0);
       break;
     }
     case "sign-chord": {

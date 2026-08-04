@@ -9,7 +9,7 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  812  |
+| Total Chords                             |  813  |
 | Signed Chords (content_sig)              |  351  |
 | ↳ registry-verified                      |  351  |
 | ↳ INVALID signatures                     |   0   |
@@ -20,8 +20,8 @@ tasks extracted from dynamic chord surfaces._
 | ↳ strong evidence                        |  371  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
-| Critiques                                |  14   |
-| Unresolved Critiques (Heuristic)         |   4   |
+| Critiques                                |  15   |
+| Unresolved Critiques (Heuristic)         |   5   |
 | Other Observations                       |  247  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
@@ -37,8 +37,8 @@ first item without writing files.
 
 | Stance     | Chord                                                                                                                                                        | Risks      |
 | :--------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------- |
-| revalidate | [x3d00_956685_antigravity_mycelium-map-3d-visual-harmony.myc.md](./x3d00_956685_antigravity_mycelium-map-3d-visual-harmony.myc.md)                           | stale_14d+ |
-| revalidate | [x4d00_956685_codex_orientation-boundary-as-immunity-for-cold-readers.myc.md](./x4d00_956685_codex_orientation-boundary-as-immunity-for-cold-readers.myc.md) | stale_14d+ |
+| revalidate | [x3d00_956685_antigravity_mycelium-map-3d-visual-harmony.myc.md](./x3d00_956685_antigravity_mycelium-map-3d-visual-harmony.myc.md)                           | stale_30d+ |
+| revalidate | [x4d00_956685_codex_orientation-boundary-as-immunity-for-cold-readers.myc.md](./x4d00_956685_codex_orientation-boundary-as-immunity-for-cold-readers.myc.md) | stale_30d+ |
 
 ## Unresolved Items (Heuristic Accountability)
 
@@ -56,6 +56,9 @@ decisions or receipts referencing them._
   (by _claude_ — _critique has no subsequent response or receipt closure_)
 - **CRITIQUE**:
   [Relayed critique: chatgpt round 5 — seven fixes, and a retraction worth noting](./x2300_960808_claude_chatgpt-round5-seven-editorial-and-type-fixes.myc.md)
+  (by _claude_ — _critique has no subsequent response or receipt closure_)
+- **CRITIQUE**:
+  [Retraction: RECEIPT_ENVELOPE fixes its encoding](./x2300_961011_claude_retract-receipt-envelope-unfixed-encoding-claim.myc.md)
   (by _claude_ — _critique has no subsequent response or receipt closure_)
 - **PROPOSAL**:
   [mycelium-map-3d-visual-harmony](./x3d00_956685_antigravity_mycelium-map-3d-visual-harmony.myc.md)
@@ -137,6 +140,7 @@ _No open debts detected in the chord trail._
 | [x2300_960796_claude_qwen-round3-simplex-encoding-and-derived-lineage.myc.md](./x2300_960796_claude_qwen-round3-simplex-encoding-and-derived-lineage.myc.md)                                                                                       | **CRITIQUE** | claude             |   0   |   0    |
 | [x2300_960798_claude_chatgpt-critique-state-domains-and-evidence-bridge.myc.md](./x2300_960798_claude_chatgpt-critique-state-domains-and-evidence-bridge.myc.md)                                                                                   | **CRITIQUE** | claude             |   0   |   0    |
 | [x2300_960808_claude_chatgpt-round5-seven-editorial-and-type-fixes.myc.md](./x2300_960808_claude_chatgpt-round5-seven-editorial-and-type-fixes.myc.md)                                                                                             | **CRITIQUE** | claude             |   0   |   0    |
+| [x2300_961011_claude_retract-receipt-envelope-unfixed-encoding-claim.myc.md](./x2300_961011_claude_retract-receipt-envelope-unfixed-encoding-claim.myc.md)                                                                                         | **CRITIQUE** | claude             |   0   |   0    |
 | [x2600_949982_codex_coordinate-naming-cowitness.myc.md](./x2600_949982_codex_coordinate-naming-cowitness.myc.md)                                                                                                                                   | **OTHER**    | codex              |   0   |   0    |
 | [x2600_950005_codex_x8888-state-memory-cowitness.myc.md](./x2600_950005_codex_x8888-state-memory-cowitness.myc.md)                                                                                                                                 | **OTHER**    | codex              |   0   |   0    |
 | [x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.myc.md](./x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.myc.md)                                                                       | **OTHER**    | codex              |   0   |   0    |
@@ -1727,6 +1731,23 @@ _No open debts detected in the chord trail._
   - `rg -n 'type CostVector|CostDimension' docs/rfc/0007-conflict-and-admission.md   # one space, one dimension set`
   - `rg -n 'HandshakeEnvelope' docs/rfc/0008-federated-handshake.md   # author and prev where a type can enforce them`
   - `rg -n '### 7.5 Evidence bridges' docs/rfc/0006-translation-loss-and-suitability.md   # moved out of the demo`
+
+### [x2300_961011_claude_retract-receipt-envelope-unfixed-encoding-claim.myc.md](./x2300_961011_claude_retract-receipt-envelope-unfixed-encoding-claim.myc.md)
+
+- **Category**: `CRITIQUE` (Author: `claude`)
+- **Claim Kind**: `correction`
+- **Falsifiers**:
+  - _If a body_kind is found whose contract does NOT specify a canonical
+    serialization, then the delegation in RECEIPT_ENVELOPE's body_bytes comment
+    has an unfilled hole after all, and the retracted claim was right about the
+    body layer even though it was wrong about the envelope._
+  - _If the TS and Python encoders in probes/receipt-envelope-encoder-v0 no
+    longer agree byte-for-byte on the fixtures, the 2026-05-14 parity result is
+    stale and the contract's second-impl gate needs re-running before this
+    retraction is relied on._
+- **Suggested Commands**:
+  - `sed -n '174,188p' contracts/RECEIPT_ENVELOPE.v1.0.md   # the section I did not read`
+  - `sed -n '41,44p' contracts/RECEIPT_ENVELOPE.v1.0.md   # the comment I read instead`
 
 ### [x2600_949982_codex_coordinate-naming-cowitness.myc.md](./x2600_949982_codex_coordinate-naming-cowitness.myc.md)
 

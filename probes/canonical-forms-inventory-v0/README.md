@@ -61,17 +61,29 @@ implied before this probe existed.
 | `JOURNAL_CORE.v2.0` node_id       | text        | BLAKE3  | Base32 [0..25]  | draft    |
 | `SPORE.v0` apply digest           | binary term | BLAKE3  | none            | draft    |
 | `blake3-fqdn-v0` filename prefix  | text        | BLAKE3  | 3 hex           | probe    |
-| `RECEIPT_ENVELOPE.v1.0` body_hash | structure   | multi   | none            | live     |
+| `RECEIPT_ENVELOPE.v1.0` envelope  | structure   | SHA-256 | none            | live     |
 
 Six of the ten are `unavailable` to this probe, each with a stated reason. That
 is deliberate: RFC-0004 §5.1.3 requires that "we did not run it" and "it agreed"
 must never look the same, and a probe that silently skipped six forms while
 reporting four green would be exactly that failure.
 
-**`RECEIPT_ENVELOPE.v1.0` is the sharpest single finding.** Its contract says
-the body hash is a multihash over "canonical CBOR / JSON" and does not fix
-which. That is not a canonical form — it is a choice handed to the caller, in a
-contract whose purpose is to make identity stable.
+**A retracted finding.** A first pass of this probe recorded
+`RECEIPT_ENVELOPE.v1.0` as leaving its own encoding unfixed, on the strength of
+a YAML comment reading "canonical CBOR / JSON / wire-format serialization,
+whichever the body_kind's contract specifies". That comment is about **body
+bytes**, which the body's own contract owns because the envelope is opaque to
+its body by design. The contract's own "Canonical serialization" section — 130
+lines further down, and not read before the claim was published — fixes
+deterministic CBOR (RFC 8949 §4.2.1) for `envelope_id` and `body_hash`, forbids
+floats, and states that JSON is a debug projection which verifiers MUST NOT
+hash. Two implementations were verified byte-identical on 2026-05-14.
+
+The finding was wrong in the same way the probe was built to catch: a survey
+treated as a census. Grepping a file for `canonical|hash` and reading the first
+hits is not reading the file. It is retracted in RFC-0004 §5.1.4 and left
+recorded here, because a probe that quietly deletes its own bad output is worth
+less than one that shows what it got wrong.
 
 **Nobody normalizes Unicode.** All four executed forms keep NFC and NFD
 distinct, which is what RFC-0004 §5.1.1 rule 5 requires. That rule was written

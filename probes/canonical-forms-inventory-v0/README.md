@@ -89,7 +89,38 @@ less than one that shows what it got wrong.
 distinct, which is what RFC-0004 §5.1.1 rule 5 requires. That rule was written
 as a correction and turns out to describe existing behavior everywhere.
 
-## Honesty notes
+## Two tables, and why
+
+The report separates **MEASURED** rows from **DOCUMENTED** rows, and they are
+not interchangeable:
+
+- **measured** — bytes this probe computed. The evidence is in the output.
+- **documented** — a claim about a file. The evidence must be a **verbatim
+  quote**, which the probe resolves in the source and reports with its line.
+
+A documented row whose quote is absent from the cited file exits **non-zero**.
+A cited file that is not in this checkout reports `unverifiable here`, which is
+a third state and deliberately not the same as either passing or failing.
+
+This exists because the failure happened. A row here once asserted that
+`RECEIPT_ENVELOPE.v1.0` left its encoding unfixed, on the strength of a YAML
+comment about *body* bytes, while the contract fixes deterministic CBOR in a
+section 130 lines further down. That claim sat in a table whose other rows were
+measurements, and nothing in the presentation told a reader which was which.
+
+The guard was falsified before being trusted: restoring the original wrong
+quote (`"leaves the choice to the caller"`) makes the probe exit 1 with
+`QUOTE NOT FOUND` on exactly that row. A green check that could not have been
+red is worth nothing, so it was made red on purpose once.
+
+What this catches is narrow and worth stating: it forces the author to open the
+file at a specific place and copy out text that supports the claim. It does not
+check that the quote *entails* the claim — a determined author can still cite
+something adjacent and true. It removes the failure that actually occurred,
+which was writing a claim about a document without reading the part that
+governs it.
+
+## Honesty notes## Honesty notes
 
 - The JCS implementation here is a **reimplementation** restricted to what the
   corpus needs. It is not warrant's, and agreement with it is therefore weaker

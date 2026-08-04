@@ -25,6 +25,24 @@ type InputKind =
   | "structure" // a JSON-like value with keys and ordering questions
   | "binary-term"; // a domain-specific binary encoding
 
+/** A claim about a document this probe cannot execute.
+ *
+ *  Every such claim MUST carry a verbatim quote from the source. The probe
+ *  resolves the quote in the file and fails the row if it is absent — so a
+ *  paraphrase, a half-read section, or a claim about a document that says the
+ *  opposite cannot reach the report wearing the same clothes as a measurement.
+ *
+ *  This exists because it did happen. A row here once asserted that
+ *  RECEIPT_ENVELOPE.v1.0 left its encoding unfixed, on the strength of a YAML
+ *  comment about body bytes, while the contract fixed deterministic CBOR in a
+ *  section 130 lines further down. Had a verbatim quote been required, the
+ *  claim could not have been written: nothing in that file says it. */
+interface Citation {
+  path: string;
+  /** Must appear verbatim in `path`. The probe reports the line it found. */
+  quote: string;
+}
+
 interface Form {
   id: string;
   where: string;
@@ -35,7 +53,11 @@ interface Form {
   status: "live" | "draft" | "external" | "probe";
   /** Returns the form's output for a value, or null if not applicable here. */
   run?: (v: Corpus) => Promise<string> | string;
+  /** Why this form was not executed. Requires `citation`. */
   unavailable?: string;
+  /** Evidence for `unavailable`, or for any claim the row makes about a
+   *  document rather than about bytes it produced. */
+  citation?: Citation;
 }
 
 /** One logical value, expressed in each shape a form might want. */
@@ -142,7 +164,10 @@ const FORMS: Form[] = [
     truncation: "none",
     floatPolicy: "floats FORBIDDEN — encoder throws",
     status: "live",
-    run: (v) => multihashSha256(encodeCanonical(v.structure)),
+    run: (v) =>
+      multihashSha256(
+        encodeCanonical(v.structure as Parameters<typeof encodeCanonical>[0]),
+      ),
   },
   {
     id: "warrant/SPEC §4 (JCS)",
@@ -164,6 +189,10 @@ const FORMS: Form[] = [
     status: "live",
     unavailable:
       "not imported here — myc's stableStringify is internal to the capture pipeline; comparing it needs a myc checkout and an exported entry point",
+    citation: {
+      path: "myc/src/x01D0_capture_pipeline.ts",
+      quote: 'name: "myc.raw.bytes.sha256",',
+    },
   },
   {
     id: "sigma-glyph/Book I NodeHash",
@@ -175,6 +204,10 @@ const FORMS: Form[] = [
     status: "external",
     unavailable:
       "input kind is a SKI term, not a JSON value; the corpus here has no term representation, so any comparison would be a category error",
+    citation: {
+      path: "~/Projects/sigma-glyph/spec/book-1-truth.en.md",
+      quote: "**NodeHash = SHA-256(CanonicalBytes)**",
+    },
   },
   {
     id: "JOURNAL_CORE.v2.0 node_id",
@@ -185,6 +218,10 @@ const FORMS: Form[] = [
     floatPolicy: "unstated",
     status: "draft",
     unavailable: "draft contract, no implementation in src/",
+    citation: {
+      path: "contracts/JOURNAL_CORE.v2.0.draft.md",
+      quote: "Base32}(\\text{BLAKE3}",
+    },
   },
   {
     id: "SPORE.v0 apply digest",
@@ -196,6 +233,10 @@ const FORMS: Form[] = [
     status: "draft",
     unavailable:
       "byte-identical across rust/deno per the contract, but over spore payloads rather than JSON values",
+    citation: {
+      path: "contracts/SPORE.v0.draft.md",
+      quote: "Verified byte-identical across rust 1.94",
+    },
   },
   {
     id: "blake3-fqdn-v0 filename prefix",
@@ -206,6 +247,10 @@ const FORMS: Form[] = [
     floatPolicy: "n/a",
     status: "probe",
     unavailable: "deferred 2026-05-19, never promoted to src/",
+    citation: {
+      path: "probes/blake3-fqdn-v0/README.md",
+      quote: "**Status: deferred 2026-05-19.**",
+    },
   },
   {
     id: "RECEIPT_ENVELOPE.v1.0 body_hash",
@@ -217,8 +262,53 @@ const FORMS: Form[] = [
     status: "live",
     unavailable:
       "the envelope's own canonical form IS fixed — deterministic CBOR per RFC 8949 4.2.1, with JSON explicitly demoted to a debug projection, two impls verified byte-identical 2026-05-14. It is unavailable here only because this probe does not construct envelopes. A first pass of this probe recorded it as an unfixed choice; that was a misread of a YAML comment about BODY bytes, which the body_kind's own contract owns by design.",
+    citation: {
+      path: "contracts/RECEIPT_ENVELOPE.v1.0.md",
+      quote: "the canonical form is **CBOR with",
+    },
   },
 ];
+
+type CiteVerdict =
+  | { state: "verified"; line: number }
+  | { state: "QUOTE NOT FOUND"; detail: string }
+  | { state: "unverifiable here"; detail: string }
+  | { state: "MISSING CITATION"; detail: string };
+
+/** Resolve a citation against the working tree.
+ *
+ *  Three outcomes, deliberately distinct — collapsing the last two is the
+ *  failure this whole probe is about. A quote that is absent is a FAILURE (the
+ *  claim is unsupported). A file that is not in this checkout is
+ *  UNVERIFIABLE (the claim may be true; nothing here can say). */
+async function verifyCitation(c: Citation | undefined): Promise<CiteVerdict> {
+  if (!c) {
+    return {
+      state: "MISSING CITATION",
+      detail: "an unexecuted row must cite its source verbatim",
+    };
+  }
+  const path = c.path.startsWith("~/")
+    ? `${Deno.env.get("HOME") ?? ""}/${c.path.slice(2)}`
+    : new URL(`../../${c.path}`, import.meta.url).pathname;
+  let text: string;
+  try {
+    text = await Deno.readTextFile(path);
+  } catch {
+    return {
+      state: "unverifiable here",
+      detail: `${c.path} is not in this checkout`,
+    };
+  }
+  const idx = text.indexOf(c.quote);
+  if (idx < 0) {
+    return {
+      state: "QUOTE NOT FOUND",
+      detail: `${c.path} does not contain the quoted text`,
+    };
+  }
+  return { state: "verified", line: text.slice(0, idx).split("\n").length };
+}
 
 interface Row {
   form: string;
@@ -226,6 +316,8 @@ interface Row {
   inputKind: string;
   outputs: Record<string, string | null>;
   unavailable?: string;
+  citation?: CiteVerdict;
+  citationPath?: string;
 }
 
 async function main() {
@@ -251,6 +343,9 @@ async function main() {
       inputKind: f.inputKind,
       outputs,
       unavailable: f.unavailable,
+      // Executed rows need no citation — their evidence is the bytes above.
+      citation: f.run ? undefined : await verifyCitation(f.citation),
+      citationPath: f.citation?.path,
     });
   }
 
@@ -391,17 +486,29 @@ async function main() {
   );
   console.log(`hash functions: ${report.hash_functions.join(", ")}\n`);
 
-  for (const r of rows) {
-    console.log(`## ${r.form}  [${r.status}, ${r.inputKind}]`);
-    if (r.unavailable) {
-      console.log(`   unavailable: ${r.unavailable}\n`);
-      continue;
-    }
+  console.log(
+    `## MEASURED — these rows are bytes this probe computed\n`,
+  );
+  for (const r of rows.filter((r) => !r.unavailable)) {
+    console.log(`### ${r.form}  [${r.status}, ${r.inputKind}]`);
     for (const c of CORPUS) {
-      const v = r.outputs[c.name];
-      console.log(`   ${c.name.padEnd(22)} ${v}`);
+      console.log(`   ${c.name.padEnd(22)} ${r.outputs[c.name]}`);
     }
     console.log();
+  }
+
+  console.log(
+    `## DOCUMENTED — these rows are claims about files, not measurements.\n` +
+      `   Each must cite its source verbatim; the quote is resolved below.\n`,
+  );
+  for (const r of rows.filter((r) => r.unavailable)) {
+    const v = r.citation!;
+    const mark = v.state === "verified"
+      ? `cited ✓ ${(r.citationPath ?? "")}:${v.line}`
+      : `${v.state} — ${"detail" in v ? v.detail : ""}`;
+    console.log(`### ${r.form}  [${r.status}, ${r.inputKind}]`);
+    console.log(`   claim:    ${r.unavailable}`);
+    console.log(`   evidence: ${mark}\n`);
   }
 
   console.log(`## layering: are CANONICAL_HASH and JCS rivals or layers?\n`);
@@ -424,6 +531,19 @@ async function main() {
       ? `- ${report.cross_form_agreement}`
       : report.cross_form_agreement.map((c) => `- ${c}`).join("\n"),
   );
+
+  // A documented claim whose quote is absent is unsupported, and the probe
+  // says so with an exit code rather than a line the reader may skim past.
+  const broken = rows.filter((r) =>
+    r.citation &&
+    (r.citation.state === "QUOTE NOT FOUND" ||
+      r.citation.state === "MISSING CITATION")
+  );
+  if (broken.length > 0) {
+    console.error(`\n${broken.length} documented row(s) without support:`);
+    for (const b of broken) console.error(`  - ${b.form}: ${b.citation!.state}`);
+    Deno.exitCode = 1;
+  }
 }
 
 if (import.meta.main) await main();

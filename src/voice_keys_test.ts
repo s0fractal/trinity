@@ -7,6 +7,7 @@ import {
   assertEquals,
 } from "https://deno.land/std@0.224.0/assert/mod.ts";
 import {
+  keyMatchesRegistry,
   mintKeypair,
   type Registry,
   resignChordFile,
@@ -260,4 +261,44 @@ Deno.test("chord-sig — verify-all sweep: unsigned pass, tampered signed chord 
     if (home !== undefined) Deno.env.set("HOME", home);
     await Deno.remove(dir, { recursive: true });
   }
+});
+
+// Custody: the property a key restored from backup or copied between hosts
+// must satisfy before anyone relies on a signature it makes. A present-but-
+// wrong key is worse than an absent one, so both branches are asserted.
+Deno.test("voice-keys — custody check accepts the registered pair", async () => {
+  const { registry, privs } = await ephemeralVoices(["claude"]);
+  assert(
+    await keyMatchesRegistry(
+      privs.get("claude")!,
+      registry.keys["claude"].pubkey,
+    ),
+  );
+});
+
+Deno.test("voice-keys — custody check REJECTS a key from another mint", async () => {
+  const { registry } = await ephemeralVoices(["claude"]);
+  const { privateKeyB64: strangerPriv } = await mintKeypair("test");
+  // A well-formed Ed25519 key that simply is not the registered one: this is
+  // the stale-backup / wrong-host / unrecorded-rotation case, and it must not
+  // pass just because the bytes are valid key material.
+  assertEquals(
+    await keyMatchesRegistry(strangerPriv, registry.keys["claude"].pubkey),
+    false,
+  );
+});
+
+Deno.test("voice-keys — custody check REJECTS unusable key material", async () => {
+  const { registry } = await ephemeralVoices(["claude"]);
+  assertEquals(
+    await keyMatchesRegistry(
+      "not-base64-pkcs8",
+      registry.keys["claude"].pubkey,
+    ),
+    false,
+  );
+  assertEquals(
+    await keyMatchesRegistry("", registry.keys["claude"].pubkey),
+    false,
+  );
 });

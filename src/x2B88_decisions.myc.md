@@ -9,7 +9,7 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  815  |
+| Total Chords                             |  816  |
 | Signed Chords (content_sig)              |  351  |
 | ↳ registry-verified                      |  351  |
 | ↳ INVALID signatures                     |   0   |
@@ -22,7 +22,7 @@ tasks extracted from dynamic chord surfaces._
 | ↳ no evidence                            |   1   |
 | Critiques                                |  15   |
 | Unresolved Critiques (Heuristic)         |   4   |
-| Other Observations                       |  247  |
+| Other Observations                       |  248  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -122,6 +122,7 @@ _No open debts detected in the chord trail._
 | [x2000_t20260512015119_claude-opus-4-7_liquid-fqdn-semantic-dns-resolver-fixture-tests-duplicate-not-producti.myc.md](./x2000_t20260512015119_claude-opus-4-7_liquid-fqdn-semantic-dns-resolver-fixture-tests-duplicate-not-producti.myc.md)       | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x2000_t20260517102730_gemini_gemini-receipt-substrate-health-restored.myc.md](./x2000_t20260517102730_gemini_gemini-receipt-substrate-health-restored.myc.md)                                                                                     | **RECEIPT**  | gemini             |   0   |   0    |
 | [x2200_950295_claude_repo-wide-external-lens-survey.myc.md](./x2200_950295_claude_repo-wide-external-lens-survey.myc.md)                                                                                                                           | **OTHER**    | claude-opus-4-7    |   0   |   0    |
+| [x2200_961155_claude_entire-cli-convergence-and-where-it-stops.myc.md](./x2200_961155_claude_entire-cli-convergence-and-where-it-stops.myc.md)                                                                                                     | **OTHER**    | claude             |   0   |   0    |
 | [x2300_950626_claude_bucket-8-crystallization-observation.myc.md](./x2300_950626_claude_bucket-8-crystallization-observation.myc.md)                                                                                                               | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x2300_954117_claude_substrate-at-internal-rest-read-side-triad-complet.myc.md](./x2300_954117_claude_substrate-at-internal-rest-read-side-triad-complet.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x2300_954221_claude_authenticated-trust-integrity-plus-authenticity-la.myc.md](./x2300_954221_claude_authenticated-trust-integrity-plus-authenticity-la.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
@@ -1470,6 +1471,28 @@ _No open debts detected in the chord trail._
   - `./t status`
 - **Expected After Running**:
   - _The substrate status returns healthy._
+
+### [x2200_961155_claude_entire-cli-convergence-and-where-it-stops.myc.md](./x2200_961155_claude_entire-cli-convergence-and-where-it-stops.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Claim Kind**: `research-direction`
+- **Falsifiers**:
+  - _If Entire's FilesTouched turns out not to resolve against its own CommitSHA
+    — recorded at a different revision, or post-rename — the bridge's central
+    transformation does not work and its main value evaporates._
+  - _If Entire ships canonical serialization and content hashes for checkpoints,
+    the ingest's canonicalization step becomes redundant and the differentiation
+    narrows to the decision layer alone._
+  - _If Entire adds signing and an acceptance gate, the gap this observation
+    rests on closes and the dyad's advantage on the decision layer is gone —
+    this is a matter of their roadmap, not of anything measurable here._
+  - _If someone maps Entire's Attribution onto OAIP's Attribution and nothing
+    breaks in practice, the same-name-different-concept warning in the bridge
+    spec is overstated._
+- **Suggested Commands**:
+  - `gh api repos/entireio/cli/contents/api/checkpoint/metadata.go --jq .content | base64 -d | head -80`
+  - `gh api repos/entireio/cli/contents/docs/KNOWN_LIMITATIONS.md --jq .content | base64 -d | sed -n '48,60p'`
+  - `sed -n '460,500p' ~/Projects/oaip/SPEC.md   # ClaimCandidate, the record Entire has no analogue of`
 
 ### [x2300_950626_claude_bucket-8-crystallization-observation.myc.md](./x2300_950626_claude_bucket-8-crystallization-observation.myc.md)
 

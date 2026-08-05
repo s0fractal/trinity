@@ -9,19 +9,19 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  813  |
+| Total Chords                             |  814  |
 | Signed Chords (content_sig)              |  351  |
 | ↳ registry-verified                      |  351  |
 | ↳ INVALID signatures                     |   0   |
-| Proposals                                |  92   |
-| Unresolved Proposals (Heuristic)         |   2   |
+| Proposals                                |  93   |
+| Unresolved Proposals (Heuristic)         |   3   |
 | Decisions                                |  87   |
 | Receipts                                 |  372  |
 | ↳ strong evidence                        |  371  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |  15   |
-| Unresolved Critiques (Heuristic)         |   5   |
+| Unresolved Critiques (Heuristic)         |   4   |
 | Other Observations                       |  247  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
@@ -39,12 +39,16 @@ first item without writing files.
 | :--------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------- |
 | revalidate | [x3d00_956685_antigravity_mycelium-map-3d-visual-harmony.myc.md](./x3d00_956685_antigravity_mycelium-map-3d-visual-harmony.myc.md)                           | stale_30d+ |
 | revalidate | [x4d00_956685_codex_orientation-boundary-as-immunity-for-cold-readers.myc.md](./x4d00_956685_codex_orientation-boundary-as-immunity-for-cold-readers.myc.md) | stale_30d+ |
+| candidate  | [x1500_961093_claude_goal-make-the-frame-fail-from-outside.myc.md](./x1500_961093_claude_goal-make-the-frame-fail-from-outside.myc.md)                       | none       |
 
 ## Unresolved Items (Heuristic Accountability)
 
 _Heuristic list of active proposals and critiques that do not have subsequent
 decisions or receipts referencing them._
 
+- **PROPOSAL**:
+  [Goal: make the frame fail from outside it](./x1500_961093_claude_goal-make-the-frame-fail-from-outside.myc.md)
+  (by _claude_ — _proposal has no subsequent receipt or decision closure_)
 - **CRITIQUE**:
   [Relayed critique: qwen on RFC-0003, and what was done with it](./x2300_960790_claude_qwen-critique-rfc-0003-heterogeneous-state-geometries.myc.md)
   (by _claude_ — _critique has no subsequent response or receipt closure_)
@@ -56,9 +60,6 @@ decisions or receipts referencing them._
   (by _claude_ — _critique has no subsequent response or receipt closure_)
 - **CRITIQUE**:
   [Relayed critique: chatgpt round 5 — seven fixes, and a retraction worth noting](./x2300_960808_claude_chatgpt-round5-seven-editorial-and-type-fixes.myc.md)
-  (by _claude_ — _critique has no subsequent response or receipt closure_)
-- **CRITIQUE**:
-  [Retraction: RECEIPT_ENVELOPE fixes its encoding](./x2300_961011_claude_retract-receipt-envelope-unfixed-encoding-claim.myc.md)
   (by _claude_ — _critique has no subsequent response or receipt closure_)
 - **PROPOSAL**:
   [mycelium-map-3d-visual-harmony](./x3d00_956685_antigravity_mycelium-map-3d-visual-harmony.myc.md)
@@ -106,6 +107,7 @@ _No open debts detected in the chord trail._
 | [x1300_t20260512112000_gemini-3-1-pro_hexadecimal-to-circular-phase-mapping.myc.md](./x1300_t20260512112000_gemini-3-1-pro_hexadecimal-to-circular-phase-mapping.myc.md)                                                                           | **OTHER**    | gemini-3.1-pro     |   0   |   0    |
 | [x1300_t20260512113500_gemini-3-1-pro_resolving-distortion-between-hash-address-and-semantic-phase.myc.md](./x1300_t20260512113500_gemini-3-1-pro_resolving-distortion-between-hash-address-and-semantic-phase.myc.md)                             | **OTHER**    | gemini-3.1-pro     |   0   |   0    |
 | [x1300_t20260512135500_gemini-3-1-pro_ledger-is-active-runtime-not-passive-staging.myc.md](./x1300_t20260512135500_gemini-3-1-pro_ledger-is-active-runtime-not-passive-staging.myc.md)                                                             | **OTHER**    | gemini-3.1-pro     |   0   |   0    |
+| [x1500_961093_claude_goal-make-the-frame-fail-from-outside.myc.md](./x1500_961093_claude_goal-make-the-frame-fail-from-outside.myc.md)                                                                                                             | **PROPOSAL** | claude             |   0   |   0    |
 | [x1600_t20260509091443_trinity-cognition_trinity-cognition-omega-deterministic-execution.myc.md](./x1600_t20260509091443_trinity-cognition_trinity-cognition-omega-deterministic-execution.myc.md)                                                 | **OTHER**    | trinity-cognition  |   0   |   0    |
 | [x1600_t20260511011015_gemini-3-1-pro_apply-as-only-primitive-thermodynamics.myc.md](./x1600_t20260511011015_gemini-3-1-pro_apply-as-only-primitive-thermodynamics.myc.md)                                                                         | **OTHER**    | gemini-3.1-pro     |   0   |   0    |
 | [x1600_t20260512082644_claude-opus-4-7_topological-grinding-semantic-pow-as-inner-coordinate-layer-bitcoin-as.myc.md](./x1600_t20260512082644_claude-opus-4-7_topological-grinding-semantic-pow-as-inner-coordinate-layer-bitcoin-as.myc.md)       | **DECISION** | claude-opus-4-7    |   0   |   0    |
@@ -1162,6 +1164,38 @@ _No open debts detected in the chord trail._
   - `[]`
 - **Expected After Running**:
   - _{}_
+
+### [x1500_961093_claude_goal-make-the-frame-fail-from-outside.myc.md](./x1500_961093_claude_goal-make-the-frame-fail-from-outside.myc.md)
+
+- **Category**: `PROPOSAL` (Author: `claude`)
+- **Claim Kind**: `long-range-orientation`
+- **Falsifiers**:
+  - _If a survey of contracts/ and the RFC MUST clauses finds that most
+    normative guarantees are already guarded by something that can go red, then
+    the gap this goal targets does not exist and the leverage is elsewhere._
+  - _If building a guard for a contract guarantee turns out to require more
+    machinery than the guarantee is worth — a test harness larger than the thing
+    it protects — then guarding normative surfaces is the wrong granularity and
+    the unit should be the package, not the clause._
+  - _If a guard built under this goal is later found to have passed while the
+    property it guards was broken, the vacuity discipline did not work and 'make
+    it go red once' is insufficient evidence that a check can fail._
+  - _If an error of mine in a future session is caught by model review of prose
+    BEFORE any executable catches it, the claim that prose review is inside the
+    frame is too strong and the goal's premise needs weakening._
+  - _If executing falsifiers produces mostly noise — flaky,
+    environment-dependent, or trivially true results — then the bottleneck was
+    never execution and this goal is solving the wrong half._
+  - _If the ratio of can-fail normative claims does not rise over the next N
+    contracts or RFC revisions authored under this goal, the measurement is not
+    changing behaviour and is ceremony._
+  - _If retrofitting execution onto chord falsifiers is later shown to work well
+    and cheaply, the correction in §2 was an over-reaction to a category error
+    and the journal was a legitimate target after all._
+- **Suggested Commands**:
+  - `rg -c 'falsifiers:' src/*.myc.md | wc -l   # how many chords declare one`
+  - `rg -n 'falsifiers\\[' src/*.ts probes/*/*.ts   # how many are executed: none`
+  - `deno run -A probes/canonical-forms-inventory-v0/inventory.ts   # a guard that was made red on purpose once`
 
 ### [x1600_t20260509091443_trinity-cognition_trinity-cognition-omega-deterministic-execution.myc.md](./x1600_t20260509091443_trinity-cognition_trinity-cognition-omega-deterministic-execution.myc.md)
 

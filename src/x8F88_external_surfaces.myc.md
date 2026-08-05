@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     16     |
 | compatibility abi |     55     |
 | compost           |     0      |
-| dynamic topology  |    813     |
+| dynamic topology  |    814     |
 | experimental      |     48     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **932**   |
+| **Total**         |  **933**   |
 
 ## Runtime Cache Diagnostics
 
@@ -169,6 +169,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x1300_t20260512112000_gemini-3-1-pro_hexadecimal-to-circular-phase-mapping.myc.md](../src/x1300_t20260512112000_gemini-3-1-pro_hexadecimal-to-circular-phase-mapping.myc.md)                                                                           | canonical        | src/x1300_t20260512112000_gemini-3-1-pro_hexadecimal-to-circular-phase-mapping.myc.md                                      | keep        |                              |
 | dynamic topology  | [src/x1300_t20260512113500_gemini-3-1-pro_resolving-distortion-between-hash-address-and-semantic-phase.myc.md](../src/x1300_t20260512113500_gemini-3-1-pro_resolving-distortion-between-hash-address-and-semantic-phase.myc.md)                             | canonical        | src/x1300_t20260512113500_gemini-3-1-pro_resolving-distortion-between-hash-address-and-semantic-phase.myc.md               | keep        |                              |
 | dynamic topology  | [src/x1300_t20260512135500_gemini-3-1-pro_ledger-is-active-runtime-not-passive-staging.myc.md](../src/x1300_t20260512135500_gemini-3-1-pro_ledger-is-active-runtime-not-passive-staging.myc.md)                                                             | canonical        | src/x1300_t20260512135500_gemini-3-1-pro_ledger-is-active-runtime-not-passive-staging.myc.md                               | keep        |                              |
+| dynamic topology  | [src/x1500_961093_claude_goal-make-the-frame-fail-from-outside.myc.md](../src/x1500_961093_claude_goal-make-the-frame-fail-from-outside.myc.md)                                                                                                             | canonical        | src/x1500_961093_claude_goal-make-the-frame-fail-from-outside.myc.md                                                       | keep        |                              |
 | dynamic topology  | [src/x1600_t20260509091443_trinity-cognition_trinity-cognition-omega-deterministic-execution.myc.md](../src/x1600_t20260509091443_trinity-cognition_trinity-cognition-omega-deterministic-execution.myc.md)                                                 | canonical        | src/x1600_t20260509091443_trinity-cognition_trinity-cognition-omega-deterministic-execution.myc.md                         | keep        |                              |
 | dynamic topology  | [src/x1600_t20260511011015_gemini-3-1-pro_apply-as-only-primitive-thermodynamics.myc.md](../src/x1600_t20260511011015_gemini-3-1-pro_apply-as-only-primitive-thermodynamics.myc.md)                                                                         | canonical        | src/x1600_t20260511011015_gemini-3-1-pro_apply-as-only-primitive-thermodynamics.myc.md                                     | keep        |                              |
 | dynamic topology  | [src/x1600_t20260512082644_claude-opus-4-7_topological-grinding-semantic-pow-as-inner-coordinate-layer-bitcoin-as.myc.md](../src/x1600_t20260512082644_claude-opus-4-7_topological-grinding-semantic-pow-as-inner-coordinate-layer-bitcoin-as.myc.md)       | canonical        | src/x1600_t20260512082644_claude-opus-4-7_topological-grinding-semantic-pow-as-inner-coordinate-layer-bitcoin-as.myc.md    | keep        |                              |

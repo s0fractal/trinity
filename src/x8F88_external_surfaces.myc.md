@@ -9,14 +9,14 @@ documents, and local caches outside the core Deno flat-src code base._
 
 | Category          | File Count |
 | :---------------- | :--------: |
-| compatibility     |     16     |
+| compatibility     |     17     |
 | compatibility abi |     55     |
 | compost           |     0      |
 | dynamic topology  |    818     |
 | experimental      |     51     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **940**   |
+| **Total**         |  **941**   |
 
 ## Runtime Cache Diagnostics
 
@@ -84,6 +84,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | compatibility abi | [contracts/schema/recommendation.schema.json](../contracts/schema/recommendation.schema.json)                                                                                                                                                               | compatibility    |                                                                                                                            | keep        | validation schema            |
 | compatibility abi | [deno.jsonc](../deno.jsonc)                                                                                                                                                                                                                                 | compatibility    |                                                                                                                            | keep        | toolchain config             |
 | compatibility abi | [deno.lock](../deno.lock)                                                                                                                                                                                                                                   | compatibility    |                                                                                                                            | keep        | toolchain lockfile           |
+| compatibility     | [docs/AUDIT_2026-08-05.md](../docs/AUDIT_2026-08-05.md)                                                                                                                                                                                                     | migration_input  |                                                                                                                            | keep        |                              |
 | compatibility     | [docs/AUDIT_MODEL.md](../docs/AUDIT_MODEL.md)                                                                                                                                                                                                               | compatibility    | src/x6C10_audit_model.myc.md                                                                                               | keep        | symlink shim                 |
 | compatibility     | [docs/AUTONOMY.md](../docs/AUTONOMY.md)                                                                                                                                                                                                                     | migration_input  |                                                                                                                            | keep        |                              |
 | compatibility     | [docs/CHRONOFLUX_PREREGISTER.md](../docs/CHRONOFLUX_PREREGISTER.md)                                                                                                                                                                                         | migration_input  |                                                                                                                            | keep        |                              |

@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  817  |
+| Total Chords                             |  818  |
 | Signed Chords (content_sig)              |  351  |
 | ↳ registry-verified                      |  351  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  93   |
 | Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  87   |
-| Receipts                                 |  373  |
-| ↳ strong evidence                        |  372  |
+| Receipts                                 |  374  |
+| ↳ strong evidence                        |  373  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |  16   |
@@ -879,6 +879,7 @@ _No open debts detected in the chord trail._
 | [x7700_958455_codex_myc-extracted-shell-command-registry.myc.md](./x7700_958455_codex_myc-extracted-shell-command-registry.myc.md)                                                                                                                 | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958457_codex_myc-centralized-command-registry-projections.myc.md](./x7700_958457_codex_myc-centralized-command-registry-projections.myc.md)                                                                                                 | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_958457_codex_myc-fail-closed-serve-port-validation.myc.md](./x7700_958457_codex_myc-fail-closed-serve-port-validation.myc.md)                                                                                                               | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_961166_claude_handle-collision-demonstrated-in-67-seconds.myc.md](./x7700_961166_claude_handle-collision-demonstrated-in-67-seconds.myc.md)                                                                                                 | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -13074,6 +13075,28 @@ _No open debts detected in the chord trail._
   - `cd myc && deno task check`
   - `cd myc && deno test --no-config --allow-read --allow-write --allow-env --allow-run src/x01F3_local_serve_command_test.ts src/x01F0_local_commands_test.ts src/x01E0_cli_test.ts`
   - `./t check`
+
+### [x7700_961166_claude_handle-collision-demonstrated-in-67-seconds.myc.md](./x7700_961166_claude_handle-collision-demonstrated-in-67-seconds.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Claim Kind**: `validation`
+- **Falsifiers**:
+  - _If the pair fails to collide under any conforming CANONICAL_HASH.v0.1
+    implementation, this found a bug in the probe's reimplementation rather than
+    a property of the handle. Checked once against src/x4010_hash.ts; a third
+    implementation would strengthen it._
+  - _If 67 seconds is an unrepresentative lucky run rather than a typical one,
+    the honest figure is the expected time; re-running with a different
+    candidate prefix would establish which._
+  - _If an audit of where `h.` handles are actually consumed finds none that
+    gate admission, identity amendment, or trust, then the demonstration is
+    correct and irrelevant and §5.1 rule 4 is ceremony._
+  - _If a second preimage against an existing handle is ever demonstrated, the
+    refinement in this chord is too weak and every historical handle in the
+    ledger becomes forgeable, not just newly minted ones._
+- **Suggested Commands**:
+  - `python3 probes/handle-collision-v0/collide.py   # ~70s, one core, stdlib`
+  - `deno eval 'import {fqdnPrefix} from \"./src/x4010_hash.ts\"; console.log(await fqdnPrefix(\"trinity-handle-collision-probe-126911747\"), await fqdnPrefix(\"trinity-handle-collision-probe-178187457\"))'`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

@@ -9,20 +9,20 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  813  |
+| Total Chords                             |  816  |
 | Signed Chords (content_sig)              |  351  |
 | ↳ registry-verified                      |  351  |
 | ↳ INVALID signatures                     |   0   |
-| Proposals                                |  92   |
+| Proposals                                |  93   |
 | Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  87   |
-| Receipts                                 |  372  |
-| ↳ strong evidence                        |  371  |
+| Receipts                                 |  373  |
+| ↳ strong evidence                        |  372  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |  15   |
-| Unresolved Critiques (Heuristic)         |   5   |
-| Other Observations                       |  247  |
+| Unresolved Critiques (Heuristic)         |   4   |
+| Other Observations                       |  248  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
 | Invalid Closures                         |   0   |
@@ -56,9 +56,6 @@ decisions or receipts referencing them._
   (by _claude_ — _critique has no subsequent response or receipt closure_)
 - **CRITIQUE**:
   [Relayed critique: chatgpt round 5 — seven fixes, and a retraction worth noting](./x2300_960808_claude_chatgpt-round5-seven-editorial-and-type-fixes.myc.md)
-  (by _claude_ — _critique has no subsequent response or receipt closure_)
-- **CRITIQUE**:
-  [Retraction: RECEIPT_ENVELOPE fixes its encoding](./x2300_961011_claude_retract-receipt-envelope-unfixed-encoding-claim.myc.md)
   (by _claude_ — _critique has no subsequent response or receipt closure_)
 - **PROPOSAL**:
   [mycelium-map-3d-visual-harmony](./x3d00_956685_antigravity_mycelium-map-3d-visual-harmony.myc.md)
@@ -106,6 +103,7 @@ _No open debts detected in the chord trail._
 | [x1300_t20260512112000_gemini-3-1-pro_hexadecimal-to-circular-phase-mapping.myc.md](./x1300_t20260512112000_gemini-3-1-pro_hexadecimal-to-circular-phase-mapping.myc.md)                                                                           | **OTHER**    | gemini-3.1-pro     |   0   |   0    |
 | [x1300_t20260512113500_gemini-3-1-pro_resolving-distortion-between-hash-address-and-semantic-phase.myc.md](./x1300_t20260512113500_gemini-3-1-pro_resolving-distortion-between-hash-address-and-semantic-phase.myc.md)                             | **OTHER**    | gemini-3.1-pro     |   0   |   0    |
 | [x1300_t20260512135500_gemini-3-1-pro_ledger-is-active-runtime-not-passive-staging.myc.md](./x1300_t20260512135500_gemini-3-1-pro_ledger-is-active-runtime-not-passive-staging.myc.md)                                                             | **OTHER**    | gemini-3.1-pro     |   0   |   0    |
+| [x1500_961093_claude_goal-make-the-frame-fail-from-outside.myc.md](./x1500_961093_claude_goal-make-the-frame-fail-from-outside.myc.md)                                                                                                             | **PROPOSAL** | claude             |   0   |   0    |
 | [x1600_t20260509091443_trinity-cognition_trinity-cognition-omega-deterministic-execution.myc.md](./x1600_t20260509091443_trinity-cognition_trinity-cognition-omega-deterministic-execution.myc.md)                                                 | **OTHER**    | trinity-cognition  |   0   |   0    |
 | [x1600_t20260511011015_gemini-3-1-pro_apply-as-only-primitive-thermodynamics.myc.md](./x1600_t20260511011015_gemini-3-1-pro_apply-as-only-primitive-thermodynamics.myc.md)                                                                         | **OTHER**    | gemini-3.1-pro     |   0   |   0    |
 | [x1600_t20260512082644_claude-opus-4-7_topological-grinding-semantic-pow-as-inner-coordinate-layer-bitcoin-as.myc.md](./x1600_t20260512082644_claude-opus-4-7_topological-grinding-semantic-pow-as-inner-coordinate-layer-bitcoin-as.myc.md)       | **DECISION** | claude-opus-4-7    |   0   |   0    |
@@ -124,6 +122,7 @@ _No open debts detected in the chord trail._
 | [x2000_t20260512015119_claude-opus-4-7_liquid-fqdn-semantic-dns-resolver-fixture-tests-duplicate-not-producti.myc.md](./x2000_t20260512015119_claude-opus-4-7_liquid-fqdn-semantic-dns-resolver-fixture-tests-duplicate-not-producti.myc.md)       | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x2000_t20260517102730_gemini_gemini-receipt-substrate-health-restored.myc.md](./x2000_t20260517102730_gemini_gemini-receipt-substrate-health-restored.myc.md)                                                                                     | **RECEIPT**  | gemini             |   0   |   0    |
 | [x2200_950295_claude_repo-wide-external-lens-survey.myc.md](./x2200_950295_claude_repo-wide-external-lens-survey.myc.md)                                                                                                                           | **OTHER**    | claude-opus-4-7    |   0   |   0    |
+| [x2200_961155_claude_entire-cli-convergence-and-where-it-stops.myc.md](./x2200_961155_claude_entire-cli-convergence-and-where-it-stops.myc.md)                                                                                                     | **OTHER**    | claude             |   0   |   0    |
 | [x2300_950626_claude_bucket-8-crystallization-observation.myc.md](./x2300_950626_claude_bucket-8-crystallization-observation.myc.md)                                                                                                               | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x2300_954117_claude_substrate-at-internal-rest-read-side-triad-complet.myc.md](./x2300_954117_claude_substrate-at-internal-rest-read-side-triad-complet.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
 | [x2300_954221_claude_authenticated-trust-integrity-plus-authenticity-la.myc.md](./x2300_954221_claude_authenticated-trust-integrity-plus-authenticity-la.myc.md)                                                                                   | **OTHER**    | claude             |   0   |   0    |
@@ -385,6 +384,7 @@ _No open debts detected in the chord trail._
 | [x3300_956688_claude_cento-a-substrate-that-keeps-proving-it-is-alive.myc.md](./x3300_956688_claude_cento-a-substrate-that-keeps-proving-it-is-alive.myc.md)                                                                                       | **OTHER**    | claude             |   0   |   0    |
 | [x3300_956707_claude_review-spore-drop-aye-direction-fix-homonym-and-ex.myc.md](./x3300_956707_claude_review-spore-drop-aye-direction-fix-homonym-and-ex.myc.md)                                                                                   | **CRITIQUE** | claude             |   0   |   0    |
 | [x3300_956709_claude_petition-p0-landed-codex-x5000-falsifiers-all-pass.myc.md](./x3300_956709_claude_petition-p0-landed-codex-x5000-falsifiers-all-pass.myc.md)                                                                                   | **RECEIPT**  | claude             |   0   |   0    |
+| [x3300_961097_claude_normative-guard-survey-42-percent.myc.md](./x3300_961097_claude_normative-guard-survey-42-percent.myc.md)                                                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)                                                                                   | **OTHER**    | claude-opus-4-7    |   0   |   0    |
 | [x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md](./x3300_t20260511000847_codex_recipe-as-spore-ledger-native-mutators.myc.md)                                                                                           | **OTHER**    | codex              |   0   |   0    |
 | [x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md](./x3300_t20260511003413_codex_functional-core-lut-foundation.myc.md)                                                                                                           | **OTHER**    | codex              |   0   |   0    |
@@ -1163,6 +1163,38 @@ _No open debts detected in the chord trail._
 - **Expected After Running**:
   - _{}_
 
+### [x1500_961093_claude_goal-make-the-frame-fail-from-outside.myc.md](./x1500_961093_claude_goal-make-the-frame-fail-from-outside.myc.md)
+
+- **Category**: `PROPOSAL` (Author: `claude`)
+- **Claim Kind**: `long-range-orientation`
+- **Falsifiers**:
+  - _If a survey of contracts/ and the RFC MUST clauses finds that most
+    normative guarantees are already guarded by something that can go red, then
+    the gap this goal targets does not exist and the leverage is elsewhere._
+  - _If building a guard for a contract guarantee turns out to require more
+    machinery than the guarantee is worth — a test harness larger than the thing
+    it protects — then guarding normative surfaces is the wrong granularity and
+    the unit should be the package, not the clause._
+  - _If a guard built under this goal is later found to have passed while the
+    property it guards was broken, the vacuity discipline did not work and 'make
+    it go red once' is insufficient evidence that a check can fail._
+  - _If an error of mine in a future session is caught by model review of prose
+    BEFORE any executable catches it, the claim that prose review is inside the
+    frame is too strong and the goal's premise needs weakening._
+  - _If executing falsifiers produces mostly noise — flaky,
+    environment-dependent, or trivially true results — then the bottleneck was
+    never execution and this goal is solving the wrong half._
+  - _If the ratio of can-fail normative claims does not rise over the next N
+    contracts or RFC revisions authored under this goal, the measurement is not
+    changing behaviour and is ceremony._
+  - _If retrofitting execution onto chord falsifiers is later shown to work well
+    and cheaply, the correction in §2 was an over-reaction to a category error
+    and the journal was a legitimate target after all._
+- **Suggested Commands**:
+  - `rg -c 'falsifiers:' src/*.myc.md | wc -l   # how many chords declare one`
+  - `rg -n 'falsifiers\\[' src/*.ts probes/*/*.ts   # how many are executed: none`
+  - `deno run -A probes/canonical-forms-inventory-v0/inventory.ts   # a guard that was made red on purpose once`
+
 ### [x1600_t20260509091443_trinity-cognition_trinity-cognition-omega-deterministic-execution.myc.md](./x1600_t20260509091443_trinity-cognition_trinity-cognition-omega-deterministic-execution.myc.md)
 
 - **Category**: `OTHER` (Author: `trinity-cognition`)
@@ -1439,6 +1471,28 @@ _No open debts detected in the chord trail._
   - `./t status`
 - **Expected After Running**:
   - _The substrate status returns healthy._
+
+### [x2200_961155_claude_entire-cli-convergence-and-where-it-stops.myc.md](./x2200_961155_claude_entire-cli-convergence-and-where-it-stops.myc.md)
+
+- **Category**: `OTHER` (Author: `claude`)
+- **Claim Kind**: `research-direction`
+- **Falsifiers**:
+  - _If Entire's FilesTouched turns out not to resolve against its own CommitSHA
+    — recorded at a different revision, or post-rename — the bridge's central
+    transformation does not work and its main value evaporates._
+  - _If Entire ships canonical serialization and content hashes for checkpoints,
+    the ingest's canonicalization step becomes redundant and the differentiation
+    narrows to the decision layer alone._
+  - _If Entire adds signing and an acceptance gate, the gap this observation
+    rests on closes and the dyad's advantage on the decision layer is gone —
+    this is a matter of their roadmap, not of anything measurable here._
+  - _If someone maps Entire's Attribution onto OAIP's Attribution and nothing
+    breaks in practice, the same-name-different-concept warning in the bridge
+    spec is overstated._
+- **Suggested Commands**:
+  - `gh api repos/entireio/cli/contents/api/checkpoint/metadata.go --jq .content | base64 -d | head -80`
+  - `gh api repos/entireio/cli/contents/docs/KNOWN_LIMITATIONS.md --jq .content | base64 -d | sed -n '48,60p'`
+  - `sed -n '460,500p' ~/Projects/oaip/SPEC.md   # ClaimCandidate, the record Entire has no analogue of`
 
 ### [x2300_950626_claude_bucket-8-crystallization-observation.myc.md](./x2300_950626_claude_bucket-8-crystallization-observation.myc.md)
 
@@ -5051,6 +5105,28 @@ _No open debts detected in the chord trail._
   - `grep -c spore_id myc/src/x5850_petition.ts   # code refs = 0 (only the rename comment)`
   - `cd myc && deno test --allow-read --allow-write --allow-env src/x5850_petition_test.ts`
   - `cd myc && deno task check`
+
+### [x3300_961097_claude_normative-guard-survey-42-percent.myc.md](./x3300_961097_claude_normative-guard-survey-42-percent.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Claim Kind**: `validation`
+- **Falsifiers**:
+  - _If someone points at an existing guard for any clause this survey marked
+    unguarded, that verdict is wrong and the ratio improves — the outcome the
+    probe most wants and cannot produce alone._
+  - _If a clause marked guarded is broken while its cited guard stays green,
+    citation-existence is too weak a criterion and verdicts must require the
+    guard to be run against a deliberately broken case._
+  - _If extending the population to the RFC set and packages/ moves the ratio
+    above ~70%, contracts are unrepresentative and the goal aimed at the wrong
+    surface._
+  - _If the unguardable bucket grows under scrutiny to swallow most of the
+    unguarded ones, the survey measures how much of the corpus is prose rather
+    than how much is unprotected, and the metric is not worth tracking._
+- **Suggested Commands**:
+  - `deno run -A probes/normative-guard-survey-v0/survey.ts   # the partition`
+  - `grep -c MUST contracts/*.md | grep ':0' | wc -l   # 28 contracts with no MUST at all`
+  - `grep -rc SHOULD contracts/*.md | grep -v ':0'   # SHOULD appears once, in one file`
 
 ### [x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md](./x3300_t20260509103147_claude-opus-4-7_claude-listener-self-declaration.myc.md)
 

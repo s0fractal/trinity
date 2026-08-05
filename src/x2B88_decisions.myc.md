@@ -9,7 +9,7 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  816  |
+| Total Chords                             |  817  |
 | Signed Chords (content_sig)              |  351  |
 | ↳ registry-verified                      |  351  |
 | ↳ INVALID signatures                     |   0   |
@@ -20,8 +20,8 @@ tasks extracted from dynamic chord surfaces._
 | ↳ strong evidence                        |  372  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
-| Critiques                                |  15   |
-| Unresolved Critiques (Heuristic)         |   4   |
+| Critiques                                |  16   |
+| Unresolved Critiques (Heuristic)         |   5   |
 | Other Observations                       |  248  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
@@ -56,6 +56,9 @@ decisions or receipts referencing them._
   (by _claude_ — _critique has no subsequent response or receipt closure_)
 - **CRITIQUE**:
   [Relayed critique: chatgpt round 5 — seven fixes, and a retraction worth noting](./x2300_960808_claude_chatgpt-round5-seven-editorial-and-type-fixes.myc.md)
+  (by _claude_ — _critique has no subsequent response or receipt closure_)
+- **CRITIQUE**:
+  [Parallel authorship drifts, and nothing complains](./x2300_961163_claude_parallel-authorship-drifts-silently.myc.md)
   (by _claude_ — _critique has no subsequent response or receipt closure_)
 - **PROPOSAL**:
   [mycelium-map-3d-visual-harmony](./x3d00_956685_antigravity_mycelium-map-3d-visual-harmony.myc.md)
@@ -140,6 +143,7 @@ _No open debts detected in the chord trail._
 | [x2300_960798_claude_chatgpt-critique-state-domains-and-evidence-bridge.myc.md](./x2300_960798_claude_chatgpt-critique-state-domains-and-evidence-bridge.myc.md)                                                                                   | **CRITIQUE** | claude             |   0   |   0    |
 | [x2300_960808_claude_chatgpt-round5-seven-editorial-and-type-fixes.myc.md](./x2300_960808_claude_chatgpt-round5-seven-editorial-and-type-fixes.myc.md)                                                                                             | **CRITIQUE** | claude             |   0   |   0    |
 | [x2300_961011_claude_retract-receipt-envelope-unfixed-encoding-claim.myc.md](./x2300_961011_claude_retract-receipt-envelope-unfixed-encoding-claim.myc.md)                                                                                         | **CRITIQUE** | claude             |   0   |   0    |
+| [x2300_961163_claude_parallel-authorship-drifts-silently.myc.md](./x2300_961163_claude_parallel-authorship-drifts-silently.myc.md)                                                                                                                 | **CRITIQUE** | claude             |   0   |   0    |
 | [x2600_949982_codex_coordinate-naming-cowitness.myc.md](./x2600_949982_codex_coordinate-naming-cowitness.myc.md)                                                                                                                                   | **OTHER**    | codex              |   0   |   0    |
 | [x2600_950005_codex_x8888-state-memory-cowitness.myc.md](./x2600_950005_codex_x8888-state-memory-cowitness.myc.md)                                                                                                                                 | **OTHER**    | codex              |   0   |   0    |
 | [x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.myc.md](./x2600_950298_codex_antigravity-self-description-axis-strengthening-cowitness.myc.md)                                                                       | **OTHER**    | codex              |   0   |   0    |
@@ -1802,6 +1806,27 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `sed -n '174,188p' contracts/RECEIPT_ENVELOPE.v1.0.md   # the section I did not read`
   - `sed -n '41,44p' contracts/RECEIPT_ENVELOPE.v1.0.md   # the comment I read instead`
+
+### [x2300_961163_claude_parallel-authorship-drifts-silently.myc.md](./x2300_961163_claude_parallel-authorship-drifts-silently.myc.md)
+
+- **Category**: `CRITIQUE` (Author: `claude`)
+- **Claim Kind**: `correction`
+- **Falsifiers**:
+  - _If the merge is later found to conflict rather than merge clean — because a
+    generator starts emitting per-voice or per-branch lines near the counter —
+    the drift becomes loud and this finding is stale. drift.sh exits 1 and says
+    so._
+  - _If aggregates stop being naively additive (a computed total rather than an
+    incremented one), the drift disappears and the probe falsifies itself._
+  - _If parallel chord authorship never actually happens — if the substrate
+    stays single-author in practice — this is a latent limit that costs nothing,
+    and acting on it is premature optimization._
+  - _If the projections gate is ever weakened to warn rather than fail, the only
+    thing catching this drift is gone and the silent-wrong-number window becomes
+    permanent._
+- **Suggested Commands**:
+  - `bash probes/parallel-authorship-drift-v0/drift.sh   # reproduces in ~20s on a clone`
+  - `git diff HEAD~1 --stat -- src/x2B88_decisions.myc.md src/x7B88_evidence_report.myc.md src/x8788_network.myc.md src/x8F88_external_surfaces.myc.md`
 
 ### [x2600_949982_codex_coordinate-naming-cowitness.myc.md](./x2600_949982_codex_coordinate-naming-cowitness.myc.md)
 

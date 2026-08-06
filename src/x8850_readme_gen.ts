@@ -103,7 +103,7 @@ export function renderReadme(s: Snapshot): string {
     "",
     "## Verify us without trusting us",
     "",
-    "You do not have to trust this repository, its maintainers, or its tooling. A stranger can confirm the federation's live Substrate Court verdict with one command, no clone, read-only network access, and nothing of ours but public bytes. Honestly scoped: **omega computes the law_hash `0x725628a1`; trinity attests it; liquid and myc witness health, not law** — so the law-agreement is between omega and trinity, and the verifier enforces the full four-substrate witness set (no substrate may be silently omitted):",
+    "You do not have to trust this repository, its maintainers, or its tooling. A stranger can confirm the federation's live Substrate Court verdict with one command, no clone, read-only network access, and nothing of ours but public bytes. Honestly scoped: **omega computes the law_hash `0x6cbd0eae`; trinity attests it; liquid and myc witness health, not law** — so the law-agreement is between omega and trinity, and the verifier enforces the full four-substrate witness set (no substrate may be silently omitted):",
     "",
     "```sh",
     "deno run --allow-net \\",

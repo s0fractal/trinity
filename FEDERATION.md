@@ -25,7 +25,7 @@ trinity's tree they are git submodules (`omega/`, `liquid/`, `myc/`).
   `src/x2F38_voice_pubkeys.json`; the same keyed principals sign across all four
   substrates.
 - **One licence** — AGPL-3.0-or-later, everywhere.
-- **One law** — the substrates agree on a single `law_hash` (`0x725628a1`); the
+- **One law** — the substrates agree on a single `law_hash` (`0x6cbd0eae`); the
   Substrate Court re-derives that agreement from raw bytes.
 
 ## Verify the whole thing without trusting it

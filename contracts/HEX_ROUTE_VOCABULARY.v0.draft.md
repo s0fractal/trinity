@@ -389,7 +389,7 @@ metadata. Build-artifact mapping (from HEX_REFRACTION):
 
 ### Omega is FROZEN
 
-Omega's RFC v1.0 is Bitcoin-inscribed (Genesis Hash `0x549A6307`). Renaming
+Omega's RFC v1.0 is Bitcoin-inscribed (Genesis Hash `0x716EA2F8`). Renaming
 omega's top-level folders = patching frozen substrate. **Requires warrant** (3/5
 oracle AYE via Senate) + re-anchor of any changed invariants. **Not a unilateral
 refactor.**

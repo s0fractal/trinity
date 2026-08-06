@@ -140,6 +140,21 @@ mod tests {
     }
 
     #[test]
+    fn zero_genome_sentinel_replaces_the_hash_it_does_not_feed_it() {
+        // The WGSL mirror (compute_toroidal.wgsl::species_advantage) once
+        // substituted the sentinel and then ran it through xorshift32 anyway,
+        // yielding 0x87985AA5 where this side yields 0x12345678 — opposite
+        // predator/prey signs for the same pair, in the consensus energy path.
+        // Pin the Rust semantics so the shader has a fixed reference.
+        assert_eq!(
+            species_advantage(0, 1),
+            1,
+            "genome 0 uses the RAW sentinel 0x12345678; hashing it flips this sign"
+        );
+        assert_eq!(species_advantage(1, 0), -1, "and the mirror image of it");
+    }
+
+    #[test]
     fn test_species_advantage_parity() {
         // Same genome → neutral
         assert_eq!(species_advantage(0xABCD, 0xABCD), 0);

@@ -579,7 +579,7 @@ one or more):
 ```text
 1. Implementation release hash      published, signed binary release whose
                                     SHA-256 is recorded in this contract.
-2. Bitcoin OP_RETURN inscription    parallel to omega Genesis 0x549A6307.
+2. Bitcoin OP_RETURN inscription    parallel to omega Genesis 0x716EA2F8.
 3. Local trusted binary hash        machine-local first-run handshake;
                                     persisted in protected substrate state.
 ```

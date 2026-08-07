@@ -99,24 +99,41 @@ pub fn species_advantage(a_genome: u32, b_genome: u32) -> i32 {
         return 0;
     }
 
-    // Philosophy Cryptographic Co-Adaptation (Red Queen's Race)
-    // Asymmetric cyclic food web based on GF(2) mixing and ring distance
-    let ha = if a_genome == 0 {
-        0x12345678
-    } else {
-        crate::math::xorshift32_once(a_genome)
-    };
-    let hb = if b_genome == 0 {
-        0x12345678
-    } else {
-        crate::math::xorshift32_once(b_genome)
-    };
-    let delta = ha.wrapping_sub(hb);
+    // ASYMMETRIC CYCLIC FOOD WEB — a ring of 256 hands, rock-paper-scissors.
+    //
+    // This comment has said "asymmetric cyclic food web ... ring distance" since
+    // it was written. The implementation compared avalanche hashes of the whole
+    // genome: `xorshift32(a) - xorshift32(b) < 0x80000000`. Measured, that was a
+    // perfectly fair coin — every genome beat exactly half of any panel, with
+    // sd 0.0124 where an actual coin gives 0.0221, because a hash beats half of
+    // anything by construction. Against the LIVING population, 60000 ticks in,
+    // genetically narrowed and kin-structured: mean win rate 0.499, sd 0.0117.
+    // The food web could not see the population it was part of.
+    //
+    // So 42% of every joule this world transfers moved through a relation with
+    // no gradient to climb and no dependence on what anyone had become. Being
+    // good at predation was not a thing an agent could be.
+    //
+    // The ring is now the predation TRAIT itself — genome bits 8..15, the
+    // `interaction_radius` byte, which is what an agent's dealings with its
+    // neighbours were always supposed to be about. `a` beats `b` when it sits in
+    // the half-ring ahead of it, so whatever the population converges on,
+    // something beats it: the winner becomes the majority and the majority
+    // becomes the target. That is what stops a predatory trait from being a free
+    // ratchet, which is the failure mode Era 971 found in longevity.
+    //
+    // EQUAL HANDS ARE NEUTRAL, and unlike the old rule that is reachable. The
+    // hash returned 0 only for bit-identical genomes, so a parent and its own
+    // mutated child were predator and prey — there was no kin and therefore no
+    // species. One byte matching is something a lineage can hold.
+    let pa = (a_genome >> 8) & 0xFF;
+    let pb = (b_genome >> 8) & 0xFF;
+    let delta = pa.wrapping_sub(pb) & 0xFF;
 
     if delta == 0 {
         0
-    } else if delta < 0x80000000 {
-        1 // a is ahead of b in the ring (a steals from b)
+    } else if delta < 128 {
+        1 // a is ahead of b on the ring (a steals from b)
     } else {
         -1 // b is ahead of a (b steals from a)
     }
@@ -163,32 +180,42 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_species_advantage_zero_guard() {
-        // genome=0 must not collapse to zero-hash; both sides get 0x12345678
+    fn the_ring_is_antisymmetric_and_neutral_on_equal_hands() {
+        // Replaces two tests that pinned the old hash rule: one asserted that
+        // genome 0 and genome 0xFF are decisive against each other, the other
+        // that the zero-genome SENTINEL (0x12345678) was substituted rather than
+        // hashed — a real past bug where the shader hashed it and produced the
+        // opposite predator/prey sign in the consensus energy path.
+        //
+        // Both concerns are structurally gone. There is no hash, so there is no
+        // sentinel and no way for the two substrates to disagree about one. And
+        // genome 0 and genome 0xFF now carry the SAME hand, because the ring
+        // reads bits 8..15 and neither has any set — they are neutral, which is
+        // the correct answer rather than a regression.
         assert_eq!(species_advantage(0, 0), 0, "identical genomes are neutral");
-        let a_vs_b = species_advantage(0, 0xFF);
-        let b_vs_a = species_advantage(0xFF, 0);
-        assert_eq!(a_vs_b, -b_vs_a, "advantage must be antisymmetric");
-        // With zero-guard both get deterministic non-zero hash
-        assert_ne!(
-            a_vs_b, 0,
-            "zero-guarded genome must produce decisive advantage against non-zero"
-        );
-    }
-
-    #[test]
-    fn zero_genome_sentinel_replaces_the_hash_it_does_not_feed_it() {
-        // The WGSL mirror (compute_toroidal.wgsl::species_advantage) once
-        // substituted the sentinel and then ran it through xorshift32 anyway,
-        // yielding 0x87985AA5 where this side yields 0x12345678 — opposite
-        // predator/prey signs for the same pair, in the consensus energy path.
-        // Pin the Rust semantics so the shader has a fixed reference.
         assert_eq!(
-            species_advantage(0, 1),
-            1,
-            "genome 0 uses the RAW sentinel 0x12345678; hashing it flips this sign"
+            species_advantage(0, 0xFF),
+            0,
+            "same hand (bits 8..15 both zero) is neutral whatever else differs"
         );
-        assert_eq!(species_advantage(1, 0), -1, "and the mirror image of it");
+
+        // Antisymmetry is what makes the books close: one winner per meal.
+        for a in [0x0000_0100u32, 0x0000_4000, 0x0000_FF00, 0xDEAD_2A00] {
+            for b in [0x0000_0500u32, 0x0000_8000, 0x0000_0100, 0xBEEF_9900] {
+                assert_eq!(
+                    species_advantage(a, b),
+                    -species_advantage(b, a),
+                    "advantage must be antisymmetric for {a:#x} vs {b:#x}"
+                );
+            }
+        }
+
+        // The ring: a hand beats the 127 behind it and loses to the 128 ahead.
+        let hand = |h: u32| h << 8;
+        assert_eq!(species_advantage(hand(0x40), hand(0x00)), 1);
+        assert_eq!(species_advantage(hand(0x40), hand(0xC1)), 1, "wraps");
+        assert_eq!(species_advantage(hand(0x40), hand(0xC0)), -1, "antipode");
+        assert_eq!(species_advantage(hand(0x00), hand(0x40)), -1);
     }
 
     #[test]

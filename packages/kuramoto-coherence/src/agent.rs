@@ -41,6 +41,43 @@ pub struct Phenotype {
 /// Tissue Crystallization marker
 pub const FLAG_TISSUE_LOCKED: u32 = 0x0800_0000;
 
+/// AGE, packed into `state_flags` bits 8..23.
+///
+/// The agent struct is 32 bytes and both other substrates mirror it byte for
+/// byte, so a new field would touch the ABI, the WGSL struct and the ZK guest.
+/// `BIRTH_TICKS` already exists but lives in a host-side array the shader
+/// cannot see, so anything derived from it would break substrate parity — which
+/// is why age has never been able to affect physics.
+///
+/// Bit 0 is the dead flag, 1..7 carry `genome & 0x7F` from ignition, 24 is
+/// BIRTH_NEAR_ATTRACTOR_FLAG, 25 is FLAG_SANCTUARY_WAIVED and 27 is
+/// FLAG_TISSUE_LOCKED. Bits 8..23 were unused — sixteen of them, saturating at
+/// 65535 ticks, comfortably past the longest lifespan the senescence law
+/// produces (~23000 at SENESCENCE_TICKS=512 for the most resilient genome).
+///
+/// This started at seventeen bits and collided with BIRTH_NEAR_ATTRACTOR_FLAG
+/// on bit 24: clearing the age of a newborn also cleared the flag recording
+/// that it was born near an attractor. Two existing tests caught it.
+pub const AGE_SHIFT: u32 = 8;
+pub const AGE_MASK: u32 = 0x00FF_FF00;
+pub const AGE_MAX: u32 = AGE_MASK >> AGE_SHIFT;
+
+/// Ticks this agent has been alive, saturating.
+#[inline]
+pub fn age_of(state_flags: u32) -> u32 {
+    (state_flags & AGE_MASK) >> AGE_SHIFT
+}
+
+/// `state_flags` with the age advanced by one, saturating rather than wrapping —
+/// an age that wraps would make the oldest agents the youngest and hand them a
+/// second life for free.
+#[inline]
+pub fn with_age_incremented(state_flags: u32) -> u32 {
+    let age = age_of(state_flags);
+    let next = if age >= AGE_MAX { AGE_MAX } else { age + 1 };
+    (state_flags & !AGE_MASK) | (next << AGE_SHIFT)
+}
+
 impl PhaseAgentMinimal {
     /// Decodes the 32-bit genome into 4 distinct phenotypic traits
     pub fn decode_phenotype(&self) -> Phenotype {

@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  829  |
-| Signed Chords (content_sig)              |  361  |
-| ↳ registry-verified                      |  361  |
+| Total Chords                             |  830  |
+| Signed Chords (content_sig)              |  362  |
+| ↳ registry-verified                      |  362  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  93   |
 | Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  87   |
-| Receipts                                 |  377  |
-| ↳ strong evidence                        |  376  |
+| Receipts                                 |  378  |
+| ↳ strong evidence                        |  377  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |  24   |
@@ -912,6 +912,7 @@ _No open debts detected in the chord trail._
 | [x7700_961329_claude-fable-5_omega-era-961-the-law-moved-and-two-earlier-receipts-are-now-stale.myc.md](./x7700_961329_claude-fable-5_omega-era-961-the-law-moved-and-two-earlier-receipts-are-now-stale.myc.md)                                   | **RECEIPT**  | claude-fable-5     |   0   |   0    |
 | [x7700_963902_claude_rfc-0003-part-03-bounded-lean-kernel.myc.md](./x7700_963902_claude_rfc-0003-part-03-bounded-lean-kernel.myc.md)                                                                                                               | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_963906_codex_rfc-0003-part-03-lean-errata-adoption.myc.md](./x7700_963906_codex_rfc-0003-part-03-lean-errata-adoption.myc.md)                                                                                                               | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_963911_codex_rfc-0003-claude-implementation-selection-brief.myc.md](./x7700_963911_codex_rfc-0003-claude-implementation-selection-brief.myc.md)                                                                                             | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -13381,6 +13382,28 @@ _No open debts detected in the chord trail._
   - `git show --stat --oneline 51513b1ce6222cec30fac58265541ad4b269129f`
   - `./proofs/rfc-0003/verify.sh`
   - `./t voice-keys verify-chord src/x7700_963906_codex_rfc-0003-part-03-lean-errata-adoption.myc.md`
+  - `./t check`
+
+### [x7700_963911_codex_rfc-0003-claude-implementation-selection-brief.myc.md](./x7700_963911_codex_rfc-0003-claude-implementation-selection-brief.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Falsifiers**:
+  - _If the referenced brief does not pin its base to_
+  - _`73a15ce6e955d530589e7896830cce48d0841545`, this receipt is false._
+  - _If the brief permits Claude to edit RFC-0003 normatively, merge, sign as_
+  - _s0fractal, or claim A3 complete from one-author code paths, the authority
+    boundary claimed above is false._
+  - _If Part 01 no longer says A3 needs `CANONICAL_ENCODING.v0.1`, the corpus,
+    two_
+  - _independent encoders, and a verifier-only rejection path, the P0 ranking
+    must be re-evaluated rather than followed from this receipt._
+  - _If_
+  - _`deno fmt --check proposals/rfc-0003/claude-next-executable-slice-task-2026-08-25.md`,
+    `git diff --check`, or `./t check` fails at this candidate, the recorded
+    local verification is false._
+- **Suggested Commands**:
+  - `deno fmt --check proposals/rfc-0003/claude-next-executable-slice-task-2026-08-25.md`
+  - `git diff --check`
   - `./t check`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)

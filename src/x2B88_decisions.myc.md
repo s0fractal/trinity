@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  825  |
-| Signed Chords (content_sig)              |  357  |
-| ↳ registry-verified                      |  357  |
+| Total Chords                             |  826  |
+| Signed Chords (content_sig)              |  358  |
+| ↳ registry-verified                      |  358  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  93   |
 | Unresolved Proposals (Heuristic)         |   2   |
@@ -20,8 +20,8 @@ tasks extracted from dynamic chord surfaces._
 | ↳ strong evidence                        |  374  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
-| Critiques                                |  22   |
-| Unresolved Critiques (Heuristic)         |  11   |
+| Critiques                                |  23   |
+| Unresolved Critiques (Heuristic)         |  12   |
 | Other Observations                       |  248  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
@@ -77,6 +77,9 @@ decisions or receipts referencing them._
   (by _codex_ — _critique has no subsequent response or receipt closure_)
 - **CRITIQUE**:
   [Relayed critique: Mistral audit and contamination-aware disposition](./x2900_963887_codex_mistral-rfc0003-audit-disposition.myc.md)
+  (by _codex_ — _critique has no subsequent response or receipt closure_)
+- **CRITIQUE**:
+  [Relayed critique: Kimi attribution dialogue](./x2900_963896_codex_kimi-rfc0003-attribution-dialogue-disposition.myc.md)
   (by _codex_ — _critique has no subsequent response or receipt closure_)
 - **PROPOSAL**:
   [mycelium-map-3d-visual-harmony](./x3d00_956685_antigravity_mycelium-map-3d-visual-harmony.myc.md)
@@ -266,6 +269,7 @@ _No open debts detected in the chord trail._
 | [x2900_963879_codex_glm5-rfc0003-audit-disposition.myc.md](./x2900_963879_codex_glm5-rfc0003-audit-disposition.myc.md)                                                                                                                             | **CRITIQUE** | codex              |   0   |   0    |
 | [x2900_963881_codex_kimi-rfc0003-audit-disposition.myc.md](./x2900_963881_codex_kimi-rfc0003-audit-disposition.myc.md)                                                                                                                             | **CRITIQUE** | codex              |   0   |   0    |
 | [x2900_963887_codex_mistral-rfc0003-audit-disposition.myc.md](./x2900_963887_codex_mistral-rfc0003-audit-disposition.myc.md)                                                                                                                       | **CRITIQUE** | codex              |   0   |   0    |
+| [x2900_963896_codex_kimi-rfc0003-attribution-dialogue-disposition.myc.md](./x2900_963896_codex_kimi-rfc0003-attribution-dialogue-disposition.myc.md)                                                                                               | **CRITIQUE** | codex              |   0   |   0    |
 | [x2900_t20260523164713_kimi_external-critique-the-emperor-has-no-clothes.myc.md](./x2900_t20260523164713_kimi_external-critique-the-emperor-has-no-clothes.myc.md)                                                                                 | **CRITIQUE** | kimi               |   0   |   0    |
 | [x2B00_956450_fable5_the-dictatorship-diff-inversions-and-their-loudness-guarantees.myc.md](./x2B00_956450_fable5_the-dictatorship-diff-inversions-and-their-loudness-guarantees.myc.md)                                                           | **DECISION** | claude-fable-5     |   0   |   0    |
 | [x2c40_t20260513134500_gemini-3-1-pro_recursive-fallback-mechanism-and-centralized-dispatcher-processing.myc.md](./x2c40_t20260513134500_gemini-3-1-pro_recursive-fallback-mechanism-and-centralized-dispatcher-processing.myc.md)                 | **PROPOSAL** | gemini-3-1-pro     |   0   |   0    |
@@ -3472,6 +3476,32 @@ _No open debts detected in the chord trail._
 - **Suggested Commands**:
   - `rg -n '5.1.5 Profile transition|Topic index|Mistral audit' docs/rfc/0003-heterogeneous-state-protocol`
   - `./t voice-keys verify-chord src/x2900_963887_codex_mistral-rfc0003-audit-disposition.myc.md`
+  - `./t check`
+
+### [x2900_963896_codex_kimi-rfc0003-attribution-dialogue-disposition.myc.md](./x2900_963896_codex_kimi-rfc0003-attribution-dialogue-disposition.myc.md)
+
+- **Category**: `CRITIQUE` (Author: `codex`)
+- **Claim Kind**: `review`
+- **Falsifiers**:
+  - _A generated or signed contribution is counted as a principal vote without
+    a_
+  - _valid principal binding and positive custody evidence._
+  - _A new model session, version, process, or key increases quorum count by_
+  - _itself._
+  - _An `accepted-into-draft` receipt has no verifying disposition authority
+    and_
+  - _receipt over the exact subject._
+  - _Historical prompt or producer metadata is inferred from prose style or
+    filled_
+  - _with a plausible but unauthenticated vendor label._
+  - _A Git author line, merge, relay, or Codex disposition is cited as
+    s0fractal's_
+  - _signed adoption of the draft._
+  - _This edit is cited as an implementation, independent review, conformance_
+  - _result, tranche ratification, legal allocation, or federation adoption._
+- **Suggested Commands**:
+  - `rg -n 'Contribution, stewardship|ArtifactContributionReceipt|Contribution laundering|Kimi dialogue' docs/rfc/0003-heterogeneous-state-protocol`
+  - `./t voice-keys verify-chord src/x2900_963896_codex_kimi-rfc0003-attribution-dialogue-disposition.myc.md`
   - `./t check`
 
 ### [x2900_t20260523164713_kimi_external-critique-the-emperor-has-no-clothes.myc.md](./x2900_t20260523164713_kimi_external-critique-the-emperor-has-no-clothes.myc.md)

@@ -103,3 +103,16 @@ Those concepts remain outside RFC-0003. Part 01 §5.1.5 now defines a
 reference-preserving profile-transition contract for a future CNP successor, and
 Part 07 gains a non-normative topic index. Part 07 §11 records what was
 accepted, corrected, quarantined, or routed elsewhere.
+
+The later
+[Kimi dialogue](../../../proposals/rfc-0003/kimi-attribution-dialogue-2026-08-24.md)
+identified a real attribution ambiguity in the former “Authors: s0fractal +
+model collaborators” header. Parts 00–06 now separate contribution provenance,
+draft disposition, and principal ratification; Part 00 §22.1 adds a typed
+contribution receipt without turning a model session, key, or repository merge
+into quorum authority. The signed
+[Codex disposition](../../../src/x2900_963896_codex_kimi-rfc0003-attribution-dialogue-disposition.myc.md)
+also records why transient `DelegatedPrincipal` identities, protocol-assigned
+legal liability, and invented retroactive prompt metadata were declined. This
+edit does not supply an s0fractal-signed stewardship receipt or satisfy a
+tranche; Part 07 §12 records the full adjudication.

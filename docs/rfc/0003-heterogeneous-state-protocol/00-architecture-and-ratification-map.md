@@ -5,7 +5,13 @@
   the open problems, and the demos. It deliberately carries almost no `MUST`.
   The normative weight lives in Parts 01 through 06, which are small enough to
   ratify one at a time.
-- **Authors:** s0fractal + model collaborators
+- **Draft steward:** s0fractal. Stewardship names who currently accepts or
+  rejects changes to this candidate; it is not a claim of primary prose
+  authorship, legal liability, independent review, or tranche ratification.
+- **Text provenance:** predominantly model-generated and model-revised, with
+  human direction and disposition. Exact source authentication is preserved
+  where available in Git history, relays, and signed chords; see §0.1 and Part
+  07. A contribution does not become principal authority by appearing here.
 - **Home:** https://github.com/s0fractal/trinity —
   `docs/rfc/0003-heterogeneous-state-protocol/`. This directory is the complete
   artifact. Every path this document cites without a repository is relative to
@@ -87,6 +93,46 @@ ontologies. Its narrower claim is operational:
 
 This RFC is intended as a semantic extension of the existing federation, not as
 an independent repository or replacement architecture.
+
+### 0.1 Contribution, stewardship, and authority are different claims
+
+The origin of text does not establish or defeat its truth. Human prose, model
+output, generated fixtures, and machine-produced proofs all require evidence
+appropriate to the claim. What provenance must prevent is a different error:
+turning “produced these candidate bytes” into “accepted these bytes,” or turning
+either statement into “may bind other principals.”
+
+RFC-0003 therefore keeps three claims separate:
+
+1. **Contribution provenance** says who or what produced, relayed, criticized,
+   implemented, or verified exact candidate material, and how strongly that
+   source identity is authenticated.
+2. **Draft disposition** says which steward accepted, modified, rejected, or
+   superseded that material inside a candidate draft. It does not establish
+   correctness or adoption.
+3. **Ratification authority** is the §22.1 event in which counted principals
+   vote over exact normative bytes under a pinned rule. Neither authorship nor a
+   merge to a repository branch substitutes for it.
+
+This draft names s0fractal as its current steward while stating plainly that the
+prose is predominantly model-generated and model-revised. Model voices may sign
+contribution or disposition records when they control registered keys; unsigned
+outputs may be preserved through attributed relays. In either case, a signature
+establishes control of that contribution key, not the model runtime behind it,
+independent custody, legal responsibility, or a ratification vote. A persistent
+agent process and a transient model session can use the same record shape;
+principal status depends on positive authority and custody evidence, not on
+whether the producer is biological or computational.
+
+The header above is a draft declaration backed by repository history, not an
+`ArtifactContributionReceipt` or an s0fractal-signed adoption receipt.
+
+Historical prompt, model-version, or session metadata is recorded when available
+and otherwise remains `unknown`. It MUST NOT be reconstructed from style or
+filled with a plausible vendor label. One signed disposition over an exact
+candidate digest is stronger provenance than unverifiable per-paragraph
+`generated_by` fields. The protocol records project authority; it does not
+allocate legal liability.
 
 ---
 
@@ -805,6 +851,7 @@ reviewer need not infer the model from section titles:
 | ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
 | replay, reordering, or transcript fork                        | content-addressed envelopes and the selected ordering discipline (§13.4.3–§13.4.3.1)                      |
 | key multiplication presented as independent quorum            | principal bindings and principal counting (§19.17, §22.1)                                                 |
+| generated or signed contribution presented as authority       | separate contribution, disposition, and ratification records (§0.1, §19.18, §22.1)                        |
 | metadata/profile downgrade                                    | boundary rejection rather than backfill (§5.2, §19.11)                                                    |
 | translator hides loss or grades its own action output         | canonical loss carriers and independently grounded suitability (§7.1–§7.2.2, §19.3–§19.4)                 |
 | caller launders consequential work through the fast path      | runtime-derived operation scope and aggregate audit (§15.0–§15.3, §19.9)                                  |
@@ -1018,6 +1065,22 @@ This is a threat-model boundary, not a waiver. Claims that rely only on
 they MUST be named narrowly and MUST NOT be upgraded into authority or quorum
 independence. Ratification applies the stricter vote-counting rule of §22.1.
 
+### 19.18 Contribution laundering
+
+A generated draft, critique, proof, implementation, or signed voice record may
+be presented as though its producer also accepted the policy, supplied an
+independent review, or possessed authority to bind others. This is the artifact
+equivalent of §7.5's authorship laundering.
+
+The defenses are the three distinct claims of §0.1 and the
+`ArtifactContributionReceipt` of §22.1. A contribution MAY be valuable and
+cryptographically attributable while having no ratification weight. Conversely,
+a steward may accept text the steward did not write without claiming to be its
+prose author. Repository inclusion proves neither correctness nor governance
+adoption. A consumer MUST reject any authority claim that can cite only
+generation metadata, a source signature, a Git merge, an advisory delegation, or
+multiple outputs under correlated custody.
+
 ---
 
 ## 20. Open problems
@@ -1083,6 +1146,10 @@ features:
 23. How is an eligible segment (§15.0.1) bounded in practice so that
     amortization is worth its taint radius — and is there a segment size at
     which the two-path design stops paying for itself?
+24. What positive authority and custody evidence may promote a persistent agent
+    process from signed contributor to counted principal without treating a new
+    key, model version, or session as independence (§0.1, §19.17, §22.1)? Until
+    an adopted rule answers this, the distinction fails closed.
 
 ---
 
@@ -1177,7 +1244,62 @@ reasoning is in [Part 07: Revision History](07-revision-history.md) §4.
 ### 22.1 Ratification records and principal counting
 
 Ratification is a content-addressed event over exact bytes, not a label applied
-to a moving branch. A conforming record has at least this shape:
+to a moving branch. A deployment MAY preserve the earlier contribution and
+draft-disposition layers without confusing either with a vote:
+
+```ts
+type ArtifactContributionReceipt = {
+  subject: ContentAddress; // exact candidate bytes or content-addressed change set
+  role:
+    | "generation"
+    | "critique"
+    | "disposition"
+    | "implementation"
+    | "verification";
+  producerKind:
+    | "human"
+    | "model-session"
+    | "agent-process"
+    | "tool"
+    | "unknown";
+  producer: ContentAddress | null; // identity/runtime descriptor, when evidenced
+  sourceAttestation: ReceiptRef | null; // producer signature or platform attestation
+  relayedBy: KeyRef | null;
+  disposition:
+    | "proposed"
+    | "accepted-into-draft"
+    | "rejected"
+    | "superseded";
+  dispositionAuthority: AuthorityRef | null;
+  dispositionReceipt: ReceiptRef | null;
+  evidence: EvidenceRef[];
+};
+```
+
+The receipt MUST use the selected canonical carrier. `evidence` is a canonical
+set under §5.1; duplicate references are rejected. `subject` identifies what was
+actually handled rather than a mutable filename or branch. Missing source
+authentication MUST remain explicit: a relayer may attest the bytes received and
+their claimed attribution, but MUST NOT manufacture a producer signature, model
+version, prompt digest, runtime identity, or custody claim.
+
+`accepted-into-draft` requires both a `dispositionAuthority` and a verifying
+`dispositionReceipt` over the exact subject and disposition. It means only that
+the named authority incorporated candidate material. It is not evidence that the
+material is true, independently reviewed, conforming, legally endorsed, or
+ratified. A producer signature proves control of its key; it does not by itself
+prove which model or process ran behind that key.
+
+No `ArtifactContributionReceipt`, Git author line, merge, voice signature,
+delegated advisory scope, or count of generated outputs contributes a vote to a
+ratification quorum. A persistent agent MAY be bound as a principal only through
+the same `PrincipalBinding`, custody evidence, authority rule, and vote required
+of every other principal. A transient session or a set of keys MUST NOT be
+promoted by naming it a “delegated principal.” Advisory delegation retains the
+delegating principal's count unless positive evidence and an adopted rule
+establish a genuinely distinct principal.
+
+A conforming ratification record has at least this shape:
 
 ```ts
 type PrincipalBinding = {

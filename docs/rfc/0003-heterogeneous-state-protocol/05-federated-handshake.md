@@ -1,7 +1,11 @@
 # RFC-0003 / Part 05: Federated Handshake and Compatibility Boundaries
 
 - **Status:** Draft
-- **Authors:** s0fractal + model collaborators
+- **Draft steward:** s0fractal; stewardship is distinct from prose authorship
+  and ratification authority (Part 00 §0.1).
+- **Text provenance:** predominantly model-generated and model-revised; exact
+  source authentication is preserved where available in relays and signed chords
+  (Part 07).
 - **Home:** https://github.com/s0fractal/trinity —
   `docs/rfc/0003-heterogeneous-state-protocol/05-federated-handshake.md`
 - **Parent:**

@@ -21,16 +21,16 @@ holding no key in this substrate.
 This index is navigational and non-normative. Section numbers point to the
 history entry, not a second copy of the current rule.
 
-| Topic                                                                | Main history entries                                               |
-| -------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| canonical bytes, references, numeric profiles, and migration         | §1 (`§5.1.0–§5.1.2`), §6, §7 P5, §8, §11                           |
-| state domains, algebraic-law evidence, invariants, and composites    | §1 (`§6–§6.2.1`), §3, §7 P1/P6, §11                                |
-| transformation kinds, loss, suitability, debt, and evidence bridges  | §1 (`§7.0–§7.2.2`, `§15.0`, `§16.7.1`), §7 P1/P4, §8, §11          |
-| conflicts, bottlenecks, mutation, admission, and budgets             | §1 (`§8.2.2`, `§10.1.3`, `§19.13`, `§19.16`), §8, §10–§11          |
-| federation, execution floor, ordering, progress, and mapping domains | §1 (`§13.4.1–§13.4.3.2`), §7 P3/P8, §8, §10–§11                    |
-| identity, disclosure, runtime paths, and performance                 | §1 (`§12`, `§14.1`, `§15.0`), §7 P2/P7, §8, §10–§11                |
-| conformance, ratification, principal counting, and amendment         | §4, §7 P6/P7/P9, §9–§11                                            |
-| relayed external inputs and their dispositions                       | §6 Grok, §7 Claude, §8 Qwen, §9 GLM-5-Turbo, §10 Kimi, §11 Mistral |
+| Topic                                                                | Main history entries                                                                              |
+| -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| canonical bytes, references, numeric profiles, and migration         | §1 (`§5.1.0–§5.1.2`), §6, §7 P5, §8, §11                                                          |
+| state domains, algebraic-law evidence, invariants, and composites    | §1 (`§6–§6.2.1`), §3, §7 P1/P6, §11                                                               |
+| transformation kinds, loss, suitability, debt, and evidence bridges  | §1 (`§7.0–§7.2.2`, `§15.0`, `§16.7.1`), §7 P1/P4, §8, §11                                         |
+| conflicts, bottlenecks, mutation, admission, and budgets             | §1 (`§8.2.2`, `§10.1.3`, `§19.13`, `§19.16`), §8, §10–§11                                         |
+| federation, execution floor, ordering, progress, and mapping domains | §1 (`§13.4.1–§13.4.3.2`), §7 P3/P8, §8, §10–§11                                                   |
+| identity, disclosure, runtime paths, and performance                 | §1 (`§12`, `§14.1`, `§15.0`), §7 P2/P7, §8, §10–§11                                               |
+| conformance, ratification, principal counting, and amendment         | §4, §7 P6/P7/P9, §9–§11                                                                           |
+| relayed external inputs and their dispositions                       | §6 Grok, §7 Claude, §8 Qwen, §9 GLM-5-Turbo, §10 Kimi, §11 Mistral, §12 Kimi attribution dialogue |
 
 ---
 
@@ -730,3 +730,68 @@ The remaining audit findings were separated from contaminated extensions:
 This adjudication adds a transition contract and navigation, not a successor
 profile, migration implementation, corpus, independent encoder, demo,
 conformance result, adoption, or ratification. No tranche is satisfied.
+
+---
+
+## 12. Kimi dialogue: generation provenance is not authority
+
+On 2026-08-24, s0fractal relayed a dialogue with Kimi about whether the
+predominantly model-generated origin of RFC-0003 undermines it. The
+[source relay](../../../proposals/rfc-0003/kimi-attribution-dialogue-2026-08-24.md)
+and signed Codex
+[disposition](../../../src/x2900_963896_codex_kimi-rfc0003-attribution-dialogue-disposition.myc.md)
+are preserved outside the specification artifact. No Kimi or s0fractal source
+signature accompanied the dialogue; the relay authenticates neither speaker.
+
+The useful criticism is not that a model generated prose. It is that the prior
+header `Authors: s0fractal + model collaborators` collapsed materially different
+claims and could be read as either hiding model production or granting model
+outputs principal authority. The correction keeps those claims separate:
+
+1. **Current draft status made explicit.** Parts 00–06 now name s0fractal as
+   draft steward without claiming primary prose authorship. They state that the
+   text is predominantly model-generated and model-revised and route exact
+   source authentication to relays, signed chords, and Git history where it
+   exists. Stewardship means selecting candidate changes, not correctness, legal
+   liability, independent review, or ratification.
+2. **Contribution, disposition, and ratification separated.** New §0.1 names the
+   three claims. Section 22.1 defines an `ArtifactContributionReceipt` over
+   exact bytes or a content-addressed change set, with source authentication,
+   relay, disposition, authority, and evidence fields kept distinct. An
+   `accepted-into-draft` claim requires its own authority and verifying receipt;
+   it still carries no vote.
+3. **Signed model voices retained without principal laundering.** Kimi's advice
+   not to give model outputs keys is too broad. A persistent voice or agent key
+   gives useful cryptographic provenance. The existing §§19.17 and 22.1 rule is
+   the right boundary: a signature proves key control, while independent
+   principal status requires positive authority and custody evidence. A new
+   session, model version, process, or key does not multiply a quorum.
+4. **Buzz accepted only as bounded prior art.** Block's
+   [Buzz](https://github.com/block/buzz) uses one signed event shape and
+   identity model for people and agent processes, with different keypairs and
+   per-agent audit trails. That supports equal cryptographic form. It does not
+   establish that every API generation is a persistent actor, assign legal
+   responsibility, or satisfy HSP's principal-independence rule.
+5. **`DelegatedPrincipal` declined.** Generation, critique, and advisory scope
+   are contribution roles. Naming a transient generation a delegated principal
+   would create the exact key/session multiplication §19.17 rejects. Advisory
+   delegation retains one principal count unless a separately adopted rule and
+   evidence establish distinct authority and custody.
+6. **Legal-liability fields declined.** HSP records project authority,
+   attribution, custody claims, and warrants. It does not determine legal
+   personhood or allocate liability. A deployment may bind an external legal
+   agreement by content address without pretending the protocol created it.
+7. **Retroactive prompt archaeology declined.** Per-paragraph `generated_by` and
+   `prompt_digest` metadata would be useful only when captured at creation.
+   Missing historical prompts, model versions, or session identities remain
+   `unknown`; they are not inferred from style. One signed disposition over an
+   exact candidate digest is stronger than many plausible but unauthenticated
+   labels.
+
+Section 19.18 now names contribution laundering as a failure mode, and open
+problem §20.24 asks what evidence could promote a persistent agent from signed
+contributor to counted principal. Until an adopted answer exists, promotion
+fails closed. This edit does not itself supply an s0fractal-signed stewardship
+receipt, an implementation of `ArtifactContributionReceipt`, an independent
+principal, a ratification vote, conformance, or legal allocation. No tranche is
+satisfied.

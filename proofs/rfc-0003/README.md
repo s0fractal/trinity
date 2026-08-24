@@ -17,10 +17,12 @@ and the debt accumulation laws that §7.3.1 states.
   encoding, or identity. Those parts of RFC-0003 are untouched here.
 
 What it is: a check on whether the _algebra_ Part 03 asserts is the algebra its
-words define. Three places it is not, and one place its own picture disagrees
-with its own text, are recorded below as **C1–C6**, each with a machine-checked
-witness and a proposed erratum. **The RFC has not been edited.** An erratum is a
-proposal for the RFC's authors, not a change made here.
+words define. Four places it is not, one place its own picture disagrees with
+its own text, and one place it asks a component for an operation but never for
+that operation's laws, are recorded below as **C1–C7** — C1–C6 with a
+machine-checked witness, each with a proposed erratum. **The RFC has not been
+edited.** An erratum is a proposal for the RFC's authors, not a change made
+here.
 
 ## Specification pinned
 
@@ -97,6 +99,12 @@ rewritten definition body, a front-matter edit, and a §7 edit were each injecte
 and the guard's response confirmed.
 
 Toolchain: Lean **4.31.0**, core only. No Mathlib, no `lake`, no dependencies.
+
+In CI this runs as its own path-scoped workflow,
+[`.github/workflows/verify-proofs.yml`](../../.github/workflows/verify-proofs.yml),
+triggered by any change under `proofs/rfc-0003/` or to the specification file it
+pins. `./t check` does not reach this artifact — trinity's own gate knows
+nothing about Lean — which is exactly why the separate workflow exists.
 
 ## What is proved
 
@@ -414,11 +422,12 @@ review.)
 
 ## Trusted computing base
 
-- Lean 4.31.0's kernel and its three standard axioms. Actual cones, from
-  `theorems.lock.json`: 29 theorems depend on **no axioms**, 44 on `propext`, 57
+- Lean 4.31.0's kernel and two of its three standard axioms. Actual cones, from
+  `theorems.lock.json`: 29 theorems depend on **no axioms**, 46 on `propext`, 57
   on `propext` and `Quot.sound`.
-- **`Classical.choice` appears nowhere.** `sorryAx` appears nowhere.
-  `proof_guard.py` refuses both outright, in the lock or out of it.
+- **`Classical.choice` appears nowhere.** `sorryAx` appears nowhere. The
+  allowlist `{propext, Quot.sound}` is closed and enforced independently of the
+  lock, so neither can be admitted by re-running `--update`.
 - **`native_decide` is not used.** It is not needed anywhere here: every
   decidable check in this kernel is small enough for the kernel itself, so the
   TCB does not include the Lean compiler, the C toolchain, or a runtime.

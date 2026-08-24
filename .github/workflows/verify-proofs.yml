@@ -1,0 +1,71 @@
+name: verify-proofs
+
+# The Lean kernel for RFC-0003 Part 03 lives in `proofs/rfc-0003/` and is NOT
+# reachable from `./t check` — trinity's own gate knows nothing about Lean. So
+# without this workflow the artifact rots silently: a `sorry`, a widened theorem
+# statement, a redefined `Profile.compose`, an axiom outside the allowlist, or a
+# normative edit inside §7 of the specification would each land green.
+#
+# It is a separate, path-scoped workflow on purpose. Downloading a Lean toolchain
+# must not sit in the main gate's critical path for changes that cannot affect
+# the proof, and a Lean regression must not be reported as "CI" — it has its own
+# name so a reader of a red check knows which claim broke.
+#
+# `03-translation-loss-and-suitability.md` is in `paths` deliberately: the guard
+# fails when §7's normative body changes, and that failure is the whole point of
+# pinning it. A front-matter edit to the same file is reported and passes.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "proofs/rfc-0003/**"
+      - "docs/rfc/0003-heterogeneous-state-protocol/03-translation-loss-and-suitability.md"
+      - ".github/workflows/verify-proofs.yml"
+  pull_request:
+    paths:
+      - "proofs/rfc-0003/**"
+      - "docs/rfc/0003-heterogeneous-state-protocol/03-translation-loss-and-suitability.md"
+      - ".github/workflows/verify-proofs.yml"
+
+jobs:
+  lean-kernel:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout codebase
+        uses: actions/checkout@v4
+        with:
+          # The proof artifact is core-Lean only: no Mathlib, no lake, no
+          # submodule, no dependency on anything else in the tree except the
+          # specification file it pins.
+          submodules: false
+
+      - name: Read pinned toolchain
+        id: toolchain
+        run: echo "value=$(cat proofs/rfc-0003/lean-toolchain)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Lean toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ steps.toolchain.outputs.value }}
+
+      - name: Install elan
+        run: |
+          set -euo pipefail
+          if [ ! -x "$HOME/.elan/bin/elan" ]; then
+            curl -sSfL \
+              https://github.com/leanprover/elan/releases/download/v4.2.3/elan-x86_64-unknown-linux-gnu.tar.gz \
+              | tar xz
+            ./elan-init -y --default-toolchain none
+          fi
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Install the pinned toolchain
+        run: elan toolchain install "${{ steps.toolchain.outputs.value }}"
+
+      # verify.sh elaborates all four modules and then runs proof_guard.py, which
+      # checks the escape hatches, the closed axiom allowlist, the pinned theorem
+      # statements, definitions and module digests, and the §7 body digest.
+      - name: Verify the kernel
+        run: ./proofs/rfc-0003/verify.sh

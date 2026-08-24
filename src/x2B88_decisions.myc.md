@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  826  |
+| Total Chords                             |  827  |
 | Signed Chords (content_sig)              |  358  |
 | ↳ registry-verified                      |  358  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  93   |
 | Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  87   |
-| Receipts                                 |  375  |
-| ↳ strong evidence                        |  374  |
+| Receipts                                 |  376  |
+| ↳ strong evidence                        |  375  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |  23   |
@@ -909,6 +909,7 @@ _No open debts detected in the chord trail._
 | [x7700_958457_codex_myc-fail-closed-serve-port-validation.myc.md](./x7700_958457_codex_myc-fail-closed-serve-port-validation.myc.md)                                                                                                               | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_961166_claude_handle-collision-demonstrated-in-67-seconds.myc.md](./x7700_961166_claude_handle-collision-demonstrated-in-67-seconds.myc.md)                                                                                                 | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_961329_claude-fable-5_omega-era-961-the-law-moved-and-two-earlier-receipts-are-now-stale.myc.md](./x7700_961329_claude-fable-5_omega-era-961-the-law-moved-and-two-earlier-receipts-are-now-stale.myc.md)                                   | **RECEIPT**  | claude-fable-5     |   0   |   0    |
+| [x7700_963902_claude_rfc-0003-part-03-bounded-lean-kernel.myc.md](./x7700_963902_claude_rfc-0003-part-03-bounded-lean-kernel.myc.md)                                                                                                               | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -13292,6 +13293,32 @@ _No open debts detected in the chord trail._
   - `(cd omega && cargo test -p omega_v2 --lib law_hash)        # 2/2`
   - `(cd omega && cargo test -p omega_v2 --test behavioral_law_anchor)  # 2/2`
   - `./t status | grep -o '\"law_hash\":\"[^\"]*\"' | head -1    # 0xa43f38a1`
+
+### [x7700_963902_claude_rfc-0003-part-03-bounded-lean-kernel.myc.md](./x7700_963902_claude_rfc-0003-part-03-bounded-lean-kernel.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Claim Kind**: `artifact`
+- **Falsifiers**:
+  - _If `./proofs/rfc-0003/verify.sh` exits non-zero on a clean checkout with
+    Lean_
+  - _4.31.0 on PATH, this receipt is false._
+  - _If `grep -rn 'sorry\|native_decide' proofs/rfc-0003/HSP/` finds a live_
+  - _occurrence outside a comment, this receipt is false._
+  - _If any theorem's `#print axioms` output names an axiom outside_
+  - _`{propext, Quot.sound}`, this receipt is false._
+  - _If the §7 normative body of_
+  - _`docs/rfc/0003-heterogeneous-state-protocol/03-translation-loss-and-suitability.md`
+    does not hash to
+    `148c50d1a560f5b4845a69657caea285caa1def169de725a1be66c06ea9505da`, the
+    theorems are pinned to a specification that no longer exists and this
+    receipt is stale — `proof_guard.py` fails in exactly that case._
+  - _If `git diff main -- docs/rfc/` is non-empty on this branch, the claim
+    that_
+  - _the RFC is unchanged is false._
+- **Suggested Commands**:
+  - `./proofs/rfc-0003/verify.sh`
+  - `cd proofs/rfc-0003 && python3 proof_guard.py`
+  - `git show e7f63f1:docs/rfc/0003-heterogeneous-state-protocol/03-translation-loss-and-suitability.md | sed -n '/^## 7\\. Translation protocol/,$p' | shasum -a 256`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

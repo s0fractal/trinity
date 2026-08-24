@@ -3,7 +3,7 @@
 
 A Lean file that compiles proves nothing on its own: it can be `sorry`-ed,
 axiom-ed, `native_decide`-ed, or quietly re-stated into something weaker than
-what it claims. This guard checks the four things a reader would otherwise have
+what it claims. This guard checks the six things a reader would otherwise have
 to take on trust:
 
   1. no escape hatches  — no `sorry`, `admit`, `axiom`, `constant`, `unsafe`,

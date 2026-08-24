@@ -50,21 +50,21 @@ separate because only the first is shared with prior art:
 
 ## 3. Profile layer — `cnp-0`
 
-| #   | Rule                                                                                                                                                                                                                                                                                                   | Clause              |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------- |
-| P1  | Every hashed root contains exactly `"canonical_encoding":"hsp-jcs@v0"` and `"numeric_profile":"cnp-0"`. Nested values do not repeat them. Changing either changes the reference.                                                                                                                       | §5.1.2.1            |
-| P2  | The object model is `null`, booleans, exact strings, arrays, string-keyed maps, and integers in `[-(2^53-1), +(2^53-1)]`.                                                                                                                                                                              | §5.1.2.1            |
-| P3  | Floating-point numbers, decimal fractions, exponent notation, and integers outside the range are not members of the profile.                                                                                                                                                                           | §5.1.2.1, §5.1.2(2) |
-| P4  | `NaN` and the infinities are rejected as validation errors, not encoded.                                                                                                                                                                                                                               | §5.1.2(1)           |
-| P5  | Raw bytes use exactly one projection, `{ "kind": "bytes", "hex": … }`, lowercase and even-length. Uppercase, odd-length, or non-hex content is **rejected, not normalized**. Length is derived and must not be repeated.                                                                               | §5.1.2.1            |
-| P6  | `ratio` requires `den > 0`, `gcd(\|num\|, den) == 1`, zero as `{num: 0, den: 1}`, and both components inside the integer range.                                                                                                                                                                        | §5.1.2              |
-| P7  | `fixed` carries only its integer `value`; the scale descriptor is bound by the domain and is never repeated per value.                                                                                                                                                                                 | §5.1.2              |
-| P8  | A scale descriptor fixes `radix ∈ {2, 10}`, non-negative `places`, `radix^places` inside the integer range, and `unit_ref` either `null` or a full digest. A different descriptor is a different domain.                                                                                               | §5.1.2.2            |
-| P9  | A ratio simplex sums to exactly `1`; a fixed-point simplex sums to exactly `radix^places`. This is validation, not encoding.                                                                                                                                                                           | §5.1.2, §5.1.2.2    |
-| P10 | A named non-rational constant declares `symbolic`, `pinned`, or `discrete-surrogate`. Host `libm` output is not a canonical source.                                                                                                                                                                    | §5.1.2.3            |
-| P11 | `circle2n@v0` is optional: an integer index in `[0, 2^n)`, addition modulo `2^n`, equality of indices, with any LUT fixed-point and content-addressed.                                                                                                                                                 | §5.1.2.4            |
-| P12 | A boundary from approximate computation names the source float format, target domain, overflow behaviour, and one of `trunc_toward_zero`, `round_ties_even`, `reject`. `reject` is the default at an irreversible boundary.                                                                            | §5.1.2.5            |
-| P13 | `renormalize_largest_remainder@v0` allocates the residual by descending remainder, then by **ascending canonical bytes of the coordinate identifier** — never by array position, unless that position is the bound identifier. It rejects a negative weight or a zero sum, and validates `Σ q_i == T`. | §5.1.2.6            |
+| #   | Rule                                                                                                                                                                                                                                                                                                                                                                                                                                                          | Clause              |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
+| P1  | Every hashed root contains exactly `"canonical_encoding":"hsp-jcs@v0"` and `"numeric_profile":"cnp-0"`. Nested values do not repeat them. Changing either changes the reference.                                                                                                                                                                                                                                                                              | §5.1.2.1            |
+| P2  | The object model is `null`, booleans, exact strings, arrays, string-keyed maps, and integers in `[-(2^53-1), +(2^53-1)]`.                                                                                                                                                                                                                                                                                                                                     | §5.1.2.1            |
+| P3  | Floating-point numbers, decimal fractions, exponent notation, and integers outside the range are not members of the profile.                                                                                                                                                                                                                                                                                                                                  | §5.1.2.1, §5.1.2(2) |
+| P4  | `NaN` and the infinities are rejected as validation errors, not encoded.                                                                                                                                                                                                                                                                                                                                                                                      | §5.1.2(1)           |
+| P5  | Raw bytes use exactly one projection, `{ "kind": "bytes", "hex": … }`, lowercase and even-length. Uppercase, odd-length, or non-hex content is **rejected, not normalized**. Length is derived and must not be repeated.                                                                                                                                                                                                                                      | §5.1.2.1            |
+| P6  | `ratio` requires `den > 0`, `gcd(\|num\|, den) == 1`, zero as `{num: 0, den: 1}`, and both components inside the integer range.                                                                                                                                                                                                                                                                                                                               | §5.1.2              |
+| P7  | `fixed` carries only its integer `value`; the scale descriptor is bound by the domain and is never repeated per value.                                                                                                                                                                                                                                                                                                                                        | §5.1.2              |
+| P8  | A scale descriptor fixes `radix ∈ {2, 10}`, non-negative `places`, `radix^places` inside the integer range, and `unit_ref` either `null` or a full digest. A different descriptor is a different domain.                                                                                                                                                                                                                                                      | §5.1.2.2            |
+| P9  | A ratio simplex sums to exactly `1`; a fixed-point simplex sums to exactly `radix^places`. This is validation, not encoding.                                                                                                                                                                                                                                                                                                                                  | §5.1.2, §5.1.2.2    |
+| P10 | A named non-rational constant declares `symbolic`, `pinned`, or `discrete-surrogate`. Host `libm` output is not a canonical source.                                                                                                                                                                                                                                                                                                                           | §5.1.2.3            |
+| P11 | `circle2n@v0` is optional: a point **is** an integer index in `[0, 2^n)`, so an integer outside that interval is rejected rather than normalized; addition is modulo `2^n` over two valid points; equality is equality of indices; any LUT is fixed-point and content-addressed.                                                                                                                                                                              | §5.1.2.4            |
+| P12 | A boundary from approximate computation names the source float format, target domain, overflow behaviour, and one of `trunc_toward_zero`, `round_ties_even`, `reject`. `reject` is the default at an irreversible boundary.                                                                                                                                                                                                                                   | §5.1.2.5            |
+| P13 | `renormalize_largest_remainder@v0` allocates the residual by descending remainder, then by **ascending canonical bytes of the coordinate identifier** — never by array position, unless that position is the bound identifier. Every component binds a **unique** coordinate identifier, so a duplicate is rejected: without uniqueness the tie-break is not a function of the input. It rejects a negative weight or a zero sum, and validates `Σ q_i == T`. | §5.1.2.6            |
 
 ## 4. Rejection classes
 
@@ -82,7 +82,8 @@ clauses above.**
 `fixed-scale-in-value`, `tagged-form-invalid`, `scale-descriptor-invalid`,
 `simplex-sum-invalid`, `simplex-negative-weight`, `simplex-zero-sum`,
 `quantization-not-representable`, `quantization-overflow`, `quantization-nan`,
-`quantization-infinite`, `renormalize-negative-weight`, `renormalize-zero-sum`.
+`quantization-infinite`, `renormalize-negative-weight`, `renormalize-zero-sum`,
+`renormalize-duplicate-coordinate`, `circle-point-out-of-range`.
 
 Every one of them is exercised by at least one corpus case; the gate fails if a
 declared class is never used.
@@ -124,6 +125,32 @@ a normative rule here.** They are open questions for the steward.
 6. **Quantizing signed zero.** `-0.0` maps to the integer `0`, following
    §5.1.2(2)'s "an exact integral result MAY be converted to the integer `0`
    before that boundary".
+7. **How a full content digest is spelled.** §5.1.2.2 says `unit_ref` is "either
+   `null` or a full content digest" without fixing the string form. This
+   candidate requires 64 lowercase hexadecimal characters and rejects an opaque
+   handle, a truncated digest, or an uppercase one — fail-closed, and consistent
+   with §5.1's refusal elsewhere to accept a truncated handle as a reference. A
+   typed reference object would be the alternative, and choosing between them is
+   a normative question.
+
+## 6. Measured divergence from the prior art §5.1.2.1 cites
+
+§5.1.2.1 justifies the selection partly by Warrant's JCS profile being
+"independently reproduced by Python, Go, and Rust". Running Warrant's own
+`canon()` over this corpus found one disagreement, and it is worth recording
+because it bounds what that prior evidence covers.
+
+RFC 8785 §3.2.3 orders member names by their **UTF-16 code units**. Warrant's
+Python `canon()` uses `json.dumps(sort_keys=True)`, which orders by **code
+point**. The two agree for every name inside the BMP and diverge as soon as a
+name is outside it: U+1D11E is the surrogate pair `D834 DD1E`, so RFC 8785 sorts
+it before U+FFFD and Python sorts it after. Warrant's published vectors are all
+BMP, so their three-language parity never exercised this.
+
+So the prior evidence supports `hsp-jcs@v0` **for BMP member names**. This is a
+finding about an external implementation, reported rather than filtered; the
+divergence is pinned in `probes/cnp-0-seed-v0/ts/parity_warrant.ts` so that a
+new one fails the check and a resolved one also fails it.
 
 ## 6. What is still missing before A3 can be claimed
 

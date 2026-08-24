@@ -13,6 +13,8 @@
 import { INT_MAX, INT_MIN, type JValue, serializeText } from "./jcs.ts";
 
 export type TransformRejection =
+  | "circle-point-out-of-range"
+  | "renormalize-duplicate-coordinate"
   | "quantization-not-representable"
   | "quantization-overflow"
   | "quantization-nan"
@@ -177,6 +179,21 @@ export function renormalizeLargestRemainder(
   components: Component[],
   total: bigint,
 ): Renormalization {
+  // §5.1.2.6: "A simplex domain MUST bind one unique canonical coordinate
+  // identifier to every component." Without uniqueness the tie-break is not a
+  // function of the input, so two implementations can allocate the residual
+  // differently and still look conforming.
+  const seen = new Set<string>();
+  for (const c of components) {
+    const key = serializeText(c.id);
+    if (seen.has(key)) {
+      throw new TransformError(
+        "renormalize-duplicate-coordinate",
+        `coordinate identifier ${key} is bound to more than one component`,
+      );
+    }
+    seen.add(key);
+  }
   if (components.some((c) => c.weight < 0n)) {
     throw new TransformError("renormalize-negative-weight", "a weight is negative");
   }
@@ -238,13 +255,34 @@ export function renormalizeLargestRemainder(
 export const CIRCLE_N = 8n;
 export const CIRCLE_MODULUS = 1n << CIRCLE_N; // 256
 
-/** A point is an integer index in [0, 2^n). Equality is equality of indices. */
-export function circleNormalize(index: bigint): bigint {
-  const m = index % CIRCLE_MODULUS;
-  return m < 0n ? m + CIRCLE_MODULUS : m;
+/**
+ * §5.1.2.4: "a point is an integer index in `[0, 2^n)`". An integer outside
+ * that interval is NOT a point, so it is rejected rather than normalized —
+ * normalizing it would accept a non-point as a point and quietly make two
+ * distinct inputs equal, which is the failure canonical encoding exists to
+ * prevent.
+ */
+export function circlePoint(index: bigint): bigint {
+  if (index < 0n || index >= CIRCLE_MODULUS) {
+    throw new TransformError(
+      "circle-point-out-of-range",
+      `${index} is not an index in [0, ${CIRCLE_MODULUS})`,
+    );
+  }
+  return index;
 }
 
-/** Addition is exact modulo 2^n. Lookup output never redefines point identity. */
+/** §5.1.2.4: equality is equality of indices, over validated points. */
+export function circleEqual(a: bigint, b: bigint): boolean {
+  return circlePoint(a) === circlePoint(b);
+}
+
+/**
+ * §5.1.2.4: "addition is exact modulo 2^n". The modulus applies to the RESULT
+ * of adding two points; it is not a way to admit an out-of-range operand.
+ */
 export function circleAdd(a: bigint, b: bigint): bigint {
-  return circleNormalize(a + b);
+  const sum = circlePoint(a) + circlePoint(b);
+  const m = sum % CIRCLE_MODULUS;
+  return m < 0n ? m + CIRCLE_MODULUS : m;
 }

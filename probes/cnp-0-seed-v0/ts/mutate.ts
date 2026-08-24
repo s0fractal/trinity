@@ -21,8 +21,12 @@ export type Mutation = {
 
 export type MutationResult = {
   id: string;
+  /** The unmutated baseline is reported separately: it is a control, not a mutation. */
+  control: boolean;
   applied: boolean;
   wentRed: boolean;
+  /** Red because a pinned expectation failed — not because the process crashed. */
+  redForTheRightReason: boolean;
   detail: string;
 };
 
@@ -66,9 +70,33 @@ const MUTATIONS: Mutation[] = [
     target: "ts/jcs.ts",
     what: "make the encoder emit members in insertion order",
     apply: (t) => {
-      const needle = "const sorted = [...v.entries].sort(";
+      // A semantic change that still type-checks: the comparator is replaced by
+      // one that preserves insertion order. An earlier version of this mutation
+      // called a method that does not exist, so the gate went red on a crash
+      // rather than on the ordering it was meant to test (codex review).
+      const needle = "const sorted = [...v.entries].sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));";
       if (!t.includes(needle)) return undefined;
-      return t.replace(needle, "const sorted = [...v.entries].reverse().slice(0).sort0(");
+      return t.replace(needle, "const sorted = [...v.entries].sort(() => 0);");
+    },
+  },
+  {
+    id: "circle-accepts-out-of-range-point",
+    target: "ts/transforms.ts",
+    what: "let an out-of-range index be normalized into a point",
+    apply: (t) => {
+      const needle = "  if (index < 0n || index >= CIRCLE_MODULUS) {";
+      if (!t.includes(needle)) return undefined;
+      return t.replace(needle, "  if (false) {");
+    },
+  },
+  {
+    id: "renormalize-allows-duplicate-coordinate",
+    target: "ts/transforms.ts",
+    what: "drop the unique-coordinate-identifier requirement",
+    apply: (t) => {
+      const needle = "    if (seen.has(key)) {";
+      if (!t.includes(needle)) return undefined;
+      return t.replace(needle, "    if (false) {");
     },
   },
   {
@@ -135,15 +163,28 @@ async function copyTree(into: string): Promise<void> {
   }
 }
 
-async function corpusFails(dir: string): Promise<{ red: boolean; output: string }> {
+type CorpusRun = { red: boolean; expectationFailure: boolean; output: string };
+
+async function corpusFails(dir: string): Promise<CorpusRun> {
   const cmd = new Deno.Command("deno", {
-    args: ["run", "--allow-read", `${dir}/ts/runner.ts`],
+    args: ["run", "--no-config", "--allow-read", `${dir}/ts/runner.ts`],
     stdout: "piped",
     stderr: "piped",
   });
   const out = await cmd.output();
   const text = new TextDecoder().decode(out.stdout) + new TextDecoder().decode(out.stderr);
-  return { red: out.code !== 0, output: text };
+  // Red is not enough. A mutation that makes the runner crash proves nothing
+  // about the property it was meant to test, so the harness requires the
+  // failure to be a REPORTED expectation failure: the runner reached its own
+  // reporting path and printed a FAIL line.
+  const reachedReport = text.includes("cnp-0 corpus — probes/cnp-0-seed-v0");
+  const crashed = /error: Uncaught|TypeError:|is not a function/.test(text);
+  const printedFailure = /^ {2}FAIL /m.test(text);
+  return {
+    red: out.code !== 0,
+    expectationFailure: reachedReport && printedFailure && !crashed,
+    output: text,
+  };
 }
 
 export async function runMutations(): Promise<MutationResult[]> {
@@ -156,8 +197,10 @@ export async function runMutations(): Promise<MutationResult[]> {
     const control = await corpusFails(cleanDir);
     results.push({
       id: "control-unmutated",
+      control: true,
       applied: true,
       wentRed: !control.red,
+      redForTheRightReason: !control.red,
       detail: control.red
         ? `the unmutated copy FAILED, so no mutation result is meaningful:\n${control.output}`
         : "the unmutated copy is green",
@@ -177,8 +220,10 @@ export async function runMutations(): Promise<MutationResult[]> {
       if (after === undefined || after === before) {
         results.push({
           id: m.id,
+          control: false,
           applied: false,
           wentRed: false,
+          redForTheRightReason: false,
           detail:
             `mutation could not be applied to ${m.target} — its anchor has moved, so ` +
             "this class is UNTESTED and must not be read as covered",
@@ -186,14 +231,19 @@ export async function runMutations(): Promise<MutationResult[]> {
         continue;
       }
       await Deno.writeTextFile(path, after);
-      const { red, output } = await corpusFails(dir);
+      const { red, expectationFailure, output } = await corpusFails(dir);
       results.push({
         id: m.id,
+        control: false,
         applied: true,
         wentRed: red,
-        detail: red
-          ? `${m.what} → gate red`
-          : `${m.what} → gate STAYED GREEN, which means this class is unprotected:\n${output}`,
+        redForTheRightReason: expectationFailure,
+        detail: !red
+          ? `${m.what} → gate STAYED GREEN, which means this class is unprotected:\n${output}`
+          : expectationFailure
+          ? `${m.what} → gate red on a reported expectation failure`
+          : `${m.what} → gate red, but NOT on a reported expectation failure ` +
+            `(a crash proves nothing about this property):\n${output}`,
       });
     } finally {
       await Deno.remove(dir, { recursive: true });
@@ -204,15 +254,19 @@ export async function runMutations(): Promise<MutationResult[]> {
 
 if (import.meta.main) {
   const results = await runMutations();
-  const bad = results.filter((r) => !r.applied || !r.wentRed);
+  const bad = results.filter((r) =>
+    !r.applied || !r.wentRed || (!r.control && !r.redForTheRightReason)
+  );
+  const mutations = results.filter((r) => !r.control);
+  const good = mutations.filter((r) => r.applied && r.wentRed && r.redForTheRightReason);
   console.log("negative controls — one mutation per protected class");
   for (const r of results) {
-    const mark = r.applied && r.wentRed ? "ok  " : "FAIL";
-    console.log(`  ${mark} ${r.id.padEnd(30)} ${r.detail.split("\n")[0]}`);
+    const ok = r.applied && r.wentRed && (r.control || r.redForTheRightReason);
+    console.log(`  ${ok ? "ok  " : "FAIL"} ${r.id.padEnd(34)} ${r.detail.split("\n")[0]}`);
   }
   console.log(
-    `  ${results.length} mutation(s), ${results.length - bad.length} produced the ` +
-      "expected failure",
+    `  1 unmutated control + ${mutations.length} mutation(s); ` +
+      `${good.length} of ${mutations.length} went red on a reported expectation failure`,
   );
   if (bad.length > 0) {
     for (const r of bad) console.log(`\n${r.id}:\n${r.detail}`);

@@ -36,10 +36,11 @@ executable part of that list and reports exactly which part it did not build.
 | `ts/mutate.ts` | negative controls: one mutation per protected class, each required to turn the gate red |
 | `ts/parity_warrant.ts` | external Warrant JCS parity, pinned, `UNAVAILABLE` when not attempted |
 | `ts/cnp0_test.ts` | the gate, wired into `deno task test:unit` and therefore `./t check` |
-| `corpus/manifest.json` | 102 cases across all eight §5.1.3 categories |
+| `corpus/manifest.json` | 112 cases across all eight §5.1.3 categories |
 | `corpus/circle256-lut.cnp0.json` | the pinned `circle256` sine table (§5.1.2.3 `pinned` strategy) |
 | `tools/build_manifest.py` | the authoring tool: writes the manifest from an independent Python serializer |
 | `tools/jcs_py.py` | that serializer |
+| `tools/warrant_bridge.py` | runs Warrant's own `canon()` over this corpus |
 
 The contract restatement lives at
 [`contracts/CANONICAL_ENCODING.v0.1.md`](../../contracts/CANONICAL_ENCODING.v0.1.md),
@@ -48,22 +49,26 @@ including the implementation choices Part 01 does not state.
 ## Run
 
 ```sh
-./probes/cnp-0-seed-v0/run.sh                                   # corpus + controls + parity
-./probes/cnp-0-seed-v0/run.sh --warrant=/path/to/warrant        # with external parity
-t cnp0                                                          # the same corpus, via the dispatcher
-deno task test:unit                                             # the gate, as CI runs it
+./probes/cnp-0-seed-v0/run.sh                              # corpus + controls + parity
+./probes/cnp-0-seed-v0/run.sh --warrant=/path/to/warrant   # with external parity
+./t cnp0                                                   # the corpus, via the dispatcher
+deno task test:unit                                        # the gate, as CI runs it
 ```
+
+Every `deno` invocation in `run.sh` passes `--no-config`. The probe imports
+nothing outside itself, and resolving trinity's root workspace would drag in
+submodule members that are absent from a fresh clone.
 
 Expected counts from a clean checkout:
 
 ```text
-cases selected      102
-  circle            4     encode          60    file            1
+cases selected      112
+  circle            8     encode          60    file            1
   fixed-simplex     3     quantize        20    ratio-simplex   3
-  renormalize       7     scale           4
+  renormalize       9     scale           8
 encoder  accepted   28      encoder  rejected   32
 verifier accepted   24      verifier rejected   36
-transform accepted  26      transform rejected  16
+transform accepted  28      transform rejected  24
 digest groups       4
 ```
 
@@ -85,19 +90,23 @@ means something stronger, and this probe does not supply it.
 
 ## What the corpus covers
 
-All eight categories of §5.1.3, 102 cases:
+All eight categories of §5.1.3, 112 cases:
 
 1. zero, one, minus one, both integer bounds, and both overflow directions;
 2. `1/3`, `-1/3`, canonical zero, and rejection of `2/4`, `0/2`, a negative and
    a zero denominator, overflow, floats, exponent notation, `1.0`, and duplicate
    member names at the root and nested;
 3. one fixed integer under two scale descriptors producing different references,
-   plus radix, places, and overflow rejections;
+   plus radix, places, and overflow rejections, and `unit_ref` accepted as a
+   full digest but rejected when it is an opaque handle, a truncated digest, or
+   uppercase;
 4. exact ratio and fixed-point simplexes, invalid sums, largest-remainder
    renormalization with a residual, a tie resolved by canonical coordinate
    identifier, the same components presented in a different order allocating
    identically, an anonymous vector using its integer index, zero-sum and
-   negative-weight rejection;
+   negative-weight rejection, and rejection of a coordinate identifier bound to
+   two components (named or anonymous) — without uniqueness the tie-break is not
+   a function of the input;
 5. profile-identifier mutation, encoding-identifier mutation, an absent
    identifier, and a one-digit pinned-constant mutation changing the digest;
 6. byte projections and their uppercase/odd-length/non-hex/extra-member
@@ -108,8 +117,11 @@ All eight categories of §5.1.3, 102 cases:
    characters, malformed and truncated escapes, both unpaired surrogate
    directions, a lone `0xff`, an overlong encoding, a surrogate half encoded as
    UTF-8, trailing bytes, trailing garbage, and a non-object root;
-7. `circle256` index equality, rotation, wrap, negative index, and a one-byte
-   mutation of the pinned LUT;
+7. `circle256` index equality both ways, rotation, wrap at the modulus, and a
+   one-byte mutation of the pinned LUT — with `-1`, `2^n`, and an out-of-range
+   addition operand **rejected rather than normalized**: §5.1.2.4 says a point
+   *is* an index in `[0, 2^n)`, so normalizing a non-point would silently make
+   two distinct inputs equal;
 8. every quantization boundary of §5.1.2.5–§5.1.2.6: positive and negative ties
    under all three modes, just-inside and just-outside the integer range,
    overflow by scale, `NaN`, both infinities, signed zero, a binary radix, and
@@ -125,37 +137,82 @@ rational and the rounding decision is an integer comparison.
 
 `ts/mutate.ts` copies the probe to a temporary tree, applies exactly one
 mutation, and requires the corpus to fail. It touches nothing in the live
-checkout, and a mutation whose anchor has moved is reported as **UNTESTED**
-rather than skipped — an unapplied mutation would otherwise look like a pass.
+checkout; a mutation whose anchor has moved is reported **UNTESTED** rather than
+skipped; and red is not enough — the run must reach the runner's own reporting
+path and print a `FAIL` line, because a mutation that merely crashes the process
+proves nothing about the property it was meant to test.
+
+**1 unmutated control + 10 mutations**, each of which went red on a reported
+expectation failure:
 
 ```text
-control-unmutated                the unmutated copy is green
-corpus-byte                      one byte inside a pinned canonical string  → red
-expected-digest                  one pinned SHA-256 expectation             → red
-expected-rejection-class         a negative case's expected class           → red
-encoder-drops-member-sort        the encoder stops sorting members          → red
-encoder-accepts-unreduced-ratio  the ratio reduction rule removed           → red
-verifier-tolerates-whitespace    the verifier accepts whitespace            → red
-lut-byte                         one byte of the pinned circle256 LUT       → red
-empty-corpus                     zero cases selected                        → red
+control-unmutated                        the unmutated copy is green (a control,
+                                         not a mutation, and counted separately)
+corpus-byte                              one byte inside a pinned canonical string
+expected-digest                          one pinned SHA-256 expectation
+expected-rejection-class                 a negative case's expected class
+encoder-drops-member-sort                the comparator stops ordering members
+circle-accepts-out-of-range-point        an out-of-range index becomes a point
+renormalize-allows-duplicate-coordinate  the unique-coordinate rule dropped
+encoder-accepts-unreduced-ratio          the ratio reduction rule removed
+verifier-tolerates-whitespace            the verifier accepts whitespace
+lut-byte                                 one byte of the pinned circle256 LUT
+empty-corpus                             zero cases selected
 ```
 
-## External parity
+## External parity — both directions
 
-`ts/parity_warrant.ts` feeds Warrant's own `examples/canon-vectors.json` through
-this wire layer and requires byte-identical output and matching digests. It is
-pinned to `s0fractal/warrant@ac63e4e9180c5878aa27159eebe1c4007909dce9`, reads
-the checkout's actual revision, and discloses a mismatch rather than accepting
-it silently.
+`ts/parity_warrant.ts` measures agreement with Warrant's JCS implementation in
+both directions, because one direction only proves we can reproduce inputs
+*they* chose:
+
+- **A — our encoder over their vectors.** Their published
+  `examples/canon-vectors.json` must come back byte-identical with matching
+  digests. Observed at the pin: **47 selected, 47 byte-identical, 0 skipped.**
+- **B — their canonicalizer, executed, over our corpus.**
+  `tools/warrant_bridge.py` imports `<warrant>/impl/warrant.py` and calls
+  `warrant.canon()` on every positive case here. Observed: **28 selected, 27
+  byte-identical, 1 recorded divergence.**
+
+**The revision is checked, not assumed.** `git rev-parse` establishes it (and
+`--show-toplevel` confirms the directory is the work-tree root, so a stray
+directory inside another repository cannot inherit that repository's revision).
+A checkout that is not the pinned `ac63e4e9…` **FAILS**; to measure a different
+revision the caller must state it with `--warrant-sha=<exact>`, which is
+recorded in the report as disclosed. A revision that cannot be established also
+fails: an unpinned parity claim is not evidence.
 
 Warrant is **not** a submodule and is not vendored. Without `--warrant=<path>`
-the command reports `UNAVAILABLE` and says so in those words: a check that did
-not run is not parity. The self-contained gate does not depend on it.
+the command reports `UNAVAILABLE` in those words: a check that did not run is
+not parity. If `python3` is unavailable, direction B reports `UNAVAILABLE` and
+the overall status is `UNAVAILABLE` rather than `PASS` — half a measurement is
+not a measurement. The self-contained gate does not depend on any of this.
 
-Observed at the pinned revision: **47 vectors selected, 47 byte-identical, 0
-skipped**. That is evidence about `hsp-jcs@v0` only. Warrant's fixtures predate
-CNP-0 and contain none of its profile members, ratios, fixed-point domains, or
-rejection corpus — exactly as §5.1.2.1 warns.
+### The divergence direction B found
+
+`c6-utf16-order` is a member-name ordering case with a non-BMP key:
+
+```text
+ours    {"canonical_encoding":…,"numeric_profile":…,"𝄞":1,"\ufffd":2}
+warrant {"canonical_encoding":…,"numeric_profile":…,"\ufffd":2,"𝄞":1}
+```
+
+RFC 8785 §3.2.3 orders member names by their **UTF-16 code units**: U+1D11E is
+the surrogate pair `D834 DD1E`, so it sorts *before* U+FFFD. Warrant's Python
+`canon()` uses `json.dumps(sort_keys=True)`, which orders by **code point**, so
+it sorts *after*. The two agree on every name inside the BMP, and Warrant's own
+vectors are all BMP — which is why their Python/Go/Rust parity never exercised
+it.
+
+This is a finding about the external implementation, not a defect here, and it
+is narrow: it needs a non-BMP member name to appear. It is recorded in
+`KNOWN_DIVERGENCES` rather than filtered away, and the pin cuts both ways — a
+**new** divergence fails, and a recorded divergence that stops reproducing also
+fails, because either means the file is out of date.
+
+It matters for §5.1.2.1, which leans on Warrant's implementation as prior
+evidence: that evidence covers the `hsp-jcs@v0` wire layer *for BMP member
+names*.
 
 ## What this probe does not establish
 

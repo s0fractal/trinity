@@ -22,7 +22,8 @@ import {
 import { verifyRaw } from "./reject.ts";
 import {
   circleAdd,
-  circleNormalize,
+  circleEqual,
+  circlePoint,
   quantize,
   type QuantizationMode,
   renormalizeLargestRemainder,
@@ -298,11 +299,31 @@ export async function run(): Promise<Report> {
 
         case "circle": {
           const expect = c.expect as Record<string, any>;
-          const got = c.op === "add"
-            ? circleAdd(BigInt(c.a as number), BigInt(c.b as number))
-            : circleNormalize(BigInt(c.a as number));
-          if (got !== BigInt(expect.index)) {
-            fail(id, `index ${got} != pinned ${expect.index}`);
+          const a = BigInt(c.a as number);
+          const run = () => {
+            if (c.op === "add") return circleAdd(a, BigInt(c.b as number));
+            if (c.op === "equal") return circleEqual(a, BigInt(c.b as number));
+            return circlePoint(a);
+          };
+          if (expect.reject) {
+            let rejection: string | undefined;
+            try {
+              run();
+            } catch (e) {
+              if (!(e instanceof TransformError)) throw e;
+              rejection = e.rejection;
+            }
+            if (rejection !== expect.reject) {
+              fail(id, `expected ${expect.reject}, got ${rejection ?? "acceptance"}`);
+            } else {
+              report.transformsRejected++;
+            }
+            break;
+          }
+          const got = run();
+          const want = "equal" in expect ? expect.equal : BigInt(expect.index);
+          if (got !== want) {
+            fail(id, `result ${got} != pinned ${want}`);
           } else {
             report.transformsAccepted++;
           }

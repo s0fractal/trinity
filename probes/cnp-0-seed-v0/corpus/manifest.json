@@ -10,6 +10,7 @@
   "authoring": "corpus/manifest.json is authored by tools/build_manifest.py (a Python code path) and pinned; the TypeScript reference encoder must reproduce these bytes and digests. Same author, so this is a second code path, not an independent implementation (§5.1.3).",
   "rejection_classes": [
     "bytes-hex-invalid",
+    "circle-point-out-of-range",
     "duplicate-member-name",
     "fixed-scale-in-value",
     "integer-out-of-range",
@@ -25,6 +26,7 @@
     "ratio-non-positive-denominator",
     "ratio-not-reduced",
     "ratio-zero-not-canonical",
+    "renormalize-duplicate-coordinate",
     "renormalize-negative-weight",
     "renormalize-zero-sum",
     "scale-descriptor-invalid",
@@ -493,6 +495,80 @@
       }
     },
     {
+      "id": "c3-scale-unit-ref-digest",
+      "category": 3,
+      "clause": "§5.1.2.2",
+      "title": "unit_ref may be a full content digest",
+      "kind": "scale",
+      "descriptor": {
+        "canonical_encoding": "hsp-jcs@v0",
+        "numeric_profile": "cnp-0",
+        "scale": "hsp-scale@v0",
+        "radix": 10,
+        "places": 6,
+        "unit_ref": "2ba1363847289f21faa2438e2b5929019979e3a5b068b130aaa0e81a3b5c878d"
+      },
+      "expect": {
+        "accept": {
+          "total": 1000000
+        }
+      }
+    },
+    {
+      "id": "c3-scale-unit-ref-not-a-digest",
+      "category": 3,
+      "clause": "§5.1.2.2",
+      "title": "an opaque handle is not a full content digest",
+      "kind": "scale",
+      "descriptor": {
+        "canonical_encoding": "hsp-jcs@v0",
+        "numeric_profile": "cnp-0",
+        "scale": "hsp-scale@v0",
+        "radix": 10,
+        "places": 6,
+        "unit_ref": "not-a-full-content-digest"
+      },
+      "expect": {
+        "reject": "scale-descriptor-invalid"
+      }
+    },
+    {
+      "id": "c3-scale-unit-ref-truncated",
+      "category": 3,
+      "clause": "§5.1.2.2",
+      "title": "a truncated digest is not a full digest",
+      "kind": "scale",
+      "descriptor": {
+        "canonical_encoding": "hsp-jcs@v0",
+        "numeric_profile": "cnp-0",
+        "scale": "hsp-scale@v0",
+        "radix": 10,
+        "places": 6,
+        "unit_ref": "2ba136384728"
+      },
+      "expect": {
+        "reject": "scale-descriptor-invalid"
+      }
+    },
+    {
+      "id": "c3-scale-unit-ref-uppercase",
+      "category": 3,
+      "clause": "§5.1.2.2",
+      "title": "an uppercase digest is rejected, not normalized",
+      "kind": "scale",
+      "descriptor": {
+        "canonical_encoding": "hsp-jcs@v0",
+        "numeric_profile": "cnp-0",
+        "scale": "hsp-scale@v0",
+        "radix": 10,
+        "places": 6,
+        "unit_ref": "2BA1363847289F21FAA2438E2B5929019979E3A5B068B130AAA0E81A3B5C878D"
+      },
+      "expect": {
+        "reject": "scale-descriptor-invalid"
+      }
+    },
+    {
       "id": "c4-ratio-simplex",
       "category": 4,
       "clause": "§5.1.3(4)",
@@ -801,6 +877,52 @@
       "total": 10,
       "expect": {
         "reject": "renormalize-negative-weight"
+      }
+    },
+    {
+      "id": "c4-renorm-duplicate-coordinate",
+      "category": 4,
+      "clause": "§5.1.2.6",
+      "title": "a coordinate identifier bound to two components makes the tie-break a function of presentation order, so it is rejected",
+      "kind": "renormalize",
+      "components": [
+        [
+          "a",
+          1
+        ],
+        [
+          "a",
+          1
+        ],
+        [
+          "b",
+          1
+        ]
+      ],
+      "total": 10,
+      "expect": {
+        "reject": "renormalize-duplicate-coordinate"
+      }
+    },
+    {
+      "id": "c4-renorm-duplicate-anonymous",
+      "category": 4,
+      "clause": "§5.1.2.6",
+      "title": "the same rule for an ordered anonymous vector's integer indices",
+      "kind": "renormalize",
+      "components": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "total": 10,
+      "expect": {
+        "reject": "renormalize-duplicate-coordinate"
       }
     },
     {
@@ -1326,37 +1448,88 @@
       "id": "c7-rotation-wrap",
       "category": 7,
       "clause": "§5.1.2.4",
-      "title": "a full turn is the identity",
+      "title": "the sum of two valid points wraps at the modulus",
       "kind": "circle",
       "op": "add",
-      "a": 17,
-      "b": 256,
-      "expect": {
-        "index": 17
-      }
-    },
-    {
-      "id": "c7-negative-index",
-      "category": 7,
-      "clause": "§5.1.2.4",
-      "title": "index -1 normalizes to 255",
-      "kind": "circle",
-      "op": "normalize",
-      "a": -1,
-      "expect": {
-        "index": 255
-      }
-    },
-    {
-      "id": "c7-equality",
-      "category": 7,
-      "clause": "§5.1.2.4",
-      "title": "equality is equality of indices, so 256 is 0",
-      "kind": "circle",
-      "op": "normalize",
-      "a": 256,
+      "a": 255,
+      "b": 1,
       "expect": {
         "index": 0
+      }
+    },
+    {
+      "id": "c7-equality-same",
+      "category": 7,
+      "clause": "§5.1.2.4",
+      "title": "equality is equality of indices",
+      "kind": "circle",
+      "op": "equal",
+      "a": 17,
+      "b": 17,
+      "expect": {
+        "equal": true
+      }
+    },
+    {
+      "id": "c7-equality-different",
+      "category": 7,
+      "clause": "§5.1.2.4",
+      "title": "two distinct indices are two distinct points",
+      "kind": "circle",
+      "op": "equal",
+      "a": 17,
+      "b": 18,
+      "expect": {
+        "equal": false
+      }
+    },
+    {
+      "id": "c7-negative-point",
+      "category": 7,
+      "clause": "§5.1.2.4",
+      "title": "-1 is not an index in [0, 2^n) and is rejected, not normalized to 255",
+      "kind": "circle",
+      "op": "point",
+      "a": -1,
+      "expect": {
+        "reject": "circle-point-out-of-range"
+      }
+    },
+    {
+      "id": "c7-out-of-range-point",
+      "category": 7,
+      "clause": "§5.1.2.4",
+      "title": "2^n is not a point either: normalizing it would make two distinct inputs equal",
+      "kind": "circle",
+      "op": "point",
+      "a": 256,
+      "expect": {
+        "reject": "circle-point-out-of-range"
+      }
+    },
+    {
+      "id": "c7-out-of-range-operand",
+      "category": 7,
+      "clause": "§5.1.2.4",
+      "title": "the modulus applies to the sum, never to an out-of-range operand",
+      "kind": "circle",
+      "op": "add",
+      "a": 250,
+      "b": 300,
+      "expect": {
+        "reject": "circle-point-out-of-range"
+      }
+    },
+    {
+      "id": "c7-point-in-range",
+      "category": 7,
+      "clause": "§5.1.2.4",
+      "title": "both bounds of the point interval",
+      "kind": "circle",
+      "op": "point",
+      "a": 255,
+      "expect": {
+        "index": 255
       }
     },
     {

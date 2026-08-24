@@ -78,17 +78,36 @@ Deno.test("the verifier never repairs: rejected input yields no bytes", async ()
   assertEquals(Object.keys(outcome).sort(), ["detail", "offset", "ok", "rejection"]);
 });
 
-Deno.test("negative controls: each protected class goes red under mutation", async () => {
+Deno.test("negative controls: each protected class goes red for the right reason", async () => {
   const results = await runMutations();
-  const control = results.find((r) => r.id === "control-unmutated");
+  const control = results.find((r) => r.control);
   assert(control?.wentRed, "the unmutated copy must be green first");
-  const bad = results.filter((r) => r.id !== "control-unmutated" && (!r.applied || !r.wentRed));
+  const mutations = results.filter((r) => !r.control);
+  // Red is not enough: a mutation that crashes the runner proves nothing about
+  // the property it was meant to test, so each must reach the runner's own
+  // reporting path and print a FAIL line.
+  const bad = mutations.filter((r) => !r.applied || !r.wentRed || !r.redForTheRightReason);
   assertEquals(bad.map((r) => `${r.id}: ${r.detail}`), []);
-  assert(results.length >= 8, "too few mutation classes");
+  assert(mutations.length >= 10, `too few mutation classes: ${mutations.length}`);
 });
 
 Deno.test("warrant parity is UNAVAILABLE, not green, without a pinned checkout", async () => {
-  const report = await parity(undefined);
+  const report = await parity({});
   assertEquals(report.status, "UNAVAILABLE");
-  assertEquals(report.matched, 0);
+  assertEquals(report.vectors.matched, 0);
+  assertEquals(report.executable.matched, 0);
+  assert(report.reasons.some((r) => r.includes("not the same as parity holding")));
+});
+
+Deno.test("warrant parity refuses a checkout whose revision it cannot establish", async () => {
+  const dir = await Deno.makeTempDir({ prefix: "cnp0-fakewarrant-" });
+  try {
+    await Deno.mkdir(`${dir}/examples`);
+    await Deno.writeTextFile(`${dir}/examples/canon-vectors.json`, '{"cases":[]}');
+    const report = await parity({ warrantPath: dir });
+    assertEquals(report.status, "FAIL");
+    assert(report.reasons.some((r) => r.includes("revision could not be established")));
+  } finally {
+    await Deno.remove(dir, { recursive: true });
+  }
 });

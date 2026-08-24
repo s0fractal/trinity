@@ -63,6 +63,8 @@ function gcd(a: bigint, b: bigint): bigint {
 }
 
 const HEX_LOWER = /^[0-9a-f]*$/;
+/** A full content digest: 64 lowercase hex characters, never truncated. */
+const FULL_DIGEST = /^[0-9a-f]{64}$/;
 
 /** §5.1.2.1: the tagged forms. Extra members are a second source of truth. */
 function validateTagged(m: JMap): void {
@@ -236,11 +238,18 @@ export function validateScaleDescriptor(v: JValue): void {
     throw new ProfileError("scale-descriptor-invalid", "places must be a non-negative integer");
   }
   const unitRef = get(v, "unit_ref");
-  if (unitRef !== null && typeof unitRef !== "string") {
-    throw new ProfileError(
-      "scale-descriptor-invalid",
-      "unit_ref is null or a full content digest",
-    );
+  // §5.1.2.2: "`unit_ref` is either `null` or a full content digest of a unit
+  // descriptor." A string that is not a full digest is rejected rather than
+  // accepted as an opaque handle — §5.1 is explicit elsewhere that a truncated
+  // handle or display name is not a reference. The exact digest spelling is an
+  // implementation choice recorded in CANONICAL_ENCODING.v0.1 §5.
+  if (unitRef !== null) {
+    if (typeof unitRef !== "string" || !FULL_DIGEST.test(unitRef)) {
+      throw new ProfileError(
+        "scale-descriptor-invalid",
+        "unit_ref must be null or a full lowercase sha-256 content digest",
+      );
+    }
   }
   const total = radix ** places;
   if (total > INT_MAX || total < INT_MIN) {

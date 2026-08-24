@@ -194,6 +194,22 @@ other("c3-scale-overflow", 3, "§5.1.2.2",
       "scale", descriptor=scale(10, 20), expect={"reject": "scale-descriptor-invalid"})
 other("c3-scale-valid-binary", 3, "§5.1.2.2", "radix 2 is admissible",
       "scale", descriptor=scale(2, 10), expect={"accept": {"total": 1024}})
+other("c3-scale-unit-ref-digest", 3, "§5.1.2.2",
+      "unit_ref may be a full content digest",
+      "scale", descriptor=scale(10, 6, s6_digest),
+      expect={"accept": {"total": 10**6}})
+other("c3-scale-unit-ref-not-a-digest", 3, "§5.1.2.2",
+      "an opaque handle is not a full content digest",
+      "scale", descriptor=scale(10, 6, "not-a-full-content-digest"),
+      expect={"reject": "scale-descriptor-invalid"})
+other("c3-scale-unit-ref-truncated", 3, "§5.1.2.2",
+      "a truncated digest is not a full digest",
+      "scale", descriptor=scale(10, 6, s6_digest[:12]),
+      expect={"reject": "scale-descriptor-invalid"})
+other("c3-scale-unit-ref-uppercase", 3, "§5.1.2.2",
+      "an uppercase digest is rejected, not normalized",
+      "scale", descriptor=scale(10, 6, s6_digest.upper()),
+      expect={"reject": "scale-descriptor-invalid"})
 
 # --------------------------------------------------------------------------
 # Category 4 — simplexes and largest-remainder renormalization
@@ -251,6 +267,15 @@ other("c4-renorm-zero-sum", 4, "§5.1.2.6", "zero sum must be rejected",
 other("c4-renorm-negative", 4, "§5.1.2.6", "negative weight must be rejected",
       "renormalize", components=[["a", -1], ["b", 2]], total=10,
       expect={"reject": "renormalize-negative-weight"})
+other("c4-renorm-duplicate-coordinate", 4, "§5.1.2.6",
+      "a coordinate identifier bound to two components makes the tie-break "
+      "a function of presentation order, so it is rejected",
+      "renormalize", components=[["a", 1], ["a", 1], ["b", 1]], total=10,
+      expect={"reject": "renormalize-duplicate-coordinate"})
+other("c4-renorm-duplicate-anonymous", 4, "§5.1.2.6",
+      "the same rule for an ordered anonymous vector's integer indices",
+      "renormalize", components=[[0, 1], [0, 1]], total=10,
+      expect={"reject": "renormalize-duplicate-coordinate"})
 other("c4-renorm-anonymous-index", 4, "§5.1.2.6",
       "an ordered anonymous vector uses its cnp-0 integer index as the "
       "coordinate identifier, so 0 wins the tie over 1",
@@ -383,12 +408,30 @@ negative("c6-root-not-object", 6, C6, "an array root cannot carry the identifier
 C7 = "§5.1.3(7)"
 other("c7-rotation", 7, "§5.1.2.4", "addition is exact modulo 2^8",
       "circle", op="add", a=250, b=10, expect={"index": 4})
-other("c7-rotation-wrap", 7, "§5.1.2.4", "a full turn is the identity",
-      "circle", op="add", a=17, b=256, expect={"index": 17})
-other("c7-negative-index", 7, "§5.1.2.4", "index -1 normalizes to 255",
-      "circle", op="normalize", a=-1, expect={"index": 255})
-other("c7-equality", 7, "§5.1.2.4", "equality is equality of indices, so 256 is 0",
-      "circle", op="normalize", a=256, expect={"index": 0})
+other("c7-rotation-wrap", 7, "§5.1.2.4",
+      "the sum of two valid points wraps at the modulus",
+      "circle", op="add", a=255, b=1, expect={"index": 0})
+other("c7-equality-same", 7, "§5.1.2.4",
+      "equality is equality of indices",
+      "circle", op="equal", a=17, b=17, expect={"equal": True})
+other("c7-equality-different", 7, "§5.1.2.4",
+      "two distinct indices are two distinct points",
+      "circle", op="equal", a=17, b=18, expect={"equal": False})
+other("c7-negative-point", 7, "§5.1.2.4",
+      "-1 is not an index in [0, 2^n) and is rejected, not normalized to 255",
+      "circle", op="point", a=-1,
+      expect={"reject": "circle-point-out-of-range"})
+other("c7-out-of-range-point", 7, "§5.1.2.4",
+      "2^n is not a point either: normalizing it would make two distinct "
+      "inputs equal",
+      "circle", op="point", a=256,
+      expect={"reject": "circle-point-out-of-range"})
+other("c7-out-of-range-operand", 7, "§5.1.2.4",
+      "the modulus applies to the sum, never to an out-of-range operand",
+      "circle", op="add", a=250, b=300,
+      expect={"reject": "circle-point-out-of-range"})
+other("c7-point-in-range", 7, "§5.1.2.4", "both bounds of the point interval",
+      "circle", op="point", a=255, expect={"index": 255})
 other("c7-lut", 7, C7,
       "the pinned sine lookup table is content-addressed and bound to the domain",
       "file", path="corpus/circle256-lut.cnp0.json",
@@ -462,6 +505,7 @@ REJECTION_CLASSES = sorted({
     "quantization-not-representable", "quantization-overflow",
     "quantization-nan", "quantization-infinite",
     "renormalize-negative-weight", "renormalize-zero-sum",
+    "renormalize-duplicate-coordinate", "circle-point-out-of-range",
 })
 
 

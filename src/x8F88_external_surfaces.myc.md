@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     17     |
 | compatibility abi |     55     |
 | compost           |     0      |
-| dynamic topology  |    827     |
+| dynamic topology  |    828     |
 | experimental      |     52     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **951**   |
+| **Total**         |  **952**   |
 
 ## Runtime Cache Diagnostics
 
@@ -317,6 +317,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x2900_963881_codex_kimi-rfc0003-audit-disposition.myc.md](../src/x2900_963881_codex_kimi-rfc0003-audit-disposition.myc.md)                                                                                                                             | canonical        | src/x2900_963881_codex_kimi-rfc0003-audit-disposition.myc.md                                                               | keep        |                              |
 | dynamic topology  | [src/x2900_963887_codex_mistral-rfc0003-audit-disposition.myc.md](../src/x2900_963887_codex_mistral-rfc0003-audit-disposition.myc.md)                                                                                                                       | canonical        | src/x2900_963887_codex_mistral-rfc0003-audit-disposition.myc.md                                                            | keep        |                              |
 | dynamic topology  | [src/x2900_963896_codex_kimi-rfc0003-attribution-dialogue-disposition.myc.md](../src/x2900_963896_codex_kimi-rfc0003-attribution-dialogue-disposition.myc.md)                                                                                               | canonical        | src/x2900_963896_codex_kimi-rfc0003-attribution-dialogue-disposition.myc.md                                                | keep        |                              |
+| dynamic topology  | [src/x2900_963905_codex_rfc0003-lean-kernel-pr16-disposition.myc.md](../src/x2900_963905_codex_rfc0003-lean-kernel-pr16-disposition.myc.md)                                                                                                                 | canonical        | src/x2900_963905_codex_rfc0003-lean-kernel-pr16-disposition.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x2900_t20260523164713_kimi_external-critique-the-emperor-has-no-clothes.myc.md](../src/x2900_t20260523164713_kimi_external-critique-the-emperor-has-no-clothes.myc.md)                                                                                 | canonical        | src/x2900_t20260523164713_kimi_external-critique-the-emperor-has-no-clothes.myc.md                                         | keep        |                              |
 | dynamic topology  | [src/x2B00_956450_fable5_the-dictatorship-diff-inversions-and-their-loudness-guarantees.myc.md](../src/x2B00_956450_fable5_the-dictatorship-diff-inversions-and-their-loudness-guarantees.myc.md)                                                           | canonical        | src/x2B00_956450_fable5_the-dictatorship-diff-inversions-and-their-loudness-guarantees.myc.md                              | keep        |                              |
 | dynamic topology  | [src/x2c40_t20260513134500_gemini-3-1-pro_recursive-fallback-mechanism-and-centralized-dispatcher-processing.myc.md](../src/x2c40_t20260513134500_gemini-3-1-pro_recursive-fallback-mechanism-and-centralized-dispatcher-processing.myc.md)                 | canonical        | src/x2c40_t20260513134500_gemini-3-1-pro_recursive-fallback-mechanism-and-centralized-dispatcher-processing.myc.md         | keep        |                              |

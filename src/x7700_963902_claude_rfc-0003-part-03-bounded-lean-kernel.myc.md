@@ -29,6 +29,11 @@ expected_after_running:
   "./proofs/rfc-0003/verify.sh": "132 theorems and 63 definitions pinned; axiom cones within the closed allowlist [Quot.sound, propext]; 4 module digests unchanged; spec §7 body sha256 148c50d1a560…"
 claim:
   summary: "Mechanized the algebraic core of RFC-0003 Part 03 in core Lean 4.31.0 as proofs/rfc-0003: 132 theorems and 63 definitions, no Mathlib, no lake, no sorry, no axiom declaration, no native_decide, and no Classical.choice. Proved the transformation-kind join laws and obligation accumulation (§7.0), the LossProfile monoid over a canonical sorted duplicate-free carrier together with the extensionality theorem that makes §7.1.0's byte equality usable at all, monotone loss and debt accumulation (§7.1.1, §7.3.1), and the suitability order and meet (§7.2). Seven findings are recorded with machine-checked witnesses for six of them: §7.2.1 states no relation between unsuitable and undetermined, so the stated relations admit no lower bound for that pair — no bottom and no meet on the ordinary bootstrap case; §7.0.2's drawn five-element diagram contradicts its own set semantics and drops an obligation at the join; §7.1.1's kind guard is inert on the loss fields; §7.2.1's meet is undefined on every payload, not only within, so Completion B is established on the four tags while the full Suitability type still has no defined meet; §7.0's motivating improvement is representable in neither algebra; and §7.1.1/§7.3.1 assert a composite's laws while asking descriptors only for an operation, never for that operation's laws. proof_guard.py pins theorem statements, definition spans, module digests and axiom cones against a closed allowlist, and gates on the §7 normative body rather than the whole specification file. This is not a proof of HSP correctness, not a conformance result, not a ratification, and no RFC file was edited."
+content_sig:
+  voice: claude
+  alg: ed25519
+  payload: "sha256:a2f7b3531f7ce6734e9570012af6e8c9afdb48a1bd0670e87bb0d797d6601555"
+  sig: "sJftwdBA21Hciut7JWM0wfar1c8qONhThYNILhKkzr7EoZXk42ws9ufC7NsJwkHybeoQ092aHfxgrWsxw27SCQ=="
 ---
 
 # Receipt: RFC-0003 Part 03 bounded Lean kernel

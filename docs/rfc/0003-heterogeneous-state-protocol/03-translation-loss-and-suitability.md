@@ -179,7 +179,8 @@ type TranslationResult<B> = {
 
 ```ts
 type LossProfile = {
-  preserved: InvariantAssessment[];
+  steps: TranslationStepRef[];
+  preserved: PreservationSet;
   distorted: InvariantDistortion[];
   lost: InformationLoss[];
   introducedAssumptions: AssumptionRecord[];
@@ -190,6 +191,96 @@ type LossProfile = {
 ```
 
 The protocol MUST NOT represent translation quality with a single scalar.
+
+#### 7.1.0 Canonical carrier and equality
+
+The algebra below requires an equality relation. It is not enough to name array
+members and leave their records, ordering, and duplicate handling to prose.
+Every `TranslationStepRef` is the full content address of a receipt that pins
+the transformation kind, translator, source and target domain, and input and
+output state references. A withheld state MAY use the commitment/availability
+layer of §14.1; it does not make the step anonymous.
+
+The loss records have the following minimum canonical shapes:
+
+```ts
+type LossSubject =
+  | { kind: "invariant"; ref: InvariantRef }
+  | { kind: "claim"; ref: ClaimRef }
+  | { kind: "descriptor"; ref: ContentAddress };
+
+type InvariantAssessment = {
+  invariant: InvariantRef;
+  assessedAt: TranslationStepRef[];
+  evidence: EvidenceRef[];
+};
+
+type PreservationSet =
+  | { kind: "all" } // algebraic top; legal only for emptyLoss
+  | { kind: "finite"; items: InvariantAssessment[] };
+
+type InvariantDistortion = {
+  invariant: InvariantRef;
+  measure: ContentAddress;
+  compositionRule: ContentAddress;
+  value: ContentAddress;
+  assessedAt: TranslationStepRef[];
+  evidence: EvidenceRef[];
+};
+
+type InformationLoss = {
+  subject: LossSubject;
+  observedAt: TranslationStepRef[];
+  evidence: EvidenceRef[];
+};
+
+type AssumptionIntroduction = {
+  at: TranslationStepRef;
+  by: KeyRef;
+  evidence: EvidenceRef[];
+};
+
+type AssumptionRecord = {
+  assumption: ClaimRef;
+  introductions: AssumptionIntroduction[];
+};
+
+type AmbiguityRecord = {
+  question: ContentAddress;
+  alternatives: ClaimRef[];
+  observedAt: TranslationStepRef[];
+  evidence: EvidenceRef[];
+};
+```
+
+All references in these records MUST be full digests where §5.1 makes them
+load-bearing. Each record, including a nested `AssumptionIntroduction`, MUST
+itself be encoded under the selected canonical encoding and identified by its
+full digest. `LossProfile.steps` is the one ordered pipeline sequence and MUST
+NOT be sorted. Every other array in these carriers represents a set — including
+`assessedAt`, `observedAt`, `introductions`, `evidence`, `alternatives`,
+`preserved.items`, and the other set-valued fields of `LossProfile` — and MUST
+be sorted by the canonical bytes of the member's full digest. Duplicate digests
+MUST be rejected rather than silently collapsed. Pipeline order is recovered by
+locating an attribution ref in `LossProfile.steps`, not by maintaining a second
+potentially contradictory order inside an atom.
+
+Field composition operates on semantic keys, not host-language object identity:
+`preserved` and `distorted` key on `(invariant, measure where present)`, `lost`
+keys on `subject`, assumptions key on `assumption`, ambiguities key on
+`(question, alternatives)`, and rejected claims key on their full digest. When
+composition merges two records under one key, it MUST flatten their pipeline
+sequence, union every set-valued attribution and evidence array, and re-encode
+one canonical record; it MUST NOT retain a bracket-shaped tree. The `steps`
+field of the profile is the ordered concatenation of step references.
+
+Two `LossProfile` values are equal exactly when their canonical bytes are equal.
+This makes associativity and identity executable properties rather than an
+appeal to whatever equality a host language gives arrays. A profile whose
+records are free text, lack canonical identifiers, or depend on insertion order
+is non-conforming and cannot satisfy Tranche C2. `translationDebt` follows the
+canonical carrier and equality rules of §7.3.1; an undefined debt value would
+otherwise reopen the same hole inside the profile.
 
 #### 7.1.1 Loss composes as a monoid, and not a commutative one
 
@@ -206,7 +297,8 @@ declare function composeLoss(
   then: LossProfile,
 ): LossProfile;
 
-declare const emptyLoss: LossProfile; // identity: the loss of an identity translation
+declare const emptyLoss: LossProfile; // steps=[], preserved={kind:"all"},
+// every other set/debt field empty
 ```
 
 with the following required properties:
@@ -221,8 +313,13 @@ with the following required properties:
 
 Field-level composition rules:
 
-- `preserved` — intersection. An invariant is preserved by the pipeline only if
-  preserved at every step. Preservation MUST NOT be inferred from the endpoints.
+- `steps` — ordered concatenation. This is the pipeline order and is the
+  load-bearing non-commutative component; sorting it would falsify provenance.
+- `preserved` — intersection, with `{ kind: "all" }` as the identity element. An
+  invariant is preserved by the pipeline only if preserved at every step.
+  Preservation MUST NOT be inferred from the endpoints. The `all` sentinel is
+  legal only in `emptyLoss`; a non-empty observed translation MUST carry a
+  finite, evidenced set rather than claim universal preservation.
 - `distorted` — accumulation, with per-invariant distortion combined by the
   distortion measure's own declared composition rule, which the invariant
   definition MUST supply.
@@ -278,9 +375,10 @@ This is the same gap §6.2 addresses for state domains, and it gets the same
 answer: the laws are claims and MUST carry evidence. For these types the
 evidence is property-based tests over generated profiles — associativity,
 identity, the non-commutativity of loss, the commutativity of debt, and the
-monotonicity above. Treating the trait as the guarantee would be §19.7's failure
-mode relocated from mathematical vocabulary to type signatures, where it is
-harder to see.
+monotonicity above. Those tests MUST compare canonical bytes, exercise alternate
+bracketings, and permute every set-valued input array. Treating the trait as the
+guarantee would be §19.7's failure mode relocated from mathematical vocabulary
+to type signatures, where it is harder to see.
 
 The trait is still worth having. It concentrates composition in one place so
 there is a single implementation for the property tests to target, rather than
@@ -359,6 +457,14 @@ Therefore:
 4. Crossing an irreversible boundary on an `undetermined` suitability MUST fail
    closed.
 
+**Bootstrap consequence.** Before a deployment has action-context fixtures or a
+genuinely third-party attester, `undetermined` is the expected result for every
+action-gating suitability, including `forIrreversibleAction`. This is not a
+degraded mode to bypass: irreversible actions remain blocked. The bootstrap path
+is to build and content-address fixtures with a declared scoring rule, not to
+rename a self-attestation or route it through a second component controlled by
+the same beneficiary.
+
 This is deliberately expensive. Its alternative is a translator that grades its
 own homework at precisely the boundary where being wrong is unrecoverable.
 
@@ -382,6 +488,40 @@ Debt that cannot be added, compared, or discharged is a word, not a mechanism.
 §10.1's admission inequality has an `expected translation debt` term with
 nothing behind it until this is fixed.
 
+The carrier is canonical rather than implementation-defined:
+
+```ts
+type DebtTerm = {
+  dimension: ContentAddress;
+  quantity: ContentAddress;
+  incurredAt: TranslationStepRef[];
+  grounds: EvidenceRef[];
+};
+
+type TranslationDebt = {
+  terms: DebtTerm[];
+};
+
+type DebtDischarge = {
+  prior: ContentAddress;
+  resulting: ContentAddress;
+  operation: "retranslation" | "claim-withdrawal" | "warranted-write-off";
+  authority: KeyRef;
+  evidence: EvidenceRef[];
+  receipt: ReceiptRef;
+};
+```
+
+Each `dimension` descriptor MUST pin the exact quantity encoding, unit, zero,
+addition rule, and partial-order rule. Terms key on `dimension`; addition
+applies that pinned rule, unions `incurredAt` and `grounds`, and emits one
+canonical term per dimension. `terms`, `incurredAt`, `grounds`, and discharge
+evidence are canonical sets sorted by member full digest with duplicates
+rejected. Debt and discharge records use the selected canonical encoding and
+full content addresses. Two debt values are equal exactly when their canonical
+bytes are equal. A prose quantity, host-native number, or unpinned
+addition/order rule is non-conforming.
+
 `TranslationDebt` MUST form a **commutative monoid** under accumulation:
 
 ```ts
@@ -389,7 +529,7 @@ declare function addDebt(
   a: TranslationDebt,
   b: TranslationDebt,
 ): TranslationDebt;
-declare const noDebt: TranslationDebt; // identity
+declare const noDebt: TranslationDebt; // { terms: [] }, the identity
 ```
 
 - associative and commutative — debt from two independent lossy mappings does
@@ -407,7 +547,8 @@ Debt MUST additionally declare:
    retranslation under a mapping with strictly better measured loss; withdrawal
    of the downstream claims that depended on the assumption; or an explicit,
    warranted, receipted write-off. Debt MUST NOT be discharged by the passage of
-   time alone.
+   time alone. Every discharge MUST produce the `DebtDischarge` transition above
+   and MUST NOT rewrite or delete the prior debt value.
 3. **A decay function, if any, that is declared and content-addressed.** Silent
    decay is how a system forgets what it owes. If an implementation declares no
    decay, debt is permanent until discharged, which is the safe default.

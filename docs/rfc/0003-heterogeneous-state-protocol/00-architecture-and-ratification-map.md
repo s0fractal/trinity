@@ -349,6 +349,21 @@ Two substrates, disjoint ontologies, one consequential action.
 finality. `liquid` holds a metabolic ontology: pressure, decay, resource
 availability. Neither models the other's concepts, and neither is asked to.
 
+**Evidence boundary.** Running both substrates from this repository can prove
+that the schemas express the boundary, the transcript replays, and the two
+ontology adapters can produce both agreement and divergence. It cannot prove
+independent implementation, authority, custody, or resistance to operator
+collusion. Separate folders, process names, sessions, or keys are not separate
+parties by themselves.
+
+To count as independent Level 4 interoperability evidence, the two ontology
+interpreters MUST be maintained independently and MUST NOT share translation,
+mapping, handshake-state, or policy-interpretation code. They MAY share the
+content-pinned execution floor and canonical primitives being tested as the
+declared protocol floor. Their authority and key-custody relation MUST be
+disclosed; shared or unknown custody cannot substantiate a multi-principal
+claim.
+
 **The action.** `liquid` reports that a resource is exhausted. `myc` must decide
 whether that constitutes grounds to withdraw a proposal that has already
 collected witnesses — an action with external effect, therefore an irreversible
@@ -413,6 +428,12 @@ agreeing region is non-empty and whose divergent region is non-empty, then
 behavioral grounding either proves nothing or proves too much, and §13.4 needs
 rework before implementation. If step 9 cannot be performed from receipts alone,
 the ledger requirements of §14 are insufficient.
+
+An in-repository demo passing these criteria falsifies defects in expression and
+replay only. A claim of independent federation additionally fails if the two
+ontology interpreters share code outside the allowed floor, if one operator can
+author both sides without disclosure, or if divergence is impossible because
+both sides call the same interpretation function.
 
 This demo SHOULD be built before any claim that the federated protocol works,
 and its absence SHOULD block Levels 4 and 5 from being asserted.
@@ -491,24 +512,24 @@ substrate would own it, and the first test that would fail if it were wrong.
 Rows are ordered by dependency: nothing below is startable before the rows above
 it land.
 
-| Primitive             | Existing source                                                   | Extend / create | Owner substrate                               | First executable test                                                                                                                                      |
-| --------------------- | ----------------------------------------------------------------- | --------------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ContentAddress`      | `contracts/CANONICAL_HASH.v0.1.md`, `fixtures/canon-vectors.json` | extend          | trinity                                       | full-digest vectors alongside the existing 12-hex handles (§5.1 rule 4)                                                                                    |
-| `CanonicalEncoding`   | `warrant` SPEC §4 + `examples/canon-vectors.json`                 | adopt + extend  | federation contract; implementers independent | Warrant vectors pass unchanged; CNP-0 adds profile IDs, ratio/fixed, constants, quantization, two encoders, and a rejecting third verifier (§5.1.2–§5.1.3) |
-| `StateDomain`         | none                                                              | create          | omega                                         | a domain that declares `Metric` without implementing it is rejected at registration (§6.3.1)                                                               |
-| `AlgebraicLaws`       | none                                                              | create          | omega                                         | a law with `status: falsified` blocks composition; a `tested` law with no generator is rejected (§6.2)                                                     |
-| `InvariantDefinition` | scattered invariant checks across substrates                      | create          | omega                                         | a `transition`-scope invariant evaluated from one state fails rather than reporting held (§6.1.1)                                                          |
-| `InvariantEvaluation` | none                                                              | create          | omega                                         | same predicate + same snapshots ⇒ same report on two substrates; a stale snapshot yields `not assessed` (§6.1.2)                                           |
-| `TypedState`          | substrate-local state shapes                                      | create          | trinity                                       | a `minimal`-profile state is refused at a boundary requiring `full`, not backfilled (§5.2)                                                                 |
-| `CompositeState`      | none                                                              | create          | liquid                                        | a composite with an undeclared coupling fails validation while every component validates (§6.5.2)                                                          |
-| `LossProfile`         | none                                                              | create          | trinity                                       | property tests: associativity, identity, non-commutativity, monotonicity for `translation` only (§7.1.1)                                                   |
-| `TransformKind`       | none                                                              | create          | trinity                                       | an undeclared kind is treated as `reconstruction`; a reconstructed value is refused at an irreversible boundary (§7.0.3)                                   |
-| `SuitabilityProfile`  | none                                                              | create          | trinity                                       | a self-reported `forIrreversibleAction` is recorded as `undetermined` regardless of the claim (§7.2.2)                                                     |
-| `ConflictOccurrence`  | `src/x2B88_decisions.myc.md` chord ledger                         | extend          | myc, liquid                                   | two occurrences sharing a fingerprint are not merged without a receipted lineage claim (§19.16)                                                            |
-| `AdmissionStage`      | `myc` proposal lifecycle, `contracts/GOVERNANCE_FLOW.v0.md`       | extend          | myc                                           | eligibility replays bit-for-bit from the receipt; authorization is attributed and not recomputed (§10.1.3)                                                 |
-| `ExecutionFloor`      | `ski@v1` / Σ-GLYPH Book I v0.5                                    | adopt (pinned)  | omega                                         | the same fixture yields identical output bytes under two substrates' evaluators (§13.4.1.1)                                                                |
-| `HandshakeMessage`    | none                                                              | create          | trinity                                       | a message from the party whose turn it is not is rejected, not merged (§13.4.3.1)                                                                          |
-| `EvidenceBridge`      | `warrant` decision records                                        | extend          | myc, trinity                                  | a bridge presented as a translation — carrying a loss profile — is rejected (§7.5)                                                                         |
+| Primitive             | Existing source                                                   | Extend / create | Owner substrate                               | First executable test                                                                                                                                                                 |
+| --------------------- | ----------------------------------------------------------------- | --------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ContentAddress`      | `contracts/CANONICAL_HASH.v0.1.md`, `fixtures/canon-vectors.json` | extend          | trinity                                       | full-digest vectors alongside the existing 12-hex handles (§5.1 rule 4)                                                                                                               |
+| `CanonicalEncoding`   | `warrant` SPEC §4 + `examples/canon-vectors.json`                 | adopt + extend  | federation contract; implementers independent | Warrant vectors pass unchanged; CNP-0 adds profile IDs, ratio/fixed, constants, quantization, two encoders, and a rejecting third verifier (§5.1.2–§5.1.3)                            |
+| `StateDomain`         | none                                                              | create          | omega                                         | a domain that declares `Metric` without implementing it is rejected at registration (§6.3.1)                                                                                          |
+| `AlgebraicLaws`       | none                                                              | create          | omega                                         | a law with `status: falsified` blocks composition; a `tested` law with no generator is rejected (§6.2)                                                                                |
+| `InvariantDefinition` | scattered invariant checks across substrates                      | create          | omega                                         | a `transition`-scope invariant evaluated from one state fails rather than reporting held (§6.1.1)                                                                                     |
+| `InvariantEvaluation` | none                                                              | create          | omega                                         | same predicate + same snapshots ⇒ same report on two substrates; a stale snapshot yields `not assessed` (§6.1.2)                                                                      |
+| `TypedState`          | substrate-local state shapes                                      | create          | trinity                                       | a `minimal`-profile state is refused at a boundary requiring `full`, not backfilled (§5.2)                                                                                            |
+| `CompositeState`      | none                                                              | create          | liquid                                        | a composite with an undeclared coupling fails validation while every component validates (§6.5.2)                                                                                     |
+| `LossProfile`         | none                                                              | create          | trinity                                       | canonical-byte equality survives alternate bracketings and set-array permutations; associativity, identity, non-commutativity, and translation-only monotonicity hold (§7.1.0–§7.1.1) |
+| `TransformKind`       | none                                                              | create          | trinity                                       | an undeclared kind is treated as `reconstruction`; a reconstructed value is refused at an irreversible boundary (§7.0.3)                                                              |
+| `SuitabilityProfile`  | none                                                              | create          | trinity                                       | a self-reported `forIrreversibleAction` is recorded as `undetermined` regardless of the claim (§7.2.2)                                                                                |
+| `ConflictOccurrence`  | `src/x2B88_decisions.myc.md` chord ledger                         | extend          | myc, liquid                                   | two occurrences sharing a fingerprint are not merged without a receipted lineage claim (§19.16)                                                                                       |
+| `AdmissionStage`      | `myc` proposal lifecycle, `contracts/GOVERNANCE_FLOW.v0.md`       | extend          | myc                                           | eligibility replays bit-for-bit from the receipt; authorization is attributed and not recomputed (§10.1.3)                                                                            |
+| `ExecutionFloor`      | `ski@v1` / Σ-GLYPH Book I v0.5                                    | adopt (pinned)  | omega                                         | the same fixture yields identical output bytes under two substrates' evaluators (§13.4.1.1)                                                                                           |
+| `HandshakeMessage`    | none                                                              | create          | trinity                                       | a message from the party whose turn it is not is rejected, not merged (§13.4.3.1)                                                                                                     |
+| `EvidenceBridge`      | `warrant` decision records                                        | extend          | myc, trinity                                  | a bridge presented as a translation — carrying a loss profile — is rejected (§7.5)                                                                                                    |
 
 Notes on the table:
 
@@ -644,10 +665,14 @@ Naming candidates is not ratifying them. Specifically:
 
 1. **The two stacks have separate key identities.** The `claude` voice key in
    `src/x2F38_voice_pubkeys.json` and the `claude-fable-5` key in the dyad's
-   trust configuration are different Ed25519 keys. Whether the federation treats
-   these as one actor with two keys, two actors, or an actor requiring a
-   key-state rotation warrant to unify, is undecided and is an instance of
-   §20.17 rather than an answer to it.
+   trust configuration are different Ed25519 keys. They MUST NOT both count
+   toward one quorum while their principal equivalence and custody relation are
+   unresolved. A principal-binding record under §22.1 may bind them as one
+   actor, rotate one into the other, or support a claim of distinct principals;
+   a declaration alone cannot establish independent custody. This is a
+   pre-ratification identity gate, distinct from §20.17's still-open question of
+   what an already-active compatibility contract does when its party later
+   forks.
 2. **Draft selection is not adoption authority.** Part 01 chooses CNP-0-JCS as
    the text's candidate. That does not make Warrant the owner of federation
    encoding, import its governance, or bind substrates that have not ratified
@@ -887,6 +912,29 @@ Rules:
 5. A lineage claim MAY be superseded by a later one with better grounds. The
    supersession MUST cite the claim it replaces, and neither is deleted.
 
+### 19.17 Single-operator collusion and correlated custody
+
+Signatures prove control of keys; they do not prove that the keys have distinct
+custodians, that policies have independent authority, or that two protocol
+parties can resist one operator instructing both. An operator controlling every
+side can manufacture an apparently multi-party transcript without breaking any
+signature primitive. This protocol can require disclosure and refuse an
+independence claim; it cannot cryptographically prevent that operator from
+colluding with itself.
+
+A deployment with shared or unknown custody MAY exercise schemas, deterministic
+execution, transcript ordering, and replay. It MUST NOT cite separate folders,
+voices, sessions, processes, or keys as evidence of distinct principals. It MUST
+mark multi-principal quorum, third-party attestation, and the
+`distinct authority` basis of §8.2.3 as unestablished unless it carries evidence
+of distinct authority and custody. A self-controlled component is not a third
+party merely because it has another key.
+
+This is a threat-model boundary, not a waiver. Claims that rely only on
+`distinct substrate` or `distinct derivation` remain testable under §8.2.3, but
+they MUST be named narrowly and MUST NOT be upgraded into authority or quorum
+independence. Ratification applies the stricter vote-counting rule of §22.1.
+
 ---
 
 ## 20. Open problems
@@ -931,9 +979,9 @@ features:
 17. What happens to a scoped compatibility contract when a party forks or amends
     its identity mid-contract — does the contract bind the predecessor, the
     successor, both, or lapse (§12, §13.2)? `warrant` SPEC §5.1 answers the
-    narrower key-rotation case; the contract-binding case is still open, and the
-    federation's two stacks currently hold separate keys for the same voice
-    (§17.1.2).
+    narrower key-rotation case; the contract-binding case is still open.
+    Pre-ratification double-counting of unresolved keys is not part of this open
+    problem; §22.1 already fails it closed.
 18. How should a proposal bond be sized so that it deters verification-budget
     exhaustion without suppressing speculative but well-formed proposals
     (§11.1.1)?
@@ -967,7 +1015,22 @@ counterparty's invariant set, so a later amendment cannot silently rewrite what
 was agreed; what happens to the contract when that party forks is open problem
 §20.17.
 
-### Level 0 — Declared domain
+### Declared intent — pre-conformance
+
+A substrate MAY publish a domain and ontology declaration before it has the
+encoding, evidence, typed deltas, and invariant machinery below. That is useful
+design material, but it is **not a conformance level** and MUST NOT be
+advertised as HSP Level 0. Its expected boundary behavior is refusal wherever a
+missing L0 artifact is required.
+
+### Level 0 — Conformant core
+
+Level 0 is deliberately substantial. It is the smallest interoperable core, not
+a low-cost declaration badge: implementing it includes canonical identity,
+validation, evidence-bearing laws, typed deltas, invariant scope/cost, and
+stable key identity. Teams should budget it as an implementation project; the
+pre-conformance state above exists so incomplete work can be shown honestly
+without weakening the base level.
 
 - states declare domain and ontology;
 - validation and canonical serialization exist;
@@ -1028,7 +1091,78 @@ others. Nothing outside a ratified tranche may be cited as agreed.
 A flat list of fifteen decisions was tried first and could not be acted on; the
 reasoning is in [Part 07: Revision History](07-revision-history.md) §4.
 
-### Section-to-document map
+### 22.1 Ratification records and principal counting
+
+Ratification is a content-addressed event over exact bytes, not a label applied
+to a moving branch. A conforming record has at least this shape:
+
+```ts
+type PrincipalBinding = {
+  principal: ContentAddress; // identity descriptor, not a display name
+  keys: KeyRef[];
+  custody: "independent" | "shared" | "unknown";
+  evidence: EvidenceRef[];
+};
+
+type TrancheRatification = {
+  schema: "hsp-ratification@v0";
+  rfc: "RFC-0003";
+  tranche: string;
+  normativeParts: { part: string; digest: ContentAddress }[];
+  dependencyRatifications: ContentAddress[];
+  ratificationRule: ContentAddress;
+  principalBindings: ContentAddress[];
+  votes: ReceiptRef[];
+  supersedes: ContentAddress | null;
+};
+```
+
+`normativeParts` MUST pin the exact canonical bytes whose requirements are being
+accepted, including every part containing the tranche and its dependencies. The
+rule, bindings, votes, and dependency records MUST themselves be
+content-addressed. A repository tag, URL, branch, filename, or mutable version
+label is not a ratification target.
+
+Every counted vote MUST verify under a key in a cited `PrincipalBinding`. Two
+keys MUST NOT count as two principals merely because their public bytes differ.
+Keys declared as the same actor, sharing custody, or having unresolved actor or
+custody equivalence count at most once in one quorum. A claim of distinct
+principals needs positive evidence of distinct authority and custody; a warrant
+that only asserts “two actors” does not manufacture independence. In particular,
+the unresolved `claude` and `claude-fable-5` keys of §17.1.2 cannot both advance
+one RFC-0003 quorum.
+
+A tranche is ratified only when its record verifies, its pinned dependency
+ratifications are already valid, its declared quorum is satisfied under
+principal—not key—counting, and every executable gate named by the tranche is
+green against those exact bytes. Passing tests without this record is evidence,
+not ratification. `GOV-ANCHORS` is a standing candidate for the ratification
+rule; using it requires a content pin and does not import it by citation alone.
+
+### 22.2 Amendment and supersession
+
+Ratified normative bytes are immutable. Any normative edit, including one
+described as an erratum, produces a new candidate and does not inherit the old
+status silently. To amend a ratified tranche:
+
+1. publish the new normative-part digests and a machine-readable change set;
+2. cite the prior ratification record in `supersedes` and retain it;
+3. rerun the tranche's executable gates and every dependency gate affected by
+   the changed bytes;
+4. satisfy the prior record's ratification rule. The new record MAY add
+   constraints; it MUST NOT remove an old requirement unless the old rule itself
+   authorizes that change;
+5. issue a new ratification record whose votes bind the new digests and the
+   superseded record.
+
+Unchanged tranches retain their status only when their own pinned normative
+bytes and dependency-ratification digests are unchanged. If either moves, the
+consumer MUST treat the tranche as pending until a superseding record says how
+the dependency change was accepted. Part 07 records editorial history but has no
+authority to amend a ratified part by itself. Silent in-place change and
+retroactive vote reuse are non-conforming.
+
+### 22.3 Section-to-document map
 
 Every section number in this set is global and stable (see the header). This is
 where a reference resolves:
@@ -1056,6 +1190,9 @@ where a reference resolves:
   raw input and non-canonical ratios. The text selects the design; this tranche
   is not satisfied until interoperability and adoption are evidenced.
 - **A4.** Require stable, verifiable key identity at Level 0.
+- **A5.** Ratification counts principals rather than public keys: bind keys to
+  content-addressed principal and custody records, and fail unresolved or shared
+  custody closed against double-counting (§22.1).
 
 Tranche A is a prerequisite for every other tranche. Until A2 and A3 land,
 §5.1's guarantees do not hold across substrate boundaries and nothing that
@@ -1083,8 +1220,9 @@ reduces design uncertainty; it does not weaken this gate.
 ### Tranche C — Translation and loss (depends on A, B)
 
 - **C1.** Make structured translation loss mandatory; no scalar quality.
-- **C2.** Adopt the loss monoid, suitability meet, and debt monoid of §7.1.1,
-  §7.2.1, and §7.3.1.
+- **C2.** Adopt the canonically encoded loss carrier and equality relation, loss
+  monoid, suitability meet, and debt monoid of §7.1.0–§7.1.1, §7.2.1, and
+  §7.3.1. Undefined or prose-only loss atoms cannot satisfy this decision.
 - **C3.** Replace scalar translation confidence with contextual suitability
   profiles, and forbid self-reported action-context suitability.
 - **C4.** Make composed translators first-class, with round-trip anchors
@@ -1132,7 +1270,8 @@ reduces design uncertainty; it does not weaken this gate.
   candidate (§17.1.1); adoption MUST pin it by version and content.
 - **G5.** Select a handshake ordering discipline — turn-taking, author-local
   chains with explicit merge, or a sequencer — since hash chaining alone does
-  not give a total order (§13.4.3.1).
+  not give a total order. A sequencer must be a named keyed party and receipt
+  every ordering decision (§13.4.3.1).
 - **G6.** Require a mapping domain predicate with coverage evidence and
   counterexample search, rather than crediting a fixture list (§13.4.3.2).
 
@@ -1157,7 +1296,10 @@ reduces design uncertainty; it does not weaken this gate.
 - **I1.** Implement the autonomy-versus-irreversibility demo (§16.1–16.5) before
   broader claims. Exercises D, E, F.
 - **I2.** Implement the federated boundary-crossing demo (§16.7) before any
-  claim that Levels 4–5 work. Exercises A, C, G.
+  claim that Levels 4–5 work. An in-repository run proves expression and replay;
+  independent interoperability additionally requires independently maintained
+  ontology interpreters and disclosed authority/custody boundaries. Exercises A,
+  C, G.
 
 ### On the split
 
@@ -1174,9 +1316,12 @@ What matters going forward rather than backward:
 2. **Part 01 still blocks conformance.** Its draft encoding is selected; the
    missing contract, corpus, independent implementations, rejection path, and
    adoption keep every later part non-conforming across substrate boundaries.
-3. **The next artifact should be code, not a fifth revision.** §17.2 gives the
-   first implementation slice as a table whose last column is a test that fails
-   today. Marginal value has moved from the text to the demos of §16.
+3. **The next normative artifact after this bounded audit erratum MUST be code,
+   not another prose-only revision.** §17.2 gives the first implementation slice
+   as a table whose last column is a test that fails today. The first row — full
+   digest vectors beside 12-hex handles — remains the smallest executable
+   blocker. Marginal value has moved from text to those tests and the demos of
+   §16.
 
 ---
 

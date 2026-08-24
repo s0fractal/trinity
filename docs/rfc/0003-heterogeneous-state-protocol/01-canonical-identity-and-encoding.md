@@ -353,6 +353,39 @@ boundaries, overflow, `NaN`, infinities, and signed zero MUST appear in the
 negative or positive fixtures as appropriate. Quantization is a declared lossy
 transformation, not invisible serialization cleanup.
 
+##### 5.1.2.6 Exact simplex renormalization
+
+An integer computation over a fixed-point probability simplex can produce
+non-negative weights whose sum is not `radix^places`, even though no float was
+used. Choosing which component receives the residual unit is part of the state
+transition, not an encoder convenience. An implementation MUST either reject
+such a vector or use a mode named by the domain or transformation descriptor.
+The v0 canonical mode is `renormalize_largest_remainder@v0`.
+
+For canonical non-negative integer weights `w_i`, let `T = radix^places` and
+`S = Σ w_i`. If any weight is negative, `S == 0`, or exact intermediate
+arithmetic is unavailable, the transform MUST reject. If `S == T`, it returns
+the weights unchanged. Otherwise it computes, using exact integer arithmetic:
+
+```text
+q_i = floor(w_i * T / S)
+r_i = (w_i * T) mod S
+R   = T - Σ q_i
+```
+
+It then adds one to exactly `R` components, ordered first by descending `r_i`
+and then by ascending canonical bytes of the component's coordinate identifier.
+A simplex domain MUST bind one unique canonical coordinate identifier to every
+component; an ordered anonymous vector uses its CNP-0 integer index. Input array
+position is not a tie-breaker unless that position is the bound coordinate
+identifier. The output MUST validate `Σ q_i == T` exactly.
+
+The descriptor MUST record the mode, source vector reference, target scale, and
+whether renormalization occurred. Renormalization is a declared quantization
+transformation and MUST appear in the loss profile; it MUST NOT be reported as
+an identity serialization. A different allocation method requires a different
+mode identifier and therefore different transformation references.
+
 #### 5.1.3 Parity is proven, not assumed
 
 Every substrate implementing the encoding MUST verify against a shared fixture
@@ -364,14 +397,17 @@ The CNP-0 corpus MUST pin canonical bytes and full SHA-256 digests for:
    denominator, overflow, floats, exponent notation, and duplicate map names;
 3. the same fixed integer under two scale descriptors producing different domain
    references;
-4. exact ratio and fixed-point simplexes, including invalid sums;
+4. exact ratio and fixed-point simplexes, including invalid sums; largest-
+   remainder renormalization with a residual, a tie resolved by canonical
+   coordinate identifier, permutation of input presentation, zero-sum rejection,
+   and negative-weight rejection;
 5. profile-identifier mutation and one-byte pinned-constant mutation changing
    the full digest;
 6. byte strings, normalization-distinct strings, key-order permutations, and
    nested empty containers;
 7. `circle256` index equality and rotation, with LUT mutation if a LUT is
    implemented;
-8. every quantization boundary named in §5.1.2.5.
+8. every quantization boundary named in §5.1.2.5–§5.1.2.6.
 
 Cross-substrate parity that has not been measured is a hope, and this document
 does not accept hopes as evidence anywhere else.

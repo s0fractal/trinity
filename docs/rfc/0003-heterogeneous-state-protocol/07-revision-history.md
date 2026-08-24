@@ -290,8 +290,10 @@ rule was reversed outright (the Unicode normalization entry above).
 
 The audit also surfaced something no review would have: the trinity `claude`
 voice key and the dyad's `claude-fable-5` key are different Ed25519 keys with no
-rotation warrant linking them. Two stacks, one voice name, two principals. That
-is an instance of open problem §20.17, not an answer to it.
+rotation warrant linking them. Two stacks and one voice name establish two key
+identities, **not two principals**. Their actor and custody relation is
+unresolved; §22.1 now fails that ambiguity closed for quorum counting. The later
+fork behavior of an active contract remains open problem §20.17.
 
 ---
 
@@ -370,3 +372,59 @@ selected; interop and ratification pending**. It deliberately does not say
 “blocker lifted.” Warrant's existing JCS vectors are prior evidence for one
 layer; they are not CNP-0 vectors, and no federation adoption follows from a
 draft edit.
+
+---
+
+## 7. Claude audit: carriers, independence, and change control
+
+On 2026-08-24, s0fractal relayed Claude's seven-part audit. The
+[source relay](../../../proposals/rfc-0003/claude-audit-2026-08-24.md) and
+Codex's
+[adjudication chord](../../../src/x2900_963873_codex_claude-rfc0003-audit-disposition.myc.md)
+are preserved outside the specification artifact. The relay has no attached
+Claude signature, so the chord attests the editorial disposition, not source
+authorship or ratification authority.
+
+Nine proposals were adjudicated rather than copied wholesale:
+
+1. **P1 accepted and strengthened.** Claude correctly found that the loss monoid
+   had no executable equality because five element records and the debt carrier
+   were undefined. §7.1.0 and §7.3.1 now define their minimum canonical
+   carriers, full-digest identity, set ordering, duplicate rejection, semantic
+   merge keys, and ordered step provenance. Adding `steps` also supplies the
+   non-commutative component the prior field rules implied but did not actually
+   guarantee.
+2. **P2 accepted with a narrower claim.** §19.17 now says signatures establish
+   key control, not distinct custody or principals. A single-operator deployment
+   can test mechanics but cannot claim multi-principal quorum, distinct
+   authority, or third-party attestation. Distinct substrate or derivation
+   evidence remains possible and must be named narrowly.
+3. **P3 accepted as an evidence-grade split.** The in-repository `myc`/`liquid`
+   demo can falsify schema and replay defects. It cannot prove independent
+   federation. §16.7 and I2 now state the additional code-sharing, maintenance,
+   authority, and custody conditions for that claim.
+4. **P4 accepted.** §7.2.2 now states the bootstrap consequence explicitly:
+   absent fixtures or a genuine third party, action-gating suitability is
+   expected to remain `undetermined` and irreversible actions remain blocked.
+5. **P5 accepted with a complete tie rule.** §5.1.2.6 selects
+   `renormalize_largest_remainder@v0`, defines exact integer allocation and
+   canonical coordinate-identifier tie-breaking, and adds adversarial fixtures.
+6. **P6 accepted without renumbering levels.** A declared-intent state now sits
+   outside conformance, while Level 0 is renamed “Conformant core” and described
+   honestly as an implementation project.
+7. **P7 accepted but its proposed escape was rejected.** The `claude` and
+   `claude-fable-5` keys cannot count twice while equivalence/custody is
+   unresolved. Merely warranting that they are “two actors” cannot create
+   independent principals. §22.1 introduces principal bindings and principal—not
+   key—quorum counting; A5 makes that a Tranche A gate.
+8. **P8 accepted without silently adopting Warrant.** A sequencer is now a named
+   keyed party whose ordering decisions carry signed, chained receipts. Warrant
+   may implement that profile if adopted; citation alone does not adopt it.
+9. **P9 accepted.** §22.1 pins ratification to exact normative bytes and
+   dependencies. §22.2 makes amendment append-only: new bytes, rerun gates, a
+   new vote, and an explicit supersession record under the prior rule, which may
+   be supplemented but not silently weakened.
+
+This was a bounded pre-ratification erratum. It does not satisfy any tranche.
+The next normative artifact is intentionally forced back to §17.2's executable
+slice rather than another prose-only pass.

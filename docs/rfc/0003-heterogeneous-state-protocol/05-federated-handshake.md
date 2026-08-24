@@ -214,7 +214,14 @@ type HandshakeMessage =
     // MUST agree; a mismatch is a `decline`, not a negotiation, because two
     // parties running different disciplines disagree about whether a message
     // was legal without either being at fault.
-    ordering: "turn-taking" | "author-chains-with-merge" | "sequencer";
+    ordering:
+      | { kind: "turn-taking" }
+      | { kind: "author-chains-with-merge" }
+      | {
+        kind: "sequencer";
+        sequencer: KeyRef;
+        receiptProfile: ContentAddress;
+      };
     floorVersion: string; // human-readable label only; nothing verifies it
   }
   | { kind: "offer-fixture"; fixture: FixtureRef; expects: OutcomeShape }
@@ -326,7 +333,15 @@ A conforming handshake MUST therefore adopt one of:
   both heads, after which the merged head is the state. The DAG is then the
   record and the total order is only ever asserted where a merge exists.
 - **A sequencer**, if the handshake has a witness willing to be one — which
-  reintroduces a privileged party and MUST NOT be the default, per §13.4.4.
+  reintroduces a privileged party and MUST NOT be the default, per §13.4.4. The
+  `hello` MUST name the sequencer by verifiable key and pin the ordering-receipt
+  profile by content address. Every accepted ordering decision MUST carry a
+  signed receipt binding the handshake reference, message reference, assigned
+  position, prior ordering receipt, and sequencer key. A transcript with a
+  missing, invalid, equivocal, or discontinuous ordering receipt MUST NOT
+  authorize an irreversible boundary. If the adopted receipt profile is Warrant,
+  these are warrant receipts; this RFC does not silently adopt Warrant merely by
+  requiring the shape.
 
 Whichever is chosen MUST be declared in `hello`, because two parties running
 different ordering disciplines will disagree about whether a message was legal

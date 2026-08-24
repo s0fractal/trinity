@@ -43,3 +43,12 @@ does not mistake them for specification parts. The 2026-08-24 CNP-0 change has a
 [Codex disposition](../../../src/x2900_963870_codex_grok-cnp0-proposal-disposition.myc.md),
 and an editorial account in Part 07 §6. Neither provenance record is normative
 or ratification authority.
+
+The bounded audit erratum later that day has a
+[Claude source relay](../../../proposals/rfc-0003/claude-audit-2026-08-24.md)
+and a signed
+[Codex disposition](../../../src/x2900_963873_codex_claude-rfc0003-audit-disposition.myc.md),
+with an editorial account in Part 07 §7. It closes carrier, threat-model,
+sequencer, principal-counting, and amendment-procedure gaps; it does not satisfy
+any tranche. Per Part 00 §22, the next normative artifact is executable code and
+fixtures rather than another prose-only revision.

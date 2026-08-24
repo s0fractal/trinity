@@ -1,0 +1,1888 @@
+{
+  "manifest": "cnp-0-corpus@v0",
+  "status": "candidate / unratified / partial implementation",
+  "canonical_encoding": "hsp-jcs@v0",
+  "numeric_profile": "cnp-0",
+  "spec": {
+    "path": "docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md",
+    "clauses": "§5.1.1-§5.1.3"
+  },
+  "authoring": "corpus/manifest.json is authored by tools/build_manifest.py (a Python code path) and pinned; the TypeScript reference encoder must reproduce these bytes and digests. Same author, so this is a second code path, not an independent implementation (§5.1.3).",
+  "rejection_classes": [
+    "bytes-hex-invalid",
+    "circle-point-out-of-range",
+    "duplicate-member-name",
+    "fixed-scale-in-value",
+    "integer-out-of-range",
+    "invalid-utf8",
+    "malformed-escape",
+    "non-canonical-form",
+    "number-not-cnp0-integer",
+    "profile-identifier-invalid",
+    "quantization-infinite",
+    "quantization-nan",
+    "quantization-not-representable",
+    "quantization-overflow",
+    "ratio-non-positive-denominator",
+    "ratio-not-reduced",
+    "ratio-zero-not-canonical",
+    "renormalize-duplicate-coordinate",
+    "renormalize-negative-weight",
+    "renormalize-zero-sum",
+    "scale-descriptor-invalid",
+    "signed-zero",
+    "simplex-negative-weight",
+    "simplex-sum-invalid",
+    "simplex-zero-sum",
+    "syntax",
+    "tagged-form-invalid",
+    "trailing-bytes",
+    "unpaired-surrogate"
+  ],
+  "cases": [
+    {
+      "id": "c1-int-zero",
+      "category": 1,
+      "clause": "§5.1.3(1)",
+      "title": "integer zero",
+      "kind": "encode",
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":0}",
+      "encoder": {
+        "accept": {
+          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":0}",
+          "sha256": "c4238c0c6e6efeed3427b4a17ef512003380754a0754f849fd00b40f1dc52746"
+        }
+      },
+      "verifier": "accept"
+    },
+    {
+      "id": "c1-int-one",
+      "category": 1,
+      "clause": "§5.1.3(1)",
+      "title": "integer one",
+      "kind": "encode",
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":1}",
+      "encoder": {
+        "accept": {
+          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":1}",
+          "sha256": "cb54b765e6411dd24b335faffee3d48f1e92308bf8a352714ffa0e964409b150"
+        }
+      },
+      "verifier": "accept"
+    },
+    {
+      "id": "c1-int-minus-one",
+      "category": 1,
+      "clause": "§5.1.3(1)",
+      "title": "integer minus one",
+      "kind": "encode",
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":-1}",
+      "encoder": {
+        "accept": {
+          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":-1}",
+          "sha256": "cd245ee8e55d97fe3ec400cc7515d70742d6c8444a1c113934e5227f0fa7eed7"
+        }
+      },
+      "verifier": "accept"
+    },
+    {
+      "id": "c1-int-max",
+      "category": 1,
+      "clause": "§5.1.3(1)",
+      "title": "upper cnp-0 bound 2^53-1",
+      "kind": "encode",
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":9007199254740991}",
+      "encoder": {
+        "accept": {
+          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":9007199254740991}",
+          "sha256": "345a018cb9fc113afa0723fa1f5d67cd363a1096e3b4ed0bc2dea31c78b795c1"
+        }
+      },
+      "verifier": "accept"
+    },
+    {
+      "id": "c1-int-min",
+      "category": 1,
+      "clause": "§5.1.3(1)",
+      "title": "lower cnp-0 bound -(2^53-1)",
+      "kind": "encode",
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":-9007199254740991}",
+      "encoder": {
+        "accept": {
+          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":-9007199254740991}",
+          "sha256": "b2bdf29e0c1cc30242c42be8200928e18794e79911d12ce9507faddebf94ae90"
+        }
+      },
+      "verifier": "accept"
+    },
+    {
+      "id": "c1-int-above-max",
+      "category": 1,
+      "clause": "§5.1.3(1)",
+      "title": "one past the upper bound",
+      "kind": "encode",
+      "encoder": {
+        "reject": "integer-out-of-range"
+      },
+      "verifier": {
+        "reject": "integer-out-of-range"
+      },
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":9007199254740992}"
+    },
+    {
+      "id": "c1-int-below-min",
+      "category": 1,
+      "clause": "§5.1.3(1)",
+      "title": "one past the lower bound",
+      "kind": "encode",
+      "encoder": {
+        "reject": "integer-out-of-range"
+      },
+      "verifier": {
+        "reject": "integer-out-of-range"
+      },
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":-9007199254740992}"
+    },
+    {
+      "id": "c1-signed-zero",
+      "category": 1,
+      "clause": "§5.1.2(2)",
+      "title": "negative zero spelling",
+      "kind": "encode",
+      "encoder": {
+        "reject": "signed-zero"
+      },
+      "verifier": {
+        "reject": "signed-zero"
+      },
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":-0}"
+    },
+    {
+      "id": "c2-ratio-third",
+      "category": 2,
+      "clause": "§5.1.3(2)",
+      "title": "one third",
+      "kind": "encode",
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"den\":3,\"kind\":\"ratio\",\"num\":1}}",
+      "encoder": {
+        "accept": {
+          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"den\":3,\"kind\":\"ratio\",\"num\":1}}",
+          "sha256": "dae8748f1d1709bf2c57861b5125b0b7c50fa521102eb550e13d225910470b34"
+        }
+      },
+      "verifier": "accept"
+    },
+    {
+      "id": "c2-ratio-neg-third",
+      "category": 2,
+      "clause": "§5.1.3(2)",
+      "title": "minus one third; sign lives in num",
+      "kind": "encode",
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"den\":3,\"kind\":\"ratio\",\"num\":-1}}",
+      "encoder": {
+        "accept": {
+          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"den\":3,\"kind\":\"ratio\",\"num\":-1}}",
+          "sha256": "d183e1c7d065013d40f19f9f3ad90ddce7fcd329c117c6d2d55794057932465a"
+        }
+      },
+      "verifier": "accept"
+    },
+    {
+      "id": "c2-ratio-zero",
+      "category": 2,
+      "clause": "§5.1.3(2)",
+      "title": "canonical zero is 0/1",
+      "kind": "encode",
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"den\":1,\"kind\":\"ratio\",\"num\":0}}",
+      "encoder": {
+        "accept": {
+          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"den\":1,\"kind\":\"ratio\",\"num\":0}}",
+          "sha256": "d7c7dea131dfbe3da72ce1d5d3071c594f7bd034391fc7cc498e73258e922e9d"
+        }
+      },
+      "verifier": "accept"
+    },
+    {
+      "id": "c2-ratio-unreduced",
+      "category": 2,
+      "clause": "§5.1.3(2)",
+      "title": "2/4 is a second encoding of 1/2",
+      "kind": "encode",
+      "encoder": {
+        "reject": "ratio-not-reduced"
+      },
+      "verifier": {
+        "reject": "ratio-not-reduced"
+      },
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"den\":4,\"kind\":\"ratio\",\"num\":2}}"
+    },
+    {
+      "id": "c2-ratio-zero-den-two",
+      "category": 2,
+      "clause": "§5.1.3(2)",
+      "title": "0/2 is a second encoding of zero",
+      "kind": "encode",
+      "encoder": {
+        "reject": "ratio-zero-not-canonical"
+      },
+      "verifier": {
+        "reject": "ratio-zero-not-canonical"
+      },
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"den\":2,\"kind\":\"ratio\",\"num\":0}}"
+    },
+    {
+      "id": "c2-ratio-negative-den",
+      "category": 2,
+      "clause": "§5.1.3(2)",
+      "title": "negative denominator",
+      "kind": "encode",
+      "encoder": {
+        "reject": "ratio-non-positive-denominator"
+      },
+      "verifier": {
+        "reject": "ratio-non-positive-denominator"
+      },
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"den\":-3,\"kind\":\"ratio\",\"num\":1}}"
+    },
+    {
+      "id": "c2-ratio-zero-den",
+      "category": 2,
+      "clause": "§5.1.3(2)",
+      "title": "zero denominator",
+      "kind": "encode",
+      "encoder": {
+        "reject": "ratio-non-positive-denominator"
+      },
+      "verifier": {
+        "reject": "ratio-non-positive-denominator"
+      },
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"den\":0,\"kind\":\"ratio\",\"num\":1}}"
+    },
+    {
+      "id": "c2-ratio-overflow",
+      "category": 2,
+      "clause": "§5.1.3(2)",
+      "title": "ratio component outside the integer range",
+      "kind": "encode",
+      "encoder": {
+        "reject": "integer-out-of-range"
+      },
+      "verifier": {
+        "reject": "integer-out-of-range"
+      },
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"den\":3,\"kind\":\"ratio\",\"num\":9007199254740992}}"
+    },
+    {
+      "id": "c2-float",
+      "category": 2,
+      "clause": "§5.1.3(2)",
+      "title": "float literal",
+      "kind": "encode",
+      "encoder": {
+        "reject": "number-not-cnp0-integer"
+      },
+      "verifier": {
+        "reject": "number-not-cnp0-integer"
+      },
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":0.5}"
+    },
+    {
+      "id": "c2-exponent",
+      "category": 2,
+      "clause": "§5.1.3(2)",
+      "title": "exponent notation",
+      "kind": "encode",
+      "encoder": {
+        "reject": "number-not-cnp0-integer"
+      },
+      "verifier": {
+        "reject": "number-not-cnp0-integer"
+      },
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":1e3}"
+    },
+    {
+      "id": "c2-decimal-integer",
+      "category": 2,
+      "clause": "§5.1.3(2)",
+      "title": "integral value written with a fraction part",
+      "kind": "encode",
+      "encoder": {
+        "reject": "number-not-cnp0-integer"
+      },
+      "verifier": {
+        "reject": "number-not-cnp0-integer"
+      },
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":1.0}"
+    },
+    {
+      "id": "c2-duplicate-root",
+      "category": 2,
+      "clause": "§5.1.3(2)",
+      "title": "duplicate member name at the root",
+      "kind": "encode",
+      "encoder": {
+        "reject": "duplicate-member-name"
+      },
+      "verifier": {
+        "reject": "duplicate-member-name"
+      },
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"numeric_profile\":\"cnp-0\",\"v\":1}"
+    },
+    {
+      "id": "c2-duplicate-nested",
+      "category": 2,
+      "clause": "§5.1.3(2)",
+      "title": "duplicate member name nested inside a ratio",
+      "kind": "encode",
+      "encoder": {
+        "reject": "duplicate-member-name"
+      },
+      "verifier": {
+        "reject": "duplicate-member-name"
+      },
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"den\":3,\"kind\":\"ratio\",\"num\":1,\"num\":2}}"
+    },
+    {
+      "id": "c3-scale-10e6",
+      "category": 3,
+      "clause": "§5.1.2.2",
+      "title": "scale descriptor radix 10 places 6",
+      "kind": "encode",
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"places\":6,\"radix\":10,\"scale\":\"hsp-scale@v0\",\"unit_ref\":null}",
+      "encoder": {
+        "accept": {
+          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"places\":6,\"radix\":10,\"scale\":\"hsp-scale@v0\",\"unit_ref\":null}",
+          "sha256": "2ba1363847289f21faa2438e2b5929019979e3a5b068b130aaa0e81a3b5c878d"
+        }
+      },
+      "verifier": "accept",
+      "digest_group": "scale-descriptors"
+    },
+    {
+      "id": "c3-scale-10e3",
+      "category": 3,
+      "clause": "§5.1.2.2",
+      "title": "scale descriptor radix 10 places 3",
+      "kind": "encode",
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"places\":3,\"radix\":10,\"scale\":\"hsp-scale@v0\",\"unit_ref\":null}",
+      "encoder": {
+        "accept": {
+          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"places\":3,\"radix\":10,\"scale\":\"hsp-scale@v0\",\"unit_ref\":null}",
+          "sha256": "7b8d154048981e6dceba96987eccd1dc8607563c9a7cd4bd0f26730a3a726c83"
+        }
+      },
+      "verifier": "accept",
+      "digest_group": "scale-descriptors"
+    },
+    {
+      "id": "c3-point-at-10e6",
+      "category": 3,
+      "clause": "§5.1.3(3)",
+      "title": "value 1500000 bound to the places-6 domain: 1.5",
+      "kind": "encode",
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"point\":{\"kind\":\"fixed\",\"value\":1500000},\"scale_ref\":\"2ba1363847289f21faa2438e2b5929019979e3a5b068b130aaa0e81a3b5c878d\"}",
+      "encoder": {
+        "accept": {
+          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"point\":{\"kind\":\"fixed\",\"value\":1500000},\"scale_ref\":\"2ba1363847289f21faa2438e2b5929019979e3a5b068b130aaa0e81a3b5c878d\"}",
+          "sha256": "09a609478912ef140af4d71d9df94e90187e9be1089eb4a08386cb0a9da6f68b"
+        }
+      },
+      "verifier": "accept",
+      "digest_group": "same-integer-two-domains"
+    },
+    {
+      "id": "c3-point-at-10e3",
+      "category": 3,
+      "clause": "§5.1.3(3)",
+      "title": "the same integer bound to the places-3 domain: 1500.0",
+      "kind": "encode",
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"point\":{\"kind\":\"fixed\",\"value\":1500000},\"scale_ref\":\"7b8d154048981e6dceba96987eccd1dc8607563c9a7cd4bd0f26730a3a726c83\"}",
+      "encoder": {
+        "accept": {
+          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"point\":{\"kind\":\"fixed\",\"value\":1500000},\"scale_ref\":\"7b8d154048981e6dceba96987eccd1dc8607563c9a7cd4bd0f26730a3a726c83\"}",
+          "sha256": "4f7b73fa3fc760c48d10e194bbd13ec59d44d8abc7312227ee69d1decce8a7aa"
+        }
+      },
+      "verifier": "accept",
+      "digest_group": "same-integer-two-domains"
+    },
+    {
+      "id": "c3-scale-in-value",
+      "category": 3,
+      "clause": "§5.1.2.2",
+      "title": "a fixed value repeating its own scale is a second source of truth",
+      "kind": "encode",
+      "encoder": {
+        "reject": "fixed-scale-in-value"
+      },
+      "verifier": {
+        "reject": "fixed-scale-in-value"
+      },
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"point\":{\"kind\":\"fixed\",\"scale\":6,\"value\":1500000}}"
+    },
+    {
+      "id": "c3-scale-radix-three",
+      "category": 3,
+      "clause": "§5.1.2.2",
+      "title": "radix must be 2 or 10",
+      "kind": "scale",
+      "descriptor": {
+        "canonical_encoding": "hsp-jcs@v0",
+        "numeric_profile": "cnp-0",
+        "scale": "hsp-scale@v0",
+        "radix": 3,
+        "places": 6,
+        "unit_ref": null
+      },
+      "expect": {
+        "reject": "scale-descriptor-invalid"
+      }
+    },
+    {
+      "id": "c3-scale-negative-places",
+      "category": 3,
+      "clause": "§5.1.2.2",
+      "title": "places must be non-negative",
+      "kind": "scale",
+      "descriptor": {
+        "canonical_encoding": "hsp-jcs@v0",
+        "numeric_profile": "cnp-0",
+        "scale": "hsp-scale@v0",
+        "radix": 10,
+        "places": -1,
+        "unit_ref": null
+      },
+      "expect": {
+        "reject": "scale-descriptor-invalid"
+      }
+    },
+    {
+      "id": "c3-scale-overflow",
+      "category": 3,
+      "clause": "§5.1.2.2",
+      "title": "radix^places must lie inside the cnp-0 integer range",
+      "kind": "scale",
+      "descriptor": {
+        "canonical_encoding": "hsp-jcs@v0",
+        "numeric_profile": "cnp-0",
+        "scale": "hsp-scale@v0",
+        "radix": 10,
+        "places": 20,
+        "unit_ref": null
+      },
+      "expect": {
+        "reject": "scale-descriptor-invalid"
+      }
+    },
+    {
+      "id": "c3-scale-valid-binary",
+      "category": 3,
+      "clause": "§5.1.2.2",
+      "title": "radix 2 is admissible",
+      "kind": "scale",
+      "descriptor": {
+        "canonical_encoding": "hsp-jcs@v0",
+        "numeric_profile": "cnp-0",
+        "scale": "hsp-scale@v0",
+        "radix": 2,
+        "places": 10,
+        "unit_ref": null
+      },
+      "expect": {
+        "accept": {
+          "total": 1024
+        }
+      }
+    },
+    {
+      "id": "c3-scale-unit-ref-digest",
+      "category": 3,
+      "clause": "§5.1.2.2",
+      "title": "unit_ref may be a full content digest",
+      "kind": "scale",
+      "descriptor": {
+        "canonical_encoding": "hsp-jcs@v0",
+        "numeric_profile": "cnp-0",
+        "scale": "hsp-scale@v0",
+        "radix": 10,
+        "places": 6,
+        "unit_ref": "2ba1363847289f21faa2438e2b5929019979e3a5b068b130aaa0e81a3b5c878d"
+      },
+      "expect": {
+        "accept": {
+          "total": 1000000
+        }
+      }
+    },
+    {
+      "id": "c3-scale-unit-ref-not-a-digest",
+      "category": 3,
+      "clause": "§5.1.2.2",
+      "title": "an opaque handle is not a full content digest",
+      "kind": "scale",
+      "descriptor": {
+        "canonical_encoding": "hsp-jcs@v0",
+        "numeric_profile": "cnp-0",
+        "scale": "hsp-scale@v0",
+        "radix": 10,
+        "places": 6,
+        "unit_ref": "not-a-full-content-digest"
+      },
+      "expect": {
+        "reject": "scale-descriptor-invalid"
+      }
+    },
+    {
+      "id": "c3-scale-unit-ref-truncated",
+      "category": 3,
+      "clause": "§5.1.2.2",
+      "title": "a truncated digest is not a full digest",
+      "kind": "scale",
+      "descriptor": {
+        "canonical_encoding": "hsp-jcs@v0",
+        "numeric_profile": "cnp-0",
+        "scale": "hsp-scale@v0",
+        "radix": 10,
+        "places": 6,
+        "unit_ref": "2ba136384728"
+      },
+      "expect": {
+        "reject": "scale-descriptor-invalid"
+      }
+    },
+    {
+      "id": "c3-scale-unit-ref-uppercase",
+      "category": 3,
+      "clause": "§5.1.2.2",
+      "title": "an uppercase digest is rejected, not normalized",
+      "kind": "scale",
+      "descriptor": {
+        "canonical_encoding": "hsp-jcs@v0",
+        "numeric_profile": "cnp-0",
+        "scale": "hsp-scale@v0",
+        "radix": 10,
+        "places": 6,
+        "unit_ref": "2BA1363847289F21FAA2438E2B5929019979E3A5B068B130AAA0E81A3B5C878D"
+      },
+      "expect": {
+        "reject": "scale-descriptor-invalid"
+      }
+    },
+    {
+      "id": "c4-ratio-simplex",
+      "category": 4,
+      "clause": "§5.1.3(4)",
+      "title": "exact ratio simplex 1/2 + 1/3 + 1/6",
+      "kind": "encode",
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"simplex\":[{\"den\":2,\"kind\":\"ratio\",\"num\":1},{\"den\":3,\"kind\":\"ratio\",\"num\":1},{\"den\":6,\"kind\":\"ratio\",\"num\":1}]}",
+      "encoder": {
+        "accept": {
+          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"simplex\":[{\"den\":2,\"kind\":\"ratio\",\"num\":1},{\"den\":3,\"kind\":\"ratio\",\"num\":1},{\"den\":6,\"kind\":\"ratio\",\"num\":1}]}",
+          "sha256": "34654cdb97d2a621feb55876d8ee55e2001b72242de5ca974777ed55fcc3cc1a"
+        }
+      },
+      "verifier": "accept"
+    },
+    {
+      "id": "c4-ratio-simplex-sum-ok",
+      "category": 4,
+      "clause": "§5.1.3(4)",
+      "title": "ratio simplex sums to exactly one",
+      "kind": "ratio-simplex",
+      "parts": [
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          6
+        ]
+      ],
+      "expect": {
+        "accept": true
+      }
+    },
+    {
+      "id": "c4-ratio-simplex-sum-bad",
+      "category": 4,
+      "clause": "§5.1.3(4)",
+      "title": "ratio simplex that does not sum to one",
+      "kind": "ratio-simplex",
+      "parts": [
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          7
+        ]
+      ],
+      "expect": {
+        "reject": "simplex-sum-invalid"
+      }
+    },
+    {
+      "id": "c4-ratio-simplex-negative",
+      "category": 4,
+      "clause": "§5.1.3(4)",
+      "title": "negative ratio component",
+      "kind": "ratio-simplex",
+      "parts": [
+        [
+          -1,
+          2
+        ],
+        [
+          3,
+          2
+        ]
+      ],
+      "expect": {
+        "reject": "simplex-negative-weight"
+      }
+    },
+    {
+      "id": "c4-fixed-simplex",
+      "category": 4,
+      "clause": "§5.1.3(4)",
+      "title": "exact fixed-point simplex at places 6",
+      "kind": "encode",
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"scale_ref\":\"2ba1363847289f21faa2438e2b5929019979e3a5b068b130aaa0e81a3b5c878d\",\"simplex\":[{\"kind\":\"fixed\",\"value\":500000},{\"kind\":\"fixed\",\"value\":300000},{\"kind\":\"fixed\",\"value\":200000}]}",
+      "encoder": {
+        "accept": {
+          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"scale_ref\":\"2ba1363847289f21faa2438e2b5929019979e3a5b068b130aaa0e81a3b5c878d\",\"simplex\":[{\"kind\":\"fixed\",\"value\":500000},{\"kind\":\"fixed\",\"value\":300000},{\"kind\":\"fixed\",\"value\":200000}]}",
+          "sha256": "33284302bc2be94127f999b8e3f2eace10408d472de3d891f43c9f20fc93ce3a"
+        }
+      },
+      "verifier": "accept"
+    },
+    {
+      "id": "c4-fixed-simplex-ok",
+      "category": 4,
+      "clause": "§5.1.3(4)",
+      "title": "fixed simplex sums to radix^places",
+      "kind": "fixed-simplex",
+      "weights": [
+        500000,
+        300000,
+        200000
+      ],
+      "total": 1000000,
+      "expect": {
+        "accept": true
+      }
+    },
+    {
+      "id": "c4-fixed-simplex-bad",
+      "category": 4,
+      "clause": "§5.1.3(4)",
+      "title": "fixed simplex with an invalid sum",
+      "kind": "fixed-simplex",
+      "weights": [
+        500000,
+        300000,
+        100000
+      ],
+      "total": 1000000,
+      "expect": {
+        "reject": "simplex-sum-invalid"
+      }
+    },
+    {
+      "id": "c4-fixed-simplex-zero",
+      "category": 4,
+      "clause": "§5.1.3(4)",
+      "title": "fixed simplex summing to zero",
+      "kind": "fixed-simplex",
+      "weights": [
+        0,
+        0,
+        0
+      ],
+      "total": 1000000,
+      "expect": {
+        "reject": "simplex-zero-sum"
+      }
+    },
+    {
+      "id": "c4-renorm-distinct-remainders",
+      "category": 4,
+      "clause": "§5.1.2.6",
+      "title": "largest-remainder allocation with distinct remainders",
+      "kind": "renormalize",
+      "components": [
+        [
+          "a",
+          1
+        ],
+        [
+          "b",
+          2
+        ],
+        [
+          "c",
+          4
+        ]
+      ],
+      "total": 10,
+      "expect": {
+        "accept": {
+          "weights": [
+            1,
+            3,
+            6
+          ],
+          "renormalized": true
+        }
+      }
+    },
+    {
+      "id": "c4-renorm-tie-by-coordinate",
+      "category": 4,
+      "clause": "§5.1.2.6",
+      "title": "a tie in remainders is broken by ascending canonical coordinate bytes",
+      "kind": "renormalize",
+      "components": [
+        [
+          "a",
+          1
+        ],
+        [
+          "b",
+          1
+        ],
+        [
+          "c",
+          1
+        ]
+      ],
+      "total": 10,
+      "expect": {
+        "accept": {
+          "weights": [
+            4,
+            3,
+            3
+          ],
+          "renormalized": true
+        }
+      }
+    },
+    {
+      "id": "c4-renorm-presentation-permuted",
+      "category": 4,
+      "clause": "§5.1.2.6",
+      "title": "input array position is not a tie-breaker: the same components presented in a different order allocate identically per coordinate",
+      "kind": "renormalize",
+      "components": [
+        [
+          "c",
+          4
+        ],
+        [
+          "a",
+          1
+        ],
+        [
+          "b",
+          2
+        ]
+      ],
+      "total": 10,
+      "expect": {
+        "accept": {
+          "weights": [
+            6,
+            1,
+            3
+          ],
+          "renormalized": true
+        }
+      }
+    },
+    {
+      "id": "c4-renorm-already-exact",
+      "category": 4,
+      "clause": "§5.1.2.6",
+      "title": "weights that already sum to the target are returned unchanged",
+      "kind": "renormalize",
+      "components": [
+        [
+          "a",
+          5
+        ],
+        [
+          "b",
+          5
+        ]
+      ],
+      "total": 10,
+      "expect": {
+        "accept": {
+          "weights": [
+            5,
+            5
+          ],
+          "renormalized": false
+        }
+      }
+    },
+    {
+      "id": "c4-renorm-zero-sum",
+      "category": 4,
+      "clause": "§5.1.2.6",
+      "title": "zero sum must be rejected",
+      "kind": "renormalize",
+      "components": [
+        [
+          "a",
+          0
+        ],
+        [
+          "b",
+          0
+        ]
+      ],
+      "total": 10,
+      "expect": {
+        "reject": "renormalize-zero-sum"
+      }
+    },
+    {
+      "id": "c4-renorm-negative",
+      "category": 4,
+      "clause": "§5.1.2.6",
+      "title": "negative weight must be rejected",
+      "kind": "renormalize",
+      "components": [
+        [
+          "a",
+          -1
+        ],
+        [
+          "b",
+          2
+        ]
+      ],
+      "total": 10,
+      "expect": {
+        "reject": "renormalize-negative-weight"
+      }
+    },
+    {
+      "id": "c4-renorm-duplicate-coordinate",
+      "category": 4,
+      "clause": "§5.1.2.6",
+      "title": "a coordinate identifier bound to two components makes the tie-break a function of presentation order, so it is rejected",
+      "kind": "renormalize",
+      "components": [
+        [
+          "a",
+          1
+        ],
+        [
+          "a",
+          1
+        ],
+        [
+          "b",
+          1
+        ]
+      ],
+      "total": 10,
+      "expect": {
+        "reject": "renormalize-duplicate-coordinate"
+      }
+    },
+    {
+      "id": "c4-renorm-duplicate-anonymous",
+      "category": 4,
+      "clause": "§5.1.2.6",
+      "title": "the same rule for an ordered anonymous vector's integer indices",
+      "kind": "renormalize",
+      "components": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "total": 10,
+      "expect": {
+        "reject": "renormalize-duplicate-coordinate"
+      }
+    },
+    {
+      "id": "c4-renorm-anonymous-index",
+      "category": 4,
+      "clause": "§5.1.2.6",
+      "title": "an ordered anonymous vector uses its cnp-0 integer index as the coordinate identifier, so 0 wins the tie over 1",
+      "kind": "renormalize",
+      "components": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "total": 10,
+      "expect": {
+        "accept": {
+          "weights": [
+            4,
+            3,
+            3
+          ],
+          "renormalized": true
+        }
+      }
+    },
+    {
+      "id": "c5-profile-mutated",
+      "category": 5,
+      "clause": "§5.1.3(5)",
+      "title": "numeric_profile mutated to cnp-1",
+      "kind": "encode",
+      "encoder": {
+        "reject": "profile-identifier-invalid"
+      },
+      "verifier": {
+        "reject": "profile-identifier-invalid"
+      },
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-1\",\"v\":1}"
+    },
+    {
+      "id": "c5-encoding-mutated",
+      "category": 5,
+      "clause": "§5.1.3(5)",
+      "title": "canonical_encoding mutated to hsp-jcs@v1",
+      "kind": "encode",
+      "encoder": {
+        "reject": "profile-identifier-invalid"
+      },
+      "verifier": {
+        "reject": "profile-identifier-invalid"
+      },
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v1\",\"numeric_profile\":\"cnp-0\",\"v\":1}"
+    },
+    {
+      "id": "c5-profile-absent",
+      "category": 5,
+      "clause": "§5.1.3(5)",
+      "title": "root without the profile identifiers",
+      "kind": "encode",
+      "encoder": {
+        "reject": "profile-identifier-invalid"
+      },
+      "verifier": {
+        "reject": "profile-identifier-invalid"
+      },
+      "raw": "{\"v\":1}"
+    },
+    {
+      "id": "c5-pinned-constant",
+      "category": 5,
+      "clause": "§5.1.3(5)",
+      "title": "a pinned constant descriptor (§5.1.2.3 strategy `pinned`)",
+      "kind": "encode",
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"constant_strategy\":\"pinned\",\"digits\":[3,1,4,1,5,9,2,6],\"numeric_profile\":\"cnp-0\",\"scale_ref\":\"2ba1363847289f21faa2438e2b5929019979e3a5b068b130aaa0e81a3b5c878d\"}",
+      "encoder": {
+        "accept": {
+          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"constant_strategy\":\"pinned\",\"digits\":[3,1,4,1,5,9,2,6],\"numeric_profile\":\"cnp-0\",\"scale_ref\":\"2ba1363847289f21faa2438e2b5929019979e3a5b068b130aaa0e81a3b5c878d\"}",
+          "sha256": "f2b1491abe1c3a932cbd63e4fdd2dd182d75fc9b060c052c50a15c3c30dc1353"
+        }
+      },
+      "verifier": "accept",
+      "digest_group": "pinned-constant-mutation"
+    },
+    {
+      "id": "c5-pinned-constant-mutated",
+      "category": 5,
+      "clause": "§5.1.3(5)",
+      "title": "one digit of the pinned constant changed: a different reference",
+      "kind": "encode",
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"constant_strategy\":\"pinned\",\"digits\":[3,1,4,1,5,9,2,7],\"numeric_profile\":\"cnp-0\",\"scale_ref\":\"2ba1363847289f21faa2438e2b5929019979e3a5b068b130aaa0e81a3b5c878d\"}",
+      "encoder": {
+        "accept": {
+          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"constant_strategy\":\"pinned\",\"digits\":[3,1,4,1,5,9,2,7],\"numeric_profile\":\"cnp-0\",\"scale_ref\":\"2ba1363847289f21faa2438e2b5929019979e3a5b068b130aaa0e81a3b5c878d\"}",
+          "sha256": "5a8e197d39ec457c4ac6209c00c82e729b6f0fae3d26d7487358374f3a8b89fe"
+        }
+      },
+      "verifier": "accept",
+      "digest_group": "pinned-constant-mutation"
+    },
+    {
+      "id": "c6-bytes",
+      "category": 6,
+      "clause": "§5.1.3(6)",
+      "title": "byte projection",
+      "kind": "encode",
+      "raw": "{\"b\":{\"hex\":\"00ff10\",\"kind\":\"bytes\"},\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\"}",
+      "encoder": {
+        "accept": {
+          "canonical": "{\"b\":{\"hex\":\"00ff10\",\"kind\":\"bytes\"},\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\"}",
+          "sha256": "f66f090744001fe0016efdf7108c8ed649588778ee2e7d7bfc11b2263754f061"
+        }
+      },
+      "verifier": "accept"
+    },
+    {
+      "id": "c6-bytes-empty",
+      "category": 6,
+      "clause": "§5.1.3(6)",
+      "title": "empty byte string",
+      "kind": "encode",
+      "raw": "{\"b\":{\"hex\":\"\",\"kind\":\"bytes\"},\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\"}",
+      "encoder": {
+        "accept": {
+          "canonical": "{\"b\":{\"hex\":\"\",\"kind\":\"bytes\"},\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\"}",
+          "sha256": "0449b1c49cb18fd625938a029bcb95cdaf272f6701f877030cfd742e90597e92"
+        }
+      },
+      "verifier": "accept"
+    },
+    {
+      "id": "c6-bytes-uppercase",
+      "category": 6,
+      "clause": "§5.1.3(6)",
+      "title": "uppercase hex is rejected, not normalized",
+      "kind": "encode",
+      "encoder": {
+        "reject": "bytes-hex-invalid"
+      },
+      "verifier": {
+        "reject": "bytes-hex-invalid"
+      },
+      "raw": "{\"b\":{\"hex\":\"00FF\",\"kind\":\"bytes\"},\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\"}"
+    },
+    {
+      "id": "c6-bytes-odd-length",
+      "category": 6,
+      "clause": "§5.1.3(6)",
+      "title": "odd-length hex",
+      "kind": "encode",
+      "encoder": {
+        "reject": "bytes-hex-invalid"
+      },
+      "verifier": {
+        "reject": "bytes-hex-invalid"
+      },
+      "raw": "{\"b\":{\"hex\":\"0f0\",\"kind\":\"bytes\"},\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\"}"
+    },
+    {
+      "id": "c6-bytes-non-hex",
+      "category": 6,
+      "clause": "§5.1.3(6)",
+      "title": "non-hexadecimal content",
+      "kind": "encode",
+      "encoder": {
+        "reject": "bytes-hex-invalid"
+      },
+      "verifier": {
+        "reject": "bytes-hex-invalid"
+      },
+      "raw": "{\"b\":{\"hex\":\"zz\",\"kind\":\"bytes\"},\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\"}"
+    },
+    {
+      "id": "c6-bytes-length-member",
+      "category": 6,
+      "clause": "§5.1.3(6)",
+      "title": "length is derived and must not be repeated",
+      "kind": "encode",
+      "encoder": {
+        "reject": "tagged-form-invalid"
+      },
+      "verifier": {
+        "reject": "tagged-form-invalid"
+      },
+      "raw": "{\"b\":{\"hex\":\"00ff\",\"kind\":\"bytes\",\"len\":2},\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\"}"
+    },
+    {
+      "id": "c6-string-nfc",
+      "category": 6,
+      "clause": "§5.1.3(6)",
+      "title": "precomposed e-acute (U+00E9)",
+      "kind": "encode",
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"s\":\"é\"}",
+      "encoder": {
+        "accept": {
+          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"s\":\"é\"}",
+          "sha256": "9b42c2c39aa7dd6d90da51d1852373226d36d63bcdb0454285574067f8832ef4"
+        }
+      },
+      "verifier": "accept",
+      "digest_group": "normalization-distinct"
+    },
+    {
+      "id": "c6-string-nfd",
+      "category": 6,
+      "clause": "§5.1.3(6)",
+      "title": "decomposed e-acute (U+0065 U+0301)",
+      "kind": "encode",
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"s\":\"é\"}",
+      "encoder": {
+        "accept": {
+          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"s\":\"é\"}",
+          "sha256": "0f220f54d0712831aa2fd58e9745abab8bd63e3bf339c392031b75d38e41b149"
+        }
+      },
+      "verifier": "accept",
+      "digest_group": "normalization-distinct"
+    },
+    {
+      "id": "c6-string-escapes",
+      "category": 6,
+      "clause": "§5.1.3(6)",
+      "title": "quote, backslash, and the control characters with short escapes",
+      "kind": "encode",
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"s\":\"\\\"\\\\\\b\\f\\n\\r\\t\"}",
+      "encoder": {
+        "accept": {
+          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"s\":\"\\\"\\\\\\b\\f\\n\\r\\t\"}",
+          "sha256": "87e973709b30058f4e4736f8451d18e844a85f3a25f8b456a31d3a2a5bec616b"
+        }
+      },
+      "verifier": "accept"
+    },
+    {
+      "id": "c6-string-control-u",
+      "category": 6,
+      "clause": "§5.1.3(6)",
+      "title": "a control character with no short escape uses lowercase \\u00xx",
+      "kind": "encode",
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"s\":\"\\u0001\\u001f\"}",
+      "encoder": {
+        "accept": {
+          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"s\":\"\\u0001\\u001f\"}",
+          "sha256": "9f66f988531c7d3057721957cd0fbdbc80daa2dd896c3e8919ff72bc101c7b08"
+        }
+      },
+      "verifier": "accept"
+    },
+    {
+      "id": "c6-string-astral",
+      "category": 6,
+      "clause": "§5.1.3(6)",
+      "title": "a non-BMP character is written literally in canonical form",
+      "kind": "encode",
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"s\":\"\\ud834\\udd1e\"}",
+      "encoder": {
+        "accept": {
+          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"s\":\"𝄞\"}",
+          "sha256": "128bcd5c661006a6ca7fa861dcf7de6bc4b2e03be72e659a0e5bab57f24aa5ee"
+        }
+      },
+      "verifier": {
+        "reject": "non-canonical-form"
+      }
+    },
+    {
+      "id": "c6-key-order-permuted",
+      "category": 6,
+      "clause": "§5.1.3(6)",
+      "title": "member order is imposed by the encoder and rejected by the verifier",
+      "kind": "encode",
+      "raw": "{\"z\":2,\"numeric_profile\":\"cnp-0\",\"canonical_encoding\":\"hsp-jcs@v0\",\"a\":1}",
+      "encoder": {
+        "accept": {
+          "canonical": "{\"a\":1,\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"z\":2}",
+          "sha256": "5c7a54ee161c1cd91fcb78177584c6e45d900e93d064e2bf3b692a5b45229f31"
+        }
+      },
+      "verifier": {
+        "reject": "non-canonical-form"
+      }
+    },
+    {
+      "id": "c6-whitespace",
+      "category": 6,
+      "clause": "§5.1.3(6)",
+      "title": "insignificant whitespace is input to the encoder and not canonical bytes",
+      "kind": "encode",
+      "raw": "{\n  \"canonical_encoding\": \"hsp-jcs@v0\",\n  \"numeric_profile\": \"cnp-0\",\n  \"a\": 1\n}",
+      "encoder": {
+        "accept": {
+          "canonical": "{\"a\":1,\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\"}",
+          "sha256": "173c59cae4ec0d5d50e5dffbd34333eb4f4ba6192e4da9aca72cc7948e86d265"
+        }
+      },
+      "verifier": {
+        "reject": "non-canonical-form"
+      }
+    },
+    {
+      "id": "c6-solidus-escape",
+      "category": 6,
+      "clause": "§5.1.3(6)",
+      "title": "an escaped solidus is legal JSON input and not canonical output",
+      "kind": "encode",
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"s\":\"a\\/b\"}",
+      "encoder": {
+        "accept": {
+          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"s\":\"a/b\"}",
+          "sha256": "5dadd65a5ff80d2d6bc4b6ff4ffea870c5ee91fae17c1a70eccc836928dd1fec"
+        }
+      },
+      "verifier": {
+        "reject": "non-canonical-form"
+      }
+    },
+    {
+      "id": "c6-empty-containers",
+      "category": 6,
+      "clause": "§5.1.3(6)",
+      "title": "nested empty containers",
+      "kind": "encode",
+      "raw": "{\"arr\":[],\"canonical_encoding\":\"hsp-jcs@v0\",\"nested\":[[],{},{\"inner\":[]}],\"numeric_profile\":\"cnp-0\",\"obj\":{}}",
+      "encoder": {
+        "accept": {
+          "canonical": "{\"arr\":[],\"canonical_encoding\":\"hsp-jcs@v0\",\"nested\":[[],{},{\"inner\":[]}],\"numeric_profile\":\"cnp-0\",\"obj\":{}}",
+          "sha256": "a17f0fedc330ff1fe7f91675fc3a1b88db4621b5c58c205568960c2646b57ba3"
+        }
+      },
+      "verifier": "accept"
+    },
+    {
+      "id": "c6-utf16-order",
+      "category": 6,
+      "clause": "§5.1.3(6)",
+      "title": "member order is by UTF-16 code unit, so U+FFFD sorts after a non-BMP key",
+      "kind": "encode",
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"𝄞\":1,\"�\":2}",
+      "encoder": {
+        "accept": {
+          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"𝄞\":1,\"�\":2}",
+          "sha256": "77e65d1ee0c91242a2d7159c52505e2b0a72f4a6965abf3b7e500b2fcafc0fdd"
+        }
+      },
+      "verifier": "accept"
+    },
+    {
+      "id": "c6-raw-control",
+      "category": 6,
+      "clause": "§5.1.3(6)",
+      "title": "a raw control character inside a string",
+      "kind": "encode",
+      "encoder": {
+        "reject": "syntax"
+      },
+      "verifier": {
+        "reject": "syntax"
+      },
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"s\":\"a\tb\"}"
+    },
+    {
+      "id": "c6-bad-escape",
+      "category": 6,
+      "clause": "§5.1.3(6)",
+      "title": "unknown escape",
+      "kind": "encode",
+      "encoder": {
+        "reject": "malformed-escape"
+      },
+      "verifier": {
+        "reject": "malformed-escape"
+      },
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"s\":\"a\\xb\"}"
+    },
+    {
+      "id": "c6-short-u-escape",
+      "category": 6,
+      "clause": "§5.1.3(6)",
+      "title": "truncated \\u escape",
+      "kind": "encode",
+      "encoder": {
+        "reject": "malformed-escape"
+      },
+      "verifier": {
+        "reject": "malformed-escape"
+      },
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"s\":\"a\\u12\"}"
+    },
+    {
+      "id": "c6-unpaired-high",
+      "category": 6,
+      "clause": "§5.1.3(6)",
+      "title": "high surrogate with no low surrogate",
+      "kind": "encode",
+      "encoder": {
+        "reject": "unpaired-surrogate"
+      },
+      "verifier": {
+        "reject": "unpaired-surrogate"
+      },
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"s\":\"\\ud834\"}"
+    },
+    {
+      "id": "c6-unpaired-low",
+      "category": 6,
+      "clause": "§5.1.3(6)",
+      "title": "low surrogate with no high surrogate",
+      "kind": "encode",
+      "encoder": {
+        "reject": "unpaired-surrogate"
+      },
+      "verifier": {
+        "reject": "unpaired-surrogate"
+      },
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"s\":\"\\udd1e\"}"
+    },
+    {
+      "id": "c6-invalid-utf8",
+      "category": 6,
+      "clause": "§5.1.3(6)",
+      "title": "a lone 0xff byte inside a string",
+      "kind": "encode",
+      "encoder": {
+        "reject": "invalid-utf8"
+      },
+      "verifier": {
+        "reject": "invalid-utf8"
+      },
+      "raw_hex": "7b2263616e6f6e6963616c5f656e636f64696e67223a226873702d6a6373407630222c226e756d657269635f70726f66696c65223a22636e702d30222c2273223a22ff227d"
+    },
+    {
+      "id": "c6-overlong-utf8",
+      "category": 6,
+      "clause": "§5.1.3(6)",
+      "title": "an overlong two-byte encoding of '/'",
+      "kind": "encode",
+      "encoder": {
+        "reject": "invalid-utf8"
+      },
+      "verifier": {
+        "reject": "invalid-utf8"
+      },
+      "raw_hex": "7b2263616e6f6e6963616c5f656e636f64696e67223a226873702d6a6373407630222c226e756d657269635f70726f66696c65223a22636e702d30222c2273223a22c0af227d"
+    },
+    {
+      "id": "c6-surrogate-in-utf8",
+      "category": 6,
+      "clause": "§5.1.3(6)",
+      "title": "a surrogate half encoded as UTF-8",
+      "kind": "encode",
+      "encoder": {
+        "reject": "invalid-utf8"
+      },
+      "verifier": {
+        "reject": "invalid-utf8"
+      },
+      "raw_hex": "7b2263616e6f6e6963616c5f656e636f64696e67223a226873702d6a6373407630222c226e756d657269635f70726f66696c65223a22636e702d30222c2273223a22eda080227d"
+    },
+    {
+      "id": "c6-trailing-bytes",
+      "category": 6,
+      "clause": "§5.1.3(6)",
+      "title": "a second value after the root",
+      "kind": "encode",
+      "encoder": {
+        "reject": "trailing-bytes"
+      },
+      "verifier": {
+        "reject": "trailing-bytes"
+      },
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":1}{}"
+    },
+    {
+      "id": "c6-trailing-garbage",
+      "category": 6,
+      "clause": "§5.1.3(6)",
+      "title": "non-JSON bytes after the root",
+      "kind": "encode",
+      "encoder": {
+        "reject": "trailing-bytes"
+      },
+      "verifier": {
+        "reject": "trailing-bytes"
+      },
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":1}x"
+    },
+    {
+      "id": "c6-root-not-object",
+      "category": 6,
+      "clause": "§5.1.3(6)",
+      "title": "an array root cannot carry the identifiers",
+      "kind": "encode",
+      "encoder": {
+        "reject": "profile-identifier-invalid"
+      },
+      "verifier": {
+        "reject": "profile-identifier-invalid"
+      },
+      "raw": "[1,2]"
+    },
+    {
+      "id": "c7-rotation",
+      "category": 7,
+      "clause": "§5.1.2.4",
+      "title": "addition is exact modulo 2^8",
+      "kind": "circle",
+      "op": "add",
+      "a": 250,
+      "b": 10,
+      "expect": {
+        "index": 4
+      }
+    },
+    {
+      "id": "c7-rotation-wrap",
+      "category": 7,
+      "clause": "§5.1.2.4",
+      "title": "the sum of two valid points wraps at the modulus",
+      "kind": "circle",
+      "op": "add",
+      "a": 255,
+      "b": 1,
+      "expect": {
+        "index": 0
+      }
+    },
+    {
+      "id": "c7-equality-same",
+      "category": 7,
+      "clause": "§5.1.2.4",
+      "title": "equality is equality of indices",
+      "kind": "circle",
+      "op": "equal",
+      "a": 17,
+      "b": 17,
+      "expect": {
+        "equal": true
+      }
+    },
+    {
+      "id": "c7-equality-different",
+      "category": 7,
+      "clause": "§5.1.2.4",
+      "title": "two distinct indices are two distinct points",
+      "kind": "circle",
+      "op": "equal",
+      "a": 17,
+      "b": 18,
+      "expect": {
+        "equal": false
+      }
+    },
+    {
+      "id": "c7-negative-point",
+      "category": 7,
+      "clause": "§5.1.2.4",
+      "title": "-1 is not an index in [0, 2^n) and is rejected, not normalized to 255",
+      "kind": "circle",
+      "op": "point",
+      "a": -1,
+      "expect": {
+        "reject": "circle-point-out-of-range"
+      }
+    },
+    {
+      "id": "c7-out-of-range-point",
+      "category": 7,
+      "clause": "§5.1.2.4",
+      "title": "2^n is not a point either: normalizing it would make two distinct inputs equal",
+      "kind": "circle",
+      "op": "point",
+      "a": 256,
+      "expect": {
+        "reject": "circle-point-out-of-range"
+      }
+    },
+    {
+      "id": "c7-out-of-range-operand",
+      "category": 7,
+      "clause": "§5.1.2.4",
+      "title": "the modulus applies to the sum, never to an out-of-range operand",
+      "kind": "circle",
+      "op": "add",
+      "a": 250,
+      "b": 300,
+      "expect": {
+        "reject": "circle-point-out-of-range"
+      }
+    },
+    {
+      "id": "c7-point-in-range",
+      "category": 7,
+      "clause": "§5.1.2.4",
+      "title": "both bounds of the point interval",
+      "kind": "circle",
+      "op": "point",
+      "a": 255,
+      "expect": {
+        "index": 255
+      }
+    },
+    {
+      "id": "c7-lut",
+      "category": 7,
+      "clause": "§5.1.3(7)",
+      "title": "the pinned sine lookup table is content-addressed and bound to the domain",
+      "kind": "file",
+      "path": "corpus/circle256-lut.cnp0.json",
+      "mutation": {
+        "byte_index": 257,
+        "expect": "different-digest"
+      },
+      "sha256": "ab2fb02af0b6c6a55ad3fcd79f4c320eff9ca1ce93fd98eb11351e68bac52d93"
+    },
+    {
+      "id": "c8-half-trunc",
+      "category": 8,
+      "clause": "§5.1.2.5",
+      "title": "positive tie under trunc_toward_zero",
+      "kind": "quantize",
+      "f64_hex": "3fe0000000000000",
+      "decimal_note": "0.5",
+      "mode": "trunc_toward_zero",
+      "radix": 10,
+      "places": 0,
+      "expect": {
+        "accept": {
+          "value": 0,
+          "exact": false
+        }
+      }
+    },
+    {
+      "id": "c8-half-ties-even",
+      "category": 8,
+      "clause": "§5.1.2.5",
+      "title": "positive tie under round_ties_even lands on zero",
+      "kind": "quantize",
+      "f64_hex": "3fe0000000000000",
+      "decimal_note": "0.5",
+      "mode": "round_ties_even",
+      "radix": 10,
+      "places": 0,
+      "expect": {
+        "accept": {
+          "value": 0,
+          "exact": false
+        }
+      }
+    },
+    {
+      "id": "c8-half-reject",
+      "category": 8,
+      "clause": "§5.1.2.5",
+      "title": "positive tie under reject",
+      "kind": "quantize",
+      "f64_hex": "3fe0000000000000",
+      "decimal_note": "0.5",
+      "mode": "reject",
+      "radix": 10,
+      "places": 0,
+      "expect": {
+        "reject": "quantization-not-representable"
+      }
+    },
+    {
+      "id": "c8-three-halves-ties-even",
+      "category": 8,
+      "clause": "§5.1.2.5",
+      "title": "1.5 ties to the even neighbour, 2",
+      "kind": "quantize",
+      "f64_hex": "3ff8000000000000",
+      "decimal_note": "1.5",
+      "mode": "round_ties_even",
+      "radix": 10,
+      "places": 0,
+      "expect": {
+        "accept": {
+          "value": 2,
+          "exact": false
+        }
+      }
+    },
+    {
+      "id": "c8-neg-half-trunc",
+      "category": 8,
+      "clause": "§5.1.2.5",
+      "title": "negative tie truncates toward zero",
+      "kind": "quantize",
+      "f64_hex": "bfe0000000000000",
+      "decimal_note": "-0.5",
+      "mode": "trunc_toward_zero",
+      "radix": 10,
+      "places": 0,
+      "expect": {
+        "accept": {
+          "value": 0,
+          "exact": false
+        }
+      }
+    },
+    {
+      "id": "c8-neg-half-ties-even",
+      "category": 8,
+      "clause": "§5.1.2.5",
+      "title": "negative tie rounds to the even neighbour",
+      "kind": "quantize",
+      "f64_hex": "bfe0000000000000",
+      "decimal_note": "-0.5",
+      "mode": "round_ties_even",
+      "radix": 10,
+      "places": 0,
+      "expect": {
+        "accept": {
+          "value": 0,
+          "exact": false
+        }
+      }
+    },
+    {
+      "id": "c8-neg-three-halves",
+      "category": 8,
+      "clause": "§5.1.2.5",
+      "title": "-1.5 ties to -2",
+      "kind": "quantize",
+      "f64_hex": "bff8000000000000",
+      "decimal_note": "-1.5",
+      "mode": "round_ties_even",
+      "radix": 10,
+      "places": 0,
+      "expect": {
+        "accept": {
+          "value": -2,
+          "exact": false
+        }
+      }
+    },
+    {
+      "id": "c8-exact-quarter",
+      "category": 8,
+      "clause": "§5.1.2.5",
+      "title": "0.25 at places 2 is exactly representable",
+      "kind": "quantize",
+      "f64_hex": "3fd0000000000000",
+      "decimal_note": "0.25",
+      "mode": "reject",
+      "radix": 10,
+      "places": 2,
+      "expect": {
+        "accept": {
+          "value": 25,
+          "exact": true
+        }
+      }
+    },
+    {
+      "id": "c8-decimal-tenth-reject",
+      "category": 8,
+      "clause": "§5.1.2.5",
+      "title": "0.1 looks exact in decimal and is not a binary64 value: reject catches it",
+      "kind": "quantize",
+      "f64_hex": "3fb999999999999a",
+      "decimal_note": "0.1",
+      "mode": "reject",
+      "radix": 10,
+      "places": 1,
+      "expect": {
+        "reject": "quantization-not-representable"
+      }
+    },
+    {
+      "id": "c8-decimal-tenth-round",
+      "category": 8,
+      "clause": "§5.1.2.5",
+      "title": "the same value under round_ties_even lands just inside",
+      "kind": "quantize",
+      "f64_hex": "3fb999999999999a",
+      "decimal_note": "0.1",
+      "mode": "round_ties_even",
+      "radix": 10,
+      "places": 1,
+      "expect": {
+        "accept": {
+          "value": 1,
+          "exact": false
+        }
+      }
+    },
+    {
+      "id": "c8-decimal-tenth-trunc",
+      "category": 8,
+      "clause": "§5.1.2.5",
+      "title": "and truncates to the same integer, one ulp above one tenth",
+      "kind": "quantize",
+      "f64_hex": "3fb999999999999a",
+      "decimal_note": "0.1",
+      "mode": "trunc_toward_zero",
+      "radix": 10,
+      "places": 1,
+      "expect": {
+        "accept": {
+          "value": 1,
+          "exact": false
+        }
+      }
+    },
+    {
+      "id": "c8-negative-zero",
+      "category": 8,
+      "clause": "§5.1.2.5",
+      "title": "signed zero quantizes to the integer zero",
+      "kind": "quantize",
+      "f64_hex": "8000000000000000",
+      "decimal_note": "-0.0",
+      "mode": "reject",
+      "radix": 10,
+      "places": 6,
+      "expect": {
+        "accept": {
+          "value": 0,
+          "exact": true
+        }
+      }
+    },
+    {
+      "id": "c8-positive-zero",
+      "category": 8,
+      "clause": "§5.1.2.5",
+      "title": "positive zero quantizes to the same integer zero",
+      "kind": "quantize",
+      "f64_hex": "0000000000000000",
+      "decimal_note": "0.0",
+      "mode": "reject",
+      "radix": 10,
+      "places": 6,
+      "expect": {
+        "accept": {
+          "value": 0,
+          "exact": true
+        }
+      }
+    },
+    {
+      "id": "c8-just-inside-max",
+      "category": 8,
+      "clause": "§5.1.2.5",
+      "title": "the largest safe integer is representable at places 0",
+      "kind": "quantize",
+      "f64_hex": "433fffffffffffff",
+      "decimal_note": "9007199254740991.0",
+      "mode": "reject",
+      "radix": 10,
+      "places": 0,
+      "expect": {
+        "accept": {
+          "value": 9007199254740991,
+          "exact": true
+        }
+      }
+    },
+    {
+      "id": "c8-just-outside-max",
+      "category": 8,
+      "clause": "§5.1.2.5",
+      "title": "one step further overflows the cnp-0 range",
+      "kind": "quantize",
+      "f64_hex": "4340000000000000",
+      "decimal_note": "9007199254740992.0",
+      "mode": "reject",
+      "radix": 10,
+      "places": 0,
+      "expect": {
+        "reject": "quantization-overflow"
+      }
+    },
+    {
+      "id": "c8-overflow-scale",
+      "category": 8,
+      "clause": "§5.1.2.5",
+      "title": "a scale that pushes an in-range value out of range",
+      "kind": "quantize",
+      "f64_hex": "7e37e43c8800759c",
+      "decimal_note": "1e+300",
+      "mode": "trunc_toward_zero",
+      "radix": 10,
+      "places": 0,
+      "expect": {
+        "reject": "quantization-overflow"
+      }
+    },
+    {
+      "id": "c8-nan",
+      "category": 8,
+      "clause": "§5.1.2.5",
+      "title": "NaN is not a value a state may hold",
+      "kind": "quantize",
+      "f64_hex": "7ff8000000000000",
+      "decimal_note": "nan",
+      "mode": "reject",
+      "radix": 10,
+      "places": 6,
+      "expect": {
+        "reject": "quantization-nan"
+      }
+    },
+    {
+      "id": "c8-positive-infinity",
+      "category": 8,
+      "clause": "§5.1.2.5",
+      "title": "positive infinity is rejected",
+      "kind": "quantize",
+      "f64_hex": "7ff0000000000000",
+      "decimal_note": "inf",
+      "mode": "trunc_toward_zero",
+      "radix": 10,
+      "places": 6,
+      "expect": {
+        "reject": "quantization-infinite"
+      }
+    },
+    {
+      "id": "c8-negative-infinity",
+      "category": 8,
+      "clause": "§5.1.2.5",
+      "title": "negative infinity is rejected",
+      "kind": "quantize",
+      "f64_hex": "fff0000000000000",
+      "decimal_note": "-inf",
+      "mode": "round_ties_even",
+      "radix": 10,
+      "places": 6,
+      "expect": {
+        "reject": "quantization-infinite"
+      }
+    },
+    {
+      "id": "c8-binary-scale",
+      "category": 8,
+      "clause": "§5.1.2.5",
+      "title": "radix 2 places 10: 0.5 is exactly 512",
+      "kind": "quantize",
+      "f64_hex": "3fe0000000000000",
+      "decimal_note": "0.5",
+      "mode": "reject",
+      "radix": 2,
+      "places": 10,
+      "expect": {
+        "accept": {
+          "value": 512,
+          "exact": true
+        }
+      }
+    }
+  ]
+}

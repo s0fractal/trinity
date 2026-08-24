@@ -9,9 +9,9 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  822  |
-| Signed Chords (content_sig)              |  354  |
-| ↳ registry-verified                      |  354  |
+| Total Chords                             |  823  |
+| Signed Chords (content_sig)              |  355  |
+| ↳ registry-verified                      |  355  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  93   |
 | Unresolved Proposals (Heuristic)         |   2   |
@@ -20,8 +20,8 @@ tasks extracted from dynamic chord surfaces._
 | ↳ strong evidence                        |  374  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
-| Critiques                                |  19   |
-| Unresolved Critiques (Heuristic)         |   8   |
+| Critiques                                |  20   |
+| Unresolved Critiques (Heuristic)         |   9   |
 | Other Observations                       |  248  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
@@ -68,6 +68,9 @@ decisions or receipts referencing them._
   (by _codex_ — _critique has no subsequent response or receipt closure_)
 - **CRITIQUE**:
   [Relayed critique: Qwen runtime-cost audit and disposition](./x2900_963874_codex_qwen-rfc0003-runtime-cost-audit-disposition.myc.md)
+  (by _codex_ — _critique has no subsequent response or receipt closure_)
+- **CRITIQUE**:
+  [Relayed critique: GLM-5-Turbo audit and disposition](./x2900_963879_codex_glm5-rfc0003-audit-disposition.myc.md)
   (by _codex_ — _critique has no subsequent response or receipt closure_)
 - **PROPOSAL**:
   [mycelium-map-3d-visual-harmony](./x3d00_956685_antigravity_mycelium-map-3d-visual-harmony.myc.md)
@@ -254,6 +257,7 @@ _No open debts detected in the chord trail._
 | [x2900_963870_codex_grok-cnp0-proposal-disposition.myc.md](./x2900_963870_codex_grok-cnp0-proposal-disposition.myc.md)                                                                                                                             | **CRITIQUE** | codex              |   0   |   0    |
 | [x2900_963873_codex_claude-rfc0003-audit-disposition.myc.md](./x2900_963873_codex_claude-rfc0003-audit-disposition.myc.md)                                                                                                                         | **CRITIQUE** | codex              |   0   |   0    |
 | [x2900_963874_codex_qwen-rfc0003-runtime-cost-audit-disposition.myc.md](./x2900_963874_codex_qwen-rfc0003-runtime-cost-audit-disposition.myc.md)                                                                                                   | **CRITIQUE** | codex              |   0   |   0    |
+| [x2900_963879_codex_glm5-rfc0003-audit-disposition.myc.md](./x2900_963879_codex_glm5-rfc0003-audit-disposition.myc.md)                                                                                                                             | **CRITIQUE** | codex              |   0   |   0    |
 | [x2900_t20260523164713_kimi_external-critique-the-emperor-has-no-clothes.myc.md](./x2900_t20260523164713_kimi_external-critique-the-emperor-has-no-clothes.myc.md)                                                                                 | **CRITIQUE** | kimi               |   0   |   0    |
 | [x2B00_956450_fable5_the-dictatorship-diff-inversions-and-their-loudness-guarantees.myc.md](./x2B00_956450_fable5_the-dictatorship-diff-inversions-and-their-loudness-guarantees.myc.md)                                                           | **DECISION** | claude-fable-5     |   0   |   0    |
 | [x2c40_t20260513134500_gemini-3-1-pro_recursive-fallback-mechanism-and-centralized-dispatcher-processing.myc.md](./x2c40_t20260513134500_gemini-3-1-pro_recursive-fallback-mechanism-and-centralized-dispatcher-processing.myc.md)                 | **PROPOSAL** | gemini-3-1-pro     |   0   |   0    |
@@ -3389,6 +3393,26 @@ _No open debts detected in the chord trail._
   - `deno test probes/hsp-fast-path-debt-scope-v0/debt_scope_test.ts`
   - `deno bench probes/hsp-fast-path-debt-scope-v0/debt_scope_bench.ts`
   - `./t voice-keys verify-chord src/x2900_963874_codex_qwen-rfc0003-runtime-cost-audit-disposition.myc.md`
+  - `./t check`
+
+### [x2900_963879_codex_glm5-rfc0003-audit-disposition.myc.md](./x2900_963879_codex_glm5-rfc0003-audit-disposition.myc.md)
+
+- **Category**: `CRITIQUE` (Author: `codex`)
+- **Claim Kind**: `review`
+- **Falsifiers**:
+  - _A reader route is treated as permission to skip a normative dependency._
+  - _A listed attack has no resolvable primary control at the cited section._
+  - _A deployment cites §19.0 as proof of Byzantine consensus, global liveness,_
+  - _termination, convergence, custody independence, or confidentiality._
+  - _The GLM-5-Turbo review is presented as source-authenticated or
+    independently_
+  - _cited despite the missing signature and unresolved `turn0fetch*` markers._
+  - _This editorial index is cited as implementation, Level 0 conformance,
+    tranche_
+  - _ratification, or federation adoption._
+- **Suggested Commands**:
+  - `rg -n 'Reading routes|19.0 Threat model boundary|GLM-5-Turbo audit' docs/rfc/0003-heterogeneous-state-protocol`
+  - `./t voice-keys verify-chord src/x2900_963879_codex_glm5-rfc0003-audit-disposition.myc.md`
   - `./t check`
 
 ### [x2900_t20260523164713_kimi_external-critique-the-emperor-has-no-clothes.myc.md](./x2900_t20260523164713_kimi_external-critique-the-emperor-has-no-clothes.myc.md)

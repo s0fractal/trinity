@@ -730,6 +730,59 @@ where independent verification is possible.
 
 ## 19. Security and failure modes
 
+### 19.0 Threat model boundary
+
+This section gathers the security assumptions already distributed through the
+normative parts. It is a map, not a claim that the protocol supplies a complete
+Byzantine consensus, availability, custody, or confidentiality construction.
+
+**Assets.** The protocol protects the referent of a content address; authorship
+and ordering of protocol messages; provenance and declared loss across
+translation; invariant and suitability evidence; admission and ratification
+inputs; authority at consequential or irreversible boundaries; and the
+append-only history needed to audit those decisions.
+
+**Adversary capabilities.** A caller, translator, proposer, federation party,
+sequencer, or operator may submit malformed input; omit or fabricate loss;
+replay, reorder, fork, or selectively withhold messages; downgrade a metadata
+profile; split one conflict or mutation across identities; choose multiple keys;
+collude across nominal components; exploit an under-scoped fast path; or submit
+fixtures intended to consume unbounded resources. Cryptographic forgery and
+digest collision remain bounded by the selected algorithms; principal and
+custody independence do not follow from cryptography (§19.17).
+
+**Trust boundaries and assumptions.** A signature establishes control of a key,
+not semantic truth, authority, or a distinct principal. A receipt establishes
+what was recorded under its pinned evaluator and inputs, not that a policy was
+wise. A content address establishes byte identity only after canonical-profile
+validation and while the addressed bytes remain resolvable. Fixture agreement
+supports only its declared mapping domain (§13.4.3.2). External authority,
+availability, key custody, algorithm agility, and confidentiality mechanisms
+must be supplied and content-pinned by the adopting deployment.
+
+**Security goal.** At a consequential boundary, missing, malformed,
+under-scoped, downgraded, incomparable-to-a-hard-limit, or unauthorised evidence
+fails closed. The protocol preserves attribution and disagreement rather than
+manufacturing global agreement. It does not promise federation-wide liveness,
+termination, or convergence: `decline`, stable disagreement, a Pareto set, and
+an unresolved conflict are legitimate terminal or persistent states. A stronger
+consensus or liveness claim requires a separate, adopted protocol and its own
+proof or executable evidence.
+
+Representative attack paths and their primary controls are indexed here so a
+reviewer need not infer the model from section titles:
+
+| Attack path                                                   | Primary control                                                                           |
+| ------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| replay, reordering, or transcript fork                        | content-addressed envelopes and the selected ordering discipline (§13.4.3–§13.4.3.1)      |
+| key multiplication presented as independent quorum            | principal bindings and principal counting (§19.17, §22.1)                                 |
+| metadata/profile downgrade                                    | boundary rejection rather than backfill (§5.2, §19.11)                                    |
+| translator hides loss or grades its own action output         | canonical loss carriers and independently grounded suitability (§7.1–§7.2.2, §19.3–§19.4) |
+| caller launders consequential work through the fast path      | runtime-derived operation scope and aggregate audit (§15.0–§15.3, §19.9)                  |
+| reference substitution or truncated-digest collision grinding | canonical bytes and full load-bearing digests (§5.1, §19.10)                              |
+| resource exhaustion by fixture or repeated mutation           | bounded execution floor, budgets, debt, and terminal outcomes (§10, §13.4.1.1, §19.6)     |
+| hidden or unavailable evidence                                | disclosure/availability layering and explicit verification state (§14.1)                  |
+
 ### 19.1 Conflict laundering
 
 A new domain may hide rather than resolve conflict. Admission MUST compare

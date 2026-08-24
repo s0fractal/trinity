@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     17     |
 | compatibility abi |     55     |
 | compost           |     0      |
-| dynamic topology  |    822     |
+| dynamic topology  |    823     |
 | experimental      |     52     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **946**   |
+| **Total**         |  **947**   |
 
 ## Runtime Cache Diagnostics
 
@@ -313,6 +313,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x2900_963870_codex_grok-cnp0-proposal-disposition.myc.md](../src/x2900_963870_codex_grok-cnp0-proposal-disposition.myc.md)                                                                                                                             | canonical        | src/x2900_963870_codex_grok-cnp0-proposal-disposition.myc.md                                                               | keep        |                              |
 | dynamic topology  | [src/x2900_963873_codex_claude-rfc0003-audit-disposition.myc.md](../src/x2900_963873_codex_claude-rfc0003-audit-disposition.myc.md)                                                                                                                         | canonical        | src/x2900_963873_codex_claude-rfc0003-audit-disposition.myc.md                                                             | keep        |                              |
 | dynamic topology  | [src/x2900_963874_codex_qwen-rfc0003-runtime-cost-audit-disposition.myc.md](../src/x2900_963874_codex_qwen-rfc0003-runtime-cost-audit-disposition.myc.md)                                                                                                   | canonical        | src/x2900_963874_codex_qwen-rfc0003-runtime-cost-audit-disposition.myc.md                                                  | keep        |                              |
+| dynamic topology  | [src/x2900_963879_codex_glm5-rfc0003-audit-disposition.myc.md](../src/x2900_963879_codex_glm5-rfc0003-audit-disposition.myc.md)                                                                                                                             | canonical        | src/x2900_963879_codex_glm5-rfc0003-audit-disposition.myc.md                                                               | keep        |                              |
 | dynamic topology  | [src/x2900_t20260523164713_kimi_external-critique-the-emperor-has-no-clothes.myc.md](../src/x2900_t20260523164713_kimi_external-critique-the-emperor-has-no-clothes.myc.md)                                                                                 | canonical        | src/x2900_t20260523164713_kimi_external-critique-the-emperor-has-no-clothes.myc.md                                         | keep        |                              |
 | dynamic topology  | [src/x2B00_956450_fable5_the-dictatorship-diff-inversions-and-their-loudness-guarantees.myc.md](../src/x2B00_956450_fable5_the-dictatorship-diff-inversions-and-their-loudness-guarantees.myc.md)                                                           | canonical        | src/x2B00_956450_fable5_the-dictatorship-diff-inversions-and-their-loudness-guarantees.myc.md                              | keep        |                              |
 | dynamic topology  | [src/x2c40_t20260513134500_gemini-3-1-pro_recursive-fallback-mechanism-and-centralized-dispatcher-processing.myc.md](../src/x2c40_t20260513134500_gemini-3-1-pro_recursive-fallback-mechanism-and-centralized-dispatcher-processing.myc.md)                 | canonical        | src/x2c40_t20260513134500_gemini-3-1-pro_recursive-fallback-mechanism-and-centralized-dispatcher-processing.myc.md         | keep        |                              |

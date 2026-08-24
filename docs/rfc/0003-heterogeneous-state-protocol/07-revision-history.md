@@ -493,3 +493,66 @@ The first benchmark on Apple M4 Pro / Deno 2.9.2 measured a linear scan of 128
 disjoint debt terms at 34.6 µs average and 127 disjoint plus one relevant term
 at 35.2 µs. This is machine-local evidence for one predicate term, not evidence
 that the full fast path is affordable. No tranche is satisfied.
+
+---
+
+## 9. GLM-5-Turbo audit: navigation and threat-model indexing
+
+On 2026-08-24, s0fractal relayed a GLM-5-Turbo review. The
+[source relay](../../../proposals/rfc-0003/glm-5-turbo-audit-2026-08-24.md) and
+signed Codex
+[disposition](../../../src/x2900_963879_codex_glm5-rfc0003-audit-disposition.myc.md)
+are preserved outside the specification artifact. No source signature or
+resolvable source list accompanied the text; markers such as `turn0fetch0` are
+not usable citations in the relay.
+
+The review was adjudicated against the post-Claude, post-Qwen artifact rather
+than accepted as a maturity score:
+
+1. **Reader navigation accepted.** The folder had a canonical linear order but
+   no audience routes. The README now has bounded orientation, implementation,
+   verification/security, and governance routes. They do not weaken dependency
+   requirements.
+2. **Threat-model indexing accepted; the absence claim was corrected.** Part 00
+   already had seventeen security/failure modes and the normative parts already
+   addressed replay, ordering, downgrade, custody, resource bounds, and
+   fail-closed action. New §19.0 makes assets, adversary capabilities, trust
+   assumptions, goals, non-goals, and attack-to-control links explicit in one
+   place. It does not claim a Byzantine consensus or security proof.
+3. **Structure and terminology findings declined as factually wrong.** `00–07`
+   is eight parts, not seven. Part 00 §4 is the terminology section; §22 defines
+   and ratifies tranches. The README and Part 00 already carry the dependency
+   graph.
+4. **Loss and conflict findings declined as stale.** Sections 7.1–7.4 define
+   canonical structured loss, its algebra, contextual suitability, debt, and
+   composition. Sections 8–11 distinguish eligibility from authorization, admit
+   stable disagreement and Pareto sets, and do not promise a global conflict
+   resolver. The absence of a global termination theorem is therefore an
+   explicit scope limit, not an unstated convergence claim.
+5. **CNP-0 dependency risk retained without a new rule.** The draft candidate is
+   deliberately not treated as adopted. Part 01 §5.1.3 and Tranche A require a
+   separate frozen corpus, independent encoders, a rejecting verifier, pinned
+   dependencies, and adoption; §22.2 defines supersession if selected bytes
+   change.
+6. **Missing conformance matrix and prototype declined as stale.** Part 00 §17.2
+   maps primitives to owners, implementation actions, and first executable
+   tests; §§21–22 separate conformance and ratification. The debt-scope probe is
+   the first code artifact, while the full-digest vector row remains the first
+   dependency blocker. No implementation or tranche was promoted by prose.
+7. **Missing diagrams narrowed to editorial preference.** Parts 04–06 already
+   contain lifecycle, handshake, and runtime text diagrams. A diagram is not a
+   normative substitute for types, predicates, receipts, or fixtures, so no new
+   diagram mandate was added.
+8. **RFC-0001/RFC-0002 dependency and ethical-role claims declined as outside or
+   false.** RFC-0003 extends named federation primitives; it does not list the
+   neighbouring RFC files as normative dependencies. Human authority and
+   affected-owner acknowledgement are deployment/governance concerns, while a
+   general philosophy of personhood is outside this protocol's bounded scope.
+9. **Formal methods retained as optional future evidence.** TLA+, Alloy, Lean,
+   or Coq may be useful for a finite selected contract. The RFC distinguishes
+   `tested` from `proved` and does not claim a proof today; tool selection
+   before executable carriers and ratified dependencies would be ceremony rather
+   than evidence.
+
+This review produced an editorial map, not a normative mechanism, implementation
+claim, conformance result, or ratification. No tranche is satisfied.

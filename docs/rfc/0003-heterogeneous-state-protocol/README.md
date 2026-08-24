@@ -19,6 +19,24 @@ contracts. Part 07 records revision history and is non-normative.
 | 06   | [Governed Identity and Runtime Paths](06-identity-and-runtime-paths.md)           | Normative; Tranches F, H     | Parts 01, 02                  |
 | 07   | [Revision History](07-revision-history.md)                                        | Non-normative record         | —                             |
 
+## Reading routes
+
+Filename order remains the canonical complete reading order. These shorter
+routes are navigation aids, not permission to ignore a normative dependency:
+
+- **Orientation:** this README, then Part 00 §§0–4 (scope and terminology), §19
+  (threat model and failure modes), §21 (conformance), and §22 (ratification).
+- **Implementation:** Parts 01–03 for identity, domains, and translation; Part
+  06 for runtime paths; then Part 04 for mutation/admission and Part 05 for
+  federation as those features enter scope. Part 00 §17.2 names the first
+  executable artifact for each primitive.
+- **Verification and security:** Part 00 §§19–20, Part 01 §14, Parts 03–05, and
+  Part 06 §15.3. Read Part 07 to distinguish current rules from rejected or
+  superseded designs.
+- **Governance and ratification:** Part 00 §§17.2 and 21–22, followed by
+  Part 07. A draft selection, green local test, or signed critique is not
+  ratification.
+
 Part 01 selects CNP-0-JCS in the draft. It still blocks conforming
 cross-substrate implementation until the separate contract, normative corpus,
 independent implementations, rejecting verifier path, and federation adoption
@@ -60,3 +78,12 @@ fast path. Parts 03 and 06 now scope debt to typed operation closures, and the
 non-normative [debt-scope probe](../../../probes/hsp-fast-path-debt-scope-v0/)
 makes that rule executable. Other suggestions were already covered, remain open
 cryptographic or performance questions, or were declined in Part 07 §8.
+
+The later
+[GLM-5-Turbo audit](../../../proposals/rfc-0003/glm-5-turbo-audit-2026-08-24.md)
+was mostly an overview of an older or incompletely read surface: it miscounted
+the parts and missed existing terminology, loss, conformance, failure-mode, and
+implementation sections. Its useful remainder was navigational. This README now
+has audience routes, and Part 00 §19.0 gathers the existing security boundaries
+into one explicit threat-model map. The signed disposition and full adjudication
+are recorded in Part 07 §9.

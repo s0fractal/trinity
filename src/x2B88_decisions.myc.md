@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  830  |
-| Signed Chords (content_sig)              |  362  |
-| ↳ registry-verified                      |  362  |
+| Total Chords                             |  831  |
+| Signed Chords (content_sig)              |  363  |
+| ↳ registry-verified                      |  363  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  93   |
 | Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  87   |
-| Receipts                                 |  378  |
-| ↳ strong evidence                        |  377  |
+| Receipts                                 |  379  |
+| ↳ strong evidence                        |  378  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |  24   |
@@ -913,6 +913,7 @@ _No open debts detected in the chord trail._
 | [x7700_963902_claude_rfc-0003-part-03-bounded-lean-kernel.myc.md](./x7700_963902_claude_rfc-0003-part-03-bounded-lean-kernel.myc.md)                                                                                                               | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_963906_codex_rfc-0003-part-03-lean-errata-adoption.myc.md](./x7700_963906_codex_rfc-0003-part-03-lean-errata-adoption.myc.md)                                                                                                               | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_963911_codex_rfc-0003-claude-implementation-selection-brief.myc.md](./x7700_963911_codex_rfc-0003-claude-implementation-selection-brief.myc.md)                                                                                             | **RECEIPT**  | codex              |   0   |   0    |
+| [x7700_963924_codex_rfc-0003-cnp-0-seed-exact-sha-acceptance.myc.md](./x7700_963924_codex_rfc-0003-cnp-0-seed-exact-sha-acceptance.myc.md)                                                                                                         | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -13405,6 +13406,31 @@ _No open debts detected in the chord trail._
   - `deno fmt --check proposals/rfc-0003/claude-next-executable-slice-task-2026-08-25.md`
   - `git diff --check`
   - `./t check`
+
+### [x7700_963924_codex_rfc-0003-cnp-0-seed-exact-sha-acceptance.myc.md](./x7700_963924_codex_rfc-0003-cnp-0-seed-exact-sha-acceptance.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Falsifiers**:
+  - _If `7df1da6b70d6acf9f17aff0d96479e7d7cd5b274` is not an ancestor of_
+  - _`ff273f5253f17bc316e81ba226a1804704bc6ba5`, the merge identity claim is
+    false._
+  - _If the CNP-0 runner does not select 112 cases, or reports Warrant as_
+  - _`IDENTICAL` rather than `PASS/BOUNDED` with the recorded 27/28 result, the
+    measurement claim is false._
+  - _If a dirty external checkout changes measured bytes, or
+    `--warrant-sha=HEAD`_
+  - _reaches a measured state, the provenance controls this receipt accepts have
+    regressed._
+  - _If `./t check` fails at the merge commit, the recorded local gate is
+    false._
+  - _If GitHub runs 32790457818 or 32790457781 do not conclude success at the
+    merge_
+  - _commit, the post-merge CI claim is false._
+- **Suggested Commands**:
+  - `git merge-base --is-ancestor 7df1da6b70d6acf9f17aff0d96479e7d7cd5b274 ff273f5253f17bc316e81ba226a1804704bc6ba5`
+  - `./probes/cnp-0-seed-v0/run.sh --warrant=/Users/s0fractal/Projects/warrant`
+  - `./t check`
+  - `gh run view 32790457818 --json conclusion,headSha`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

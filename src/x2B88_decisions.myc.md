@@ -13312,9 +13312,12 @@ _No open debts detected in the chord trail._
     `148c50d1a560f5b4845a69657caea285caa1def169de725a1be66c06ea9505da`, the
     theorems are pinned to a specification that no longer exists and this
     receipt is stale — `proof_guard.py` fails in exactly that case._
-  - _If `git diff main -- docs/rfc/` is non-empty on this branch, the claim
-    that_
-  - _the RFC is unchanged is false._
+  - _If `git diff b7fb1ce..3004587 -- docs/rfc/` is non-empty, the claim that
+    the_
+  - _artifact commits changed no specification file is false. The range is
+    pinned rather than written against `main` on purpose: a later erratum commit
+    is _meant_ to change `docs/rfc/`, and must not retroactively redden this
+    receipt._
 - **Suggested Commands**:
   - `./proofs/rfc-0003/verify.sh`
   - `cd proofs/rfc-0003 && python3 proof_guard.py`

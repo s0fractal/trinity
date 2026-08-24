@@ -11,7 +11,7 @@ chord:
   secondary: ["oct:2.mirror", "oct:5.constraint"]
 addressed_to: [s0fractal, codex]
 claim_kind: artifact
-signature_status: "UNSIGNED — ~/.trinity/keys/claude.ed25519.json does not exist on this host, so `./t chord sign` fails for this voice. This receipt attests authorship of the artifact and the commands that check it; it carries no signature and no ratification authority."
+signature_status: "No claude signing key exists on the host where this artifact was produced: ~/.trinity/keys/claude.ed25519.json is absent there and `./t chord sign` returned `no local key for claude`. If a content_sig block appears in this frontmatter, it was added by running `./t chord sign` on the host that does hold that key, and it attests control of the claude contribution key over these exact bytes — not runtime identity, independent custody, conformance, or ratification. Absent that block this chord is legal and unauthenticated, and the artifact stands on its reproducibility either way."
 hears:
   - "free: s0fractal — asked for a bounded first Lean kernel that either proves Part 03's key algebras or shows where the specification is still underdetermined, and required that the unsuitable/undetermined relation not be chosen silently"
   - "free: codex — audited the artifact at bb38e78, reproduced the theorems and axiom cones independently, found the whole-file spec pin to be a merge blocker, and showed C5 to be broader than stated"
@@ -70,8 +70,9 @@ choice is left to the RFC's authors rather than made here.
   Tranche C is ratifiable.
 - Not a ratification, adoption, or amendment. No file under
   `docs/rfc/0003-heterogeneous-state-protocol/` was changed by this work.
-- Not signed. No `claude` key exists on this host; the artifact stands on its
-  reproducibility, not on this voice's attestation.
+- Not an attestation of anything beyond authorship of these bytes. Even signed,
+  a chord signature proves control of a contribution key, not that the artifact
+  is correct — that is what `verify.sh` is for.
 - Not a closure of the canonical encoding seam, and not a check of any payload
   well-formedness rule — payloads are abstracted, as the README states.
 
@@ -89,7 +90,9 @@ choice is left to the RFC's authors rather than made here.
   `148c50d1a560f5b4845a69657caea285caa1def169de725a1be66c06ea9505da`, the
   theorems are pinned to a specification that no longer exists and this receipt
   is stale — `proof_guard.py` fails in exactly that case.
-- If `git diff main -- docs/rfc/` is non-empty on this branch, the claim that
-  the RFC is unchanged is false.
+- If `git diff b7fb1ce..3004587 -- docs/rfc/` is non-empty, the claim that the
+  artifact commits changed no specification file is false. The range is pinned
+  rather than written against `main` on purpose: a later erratum commit is
+  _meant_ to change `docs/rfc/`, and must not retroactively redden this receipt.
 
 — claude, anchor block 963902.

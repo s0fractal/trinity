@@ -14,6 +14,19 @@ name: verify-proofs
 # `03-translation-loss-and-suitability.md` is in `paths` deliberately: the guard
 # fails when §7's normative body changes, and that failure is the whole point of
 # pinning it. A front-matter edit to the same file is reported and passes.
+#
+# Two hardening rules this file follows, because it runs on `pull_request` and
+# therefore on content a stranger controls:
+#
+#   1. `lean-toolchain` is attacker-controlled input. Its bytes are never placed
+#      into a `${{ }}` expression — that substitution happens before the shell
+#      sees the script, so `$(…)` in the file would execute. It is read inside
+#      the shell, validated against an exact pattern, and used only as a quoted
+#      variable, all within ONE step: passing it between steps through
+#      `GITHUB_OUTPUT`/`GITHUB_ENV` would reopen the same hole via an embedded
+#      newline. The cache key uses `hashFiles()` rather than the file's content.
+#   2. Every downloaded byte is checked against a pinned digest before it is
+#      unpacked or executed.
 
 on:
   push:
@@ -28,6 +41,9 @@ on:
       - "docs/rfc/0003-heterogeneous-state-protocol/03-translation-loss-and-suitability.md"
       - ".github/workflows/verify-proofs.yml"
 
+permissions:
+  contents: read
+
 jobs:
   lean-kernel:
     runs-on: ubuntu-latest
@@ -39,30 +55,42 @@ jobs:
           # submodule, no dependency on anything else in the tree except the
           # specification file it pins.
           submodules: false
-
-      - name: Read pinned toolchain
-        id: toolchain
-        run: echo "value=$(cat proofs/rfc-0003/lean-toolchain)" >> "$GITHUB_OUTPUT"
+          persist-credentials: false
 
       - name: Cache Lean toolchain
         uses: actions/cache@v4
         with:
           path: ~/.elan
-          key: elan-${{ runner.os }}-${{ steps.toolchain.outputs.value }}
+          key: elan-${{ runner.os }}-${{ hashFiles('proofs/rfc-0003/lean-toolchain') }}
 
-      - name: Install elan
+      - name: Install elan and the pinned toolchain
+        env:
+          # Pinned release and its digest, verified out of band. `elan-init` is
+          # the only member of this archive.
+          ELAN_URL: https://github.com/leanprover/elan/releases/download/v4.2.3/elan-x86_64-unknown-linux-gnu.tar.gz
+          ELAN_SHA256: df0b2b3a439961ffcbb3985214365ffe40f49bc871df04dff268c7d8e21ca8b2
         run: |
           set -euo pipefail
-          if [ ! -x "$HOME/.elan/bin/elan" ]; then
-            curl -sSfL \
-              https://github.com/leanprover/elan/releases/download/v4.2.3/elan-x86_64-unknown-linux-gnu.tar.gz \
-              | tar xz
-            ./elan-init -y --default-toolchain none
-          fi
-          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
 
-      - name: Install the pinned toolchain
-        run: elan toolchain install "${{ steps.toolchain.outputs.value }}"
+          # Untrusted input: read, then validate, then only ever use quoted.
+          toolchain="$(tr -d '[:space:]' < proofs/rfc-0003/lean-toolchain)"
+          if ! printf '%s' "$toolchain" \
+              | grep -Eq '^leanprover/lean4:v[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error::proofs/rfc-0003/lean-toolchain is not a plain" \
+              "leanprover/lean4:vX.Y.Z pin; refusing to run"
+            exit 1
+          fi
+
+          if [ ! -x "$HOME/.elan/bin/elan" ]; then
+            curl --proto '=https' --tlsv1.2 -sSfL -o elan.tar.gz "$ELAN_URL"
+            echo "${ELAN_SHA256}  elan.tar.gz" | sha256sum -c -
+            tar xzf elan.tar.gz
+            ./elan-init -y --default-toolchain none
+            rm -f elan.tar.gz elan-init
+          fi
+
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          "$HOME/.elan/bin/elan" toolchain install "$toolchain"
 
       # verify.sh elaborates all four modules and then runs proof_guard.py, which
       # checks the escape hatches, the closed axiom allowlist, the pinned theorem

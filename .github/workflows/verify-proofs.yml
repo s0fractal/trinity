@@ -90,7 +90,17 @@ jobs:
           fi
 
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-          "$HOME/.elan/bin/elan" toolchain install "$toolchain"
+          # `elan toolchain install` exits 1 when this exact toolchain was
+          # restored from actions/cache and is already installed. Detect that
+          # successful cache-hit state explicitly; every other state still has
+          # to complete a real installation.
+          if "$HOME/.elan/bin/elan" toolchain list \
+              | awk '{print $1}' \
+              | grep -Fxq "$toolchain"; then
+            echo "using cached Lean toolchain $toolchain"
+          else
+            "$HOME/.elan/bin/elan" toolchain install "$toolchain"
+          fi
 
       # verify.sh elaborates all four modules and then runs proof_guard.py, which
       # checks the escape hatches, the closed axiom allowlist, the pinned theorem

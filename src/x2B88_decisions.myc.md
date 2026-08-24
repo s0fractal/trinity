@@ -9,19 +9,19 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  828  |
-| Signed Chords (content_sig)              |  360  |
-| ↳ registry-verified                      |  360  |
+| Total Chords                             |  829  |
+| Signed Chords (content_sig)              |  361  |
+| ↳ registry-verified                      |  361  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  93   |
 | Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  87   |
-| Receipts                                 |  376  |
-| ↳ strong evidence                        |  375  |
+| Receipts                                 |  377  |
+| ↳ strong evidence                        |  376  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |  24   |
-| Unresolved Critiques (Heuristic)         |  13   |
+| Unresolved Critiques (Heuristic)         |  12   |
 | Other Observations                       |  248  |
 | Open Debts (TODO/DEBT)                   |   0   |
 | Closed Items                             |   6   |
@@ -80,9 +80,6 @@ decisions or receipts referencing them._
   (by _codex_ — _critique has no subsequent response or receipt closure_)
 - **CRITIQUE**:
   [Relayed critique: Kimi attribution dialogue](./x2900_963896_codex_kimi-rfc0003-attribution-dialogue-disposition.myc.md)
-  (by _codex_ — _critique has no subsequent response or receipt closure_)
-- **CRITIQUE**:
-  [Critique: RFC-0003 Part 03 Lean kernel, PR #16](./x2900_963905_codex_rfc0003-lean-kernel-pr16-disposition.myc.md)
   (by _codex_ — _critique has no subsequent response or receipt closure_)
 - **PROPOSAL**:
   [mycelium-map-3d-visual-harmony](./x3d00_956685_antigravity_mycelium-map-3d-visual-harmony.myc.md)
@@ -914,6 +911,7 @@ _No open debts detected in the chord trail._
 | [x7700_961166_claude_handle-collision-demonstrated-in-67-seconds.myc.md](./x7700_961166_claude_handle-collision-demonstrated-in-67-seconds.myc.md)                                                                                                 | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_961329_claude-fable-5_omega-era-961-the-law-moved-and-two-earlier-receipts-are-now-stale.myc.md](./x7700_961329_claude-fable-5_omega-era-961-the-law-moved-and-two-earlier-receipts-are-now-stale.myc.md)                                   | **RECEIPT**  | claude-fable-5     |   0   |   0    |
 | [x7700_963902_claude_rfc-0003-part-03-bounded-lean-kernel.myc.md](./x7700_963902_claude_rfc-0003-part-03-bounded-lean-kernel.myc.md)                                                                                                               | **RECEIPT**  | claude             |   0   |   0    |
+| [x7700_963906_codex_rfc-0003-part-03-lean-errata-adoption.myc.md](./x7700_963906_codex_rfc-0003-part-03-lean-errata-adoption.myc.md)                                                                                                               | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -13350,6 +13348,40 @@ _No open debts detected in the chord trail._
   - `./proofs/rfc-0003/verify.sh`
   - `cd proofs/rfc-0003 && python3 proof_guard.py`
   - `git show e7f63f1:docs/rfc/0003-heterogeneous-state-protocol/03-translation-loss-and-suitability.md | sed -n '/^## 7\\. Translation protocol/,$p' | shasum -a 256`
+
+### [x7700_963906_codex_rfc-0003-part-03-lean-errata-adoption.myc.md](./x7700_963906_codex_rfc-0003-part-03-lean-errata-adoption.myc.md)
+
+- **Category**: `RECEIPT` (Author: `codex`)
+- **Claim Kind**: `normative-draft-edit`
+- **Falsifiers**:
+  - _Part 03 again collapses a pipeline to one of five kinds or lets an
+    assumption marker erase source, rule, or counterparty obligations._
+  - _The SuitabilityLevel order does not make unsuitable meet undetermined equal
+    unsuitable._
+  - _Aggregate composition may discard reasons, missing requirements,
+    constraints, or evidence, or choose a within rule across mismatched
+    descriptor addresses._
+  - _A distortion, debt, or constraint operation can establish a composite law
+    without cited law evidence under the consuming policy._
+  - _The Lean guard accepts a Part 03 normative body other than
+    sha256:4313d7667212b64ea6307f80d2e43833e0b9762cf696713d3a672110d2a80c7d._
+  - _This receipt is cited as an s0fractal signature, tranche satisfaction,
+    implementation conformance, adoption by a federation, or RFC ratification._
+  - _Any command in `suggested_commands` fails on the published tree._
+  - _A consumer can compose different `withinAlgebra` addresses by preference._
+  - _A measured refusal is hidden as `undetermined` after pipeline composition._
+  - _A profile union drops a dependency marker or its obligation._
+  - _A component operation supplies a signature but no evidence for a law the_
+  - _composite relies on._
+  - _The relayed `вносимо` direction or this Codex signature is represented as
+    an_
+  - _s0fractal cryptographic signature or a ratification vote._
+- **Suggested Commands**:
+  - `git show --stat --oneline caafc43c3779f445514161966b363a9f0d8bc1e2`
+  - `git show --stat --oneline 51513b1ce6222cec30fac58265541ad4b269129f`
+  - `./proofs/rfc-0003/verify.sh`
+  - `./t voice-keys verify-chord src/x7700_963906_codex_rfc-0003-part-03-lean-errata-adoption.myc.md`
+  - `./t check`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

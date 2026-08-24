@@ -1,0 +1,1049 @@
+{
+  "spec": {
+    "commit": "e7f63f1ad9efa75ffb157f73bafc07a6336c31ff",
+    "path": "docs/rfc/0003-heterogeneous-state-protocol/03-translation-loss-and-suitability.md",
+    "sha256": "9462e6bfbbf3c6d24d41a80df6dffa30b42c41bf705cf657fb0874d25f098616"
+  },
+  "theorems": {
+    "HSP.Counterexamples.average_is_not_a_meet": {
+      "axioms": [],
+      "module": "Counterexamples",
+      "rfc": "\u00a77.2.1",
+      "statement_sha256": "e876696df3cba57c460b61e75b621b1cb715a324053bd0e7705a331ffe733dc2"
+    },
+    "HSP.Counterexamples.bounded_payload_rule_can_break_meet": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "Counterexamples",
+      "rfc": "\u00a77.2.1",
+      "statement_sha256": "1d658ae983e17d6e9e0d7249276aa9a8bc4589c825fc199ea214da99c7bbe06b"
+    },
+    "HSP.Counterexamples.compose_not_commutative": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "Counterexamples",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "1f3108d4ff97a11735d1921faec7dfe27c356947acca91d08845d9d759919f9a"
+    },
+    "HSP.Counterexamples.debt_commutes_while_loss_does_not": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "Counterexamples",
+      "rfc": "\u00a77.3.1",
+      "statement_sha256": "4c5b640c6fa2bedf225e512477a84f3ad3c369330a8f6a26b22bac78ca38599e"
+    },
+    "HSP.Counterexamples.distortA_canonical": {
+      "axioms": [],
+      "module": "Counterexamples",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "626e475ca925031139f2236cf4234170787216e59800e0f0689575bb262eda57"
+    },
+    "HSP.Counterexamples.distortB_canonical": {
+      "axioms": [],
+      "module": "Counterexamples",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "d1e6ebe2207e4be9cffd8c32e3552df3dc0bdd03c4d5d3c681c0a43529532e18"
+    },
+    "HSP.Counterexamples.distortion_rule_breaks_commutativity": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "Counterexamples",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "6e56bd9e044142497502be7e2c5765a8478e588a15947a0ce1a45d2bc599c4be"
+    },
+    "HSP.Counterexamples.drawn_order_drops_obligations": {
+      "axioms": [],
+      "module": "Counterexamples",
+      "rfc": "\u00a77.0.2",
+      "statement_sha256": "6733c0cf5f0b3e335814282facdfa811931dd945a4ba879072634b72f8fa181d"
+    },
+    "HSP.Counterexamples.drawn_order_over_restricts": {
+      "axioms": [],
+      "module": "Counterexamples",
+      "rfc": "\u00a77.0.2",
+      "statement_sha256": "76e214d3f1d836f211e4635faee64bfb2fe80f74ef5cc21ea6ff5eb18270aca2"
+    },
+    "HSP.Counterexamples.empty_is_identity_here": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "Counterexamples",
+      "rfc": "\u00a77.3.1",
+      "statement_sha256": "deee22f1d0264ecb1ccf40d6b9e094fb26dcd05e50d8d0acec82bba2d4180188"
+    },
+    "HSP.Counterexamples.enrichment_improvement_invisible_to_meet": {
+      "axioms": [],
+      "module": "Counterexamples",
+      "rfc": "\u00a77.0",
+      "statement_sha256": "96c308403d3a788a6791b9c558159b5c8dc8d308b6cfe5544a623f74380691b2"
+    },
+    "HSP.Counterexamples.monotone_loss_for_translation_pipeline": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "Counterexamples",
+      "rfc": "\u00a77.0.2",
+      "statement_sha256": "0b4dc96f9c20b3ef942b5f1cba0a9367a0276d44a4d4463c225a6eeb3a5c760e"
+    },
+    "HSP.Counterexamples.monotone_loss_holds_for_reconstruction_pipeline": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "Counterexamples",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "039ec04fbe701ff79e6c3c3cc62920c5a01bfa3dd7452d62fd0ac74d4b5abf6f"
+    },
+    "HSP.Counterexamples.monotone_loss_needs_no_kind_guard": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "Counterexamples",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "02b948eb65a156198d806c70721ff75686f84c230a3c53821694ac6ef19a38dd"
+    },
+    "HSP.Counterexamples.noncommutativity_lives_in_steps": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "Counterexamples",
+      "rfc": "\u00a77.1.0",
+      "statement_sha256": "2c51a326d0adbfd83728435842b64f27d2e3714a3dc6fedd5194cbea62698529"
+    },
+    "HSP.Counterexamples.reconstruction_pipeline_is_not_monotone_bound": {
+      "axioms": [],
+      "module": "Counterexamples",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "21138d097e1b35078e1ec9f1869f6e836e3bd7ecad66d64ca0fb6c0a794e704e"
+    },
+    "HSP.Counterexamples.stepA_canonical": {
+      "axioms": [],
+      "module": "Counterexamples",
+      "rfc": "\u00a77.3.1",
+      "statement_sha256": "0563ea7aadba54d0d1d7daf08315e62c2b55af954521dd0ce76fa433dc07c020"
+    },
+    "HSP.Counterexamples.stepB_canonical": {
+      "axioms": [],
+      "module": "Counterexamples",
+      "rfc": "\u00a77.3.1",
+      "statement_sha256": "de61cd194ca837bf56beb122b8f49ef08b5b323bd6f47432be3ecb31a22a9fe5"
+    },
+    "HSP.Counterexamples.suitability_underdetermined": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "Counterexamples",
+      "rfc": "\u00a77.2.1",
+      "statement_sha256": "a411185e3a8a095b33b665b9026c2b651a313a41b4f4fe35c9a0c180b3e6819b"
+    },
+    "HSP.LossProfile.CMap.ext": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.0",
+      "statement_sha256": "ec9bb8fd8b0e8a55c5b9845712d48fa4c5d9b39c9a0ab3e7975c451895bdcd77"
+    },
+    "HSP.LossProfile.CMap.interWith_assoc": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.0",
+      "statement_sha256": "5b1eaefad979810f93e5c80690e8872597b3e5e8e25ea7d4dcdce139fbd2ea8a"
+    },
+    "HSP.LossProfile.CMap.interWith_comm": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.0",
+      "statement_sha256": "4ed63e7d0331f56b2e370d800e2dde28916d9774f004fe78b9037d3fc7cd6ce3"
+    },
+    "HSP.LossProfile.CMap.interWith_idem": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.0",
+      "statement_sha256": "31bc9c81a31b21396f60de7dd4f371433cbd9fc553db85fc8e43d36c386478b9"
+    },
+    "HSP.LossProfile.CMap.joinOpt_assoc": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "44c7a1aabbe4724480af7c495bf1ac6ca8175fd86146cfcf76f8cdfb0b4f2b06"
+    },
+    "HSP.LossProfile.CMap.joinOpt_comm": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "c9afff1fd421145e1576d06fb9901efa69503cd95e9b41ca30c9b042045fad11"
+    },
+    "HSP.LossProfile.CMap.keysGt_interWith": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "31bfb5a8a48bb02add578d5dbc58a1c97856a6f5e004d43de5d72edcfa1e2451"
+    },
+    "HSP.LossProfile.CMap.keysGt_mergeWith": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "fbd072e86e6b59255d683fc382c8ba3bd631b901b33aed2cfd667827b5d04a52"
+    },
+    "HSP.LossProfile.CMap.keysGt_mono": {
+      "axioms": [],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "4ed9252bd4d3aa4131b9d711f83dae8f5696b0808c3ae5ee101f2ae92f6af3b5"
+    },
+    "HSP.LossProfile.CMap.lookup_cons_ne": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "51e25e9cc780dd52efdaaad231525b8733a5213fb9e732e6db80fb5b4b26e61e"
+    },
+    "HSP.LossProfile.CMap.lookup_cons_self": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "77845768de6c6b3a66fbef28b3dfd88434f06377ba260ebf9c6d030d9be561ca"
+    },
+    "HSP.LossProfile.CMap.lookup_eq_none_of_keysGt": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "e7779b606bb861e8e2ffe4b7042e13b30b635d3c388c6b4cd5fbffbdd62b894f"
+    },
+    "HSP.LossProfile.CMap.lookup_interWith": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "653ae1a1c3af2b0446f0faede4e0d637259378d4f9502f216bcae6c7058bbf5e"
+    },
+    "HSP.LossProfile.CMap.lookup_mergeWith": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "6c4ddff985fbf7e6b53d40505b5577286406db4f3d86bbbdbffe62404132eb81"
+    },
+    "HSP.LossProfile.CMap.meetOpt_assoc": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "641b4cfc7f30b387ffa0b369160b4d2c9f0c20c9a2c211bf34c708caef2f5d90"
+    },
+    "HSP.LossProfile.CMap.meetOpt_comm": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "0771a9eaa8e5c8d34220be89cf7368747aa1b9a526dfa9c3a989c4be5a9c6098"
+    },
+    "HSP.LossProfile.CMap.mergeWith_assoc": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.0",
+      "statement_sha256": "efd9d91134beab115404d5a1031e8af4266606dbd67e2efb7e8b5d16b25b8bc2"
+    },
+    "HSP.LossProfile.CMap.mergeWith_comm": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.0",
+      "statement_sha256": "81cc07982dd05b1596e2acc199baa2927d0f05a84fbf4b62b1455449a328cbc1"
+    },
+    "HSP.LossProfile.CMap.mergeWith_idem": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.0",
+      "statement_sha256": "643970cf9bf38651e37186b232b882e7650a14fb04f2ab4e83017a252a684a0a"
+    },
+    "HSP.LossProfile.CMap.mergeWith_nil_left": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.0",
+      "statement_sha256": "87b01eaf04bd0336fdba02c94b6edf74821ff9e1058833a12656196d25b363a1"
+    },
+    "HSP.LossProfile.CMap.mergeWith_nil_right": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.0",
+      "statement_sha256": "ee5c8b7aac6df822bc7920cc0b8fe4c804a951edc47e201c5782ab5c17ccf27a"
+    },
+    "HSP.LossProfile.CMap.sorted_interWith": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "33c99e3ce7a63fcc414499081e7826c99b3f4ce929b1806304a79599446c6226"
+    },
+    "HSP.LossProfile.CMap.sorted_mergeWith": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "fc7e1ad71ecc8b51e4911a97cc0469d30409da3fbe0aae4c2af282a9b9c3b733"
+    },
+    "HSP.LossProfile.Preservation.inter_all_left": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "5a3f4ca9072a9e0a3f9d9377b23a71b414658e19b293723009b21fc105d5cba1"
+    },
+    "HSP.LossProfile.Preservation.inter_all_right": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "0bdb48a0b3de10897b200ca3b71043eb0c4f83e08f86dd86562c7e261329a1a3"
+    },
+    "HSP.LossProfile.Preservation.inter_assoc": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "d50f9892403533360cc09dad5d604f224fd02aad88d90df9540c2b3cba68e565"
+    },
+    "HSP.LossProfile.Preservation.inter_canonical": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "1c0873e30738eaf024aedc93714b7eb50ac83847aa6f320b3dd155fc1d3c25f9"
+    },
+    "HSP.LossProfile.Preservation.inter_comm": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "94e39158cc31deb6d56b05b1d2b451abe7484316fb54f37df0a84b49253da5bc"
+    },
+    "HSP.LossProfile.Preservation.inter_eq_all_iff": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "e94313f0f2a9e75cd377fd13708b6779f86e3305ef53be6c9f496dc4b8a5d23d"
+    },
+    "HSP.LossProfile.Profile.assumptions_compose_comm": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "55da2b655699c5f90f63e4d40d10cc6c214bad211c053f24a17e80980972cb7c"
+    },
+    "HSP.LossProfile.Profile.compose_assoc": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "4b26fff51a9a85f3ae0af84bd86ffcfffd69b6d84119880d7661d10220b76ca3"
+    },
+    "HSP.LossProfile.Profile.compose_canonical": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.0",
+      "statement_sha256": "d517ac4e7f4942a97b9307004891f936e881744a9ef5728292e52431faa1480f"
+    },
+    "HSP.LossProfile.Profile.compose_empty_left": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "3de199fc0cf16123e48f39869ce21bb262e15ec5e05e40da238843608627e5e2"
+    },
+    "HSP.LossProfile.Profile.compose_empty_right": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "f425921c484e1463fb2015647285513665b4641e8987dafd58d53bc7288d1a44"
+    },
+    "HSP.LossProfile.Profile.debt_compose_comm": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.3.1",
+      "statement_sha256": "09fbe176c651e542fa24c7e97339c8898a8bf92df0121d56804aa0bf4fa4f529"
+    },
+    "HSP.LossProfile.Profile.debt_monotone": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.3.1",
+      "statement_sha256": "b6ed6331ae776436aefb2b5077032fa56ddbc7d3fcf86c0a3bf0a2465cf54b48"
+    },
+    "HSP.LossProfile.Profile.empty_canonical": {
+      "axioms": [],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.0",
+      "statement_sha256": "f96d5fcb37e8943e7047785245d22285bea255d9497cc44fcb6966cd913eb80c"
+    },
+    "HSP.LossProfile.Profile.lost_compose_comm": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "1f3551daf0c61df6c824f743537e193648a051c9d2a53a36fdd66a3885b3de01"
+    },
+    "HSP.LossProfile.Profile.lost_monotone_left": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "4a1781dcd0c72bbde22673c64bcc96245c4a5e9640db464161726ba50f99a66b"
+    },
+    "HSP.LossProfile.Profile.lost_monotone_right": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "897fa85c3d51db81b70115b9acf82a6b2806700d07a096bb82496e4c5bd8324c"
+    },
+    "HSP.LossProfile.Profile.preserved_antitone": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "f5cd47c2cb20a2a6ef08defdc4dd5bed62dfe08b458c0bf91e32974999e6f88d"
+    },
+    "HSP.LossProfile.Profile.preserved_compose_comm": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "464fcd594fd68934c0a266bbbe5d0313cb05839e0fc7dc25ca9e8fbe4ae9f8a6"
+    },
+    "HSP.LossProfile.Profile.steps_compose": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "statement_sha256": "49c4864c41cb84788cd7b517f17daaa993c5c826364170276a24929641f9e51b"
+    },
+    "HSP.Suitability.CompletionA.bot_le": {
+      "axioms": [],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "statement_sha256": "51f3a2cd016588a1aa32c0af7430a340c9242ae2a0d0257b31621f107719ee85"
+    },
+    "HSP.Suitability.CompletionA.extends_stated": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.2",
+      "statement_sha256": "50e3464fa8e8750713f77b9e824424777f05082244b18a948be194924f4d3a38"
+    },
+    "HSP.Suitability.CompletionA.le_antisymm": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.2",
+      "statement_sha256": "9cb71b86bc387b26d3f524fa3478e2af87af90e1e57760b2ea592d91590db62d"
+    },
+    "HSP.Suitability.CompletionA.le_meet": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "statement_sha256": "ee8d1c7f4a46c8745fc77625b8e1dfb17ef3fc3bca712c39ca334a119fbfd94b"
+    },
+    "HSP.Suitability.CompletionA.le_refl": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.2",
+      "statement_sha256": "5ed42ac3b6dd0d30432b5f6a1092893b9ccb6d218eef7d3b7116057a1ebe6a5b"
+    },
+    "HSP.Suitability.CompletionA.le_top": {
+      "axioms": [],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "statement_sha256": "f7ee3716e64e736553022c37f3c098c4395cf35885ee09f63b7e3745ef566b26"
+    },
+    "HSP.Suitability.CompletionA.le_trans": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.2",
+      "statement_sha256": "35a78697e29603fadf4ebb1e71daa1091f323b8a66569c88d0bf73067ef8e099"
+    },
+    "HSP.Suitability.CompletionA.meet_assoc": {
+      "axioms": [],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.2",
+      "statement_sha256": "842b65f3ccbc5022d306c6adaad80355d03df42cdd68cd149ff329e05bbdfea5"
+    },
+    "HSP.Suitability.CompletionA.meet_comm": {
+      "axioms": [],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.2",
+      "statement_sha256": "17afa02d7f36292c5a45d3ebe91eec0d18364e681791a152c92c86762343bbc6"
+    },
+    "HSP.Suitability.CompletionA.meet_idem": {
+      "axioms": [],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.2",
+      "statement_sha256": "37a28c80af47b8b063e38d4244568cdd77ecdd84a78095bc449a1ea65d4ab544"
+    },
+    "HSP.Suitability.CompletionA.meet_le_left": {
+      "axioms": [],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "statement_sha256": "07dce178a0ac0860944d27051ec2d81be7b24419b6f573cc91bb9443fd962150"
+    },
+    "HSP.Suitability.CompletionA.meet_le_right": {
+      "axioms": [],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "statement_sha256": "4ad066b9e7b06ed4af0b9f82af3362f3d63c0bd6888217583cfdc29fdcde8701"
+    },
+    "HSP.Suitability.CompletionA.rank_inj": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.2",
+      "statement_sha256": "4554f5e38e0af74bb818859283892c7fde5c17f1aa35f39b04dcae8ef1d6ac37"
+    },
+    "HSP.Suitability.CompletionB.bot_le": {
+      "axioms": [],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "statement_sha256": "4b299926996c5ab52bbe233190d821cc28bdae28ff9b137eb049a734d67b5360"
+    },
+    "HSP.Suitability.CompletionB.extends_stated": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "statement_sha256": "50e3464fa8e8750713f77b9e824424777f05082244b18a948be194924f4d3a38"
+    },
+    "HSP.Suitability.CompletionB.le_antisymm": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "statement_sha256": "9cb71b86bc387b26d3f524fa3478e2af87af90e1e57760b2ea592d91590db62d"
+    },
+    "HSP.Suitability.CompletionB.le_meet": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "statement_sha256": "ee8d1c7f4a46c8745fc77625b8e1dfb17ef3fc3bca712c39ca334a119fbfd94b"
+    },
+    "HSP.Suitability.CompletionB.le_refl": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "statement_sha256": "5ed42ac3b6dd0d30432b5f6a1092893b9ccb6d218eef7d3b7116057a1ebe6a5b"
+    },
+    "HSP.Suitability.CompletionB.le_top": {
+      "axioms": [],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "statement_sha256": "f7ee3716e64e736553022c37f3c098c4395cf35885ee09f63b7e3745ef566b26"
+    },
+    "HSP.Suitability.CompletionB.le_trans": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "statement_sha256": "35a78697e29603fadf4ebb1e71daa1091f323b8a66569c88d0bf73067ef8e099"
+    },
+    "HSP.Suitability.CompletionB.meet_assoc": {
+      "axioms": [],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "statement_sha256": "842b65f3ccbc5022d306c6adaad80355d03df42cdd68cd149ff329e05bbdfea5"
+    },
+    "HSP.Suitability.CompletionB.meet_comm": {
+      "axioms": [],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "statement_sha256": "17afa02d7f36292c5a45d3ebe91eec0d18364e681791a152c92c86762343bbc6"
+    },
+    "HSP.Suitability.CompletionB.meet_idem": {
+      "axioms": [],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "statement_sha256": "37a28c80af47b8b063e38d4244568cdd77ecdd84a78095bc449a1ea65d4ab544"
+    },
+    "HSP.Suitability.CompletionB.meet_le_left": {
+      "axioms": [],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "statement_sha256": "07dce178a0ac0860944d27051ec2d81be7b24419b6f573cc91bb9443fd962150"
+    },
+    "HSP.Suitability.CompletionB.meet_le_right": {
+      "axioms": [],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "statement_sha256": "4ad066b9e7b06ed4af0b9f82af3362f3d63c0bd6888217583cfdc29fdcde8701"
+    },
+    "HSP.Suitability.CompletionB.rank_inj": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "statement_sha256": "4554f5e38e0af74bb818859283892c7fde5c17f1aa35f39b04dcae8ef1d6ac37"
+    },
+    "HSP.Suitability.bootstrap_stays_blocked": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.2",
+      "statement_sha256": "c8c098e16853cc7a82248a2d31770105a9041bb30bb9f08caf4b04d3c2e16c11"
+    },
+    "HSP.Suitability.completions_disagree": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "Suitability",
+      "rfc": "\u00a77.3",
+      "statement_sha256": "4a25cbef5dd4ab591064a50b0ef38e15a2c55d146600bc8a93dec16e5766b9a2"
+    },
+    "HSP.Suitability.foldl_undetermined": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.2",
+      "statement_sha256": "4c01a00f3740af4d2e102d08944b1d75a7718c17a0424cb9b9f09433f0b53521"
+    },
+    "HSP.Suitability.gate_agrees": {
+      "axioms": [],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "statement_sha256": "db20920068b52a0a7437fa699a95c9b5f0405afd63a56ee119d63d245742055c"
+    },
+    "HSP.Suitability.meetC_assoc": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "statement_sha256": "64bf5aad7b885ed97bb9c7c7faef9eb333d9e28b698301acbf0ad4ae88db75e4"
+    },
+    "HSP.Suitability.meetC_comm": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "statement_sha256": "c05bfc3ccb756395609957ba2b1266d06d2359e23aade08e5d5650d6ec39eb35"
+    },
+    "HSP.Suitability.meetC_idem": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "statement_sha256": "09613aa490a9a96d7a9eba7c3b260bfbbaf0f711f0b4e0de474671a6a8f547af"
+    },
+    "HSP.Suitability.no_bottom": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "statement_sha256": "430ac7fa8f83056547c703353d332160dfeb4ef5e849983b898fdce8a91f700a"
+    },
+    "HSP.Suitability.no_lower_bound": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "statement_sha256": "25c390f29c70f370e06e3cead0ac7aec1234843c6ffa501b414361e90e47365b"
+    },
+    "HSP.Suitability.no_meet": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "statement_sha256": "40a6b3e668680e818a0214b8dc78f9fecf8d714b1220441180c1ce50d3a41575"
+    },
+    "HSP.Suitability.self_report_cannot_cross": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.2",
+      "statement_sha256": "d5329f6250e531e7eaecc07b3fcf391cc893c0eee87a56b121d14b5318644e3f"
+    },
+    "HSP.Suitability.statedLe_antisymm": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "statement_sha256": "be0586324d05dbbd433704a3e31e15ec5f4387fdde8e25bdb2a231ea347a27c8"
+    },
+    "HSP.Suitability.statedLe_refl": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "statement_sha256": "51083a395f0cd7bf33f971b55be0a374914c007302a9242fa11f9dfcacfcb4ac"
+    },
+    "HSP.Suitability.statedLe_trans": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "statement_sha256": "b452711764d847c8da6f53101c336465d590a472ef86a5b8d3ec07ff986d46cb"
+    },
+    "HSP.Suitability.unsuitable_undetermined_incomparable": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "statement_sha256": "ee5dd290ac4015d3b1883a62e981042c557ae5250fb94eab092c6aa8659488fe"
+    },
+    "HSP.TransformKind.Class5.join_assoc": {
+      "axioms": [],
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.2",
+      "statement_sha256": "e9b40e49f5ab6524f340140ed4dc40a02d8fe8e5aaf30f46385cb915e7ad54eb"
+    },
+    "HSP.TransformKind.Class5.join_comm": {
+      "axioms": [],
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.2",
+      "statement_sha256": "92ccbafee6d3c6a99ff3adeadc3c1aa10e51e4a333c004471fb5459723eb3615"
+    },
+    "HSP.TransformKind.Class5.join_idem": {
+      "axioms": [],
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.2",
+      "statement_sha256": "97b517da8e4d05abeeca6b54f0a513cac20e67b1ea8be762c52ed3a3be5d01bd"
+    },
+    "HSP.TransformKind.bot_le": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.2",
+      "statement_sha256": "5b3bbce339001c78dc0956e170105215d7c149f307d944f3d6c1e6b12cde84e7"
+    },
+    "HSP.TransformKind.boundaryBarred_join": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.3",
+      "statement_sha256": "3966b12a0bd462834fc269487bbde32a2620d3f25a3e43f9006ebd82c72e8d7d"
+    },
+    "HSP.TransformKind.classify_append": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.1",
+      "statement_sha256": "1f76f5bd75377f67ae85fd1f77f3cc5ef6e48efc027e3e27f0b91b0f44339f94"
+    },
+    "HSP.TransformKind.classify_cons": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "TransformKind",
+      "rfc": "\u00a77.4",
+      "statement_sha256": "e77b5e7973f1a0d200d1c07855d6b3a7a343304f2170851e4e04b930b3ae2b42"
+    },
+    "HSP.TransformKind.declarationConforms_iff": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.2",
+      "statement_sha256": "48f05e26000901c3c0284c4ea36e733c08306d8aa91b43db5a3420964062372e"
+    },
+    "HSP.TransformKind.foldl_join": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.1",
+      "statement_sha256": "a700bd966518b8c687235ca122042287fd6d3f8379d5528fd283edce9aac2045"
+    },
+    "HSP.TransformKind.join_assoc": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.2",
+      "statement_sha256": "9f976c004f1060411f6f488359c208c419fc6b8a826f2357edaa5807054e35b9"
+    },
+    "HSP.TransformKind.join_bot_left": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.2",
+      "statement_sha256": "c4e54c5286fc66b28fb0616f25701ded574505c3d4220ef1b9c2af45a43fd760"
+    },
+    "HSP.TransformKind.join_bot_right": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.2",
+      "statement_sha256": "98d8a2e24953e8f96d489bb8c97fa0fa5fe3ea3349e2c1d8d534f70c88184014"
+    },
+    "HSP.TransformKind.join_comm": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.2",
+      "statement_sha256": "6c2364b34c939948c62c081faa41c30af7d47560261df420fb6fe68a177cb02f"
+    },
+    "HSP.TransformKind.join_idem": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.2",
+      "statement_sha256": "895f8b5a41477338e431a31a2f66fb30b47c27f691cf9d66a75fb260866449cf"
+    },
+    "HSP.TransformKind.join_le": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.2",
+      "statement_sha256": "94868cdbe46564bd95312a28605abfaf508708b72cab44c350b3d12262c0d996"
+    },
+    "HSP.TransformKind.join_top_left": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.2",
+      "statement_sha256": "f734e5ad4b7d00d1e741d3582a4e544d21029043b40975913b8dc9f30774c6b2"
+    },
+    "HSP.TransformKind.join_top_right": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.2",
+      "statement_sha256": "7fdde717c70cfb1808e7e2ae510324734912b4384ece5b2119e0d21ea9344159"
+    },
+    "HSP.TransformKind.le_antisymm": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.2",
+      "statement_sha256": "a83a8dc9760bd35c9d589ba496d97de5b3b5fdb9321a94478062047a364d594b"
+    },
+    "HSP.TransformKind.le_join_left": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.2",
+      "statement_sha256": "ed8af51c0e944a7a7cfe2035ea747a74da47293a4fc82e4296b6f339f4bdc47d"
+    },
+    "HSP.TransformKind.le_join_right": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.2",
+      "statement_sha256": "07ccdd15f39007813bee1dde1cb0f1f34cc1b0743966d24a2a8d4d82b381a8d8"
+    },
+    "HSP.TransformKind.le_refl": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.2",
+      "statement_sha256": "d13495379c550bcf9a565a6582845565b73104abf21572eb2c24a4957ac18bbd"
+    },
+    "HSP.TransformKind.le_top": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.2",
+      "statement_sha256": "c52024356a52532b3dbbd851977a1940e14893517e6351266138e4cafe985d39"
+    },
+    "HSP.TransformKind.le_trans": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.2",
+      "statement_sha256": "207f1ca14e6dba83022b6d0ee2360b30a11b0fcd3e4d9759b2111ad380710548"
+    },
+    "HSP.TransformKind.monotoneLossRequired_iff": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.1",
+      "statement_sha256": "58f86c4014602e5451f840a8d867de2dd8090fd74388d124b683edf04fb428bf"
+    },
+    "HSP.TransformKind.obligations_join": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.2",
+      "statement_sha256": "5f3546d1356296bc4f820685b62bd338c26dad7177bcce89efe8cee34aad848e"
+    },
+    "HSP.TransformKind.reconstruction_propagates": {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.1",
+      "statement_sha256": "acb971f184df3b9eced5acbcc73f695f277c9468ee94fb12038cc7ecba357e47"
+    },
+    "HSP.TransformKind.understated_declaration_rejected": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.2",
+      "statement_sha256": "90ccf6aa7483cc303cb277c48cedadcebecf86b850197cdcabcc2dc6b2cfaff6"
+    }
+  },
+  "toolchain": "leanprover/lean4:v4.31.0"
+}

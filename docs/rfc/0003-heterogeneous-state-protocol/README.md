@@ -50,5 +50,13 @@ and a signed
 [Codex disposition](../../../src/x2900_963873_codex_claude-rfc0003-audit-disposition.myc.md),
 with an editorial account in Part 07 §7. It closes carrier, threat-model,
 sequencer, principal-counting, and amendment-procedure gaps; it does not satisfy
-any tranche. Per Part 00 §22, the next normative artifact is executable code and
-fixtures rather than another prose-only revision.
+any tranche. Per Part 00 §22, that erratum required the following artifact to be
+executable code or fixtures rather than another prose-only revision.
+
+The subsequent
+[Qwen runtime-cost audit](../../../proposals/rfc-0003/qwen-runtime-cost-audit-2026-08-24.md)
+identified one new ambiguity: whether any translation debt globally disables the
+fast path. Parts 03 and 06 now scope debt to typed operation closures, and the
+non-normative [debt-scope probe](../../../probes/hsp-fast-path-debt-scope-v0/)
+makes that rule executable. Other suggestions were already covered, remain open
+cryptographic or performance questions, or were declined in Part 07 §8.

@@ -314,6 +314,14 @@ comparison, and it fails if **any** dimension is exceeded — a surplus in one
 dimension MUST NOT offset an overrun in another unless an explicit, warranted,
 content-addressed exchange rule permits it.
 
+Incomparability between two otherwise eligible proposals is not itself a budget
+failure. Both remain in the Pareto set and governance MAY authorize one for
+attributed reasons under §10.1.3. Incomparability between a proposal's cost and
+a required hard limit is different: the limit has not been shown satisfied and
+eligibility fails closed. Stakeholders MAY adopt different exchange or
+lexicographic rules, but each rule is local policy, MUST be content-addressed,
+and MUST NOT be presented as a federation-wide rate.
+
 #### 10.1.2 The cost model is content-addressed, or admission is a story
 
 §10.1 correctly refuses to collapse the inequality into one number. That refusal

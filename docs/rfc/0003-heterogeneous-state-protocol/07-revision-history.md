@@ -428,3 +428,68 @@ Nine proposals were adjudicated rather than copied wholesale:
 This was a bounded pre-ratification erratum. It does not satisfy any tranche.
 The next normative artifact is intentionally forced back to §17.2's executable
 slice rather than another prose-only pass.
+
+---
+
+## 8. Qwen audit: debt locality and ceremony cost
+
+Later on 2026-08-24, s0fractal relayed a further Qwen audit focused on runtime
+cost and bureaucratic failure modes. The
+[source relay](../../../proposals/rfc-0003/qwen-runtime-cost-audit-2026-08-24.md),
+Codex
+[disposition](../../../src/x2900_963874_codex_qwen-rfc0003-runtime-cost-audit-disposition.myc.md),
+and [executable probe](../../../probes/hsp-fast-path-debt-scope-v0/) are
+preserved outside the specification artifact. No Qwen signature accompanied the
+relay.
+
+The findings were separated by whether they exposed a new contract gap:
+
+1. **Debt locality accepted and implemented.** “No unresolved debt” in §15.0
+   could be read globally, allowing one peripheral translation debt to disable
+   an agent's entire fast path. §7.3.1 now gives each debt term a global or
+   bounded typed scope. §15.0 derives a complete operation-scope closure and
+   blocks only global, overlapping, malformed, or unknown debt. Eleven
+   executable tests cover independence, overlap, coupling, snapshot
+   completeness, malformed input, duplication, and input-order invariance.
+2. **Cost-vector paralysis corrected, not adopted as described.** The draft
+   already permits explicit, warranted, content-addressed exchange rules and
+   separates deterministic eligibility from governance authorization. §10.1.1
+   now makes the remaining distinction explicit: incomparable eligible
+   alternatives remain a Pareto set; failure applies when a hard limit has not
+   been shown satisfied. A local stakeholder rule is not a global exchange rate.
+3. **Exact-rational complexity retained as an open measurement question.** CNP-0
+   rejected the earlier `i128` proposal and bounds serialized integers to
+   ±(2^53−1); §20.15 already asks whether rational reduction and fixed-point
+   migration meet fast-path volume. Canonical input is validated at the
+   boundary, not recomputed by traversing every historical reference on each
+   hash. No new numeric rule was added.
+4. **Ungrounded handshake mode declined for consequential HSP action.** Section
+   13.4.5 already admits the execution floor is pre-agreement. Parties without
+   it may exchange documents or dictionaries outside a grounded handshake, but
+   calling that an HSP compatibility contract would erase the protocol's only
+   behavioral evidence. A larger quorum does not turn ungrounded semantics into
+   grounded semantics at an irreversible boundary.
+5. **Reference bloat routed to implementation evidence.** Content addressing
+   permits structural sharing and partial resolution; it does not require
+   embedding an entire DAG in each message. The new probe measures a simple
+   linear debt-scope scan and leaves scope indexes, bundles, membership proofs,
+   and network parsing costs open rather than mandating IPLD or another store.
+6. **ZK loss proofs remain open, not selected.** §14.1 and §20.20 already
+   reserve commitments and selective disclosure. A scalar statement such as
+   `loss <= threshold` is not generally defined over the structured partial
+   orders in this RFC, so selecting a ZK circuit before the carrier, predicate,
+   and construction are ratified would be false precision.
+7. **Tension omission was already closed.** Section 19.15 requires `absent` to
+   differ from `not assessed` and fails a boundary closed when a gating tension
+   dimension is unassessed. Automatically rewriting that epistemic state into a
+   suitability label would conflate two contracts.
+8. **Lean/Coq is not mandatory.** Section 6.2 deliberately admits `tested` laws
+   with generators and counterexamples as distinct from `proved`; boundary
+   policy chooses the minimum status. Hard domains may justify proof, but the
+   RFC does not silently upgrade that engineering pressure into a universal tool
+   mandate.
+
+The first benchmark on Apple M4 Pro / Deno 2.9.2 measured a linear scan of 128
+disjoint debt terms at 34.6 µs average and 127 disjoint plus one relevant term
+at 35.2 µs. This is machine-local evidence for one predicate term, not evidence
+that the full fast path is affordable. No tranche is satisfied.

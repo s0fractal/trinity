@@ -131,9 +131,41 @@ no mutation cost     — no mutation is proposed and no *mutation-budget* term i
                        including the predicate evaluation itself
 not coupled          — the operation touches no component of a coupled composite
                        state (§6.5.1)
-no unresolved debt   — the states involved carry no outstanding translation debt
+no relevant debt     — no outstanding translation-debt term has global scope or
+                       intersects the operation scope defined below
 invariants unchanged — the operation touches no invariant in the identity policy
 ```
+
+The runtime, never the caller, MUST derive an `OperationScope` from the actual
+read/write set and its semantic closure:
+
+```ts
+type OperationScope = {
+  refs: ScopeRef[]; // §7.3.1 typed full-digest references
+  debtIndexSnapshot: ContentAddress;
+};
+```
+
+The closure contains every state-lineage, domain, ontology, component, and
+invariant reference touched by the operation, plus any component or invariant
+pulled in by a declared coupling or dependency. `refs` is a non-empty canonical
+set. The debt index snapshot commits to the complete outstanding debt set
+against which the decision was evaluated.
+
+A debt term is relevant when its scope is `global` or when one typed reference
+in its bounded scope exactly matches one in the operation closure. A resolved
+term does not appear in the outstanding snapshot. An unrelated bounded term MUST
+NOT block the fast path. A missing snapshot, incomplete operation closure, empty
+bounded scope, unknown scope kind, malformed reference, or legacy term without
+scope MUST block it. This makes locality fail closed without turning one debt in
+ontology A into a permanent governed-path tax on an independent operation in
+ontology B.
+
+The path-selection receipt MUST bind the operation-scope digest, debt-index
+snapshot, and either the matching debt-term digests or a verifiable empty-match
+result. A runtime MAY use a content-addressed scope index or membership proof to
+avoid scanning every term, but the index is an optimization of the same result,
+not a weaker predicate.
 
 The predicate MUST fail closed: if any term is unknown, unavailable, or
 expensive to evaluate, the operation takes the governed path. Evaluating the
@@ -159,8 +191,10 @@ evaluated once and held — provided that:
 1. the segment declares its bounds up front (operation count, wall-clock, or
    state-reachability), and MUST end when any bound is reached;
 2. any event that could falsify a held term ends the segment immediately — a
-   federation message arriving, a debt being recorded, an identity amendment, a
-   coupling being added;
+   federation message arriving, a relevant/global/unknown-scope debt being
+   recorded, an identity amendment, or a coupling being added. A bounded debt
+   proven disjoint from the held operation scope does not end the segment, but
+   the proof and new debt-index snapshot MUST be attached to its receipt;
 3. the segment is itself receipted, so the amortization is auditable as a unit;
 4. the segment fails closed: on any uncertainty it ends and the next operation
    re-evaluates in full.

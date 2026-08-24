@@ -494,9 +494,19 @@ The carrier is canonical rather than implementation-defined:
 type DebtTerm = {
   dimension: ContentAddress;
   quantity: ContentAddress;
+  scope: DebtScope;
   incurredAt: TranslationStepRef[];
   grounds: EvidenceRef[];
 };
+
+type ScopeRef = {
+  kind: "state-lineage" | "domain" | "ontology" | "component" | "invariant";
+  ref: ContentAddress;
+};
+
+type DebtScope =
+  | { kind: "global" }
+  | { kind: "bounded"; refs: ScopeRef[] };
 
 type TranslationDebt = {
   terms: DebtTerm[];
@@ -513,14 +523,23 @@ type DebtDischarge = {
 ```
 
 Each `dimension` descriptor MUST pin the exact quantity encoding, unit, zero,
-addition rule, and partial-order rule. Terms key on `dimension`; addition
-applies that pinned rule, unions `incurredAt` and `grounds`, and emits one
-canonical term per dimension. `terms`, `incurredAt`, `grounds`, and discharge
-evidence are canonical sets sorted by member full digest with duplicates
-rejected. Debt and discharge records use the selected canonical encoding and
-full content addresses. Two debt values are equal exactly when their canonical
-bytes are equal. A prose quantity, host-native number, or unpinned
-addition/order rule is non-conforming.
+addition rule, and partial-order rule. A bounded scope MUST contain at least one
+typed full-digest reference and MUST NOT mix a bare display name or truncated
+handle into `refs`; a debt whose effect cannot be bounded uses `global` rather
+than omitting scope. Terms key on `(dimension, scope)`; addition applies the
+pinned rule only within that key, unions `incurredAt` and `grounds`, and emits
+one canonical term per key. `refs`, `terms`, `incurredAt`, `grounds`, and
+discharge evidence are canonical sets sorted by member full digest with
+duplicates rejected. Debt and discharge records use the selected canonical
+encoding and full content addresses. Two debt values are equal exactly when
+their canonical bytes are equal. A prose quantity, host-native number, unpinned
+addition/order rule, empty bounded scope, or missing scope is non-conforming.
+
+Scope is an accountability boundary, not a deletion mechanism. Splitting one
+global debt into invented narrow scopes to regain the fast path is
+debt-laundering and MUST retain a receipted derivation showing why each bounded
+scope is complete. Section 15.0 defines how a runtime compares these scopes with
+an operation; unknown, malformed, or legacy unscoped debt fails closed there.
 
 `TranslationDebt` MUST form a **commutative monoid** under accumulation:
 

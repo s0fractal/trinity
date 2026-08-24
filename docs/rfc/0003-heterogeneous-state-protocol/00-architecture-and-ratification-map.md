@@ -1253,7 +1253,9 @@ reduces design uncertainty; it does not weaken this gate.
 
 - **F1.** Adopt state profiles so ceremony scales with consequence.
 - **F2.** Adopt the two-path runtime with a runtime-evaluated, fail-closed,
-  receipt-recorded path predicate.
+  receipt-recorded path predicate. Translation debt is scope-local: global,
+  overlapping, malformed, or unknown-scope debt blocks; a bounded debt proven
+  disjoint from the complete operation scope does not (§15.0).
 - **F3.** Permit amortized predicate evaluation and receipting under §15.0.1,
   with declared segment bounds and taint propagation.
 
@@ -1316,12 +1318,13 @@ What matters going forward rather than backward:
 2. **Part 01 still blocks conformance.** Its draft encoding is selected; the
    missing contract, corpus, independent implementations, rejection path, and
    adoption keep every later part non-conforming across substrate boundaries.
-3. **The next normative artifact after this bounded audit erratum MUST be code,
-   not another prose-only revision.** §17.2 gives the first implementation slice
-   as a table whose last column is a test that fails today. The first row — full
-   digest vectors beside 12-hex handles — remains the smallest executable
-   blocker. Marginal value has moved from text to those tests and the demos of
-   §16.
+3. **The first post-erratum artifact is code, not another prose-only revision.**
+   `probes/hsp-fast-path-debt-scope-v0` makes the debt-locality term of §15.0
+   executable with eleven fail-closed tests and a local benchmark. It is a
+   Tranche F fragment, not conformance and not a substitute for §17.2's
+   dependency order. The first row there — full-digest vectors beside 12-hex
+   handles — remains the smallest executable blocker. Marginal value has moved
+   from text to those tests and the demos of §16.
 
 ---
 

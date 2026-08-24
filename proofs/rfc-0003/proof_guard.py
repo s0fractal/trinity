@@ -64,9 +64,9 @@ SPEC_RELPATH = os.path.join(
 # The clause the normative body starts at. Everything above it is front matter:
 # status, stewardship, provenance, home, parent, dependency list.
 SPEC_BODY_MARKER = "\n## 7. Translation protocol\n"
-SPEC_BODY_SHA256 = "148c50d1a560f5b4845a69657caea285caa1def169de725a1be66c06ea9505da"
-SPEC_FILE_SHA256 = "794d9b3591397cd033843890fdee06a09c98103be45324cc7e00b858fa9d6b65"
-SPEC_COMMIT = "b7fb1cecf3d284d831692dfbdf5acfa4ab424321"
+SPEC_BODY_SHA256 = "4313d7667212b64ea6307f80d2e43833e0b9762cf696713d3a672110d2a80c7d"
+SPEC_FILE_SHA256 = "b77d967c1a61a2db9890cab1b900599f903bdc845cb094a8f9f1234de05c2ff9"
+SPEC_COMMIT = "caafc43c3779f445514161966b363a9f0d8bc1e2"
 
 EXPECTED_TOOLCHAIN = "leanprover/lean4:v4.31.0"
 

@@ -17,39 +17,46 @@ and the debt accumulation laws that §7.3.1 states.
   encoding, or identity. Those parts of RFC-0003 are untouched here.
 
 What it is: a check on whether the _algebra_ Part 03 asserts is the algebra its
-words define. Four places it is not, one place its own picture disagrees with
-its own text, and one place it asks a component for an operation but never for
-that operation's laws, are recorded below as **C1–C7** — C1–C6 with a
-machine-checked witness, each with a proposed erratum. **The RFC has not been
-edited.** An erratum is a proposal for the RFC's authors, not a change made
-here.
+words define. The kernel exposed seven findings: C1–C6 have machine-checked
+witnesses, while C7 is visible in the hypotheses the proofs require. The draft
+steward accepted C1, C2, C3, C5, C6, and C7 as normative errata at `caafc43`; C4
+confirmed the existing averaging prohibition. The witnesses remain here as
+regression tests against reintroducing the old ambiguity. Acceptance changes the
+specification; it does not turn this bounded model into a proof of HSP.
 
 ## Specification pinned
 
 |                                     |                                                                                     |
 | ----------------------------------- | ----------------------------------------------------------------------------------- |
 | Repository                          | `s0fractal/trinity`                                                                 |
-| Commit                              | `b7fb1cecf3d284d831692dfbdf5acfa4ab424321`                                          |
+| Commit                              | `caafc43c3779f445514161966b363a9f0d8bc1e2`                                          |
 | File                                | `docs/rfc/0003-heterogeneous-state-protocol/03-translation-loss-and-suitability.md` |
-| **§7 body sha256** (the dependency) | `148c50d1a560f5b4845a69657caea285caa1def169de725a1be66c06ea9505da`                  |
-| Whole-file sha256 (reported only)   | `794d9b3591397cd033843890fdee06a09c98103be45324cc7e00b858fa9d6b65`                  |
+| **§7 body sha256** (the dependency) | `4313d7667212b64ea6307f80d2e43833e0b9762cf696713d3a672110d2a80c7d`                  |
+| Whole-file sha256 (reported only)   | `b77d967c1a61a2db9890cab1b900599f903bdc845cb094a8f9f1234de05c2ff9`                  |
 
 `proof_guard.py` gates on the **normative body** — everything from
 `## 7. Translation protocol` to the end of the file — and merely _reports_ a
 change to the front matter. The reason is concrete: this artifact was first
 written against `e7f63f1`, where the file hashed to `9462e6bf…`; `b7fb1ce`
-("docs(rfc): separate contribution from authority") rewrote the stewardship and
-provenance block and changed the file digest to `794d9b…` **without touching a
-single clause any theorem here rests on**. A whole-file pin would have gone red
-for that, and a guard that goes red for a header edit teaches people to ignore
-it. The §7 body digest is byte-identical across both commits, which is
-checkable:
+("docs(rfc): separate contribution from authority") rewrote only stewardship and
+provenance. A whole-file gate would have failed even though the §7 body was
+byte-identical.
+
+Commit `caafc43` is different: it deliberately changes §7 by accepting the
+findings below. The pin was advanced only after comparing the new clauses with
+the existing models: profile union matches `Marks.join`; Completion B matches
+`CompletionB.meet`; the full payload operation remains conditional on the laws
+made normative for the aggregate and its descriptor; and the descriptor-law
+hypotheses are now explicit requirements. The theorem and definition locks were
+not weakened to make the new pin pass.
+
+The earlier front-matter-only change remains checkable:
 
 ```sh
 git show e7f63f1:docs/rfc/0003-heterogeneous-state-protocol/03-translation-loss-and-suitability.md
 ```
 
-A change inside §7 still fails, immediately and by name.
+A later change inside §7 still fails, immediately and by name.
 
 ## How to verify
 
@@ -250,13 +257,14 @@ evidence a descriptor has to supply.
 - **`byInvariant` suitability, round-trip anchors (§7.4.2), evidence bridges
   (§7.5), and debt discharge/decay (§7.3.1(2,3)) are not modelled at all.**
 
-## What remains underdetermined in the RFC
+## Findings against the pre-erratum text and their disposition
 
 Seven findings. C1–C6 each have a machine-checked witness in
 `HSP/Counterexamples.lean`; C7 is visible in the hypothesis list of
-`HSP/LossProfile.lean` rather than as a witness. None of them is a claim that
-HSP is wrong; each is a place where two conforming implementations can differ,
-or where the document contradicts itself.
+`HSP/LossProfile.lean` rather than as a witness. They were found against the
+pre-`caafc43` text. C1, C2, C3, C5, C6, and C7 are now adopted; C4 required no
+edit. The counterexamples below describe the old failure and remain falsifiers
+for the revised clauses.
 
 ### C1 — §7.1.1: the kind guard is inert on the loss fields
 
@@ -272,9 +280,10 @@ kind_ ("For those, the field rules above still apply"), and union and
 intersection are monotone. The proposed test therefore tests the field rules,
 not the kind.
 
-**Proposed erratum.** Keep the field rules. Re-attach the qualifier to the claim
-it governs — the _fitness_ of the output, not the loss fields — so that a reader
-does not conclude the algebra changes with the kind. It does not.
+**Disposition — adopted in `caafc43`.** The field rules remain monotone for
+every kind. The qualifier now governs the _fitness_ of the output rather than
+the recorded loss fields, so the cheap field test no longer pretends to test the
+kind declaration.
 
 ### C2 — §7.0.2: the drawn diagram contradicts the stated set semantics
 
@@ -294,18 +303,18 @@ with `reconstruction` yields `reconstruction`, from which §7.0.1(4)'s obligatio
 on the enrichment's sources can no longer be read off. The obligations do not
 accumulate; one is lost at the join.
 
-**Proposed erratum.** Separate the two things §7.0 currently conflates:
+**Disposition — adopted in `caafc43`.** Section 7.0 now separates the two things
+the earlier text conflated:
 
 - `TransformationKind` — what a _single step_ is: one of the five;
 - `TransformationProfile` — what a _pipeline_ is: the canonical set of
   dependency markers, ordered by inclusion.
 
-A pipeline's declared kind is then a profile, not a kind, and §7.0.2's diagram
-is redrawn as the lattice of those sets. `reconstruction` remains a
-boundary-barred marker that is maximal in the trust order but does **not**
-absorb `sources` / `rules` / `counterparty`. `obligations_join` becomes a
-theorem rather than a hope. (This split is Codex's formulation, adopted here
-after review; see "External audit".)
+A pipeline now declares a profile, not a winning kind, and §7.0.2 defines the
+finite-set join-semilattice directly. An `assumption` marker remains
+boundary-barred but does **not** absorb source, rule, or counterparty markers.
+`obligations_join` becomes a theorem rather than a hope. (This split is Codex's
+formulation, adopted here after review; see "External audit".)
 
 ### C3 — §7.2.1: the relation between `unsuitable` and `undetermined` is missing
 
@@ -322,16 +331,15 @@ step, one unmeasured step).
 this is an erratum, not a safety hole. `completions_disagree`: they report
 different values on that pair.
 
-**Proposed erratum — and this artifact does not make the choice.** The
-recommendation is Completion B: add `unsuitable` **below** `undetermined`, with
-this justification — `unsuitable` carries a `ReasonRef` (an evidenced refusal),
-`undetermined` carries `missing: EvidenceRequirement[]` (a list of what would
-resolve it). Under Completion A a pipeline containing a measured-unsuitable step
-reports `undetermined`, advertising a remedy that cannot lift the pipeline.
-Under Completion B the evidenced refusal survives composition, which is what
-§7.2.2 asks for everywhere else. Codex's review reached the same conclusion
-independently: a proven refusal must not be masked as an ostensibly fixable
-shortage of evidence. Suggested wording for §7.2.1:
+**Disposition — Completion B adopted in `caafc43`.** `unsuitable` is below
+`undetermined`: `unsuitable` is an evidenced refusal, while `undetermined`
+records what evidence is missing. Under Completion A a pipeline containing a
+measured-unsuitable step reports `undetermined`, advertising a remedy that
+cannot lift the pipeline. Under Completion B the evidenced refusal survives
+composition, while the aggregate still preserves the other step's missing
+requirements. Codex's review reached the same conclusion independently: a proven
+refusal must not be masked as an ostensibly fixable shortage of evidence. The
+adopted wording is equivalent to:
 
 > with `unsuitable < undetermined < bounded < suitable`. `undetermined` is above
 > `unsuitable` because `unsuitable` is an evidenced refusal and `undetermined`
@@ -367,17 +375,20 @@ left-biasing is not even commutative, so it is not a meet at all.
 `tagOf_meetFull` bounds what the rest of this artifact established: the payload
 meet projects onto the tag meet, so the tag results settle §7.2.2's gate — which
 reads only the tag — and say nothing about the value a receipt carries.
-**Completion B is proved for the tags; the full `Suitability` type still has no
-defined meet.**
+**Completion B is proved for the tags; the bounded Lean model does not itself
+choose operations for the full payload.** The revised RFC supplies those
+operations and requires their law evidence; the conditional `meetFull` theorems
+state exactly what follows once they are supplied.
 
-**Proposed erratum.** Declare all four operations with the discipline §7.1.1
-already imposes on a distortion measure and §7.3.1 on a `dimension` descriptor:
-content-addressed, and carrying the algebra-law evidence (commutative,
-associative, idempotent) that the word "meet" presupposes. Union of `missing`,
-union of `evidence`, and a declared refinement meet on `within` are defensible
-candidates; `ReasonRef` has no natural candidate at all, which is exactly why it
-must be specified rather than left to implementers. (Scope widened from `within`
-to all four payloads after Codex's review.)
+**Disposition — adopted in `caafc43`.** `SuitabilityLevel` carries the
+Completion B gate. `SuitabilityAggregate` retains canonical sets of reasons,
+missing requirements, constraints, and evidence. Its meet takes the level
+minimum, unions reasons/missing/evidence, and applies one content-addressed
+refinement meet to `within`; that descriptor must carry the commutative,
+associative, idempotent, identity, order, and greatest-lower-bound evidence the
+operation requires. The aggregate therefore retains both a refusal and a
+different step's missing evidence instead of making one payload win. (Scope
+widened from `within` to all four payloads after Codex's review.)
 
 ### C6 — §7.0 vs §7.2.1: the improvement that motivates the taxonomy is not representable
 
@@ -389,12 +400,12 @@ unconditionally, and a meet is never above its arguments
 forced). So the improvement §7.0 describes is recorded nowhere in Part 03's
 algebras, for any kind.
 
-**Proposed erratum.** Say explicitly that §7.0's improvement is a relation
-between the _output state_ and the _intermediate state_, not between a pipeline
-and its steps, and give it a carrier if it is meant to be checkable. Otherwise
-§7.0.1(2)'s "what MUST hold instead is that the new information is attributed"
-is the entire operative content of the carve-out — which is a defensible
-position, but the document should say so rather than imply an algebraic claim.
+**Disposition — adopted in `caafc43`.** Section 7.0 now says explicitly that an
+improvement relates one step's _output state_ to its input or intermediate state
+under a fixed context, not a pipeline aggregate to its steps. The conservative
+pipeline meet remains unchanged. The RFC defines no automatic improvement
+algebra: attribution plus independently grounded suitability is the operative
+content.
 
 ### C7 — §7.1.1 and §7.3.1: descriptors are asked for an operation and not for its laws
 
@@ -408,17 +419,15 @@ the component's laws are never required.
 `compose_assoc` takes `hD` and `hQ`; `debt_compose_comm` takes commutativity;
 `debt_monotone` takes a debt order with `qle x (qadd x y)`. Those hypotheses are
 not modelling convenience — they are the exact evidence a descriptor has to
-supply for §7.1.1's and §7.3.1's own claims to hold, and a conforming descriptor
-today can supply an associative-looking rule that is not associative without
-violating any stated MUST.
+supply for §7.1.1's and §7.3.1's own claims to hold. Under the pre-erratum text,
+a conforming descriptor could supply an associative-looking rule that was not
+associative without violating any stated MUST.
 
-**Proposed erratum.** Require every descriptor that supplies an operation to
-carry algebra-law evidence for it, in the same form §7.1.1's own "What a type
-system can and cannot carry here" already demands: property-based tests over
-canonical bytes, content-addressed, cited from the descriptor. §7.1.1 says the
-laws "are claims and MUST carry evidence" about the _profile_; the same sentence
-has to reach the components the profile is built from. (Raised by Codex's
-review.)
+**Disposition — adopted in `caafc43`.** Every descriptor supplying a component
+operation now carries `LawClaim` evidence for the laws the composite uses, in
+the same form §7.1.1 already demanded for the profile: canonical-byte tests or
+proofs, content-addressed and cited from the descriptor. The consuming policy
+sets the minimum acceptable status under §6.2. (Raised by Codex's review.)
 
 ## Trusted computing base
 
@@ -443,20 +452,22 @@ confirmed the axiom-cone distribution independently, and ran the repository's
 own gates (`./t check`: 550 tests, audit and projections green). Its
 dispositions, and what each changed here:
 
-| Finding | Codex's disposition                                                                                                                  | Effect on this artifact                                                                                                                                                       |
-| ------- | ------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| C2      | normative erratum; proposed splitting `TransformationKind` (one step) from a canonical `TransformationProfile` (pipeline marker set) | adopted into C2's proposed erratum                                                                                                                                            |
-| C3      | countermodel correct; Completion B endorsed                                                                                          | recorded; the choice remains the RFC authors'                                                                                                                                 |
-| C5      | **broader than stated** — payloads are almost entirely abstracted, so the full `Suitability` type still has no defined meet          | scope widened from `within` to all four payloads; `SFull`/`meetFull`/`tagOf_meetFull` added, and `tagOf_meetFull` now states the boundary of the tag-level results explicitly |
-| C1, C6  | useful clarifications, not urgent                                                                                                    | unchanged                                                                                                                                                                     |
-| C4      | confirms the existing prohibition; no erratum needed                                                                                 | C4 now says so                                                                                                                                                                |
-| —       | `CMap.ext` is carrier-level, not CNP/JCS bytes                                                                                       | stated in "What is only modelled"                                                                                                                                             |
-| —       | descriptor operations are asked for without their laws                                                                               | promoted to **C7**                                                                                                                                                            |
-| —       | guard pinned statements but not definitions; forbade `axiom` but not `constant`; had no closed axiom allowlist                       | all three fixed, plus module digests                                                                                                                                          |
-| —       | **merge blocker:** the whole-file spec pin went red on `b7fb1ce` for a provenance-header edit                                        | fixed at the root: the guard now gates on the §7 normative body and reports header changes                                                                                    |
+| Finding | Codex's disposition                                                                                                                  | Effect on this artifact                                                                                                                             |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| C2      | normative erratum; proposed splitting `TransformationKind` (one step) from a canonical `TransformationProfile` (pipeline marker set) | proposal incorporated here, then adopted normatively at `caafc43`                                                                                   |
+| C3      | countermodel correct; Completion B endorsed                                                                                          | recorded in the model, then adopted normatively at `caafc43`                                                                                        |
+| C5      | **broader than stated** — payloads are almost entirely abstracted, so the full `Suitability` type still has no defined meet          | scope widened from `within` to all four payloads; conditional full-payload laws added; the normative aggregate operations were adopted at `caafc43` |
+| C1, C6  | useful clarifications, not urgent                                                                                                    | subsequently adopted at `caafc43`                                                                                                                   |
+| C4      | confirms the existing prohibition; no erratum needed                                                                                 | C4 now says so                                                                                                                                      |
+| —       | `CMap.ext` is carrier-level, not CNP/JCS bytes                                                                                       | stated in "What is only modelled"                                                                                                                   |
+| —       | descriptor operations are asked for without their laws                                                                               | promoted to **C7**                                                                                                                                  |
+| —       | guard pinned statements but not definitions; forbade `axiom` but not `constant`; had no closed axiom allowlist                       | all three fixed, plus module digests                                                                                                                |
+| —       | **merge blocker:** the whole-file spec pin went red on `b7fb1ce` for a provenance-header edit                                        | fixed at the root: the guard now gates on the §7 normative body and reports header changes                                                          |
 
-The review is an outside voice relayed through this repository; it carries no
-signature and no ratification authority, and neither does this response to it.
+The final technical disposition is preserved in the signed Codex critique
+[`x2900_963905`](../../src/x2900_963905_codex_rfc0003-lean-kernel-pr16-disposition.myc.md).
+That signature authenticates the contribution key over the exact review; it is
+not ratification authority.
 
 ## Related in-repo work
 
@@ -470,9 +481,13 @@ conformance.
 
 ## Provenance and status
 
-Authored by Claude (Anthropic) at s0fractal's direction, against `main@e7f63f1`.
-Non-normative. Not signed. It carries no authority to amend RFC-0003, and the
-RFC is unchanged by it. The task brief this artifact answers is
+Authored by Claude (Anthropic) at s0fractal's direction, initially against
+`main@e7f63f1`. Non-normative. Its receipt
+[`x7700_963902`](../../src/x7700_963902_claude_rfc-0003-part-03-bounded-lean-kernel.myc.md)
+is signed by the repository's Claude contribution key, which authenticates the
+receipt bytes but carries no authority to amend RFC-0003. The artifact itself
+did not edit the RFC; the later normative disposition is the separate `caafc43`
+commit. The task brief this artifact answers is
 [`proposals/rfc-0003/claude-lean-kernel-task.md`](../../proposals/rfc-0003/claude-lean-kernel-task.md).
 
 Sigma-Glyph is deliberately not involved: `sigma-glyph/proofs/` owns proofs

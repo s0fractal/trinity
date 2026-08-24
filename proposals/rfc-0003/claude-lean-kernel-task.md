@@ -218,9 +218,15 @@ three requested changes. All are applied; the artifact is now 132 theorems and
    a canonical `TransformationProfile` (pipeline marker set). **C4** is recorded
    as confirming the existing prohibition; no erratum needed there.
 
-Still open, and deliberately not done here:
+### Round 3 — subsequent normative disposition
 
-- The RFC errata themselves (C2, Completion B, payload laws, descriptor laws,
-  C1/C6 clarifications) are a normative edit and belong in a separate commit
-  made under an explicit decision to accept them.
-- No chord receipt has been recorded for either round.
+The proof branch remained non-normative and merged as PR #16. After its exact
+candidate passed the Lean, repository, cross-substrate, and secret-scanning
+gates, the draft steward explicitly directed that the errata be incorporated.
+Commit `caafc43` applies them as a separate normative change: C2's profile
+split, Completion B, full aggregate payload rules, descriptor law evidence, and
+the C1/C6 clarifications. C4 required no edit.
+
+The Claude artifact receipt and Codex technical critique are now signed by their
+respective contribution keys. Those signatures authenticate contribution bytes;
+they are not the normative decision, a conformance result, or ratification.

@@ -21,16 +21,16 @@ holding no key in this substrate.
 This index is navigational and non-normative. Section numbers point to the
 history entry, not a second copy of the current rule.
 
-| Topic                                                                | Main history entries                                                                              |
-| -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| canonical bytes, references, numeric profiles, and migration         | §1 (`§5.1.0–§5.1.2`), §6, §7 P5, §8, §11                                                          |
-| state domains, algebraic-law evidence, invariants, and composites    | §1 (`§6–§6.2.1`), §3, §7 P1/P6, §11                                                               |
-| transformation kinds, loss, suitability, debt, and evidence bridges  | §1 (`§7.0–§7.2.2`, `§15.0`, `§16.7.1`), §7 P1/P4, §8, §11                                         |
-| conflicts, bottlenecks, mutation, admission, and budgets             | §1 (`§8.2.2`, `§10.1.3`, `§19.13`, `§19.16`), §8, §10–§11                                         |
-| federation, execution floor, ordering, progress, and mapping domains | §1 (`§13.4.1–§13.4.3.2`), §7 P3/P8, §8, §10–§11                                                   |
-| identity, disclosure, runtime paths, and performance                 | §1 (`§12`, `§14.1`, `§15.0`), §7 P2/P7, §8, §10–§11                                               |
-| conformance, ratification, principal counting, and amendment         | §4, §7 P6/P7/P9, §9–§11                                                                           |
-| relayed external inputs and their dispositions                       | §6 Grok, §7 Claude, §8 Qwen, §9 GLM-5-Turbo, §10 Kimi, §11 Mistral, §12 Kimi attribution dialogue |
+| Topic                                                                | Main history entries                                                                                               |
+| -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| canonical bytes, references, numeric profiles, and migration         | §1 (`§5.1.0–§5.1.2`), §6, §7 P5, §8, §11                                                                           |
+| state domains, algebraic-law evidence, invariants, and composites    | §1 (`§6–§6.2.1`), §3, §7 P1/P6, §11                                                                                |
+| transformation kinds, loss, suitability, debt, and evidence bridges  | §1 (`§7.0–§7.2.2`, `§15.0`, `§16.7.1`), §7 P1/P4, §8, §11, §13                                                     |
+| conflicts, bottlenecks, mutation, admission, and budgets             | §1 (`§8.2.2`, `§10.1.3`, `§19.13`, `§19.16`), §8, §10–§11                                                          |
+| federation, execution floor, ordering, progress, and mapping domains | §1 (`§13.4.1–§13.4.3.2`), §7 P3/P8, §8, §10–§11                                                                    |
+| identity, disclosure, runtime paths, and performance                 | §1 (`§12`, `§14.1`, `§15.0`), §7 P2/P7, §8, §10–§11                                                                |
+| conformance, ratification, principal counting, and amendment         | §4, §7 P6/P7/P9, §9–§11                                                                                            |
+| relayed external inputs and their dispositions                       | §6 Grok, §7 Claude, §8 Qwen, §9 GLM-5-Turbo, §10 Kimi, §11 Mistral, §12 Kimi attribution dialogue, §13 Lean kernel |
 
 ---
 
@@ -132,10 +132,11 @@ the version DAG, and nothing verifies against it.
 worst step, while §13.4 specified a protocol in which parties resolve ambiguity
 by asking each other.
 
-**Now:** five kinds — `translation`, `enrichment`, `inference`,
-`reconstruction`, `negotiation`. Monotone loss binds `translation` alone; the
-others must attribute where their new information came from. Reconstruction may
-not cross an irreversible boundary.
+**Now:** five per-step kinds — `translation`, `enrichment`, `inference`,
+`reconstruction`, `negotiation`. Recorded loss fields remain monotone under
+composition for every kind. The kind distinction governs whether input/output
+fitness may improve through new information, which must be attributed.
+Reconstruction may not cross an irreversible boundary.
 
 **Why:** under one section a step that improves suitability was a conformance
 bug; under another it was the mechanism. Any competent implementation would have
@@ -795,3 +796,70 @@ fails closed. This edit does not itself supply an s0fractal-signed stewardship
 receipt, an implementation of `ArtifactContributionReceipt`, an independent
 principal, a ratification vote, conformance, or legal allocation. No tranche is
 satisfied.
+
+---
+
+## 13. Lean kernel: the prose did not determine the algebras it named
+
+On 2026-08-24, the bounded core-Lean artifact in
+[`proofs/rfc-0003/`](../../../proofs/rfc-0003/) made 132 theorem statements and
+63 definitions independently checkable under a closed axiom allowlist. PR
+[#16](https://github.com/s0fractal/trinity/pull/16) merged the artifact at exact
+candidate `ee5ae7ba989e08cdfc71b688921067b37fc207c1`; clean Ubuntu CI, local
+reproduction, and counterfactual guard tests all passed. The artifact is not a
+proof of HSP correctness. Its relevant result is narrower: several prose
+requirements admitted no operation or admitted multiple incompatible ones.
+
+The draft steward then explicitly accepted the normative errata. The accepted
+changes are:
+
+1. **Step kind separated from pipeline profile (C2).** The old five-element
+   diagram called `reconstruction` a top while also saying joins retained a set
+   of obligations. Those claims conflict: a top absorbs `enrichment` or
+   `inference` and erases the obligation that came with it. `TransformationKind`
+   now classifies one step. `TransformationProfile` is the canonical set of
+   source, rule, assumption, and counterparty dependency markers, ordered by
+   inclusion and joined by union. An assumption remains boundary-barred without
+   swallowing unrelated obligations.
+2. **Completion B adopted (C3).** The level chain is now
+   `unsuitable < undetermined < bounded < suitable`. An evidenced refusal
+   dominates an unmeasured step, so the ordinary bootstrap composition reports
+   `unsuitable` instead of advertising missing evidence as though it could cure
+   the refusal. Both candidate completions blocked irreversible actions; this
+   choice fixes receipt semantics, not an emergency gate bypass.
+3. **Payload composition made total and provenance-preserving (C5).** The old
+   tagged union gave no rule for competing reasons, missing requirements,
+   evidence, or `within`. `SuitabilityLevel` now carries the gate and
+   `SuitabilityAggregate` carries canonical sets. Composition takes the level
+   minimum, unions reasons/missing/evidence, and delegates `within` to one
+   content-addressed meet descriptor with explicit laws. Descriptor mismatch
+   fails instead of choosing a side. This preserves a refusal and the evidence
+   shortage that accompanied another step in the same receipt.
+4. **Component operations must justify composite laws (C7).** A monoid law on
+   `LossProfile` or `TranslationDebt` does not follow from an operation-shaped
+   field. Distortion, debt, and constraint descriptors now cite `LawClaim`
+   evidence for every associative, commutative, idempotent, identity,
+   monotonicity, order, or greatest-lower-bound claim the composite uses. The
+   consuming policy still sets the minimum acceptable epistemic status under
+   §6.2.
+5. **The kind guard was moved to the claim it governs (C1).** Union of loss and
+   intersection of preservation are monotone for every kind. That cheap test
+   checks field composition, not the kind declaration. The kind distinction
+   governs whether newly acquired information may improve input/output fitness.
+6. **Improvement and pipeline meet were separated (C6).** An enrichment may make
+   its output more suitable than its input under one fixed context. A pipeline
+   aggregate remains the conservative meet of its steps and cannot encode that
+   improvement. The RFC grants no automatic upgrade algebra: attribution plus
+   independently grounded suitability is the operative rule.
+7. **The averaging prohibition stood (C4).** The counterexample confirmed the
+   existing text: an average can sit above the weakest step and therefore is not
+   the required meet. No correction was needed.
+
+The exact limitations remain visible. The Lean carrier theorem does not prove
+CNP/JCS canonical bytes; descriptor law evidence is still evidence with a
+policy-selected strength, not an automatic theorem; and no implementation,
+conformance corpus, independent encoder, tranche satisfaction, federation
+adoption, or ratification follows from accepting these edits. The signed Claude
+receipt authenticates its contribution key, and the signed Codex critique gives
+a technical disposition over the proof candidate; neither signature is a
+substitute for the steward's normative decision or a principal vote.

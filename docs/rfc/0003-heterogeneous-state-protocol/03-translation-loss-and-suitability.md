@@ -32,10 +32,12 @@ Translation is the central primitive of this RFC.
 
 ### 7.0 Five kinds of transformation, only one of which is translation
 
-The loss algebra of §7.1.1 requires that a longer pipeline never report less
-loss than its worst step. That is true of a **closed** transformation — one that
-carries only the information already present in its input — and false of
-anything that acquires new information.
+The field algebra of §7.1.1 makes recorded loss monotone for every kind: `lost`
+only grows and `preserved` only shrinks. What differs by kind is whether the
+**fitness of the output state** may improve relative to the input or an
+intermediate state. A closed transformation carries only the information already
+present in its input; the other kinds acquire or introduce information whose
+origin must remain visible.
 
 A transformer may consult evidence, query the target ontology, run inference,
 resolve an ambiguity by asking the environment, or negotiate the meaning with a
@@ -43,26 +45,26 @@ counterparty. Any of those can leave the output _more_ fit for an action than
 the intermediate state was. Not because lost bits came back, but because a new
 source of information entered.
 
-A monotonicity rule and a negotiation protocol cannot both bind the same object:
-under one a step that improves suitability is a conformance bug, under the other
-it is the mechanism. Left unseparated, an implementation either violates the
-monoid or buries the enrichment inside `introducedAssumptions`, where it is
-indistinguishable from a fabrication
+A no-improvement rule and a negotiation protocol cannot both bind the same
+input/output fitness relation: under one a step that improves suitability is a
+conformance bug, under the other it is the mechanism. Left unseparated, an
+implementation either rejects legitimate enrichment or buries it inside
+`introducedAssumptions`, where it is indistinguishable from a fabrication
 ([Part 07: Revision History](07-revision-history.md) §1).
 
 The five kinds are therefore distinguished, and each carries different
 obligations:
 
-| Kind             | New information from | Monotone loss | May cross irreversible boundary                    |
-| ---------------- | -------------------- | ------------- | -------------------------------------------------- |
-| `translation`    | nothing              | **required**  | yes, per suitability                               |
-| `enrichment`     | cited evidence       | not required  | yes, if sources are attested                       |
-| `inference`      | declared rules       | not required  | only if rules are content-addressed and replayable |
-| `reconstruction` | assumption           | not required  | **no** — §7.0.3                                    |
-| `negotiation`    | a counterparty       | not required  | only under a scoped contract (§13.2)               |
+| Kind             | New information from | Output fitness may improve through that information | May cross irreversible boundary                    |
+| ---------------- | -------------------- | --------------------------------------------------- | -------------------------------------------------- |
+| `translation`    | nothing              | no                                                  | yes, per suitability                               |
+| `enrichment`     | cited evidence       | yes, with attribution                               | yes, if sources are attested                       |
+| `inference`      | declared rules       | yes, with attribution                               | only if rules are content-addressed and replayable |
+| `reconstruction` | assumption           | yes, but boundary-barred                            | **no** — §7.0.3                                    |
+| `negotiation`    | a counterparty       | yes, with attribution                               | only under a scoped contract (§13.2)               |
 
 ```ts
-type TransformKind =
+type TransformationKind =
   | { kind: "translation" }
   | {
     kind: "enrichment";
@@ -72,75 +74,104 @@ type TransformKind =
   | { kind: "inference"; rules: ContentAddress; replayable: boolean }
   | { kind: "reconstruction"; assumptions: AssumptionRecord[] }
   | { kind: "negotiation"; counterparty: AgentId; contract: ContractRef };
+
+type TransformationDependency =
+  | {
+    kind: "source";
+    source: EvidenceRef;
+    attestations: AttestationRef[];
+  }
+  | { kind: "rule"; rule: ContentAddress; replayable: boolean }
+  | {
+    kind: "assumption";
+    assumption: ClaimRef;
+    record: ContentAddress;
+  }
+  | { kind: "counterparty"; agent: AgentId; contract: ContractRef };
+
+type TransformationProfile = {
+  dependencies: TransformationDependency[];
+};
 ```
+
+`TransformationKind` classifies one step. `TransformationProfile` classifies a
+pipeline without discarding any dependency introduced by its steps. A
+`translation` contributes no dependency marker; the other four kinds contribute
+the corresponding `source`, `rule`, `assumption`, or `counterparty` markers.
 
 #### 7.0.1 Rules
 
 1. Every transformation MUST declare its kind. An undeclared kind is treated as
    `reconstruction` — the most restricted — because a transformer that will not
    say where its information came from has not established that it came from
-   anywhere.
-2. **Monotone loss binds `translation` only.** For the other kinds, the loss
-   profile still composes by §7.1.1's field rules, but the monotonicity check is
-   not a conformance failure; what MUST hold instead is that the new information
-   is attributed: each improvement traces to a cited source, rule, assumption,
-   or counterparty exchange.
-3. A pipeline mixing kinds is classified by the **join** of its members under
-   the order in §7.0.2 — not by "the order above", which is a table's row order
-   and defines nothing. One reconstruction step makes the pipeline a
-   reconstruction, however many faithful translations surround it.
+   anywhere. Its profile MUST contain an `assumption` marker pointing to the
+   receipt that records this fail-closed classification.
+2. **Loss-field monotonicity binds every kind.** The union/intersection rules of
+   §7.1.1 never delete recorded loss. What binds `translation` alone is the
+   expectation that output fitness cannot improve through newly acquired
+   information, because a translation acquires none. For the other kinds, each
+   improvement MUST trace to a cited source, rule, assumption, or counterparty
+   exchange.
+3. A pipeline mixing kinds is classified by the **join** of its
+   `TransformationProfile` values under §7.0.2. The join is canonical set union,
+   so obligations accumulate rather than collapse into one winning kind.
 4. `enrichment` sources MUST be content-addressed and independently resolvable.
    "The model knew this" is not a source.
 5. `inference` MUST record the rules by content address. An inference whose
    rules are a model's weights is not replayable and MUST be declared
    `replayable: false`, which bars it from irreversible boundaries under rule 6.
+6. An inference marked `replayable: false` MUST NOT cross an irreversible
+   boundary. A negotiation may cross one only under its cited scoped contract,
+   and any assumption marker invokes §7.0.3 regardless of the other markers in
+   the profile.
 
-#### 7.0.2 The order on transformation kinds
+#### 7.0.2 The order on transformation profiles
 
-Rule 3 needs an actual order, and the table in §7.0 does not supply one — its
-rows are in reading order, which would put `negotiation` after `reconstruction`
-and so imply that negotiating is worse than assuming. It is not.
-
-The kinds form a **partial order by what a consumer must trust**, and a pipeline
-takes the **join** (least upper bound) of its steps:
+The five `TransformationKind` variants are not a five-element lattice. They are
+mutually exclusive classifications of one step. A pipeline is ordered by the
+dependencies it asks a consumer to trust:
 
 ```text
-              reconstruction
-              (trust the transformer's own judgment)
-                   │
-      ┌────────────┼────────────┐
-      │            │            │
- inference    negotiation   enrichment
-(trust the   (trust a      (trust a cited
- rules)       counterparty) source)
-      └────────────┼────────────┘
-                   │
-              translation
-              (trust nothing beyond the input)
+P <= Q       iff dependencies(P) is a subset of dependencies(Q)
+P join Q     = canonicalUnion(dependencies(P), dependencies(Q))
+bottom       = { dependencies: [] }
 ```
 
-- `translation` is the bottom: it introduces no external dependency.
-- `enrichment`, `inference`, and `negotiation` are **mutually incomparable**.
-  Each adds exactly one kind of external dependency, and they are not
-  substitutable — a cited source is not a counterparty, and neither is a rule. A
-  pipeline containing two of them is at least as demanding as either, and its
-  join is recorded as the set rather than collapsed into a ranking.
-- `reconstruction` is the top, and it is the top for a stated reason: every
-  other kind can point at something outside the transformer. Reconstruction
-  points at the transformer's own judgment, which is the pattern this protocol
-  forbids everywhere it can (§7.2.2, §15.3.1).
+Every dependency record MUST use the selected canonical encoding and a full
+content address. `dependencies` is a canonical set sorted by member digest;
+duplicate digests MUST be rejected. Profile equality is equality of canonical
+bytes. The join MUST flatten and union dependency records rather than preserve a
+bracket-shaped tree, and therefore is associative, commutative, and idempotent
+with the empty translation profile as identity.
+
+The resulting structure is the finite-set join-semilattice, not the earlier
+five-element diagram. A `source`, `rule`, `assumption`, and `counterparty`
+marker are incomparable unless one profile contains the other. An `assumption`
+marker is boundary-barred under §7.0.3, but it does not absorb or erase source,
+rule, or counterparty markers. There is no synthetic `reconstruction` top that
+can make another obligation disappear.
 
 Consequences for a mixed pipeline:
 
-1. The join determines which obligations apply. A pipeline joining `enrichment`
-   and `inference` MUST satisfy both rule 4 and rule 5 — the requirements
-   accumulate; they do not merge into a weaker single rule.
-2. Monotone loss is required only if the join is exactly `translation`.
-3. If the join is `reconstruction`, §7.0.3's boundary prohibition applies to the
-   whole pipeline.
-4. A pipeline's declared kind MUST be its computed join. Declaring a lower kind
-   than the join is a conformance failure, and it is detectable, because the
-   steps are content-addressed and each declares its own kind.
+1. Every marker in the join activates its own obligation. A pipeline containing
+   `source` and `rule` markers MUST satisfy both rule 4 and rule 5.
+2. A profile is closed exactly when its dependency set is empty, which requires
+   every member step to be `translation`.
+3. If the profile contains any `assumption` marker, §7.0.3's boundary
+   prohibition applies to the whole pipeline. Other markers and their
+   obligations remain present.
+4. A pipeline MUST declare its computed `TransformationProfile`. Omitting a
+   marker or declaring a strict subset is a conformance failure, detectable by
+   recomputing the canonical union from the content-addressed steps.
+
+The “improvement” discussed in §7.0 is an input/output relation under one fixed
+claim and action context: an enriched output may be more suitable than the
+intermediate state from which that step began. It is **not** a relation between
+a pipeline aggregate and its member aggregates; §7.2.1 deliberately computes a
+conservative meet for that purpose. This RFC defines no second algebra that
+turns attributed information into an automatic suitability upgrade. The
+operative conformance requirement is attribution plus independently grounded
+suitability under §7.2.2; provenance alone never grants the upgrade.
 
 #### 7.0.3 Reconstruction is the dangerous one
 
@@ -325,8 +356,9 @@ Field-level composition rules:
   legal only in `emptyLoss`; a non-empty observed translation MUST carry a
   finite, evidenced set rather than claim universal preservation.
 - `distorted` — accumulation, with per-invariant distortion combined by the
-  distortion measure's own declared composition rule, which the invariant
-  definition MUST supply.
+  distortion measure's own declared composition rule. `compositionRule` MUST
+  resolve to an `OperationAlgebraDescriptor` below whose associative law has
+  sufficient evidence for the boundary using the result.
 - `lost` — union. Information lost at any step is lost by the pipeline; a later
   step cannot restore it, and a later step that appears to restore it is
   fabricating, which is `introducedAssumptions`, not recovery.
@@ -335,18 +367,50 @@ Field-level composition rules:
   survive composition.
 - `translationDebt` — accumulation under §7.3.1.
 
-Because `lost` is a union and `preserved` an intersection, composed loss is
-**monotone** for `translation` steps: a longer pipeline of closed
-transformations can never report less loss than its worst step. Any
-implementation where adding a _translation_ step improves the loss profile has a
-bug, and this is a cheap invariant to test.
+The component operations cannot inherit laws merely because the composite names
+them. Every content-addressed operation used by this section MUST resolve to a
+descriptor of this minimum shape:
 
-The qualifier is load-bearing. Monotonicity is a property of transformations
-that acquire no new information, and §7.0 separates out the four kinds that do.
-For those, the field rules above still apply — `lost` still unions, `preserved`
-still intersects — but a suitability improvement is expected rather than
-anomalous, and what MUST be checkable is the attribution of the new information,
-not its absence.
+```ts
+type OperationAlgebraDescriptor = {
+  carrier: ContentAddress;
+  equality: ContentAddress; // equality of canonical bytes for this carrier
+  operation: ContentAddress;
+  laws: AlgebraicLaws; // §6.2 LawClaim values, not booleans
+  address: ContentAddress;
+};
+
+type PartialOrderDescriptor = {
+  carrier: ContentAddress;
+  relation: ContentAddress;
+  reflexive: LawClaim;
+  antisymmetric: LawClaim;
+  transitive: LawClaim;
+  address: ContentAddress;
+};
+```
+
+The descriptor, its law claims, generators, domains, proofs, and counterexamples
+are part of its canonical bytes. A rule used to establish an associative
+composite MUST declare associativity; a rule used in a commutative or idempotent
+composite MUST additionally declare those laws. The policy at the consuming
+boundary sets the minimum acceptable `LawStatus` under §6.2. An absent, merely
+asserted where the policy requires stronger evidence, or falsified required law
+fails closed. Property tests MUST compare canonical bytes and cite their
+content-addressed generator and generation domain.
+
+Because `lost` is a union and `preserved` an intersection, those recorded loss
+fields are **monotone under sequential composition for every transformation
+kind**: adding a step cannot delete an earlier loss or manufacture an earlier
+preservation. This is a cheap invariant for the field rules; it is not a test of
+whether a step correctly declared its `TransformationKind`.
+
+The kind distinction instead governs the input/output fitness claim. A closed
+`translation` cannot justify improved suitability by newly acquired information.
+The other four kinds may produce a more suitable output, while the loss fields
+continue to accumulate, only when the new information is attributed and the
+resulting action suitability is independently grounded. Section 7.0.2 states why
+this improvement is not represented by the pipeline meet itself.
 
 ##### What a type system can and cannot carry here
 
@@ -362,7 +426,7 @@ pub trait Monoid {
 impl Monoid for LossProfile { /* §7.1.1 field rules */ }
 impl Monoid for TranslationDebt { /* §7.3.1, additionally commutative */ }
 
-// Suitability is an order, not a monoid: composition is the meet (§7.2.1).
+// SuitabilityLevel is ordered; SuitabilityAggregate composes by meet (§7.2.1).
 pub trait MeetSemilattice {
     fn meet(self, other: Self) -> Self;
 }
@@ -392,12 +456,12 @@ one per call site.
 
 ```ts
 type SuitabilityProfile = {
-  forSearch: Suitability;
-  forHypothesisGeneration: Suitability;
-  forPlanning: Suitability;
-  forReversibleAction: Suitability;
-  forIrreversibleAction: Suitability;
-  byInvariant: Record<InvariantId, Suitability>;
+  forSearch: SuitabilityAggregate;
+  forHypothesisGeneration: SuitabilityAggregate;
+  forPlanning: SuitabilityAggregate;
+  forReversibleAction: SuitabilityAggregate;
+  forIrreversibleAction: SuitabilityAggregate;
+  byInvariant: Record<InvariantId, SuitabilityAggregate>;
 };
 ```
 
@@ -406,20 +470,56 @@ Suitability MUST be evaluated relative to the claim and action context.
 
 #### 7.2.1 Suitability is ordered, and composes by meet
 
-`Suitability` MUST be a **bounded partial order** — not a number, and not an
-unordered label. Two suitabilities MUST be comparable or explicitly
-incomparable; "we cannot tell" is a value in the order, not a missing answer.
+The action-gating level MUST be a **bounded total order** — not a number and not
+an unordered label. Completion B is normative:
 
 ```ts
-type Suitability =
-  | { kind: "unsuitable"; reason: ReasonRef }
-  | { kind: "bounded"; within: ConstraintRef[]; evidence: EvidenceRef[] }
-  | { kind: "suitable"; evidence: EvidenceRef[] }
-  | { kind: "undetermined"; missing: EvidenceRequirement[] };
+type SuitabilityLevel =
+  | "unsuitable"
+  | "undetermined"
+  | "bounded"
+  | "suitable";
+
+type SuitabilityAggregate = {
+  level: SuitabilityLevel;
+  reasons: ReasonRef[];
+  missing: EvidenceRequirement[];
+  within: ConstraintRef[];
+  evidence: EvidenceRef[];
+  withinAlgebra: ContentAddress;
+};
+
+type ConstraintMeetDescriptor = {
+  carrier: ContentAddress; // canonical ConstraintRef[]
+  equality: ContentAddress;
+  meet: ContentAddress;
+  top: ConstraintRef[];
+  order: PartialOrderDescriptor;
+  greatestLowerBound: LawClaim;
+  laws: AlgebraicLaws; // associative, commutative, idempotent, top identity
+  address: ContentAddress;
+};
 ```
 
-with `unsuitable < bounded < suitable`, and `undetermined` **below** `bounded`:
-an unmeasured translation is not better than a measured and constrained one.
+The level order is:
+
+```text
+unsuitable < undetermined < bounded < suitable
+```
+
+`unsuitable` is below `undetermined` because it is an evidenced refusal, while
+`undetermined` names evidence that is still missing. Composing a measured
+refusal with an unmeasured step MUST report `unsuitable`; it MUST NOT advertise
+the pipeline as a resolvable evidence gap. `undetermined` remains below
+`bounded` because an unmeasured translation is not better than a measured and
+constrained one.
+
+The aggregate separates the gate from its provenance. `reasons`, `missing`,
+`within`, and `evidence` are canonical sets sorted by member full digest, with
+duplicate digests rejected. They remain present even when another level
+dominates: an `unsuitable` aggregate may still carry the missing requirements of
+a different step, and an `undetermined` aggregate retains evidence already
+collected. Equality is equality of canonical bytes.
 
 Composition along a pipeline is the **meet** (greatest lower bound):
 
@@ -427,9 +527,40 @@ Composition along a pipeline is the **meet** (greatest lower bound):
 suitability(A -> B -> C) = suitability(A -> B)  ∧  suitability(B -> C)
 ```
 
-A pipeline is no more suitable than its weakest step, per action context, per
-invariant. This MUST NOT be implemented as an average, a product of confidences,
-or any rule that lets two mediocre translations compose into a good one.
+For two aggregates with the same `withinAlgebra`, the meet is defined exactly:
+
+1. `level` — the minimum under the chain above;
+2. `reasons`, `missing`, and `evidence` — canonical set union;
+3. `within` — the operation pinned by the referenced `ConstraintMeetDescriptor`.
+
+The descriptor MUST use the same canonical carrier and equality as the
+aggregate, and MUST carry law evidence for associativity, commutativity,
+idempotence, identity at `top`, and the greatest-lower-bound property under its
+declared refinement order. The boundary policy determines the minimum accepted
+`LawStatus` under §6.2. Aggregates naming different `withinAlgebra` addresses
+MUST NOT be composed; the translator junction is incompatible and fails rather
+than choosing one rule.
+
+Under the product order, levels use the chain above; the three provenance sets
+use reverse inclusion, so union is their greatest lower bound; and `within` uses
+the descriptor's refinement order. Therefore the aggregate operation is a meet
+when — and only when — the descriptor's cited laws satisfy the consuming policy.
+A pipeline is no more suitable than its weakest step, while reasons, missing
+requirements, constraints, and evidence are never discarded. This MUST NOT be
+implemented as an average, a product of confidences, a left- or right-biased
+payload choice, or any rule that lets two mediocre translations compose into a
+good one.
+
+Minimum well-formedness rules:
+
+- an observed `unsuitable` value MUST have at least one `ReasonRef`;
+- an observed `undetermined` value MUST have at least one `EvidenceRequirement`
+  naming what would determine it;
+- an observed `bounded` value MUST be strictly below the descriptor's `top` in
+  its declared refinement order;
+- an observed `suitable` value MUST cite the evidence grounding that judgment;
+- an aggregate produced by composition MAY carry payloads associated with other
+  levels, because discarding them would falsify pipeline provenance.
 
 #### 7.2.2 Suitability MUST NOT be self-reported
 
@@ -456,8 +587,10 @@ Therefore:
    - **third-party attestation** — an agent that is neither the translator's
      author nor the action's beneficiary, with its own receipt.
 3. A self-reported action suitability MUST be recorded as
-   `{ kind: "undetermined" }` by any consumer, regardless of what the translator
-   claimed. It is not evidence and MUST NOT be upgraded by repetition.
+   `{ level: "undetermined", missing: [independentMeasurementRequirement],
+   reasons: [], within: top, evidence: [], withinAlgebra }`
+   by any consumer, regardless of what the translator claimed. It is not
+   evidence and MUST NOT be upgraded by repetition.
 4. Crossing an irreversible boundary on an `undetermined` suitability MUST fail
    closed.
 
@@ -524,20 +657,38 @@ type DebtDischarge = {
   evidence: EvidenceRef[];
   receipt: ReceiptRef;
 };
+
+type DebtDimensionDescriptor = {
+  quantityCarrier: ContentAddress;
+  unit: ContentAddress;
+  zero: ContentAddress;
+  addition: OperationAlgebraDescriptor;
+  order: PartialOrderDescriptor;
+  accumulationMonotone: LawClaim; // a <= add(a, b)
+  address: ContentAddress;
+};
 ```
 
-Each `dimension` descriptor MUST pin the exact quantity encoding, unit, zero,
-addition rule, and partial-order rule. A bounded scope MUST contain at least one
-typed full-digest reference and MUST NOT mix a bare display name or truncated
-handle into `refs`; a debt whose effect cannot be bounded uses `global` rather
-than omitting scope. Terms key on `(dimension, scope)`; addition applies the
-pinned rule only within that key, unions `incurredAt` and `grounds`, and emits
-one canonical term per key. `refs`, `terms`, `incurredAt`, `grounds`, and
-discharge evidence are canonical sets sorted by member full digest with
-duplicates rejected. Debt and discharge records use the selected canonical
-encoding and full content addresses. Two debt values are equal exactly when
-their canonical bytes are equal. A prose quantity, host-native number, unpinned
-addition/order rule, empty bounded scope, or missing scope is non-conforming.
+Each `dimension` MUST resolve to a `DebtDimensionDescriptor` that pins the exact
+quantity encoding, unit, zero, addition rule, partial-order rule, and the law
+evidence those rules need. `addition.laws` MUST declare associativity,
+commutativity, and identity at the descriptor's exact `zero` value;
+`accumulationMonotone` MUST establish `a <= add(a, b)` under `order`. The order
+descriptor MUST carry reflexivity, antisymmetry, and transitivity claims. These
+claims are governed by §6.2: missing or insufficient evidence fails wherever a
+consumer relies on the corresponding composite law.
+
+A bounded scope MUST contain at least one typed full-digest reference and MUST
+NOT mix a bare display name or truncated handle into `refs`; a debt whose effect
+cannot be bounded uses `global` rather than omitting scope. Terms key on
+`(dimension, scope)`; addition applies the pinned rule only within that key,
+unions `incurredAt` and `grounds`, and emits one canonical term per key. `refs`,
+`terms`, `incurredAt`, `grounds`, and discharge evidence are canonical sets
+sorted by member full digest with duplicates rejected. Debt and discharge
+records use the selected canonical encoding and full content addresses. Two debt
+values are equal exactly when their canonical bytes are equal. A prose quantity,
+host-native number, unpinned addition/order rule, missing required law claim,
+empty bounded scope, or missing scope is non-conforming.
 
 Scope is an accountability boundary, not a deletion mechanism. Splitting one
 global debt into invented narrow scopes to regain the fast path is
@@ -589,8 +740,9 @@ composition is permitted at all.
 ```ts
 type ComposedTranslator = {
   steps: TranslatorRef[]; // ordered
+  transformation: TransformationProfile; // canonical union over steps
   loss: LossProfile; // composeLoss over steps
-  suitability: SuitabilityProfile; // meet over steps
+  suitability: SuitabilityProfile; // aggregate meet over steps
   debt: TranslationDebt; // addDebt over steps
   anchors: RoundTripReport[];
   composed: TranslatorRef; // content address of this composition
@@ -613,6 +765,12 @@ type ComposedTranslator = {
 4. A composition whose measured end-to-end behavior disagrees with its computed
    profile MUST be rejected, and the disagreement MUST be recorded. This is a
    detector for a step lying about its own loss.
+5. `transformation` MUST equal the canonical union of every step's dependency
+   profile under §7.0.2. An omitted marker is a conformance failure even when
+   the loss, suitability, and debt values otherwise compose.
+6. Suitability aggregates at a junction MUST name the same `withinAlgebra`.
+   Different descriptor addresses make the composition undefined; no caller or
+   translator may choose one by preference.
 
 #### 7.4.2 Round-trip anchors
 

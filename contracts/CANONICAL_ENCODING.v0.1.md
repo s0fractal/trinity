@@ -148,9 +148,12 @@ it before U+FFFD and Python sorts it after. Warrant's published vectors are all
 BMP, so their three-language parity never exercised this.
 
 So the prior evidence supports `hsp-jcs@v0` **for BMP member names**. This is a
-finding about an external implementation, reported rather than filtered; the
-divergence is pinned in `probes/cnp-0-seed-v0/ts/parity_warrant.ts` so that a
-new one fails the check and a resolved one also fails it.
+finding about an external implementation, reported rather than filtered. The
+divergence is pinned in `probes/cnp-0-seed-v0/ts/parity_warrant.ts` as an exact
+**byte pair**, both sides, so that a new divergence, a changed one, a resolved
+one, or a change to our own side all fail the check. The measurement runs
+against a tree materialized from the pinned revision, so a modified working copy
+of the external checkout cannot reach it.
 
 ## 6. What is still missing before A3 can be claimed
 

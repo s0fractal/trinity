@@ -34,7 +34,7 @@ executable part of that list and reports exactly which part it did not build.
 | `ts/transforms.ts` | `renormalize_largest_remainder@v0`, quantization modes, `circle2n@v0` |
 | `ts/runner.ts` | the corpus runner — exact selected/pass/reject counts |
 | `ts/mutate.ts` | negative controls: one mutation per protected class, each required to turn the gate red |
-| `ts/parity_warrant.ts` | external Warrant JCS parity, pinned, `UNAVAILABLE` when not attempted |
+| `ts/parity_warrant.ts` | external Warrant parity, both directions, over a materialized pinned tree |
 | `ts/cnp0_test.ts` | the gate, wired into `deno task test:unit` and therefore `./t check` |
 | `corpus/manifest.json` | 112 cases across all eight §5.1.3 categories |
 | `corpus/circle256-lut.cnp0.json` | the pinned `circle256` sine table (§5.1.2.3 `pinned` strategy) |
@@ -160,7 +160,7 @@ lut-byte                                 one byte of the pinned circle256 LUT
 empty-corpus                             zero cases selected
 ```
 
-## External parity — both directions
+## External parity — both directions, and what "PASS" does not mean
 
 `ts/parity_warrant.ts` measures agreement with Warrant's JCS implementation in
 both directions, because one direction only proves we can reproduce inputs
@@ -168,25 +168,37 @@ both directions, because one direction only proves we can reproduce inputs
 
 - **A — our encoder over their vectors.** Their published
   `examples/canon-vectors.json` must come back byte-identical with matching
-  digests. Observed at the pin: **47 selected, 47 byte-identical, 0 skipped.**
+  digests. Observed: **47 selected, 47 byte-identical, 0 skipped.**
 - **B — their canonicalizer, executed, over our corpus.**
-  `tools/warrant_bridge.py` imports `<warrant>/impl/warrant.py` and calls
-  `warrant.canon()` on every positive case here. Observed: **28 selected, 27
-  byte-identical, 1 recorded divergence.**
+  `tools/warrant_bridge.py` imports `impl/warrant.py` and calls `warrant.canon()`
+  on every positive case here. Observed: **28 selected, 27 byte-identical, 1
+  recorded divergence.**
 
-**The revision is checked, not assumed.** `git rev-parse` establishes it (and
-`--show-toplevel` confirms the directory is the work-tree root, so a stray
-directory inside another repository cannot inherit that repository's revision).
-A checkout that is not the pinned `ac63e4e9…` **FAILS**; to measure a different
-revision the caller must state it with `--warrant-sha=<exact>`, which is
-recorded in the report as disclosed. A revision that cannot be established also
-fails: an unpinned parity claim is not evidence.
+Two statements, reported separately, because collapsing them into one word would
+hide the finding:
 
-Warrant is **not** a submodule and is not vendored. Without `--warrant=<path>`
-the command reports `UNAVAILABLE` in those words: a check that did not run is
-not parity. If `python3` is unavailable, direction B reports `UNAVAILABLE` and
-the overall status is `UNAVAILABLE` rather than `PASS` — half a measurement is
-not a measurement. The self-contained gate does not depend on any of this.
+| field | meaning |
+| --- | --- |
+| `status` — the **regression gate** | is the measurement exactly what is pinned? |
+| `parityState` — the **finding** | `IDENTICAL`, `BOUNDED`, `DIVERGENT`, or `UNMEASURED` |
+
+The current result is `status: PASS` with `parityState: BOUNDED`. **27 of 28 is
+not parity.** It is agreement outside one recorded, byte-pinned disagreement.
+
+### What is measured, and what cannot reach it
+
+The pinned revision is **materialized** with `git archive` into a temporary tree,
+and that tree is what runs. Checking `git rev-parse HEAD` was not enough: HEAD
+says nothing about uncommitted edits, so a modified `impl/warrant.py` at the
+pinned commit was being measured while the report said the revision matched
+(found by codex against `e628382`). Local modifications under `impl/` or
+`examples/` are now reported and **not** measured.
+
+The revision must be present in the checkout. If it is not — or git or python3 is
+missing — the result is `UNAVAILABLE` with `parityState: UNMEASURED`, never
+`PASS`: a check that did not run is not parity. To measure a revision other than
+the pin, the caller states it with `--warrant-sha=<exact>`, and the report
+records it as disclosed.
 
 ### The divergence direction B found
 
@@ -204,15 +216,19 @@ it sorts *after*. The two agree on every name inside the BMP, and Warrant's own
 vectors are all BMP — which is why their Python/Go/Rust parity never exercised
 it.
 
-This is a finding about the external implementation, not a defect here, and it
-is narrow: it needs a non-BMP member name to appear. It is recorded in
-`KNOWN_DIVERGENCES` rather than filtered away, and the pin cuts both ways — a
-**new** divergence fails, and a recorded divergence that stops reproducing also
-fails, because either means the file is out of date.
+`KNOWN_DIVERGENCES` pins the **exact byte pair**, both sides. Recording only the
+case id would have made the entry an allowlist for arbitrary output: any bytes
+for that id would have counted as "the expected divergence" (codex demonstrated
+exactly this against `e628382` by altering `canon()` for that one case at the
+pinned commit). Now four things fail — a new divergence, a *changed* divergence,
+a recorded one that stops reproducing, and a change to **our** side of the pair.
+Three tests cover it, including one that builds a git repository whose committed
+canonicalizer is tampered for precisely that case.
 
-It matters for §5.1.2.1, which leans on Warrant's implementation as prior
-evidence: that evidence covers the `hsp-jcs@v0` wire layer *for BMP member
-names*.
+This is a finding about the external implementation, not a defect here, and it is
+narrow: it needs a non-BMP member name. It matters for §5.1.2.1, which leans on
+Warrant's implementation as prior evidence — that evidence covers the
+`hsp-jcs@v0` wire layer **for BMP member names**.
 
 ## What this probe does not establish
 

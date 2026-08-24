@@ -5,7 +5,8 @@
 import { assert, assertEquals } from "@std/assert";
 import { run } from "./runner.ts";
 import { runMutations } from "./mutate.ts";
-import { parity } from "./parity_warrant.ts";
+import { KNOWN_DIVERGENCES, parity } from "./parity_warrant.ts";
+import { sha256Hex } from "./jcs.ts";
 
 const ROOT = new URL("../", new URL(".", import.meta.url));
 
@@ -99,14 +100,143 @@ Deno.test("warrant parity is UNAVAILABLE, not green, without a pinned checkout",
   assert(report.reasons.some((r) => r.includes("not the same as parity holding")));
 });
 
-Deno.test("warrant parity refuses a checkout whose revision it cannot establish", async () => {
+Deno.test("a directory that cannot supply the pinned tree measures nothing", async () => {
   const dir = await Deno.makeTempDir({ prefix: "cnp0-fakewarrant-" });
   try {
     await Deno.mkdir(`${dir}/examples`);
     await Deno.writeTextFile(`${dir}/examples/canon-vectors.json`, '{"cases":[]}');
     const report = await parity({ warrantPath: dir });
+    // Not a git checkout, so the pinned revision cannot be archived. Nothing was
+    // measured, and nothing measured is UNAVAILABLE — never PASS.
+    assertEquals(report.status, "UNAVAILABLE");
+    assertEquals(report.parityState, "UNMEASURED");
+    assertEquals(report.measured, undefined);
+    assert(report.reasons.some((r) => r.includes("could not be materialized")));
+  } finally {
+    await Deno.remove(dir, { recursive: true });
+  }
+});
+
+
+/* ------------------------------------------------------------------ *
+ * The recorded-divergence pin, tested the way codex broke the previous
+ * version: a checkout at the pinned revision whose canonicalizer returns
+ * something else for exactly the recorded case.
+ * ------------------------------------------------------------------ */
+
+/** Warrant's canonicalizer, reproduced; `tamper` alters only the recorded case. */
+function fakeWarrantSource(tamper: boolean): string {
+  return [
+    "import json",
+    "",
+    "def canon(body):",
+    ...(tamper
+      ? [
+        "    if any(ord(ch) > 0xFFFF for k in body for ch in k):",
+        '        return b\'{"tampered":true}\'',
+      ]
+      : []),
+    '    return json.dumps(body, sort_keys=True, separators=(",", ":"),',
+    '                      ensure_ascii=False).encode("utf-8")',
+    "",
+  ].join("\n");
+}
+
+async function fakeWarrantRepo(tamper: boolean): Promise<{ dir: string; sha: string }> {
+  const dir = await Deno.makeTempDir({ prefix: "cnp0-fakewarrant-" });
+  await Deno.mkdir(`${dir}/impl`);
+  await Deno.mkdir(`${dir}/examples`);
+  await Deno.writeTextFile(`${dir}/impl/warrant.py`, fakeWarrantSource(tamper));
+  // One trivial vector so direction A has something to select. It is computed
+  // here rather than taken from the real Warrant, so it tests the mechanics of
+  // this harness and nothing about Warrant.
+  const canonHex = "7b2261223a317d"; // {"a":1}
+  const warrantId = await sha256Hex(new TextEncoder().encode('{"a":1}'));
+  await Deno.writeTextFile(
+    `${dir}/examples/canon-vectors.json`,
+    JSON.stringify({
+      cases: [{ name: "trivial", body: { a: 1 }, canon_hex: canonHex, warrant_id: warrantId }],
+    }),
+  );
+  const run = async (args: string[]) => {
+    const r = await new Deno.Command("git", {
+      args: ["-C", dir, ...args],
+      stdout: "null",
+      stderr: "null",
+    }).output();
+    if (!r.success) throw new Error(`git ${args.join(" ")} failed`);
+  };
+  await run(["init", "-q"]);
+  await run(["add", "-A"]);
+  await run([
+    "-c",
+    "user.name=cnp0-test",
+    "-c",
+    "user.email=cnp0@example.invalid",
+    "-c",
+    "commit.gpgsign=false",
+    "commit",
+    "-q",
+    "-m",
+    "fixture",
+  ]);
+  const head = await new Deno.Command("git", {
+    args: ["-C", dir, "rev-parse", "HEAD"],
+    stdout: "piped",
+    stderr: "null",
+  }).output();
+  return { dir, sha: new TextDecoder().decode(head.stdout).trim() };
+}
+
+Deno.test("a recorded divergence does not license arbitrary bytes", async () => {
+  const { dir, sha } = await fakeWarrantRepo(true);
+  try {
+    const report = await parity({ warrantPath: dir, disclosedSha: sha });
     assertEquals(report.status, "FAIL");
-    assert(report.reasons.some((r) => r.includes("revision could not be established")));
+    assertEquals(report.parityState, "DIVERGENT");
+    const ids = report.executable.changedDivergences.map((d) => d.id);
+    assert(
+      ids.includes("c6-utf16-order"),
+      `expected the recorded case to be reported as CHANGED, got ${JSON.stringify(report.executable)}`,
+    );
+    assertEquals(report.executable.newDivergences, []);
+  } finally {
+    await Deno.remove(dir, { recursive: true });
+  }
+});
+
+Deno.test("an honest checkout at a disclosed revision is BOUNDED, not IDENTICAL", async () => {
+  const { dir, sha } = await fakeWarrantRepo(false);
+  try {
+    const report = await parity({ warrantPath: dir, disclosedSha: sha });
+    assertEquals(report.status, "PASS");
+    // 27 of 28 identical is not parity, and the report says so in its own field.
+    assertEquals(report.parityState, "BOUNDED");
+    assertEquals(report.executable.changedDivergences, []);
+    assertEquals(
+      report.executable.knownDivergences.map((d) => d.id),
+      Object.keys(KNOWN_DIVERGENCES),
+    );
+  } finally {
+    await Deno.remove(dir, { recursive: true });
+  }
+});
+
+Deno.test("a dirty external checkout cannot reach the measurement", async () => {
+  const { dir, sha } = await fakeWarrantRepo(false);
+  try {
+    // Commit the honest implementation, then tamper only the WORK TREE. The
+    // committed tree is what gets archived and measured, so the tampering must
+    // not change the result — and must be disclosed.
+    await Deno.writeTextFile(`${dir}/impl/warrant.py`, fakeWarrantSource(true));
+    const report = await parity({ warrantPath: dir, disclosedSha: sha });
+    assertEquals(report.status, "PASS");
+    assertEquals(report.parityState, "BOUNDED");
+    assert(
+      (report.worktree?.dirtyPaths ?? []).some((p) => p.includes("impl/warrant.py")),
+      "the local modification must be disclosed in the report",
+    );
+    assertEquals(report.measured?.revision, sha);
   } finally {
     await Deno.remove(dir, { recursive: true });
   }

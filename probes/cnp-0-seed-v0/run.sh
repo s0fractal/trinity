@@ -38,7 +38,7 @@ python3 tools/build_manifest.py --check
 echo
 echo "==> cnp-0-seed-v0: warrant JCS parity (external, pinned)"
 if [ -n "$WARRANT_ARG" ]; then
-  deno run --no-config --allow-read --allow-run ts/parity_warrant.ts "$WARRANT_ARG" "${2:-}"
+  deno run --no-config --allow-read --allow-write --allow-run ts/parity_warrant.ts "$WARRANT_ARG" "${2:-}"
 else
-  deno run --no-config --allow-read --allow-run ts/parity_warrant.ts
+  deno run --no-config --allow-read --allow-write --allow-run ts/parity_warrant.ts
 fi

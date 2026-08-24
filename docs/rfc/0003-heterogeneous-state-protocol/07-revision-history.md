@@ -556,3 +556,82 @@ than accepted as a maturity score:
 
 This review produced an editorial map, not a normative mechanism, implementation
 claim, conformance result, or ratification. No tranche is satisfied.
+
+---
+
+## 10. Kimi audit: external standards and bounded handshake failure
+
+On 2026-08-24, s0fractal relayed a Kimi audit. The
+[source relay](../../../proposals/rfc-0003/kimi-audit-2026-08-24.md) and signed
+Codex
+[disposition](../../../src/x2900_963881_codex_kimi-rfc0003-audit-disposition.myc.md)
+are preserved outside the specification artifact. No Kimi signature accompanied
+the relay. The review explicitly says Parts 02–06 were unavailable and their
+contents were reconstructed, so claims about those parts were treated as
+hypotheses and checked against the actual files.
+
+The adjudication separates two useful residuals from findings already answered
+by the unread normative parts:
+
+1. **External-standards positioning accepted.** The RFC cited strong internal
+   prior art but did not explain how RDF, JSON-LD, RDFC-1.0, OWL, SKOS, SHACL,
+   and IPLD can be reused. New §17.3 names them as domain carriers, validators,
+   ontology tools, canonical RDF identity, or storage/transport components. It
+   also states the remaining boundary: those standards do not by themselves
+   supply structured translation loss, contextual action suitability, authority,
+   mutation admission, or HSP receipts. None was silently adopted.
+2. **Handshake stall handling accepted narrowly.** A sequencer is not required;
+   strict turn-taking is recommended and explicit merge is the other option.
+   Still, the text did not say how a selected sequencer's outage or an unbounded
+   fixture exchange terminates. Section 13.4.3.1.1 now pins deterministic
+   message/fixture/evaluator bounds, declines on exhaustion or sequencer
+   failure, and requires a new handshake before changing ordering discipline. A
+   local wall-clock timeout permits local abort but is not evidence of remote
+   misconduct without an adopted time oracle. This is bounded failure, not a
+   liveness theorem.
+3. **A3 and implementation criticism confirmed as status, not a new defect.**
+   Part 01 §5.1.3, §17.2, §21, and §22 already say the corpus, two independent
+   encoders, rejecting verifier, adoption, and executable slices do not exist.
+   Tranche A is already the prerequisite for every other tranche; Levels 4–5
+   already require the independent §16.7 demo. The audit reinforces the next
+   work order but does not change it.
+4. **Single-operator and duplicate-key criticism confirmed as an honesty
+   boundary already enforced.** Sections 19.17 and 22.1 forbid separate folders,
+   voices, sessions, processes, or keys from counting as independent principals
+   without positive authority/custody evidence. The unresolved Claude keys count
+   at most once. No current record claims multi-principal ratification.
+5. **CNP-0 large-integer claim corrected.** The safe-integer bound applies to
+   JSON numeric values, not to SHA-256 identity: digests and raw bytes are exact
+   strings/tagged bytes. Larger arithmetic domains require a new numeric profile
+   rather than being silently rounded. Exact-rational and fixed-point cost is
+   already open problem §20.15 and remains an implementation measurement, not a
+   production-throughput claim.
+6. **Economic/DoS model declined as stale.** Part 04 §11.1.1 already requires a
+   bond, per-agent/per-lineage rate limit, or cheap deterministic screening
+   before expensive verification, and budgets federation verification capacity
+   explicitly. Tranche E4 carries that gate. Gas, staking, or reputation may be
+   local policy; no universal currency was added.
+7. **Algebra/cosplay criticism corrected.** Sections 6.2 and 7.1.1 explicitly
+   say a type or trait does not prove laws. `asserted`, `tested`, `proved`, and
+   `falsified` are distinct; property tests compare canonical bytes and retain
+   counterexamples. No formal proof or ratification is claimed today.
+8. **Content-addressing scale retained as a measurement blocker.** Content
+   addressing permits structural sharing and does not require recursively
+   hashing history on each step. The 35 µs debt benchmark covers one linear
+   predicate only. Network, resolver, bundle, membership-proof, and complete
+   fast-path cost remain open and MUST NOT be inferred from that number.
+9. **“One encoding contradicts plural domains” declined.** A canonical byte
+   envelope defines cross-substrate identity; a state-domain contract defines
+   semantic laws. Sharing an encoding does not give a causal graph, probability
+   simplex, and partial order one operation algebra. Section 17.3 now states the
+   distinction explicitly because the objection is likely to recur.
+10. **Accessibility claim bounded by reproducible evidence.** At this
+    adjudication's parent commit (`4ae17fd`), Parts 02–06 are present in the
+    same ordered artifact linked by its README. The relay does not identify the
+    commit it says was unavailable, so that retrieval failure cannot be
+    reproduced or attributed to Git. The limitation is preserved rather than
+    upgrading reconstructed content into a complete audit.
+
+This pass adds no implementation, CNP-0 corpus, independent encoder, rejecting
+verifier, demo, conformance level, adoption, or ratification. A3 and §17.2's
+first full-digest vector row remain the next dependency blockers.

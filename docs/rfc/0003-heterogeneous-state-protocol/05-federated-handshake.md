@@ -222,6 +222,8 @@ type HandshakeMessage =
         sequencer: KeyRef;
         receiptProfile: ContentAddress;
       };
+    // Shared deterministic progress bounds; full content digest (§13.4.3.1.1).
+    progressPolicy: ProgressPolicyRef;
     floorVersion: string; // human-readable label only; nothing verifies it
   }
   | { kind: "offer-fixture"; fixture: FixtureRef; expects: OutcomeShape }
@@ -243,6 +245,18 @@ type FixtureResult = {
   agreed: boolean;
   divergence?: DivergenceRecord;
 };
+
+type HandshakeProgressPolicy = {
+  // Canonical non-negative CNP-0 integers.
+  maxEnvelopes: number;
+  maxFixtureEvaluations: number;
+  // A budget in the declared execution floor's own content-addressed cost model.
+  evaluatorBudget: ContentAddress;
+  onExhaustion: "decline";
+  onSequencerFailure: "decline-and-restart";
+};
+
+type ProgressPolicyRef = ContentAddress; // full digest of HandshakeProgressPolicy
 ```
 
 Every message after `hello` MUST carry a non-null `prev` in its envelope — the
@@ -349,6 +363,35 @@ without either being at fault.
 
 This orders messages _within_ a handshake. It does not order events across
 handshakes or across the federation, and MUST NOT be presented as doing so.
+
+##### 13.4.3.1.1 Progress, timeout, and sequencer failure
+
+Safety without a progress bound permits an untrusted party to turn fixture
+exchange into unbounded work. Conversely, a wall-clock timeout cannot become an
+objective protocol fact when §13.4.3.1 deliberately assumes no shared clock. The
+handshake therefore separates deterministic transcript bounds from local
+availability observations.
+
+1. Both `hello` messages MUST bind the same full-digest `progressPolicy`; a
+   mismatch is a `decline`. Counts MUST be CNP-0 non-negative integers and the
+   evaluator budget MUST use the execution floor's pinned cost model.
+2. Every accepted envelope and fixture evaluation MUST consume the applicable
+   bound. Exhaustion terminates the transcript as `decline`; a party unable to
+   emit the final envelope records a local terminal receipt. An exhausted or
+   stalled transcript MUST NOT authorize an irreversible boundary.
+3. A deployment MAY apply a local idle timeout or availability policy. Its
+   expiry authorizes that party to stop waiting; it is not evidence that the
+   counterparty censored, failed, or violated a shared deadline unless a
+   separately adopted time/availability oracle supplies that evidence.
+4. A missing, invalid, equivocal, or discontinuous sequencer receipt is
+   `sequencerFailure`. The parties MUST decline and start a new handshake to
+   select turn-taking, explicit merge, or another sequencer. They MUST NOT
+   switch ordering discipline inside the old transcript: doing so would make
+   earlier legality depend on a later fallback rule.
+
+This gives a bounded failure path, not a liveness theorem. A peer or sequencer
+can still refuse service; HSP prevents that refusal from being converted into a
+successful compatibility or action claim.
 
 #### 13.4.3.2 A fixture set is not a domain
 

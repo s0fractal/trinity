@@ -528,7 +528,7 @@ it land.
 | `ConflictOccurrence`  | `src/x2B88_decisions.myc.md` chord ledger                         | extend          | myc, liquid                                   | two occurrences sharing a fingerprint are not merged without a receipted lineage claim (§19.16)                                                                                       |
 | `AdmissionStage`      | `myc` proposal lifecycle, `contracts/GOVERNANCE_FLOW.v0.md`       | extend          | myc                                           | eligibility replays bit-for-bit from the receipt; authorization is attributed and not recomputed (§10.1.3)                                                                            |
 | `ExecutionFloor`      | `ski@v1` / Σ-GLYPH Book I v0.5                                    | adopt (pinned)  | omega                                         | the same fixture yields identical output bytes under two substrates' evaluators (§13.4.1.1)                                                                                           |
-| `HandshakeMessage`    | none                                                              | create          | trinity                                       | a message from the party whose turn it is not is rejected, not merged (§13.4.3.1)                                                                                                     |
+| `HandshakeMessage`    | none                                                              | create          | trinity                                       | wrong-turn input is rejected; progress-budget exhaustion declines; ordering mode cannot switch inside one transcript (§13.4.3.1–§13.4.3.1.1)                                          |
 | `EvidenceBridge`      | `warrant` decision records                                        | extend          | myc, trinity                                  | a bridge presented as a translation — carrying a loss profile — is rejected (§7.5)                                                                                                    |
 
 Notes on the table:
@@ -682,6 +682,35 @@ Naming candidates is not ratifying them. Specifically:
    stated reason that a STANDARD must not rest on a moving target. Any adoption
    here MUST pin the same way; citing a repository URL is not a pin.
 
+### 17.3 External standards reuse boundary
+
+This RFC does not replace the Semantic Web or content-addressed storage. The
+following standards are non-normative prior art and candidate implementation
+components. Their URLs are discovery aids, not dependency pins; adoption still
+requires exact profiles, versions, bytes, and executable gates.
+
+| Standard family                                                                                                                                 | What it already supplies                                                                          | Where it can serve HSP                                                                                              | What HSP adds or keeps separate                                                                                                       |
+| ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| [RDF 1.2](https://www.w3.org/TR/rdf12-concepts/), [JSON-LD 1.1](https://www.w3.org/TR/json-ld11/), [RDFC-1.0](https://www.w3.org/TR/rdf-canon/) | a graph data model, a JSON-based linked-data serialization, and canonical RDF-dataset labelling   | an RDF-backed state domain, import/export projection, or canonical dataset identity under a declared domain profile | non-graph domains; typed operations and invariants; translation loss, action suitability, authority, admission, and receipts          |
+| [OWL 2](https://www.w3.org/TR/owl2-overview/) and [SKOS](https://www.w3.org/TR/skos-reference/)                                                 | formalized vocabularies/ontology semantics and a model for sharing knowledge-organization systems | ontology descriptors, taxonomies, mapping inputs, and domain-specific reasoning profiles                            | evidence grades, bounded mapping domains, asymmetric loss, mutation budgets, compatibility contracts, and irreversible-boundary rules |
+| [SHACL](https://www.w3.org/TR/shacl/)                                                                                                           | validation of RDF data graphs against shapes graphs                                               | an invariant predicate and evidence engine for an RDF-backed domain                                                 | cross-domain translation, contextual suitability, non-RDF state families, and authorization                                           |
+| [IPLD](https://ipld.io/docs/data-model/)                                                                                                        | an abstract data model, codecs, bytes, and content-addressed links                                | a transport/store backend or CID projection under §5.1 rule 6                                                       | one selected HSP identity profile and semantic contracts; IPLD storage is not mandated and a CID does not attest meaning or loss      |
+
+Reuse is evaluated per state domain. An RDF/OWL/SHACL implementation that meets
+a domain's contract is preferable to renaming the same machinery, while an
+adapter that changes representation or semantics is still a declared HSP
+transformation with a loss profile. RDFC-1.0 may identify an RDF dataset; it
+does not silently become the identity of a probability simplex, causal model, or
+authority decision.
+
+The distinction also answers an apparent contradiction between §2.1 and §5.1.1.
+One canonical **byte envelope** is not one universal **semantic domain**. CNP-0
+defines how a finite HSP object is identified across substrates; the object's
+domain descriptor still determines its valid points, operations, laws, and
+invariants. Serializing a graph and a partial order through one envelope does
+not make either obey the other's semantics, just as writing both in UTF-8 would
+not make them one language.
+
 ---
 
 ## 18. Initial substrate responsibilities
@@ -772,16 +801,17 @@ proof or executable evidence.
 Representative attack paths and their primary controls are indexed here so a
 reviewer need not infer the model from section titles:
 
-| Attack path                                                   | Primary control                                                                           |
-| ------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| replay, reordering, or transcript fork                        | content-addressed envelopes and the selected ordering discipline (§13.4.3–§13.4.3.1)      |
-| key multiplication presented as independent quorum            | principal bindings and principal counting (§19.17, §22.1)                                 |
-| metadata/profile downgrade                                    | boundary rejection rather than backfill (§5.2, §19.11)                                    |
-| translator hides loss or grades its own action output         | canonical loss carriers and independently grounded suitability (§7.1–§7.2.2, §19.3–§19.4) |
-| caller launders consequential work through the fast path      | runtime-derived operation scope and aggregate audit (§15.0–§15.3, §19.9)                  |
-| reference substitution or truncated-digest collision grinding | canonical bytes and full load-bearing digests (§5.1, §19.10)                              |
-| resource exhaustion by fixture or repeated mutation           | bounded execution floor, budgets, debt, and terminal outcomes (§10, §13.4.1.1, §19.6)     |
-| hidden or unavailable evidence                                | disclosure/availability layering and explicit verification state (§14.1)                  |
+| Attack path                                                   | Primary control                                                                                           |
+| ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| replay, reordering, or transcript fork                        | content-addressed envelopes and the selected ordering discipline (§13.4.3–§13.4.3.1)                      |
+| key multiplication presented as independent quorum            | principal bindings and principal counting (§19.17, §22.1)                                                 |
+| metadata/profile downgrade                                    | boundary rejection rather than backfill (§5.2, §19.11)                                                    |
+| translator hides loss or grades its own action output         | canonical loss carriers and independently grounded suitability (§7.1–§7.2.2, §19.3–§19.4)                 |
+| caller launders consequential work through the fast path      | runtime-derived operation scope and aggregate audit (§15.0–§15.3, §19.9)                                  |
+| reference substitution or truncated-digest collision grinding | canonical bytes and full load-bearing digests (§5.1, §19.10)                                              |
+| resource exhaustion by fixture or repeated mutation           | bounded execution floor, budgets, debt, and terminal outcomes (§10, §13.4.1.1, §19.6)                     |
+| peer or sequencer stalls, censors, or disappears              | pinned progress bounds, local abort, decline-and-restart without in-place ordering fallback (§13.4.3.1.1) |
+| hidden or unavailable evidence                                | disclosure/availability layering and explicit verification state (§14.1)                                  |
 
 ### 19.1 Conflict laundering
 
@@ -1326,7 +1356,9 @@ reduces design uncertainty; it does not weaken this gate.
 - **G5.** Select a handshake ordering discipline — turn-taking, author-local
   chains with explicit merge, or a sequencer — since hash chaining alone does
   not give a total order. A sequencer must be a named keyed party and receipt
-  every ordering decision (§13.4.3.1).
+  every ordering decision. The handshake pins deterministic progress bounds;
+  sequencer failure declines the transcript, and changing discipline requires a
+  new handshake (§13.4.3.1–§13.4.3.1.1).
 - **G6.** Require a mapping domain predicate with coverage evidence and
   counterexample search, rather than crediting a fixture list (§13.4.3.2).
 

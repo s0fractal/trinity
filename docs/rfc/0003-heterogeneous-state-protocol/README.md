@@ -87,3 +87,11 @@ implementation sections. Its useful remainder was navigational. This README now
 has audience routes, and Part 00 §19.0 gathers the existing security boundaries
 into one explicit threat-model map. The signed disposition and full adjudication
 are recorded in Part 07 §9.
+
+The [Kimi audit](../../../proposals/rfc-0003/kimi-audit-2026-08-24.md) correctly
+kept A3 and independent implementation as blockers but reconstructed Parts 02–06
+without reading them, so several claimed gaps were already explicit contracts.
+Its two useful residuals are now bounded: Part 00 §17.3 positions HSP against
+RDF/OWL/SHACL/SKOS/IPLD reuse, and Part 05 §13.4.3.1.1 defines progress
+exhaustion and sequencer-failure behavior without inventing a shared clock or a
+liveness theorem. Part 07 §10 records the full disposition.

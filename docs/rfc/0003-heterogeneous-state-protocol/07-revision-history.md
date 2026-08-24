@@ -16,6 +16,24 @@ holding no key in this substrate.
 
 ---
 
+## Topic index
+
+This index is navigational and non-normative. Section numbers point to the
+history entry, not a second copy of the current rule.
+
+| Topic                                                                | Main history entries                                               |
+| -------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| canonical bytes, references, numeric profiles, and migration         | §1 (`§5.1.0–§5.1.2`), §6, §7 P5, §8, §11                           |
+| state domains, algebraic-law evidence, invariants, and composites    | §1 (`§6–§6.2.1`), §3, §7 P1/P6, §11                                |
+| transformation kinds, loss, suitability, debt, and evidence bridges  | §1 (`§7.0–§7.2.2`, `§15.0`, `§16.7.1`), §7 P1/P4, §8, §11          |
+| conflicts, bottlenecks, mutation, admission, and budgets             | §1 (`§8.2.2`, `§10.1.3`, `§19.13`, `§19.16`), §8, §10–§11          |
+| federation, execution floor, ordering, progress, and mapping domains | §1 (`§13.4.1–§13.4.3.2`), §7 P3/P8, §8, §10–§11                    |
+| identity, disclosure, runtime paths, and performance                 | §1 (`§12`, `§14.1`, `§15.0`), §7 P2/P7, §8, §10–§11                |
+| conformance, ratification, principal counting, and amendment         | §4, §7 P6/P7/P9, §9–§11                                            |
+| relayed external inputs and their dispositions                       | §6 Grok, §7 Claude, §8 Qwen, §9 GLM-5-Turbo, §10 Kimi, §11 Mistral |
+
+---
+
 ## 1. Corrections to what the document claimed
 
 ### §5.1.0 — content addressing was oversold
@@ -635,3 +653,80 @@ by the unread normative parts:
 This pass adds no implementation, CNP-0 corpus, independent encoder, rejecting
 verifier, demo, conformance level, adoption, or ratification. A3 and §17.2's
 first full-digest vector row remain the next dependency blockers.
+
+---
+
+## 11. Mistral audit: profile migration and contamination boundary
+
+On 2026-08-24, s0fractal relayed a Mistral review of exact commit `178fe86`. The
+[source relay](../../../proposals/rfc-0003/mistral-audit-2026-08-24.md) and
+signed Codex
+[disposition](../../../src/x2900_963887_codex_mistral-rfc0003-audit-disposition.myc.md)
+are preserved outside the specification artifact. No Mistral signature
+accompanied the relay. The user warned that prior intents and projects had
+entered the prompt, so those passages were classified separately rather than
+treated as HSP requirements.
+
+One normative seam and one editorial improvement survived adjudication:
+
+1. **Encoding-profile migration accepted and made fail-closed.** The draft
+   already said a future `CNP-1` needs a new identifier and references, but did
+   not define coexistence with historical objects. New §5.1.5 keeps one active
+   authoring profile per ratification subject, preserves every legacy reference,
+   and requires either a content-addressed same-object re-encoding contract or
+   an explicit clean break. A semantic change remains a Part 03 transformation;
+   a batch root proves membership, not migration completeness. Section 22.2 now
+   requires this transition policy when an amendment changes the encoding or
+   numeric profile.
+2. **Revision-history navigation accepted.** Part 07 now begins with a topic
+   index spanning canonical identity, domains, translation, conflict,
+   federation, runtime, governance, and relayed audits. It changes no rule and
+   creates no duplicate normative text.
+
+The remaining audit findings were separated from contaminated extensions:
+
+3. **Performance and implementation risk confirmed as status.** The 35 µs debt
+   scan measures one fast-path term; §15.0.1 requires the entire predicate and
+   receipt to remain cheaper than governed ceremony. Eligible segments already
+   provide the proposed amortization. A3, independent encoders, and both demos
+   remain incomplete and no production claim exists.
+4. **Execution-floor “universality” corrected.** The floor executes bounded
+   fixtures and deliberately knows no domain vocabulary. Complex ontology
+   semantics stay in local domains; the shared evaluator need not become a
+   universal reasoner. Its implementation, maintenance, and selection remain
+   explicit G4 gates.
+5. **Consensus and policy laundering corrected as already bounded.** HSP does
+   not select one federation-wide consensus algorithm; each irreversible
+   boundary pins its authority requirements. EvidenceBridge already separates
+   observation, attributed policy, and warranted decision and explicitly names
+   authorship laundering as the failure it prevents.
+6. **Composite cascade and test-generator concerns already have carriers.**
+   Section 6.5 requires directed couplings, consistency models, global
+   invariants, coupling-aware fast-path refusal, and loss when a translator
+   drops a coupling. Section 6.2 records the generator, its covered domain, case
+   count, seed, evidence, and retained counterexamples; `tested` is never
+   `proved`.
+7. **“HSP-Lite” declined as a protocol fork.** Small registries, state profiles,
+   cumulative conformance levels, and fast/governed paths already scale ceremony
+   by consequence. A separate Lite dialect would create a second meaning of
+   conformance; a bounded implementation profile may select fewer capabilities
+   without weakening boundary rules.
+8. **Visualization retained outside semantics.** SVG, Sankey, radar, trees, and
+   sequence diagrams may be useful views. They MUST NOT turn partial orders,
+   `not assessed`, incomparable costs, loss atoms, or tensions into commensurate
+   scalar axes by presentation. No SVG rendering contract was added to HSP.
+9. **Intent-to-action and human-governance mappings declined as contamination.**
+   Choosing an action from an intent is generally inference or an attributed
+   EvidenceBridge, not translation. `total_happiness`, work/family limits,
+   mutation budgets for personal goals, social norms, СУПЕРШЕДУЛЕР, VOID, and a
+   “shared digital space” belong to separately scoped product/domain proposals.
+   RFC-0003 supplies types they may choose to adopt; it does not validate their
+   ontology, ethics, measurement, or authority.
+10. **Localization and playground ideas routed to products.** Ukrainian
+    documentation, an interactive explorer, or a visualization lab may improve
+    adoption, but they are not conformance requirements and do not precede A3's
+    corpus, rejecting verifier, or first full-digest vectors.
+
+This adjudication adds a transition contract and navigation, not a successor
+profile, migration implementation, corpus, independent encoder, demo,
+conformance result, adoption, or ratification. No tranche is satisfied.

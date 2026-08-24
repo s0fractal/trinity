@@ -473,6 +473,86 @@ most importantly that its JCS implementation is a reimplementation rather than
 `warrant`'s, so agreement is weaker evidence than running `warrant`'s harness
 directly. CNP-0's own acceptance and rejection corpus remains unimplemented.
 
+#### 5.1.5 Profile transition without reference rewriting
+
+Section 5.1.2.1 says a future larger-integer or otherwise changed profile uses a
+new identifier and therefore new references. That prevents silent
+reinterpretation but is not yet a migration contract. Without one, an
+implementation is tempted either to alias old and new digests as “the same
+object” or to rewrite old receipts. Both destroy the byte identity §5.1 exists
+to preserve.
+
+Exactly one encoding/numeric-profile pair is active for **new HSP authoring**
+under one ratification subject. A deployment MAY continue resolving historical
+profiles, but it MUST declare a content-addressed transition policy:
+
+```ts
+type ProfileTransitionPolicy = {
+  fromProfile: ContentAddress; // exact prior profile contract
+  toProfile: ContentAddress; // exact successor profile contract
+  mode: "reencode" | "clean-break";
+  migration: ContentAddress | null; // required exactly for reencode
+  acceptedLegacyProfiles: ContentAddress[];
+};
+
+type CanonicalProfileMigration = {
+  sourceProfile: ContentAddress;
+  targetProfile: ContentAddress;
+  objectFamily: ContentAddress;
+  rule: ContentAddress; // deterministic, bounded, no ambient authority
+  equivalence: PredicateRef; // equality of decoded abstract objects
+};
+
+type ReencodingReceipt = {
+  source: ContentAddress; // full historical digest
+  target: ContentAddress; // full successor digest
+  migration: ContentAddress;
+  executor: KeyRef;
+  evidence: EvidenceRef[];
+};
+```
+
+Rules:
+
+1. The transition policy, migration, and receipt MUST use the selected canonical
+   carrier and full-digest identity. `acceptedLegacyProfiles` and receipt
+   `evidence` are canonical sets: full references sorted by canonical bytes,
+   with duplicates rejected. `reencode` requires a non-null `migration`;
+   `clean-break` requires `migration: null`. The successor ratification record
+   binds the transition policy from outside it, avoiding a cyclic pair of
+   content addresses.
+2. **A historical reference is immutable.** Migration creates a target object
+   and receipt; it never edits, aliases, redirects, or re-hashes the source. Old
+   receipts continue to verify under the profile they actually named.
+3. `reencode` is legal only when source bytes validate under `sourceProfile`,
+   target bytes validate under `targetProfile`, and the pinned `equivalence`
+   predicate establishes that both decode to the same abstract object in the
+   declared `objectFamily`. Profile tags themselves remain part of digest input,
+   so source and target references are expected to differ.
+4. A rule that changes the abstract object is **not re-encoding**. It is a Part
+   03 transformation and owes a transformation kind, loss profile, suitability,
+   and separate receipt. Calling it migration MUST NOT erase those obligations.
+5. A `clean-break` transition has `migration: null`. It makes no cross-profile
+   identity claim. Legacy objects MAY remain resolvable for historical audit but
+   MUST be translated or rejected at a boundary requiring the successor profile.
+6. Every boundary policy MUST name accepted profile contracts and the transition
+   policy it applies. An unknown profile, missing transition, invalid receipt,
+   or unsupported chain fails closed; a consumer MUST NOT choose a migration by
+   mutable version label.
+7. A batch manifest MAY aggregate re-encoding receipts by content address. Its
+   scope and completeness are separate claims with evidence; a Merkle or list
+   root proves membership, not that every legacy object was migrated.
+8. Migration chains compose as receipt chains. A verifier checking a historical
+   decision uses the original reference directly; it MUST NOT substitute the
+   newest target and retroactively evaluate the old decision under new bytes.
+
+A successor profile's corpus MUST include positive same-object re-encodings;
+profile-tag mutation producing distinct references; rejection of malformed
+source and target bytes; rejection when the equivalence predicate fails; clean
+break behavior; mixed-profile boundary rejection; and a batch manifest whose
+membership is valid while its deliberately incomplete scope is not reported as
+complete.
+
 ## 14. Ledger requirements
 
 The ledger MUST preserve more than state changes. It MUST preserve changes to

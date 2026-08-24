@@ -95,3 +95,11 @@ Its two useful residuals are now bounded: Part 00 §17.3 positions HSP against
 RDF/OWL/SHACL/SKOS/IPLD reuse, and Part 05 §13.4.3.1.1 defines progress
 exhaustion and sequencer-failure behavior without inventing a shared clock or a
 liveness theorem. Part 07 §10 records the full disposition.
+
+The [Mistral audit](../../../proposals/rfc-0003/mistral-audit-2026-08-24.md)
+mixed a useful version-compatibility question with prior user intents around
+SVG, СУПЕРШЕДУЛЕР, flow balancing, human priorities, and social governance.
+Those concepts remain outside RFC-0003. Part 01 §5.1.5 now defines a
+reference-preserving profile-transition contract for a future CNP successor, and
+Part 07 gains a non-normative topic index. Part 07 §11 records what was
+accepted, corrected, quarantined, or routed elsewhere.

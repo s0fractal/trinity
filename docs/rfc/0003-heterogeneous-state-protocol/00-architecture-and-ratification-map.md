@@ -1238,6 +1238,12 @@ status silently. To amend a ratified tranche:
 5. issue a new ratification record whose votes bind the new digests and the
    superseded record.
 
+If the amendment changes the canonical encoding or numeric profile, the new
+record MUST additionally bind a `ProfileTransitionPolicy` under §5.1.5. A
+successor may choose `reencode` with a pinned equivalence contract or an
+explicit `clean-break`; it MUST NOT inherit reference equality by version-name
+similarity or rewrite historical receipts.
+
 Unchanged tranches retain their status only when their own pinned normative
 bytes and dependency-ratification digests are unchanged. If either moves, the
 consumer MUST treat the tranche as pending until a superseding record says how
@@ -1253,7 +1259,7 @@ where a reference resolves:
 | Sections                        | Part                    |
 | ------------------------------- | ----------------------- |
 | §0–§4, §16–§23                  | Part 00 (this document) |
-| §5.1, §5.1.0–§5.1.4, §14, §14.1 | Part 01                 |
+| §5.1, §5.1.0–§5.1.5, §14, §14.1 | Part 01                 |
 | §5 (core model), §6             | Part 02                 |
 | §7                              | Part 03                 |
 | §8, §9, §10, §11                | Part 04                 |

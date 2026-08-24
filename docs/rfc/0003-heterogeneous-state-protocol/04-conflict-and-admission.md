@@ -1,24 +1,24 @@
-# RFC-0007: Conflict, Bottleneck and Admission
+# RFC-0003 / Part 04: Conflict, Bottleneck and Admission
 
 - **Status:** Draft
 - **Authors:** s0fractal + model collaborators
 - **Home:** https://github.com/s0fractal/trinity —
-  `docs/rfc/0007-conflict-and-admission.md`
+  `docs/rfc/0003-heterogeneous-state-protocol/04-conflict-and-admission.md`
 - **Parent:**
-  [RFC-0003 — Heterogeneous State Protocol: Architecture and
-  Ratification Map](0003-heterogeneous-state-geometries.md), which holds the
-  theses, non-goals, terminology, dependency graph, failure-mode catalogue, and
-  open problems this document depends on.
+  [Part 00 — Architecture and Ratification
+  Map](00-architecture-and-ratification-map.md), which holds the theses,
+  non-goals, terminology, dependency graph, failure-mode catalogue, and open
+  problems this document depends on.
 - **Ratifies:** Tranche D (D1–D3), Tranche E (E1–E5)
-- **Depends on:** RFC-0004, RFC-0005
-- **Created:** 2026-08-03 (split from RFC-0003 after four rounds of external
-  critique; see [REVISION HISTORY](0003-REVISION-HISTORY.md))
+- **Depends on:** Parts 01, 02
+- **Created:** 2026-08-03 (extracted from the original single-file draft after
+  four rounds of external critique; see [Part 07](07-revision-history.md))
 
 > **Section numbers are inherited and stable.** This document keeps the section
 > numbers it carried inside RFC-0003. They are not renumbered from 1, because
 > ledger chords and prior receipts cite them, and a cross-reference that
 > silently changes meaning is the failure this protocol exists to prevent. A
-> reference of the form §N.M is resolvable through RFC-0003's §22 map.
+> reference of the form §N.M is resolvable through Part 00's §22 map.
 
 ---
 
@@ -110,7 +110,7 @@ A witness pair must not be satisfiable by preference — "these demand different
 actions" is a normative claim whose owner is whoever wants the mutation. Nor may
 it be narrowed to warrant-level difference alone, which would make the authority
 ontology the privileged reality and could never recognize a gap governance has
-not yet noticed ([REVISION HISTORY](0003-REVISION-HISTORY.md) §1).
+not yet noticed ([Part 07: Revision History](07-revision-history.md) §1).
 
 There are therefore **two classes of witness pair, licensing different things**:
 
@@ -338,7 +338,8 @@ Therefore:
 Requiring a third party to recompute an admission verdict, and admitting that
 terms like `cognitiveComplexity` and `trust` are a principal's judgment, cannot
 both be normative — that is asking for a mathematical function and a human
-decision from one object ([REVISION HISTORY](0003-REVISION-HISTORY.md) §1).
+decision from one object ([Part 07: Revision History](07-revision-history.md)
+§1).
 
 Admission is therefore two decisions with different epistemic types, recorded
 separately.

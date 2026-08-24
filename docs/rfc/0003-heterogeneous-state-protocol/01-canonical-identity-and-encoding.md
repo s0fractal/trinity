@@ -1,24 +1,24 @@
-# RFC-0004: Canonical Identity and Encoding
+# RFC-0003 / Part 01: Canonical Identity and Encoding
 
 - **Status:** Draft
 - **Authors:** s0fractal + model collaborators
 - **Home:** https://github.com/s0fractal/trinity —
-  `docs/rfc/0004-canonical-identity-and-encoding.md`
+  `docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md`
 - **Parent:**
-  [RFC-0003 — Heterogeneous State Protocol: Architecture and
-  Ratification Map](0003-heterogeneous-state-geometries.md), which holds the
-  theses, non-goals, terminology, dependency graph, failure-mode catalogue, and
-  open problems this document depends on.
+  [Part 00 — Architecture and Ratification
+  Map](00-architecture-and-ratification-map.md), which holds the theses,
+  non-goals, terminology, dependency graph, failure-mode catalogue, and open
+  problems this document depends on.
 - **Ratifies:** Tranche A (A1–A4), Tranche J (J1–J3)
 - **Depends on:** nothing — this is the root of the dependency graph
-- **Created:** 2026-08-03 (split from RFC-0003 after four rounds of external
-  critique; see [REVISION HISTORY](0003-REVISION-HISTORY.md))
+- **Created:** 2026-08-03 (extracted from the original single-file draft after
+  four rounds of external critique; see [Part 07](07-revision-history.md))
 
 > **Section numbers are inherited and stable.** This document keeps the section
 > numbers it carried inside RFC-0003. They are not renumbered from 1, because
 > ledger chords and prior receipts cite them, and a cross-reference that
 > silently changes meaning is the failure this protocol exists to prevent. A
-> reference of the form §N.M is resolvable through RFC-0003's §22 map.
+> reference of the form §N.M is resolvable through Part 00's §22 map.
 
 ---
 
@@ -153,7 +153,7 @@ The encoding MUST satisfy:
    the reference rather than silently rehoming it.
 
 Rule 5 reverses an obvious-looking requirement, and the reasoning is in
-[REVISION HISTORY](0003-REVISION-HISTORY.md) §1.
+[Part 07: Revision History](07-revision-history.md) §1.
 
 #### 5.1.2 Floating point
 
@@ -166,8 +166,10 @@ In canonical form:
 1. `NaN` and the infinities MUST be rejected. They are not values a state may
    hold; a computation producing one has failed and MUST surface as a validation
    error, not as bytes.
-2. Negative zero MUST be normalized to positive zero before encoding. `-0.0` and
-   `+0.0` compare equal and MUST NOT produce different references.
+2. IEEE floating-point values, including `-0.0` and `+0.0`, MUST NOT enter the
+   selected canonical object model. An exact integral result MAY be converted to
+   the integer `0` before that boundary; an encoder MUST NOT accept a float and
+   silently canonicalize it.
 3. Byte order and width MUST be fixed by the profile, not inherited from the
    host.
 4. **Where equality of a value is load-bearing — simplex points, thresholds,
@@ -192,7 +194,7 @@ both are exact:
 
 ```json
 { "kind": "ratio", "num": <int>, "den": <int> }
-{ "kind": "fixed", "value": <int>, "scale": <int> }
+{ "kind": "fixed", "value": <int> }
 ```
 
 For `ratio`, the canonical form MUST satisfy:
@@ -203,10 +205,12 @@ For `ratio`, the canonical form MUST satisfy:
 3. zero is `{ num: 0, den: 1 }` and nothing else;
 4. both components lie inside the encoding's integer domain.
 
-For `fixed`, `scale` MUST be declared by the state domain rather than per value,
-and all values in one domain MUST share it — otherwise comparing two points
-means rescaling, and rescaling reintroduces the rounding the rule exists to
-remove.
+For `fixed`, a content-addressed scale descriptor MUST be declared by the state
+domain rather than repeated per value, and all values in one domain MUST share
+it — otherwise comparing two points means rescaling, and rescaling reintroduces
+the rounding the rule exists to remove. The domain reference already binds the
+point to that descriptor; repeating `scale` or `scale_id` in each value would
+create two sources of truth.
 
 **Reduction rules are not optional decoration.** Without them the encoding is
 deterministic but not injective in the direction that matters: two byte
@@ -216,10 +220,10 @@ comparing encodings rather than values.
 
 **The simplex additionally constrains the sum.** A probability vector MUST sum
 to exactly one under exact arithmetic — `Σ num_i / den_i == 1` for ratios, or
-`Σ value_i == scale` for fixed-point with a shared scale. This is a validation
-rule (§6), not an encoding rule, and it is the reason the simplex cannot use
-floats: "sums to one after rounding" is not a property two independent
-implementations will agree on.
+`Σ value_i == radix^places` for fixed-point under the domain's scale descriptor.
+This is a validation rule (§6), not an encoding rule, and it is the reason the
+simplex cannot use floats: "sums to one after rounding" is not a property two
+independent implementations will agree on.
 
 A string form such as `"1/3"` is a third option, and RFC 7493 §2.2 does
 recommend strings for numeric values outside the safe integer range. It is not
@@ -228,29 +232,159 @@ implementation must parse identically, which is more surface for the second
 independent implementation to diverge on, and divergence there is exactly what
 canonical encoding exists to prevent.
 
-Selecting between these remains Tranche A3's decision. This section states what
-any selection must satisfy.
+##### 5.1.2.1 CNP-0-JCS: draft selection
+
+This draft selects **CNP-0-JCS** as the Tranche A3 candidate. The selection is
+one package with two named layers:
+
+- `hsp-jcs@v0` is the wire encoding: RFC 8785 JCS over strict I-JSON;
+- `cnp-0` is the numeric profile carried by that encoding.
+
+A profile identifier without a byte encoding does not determine a digest, and a
+choice between “binary or JCS” is not a choice. CNP-0-JCS therefore fixes both.
+Every root object MUST contain the exact members
+`"canonical_encoding":"hsp-jcs@v0"` and `"numeric_profile":"cnp-0"` inside the
+bytes being hashed; changing either member MUST change the reference. Nested
+values do not repeat them.
+
+The admissible object model is `null`, booleans, exact strings, arrays,
+string-keyed maps, and integers in the inclusive range
+`[-(2^53 - 1), +(2^53 - 1)]`. Map member names MUST be unique in the raw input.
+Strings follow §5.1.1 rule 5. Floating-point numbers, decimal fractions,
+exponent notation, CBOR tags, and integers outside the range are not members of
+this profile. Raw bytes use exactly one tagged projection:
+
+```json
+{ "kind": "bytes", "hex": "<even-length lowercase hexadecimal>" }
+```
+
+Length is derived from `hex` and MUST NOT be repeated. A decoder MUST reject
+uppercase, odd-length, or non-hexadecimal content rather than normalize it.
+Ratio and fixed-point values use the forms and validation rules above. A domain
+MUST declare which numeric form it admits; it MUST NOT accept both forms for one
+semantic value and treat them as equal.
+
+CNP-0-JCS reuses the already implemented Warrant JCS profile because its
+canonical bytes are pinned by a normative fixture artifact and independently
+reproduced by Python, Go, and Rust. That is prior evidence, not proof of CNP-0
+conformance: those fixtures do not contain the profile identifiers, ratios,
+fixed-point domains, or the rejection corpus required below.
+
+The proposal that motivated this selection recommended an abstract `i128`
+domain. It is not adopted in v0. JCS interoperates without integer rounding only
+inside the I-JSON safe range; claiming `i128` while leaving its byte form to a
+later binary choice would restore the ambiguity this section removes. A future
+larger-integer profile MUST use a new identifier and references.
+
+##### 5.1.2.2 Fixed-point scale identity
+
+A fixed-point domain MUST bind one content-addressed scale descriptor of this
+shape:
+
+```json
+{
+  "canonical_encoding": "hsp-jcs@v0",
+  "numeric_profile": "cnp-0",
+  "scale": "hsp-scale@v0",
+  "radix": 10,
+  "places": 6,
+  "unit_ref": null
+}
+```
+
+`radix` MUST be `2` or `10`; `places` MUST be a non-negative integer; and
+`radix^places` MUST lie inside the CNP-0 integer range. The represented value is
+`value / radix^places`. `unit_ref` is either `null` or a full content digest of
+a unit descriptor. A different scale descriptor produces a different domain
+reference. Changing scale is therefore a new domain plus a declared translation,
+never an in-place rewrite.
+
+Equality inside the domain compares integer `value`. Cross-scale comparison is
+available only through a declared translation. For a fixed-point probability
+simplex, `Σ value_i` MUST equal `radix^places` exactly.
+
+##### 5.1.2.3 Named constants and transcendental sinks
+
+Host `libm` output is not a canonical constant source. If a domain's canonical
+point, invariant, or transition depends on a named non-rational constant, its
+descriptor MUST declare exactly one strategy:
+
+1. `symbolic` — the rule is expressed without materializing the constant, such
+   as comparing non-negative `x²` with `2` instead of `x` with `√2`;
+2. `pinned` — the descriptor contains a full content digest of canonical bytes
+   holding the required digits or lookup table, plus their numeric scale;
+3. `discrete-surrogate` — the domain uses an exact discrete representation and
+   declares translation loss when exporting to a continuous one.
+
+Changing pinned bytes changes the domain reference. Omitting the strategy when
+the constant reaches canonical state is a validation failure. This does not
+claim to canonicalize real numbers generally; it makes the finite approximation
+and its authority inspectable.
+
+##### 5.1.2.4 Optional discrete circle domains
+
+`circle2n@v0` is an optional discrete-surrogate family, not part of the scalar
+profile. If implemented, a domain descriptor MUST fix an integer `1 <= n <= 52`;
+a point is an integer index in `[0, 2^n)`, addition is exact modulo `2^n`, and
+equality is equality of indices. A `sin` or `cos` lookup table MUST be
+fixed-point, content-addressed, and bound into the domain descriptor. Lookup
+output MUST NOT redefine point identity.
+
+The first fixture domain SHOULD use `n = 8` (`circle256`). Export to radians or
+to a continuous circle is a translation with a loss profile. A discrete circle
+MUST NOT claim continuous, Riemannian, or information-geometric capabilities
+merely because its points are conventionally drawn on a circle.
+
+##### 5.1.2.5 Quantization from approximate computation
+
+Internal floating-point computation remains permitted by rule 5. Any boundary
+that maps it into CNP-0 MUST name the source float format, target exact domain,
+overflow behavior, and one quantization mode:
+
+- `trunc_toward_zero`;
+- `round_ties_even`;
+- `reject`.
+
+The mode and its parameters are part of the domain or transformation descriptor.
+`reject` accepts only values exactly representable in the target domain. At an
+irreversible boundary, `reject` is the default unless a different mode is
+explicitly warranted. Positive and negative ties, just-inside and just-outside
+boundaries, overflow, `NaN`, infinities, and signed zero MUST appear in the
+negative or positive fixtures as appropriate. Quantization is a declared lossy
+transformation, not invisible serialization cleanup.
 
 #### 5.1.3 Parity is proven, not assumed
 
 Every substrate implementing the encoding MUST verify against a shared fixture
-set, in the manner `fixtures/canon-vectors.json` already establishes for the
-canonical hash. The fixtures MUST include the adversarial cases — `-0.0`,
-denormals, non-normalized equivalent strings, key-order permutations, nested
-empty containers, and the largest and smallest representable values.
+set, in the manner `warrant/examples/canon-vectors.json` establishes for JCS.
+The CNP-0 corpus MUST pin canonical bytes and full SHA-256 digests for:
+
+1. zero, one, minus one, and both CNP-0 integer bounds;
+2. `1/3`, `-1/3`, canonical zero, and rejection of `2/4`, `0/2`, a negative
+   denominator, overflow, floats, exponent notation, and duplicate map names;
+3. the same fixed integer under two scale descriptors producing different domain
+   references;
+4. exact ratio and fixed-point simplexes, including invalid sums;
+5. profile-identifier mutation and one-byte pinned-constant mutation changing
+   the full digest;
+6. byte strings, normalization-distinct strings, key-order permutations, and
+   nested empty containers;
+7. `circle256` index equality and rotation, with LUT mutation if a LUT is
+   implemented;
+8. every quantization boundary named in §5.1.2.5.
 
 Cross-substrate parity that has not been measured is a hope, and this document
 does not accept hopes as evidence anywhere else.
 
-**Encoding selection is deferred.** This RFC states the requirements above but
-does **not** select the encoding. That selection is a federation-wide commitment
-affecting substrates that are not parties to this RFC, and it deserves its own
-contract with its own test vectors rather than a clause inside a state domain
-proposal. It is filed as decision request §22 Tranche A3 and open problem
-§20.15.
+**Design selected; conformance pending.** CNP-0-JCS resolves the draft's design
+choice. It does not ratify Tranche A3 and does not lift the federation blocker.
+That requires `CANONICAL_ENCODING.v0.1`, the corpus above, at least two
+independent encoders that reproduce its bytes and digests, and a third
+verifier-only path that rejects non-canonical ratios and malformed raw input.
 
-Until that contract exists, §5.1 is specified but not yet implementable across
-substrate boundaries, and this document does not pretend otherwise.
+Until those artifacts exist and the substrates adopt them, §5.1 is specified but
+not yet implementable as a conforming cross-substrate protocol. The honest
+status is **A3 design selected; A3 interop and ratification pending**.
 
 #### 5.1.4 The selection is narrower than it looks
 
@@ -265,15 +399,17 @@ results:
    structural digest _exactly when_ the body text is already canonical, and
    differs otherwise — holds across the corpus. So Tranche A3 selects a
    canonicalizer that produces the bytes `CANONICAL_HASH` already digests.
-   **Every existing `h.` handle over an already-canonical body stays valid
-   unchanged.** This is a substantially cheaper decision than choosing between
-   two identity schemes, which is how it was framed before the inventory.
+   Existing `h.` handles stay valid inside their owning protocols; they are not
+   retroactively relabelled as CNP-0 objects. New HSP objects carry the encoding
+   and numeric-profile identifiers required by §5.1.2.1, so adopting CNP-0 does
+   not silently change the meaning of an old handle.
 2. **Trinity already ships a second structural canonicalizer.**
    `packages/canonical-receipt` is live on jsr and implements RFC 8949 canonical
-   CBOR, forbidding floats by throwing. It is not a rival to JCS either — it
-   targets binary receipts rather than JSON documents — but a federation with
-   two live structural canonicalizers MUST say which applies where, and this RFC
-   previously did not know the second one existed.
+   CBOR, forbidding floats by throwing. It remains canonical for receipt
+   envelopes and is not the selected HSP state-object encoding: its live strict
+   subset has a different integer domain and no CNP-0 ratio/fixed corpus. The
+   encoding identifier keeps the two families disjoint instead of pretending one
+   set of bytes is the other.
 3. **`RECEIPT_ENVELOPE.v1.0` fixes its encoding, and models the pattern this RFC
    asks for.** An earlier revision of this section claimed the contract left its
    encoding unfixed. That was a misreading, corrected here: the contract's
@@ -299,8 +435,7 @@ results:
 The inventory is a probe, not authority. Its own falsifiers are in its README —
 most importantly that its JCS implementation is a reimplementation rather than
 `warrant`'s, so agreement is weaker evidence than running `warrant`'s harness
-directly, and that the float cases §5.1.2 most cares about are not yet in the
-corpus.
+directly. CNP-0's own acceptance and rejection corpus remains unimplemented.
 
 ## 14. Ledger requirements
 

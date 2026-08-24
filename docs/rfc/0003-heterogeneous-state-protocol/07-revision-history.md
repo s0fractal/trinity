@@ -1,10 +1,10 @@
-# RFC-0003 — Revision history
+# RFC-0003 / Part 07: Revision History
 
 Where the specification changed its mind, and why.
 
 This file exists because the reasoning was worth keeping and the normative
-documents are not the place for it. A reader of RFC-0005 should not have to eat
-RFC-0004's history to learn what a state domain is. Each correction below was
+documents are not the place for it. A reader of Part 02 should not have to eat
+Part 01's history to learn what a state domain is. Each correction below was
 carried inline in the text until the split; the rule now is that **normative
 documents state what is required, and this file states how it came to be
 required.**
@@ -323,10 +323,10 @@ That reason expired. The boundaries survived two further rounds, including one
 that added a transformation taxonomy, a composition model, an evidence-bridge
 primitive, and an entire disclosure tranche — and absorbed all of it without
 moving. The argument that finally decided it was the other one: **Tranche A is a
-prerequisite for everything and its encoding is unselected, so no later tranche
-can currently be implemented as a conforming federation protocol.** A document
-that must be adopted in pieces, whose first piece is unadopted, is not a
-specification anyone can act on.
+prerequisite for everything and, at the time of the split, its encoding was
+unselected, so no later tranche could be implemented as a conforming federation
+protocol.** A document that must be adopted in pieces, whose first piece is
+unadopted, is not a specification anyone can act on.
 
 Corrections were sequenced before the cut deliberately: three round-4 changes
 altered what belonged in which document, and cutting first would have fixed
@@ -336,3 +336,37 @@ repair it.
 Section numbers were **not** renumbered during the split. Ledger chords and
 prior receipts cite them, and a citation whose referent silently changes is the
 failure this protocol exists to prevent.
+
+---
+
+## 6. CNP-0: selection without a false unblock
+
+On 2026-08-24, s0fractal relayed a Grok proposal for Canonical Numeric Profile
+v0. The [original relay](../../../proposals/rfc-0003/grok-cnp-0-2026-08-24.md)
+and Codex's
+[adjudication](../../../src/x2900_963870_codex_grok-cnp0-proposal-disposition.myc.md)
+are preserved separately. The source voice has no registered Trinity key; the
+chord attests the relay and disposition, not Grok's authorship, signature,
+ratification authority, or protocol adoption.
+
+The proposal correctly made exact numerics operational: reduced ratios,
+domain-scoped fixed-point, exact simplexes, pinned constant material, discrete
+circle identity, explicit quantization, and an adversarial interoperability
+corpus. Those requirements entered §5.1.2–§5.1.3.
+
+Two corrections were load-bearing:
+
+1. `CNP-0-BIN` **or** `CNP-0-JCS` was not a byte-level selection. A numeric
+   profile does not determine map ordering, string encoding, framing, or digest
+   bytes. The draft now separates wire identifier `hsp-jcs@v0` from numeric
+   profile `cnp-0` and selects the pair CNP-0-JCS.
+2. The proposed abstract `i128` range did not fit that selection. JCS over
+   I-JSON is independently exercised only inside ±(2^53−1); a wider range needs
+   a new profile and new references rather than an unspecified future binary
+   form.
+
+The edit changes the state from **encoding design unselected** to **A3 design
+selected; interop and ratification pending**. It deliberately does not say
+“blocker lifted.” Warrant's existing JCS vectors are prior evidence for one
+layer; they are not CNP-0 vectors, and no federation adoption follows from a
+draft edit.

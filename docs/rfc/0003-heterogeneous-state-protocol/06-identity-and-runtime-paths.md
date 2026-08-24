@@ -1,24 +1,24 @@
-# RFC-0009: Governed Identity and Runtime Paths
+# RFC-0003 / Part 06: Governed Identity and Runtime Paths
 
 - **Status:** Draft
 - **Authors:** s0fractal + model collaborators
 - **Home:** https://github.com/s0fractal/trinity —
-  `docs/rfc/0009-identity-and-runtime-paths.md`
+  `docs/rfc/0003-heterogeneous-state-protocol/06-identity-and-runtime-paths.md`
 - **Parent:**
-  [RFC-0003 — Heterogeneous State Protocol: Architecture and
-  Ratification Map](0003-heterogeneous-state-geometries.md), which holds the
-  theses, non-goals, terminology, dependency graph, failure-mode catalogue, and
-  open problems this document depends on.
+  [Part 00 — Architecture and Ratification
+  Map](00-architecture-and-ratification-map.md), which holds the theses,
+  non-goals, terminology, dependency graph, failure-mode catalogue, and open
+  problems this document depends on.
 - **Ratifies:** Tranche F (F1–F3), Tranche H (H1)
-- **Depends on:** RFC-0004, RFC-0005
-- **Created:** 2026-08-03 (split from RFC-0003 after four rounds of external
-  critique; see [REVISION HISTORY](0003-REVISION-HISTORY.md))
+- **Depends on:** Parts 01, 02
+- **Created:** 2026-08-03 (extracted from the original single-file draft after
+  four rounds of external critique; see [Part 07](07-revision-history.md))
 
 > **Section numbers are inherited and stable.** This document keeps the section
 > numbers it carried inside RFC-0003. They are not renumbered from 1, because
 > ledger chords and prior receipts cite them, and a cross-reference that
 > silently changes meaning is the failure this protocol exists to prevent. A
-> reference of the form §N.M is resolvable through RFC-0003's §22 map.
+> reference of the form §N.M is resolvable through Part 00's §22 map.
 
 ---
 

@@ -1,53 +1,52 @@
-# RFC-0003: Heterogeneous State Protocol — Architecture and Ratification Map
+# RFC-0003 / Part 00: Architecture and Ratification Map
 
 - **Status:** Draft — **umbrella**. This document carries the theses, the
   non-goals, the terminology, the dependency graph, the failure-mode catalogue,
   the open problems, and the demos. It deliberately carries almost no `MUST`.
-  The normative weight lives in RFC-0004 through RFC-0009, which are small
-  enough to ratify one at a time.
+  The normative weight lives in Parts 01 through 06, which are small enough to
+  ratify one at a time.
 - **Authors:** s0fractal + model collaborators
 - **Home:** https://github.com/s0fractal/trinity —
-  `docs/rfc/0003-heterogeneous-state-geometries.md`. Every path this document
-  cites without a repository is relative to that repository; everything outside
-  it is listed with its repository in §17.1.
-- **Filename note:** the path still says `geometries`. The title stopped saying
-  it in round 4, for the reason given in §4.2 — partial orders and constraint
-  systems are not geometries, and the document was carrying its own decorative
-  metaphor in its name. The path is stable because committed ledger records
-  reference it.
+  `docs/rfc/0003-heterogeneous-state-protocol/`. This directory is the complete
+  artifact. Every path this document cites without a repository is relative to
+  the Trinity repository; everything outside it is listed with its repository in
+  §17.1.
 - **Target:** Trinity federation (`trinity`, `myc`, `omega`, `liquid`)
 - **Scope:** Semantic Schema V2 extension
 - **Created:** 2026-08-03
-- **Revised:** 2026-08-03 — four rounds of external critique, then split. The
-  reasoning behind each correction is in
-  [REVISION HISTORY](0003-REVISION-HISTORY.md); the relayed reviews are chords
-  `x2300_960790`, `x2300_960792`, `x2300_960796`, `x2300_960798`.
+- **Revised:** 2026-08-24 — packaged as one ordered RFC-0003 artifact and added
+  the CNP-0-JCS draft selection after external proposal review. The reasoning
+  behind each substantive correction is in
+  [Part 07: Revision History](07-revision-history.md); the relayed reviews are
+  chords `x2300_960790`, `x2300_960792`, `x2300_960796`, `x2300_960798`.
 - **Supersedes:** nothing
 - **Extends:** the federation's existing state, warrant, evidence, receipt, and
   lineage primitives
 
 ## The document set
 
-| Document                                                                                       | Ratifies         | Depends on                          |
-| ---------------------------------------------------------------------------------------------- | ---------------- | ----------------------------------- |
-| **RFC-0003** (this) — Architecture and Ratification Map                                        | nothing          | —                                   |
-| [RFC-0004](0004-canonical-identity-and-encoding.md) — Canonical Identity and Encoding          | Tranche A, J1–J3 | nothing                             |
-| [RFC-0005](0005-typed-state-domains.md) — Typed State Domains and Invariants                   | Tranche B        | RFC-0004                            |
-| [RFC-0006](0006-translation-loss-and-suitability.md) — Translation, Loss, Suitability and Debt | Tranche C        | RFC-0004, RFC-0005                  |
-| [RFC-0007](0007-conflict-and-admission.md) — Conflict, Bottleneck and Admission                | Tranches D, E    | RFC-0004, RFC-0005                  |
-| [RFC-0008](0008-federated-handshake.md) — Federated Handshake and Compatibility Boundaries     | Tranche G        | RFC-0004, RFC-0006, execution floor |
-| [RFC-0009](0009-identity-and-runtime-paths.md) — Governed Identity and Runtime Paths           | Tranches F, H    | RFC-0004, RFC-0005                  |
+| Part                                         | Document                                         | Ratifies         | Depends on                    |
+| -------------------------------------------- | ------------------------------------------------ | ---------------- | ----------------------------- |
+| **00** (this)                                | Architecture and Ratification Map                | nothing          | —                             |
+| [01](01-canonical-identity-and-encoding.md)  | Canonical Identity and Encoding                  | Tranche A, J1–J3 | nothing                       |
+| [02](02-typed-state-domains.md)              | Typed State Domains and Invariants               | Tranche B        | Part 01                       |
+| [03](03-translation-loss-and-suitability.md) | Translation, Loss, Suitability and Debt          | Tranche C        | Parts 01, 02                  |
+| [04](04-conflict-and-admission.md)           | Conflict, Bottleneck and Admission               | Tranches D, E    | Parts 01, 02                  |
+| [05](05-federated-handshake.md)              | Federated Handshake and Compatibility Boundaries | Tranche G        | Parts 01, 03, execution floor |
+| [06](06-identity-and-runtime-paths.md)       | Governed Identity and Runtime Paths              | Tranches F, H    | Parts 01, 02                  |
+| [07](07-revision-history.md)                 | Revision History                                 | non-normative    | —                             |
 
 **Section numbers are global and stable across the set.** Nothing was renumbered
 when the document was split: §7.2.2 means the same passage it meant before, and
-now lives in RFC-0006. This is deliberate — ledger chords and prior receipts
-cite these numbers, and a citation that silently changes referent is the failure
-the protocol exists to prevent. §22 maps every section range to its document.
+now lives in Part 03. This is deliberate — ledger chords and prior receipts cite
+these numbers, and a citation that silently changes referent is the failure the
+protocol exists to prevent. §22 maps every section range to its document.
 
-**RFC-0004 is the blocker.** Its encoding is unselected, so no later document
-can currently be implemented as a conforming federation protocol. Anything
-depending on cross-substrate reference equality is specified and not yet
-implementable, and this set says so rather than letting a reader discover it.
+**Part 01 is the blocker.** The draft now selects CNP-0-JCS, but selection text
+is not interoperability evidence or federation ratification. Until the separate
+contract, CNP-0 corpus, two independent encoders, verifier-only rejection path,
+and substrate adoption exist, anything depending on cross-substrate reference
+equality is specified and not yet conformingly implementable.
 
 ## 0. Abstract
 
@@ -374,7 +373,7 @@ The structure is three-part, not two:
 evidence  →  policy rule  →  warranted decision
 ```
 
-The normative definition of `EvidenceBridge` is **§7.5, in RFC-0006** — it is a
+The normative definition of `EvidenceBridge` is **§7.5, in Part 03** — it is a
 translation-layer primitive, not a property of this demo. This section only
 records why the demo needs one.
 
@@ -492,30 +491,31 @@ substrate would own it, and the first test that would fail if it were wrong.
 Rows are ordered by dependency: nothing below is startable before the rows above
 it land.
 
-| Primitive             | Existing source                                                   | Extend / create | Owner substrate                       | First executable test                                                                                                    |
-| --------------------- | ----------------------------------------------------------------- | --------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| `ContentAddress`      | `contracts/CANONICAL_HASH.v0.1.md`, `fixtures/canon-vectors.json` | extend          | trinity                               | full-digest vectors alongside the existing 12-hex handles (§5.1 rule 4)                                                  |
-| `CanonicalEncoding`   | `warrant` SPEC §4 + `examples/canon-vectors.json`                 | adopt + extend  | trinity, as `CANONICAL_ENCODING.v0.1` | the existing 47 vectors pass unchanged, plus new ratio/fixed-point cases (§5.1.2)                                        |
-| `StateDomain`         | none                                                              | create          | omega                                 | a domain that declares `Metric` without implementing it is rejected at registration (§6.3.1)                             |
-| `AlgebraicLaws`       | none                                                              | create          | omega                                 | a law with `status: falsified` blocks composition; a `tested` law with no generator is rejected (§6.2)                   |
-| `InvariantDefinition` | scattered invariant checks across substrates                      | create          | omega                                 | a `transition`-scope invariant evaluated from one state fails rather than reporting held (§6.1.1)                        |
-| `InvariantEvaluation` | none                                                              | create          | omega                                 | same predicate + same snapshots ⇒ same report on two substrates; a stale snapshot yields `not assessed` (§6.1.2)         |
-| `TypedState`          | substrate-local state shapes                                      | create          | trinity                               | a `minimal`-profile state is refused at a boundary requiring `full`, not backfilled (§5.2)                               |
-| `CompositeState`      | none                                                              | create          | liquid                                | a composite with an undeclared coupling fails validation while every component validates (§6.5.2)                        |
-| `LossProfile`         | none                                                              | create          | trinity                               | property tests: associativity, identity, non-commutativity, monotonicity for `translation` only (§7.1.1)                 |
-| `TransformKind`       | none                                                              | create          | trinity                               | an undeclared kind is treated as `reconstruction`; a reconstructed value is refused at an irreversible boundary (§7.0.3) |
-| `SuitabilityProfile`  | none                                                              | create          | trinity                               | a self-reported `forIrreversibleAction` is recorded as `undetermined` regardless of the claim (§7.2.2)                   |
-| `ConflictOccurrence`  | `src/x2B88_decisions.myc.md` chord ledger                         | extend          | myc, liquid                           | two occurrences sharing a fingerprint are not merged without a receipted lineage claim (§19.16)                          |
-| `AdmissionStage`      | `myc` proposal lifecycle, `contracts/GOVERNANCE_FLOW.v0.md`       | extend          | myc                                   | eligibility replays bit-for-bit from the receipt; authorization is attributed and not recomputed (§10.1.3)               |
-| `ExecutionFloor`      | `ski@v1` / Σ-GLYPH Book I v0.5                                    | adopt (pinned)  | omega                                 | the same fixture yields identical output bytes under two substrates' evaluators (§13.4.1.1)                              |
-| `HandshakeMessage`    | none                                                              | create          | trinity                               | a message from the party whose turn it is not is rejected, not merged (§13.4.3.1)                                        |
-| `EvidenceBridge`      | `warrant` decision records                                        | extend          | myc, trinity                          | a bridge presented as a translation — carrying a loss profile — is rejected (§7.5)                                       |
+| Primitive             | Existing source                                                   | Extend / create | Owner substrate                               | First executable test                                                                                                                                      |
+| --------------------- | ----------------------------------------------------------------- | --------------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ContentAddress`      | `contracts/CANONICAL_HASH.v0.1.md`, `fixtures/canon-vectors.json` | extend          | trinity                                       | full-digest vectors alongside the existing 12-hex handles (§5.1 rule 4)                                                                                    |
+| `CanonicalEncoding`   | `warrant` SPEC §4 + `examples/canon-vectors.json`                 | adopt + extend  | federation contract; implementers independent | Warrant vectors pass unchanged; CNP-0 adds profile IDs, ratio/fixed, constants, quantization, two encoders, and a rejecting third verifier (§5.1.2–§5.1.3) |
+| `StateDomain`         | none                                                              | create          | omega                                         | a domain that declares `Metric` without implementing it is rejected at registration (§6.3.1)                                                               |
+| `AlgebraicLaws`       | none                                                              | create          | omega                                         | a law with `status: falsified` blocks composition; a `tested` law with no generator is rejected (§6.2)                                                     |
+| `InvariantDefinition` | scattered invariant checks across substrates                      | create          | omega                                         | a `transition`-scope invariant evaluated from one state fails rather than reporting held (§6.1.1)                                                          |
+| `InvariantEvaluation` | none                                                              | create          | omega                                         | same predicate + same snapshots ⇒ same report on two substrates; a stale snapshot yields `not assessed` (§6.1.2)                                           |
+| `TypedState`          | substrate-local state shapes                                      | create          | trinity                                       | a `minimal`-profile state is refused at a boundary requiring `full`, not backfilled (§5.2)                                                                 |
+| `CompositeState`      | none                                                              | create          | liquid                                        | a composite with an undeclared coupling fails validation while every component validates (§6.5.2)                                                          |
+| `LossProfile`         | none                                                              | create          | trinity                                       | property tests: associativity, identity, non-commutativity, monotonicity for `translation` only (§7.1.1)                                                   |
+| `TransformKind`       | none                                                              | create          | trinity                                       | an undeclared kind is treated as `reconstruction`; a reconstructed value is refused at an irreversible boundary (§7.0.3)                                   |
+| `SuitabilityProfile`  | none                                                              | create          | trinity                                       | a self-reported `forIrreversibleAction` is recorded as `undetermined` regardless of the claim (§7.2.2)                                                     |
+| `ConflictOccurrence`  | `src/x2B88_decisions.myc.md` chord ledger                         | extend          | myc, liquid                                   | two occurrences sharing a fingerprint are not merged without a receipted lineage claim (§19.16)                                                            |
+| `AdmissionStage`      | `myc` proposal lifecycle, `contracts/GOVERNANCE_FLOW.v0.md`       | extend          | myc                                           | eligibility replays bit-for-bit from the receipt; authorization is attributed and not recomputed (§10.1.3)                                                 |
+| `ExecutionFloor`      | `ski@v1` / Σ-GLYPH Book I v0.5                                    | adopt (pinned)  | omega                                         | the same fixture yields identical output bytes under two substrates' evaluators (§13.4.1.1)                                                                |
+| `HandshakeMessage`    | none                                                              | create          | trinity                                       | a message from the party whose turn it is not is rejected, not merged (§13.4.3.1)                                                                          |
+| `EvidenceBridge`      | `warrant` decision records                                        | extend          | myc, trinity                                  | a bridge presented as a translation — carrying a loss profile — is rejected (§7.5)                                                                         |
 
 Notes on the table:
 
-1. **Three rows are `adopt`, not `create`.** Canonical encoding and the
-   execution floor exist and are tested (§17.1); building parallel ones would be
-   the ecosystem fork §5.1 argues against. Adoption still requires the pin.
+1. **The selected candidates are extended, not reinvented.** CNP-0-JCS reuses
+   Warrant's tested JCS surface, and the execution floor reuses `ski@v1`
+   (§17.1). CNP-0 still needs its own normative vectors and independent gates;
+   reuse is prior evidence, not inherited conformance. Adoption requires pins.
 2. **`omega` carries the deterministic rows** because determinism is its stated
    responsibility (§18), and every one of those tests is a determinism test.
 3. **The `first executable test` column is the point of the table.** Each is a
@@ -602,15 +602,18 @@ rather than "proved" for that reason.
 
 #### 17.1.1 Two decisions now have named candidates
 
-- **Tranche A3 (canonical encoding).** `warrant`'s JCS profile is a concrete
-  candidate rather than an open search. It resolves the float question by
-  removing floats entirely, and bounds integers to ±(2^53−1) because RFC 8785
-  serializes numbers through an IEEE-754 double and is lossy above that — the
-  same failure §5.1.2 describes, found there by external review and fixed with
-  vectors. Adopting it requires deciding how §6.4's probability simplex lives
-  inside an integers-only domain; §5.1.2 now specifies the two admissible
-  patterns and their canonical-form rules, so this tranche selects between them
-  rather than facing an open question.
+- **Tranche A3 (canonical encoding).** Part 01 §5.1.2.1 now selects
+  **CNP-0-JCS** in the draft: RFC 8785 JCS over strict I-JSON, integers bounded
+  to ±(2^53−1), IEEE floats forbidden, and exact ratio or domain-scoped
+  fixed-point selected per state domain. It also separates the wire identifier
+  `hsp-jcs@v0` from numeric profile `cnp-0`, with both inside digest input.
+
+  This resolves the design choice, not the tranche. Warrant's 47 canonical
+  vectors and Python/Go/Rust agreement are prior evidence for the JCS layer;
+  they do not exercise CNP-0 identifiers, ratios, fixed scales, constants,
+  circles, or quantization. A3 remains pending until `CANONICAL_ENCODING.v0.1`,
+  the CNP-0 corpus, two independent encoders, a third verifier-only rejection
+  path, and federation adoption exist.
 
   **Corrected 2026-08-03 by measurement.** This entry originally read as a
   choice between `warrant`'s profile and the federation's existing
@@ -622,9 +625,9 @@ rather than "proved" for that reason.
   structural canonicalizer this RFC did not know about
   (`packages/canonical-receipt`, RFC 8949 canonical CBOR, published on jsr). A
   further claim made in that pass — that `RECEIPT_ENVELOPE.v1.0` leaves its own
-  encoding unfixed — was itself wrong and is retracted in RFC-0004 §5.1.4: the
+  encoding unfixed — was itself wrong and is retracted in Part 01 §5.1.4: the
   contract fixes deterministic CBOR explicitly and models the per-family
-  declaration §5.1.1 rule 6 asks for. See RFC-0004 §5.1.4.
+  declaration §5.1.1 rule 6 asks for. See Part 01 §5.1.4.
 - **Tranche G4 (execution floor evaluator).** `ski@v1` (warrant SPEC §3.1, over
   Σ-GLYPH Book I v0.5) satisfies every requirement §13.4.1.1 states:
   deterministic across hosts, bit-exact across implementations, terminating by
@@ -645,10 +648,10 @@ Naming candidates is not ratifying them. Specifically:
    these as one actor with two keys, two actors, or an actor requiring a
    key-state rotation warrant to unify, is undecided and is an instance of
    §20.17 rather than an answer to it.
-2. **Adoption direction is not implied.** That `warrant` solved the encoding
-   question does not make it the federation's encoding; that is Tranche A3's
-   decision, and the substrates that would have to implement it are not parties
-   to this RFC.
+2. **Draft selection is not adoption authority.** Part 01 chooses CNP-0-JCS as
+   the text's candidate. That does not make Warrant the owner of federation
+   encoding, import its governance, or bind substrates that have not ratified
+   and implemented the contract.
 3. **Version pinning is mandatory if adopted.** `ski@v1` names Book I v0.5
    specifically, and `GOV-ANCHORS` pins its dependencies by content hash for the
    stated reason that a STANDARD must not rest on a moving target. Any adoption
@@ -919,9 +922,9 @@ features:
 14. Is the five-element floor of §13.4.1 minimal, or does a different
     decomposition do the same work with less? Sufficiency is argued; minimality
     is not proven (§13.4.1.2).
-15. Which canonical encoding should the federation adopt, and can exact-rational
-    or fixed-point simplex representations be made efficient enough for the
-    volumes the fast path assumes (§5.1.1)?
+15. Can CNP-0-JCS's safe-integer bound, exact-rational reduction cost, and
+    fixed-point domain migrations meet fast-path volumes, and does its eventual
+    independent corpus justify federation adoption (§5.1.2–§5.1.3)?
 16. Are distinct substrate, distinct derivation, and distinct authority
     sufficient for policy independence, or can correlated failure survive all
     three (§8.2.3)?
@@ -1023,22 +1026,22 @@ ratifiable, states what it depends on, and can be rejected without voiding the
 others. Nothing outside a ratified tranche may be cited as agreed.
 
 A flat list of fifteen decisions was tried first and could not be acted on; the
-reasoning is in [REVISION HISTORY](0003-REVISION-HISTORY.md) §4.
+reasoning is in [Part 07: Revision History](07-revision-history.md) §4.
 
 ### Section-to-document map
 
 Every section number in this set is global and stable (see the header). This is
 where a reference resolves:
 
-| Sections                        | Document                 |
-| ------------------------------- | ------------------------ |
-| §0–§4, §16–§23                  | RFC-0003 (this document) |
-| §5.1, §5.1.0–§5.1.3, §14, §14.1 | RFC-0004                 |
-| §5 (core model), §6             | RFC-0005                 |
-| §7                              | RFC-0006                 |
-| §8, §9, §10, §11                | RFC-0007                 |
-| §13                             | RFC-0008                 |
-| §5.2, §12, §15                  | RFC-0009                 |
+| Sections                        | Part                    |
+| ------------------------------- | ----------------------- |
+| §0–§4, §16–§23                  | Part 00 (this document) |
+| §5.1, §5.1.0–§5.1.4, §14, §14.1 | Part 01                 |
+| §5 (core model), §6             | Part 02                 |
+| §7                              | Part 03                 |
+| §8, §9, §10, §11                | Part 04                 |
+| §13                             | Part 05                 |
+| §5.2, §12, §15                  | Part 06                 |
 
 ### Tranche A — Identity and encoding (no dependencies)
 
@@ -1047,17 +1050,17 @@ where a reference resolves:
   irreversible boundary, admission, identity amendment, or trust computation.
 - **A2.** Require a single canonical encoding meeting §5.1.1, with the float
   policy of §5.1.2 and cross-substrate parity fixtures per §5.1.3.
-- **A3.** Commission `CANONICAL_ENCODING.v0.1` as a separate federation
-  contract, selecting the encoding. This RFC states requirements and
-  deliberately does not choose. A concrete candidate exists — `warrant` SPEC
-  §4's JCS-over-I-JSON profile, with three agreeing implementations (§17.1.1) —
-  whose open question is how the probability simplex lives inside an
-  integers-only domain.
+- **A3.** Commission and ratify `CANONICAL_ENCODING.v0.1` for the draft-selected
+  CNP-0-JCS profile (§5.1.2.1), with its normative corpus (§5.1.3), at least two
+  independent encoders, and a third verifier-only path that rejects malformed
+  raw input and non-canonical ratios. The text selects the design; this tranche
+  is not satisfied until interoperability and adoption are evidenced.
 - **A4.** Require stable, verifiable key identity at Level 0.
 
 Tranche A is a prerequisite for every other tranche. Until A2 and A3 land,
 §5.1's guarantees do not hold across substrate boundaries and nothing that
-depends on cross-substrate reference equality should be claimed.
+depends on cross-substrate reference equality should be claimed. A draft choice
+reduces design uncertainty; it does not weaken this gate.
 
 ### Tranche B — State-domain typing (depends on A)
 
@@ -1161,15 +1164,16 @@ depends on cross-substrate reference equality should be claimed.
 Three reviewers, independently, proposed decomposing this RFC. The split was
 carried out; this document is the umbrella that remains. The reasoning, and why
 it was deferred twice before being accepted, is in
-[REVISION HISTORY](0003-REVISION-HISTORY.md) §5.
+[Part 07: Revision History](07-revision-history.md) §5.
 
 What matters going forward rather than backward:
 
 1. **Ratification is per tranche, per document.** A ratified tranche constrains
    something. An unratified complete specification constrains nothing while
    looking as though it does, which is the more dangerous of the two states.
-2. **RFC-0004 unblocks everything.** Until its encoding is selected, every later
-   document is specified and not implementable across substrate boundaries.
+2. **Part 01 still blocks conformance.** Its draft encoding is selected; the
+   missing contract, corpus, independent implementations, rejection path, and
+   adoption keep every later part non-conforming across substrate boundaries.
 3. **The next artifact should be code, not a fifth revision.** §17.2 gives the
    first implementation slice as a table whose last column is a test that fails
    today. Marginal value has moved from the text to the demos of §16.

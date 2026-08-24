@@ -1,24 +1,24 @@
-# RFC-0006: Translation, Loss, Suitability and Debt
+# RFC-0003 / Part 03: Translation, Loss, Suitability and Debt
 
 - **Status:** Draft
 - **Authors:** s0fractal + model collaborators
 - **Home:** https://github.com/s0fractal/trinity —
-  `docs/rfc/0006-translation-loss-and-suitability.md`
+  `docs/rfc/0003-heterogeneous-state-protocol/03-translation-loss-and-suitability.md`
 - **Parent:**
-  [RFC-0003 — Heterogeneous State Protocol: Architecture and
-  Ratification Map](0003-heterogeneous-state-geometries.md), which holds the
-  theses, non-goals, terminology, dependency graph, failure-mode catalogue, and
-  open problems this document depends on.
+  [Part 00 — Architecture and Ratification
+  Map](00-architecture-and-ratification-map.md), which holds the theses,
+  non-goals, terminology, dependency graph, failure-mode catalogue, and open
+  problems this document depends on.
 - **Ratifies:** Tranche C (C1–C6)
-- **Depends on:** RFC-0004, RFC-0005
-- **Created:** 2026-08-03 (split from RFC-0003 after four rounds of external
-  critique; see [REVISION HISTORY](0003-REVISION-HISTORY.md))
+- **Depends on:** Parts 01, 02
+- **Created:** 2026-08-03 (extracted from the original single-file draft after
+  four rounds of external critique; see [Part 07](07-revision-history.md))
 
 > **Section numbers are inherited and stable.** This document keeps the section
 > numbers it carried inside RFC-0003. They are not renumbered from 1, because
 > ledger chords and prior receipts cite them, and a cross-reference that
 > silently changes meaning is the failure this protocol exists to prevent. A
-> reference of the form §N.M is resolvable through RFC-0003's §22 map.
+> reference of the form §N.M is resolvable through Part 00's §22 map.
 
 ---
 
@@ -44,7 +44,7 @@ under one a step that improves suitability is a conformance bug, under the other
 it is the mechanism. Left unseparated, an implementation either violates the
 monoid or buries the enrichment inside `introducedAssumptions`, where it is
 indistinguishable from a fabrication
-([REVISION HISTORY](0003-REVISION-HISTORY.md) §1).
+([Part 07: Revision History](07-revision-history.md) §1).
 
 The five kinds are therefore distinguished, and each carries different
 obligations:
@@ -543,7 +543,7 @@ Rules:
    _decision_ was authorized, and joining them would put an authority into the
    loss algebra.
 
-§16.7 (RFC-0003) exercises this: the federated demo must produce a bridge
+§16.7 (Part 00) exercises this: the federated demo must produce a bridge
 separately from its mapping, so that a reader of the receipts can ask who
 decided that exhaustion justifies withdrawal and get a name rather than a
 mapping.

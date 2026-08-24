@@ -1,24 +1,24 @@
-# RFC-0005: Typed State Domains and Invariants
+# RFC-0003 / Part 02: Typed State Domains and Invariants
 
 - **Status:** Draft
 - **Authors:** s0fractal + model collaborators
 - **Home:** https://github.com/s0fractal/trinity —
-  `docs/rfc/0005-typed-state-domains.md`
+  `docs/rfc/0003-heterogeneous-state-protocol/02-typed-state-domains.md`
 - **Parent:**
-  [RFC-0003 — Heterogeneous State Protocol: Architecture and
-  Ratification Map](0003-heterogeneous-state-geometries.md), which holds the
-  theses, non-goals, terminology, dependency graph, failure-mode catalogue, and
-  open problems this document depends on.
+  [Part 00 — Architecture and Ratification
+  Map](00-architecture-and-ratification-map.md), which holds the theses,
+  non-goals, terminology, dependency graph, failure-mode catalogue, and open
+  problems this document depends on.
 - **Ratifies:** Tranche B (B1–B8)
-- **Depends on:** RFC-0004
-- **Created:** 2026-08-03 (split from RFC-0003 after four rounds of external
-  critique; see [REVISION HISTORY](0003-REVISION-HISTORY.md))
+- **Depends on:** Part 01
+- **Created:** 2026-08-03 (extracted from the original single-file draft after
+  four rounds of external critique; see [Part 07](07-revision-history.md))
 
 > **Section numbers are inherited and stable.** This document keeps the section
 > numbers it carried inside RFC-0003. They are not renumbered from 1, because
 > ledger chords and prior receipts cite them, and a cross-reference that
 > silently changes meaning is the failure this protocol exists to prevent. A
-> reference of the form §N.M is resolvable through RFC-0003's §22 map.
+> reference of the form §N.M is resolvable through Part 00's §22 map.
 
 ---
 
@@ -282,7 +282,7 @@ associativity, the triangle inequality, invertibility, and monotonicity — wher
 the counterexamples live in the corners a naive generator does not reach.
 Collapsing proof strength into a flag is the move this protocol refuses for
 translation quality (§7.1), suitability (§7.2.1), and cost (§10.1.1); see
-[REVISION HISTORY](0003-REVISION-HISTORY.md) §1.
+[Part 07: Revision History](07-revision-history.md) §1.
 
 Rules:
 

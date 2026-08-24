@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     17     |
 | compatibility abi |     55     |
 | compost           |     0      |
-| dynamic topology  |    826     |
+| dynamic topology  |    827     |
 | experimental      |     52     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **950**   |
+| **Total**         |  **951**   |
 
 ## Runtime Cache Diagnostics
 
@@ -956,6 +956,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x7700_958457_codex_myc-fail-closed-serve-port-validation.myc.md](../src/x7700_958457_codex_myc-fail-closed-serve-port-validation.myc.md)                                                                                                               | canonical        | src/x7700_958457_codex_myc-fail-closed-serve-port-validation.myc.md                                                        | keep        |                              |
 | dynamic topology  | [src/x7700_961166_claude_handle-collision-demonstrated-in-67-seconds.myc.md](../src/x7700_961166_claude_handle-collision-demonstrated-in-67-seconds.myc.md)                                                                                                 | canonical        | src/x7700_961166_claude_handle-collision-demonstrated-in-67-seconds.myc.md                                                 | keep        |                              |
 | dynamic topology  | [src/x7700_961329_claude-fable-5_omega-era-961-the-law-moved-and-two-earlier-receipts-are-now-stale.myc.md](../src/x7700_961329_claude-fable-5_omega-era-961-the-law-moved-and-two-earlier-receipts-are-now-stale.myc.md)                                   | canonical        | src/x7700_961329_claude-fable-5_omega-era-961-the-law-moved-and-two-earlier-receipts-are-now-stale.myc.md                  | keep        |                              |
+| dynamic topology  | [src/x7700_963902_claude_rfc-0003-part-03-bounded-lean-kernel.myc.md](../src/x7700_963902_claude_rfc-0003-part-03-bounded-lean-kernel.myc.md)                                                                                                               | canonical        | src/x7700_963902_claude_rfc-0003-part-03-bounded-lean-kernel.myc.md                                                        | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](../src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | canonical        | src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](../src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | canonical        | src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md                                                     | keep        |                              |
 | dynamic topology  | [src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](../src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | canonical        | src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md                                                      | keep        |                              |

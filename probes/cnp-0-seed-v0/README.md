@@ -196,9 +196,17 @@ pinned commit was being measured while the report said the revision matched
 
 The revision must be present in the checkout. If it is not — or git or python3 is
 missing — the result is `UNAVAILABLE` with `parityState: UNMEASURED`, never
-`PASS`: a check that did not run is not parity. To measure a revision other than
-the pin, the caller states it with `--warrant-sha=<exact>`, and the report
-records it as disclosed.
+`PASS`: a check that did not run is not parity.
+
+To measure a revision other than the pin, the caller states it with
+`--warrant-sha=<full 40-hex commit id>`. **A name is not a pin.** `HEAD`, a
+branch, a tag, an abbreviated id, and an uppercase spelling are all refused as
+`UNAVAILABLE`/`UNMEASURED`: each of them resolves in git and `git archive` would
+produce a tree, but what they name can change, so recording one as the measured
+revision would be recording a promise nobody made (`--warrant-sha=HEAD` did
+exactly that until codex found it in `21af739`). A full 40-hex id is additionally
+resolved with `git rev-parse --verify <id>^{commit}` and required to resolve to
+itself, which also refuses an annotated tag object's own id.
 
 ### The divergence direction B found
 

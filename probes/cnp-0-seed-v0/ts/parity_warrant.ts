@@ -19,9 +19,10 @@
 // The revision is checked, not assumed: a checkout that is not the pinned
 // revision FAILS unless the caller discloses the exact revision they mean.
 //
-// Usage:
-//   deno run --allow-read --allow-run ts/parity_warrant.ts --warrant=<path>
-//   deno run ... --warrant=<path> --warrant-sha=<exact-sha>   # disclose another revision
+// Usage (--allow-write is required: the pinned tree is materialized into a
+// temporary directory before anything is measured):
+//   deno run --allow-read --allow-write --allow-run ts/parity_warrant.ts --warrant=<path>
+//   deno run ... --warrant=<path> --warrant-sha=<full-40-hex-commit-id>
 //   deno run ... --json
 
 const HERE = new URL(".", import.meta.url);
@@ -206,9 +207,18 @@ async function revisionOf(
 
 export type ParityOptions = {
   warrantPath?: string;
-  /** An exact revision the caller discloses instead of the pin. */
+  /**
+   * An exact revision the caller discloses instead of the pin. It must be a
+   * full 40-character lowercase commit id: a name that can move is not a pin,
+   * however exactly it is spelled at the moment it is typed.
+   */
   disclosedSha?: string;
 };
+
+/** A full commit object id. Not a branch, not a tag, not an abbreviation. */
+function isFullCommitId(s: string): boolean {
+  return /^[0-9a-f]{40}$/.test(s);
+}
 
 async function git(args: string[]): Promise<{ ok: boolean; out: string }> {
   try {
@@ -234,9 +244,21 @@ async function materialize(
   repo: string,
   sha: string,
 ): Promise<{ dir: string } | { error: string }> {
-  const exists = await git(["-C", repo, "cat-file", "-e", `${sha}^{commit}`]);
-  if (!exists.ok) {
+  // Resolve and require the resolution to be the identity. `git archive HEAD`
+  // succeeds and produces a tree, so passing a moving ref used to be recorded
+  // as though it were a pin (codex review of 21af739). This also rejects a
+  // 40-hex value that is a tag OBJECT rather than a commit: peeling it with
+  // ^{commit} yields a different id, and a different id is not the one the
+  // caller named.
+  const resolved = await git(["-C", repo, "rev-parse", "--verify", `${sha}^{commit}`]);
+  if (!resolved.ok) {
     return { error: `revision ${sha} is not present in ${repo}` };
+  }
+  if (resolved.out !== sha) {
+    return {
+      error: `${sha} resolves to commit ${resolved.out}, so it names something ` +
+        "other than that commit and cannot be treated as a pin",
+    };
   }
   const dir = await Deno.makeTempDir({ prefix: "cnp0-warrant-tree-" });
   const tar = `${dir}/tree.tar`;
@@ -298,6 +320,15 @@ export async function parity(opts: ParityOptions = {}): Promise<ParityReport> {
   }
   const warrantPath = opts.warrantPath.replace(/\/$/, "");
   report.warrantPath = warrantPath;
+
+  if (!isFullCommitId(expected)) {
+    report.reasons.push(
+      `${JSON.stringify(expected)} is not a full 40-character lowercase commit ` +
+        "id. HEAD, a branch, a tag, and an abbreviated id can all move or be " +
+        "ambiguous, so none of them is a pin; nothing was measured",
+    );
+    return report;
+  }
 
   // The checkout's HEAD is reported, but nothing depends on it: what gets
   // measured is the materialized tree of `expected`.

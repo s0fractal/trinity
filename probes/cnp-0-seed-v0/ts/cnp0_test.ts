@@ -241,3 +241,77 @@ Deno.test("a dirty external checkout cannot reach the measurement", async () => 
     await Deno.remove(dir, { recursive: true });
   }
 });
+
+
+Deno.test("a moving or ambiguous revision is not a pin", async () => {
+  const { dir, sha } = await fakeWarrantRepo(false);
+  try {
+    // Each of these resolves in git, and `git archive` would happily produce a
+    // tree for it. None of them is a pin: what it names can change.
+    for (
+      const ref of [
+        "HEAD",
+        sha.slice(0, 12), // abbreviated
+        sha.toUpperCase(), // not lowercase
+        "main",
+        "master",
+      ]
+    ) {
+      const report = await parity({ warrantPath: dir, disclosedSha: ref });
+      assertEquals(report.status, "UNAVAILABLE", `${ref} was accepted`);
+      assertEquals(report.parityState, "UNMEASURED", `${ref} was measured`);
+      assertEquals(report.measured, undefined, `${ref} recorded a measured tree`);
+      assert(
+        report.reasons.some((r) => r.includes("not a full 40-character lowercase commit id")),
+        `${ref} was refused for the wrong reason: ${report.reasons.join("; ")}`,
+      );
+    }
+  } finally {
+    await Deno.remove(dir, { recursive: true });
+  }
+});
+
+Deno.test("a full 40-hex id that names something other than that commit is refused", async () => {
+  const { dir, sha } = await fakeWarrantRepo(false);
+  try {
+    // An annotated tag is its own object with its own 40-hex id. It passes the
+    // shape check and still must be refused: peeling it yields a different id,
+    // and a different id is not the one the caller named.
+    const tag = await new Deno.Command("git", {
+      args: [
+        "-C",
+        dir,
+        "-c",
+        "user.name=cnp0-test",
+        "-c",
+        "user.email=cnp0@example.invalid",
+        "tag",
+        "-a",
+        "v1",
+        "-m",
+        "annotated",
+      ],
+      stdout: "null",
+      stderr: "null",
+    }).output();
+    assert(tag.success, "could not create the annotated tag");
+    const idOut = await new Deno.Command("git", {
+      args: ["-C", dir, "rev-parse", "v1"],
+      stdout: "piped",
+      stderr: "null",
+    }).output();
+    const tagOid = new TextDecoder().decode(idOut.stdout).trim();
+    assert(/^[0-9a-f]{40}$/.test(tagOid) && tagOid !== sha, "expected a distinct tag object id");
+
+    const report = await parity({ warrantPath: dir, disclosedSha: tagOid });
+    assertEquals(report.status, "UNAVAILABLE");
+    assertEquals(report.parityState, "UNMEASURED");
+    assertEquals(report.measured, undefined);
+    assert(
+      report.reasons.some((r) => r.includes("resolves to commit")),
+      `wrong reason: ${report.reasons.join("; ")}`,
+    );
+  } finally {
+    await Deno.remove(dir, { recursive: true });
+  }
+});

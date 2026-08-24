@@ -5,9 +5,17 @@ import HSP.Suitability
 /-!
 # HSP.Counterexamples — witnesses and countermodels for RFC-0003 Part 03
 
-Specification pinned: trinity `main@e7f63f1`,
-`docs/rfc/0003-heterogeneous-state-protocol/03-translation-loss-and-suitability.md`,
-sha256 `9462e6bfbbf3c6d24d41a80df6dffa30b42c41bf705cf657fb0874d25f098616`.
+Specification pinned: trinity `main@b7fb1ce`,
+`docs/rfc/0003-heterogeneous-state-protocol/03-translation-loss-and-suitability.md`.
+
+The dependency is the **normative body** — everything from `## 7. Translation
+protocol` to the end of the file — sha256
+`148c50d1a560f5b4845a69657caea285caa1def169de725a1be66c06ea9505da`. That is what
+`proof_guard.py` gates on. The whole file currently hashes to
+`794d9b3591397cd033843890fdee06a09c98103be45324cc7e00b858fa9d6b65`; it differs
+from the digest this artifact was first written against (`9462e6bf…`, at
+`e7f63f1`) only in the front-matter provenance block, which no theorem here
+depends on. A header edit is reported, not failed; a §7 edit fails.
 
 Two kinds of statement live here, and they are labelled:
 
@@ -264,26 +272,62 @@ theorem average_is_not_a_meet :
       ∧ CompletionB.le (averageCompose S.unsuitable S.suitable) S.unsuitable = false :=
   ⟨rfl, rfl⟩
 
-/-! ## C5 — §7.2.1: the `bounded` payload has no declared combining rule -/
+/-! ## C5 — §7.2.1: the meet is undefined on every payload, not just `bounded` -/
 
-/-- A constraint-set combination that satisfies the type and nothing else. -/
+/-- One admissible reading of "combine the payloads": keep the first. -/
 def leftBias (x _ : Bool) : Bool := x
 
-/-- **C5 — §7.2.1, erratum.** `bounded` carries `within: ConstraintRef[]`, and
-    §7.2.1 declares neither a refinement order on constraint sets nor a
-    combining operation for them. An implementation that picks the first
-    operand's constraints — a natural reading of "keep the tighter bound" when
-    no order is declared — yields a "meet" that is not commutative, so §7.2.1's
-    own semilattice requirement fails without anyone violating a stated MUST.
+/-- Another: keep the second. -/
+def rightBias (_ y : Bool) : Bool := y
 
-    Proposed erratum: require the `ConstraintRef` vocabulary to declare a
-    content-addressed refinement order with meets, the way §7.1.1 already
-    requires a distortion measure to supply its composition rule and §7.3.1
-    requires a `dimension` descriptor to pin its addition and order. -/
+/-- **C5 — §7.2.1, erratum.** §7.2.1 fixes an order on the four *tags* and calls
+    composition the meet, but every constructor carries a payload and §7.1.0
+    compares values by canonical bytes. Composition therefore has to say which
+    `ReasonRef` two `unsuitable` steps yield, whether two `undetermined` steps
+    union their `missing` requirements, how two `within` sets combine along with
+    their evidence, and whether a `suitable` step's evidence survives into a
+    `bounded` result. §7.2.1 answers none of the four.
+
+    The witness takes the least forgiving of them: two steps that are each
+    measured `unsuitable`, for different reasons. Two implementations that both
+    satisfy every stated MUST produce **different composed values** — and the
+    divergence is invisible to §7.2.2's gate, which reads only the tag, while
+    being fully visible to §7.1.0's byte equality, which is what a receipt is
+    compared with. Left-biasing is not even commutative, so it is not a meet at
+    all.
+
+    Proposed erratum. Declare all four operations, with the same discipline
+    §7.1.1 imposes on a distortion measure and §7.3.1 on a `dimension`
+    descriptor: content-addressed, and carrying the algebra-law evidence
+    (commutative, associative, idempotent) that §7.2.1's "meet" presupposes. The
+    natural candidates — union of `missing`, union of `evidence`, a declared
+    refinement meet on `within` — are defensible, but `ReasonRef` has no natural
+    candidate at all, which is why it must be specified rather than left to
+    implementers. -/
+theorem payload_meet_undetermined :
+    tagOf (meetFull leftBias leftBias leftBias leftBias
+        (SFull.unsuitable true) (SFull.unsuitable false))
+      = tagOf (meetFull rightBias rightBias rightBias rightBias
+        (SFull.unsuitable true) (SFull.unsuitable false))
+    ∧ meetFull leftBias leftBias leftBias leftBias
+        (SFull.unsuitable true) (SFull.unsuitable false)
+      ≠ meetFull rightBias rightBias rightBias rightBias
+        (SFull.unsuitable true) (SFull.unsuitable false)
+    ∧ meetFull leftBias leftBias leftBias leftBias
+        (SFull.unsuitable true) (SFull.unsuitable false)
+      ≠ meetFull leftBias leftBias leftBias leftBias
+        (SFull.unsuitable false) (SFull.unsuitable true) := by
+  refine ⟨rfl, ?_, ?_⟩ <;> simp [meetFull, leftBias, rightBias]
+
+/-- **C5a.** The same gap on `bounded`, where an implementation reading "keep the
+    tighter bound" with no declared refinement order picks the first operand and
+    loses commutativity. -/
 theorem bounded_payload_rule_can_break_meet :
-    meetC leftBias (SC.bounded true) (SC.bounded false)
-      ≠ meetC leftBias (SC.bounded false) (SC.bounded true) := by
-  simp [meetC, leftBias]
+    meetFull leftBias leftBias leftBias leftBias
+        (SFull.bounded true true) (SFull.bounded false false)
+      ≠ meetFull leftBias leftBias leftBias leftBias
+        (SFull.bounded false false) (SFull.bounded true true) := by
+  simp [meetFull, leftBias]
 
 /-! ## C6 — §7.0/§7.2.1: the improvement that motivates the taxonomy is not
 representable in the composition rules
@@ -350,6 +394,7 @@ end HSP.Counterexamples
 #print axioms HSP.Counterexamples.drawn_order_drops_obligations
 #print axioms HSP.Counterexamples.suitability_underdetermined
 #print axioms HSP.Counterexamples.average_is_not_a_meet
+#print axioms HSP.Counterexamples.payload_meet_undetermined
 #print axioms HSP.Counterexamples.bounded_payload_rule_can_break_meet
 #print axioms HSP.Counterexamples.enrichment_improvement_invisible_to_meet
 #print axioms HSP.Counterexamples.empty_is_identity_here

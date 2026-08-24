@@ -1,8 +1,408 @@
 {
+  "axiom_allowlist": [
+    "Quot.sound",
+    "propext"
+  ],
+  "definitions": {
+    "HSP.Counterexamples.P": {
+      "kind": "abbrev",
+      "module": "Counterexamples",
+      "rfc": "\u00a77.3.1",
+      "sha256": "17b56d2757a056e001e4d7074d96d59144cfee1ff82262df366a3d6c23b7232b"
+    },
+    "HSP.Counterexamples.addRule": {
+      "kind": "def",
+      "module": "Counterexamples",
+      "rfc": "\u00a77.3.1",
+      "sha256": "f923815303b7e7fbc26b756d79899c22e5a0d4a1136fe13a51956ee6534549cb"
+    },
+    "HSP.Counterexamples.averageCompose": {
+      "kind": "def",
+      "module": "Counterexamples",
+      "rfc": "\u00a77.2.1",
+      "sha256": "0159d894c559dff79c66117b281b3e8c7059c823c4d7c321602e134f97f1caec"
+    },
+    "HSP.Counterexamples.distortA": {
+      "kind": "def",
+      "module": "Counterexamples",
+      "rfc": "\u00a77.1.1",
+      "sha256": "f59dddbc2baa7155e7bd10975886e4ee80b4e39212fd4a33fe14c6c3c5716449"
+    },
+    "HSP.Counterexamples.distortB": {
+      "kind": "def",
+      "module": "Counterexamples",
+      "rfc": "\u00a77.1.1",
+      "sha256": "3a1c73abb1bd0adcb0b79bf6dc94e934ce6185c3a063098cf87eca5b1ca40454"
+    },
+    "HSP.Counterexamples.leftBias": {
+      "kind": "def",
+      "module": "Counterexamples",
+      "rfc": "\u00a77.2.1",
+      "sha256": "5b97e7c589392dddcd5be4295c0ab4dec0b5e2db8f5a8916fa927baa49a15564"
+    },
+    "HSP.Counterexamples.leftRule": {
+      "kind": "def",
+      "module": "Counterexamples",
+      "rfc": "\u00a77.1.1",
+      "sha256": "c1bb71cf8c4c143351040fb2b3fe9b8924c70e7575d28d825393cf1e2628d023"
+    },
+    "HSP.Counterexamples.ofRank": {
+      "kind": "def",
+      "module": "Counterexamples",
+      "rfc": "\u00a77.2.1",
+      "sha256": "eb21389bcbb9bbd03069934228bb419d933fe392fc3b72c04501efde59c08814"
+    },
+    "HSP.Counterexamples.rightBias": {
+      "kind": "def",
+      "module": "Counterexamples",
+      "rfc": "\u00a77.2.1",
+      "sha256": "68b1fab0ba348f4d372169c8adf37390b7ae0310b0a3109dbea9f835cabad8a0"
+    },
+    "HSP.Counterexamples.stepA": {
+      "kind": "def",
+      "module": "Counterexamples",
+      "rfc": "\u00a77.3.1",
+      "sha256": "60e5965ce74877623bacdcd9387b9a810ac830e14d74cc754de71a803e95f856"
+    },
+    "HSP.Counterexamples.stepB": {
+      "kind": "def",
+      "module": "Counterexamples",
+      "rfc": "\u00a77.3.1",
+      "sha256": "d86300d4392803b8e400a91decc2c23c6cf0250f533c55066575ca3c4408b5d3"
+    },
+    "HSP.LossProfile.CMap.Sorted": {
+      "kind": "def",
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.0",
+      "sha256": "2b5b37eee94113206cdb1eb9325772c779005ba29a3c0d0c3a273183d62318a5"
+    },
+    "HSP.LossProfile.CMap.interWith": {
+      "kind": "def",
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "sha256": "78eb36c013817c7ae6e7c72ffe0ba4cc8644d93a98e1ae4d54e321421ac4e55f"
+    },
+    "HSP.LossProfile.CMap.joinOpt": {
+      "kind": "def",
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "sha256": "24ab635b34828081dfdb77b94d73e8d9ec6093b74dd3d617ec6a9dab6c18911d"
+    },
+    "HSP.LossProfile.CMap.keysGt": {
+      "kind": "def",
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.0",
+      "sha256": "c586b5a1b4c22bdd04bd77b69a4a59ec1882d0b73cf2e1632d1d4c5cfc285590"
+    },
+    "HSP.LossProfile.CMap.lookup": {
+      "kind": "def",
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.0",
+      "sha256": "41127e1472810ecff2c2b85706c301745eaaed8c6252bd94aa479789454f206d"
+    },
+    "HSP.LossProfile.CMap.meetOpt": {
+      "kind": "def",
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "sha256": "e62ea74b4bd81b4baba3520dc3bc5f3e2f765314d61acb7ef56c48d8689e82d4"
+    },
+    "HSP.LossProfile.CMap.mergeWith": {
+      "kind": "def",
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "sha256": "e9731501d104338774b5d4546fbdabebd9bd1a6f096dd3ce8e9430a80582eb28"
+    },
+    "HSP.LossProfile.CSet": {
+      "kind": "abbrev",
+      "module": "LossProfile",
+      "rfc": "\u00a77.3.1",
+      "sha256": "b5aef6f9f255c7345c7e663087baf7f0f507701a73cb8eda2a2d4cae304d8407"
+    },
+    "HSP.LossProfile.Digest": {
+      "kind": "abbrev",
+      "module": "LossProfile",
+      "rfc": "\u00a75.1",
+      "sha256": "99d6957bcad73e041a0047e6b8a1bc47de7b1435307e9b2489390bf659e4133d"
+    },
+    "HSP.LossProfile.Preservation": {
+      "kind": "inductive",
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.0",
+      "sha256": "212be3c5a35ee98cbc6b42751da8683f77723de4baf788c8c9cfc83efd486c31"
+    },
+    "HSP.LossProfile.Preservation.Canonical": {
+      "kind": "def",
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "sha256": "5ee26d52fe84c87e2df8c60ce2ff3b9316db9d9b7184fe96c2e55edb17b0ee20"
+    },
+    "HSP.LossProfile.Preservation.inter": {
+      "kind": "def",
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "sha256": "06942ba306c1502abc2707873e1b5d66ff36e85deb88a4fbef4761a9dec9d9cf"
+    },
+    "HSP.LossProfile.Preservation.items": {
+      "kind": "def",
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "sha256": "d6dff7a3f1be668646fcffa509ab5059489c982ffe9dd34bdcdca5b457feb44c"
+    },
+    "HSP.LossProfile.Profile": {
+      "kind": "structure",
+      "module": "LossProfile",
+      "rfc": "\u00a77.1",
+      "sha256": "e0b7b47ba549ff22616e8b13a91cbd283c987875cf68127662f2e3e40d1bb447"
+    },
+    "HSP.LossProfile.Profile.Canonical": {
+      "kind": "def",
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.0",
+      "sha256": "d2697b88f22760fba5838a38b56e9d1c649e66057f848edb7aad59f6c9d8bfc7"
+    },
+    "HSP.LossProfile.Profile.compose": {
+      "kind": "def",
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "sha256": "dc1ae13f4165d35d4a9cf262d869eb7aedcf2d94079c5c19b04368d760fea3bb"
+    },
+    "HSP.LossProfile.Profile.empty": {
+      "kind": "def",
+      "module": "LossProfile",
+      "rfc": "\u00a77.1.1",
+      "sha256": "2756485d30fd2e49fc1f44c59aae8010cfd348d1b5bd9f3265830d2677bb21e1"
+    },
+    "HSP.LossProfile.interSet": {
+      "kind": "def",
+      "module": "LossProfile",
+      "rfc": "\u00a77.3.1",
+      "sha256": "8fb32d5b362a31b1384c49ca5d9af79faa7bd204d5b9c2fcf62069e95aa1e04f"
+    },
+    "HSP.LossProfile.unionSet": {
+      "kind": "def",
+      "module": "LossProfile",
+      "rfc": "\u00a77.3.1",
+      "sha256": "c5337b716c5153e8586668b86d05c1b5dd44b88cf3c904577ae1d789d7f13f90"
+    },
+    "HSP.Suitability.CompletionA.le": {
+      "kind": "def",
+      "module": "Suitability",
+      "rfc": "\u00a77.2.2",
+      "sha256": "4775b09de3bea58596c3b00614547c0148857b08b002b1cdd3763545820abfd4"
+    },
+    "HSP.Suitability.CompletionA.meet": {
+      "kind": "def",
+      "module": "Suitability",
+      "rfc": "\u00a77.2.2",
+      "sha256": "55d9ac0729a3ed9ee65ae8a13d880d4614ee4ac37ea3f6ce94878f33f5fd01e5"
+    },
+    "HSP.Suitability.CompletionA.rank": {
+      "kind": "def",
+      "module": "Suitability",
+      "rfc": "\u00a77.2.2",
+      "sha256": "f9ca3d92fe3bad064d5951b516344f0af59fb7ffa2147769428f1814f8be7a6b"
+    },
+    "HSP.Suitability.CompletionB.le": {
+      "kind": "def",
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "sha256": "4775b09de3bea58596c3b00614547c0148857b08b002b1cdd3763545820abfd4"
+    },
+    "HSP.Suitability.CompletionB.meet": {
+      "kind": "def",
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "sha256": "55d9ac0729a3ed9ee65ae8a13d880d4614ee4ac37ea3f6ce94878f33f5fd01e5"
+    },
+    "HSP.Suitability.CompletionB.rank": {
+      "kind": "def",
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "sha256": "fa57b6e5f24fc43298c68bb4b0957de5446c7c7c130dedeaeba5b369824b1fc6"
+    },
+    "HSP.Suitability.IsGlbOf": {
+      "kind": "def",
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "sha256": "d5fed690193f6578fa498670dde70851398e78a2bbc7fead0b7a2471a9119b7a"
+    },
+    "HSP.Suitability.S": {
+      "kind": "inductive",
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "sha256": "a320d8b895bbee003ec8984b41a9b3951b7d17ff37960ec0cae942a5da83d679"
+    },
+    "HSP.Suitability.SFull": {
+      "kind": "inductive",
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "sha256": "560a85427cf500a31159fe15fe51cd2b96fd1c549bedf9a4edd44d8a13d248d3"
+    },
+    "HSP.Suitability.crossesIrreversible": {
+      "kind": "def",
+      "module": "Suitability",
+      "rfc": "\u00a77.2.2",
+      "sha256": "386b202a17a8667cdb57d11b06fafc9c5e4f81dbb8f635ed2b816b66ec93df2b"
+    },
+    "HSP.Suitability.meetFull": {
+      "kind": "def",
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "sha256": "8b97f6be22610c4251903b67ff39213626aa0b7c6f551b68fec198d29a9bc55c"
+    },
+    "HSP.Suitability.recordActionSuitability": {
+      "kind": "def",
+      "module": "Suitability",
+      "rfc": "\u00a77.2.2",
+      "sha256": "84492d623586458cae15d2be28af7c28e63d39d4827cd8be74f57167e13a34df"
+    },
+    "HSP.Suitability.reportsRemedy": {
+      "kind": "def",
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "sha256": "11510dd4862ae73ed37ead2968a64567520f0d30e49df30b05202127093688da"
+    },
+    "HSP.Suitability.statedLe": {
+      "kind": "def",
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "sha256": "da45b79445b1cf92200cba95026357a4e01faab256b63efab7daa903d10ae216"
+    },
+    "HSP.Suitability.tagOf": {
+      "kind": "def",
+      "module": "Suitability",
+      "rfc": "\u00a77.2.1",
+      "sha256": "888c5d4ced35d574de0c7f0329d0f798d2429d0f8592e8f9ea26bd37c899266f"
+    },
+    "HSP.TransformKind.Class5": {
+      "kind": "inductive",
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.2",
+      "sha256": "7e2ec688a0a5ddc280f5dbeff3ec22aed5444347bd0ad2e2465bb981faebd98b"
+    },
+    "HSP.TransformKind.Class5.join": {
+      "kind": "def",
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.2",
+      "sha256": "293643c2854ede6e6d946bb37e4d5f20ec482b5ee3ecf3385ba6baf160ef353c"
+    },
+    "HSP.TransformKind.Class5.obligations": {
+      "kind": "def",
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.2",
+      "sha256": "3c683edbb38014b9aeaeb12a9a041f18cb00ea362f2f04b2125d34bffe7b9094"
+    },
+    "HSP.TransformKind.Kind": {
+      "kind": "inductive",
+      "module": "TransformKind",
+      "rfc": "\u00a77.0",
+      "sha256": "6b6c568db060f398c4699e3c91d9cf82a14c8aa77dd37874064a2f2a493a1114"
+    },
+    "HSP.TransformKind.Marks": {
+      "kind": "structure",
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.2",
+      "sha256": "5be853c00bab050bb83a99c320a831ac4cb1a1ac7fdc7776f562ae67774e1ee0"
+    },
+    "HSP.TransformKind.Marks.Le": {
+      "kind": "def",
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.2",
+      "sha256": "c41440f66606c14c38d7afc7e6b5dad7f91500c235c6e1b92e3b6ce2bbfce840"
+    },
+    "HSP.TransformKind.Marks.bot": {
+      "kind": "def",
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.2",
+      "sha256": "8ecafb369ec90e023356b363f18420645f22ff5d82e906332c381aa82f9cc90e"
+    },
+    "HSP.TransformKind.Marks.join": {
+      "kind": "def",
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.1",
+      "sha256": "5072f67933d1c07a67f039283fb5707913cb276c5c55b6f29aa0abbb60bd037a"
+    },
+    "HSP.TransformKind.Marks.ofKind": {
+      "kind": "def",
+      "module": "TransformKind",
+      "rfc": "\u00a77.0",
+      "sha256": "7d868467ea8e690b20dcc09ebfa5bac34667b3acc5044991ec4352eb1cb9ee45"
+    },
+    "HSP.TransformKind.Marks.top": {
+      "kind": "def",
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.2",
+      "sha256": "3af8f29b047038ddc889a9df6500b1e64c3c5d108e14deb07212ed8279eae801"
+    },
+    "HSP.TransformKind.Obligation": {
+      "kind": "inductive",
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.1",
+      "sha256": "5a20edbf671d0ee9c6199a8243d114e866b0d5b4bc6f5e5ca6b1706e86e855cb"
+    },
+    "HSP.TransformKind.boundaryBarred": {
+      "kind": "def",
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.2",
+      "sha256": "c061cabd34fea37486083826616c87ba9de165025b0c8818073b975fecc687df"
+    },
+    "HSP.TransformKind.classify": {
+      "kind": "def",
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.1",
+      "sha256": "b4996c49553a07496ded9ca1d75e90dcbf61ec900c08e94bc1394929f5567e94"
+    },
+    "HSP.TransformKind.classifyDeclared": {
+      "kind": "def",
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.1",
+      "sha256": "d734cae8d87b404541a52acfad4400cdc1117b42cea3ec8e81443dbe46ba527f"
+    },
+    "HSP.TransformKind.declarationConforms": {
+      "kind": "def",
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.2",
+      "sha256": "325913089a7a6fbf825f24d59c74e8ee888f580436a6a75b660b3878a837611c"
+    },
+    "HSP.TransformKind.declaredKind": {
+      "kind": "def",
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.1",
+      "sha256": "c9744cfe17b717b56dc39f75104d35885e4313af2dfb286384179dbe420a2886"
+    },
+    "HSP.TransformKind.monotoneLossRequired": {
+      "kind": "def",
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.2",
+      "sha256": "3f59596eb8b556e42039c8ef0250935d80f3019ca8cb831fdafbe5b33a45ad2c"
+    },
+    "HSP.TransformKind.obligations": {
+      "kind": "def",
+      "module": "TransformKind",
+      "rfc": "\u00a77.0.1",
+      "sha256": "90308364557f1d4874c74180f682aa18d16fad18bee1134b0727f0b8983bfbf7"
+    }
+  },
+  "modules": {
+    "Counterexamples": {
+      "sha256": "ab1221415d45b9379c8ecc12556e9756674d5af721fbf8eb2d10e21c91b54d03"
+    },
+    "LossProfile": {
+      "sha256": "099fc0a59cfc5164806767334fce337afd4080a6380104cff5e4df17796f3e66"
+    },
+    "Suitability": {
+      "sha256": "e9ea74a5ed8df0af820fa1e299c4887950e58168d7b084db669474386836ded1"
+    },
+    "TransformKind": {
+      "sha256": "e3f858461012d772291ea5441ecb3f6d48d2ffce89268f5b882dfe757ef8a27a"
+    }
+  },
   "spec": {
-    "commit": "e7f63f1ad9efa75ffb157f73bafc07a6336c31ff",
-    "path": "docs/rfc/0003-heterogeneous-state-protocol/03-translation-loss-and-suitability.md",
-    "sha256": "9462e6bfbbf3c6d24d41a80df6dffa30b42c41bf705cf657fb0874d25f098616"
+    "body_marker": "## 7. Translation protocol",
+    "body_sha256": "148c50d1a560f5b4845a69657caea285caa1def169de725a1be66c06ea9505da",
+    "commit": "b7fb1cecf3d284d831692dfbdf5acfa4ab424321",
+    "file_sha256": "794d9b3591397cd033843890fdee06a09c98103be45324cc7e00b858fa9d6b65",
+    "path": "docs/rfc/0003-heterogeneous-state-protocol/03-translation-loss-and-suitability.md"
   },
   "theorems": {
     "HSP.Counterexamples.average_is_not_a_meet": {
@@ -17,7 +417,7 @@
       ],
       "module": "Counterexamples",
       "rfc": "\u00a77.2.1",
-      "statement_sha256": "1d658ae983e17d6e9e0d7249276aa9a8bc4589c825fc199ea214da99c7bbe06b"
+      "statement_sha256": "ad65669ef602d505824e7ed6b888bc633ec0543b4c52eb75fc9678415c1bcb0a"
     },
     "HSP.Counterexamples.compose_not_commutative": {
       "axioms": [
@@ -120,6 +520,14 @@
       "module": "Counterexamples",
       "rfc": "\u00a77.1.0",
       "statement_sha256": "2c51a326d0adbfd83728435842b64f27d2e3714a3dc6fedd5194cbea62698529"
+    },
+    "HSP.Counterexamples.payload_meet_undetermined": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "Counterexamples",
+      "rfc": "\u00a77.2.1",
+      "statement_sha256": "114b7588316d305c4438f519003709ad8acc0fba975e9b949b57611c37f1a85b"
     },
     "HSP.Counterexamples.reconstruction_pipeline_is_not_monotone_bound": {
       "axioms": [],
@@ -742,29 +1150,29 @@
       "rfc": "\u00a77.2.1",
       "statement_sha256": "db20920068b52a0a7437fa699a95c9b5f0405afd63a56ee119d63d245742055c"
     },
-    "HSP.Suitability.meetC_assoc": {
+    "HSP.Suitability.meetFull_assoc": {
       "axioms": [
         "propext"
       ],
       "module": "Suitability",
       "rfc": "\u00a77.2.1",
-      "statement_sha256": "64bf5aad7b885ed97bb9c7c7faef9eb333d9e28b698301acbf0ad4ae88db75e4"
+      "statement_sha256": "b708287040f05748980cd21566380a7ec4da36aa96aa19c99e2dc2f2afe68d38"
     },
-    "HSP.Suitability.meetC_comm": {
+    "HSP.Suitability.meetFull_comm": {
       "axioms": [
         "propext"
       ],
       "module": "Suitability",
       "rfc": "\u00a77.2.1",
-      "statement_sha256": "c05bfc3ccb756395609957ba2b1266d06d2359e23aade08e5d5650d6ec39eb35"
+      "statement_sha256": "fecd4e31b44d56199efc50edfa20cbf5208efa7b54eaa0951f1c111912828905"
     },
-    "HSP.Suitability.meetC_idem": {
+    "HSP.Suitability.meetFull_idem": {
       "axioms": [
         "propext"
       ],
       "module": "Suitability",
       "rfc": "\u00a77.2.1",
-      "statement_sha256": "09613aa490a9a96d7a9eba7c3b260bfbbaf0f711f0b4e0de474671a6a8f547af"
+      "statement_sha256": "a86169be0428ca22f17fcb6eee6b3caf1b6126c9ca35d82bb0ccf36231ea5133"
     },
     "HSP.Suitability.no_bottom": {
       "axioms": [
@@ -821,6 +1229,14 @@
       "module": "Suitability",
       "rfc": "\u00a77.2.1",
       "statement_sha256": "b452711764d847c8da6f53101c336465d590a472ef86a5b8d3ec07ff986d46cb"
+    },
+    "HSP.Suitability.tagOf_meetFull": {
+      "axioms": [
+        "propext"
+      ],
+      "module": "Suitability",
+      "rfc": "\u00a77.2.2",
+      "statement_sha256": "5989bd0c17094878569ce2a2a014e397b8e182b49585755e816fa2af1ba68e37"
     },
     "HSP.Suitability.unsuitable_undetermined_incomparable": {
       "axioms": [

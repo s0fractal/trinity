@@ -4,9 +4,17 @@
 Mechanization of the transformation-kind taxonomy (§7.0), the order on kinds
 (§7.0.2), the pipeline join, and the obligations that a join must carry.
 
-Specification pinned: trinity `main@e7f63f1`,
-`docs/rfc/0003-heterogeneous-state-protocol/03-translation-loss-and-suitability.md`,
-sha256 `9462e6bfbbf3c6d24d41a80df6dffa30b42c41bf705cf657fb0874d25f098616`.
+Specification pinned: trinity `main@b7fb1ce`,
+`docs/rfc/0003-heterogeneous-state-protocol/03-translation-loss-and-suitability.md`.
+
+The dependency is the **normative body** — everything from `## 7. Translation
+protocol` to the end of the file — sha256
+`148c50d1a560f5b4845a69657caea285caa1def169de725a1be66c06ea9505da`. That is what
+`proof_guard.py` gates on. The whole file currently hashes to
+`794d9b3591397cd033843890fdee06a09c98103be45324cc7e00b858fa9d6b65`; it differs
+from the digest this artifact was first written against (`9462e6bf…`, at
+`e7f63f1`) only in the front-matter provenance block, which no theorem here
+depends on. A header edit is reported, not failed; a §7 edit fails.
 
 Scope note. This file models the *classification* of a transformation, not the
 transformation. Payloads (`sources`, `attestation`, `rules`, `assumptions`,

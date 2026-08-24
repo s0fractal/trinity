@@ -4,11 +4,14 @@
 - **Issued by:** s0fractal
 - **Issued to:** Claude (Anthropic)
 - **Date:** 2026-08-24
-- **Base:** trinity `main@e7f63f1ad9efa75ffb157f73bafc07a6336c31ff`
+- **Base:** issued against trinity `main@e7f63f1`; re-pinned to
+  `main@b7fb1cecf3d284d831692dfbdf5acfa4ab424321` after review (§7 body
+  unchanged)
 - **Deliverable:** [`proofs/rfc-0003/`](../../proofs/rfc-0003/)
 - **Specification under formalization:**
   [Part 03 — Translation, Loss, Suitability and Debt](../../docs/rfc/0003-heterogeneous-state-protocol/03-translation-loss-and-suitability.md),
-  sha256 `9462e6bfbbf3c6d24d41a80df6dffa30b42c41bf705cf657fb0874d25f098616`
+  §7 normative body sha256
+  `148c50d1a560f5b4845a69657caea285caa1def169de725a1be66c06ea9505da`
 
 This file records a task and its disposition. It is not a specification edit, a
 ratification, or a governance action, and it grants no authority to amend
@@ -162,10 +165,11 @@ proofs/rfc-0003/
 
 ## Disposition
 
+### Round 1 — delivery
+
 Delivered on branch `proof/rfc-0003-lean-kernel` as
-[`proofs/rfc-0003/`](../../proofs/rfc-0003/). 130 theorems, Lean 4.31.0, core
-only, no Mathlib and no `lake`. Full accounting is in that directory's README;
-in summary:
+[`proofs/rfc-0003/`](../../proofs/rfc-0003/). Lean 4.31.0, core only, no Mathlib
+and no `lake`. Full accounting is in that directory's README; in summary:
 
 - **Requirements 1–5 are met.** The kind order, join laws, obligation
   accumulation, the loss monoid with its canonical carrier, the
@@ -177,14 +181,46 @@ in summary:
   completions are formalized; they gate irreversible boundaries identically and
   report different values on that one pair. An erratum with suggested wording is
   proposed; the choice is left to the RFC's authors.
-- **Five further findings** were produced by the mechanization and are recorded
-  as C1, C2, C4, C5, C6 in the artifact README — most consequentially C2, where
-  §7.0.2's drawn Hasse diagram and its stated set semantics disagree in a way
-  that drops an obligation at the join.
-- **Deviation from the acceptance commands.** `lean HSP/Counterexamples.lean`
-  requires `LEAN_PATH` and the compiled `.olean`s of the other three modules,
-  because it imports them and `lean` does not resolve cross-file imports without
-  a build. The other three files are import-free and run exactly as written.
-  `./verify.sh` runs the whole sequence.
+- **Further findings** produced by the mechanization are recorded as C1, C2, C4,
+  C5, C6 in the artifact README — most consequentially C2, where §7.0.2's drawn
+  Hasse diagram and its stated set semantics disagree in a way that drops an
+  obligation at the join.
 - **The RFC is unchanged.** No file under
   `docs/rfc/0003-heterogeneous-state-protocol/` was touched.
+
+### Round 2 — after Codex's audit
+
+Codex (`codex-gpt-5`) reviewed `bb38e78`, reproduced the theorems and the axiom
+cones independently, ran `./t check` green, and returned a merge blocker plus
+three requested changes. All are applied; the artifact is now 132 theorems and
+63 definitions.
+
+1. **Merge blocker — spec pin.** The artifact pinned the whole Part 03 file at
+   `e7f63f1`; `b7fb1ce` rewrote the stewardship/provenance front matter,
+   changing the file digest without touching a clause. Fixed at the root rather
+   than by re-pinning once: `proof_guard.py` now gates on the **§7 normative
+   body** (byte-identical across both commits) and _reports_ front-matter
+   changes. The branch is rebased onto `b7fb1ce`.
+2. **C5 was broader than stated.** Payloads were abstracted away, so Completion
+   B was established only on the four tags. `SFull`, `meetFull`, and
+   `tagOf_meetFull` now restore all four payloads, prove the meet laws
+   conditional on four declared operations, and state the boundary of the
+   tag-level results explicitly. The full `Suitability` type still has no
+   defined meet, and the README now says so.
+3. **Guard hardening.** Definitions and whole-module digests are pinned in
+   addition to theorem statements; `constant` joins the forbidden list; the
+   axiom allowlist `{propext, Quot.sound}` is closed and enforced independently
+   of what the lock records. Each check was negative-tested.
+4. **C7 added** — §7.1.1 and §7.3.1 assert the composite's laws while asking
+   descriptors only for an operation, never for that operation's laws. Raised by
+   Codex; now a named finding with its own erratum proposal.
+5. **C2's erratum adopts Codex's split** of `TransformationKind` (one step) from
+   a canonical `TransformationProfile` (pipeline marker set). **C4** is recorded
+   as confirming the existing prohibition; no erratum needed there.
+
+Still open, and deliberately not done here:
+
+- The RFC errata themselves (C2, Completion B, payload laws, descriptor laws,
+  C1/C6 clarifications) are a normative edit and belong in a separate commit
+  made under an explicit decision to accept them.
+- No chord receipt has been recorded for either round.

@@ -4,9 +4,17 @@
 Mechanization of §7.2.1 ("Suitability is ordered, and composes by meet") and the
 fail-closed rules of §7.2.2.
 
-Specification pinned: trinity `main@e7f63f1`,
-`docs/rfc/0003-heterogeneous-state-protocol/03-translation-loss-and-suitability.md`,
-sha256 `9462e6bfbbf3c6d24d41a80df6dffa30b42c41bf705cf657fb0874d25f098616`.
+Specification pinned: trinity `main@b7fb1ce`,
+`docs/rfc/0003-heterogeneous-state-protocol/03-translation-loss-and-suitability.md`.
+
+The dependency is the **normative body** — everything from `## 7. Translation
+protocol` to the end of the file — sha256
+`148c50d1a560f5b4845a69657caea285caa1def169de725a1be66c06ea9505da`. That is what
+`proof_guard.py` gates on. The whole file currently hashes to
+`794d9b3591397cd033843890fdee06a09c98103be45324cc7e00b858fa9d6b65`; it differs
+from the digest this artifact was first written against (`9462e6bf…`, at
+`e7f63f1`) only in the front-matter provenance block, which no theorem here
+depends on. A header edit is reported, not failed; a §7 edit fails.
 
 **This file does not prove that §7.2.1 holds. It proves that §7.2.1, as
 written, does not determine an order.** The RFC states three relations —
@@ -17,10 +25,12 @@ composition is the meet. It never relates `unsuitable` to `undetermined`. The
 hence no bottom and no meet; the `CompletionA`/`CompletionB` sections give the
 two minimal completions and show what does and does not turn on the choice.
 
-Scope note. Payloads (`ReasonRef`, `ConstraintRef[]`, `EvidenceRef[]`,
-`EvidenceRequirement[]`) are abstracted away in the four-element carrier; the
-`BoundedPayload` section returns to the `bounded` payload specifically, because
-it is a second place the order is underdetermined.
+Scope note. The four-element carrier abstracts away every payload (`ReasonRef`,
+`ConstraintRef[]`, `EvidenceRef[]`, `EvidenceRequirement[]`). The `Payloads`
+section restores all four and shows what the tag-level results do and do not
+cover: the tags settle §7.2.2's gate, and leave the composed *value* — the thing
+a receipt carries and §7.1.0 compares byte-wise — undefined in four separate
+places.
 -/
 
 namespace HSP.Suitability
@@ -301,62 +311,111 @@ theorem bootstrap_stays_blocked (n : Nat) :
   rw [foldl_undetermined]
   rfl
 
-/-! ## The `bounded` payload — a second underdetermination
+/-! ## The payloads — where the meet is still undefined
 
-§7.2.1's `bounded` carries `within: ConstraintRef[]`. Two `bounded`
-suitabilities with different constraint sets must have a meet, and the RFC
-declares no operation on `ConstraintRef[]` and no refinement order on it. This
-section shows what such an operation must satisfy for §7.2.1's meet laws to
-survive; `Counterexamples.lean` exhibits an implementation that satisfies the
-type and breaks the laws.
+The four sections above establish Completion B **on the tags**. §7.2.1's carrier
+is not the tags: every constructor carries a payload, and §7.1.0's equality is
+equality of canonical bytes, so two values with the same tag and different
+payloads are different values. A meet on the tags is therefore not yet a meet on
+`Suitability`.
+
+Composing along a pipeline has to answer four questions the RFC never asks:
+
+1. two `unsuitable` steps — which `ReasonRef` does the pipeline carry?
+2. two `undetermined` steps — are the `missing` requirements unioned?
+3. two `bounded` steps — how do `within` sets combine, and their evidence?
+4. `bounded` against `suitable` — does the suitable step's evidence join the
+   bounded result, or is it discarded?
+
+Each is a combining operation. This section makes them parameters, proves the
+meet laws hold exactly to the extent that those operations do, and proves that
+the tag-level results above are precisely the projection of this one — so the
+scope of what was established there is legible rather than implied.
 -/
 
-section BoundedPayload
+section Payloads
 
-/-- The carrier with the `bounded` payload restored, over an abstract
-    constraint-set type `C`. -/
-inductive SC (C : Type) where
-  | unsuitable
-  | undetermined
-  | bounded (within : C)
-  | suitable
+/-- §7.2.1's carrier with every payload restored: `R` a `ReasonRef`, `M` an
+    `EvidenceRequirement[]`, `C` a `ConstraintRef[]`, `E` an `EvidenceRef[]`. -/
+inductive SFull (R M C E : Type) where
+  | unsuitable (reason : R)
+  | undetermined (missing : M)
+  | bounded (within : C) (evidence : E)
+  | suitable (evidence : E)
 
-variable {C : Type}
+variable {R M C E : Type}
 
-/-- Meet on the Completion-B chain, with `bounded ∧ bounded` delegated to a
-    combining operation on constraint sets, which §7.2.1 does not supply. -/
-def meetC (cmeet : C → C → C) : SC C → SC C → SC C
-  | .unsuitable, _ => .unsuitable
-  | _, .unsuitable => .unsuitable
-  | .undetermined, _ => .undetermined
-  | _, .undetermined => .undetermined
-  | .bounded c₁, .bounded c₂ => .bounded (cmeet c₁ c₂)
-  | .bounded c, .suitable => .bounded c
-  | .suitable, .bounded c => .bounded c
-  | .suitable, .suitable => .suitable
+/-- The tag of a full suitability value: the four-element abstraction the
+    sections above reason about. -/
+def tagOf : SFull R M C E → S
+  | .unsuitable _ => S.unsuitable
+  | .undetermined _ => S.undetermined
+  | .bounded _ _ => S.bounded
+  | .suitable _ => S.suitable
 
-/-- The meet on suitability is commutative exactly to the extent that the
-    constraint-set operation is. §7.2.1 asserts the former and never states the
-    latter, so the assertion is conditional on an obligation the RFC does not
-    impose. -/
-theorem meetC_comm (cmeet : C → C → C)
-    (hc : ∀ x y, cmeet x y = cmeet y x) (a b : SC C) :
-    meetC cmeet a b = meetC cmeet b a := by
-  cases a <;> cases b <;> simp [meetC, hc]
+/-- The Completion-B meet, with all four payload questions delegated to declared
+    operations. §7.2.1 supplies none of them. -/
+def meetFull (rmeet : R → R → R) (mmeet : M → M → M)
+    (cmeet : C → C → C) (emeet : E → E → E) :
+    SFull R M C E → SFull R M C E → SFull R M C E
+  | .unsuitable r₁, .unsuitable r₂ => .unsuitable (rmeet r₁ r₂)
+  | .unsuitable r, _ => .unsuitable r
+  | _, .unsuitable r => .unsuitable r
+  | .undetermined m₁, .undetermined m₂ => .undetermined (mmeet m₁ m₂)
+  | .undetermined m, _ => .undetermined m
+  | _, .undetermined m => .undetermined m
+  | .bounded c₁ e₁, .bounded c₂ e₂ => .bounded (cmeet c₁ c₂) (emeet e₁ e₂)
+  | .bounded c e₁, .suitable e₂ => .bounded c (emeet e₁ e₂)
+  | .suitable e₁, .bounded c e₂ => .bounded c (emeet e₁ e₂)
+  | .suitable e₁, .suitable e₂ => .suitable (emeet e₁ e₂)
 
-/-- Likewise for associativity. -/
-theorem meetC_assoc (cmeet : C → C → C)
-    (hc : ∀ x y z, cmeet (cmeet x y) z = cmeet x (cmeet y z)) (a b c : SC C) :
-    meetC cmeet (meetC cmeet a b) c = meetC cmeet a (meetC cmeet b c) := by
-  cases a <;> cases b <;> cases c <;> simp [meetC, hc]
+/-- **The scope of the tag-level results, stated exactly.** The payload meet
+    projects onto the tag meet of `CompletionB`: everything proved about the
+    four tags is proved about `Suitability` *up to* its payloads, and nothing
+    more. Whatever the four operations do, they cannot move a value between
+    tags — so §7.2.2's gate, which reads only the tag, is settled by the tag
+    results, while the value a receipt carries is not. -/
+theorem tagOf_meetFull (rmeet : R → R → R) (mmeet : M → M → M)
+    (cmeet : C → C → C) (emeet : E → E → E) (a b : SFull R M C E) :
+    tagOf (meetFull rmeet mmeet cmeet emeet a b)
+      = CompletionB.meet (tagOf a) (tagOf b) := by
+  cases a <;> cases b <;> rfl
 
-/-- And for idempotence, which §7.2.1 needs for "a pipeline is no more suitable
-    than its weakest step" to be stable under repeating a step. -/
-theorem meetC_idem (cmeet : C → C → C)
-    (hc : ∀ x, cmeet x x = x) (a : SC C) : meetC cmeet a a = a := by
-  cases a <;> simp [meetC, hc]
+/-- §7.2.1's meet is commutative exactly to the extent that all four payload
+    operations are. -/
+theorem meetFull_comm (rmeet : R → R → R) (mmeet : M → M → M)
+    (cmeet : C → C → C) (emeet : E → E → E)
+    (hr : ∀ x y, rmeet x y = rmeet y x) (hm : ∀ x y, mmeet x y = mmeet y x)
+    (hc : ∀ x y, cmeet x y = cmeet y x) (he : ∀ x y, emeet x y = emeet y x)
+    (a b : SFull R M C E) :
+    meetFull rmeet mmeet cmeet emeet a b = meetFull rmeet mmeet cmeet emeet b a := by
+  cases a <;> cases b <;> simp [meetFull, hr, hm, hc, he]
 
-end BoundedPayload
+/-- Likewise for associativity: "a pipeline is no more suitable than its weakest
+    step" must not depend on how the pipeline is bracketed, and that is a
+    property of the payload operations, not of the tags. -/
+theorem meetFull_assoc (rmeet : R → R → R) (mmeet : M → M → M)
+    (cmeet : C → C → C) (emeet : E → E → E)
+    (hr : ∀ x y z, rmeet (rmeet x y) z = rmeet x (rmeet y z))
+    (hm : ∀ x y z, mmeet (mmeet x y) z = mmeet x (mmeet y z))
+    (hc : ∀ x y z, cmeet (cmeet x y) z = cmeet x (cmeet y z))
+    (he : ∀ x y z, emeet (emeet x y) z = emeet x (emeet y z))
+    (a b c : SFull R M C E) :
+    meetFull rmeet mmeet cmeet emeet (meetFull rmeet mmeet cmeet emeet a b) c
+      = meetFull rmeet mmeet cmeet emeet a (meetFull rmeet mmeet cmeet emeet b c) := by
+  cases a <;> cases b <;> cases c <;> simp [meetFull, hr, hm, hc, he]
+
+/-- And for idempotence, which §7.2.1 needs for repeating a step to be a no-op
+    on the pipeline's suitability. -/
+theorem meetFull_idem (rmeet : R → R → R) (mmeet : M → M → M)
+    (cmeet : C → C → C) (emeet : E → E → E)
+    (hr : ∀ x, rmeet x x = x) (hm : ∀ x, mmeet x x = x)
+    (hc : ∀ x, cmeet x x = x) (he : ∀ x, emeet x x = x)
+    (a : SFull R M C E) :
+    meetFull rmeet mmeet cmeet emeet a a = a := by
+  cases a <;> simp [meetFull, hr, hm, hc, he]
+
+end Payloads
 
 end HSP.Suitability
 
@@ -397,9 +456,10 @@ end HSP.Suitability
 #print axioms HSP.Suitability.completions_disagree
 #print axioms HSP.Suitability.self_report_cannot_cross
 #print axioms HSP.Suitability.bootstrap_stays_blocked
-#print axioms HSP.Suitability.meetC_comm
-#print axioms HSP.Suitability.meetC_assoc
-#print axioms HSP.Suitability.meetC_idem
+#print axioms HSP.Suitability.tagOf_meetFull
+#print axioms HSP.Suitability.meetFull_comm
+#print axioms HSP.Suitability.meetFull_assoc
+#print axioms HSP.Suitability.meetFull_idem
 #print axioms HSP.Suitability.CompletionA.rank_inj
 #print axioms HSP.Suitability.CompletionB.rank_inj
 #print axioms HSP.Suitability.foldl_undetermined

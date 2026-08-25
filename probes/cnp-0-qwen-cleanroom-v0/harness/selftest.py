@@ -438,6 +438,31 @@ def t_budget_may_discount_a_failed_invocation():
                if ok else blob[-200:])
 
 
+def t_model_is_called_over_the_api():
+    """`ollama run` spliced terminal control codes into round 3's Rust."""
+    src = open(os.path.join(HERE, "harness", "round.py"), encoding="utf-8").read()
+    ok = '"ollama", "run"' not in src and "/api/generate" in src
+    record("model-is-called-over-the-api", 1, ok,
+           "the model is invoked over the HTTP API, which has no display layer"
+           if ok else "round.py still shells out to `ollama run`")
+
+
+def t_refused_turn_feedback_is_transport_only():
+    """A refused turn is told what the transport refused, and nothing else."""
+    sys.path.insert(0, os.path.join(HERE, "harness"))
+    import round as roundmod
+    refusal = "src/main.rs was emitted more than once."
+    prompt = roundmod.build_prompt(None, {"Cargo.toml": "x"}, None, 2, refusal)
+    ok = (refusal in prompt
+          and "not accepted" in prompt.lower()
+          and "format of the reply, not its content" in prompt
+          and "manifest.json" not in prompt
+          and "expected" not in prompt.split("NOT ACCEPTED")[1].lower())
+    record("refused-turn-feedback-is-transport-only", 1, ok,
+           "a refused turn is told the packaging rule it broke and nothing more"
+           if ok else "the refusal feedback carries more than the transport rule")
+
+
 def t_deleted_feedback_is_refused():
     """A recorded cargo.txt that has been deleted must stop the next round."""
     with tempfile.TemporaryDirectory() as tmp:
@@ -693,6 +718,8 @@ def main() -> int:
                t_no_fourth_round, t_budget_change_is_a_recorded_decision,
                t_budget_cannot_discount_a_round_the_model_ran,
                t_budget_may_discount_a_failed_invocation,
+               t_model_is_called_over_the_api,
+               t_refused_turn_feedback_is_transport_only,
                t_evaluate_requires_freeze,
                t_evaluate_detects_tampered_tree, t_sandbox_isolation):
         fn()

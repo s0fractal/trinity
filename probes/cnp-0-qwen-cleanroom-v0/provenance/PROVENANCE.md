@@ -46,6 +46,19 @@ Ollama reports an id, not a weights digest. That id pins the local blob and
 nothing about how it was produced; a different machine pulling the same tag is
 not guaranteed the same bytes. Recorded as what it is.
 
+## How the model is invoked
+
+`POST http://127.0.0.1:11434/api/generate`, `stream: false`, no `options`.
+
+Rounds 1–3 used `ollama run`. Round 3's output came back with 118 terminal
+control sequences spliced into the model's Rust; those bytes are the transport's,
+not the model's, and nothing was repaired. Round 3 is recorded as it came back
+and still counts against the budget — the rule forbidding a round the model
+actually ran from being excused was written before that round started.
+
+Per turn the record carries `prompt_eval_count`, `eval_count` and `done_reason`
+from the API, alongside the prompt and output digests.
+
 ## Specification under implementation
 
 RFC-0003 Part 01 §5.1.1–§5.1.3 at trinity `main@937d61f`. The capsule quotes it;

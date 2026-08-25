@@ -30,6 +30,8 @@ import shutil
 import subprocess
 import sys
 import time
+import urllib.error
+import urllib.request
 
 import pack as packmod
 import sandbox
@@ -76,6 +78,36 @@ def live_model_id(model: str) -> str | None:
         if parts and parts[0] == model:
             return parts[1] if len(parts) > 1 else None
     return None
+
+
+API = "http://127.0.0.1:11434/api/generate"
+
+
+def generate(model: str, prompt: str, think: bool, timeout: int) -> dict:
+    """One turn, over ollama's HTTP API rather than `ollama run`.
+
+    `ollama run` writes to a terminal even when its stdout is a pipe: round 3
+    came back with 118 cursor-movement and erase-line sequences spliced into the
+    model's Rust, so lines like `"ratio-non-positive-denominat\x1b[29D\x1b[K"`
+    were recorded as the model's own bytes. They were not. Re-deriving the
+    intended text means emulating a terminal, which is exactly the kind of quiet
+    repair that makes a transcript worthless.
+
+    The API returns the generated string with no display layer over it, and
+    reports how many tokens the prompt and the response actually used — which is
+    a better provenance record than scraping a column out of `ollama ps`.
+
+    No `options` are sent, so the server's own defaults govern and the result
+    stays attributable to the model as configured rather than to the proctor.
+    """
+    body = {"model": model, "prompt": prompt, "stream": False}
+    if think:
+        body["think"] = "high"
+    req = urllib.request.Request(
+        API, data=json.dumps(body).encode("utf-8"),
+        headers={"Content-Type": "application/json"})
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        return json.loads(resp.read().decode("utf-8"))
 
 
 def served_context(model: str) -> int | None:
@@ -158,7 +190,8 @@ def previous_feedback(prior: list[dict]) -> tuple[str | None, str | None]:
 
 
 def build_prompt(feedback: str | None, accumulated: dict[str, str],
-                 cargo_now: str | None, turn: int) -> str:
+                 cargo_now: str | None, turn: int,
+                 refused: str | None = None) -> str:
     """The pack, the model's own work so far, and machine output. Nothing else.
 
     Everything added here is fixed scaffolding: no description of the task, no
@@ -184,6 +217,12 @@ def build_prompt(feedback: str | None, accumulated: dict[str, str],
     if cargo_now:
         parts.append(
             "\n===== BUILD OUTPUT FOR THOSE FILES =====\n" + cargo_now + "\n"
+        )
+    if refused:
+        parts.append(
+            "\n===== YOUR LAST REPLY WAS NOT ACCEPTED =====\n"
+            "This is about the format of the reply, not its content. Nothing in "
+            "it was kept.\n\n" + refused + "\n"
         )
     if turn == 1 and not accumulated:
         parts.append(
@@ -447,17 +486,13 @@ def main() -> int:
             "that is not the one recorded."
         )
 
-    argv = ["ollama", "run"]
-    if spec["think"]:
-        # `--think` takes its value with `=`. Written as two arguments, ollama
-        # reads the value as the model name and tries to pull it.
-        argv += ["--think=high", "--hidethinking"]
-    argv.append(args.model)
+    record["api"] = API
 
     raw_dir = os.path.join(TRANSCRIPT, f"round-{n:02d}")
     os.makedirs(raw_dir, exist_ok=True)
 
     accumulated: dict[str, str] = {}
+    refused: str | None = None
     turns: list[dict] = []
     cargo_now: str | None = None
     exits: dict = {}
@@ -466,18 +501,17 @@ def main() -> int:
 
     for turn in range(1, MAX_TURNS_PER_ROUND + 1):
         prompt = build_prompt(feedback if turn == 1 else None, accumulated,
-                              cargo_now, turn)
+                              cargo_now, turn, refused)
         t0 = time.time()
+        meta: dict = {}
         try:
-            proc = subprocess.run(argv, input=prompt, capture_output=True,
-                                  text=True, timeout=TURN_TIMEOUT_S)
-            output, model_exit = proc.stdout, proc.returncode
-            timed_out = False
-        except subprocess.TimeoutExpired as expired:
-            output = expired.stdout or ""
-            if isinstance(output, bytes):
-                output = output.decode("utf-8", "replace")
-            model_exit, timed_out = None, True
+            reply = generate(args.model, prompt, spec["think"], TURN_TIMEOUT_S)
+            output, model_exit, timed_out = reply.get("response", ""), 0, False
+            meta = {k: reply.get(k) for k in
+                    ("done_reason", "prompt_eval_count", "eval_count")}
+        except (urllib.error.URLError, TimeoutError, OSError) as exc:
+            output, model_exit, timed_out = "", None, isinstance(exc, TimeoutError)
+            meta = {"transport_error": str(exc)}
 
         entry = {
             "turn": turn,
@@ -488,28 +522,89 @@ def main() -> int:
             "output_bytes": len(output.encode("utf-8")),
             "model_exit": model_exit,
             "timed_out": timed_out,
+            **meta,
         }
-        open(os.path.join(raw_dir, f"turn-{turn:02d}-prompt.txt"), "w",
-             encoding="utf-8").write(prompt)
-        open(os.path.join(raw_dir, f"turn-{turn:02d}-output.txt"), "w",
-             encoding="utf-8").write(output)
+        if "transport_error" in entry:
+            # The server, not the model. Ending here keeps a dead ollama from
+            # burning eight turns against nothing and being recorded as eight
+            # empty replies.
+            record["turns"] = turns + [entry]
+            record["error"] = (
+                f"turn {turn} never reached the model: {entry['transport_error']}"
+            )
+            record["freeze_ready"] = False
+            return finish(record, n, prior)
 
         if turn == 1:
             record["served_context"] = served_context(args.model)
             print(f"    served context: {record['served_context']}")
 
+        if "\x1b" in output:
+            # `ollama run` did this; the API should not. If it ever does, the
+            # recorded bytes are not the model's and no repair is attempted.
+            entry["control_sequences"] = output.count("\x1b")
+            record["turns"] = turns + [entry]
+            record["error"] = (
+                f"turn {turn} came back with {entry['control_sequences']} terminal "
+                "control sequences spliced into it; those bytes are the "
+                "transport's, not the model's"
+            )
+            record["freeze_ready"] = False
+            return finish(record, n, prior)
+
+        if entry.get("done_reason") == "length":
+            # The reply hit the context ceiling and stops mid-token. Recording it
+            # as the model's answer would score a truncated file as a wrong one.
+            entry["truncated"] = True
+            record["turns"] = turns + [entry]
+            record["error"] = (
+                f"turn {turn} was cut off at the context limit after "
+                f"{entry.get('eval_count')} tokens (prompt used "
+                f"{entry.get('prompt_eval_count')} of {record.get('served_context')})"
+            )
+            record["freeze_ready"] = False
+            return finish(record, n, prior)
+
+        served, used = record.get("served_context"), entry.get("prompt_eval_count")
+        if served and used and used >= served:
+            # ollama truncates an over-long prompt at the FRONT, which is where
+            # the specification sits. A round built on a prompt the model was
+            # only shown the tail of measures nothing.
+            record["turns"] = turns + [entry]
+            record["error"] = (
+                f"turn {turn} sent a prompt of {used} tokens into a served "
+                f"context of {served}; the front of it — the specification — "
+                "would have been truncated away"
+            )
+            record["freeze_ready"] = False
+            return finish(record, n, prior)
+        open(os.path.join(raw_dir, f"turn-{turn:02d}-prompt.txt"), "w",
+             encoding="utf-8").write(prompt)
+        open(os.path.join(raw_dir, f"turn-{turn:02d}-output.txt"), "w",
+             encoding="utf-8").write(output)
+
         emitted = extract_files(output)
         entry["files"] = [rel for rel, _ in emitted]
         try:
             tree.check_emitted([rel for rel, _ in emitted], require_complete=False)
+            refused = None
         except tree.TreeError as exc:
-            entry["refused"] = str(exc)
+            # A malformed reply costs a turn, not the round. The refusal is about
+            # the FILE: transport — how a reply is packaged — and saying so back
+            # tells the model nothing about the specification, the corpus, or its
+            # design. An earlier version ended the round here, which spent a
+            # budget round on a packaging slip and left the model no way to
+            # correct something it was never told it had done.
+            refused = str(exc)
+            entry["refused"] = refused
             turns.append(entry)
             record["turns"] = turns
-            record["error"] = f"turn {turn}: {exc}"
-            record["freeze_ready"] = False
-            print(f"round {n}, turn {turn}: {exc}")
-            return finish(record, n, prior)
+            print(f"  turn {turn}: refused — {exc}")
+            if turn == MAX_TURNS_PER_ROUND:
+                record["error"] = f"turn {turn}: {exc}"
+                record["freeze_ready"] = False
+                return finish(record, n, prior)
+            continue
 
         for rel, body in emitted:
             accumulated[rel] = body

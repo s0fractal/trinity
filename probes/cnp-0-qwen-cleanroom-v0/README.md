@@ -210,6 +210,46 @@ round the model actually ran, and a round it ran out of time on, cannot be
 excused however the file is written; three controls hold that line, including one
 that tries to excuse a round with output and is refused.
 
+### The model is called over the API, because `ollama run` is a display
+
+Round 3 came back with 118 cursor-movement and erase-line sequences spliced into
+the model's Rust — `"ratio-non-positive-denominat\x1b[29D\x1b[K"` recorded as the
+model's own bytes. `ollama run` draws to a terminal even when its stdout is a
+pipe. Re-deriving the intended text would mean emulating a terminal, which is
+exactly the quiet repair that makes a transcript worthless, so nothing is
+repaired: the round is recorded as it came back, and the transport was replaced.
+
+`http://127.0.0.1:11434/api/generate` has no display layer and reports how many
+tokens the prompt and the reply actually used, which is a better record than
+scraping a column out of `ollama ps`. No `options` are sent, so the server's own
+defaults govern and the result stays attributable to the model as configured
+rather than to the proctor.
+
+Three states the API makes visible, each of which now ends a round loudly rather
+than being recorded as an answer: a reply containing any control sequence at all;
+`done_reason: "length"`, which means the reply stops mid-token; and a prompt
+whose token count reaches the served context, because ollama truncates an
+over-long prompt at the **front** — where the specification sits.
+
+### A malformed reply costs a turn, not the round
+
+Round 3 ended on turn 2 because the model emitted `src/main.rs` six times in one
+reply, revising it as it went. Refusing that emission is right — two blocks for
+one path means the last silently wins and which was meant is unknowable — but
+ending the round on it spent a budget round on a packaging slip, and left the
+model no way to correct something it was never told it had done.
+
+The refusal now costs the turn. The model is shown, verbatim, the transport rule
+it broke, under a heading saying this is about the format of the reply and not
+its content. That channel carries nothing about the specification, the corpus, or
+the design; a control asserts as much. If the last turn of a round is refused,
+the round ends there.
+
+This rule changed **after** a round failed on it, which is the shape of a
+self-serving change, so it is recorded as one: round 3 still counts against the
+budget, and the rule that forbids excusing a round the model ran was written
+before round 3 started.
+
 ### The pack is re-derived, not trusted
 
 Before every round and every freeze the capsule is re-hashed and compared with

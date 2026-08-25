@@ -31,7 +31,7 @@ async function selftest(): Promise<{ results: Result[]; failed: number; skipped:
 Deno.test("clean-room harness: every tier-1 negative control refuses", async () => {
   const report = await selftest();
   const tier1 = report.results.filter((r) => r.tier === 1);
-  assert(tier1.length >= 38, `too few tier-1 controls: ${tier1.length}`);
+  assert(tier1.length >= 40, `too few tier-1 controls: ${tier1.length}`);
   const bad = tier1.filter((r) => !r.ok || r.skipped);
   assertEquals(bad.map((r) => `${r.name}: ${r.detail}`), []);
 });

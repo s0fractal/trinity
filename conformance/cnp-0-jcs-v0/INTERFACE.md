@@ -105,7 +105,9 @@ values even though some parsers accept them, and a member name may not repeat
 within one object — the same rule §5.1.1 applies to the wire.
 
 One record per line, in input order, one per input line, no blank lines. A
-record ends with LF or CRLF and nothing else.
+record is terminated by LF or CRLF; the terminator after the **last** record is
+optional, since a program that writes its final line without one is not
+ambiguous about where that line ends. A bare CR is not a terminator.
 
 ## Exit status
 

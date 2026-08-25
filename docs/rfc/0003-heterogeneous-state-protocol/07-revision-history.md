@@ -1071,18 +1071,27 @@ ride along inside the kit; and the test asserting the kit ships no
 implementation opened with a tautology and looked only inside `ts/`. The
 inventory is now closed in both the runner and the test.
 
-The kit's selftest grew from 9 controls to 25 over the review rounds that
-followed. Eleven of them answer every case correctly and get only the shape of
-the reply wrong — reversed order, a repeated id, an unasked id,
-wrong-then-right, an extra line, a missing line, a blank record, a whitespace
-record, `"id"` twice in one object, a `NaN` value, an undefined field. Each
-scored a perfect 126/126 against some earlier version of the runner.
+The kit's selftest grew from 9 controls to 26 over the review rounds that
+followed. Most of the additions are not wrong about any answer: they differ only
+in the shape of the reply, or in what the kit contains.
 
-Later rounds of the same review closed four more bypasses of the same shape — an
-exempt `__pycache__` path, a manifest entry pointing outside the kit,
-`json.loads` accepting `NaN`, and `text=True` translating away the carriage
-returns the newline check was looking for. Every one was a lenient default that
-looked like tidiness.
+Several were demonstrated by the reviewer to score a perfect 126/126 against
+some earlier version of the runner before being closed — replies in reverse
+order; a wrong answer followed by a right one for every case; an id nobody asked
+about; output padded with blank lines; a JSON object carrying `"id"` twice; a
+reply correct in every scored field plus an `"extra": NaN`; a manifest entry
+pointing at a file outside the kit; and an unpinned implementation hidden in
+`__pycache__`. One more did not produce a wrong score but hung the runner
+outright: a `MANIFEST.sha256` symlinked to a FIFO, opened because the scan's
+refusal was recorded and then not acted on.
+
+An earlier version of this paragraph claimed a specific number of controls that
+"answer every case correctly", which was false — some replace or omit a case
+rather than answering all of them, and not all had been shown to score a perfect
+run. The claim is narrowed here to what was actually demonstrated.
+
+Every one of these was a lenient default that looked like tidiness, and every
+one was found by an outside reviewer rather than by us.
 
 ### What the manifest proves
 

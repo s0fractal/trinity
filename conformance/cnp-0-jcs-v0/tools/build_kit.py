@@ -26,6 +26,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import stat
 import sys
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -186,6 +187,29 @@ def manifest_text() -> str:
 
 def main() -> int:
     check = "--check" in sys.argv
+    if check:
+        # Same order as the runner: look at the tree before opening anything in
+        # it. A symlink or a special file is refused here rather than followed.
+        refusals = []
+        stack = [HERE]
+        while stack:
+            current = stack.pop()
+            for name in sorted(os.listdir(current)):
+                full = os.path.join(current, name)
+                rel = os.path.relpath(full, HERE).replace(os.sep, "/")
+                st = os.lstat(full)
+                if stat.S_ISLNK(st.st_mode):
+                    refusals.append(f"{rel} is a symlink")
+                elif stat.S_ISDIR(st.st_mode):
+                    stack.append(full)
+                elif not stat.S_ISREG(st.st_mode):
+                    refusals.append(f"{rel} is not a regular file")
+        if refusals:
+            for r in refusals:
+                print(f"FAIL {r}")
+            print("\nNothing was opened. The kit must be plain files.")
+            return 1
+
     required, extended, seed = build_corpus()
     extract, regions, spec_digest = build_extract()
     contract, contract_digest = build_contract()

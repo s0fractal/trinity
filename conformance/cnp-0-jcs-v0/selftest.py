@@ -259,6 +259,28 @@ def main() -> int:
 
         # An unpinned file must be refused, not ignored: a listed-files-only check
         # lets an implementation ride along inside the kit.
+        # A refusal that is recorded and then not acted on is not a refusal. A
+        # MANIFEST.sha256 symlinked to a FIFO used to be opened anyway, and the
+        # runner hung: the failure mode of a missed pre-read check is a hang, not
+        # a wrong answer, which is why this control asserts speed as well.
+        fifo_kit = os.path.join(tmp, "fifo")
+        shutil.copytree(HERE, fifo_kit)
+        os.remove(os.path.join(fifo_kit, "MANIFEST.sha256"))
+        pipe = os.path.join(tmp, "a-fifo")
+        os.mkfifo(pipe)
+        os.symlink(pipe, os.path.join(fifo_kit, "MANIFEST.sha256"))
+        try:
+            proc = subprocess.run(
+                [sys.executable, os.path.join(fifo_kit, "run_conformance.py"),
+                 "--cmd", "true"], capture_output=True, text=True, timeout=20)
+            blob = proc.stdout + proc.stderr
+            ok = (proc.returncode != 0 and "is a symlink" in blob
+                  and "Nothing was opened" in blob)
+            detail = ("refused before opening it" if ok else blob[-200:])
+        except subprocess.TimeoutExpired:
+            ok, detail = False, "the runner hung instead of refusing"
+        record("a-manifest-symlinked-to-a-fifo-is-refused", ok, detail)
+
         # No path is exempt. `__pycache__` was, and a file hidden there scored a
         # perfect run: an exclusion is a hole whoever knows about it walks through.
         # A manifest is a claim about the kit. An entry that leaves it is not a

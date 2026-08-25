@@ -151,15 +151,26 @@ def verify_kit(skip: bool = False) -> str | None:
         print("!!  kit integrity check SKIPPED; this score is not a conformance "
               "result", file=sys.stderr)
         return None
-    if not os.path.exists(MANIFEST):
+    # Scan, then STOP if the scan objected. An earlier version recorded the
+    # refusals and called read_manifest() anyway, so a MANIFEST.sha256 that was a
+    # symlink to a FIFO was opened and the runner hung — the refusal existed and
+    # was simply not acted on before the first read. A check whose result is
+    # collected and not honoured is not a check.
+    present, dirs, refusals = scan_tree()
+    if refusals:
         raise SystemExit(
-            "refusing: MANIFEST.sha256 is missing, so nothing pins the corpus this "
-            "score would be computed against."
+            "refusing: the kit holds entries that cannot be part of it:\n  "
+            + "\n  ".join(refusals)
+            + "\nNothing was opened."
+        )
+    if "MANIFEST.sha256" not in present:
+        raise SystemExit(
+            "refusing: MANIFEST.sha256 is missing or is not a regular file, so "
+            "nothing pins the corpus this score would be computed against. "
+            "Nothing was opened."
         )
 
-    present, dirs, bad = scan_tree()
-    pinned, problems = read_manifest(present)
-    bad = list(bad) + problems
+    pinned, bad = read_manifest(present)
 
     scoreable = present - {"MANIFEST.sha256"}
     for rel in sorted(scoreable - set(pinned)):
@@ -280,6 +291,9 @@ def split_records(stdout: str, sub: str) -> list[str]:
             "record. Records end with LF or CRLF; a bare CR makes what counts as "
             "a line ambiguous."
         )
+    # The terminator after the last record is optional: a program that writes its
+    # final line without one is not ambiguous about where that line ends.
+    # INTERFACE.md says so in the same words, so the two cannot drift apart.
     if stdout.endswith("\n"):
         stdout = stdout[:-1]
     if stdout == "":

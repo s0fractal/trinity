@@ -37,8 +37,10 @@ Deno.test("conformance kit: the runner fails wrong implementations", async () =>
   // the positive one is what makes the rest mean something.
   assert(text.includes("ok   correct-implementation-passes"), text);
   assert(text.includes("ok   edited-corpus-is-refused"), text);
-  // The four shapes that made the runner unsound: every answer correct, only
-  // the reply stream wrong. All four scored 126/126 before.
+  // Reply-shape controls. Several of these were demonstrated to score a perfect
+  // 126/126 against earlier versions of this runner; the rest guard the same
+  // class of hole without having been exploited. Which is which is recorded in
+  // README.md rather than asserted here.
   for (
     const control of [
       "answers-in-the-wrong-order-fail",
@@ -67,7 +69,9 @@ Deno.test("conformance kit: the runner fails wrong implementations", async () =>
   );
   assert(text.includes("ok   an-empty-directory-is-refused"), text);
   assert(text.includes("ok   a-report-inside-the-kit-is-refused"), text);
-  assert(/\n25 passed, 0 failed/.test(text), text);
+  // A refusal recorded and not acted on is not a refusal: this one used to hang.
+  assert(text.includes("ok   a-manifest-symlinked-to-a-fifo-is-refused"), text);
+  assert(/\n26 passed, 0 failed/.test(text), text);
 });
 
 Deno.test("conformance kit: the reference encoder satisfies it", async () => {
@@ -95,13 +99,20 @@ Deno.test("conformance kit: its inventory is closed and holds no implementation"
   // No exemption for any path. This walk used to skip __pycache__, and a file
   // hidden there was unpinned, unnoticed, and scored a perfect run.
   const found: string[] = [];
+  const dirs: string[] = [];
   const odd: string[] = [];
   const walk = async (dir: string, prefix = "") => {
     for await (const entry of Deno.readDir(dir)) {
       const rel = prefix + entry.name;
       if (entry.isSymlink) odd.push(`${rel} is a symlink`);
-      else if (entry.isDirectory) await walk(`${dir}${entry.name}/`, `${rel}/`);
-      else if (entry.isFile) found.push(rel);
+      else if (entry.isDirectory) {
+        // Directories count. This walk used to see only files, so a directory
+        // holding nothing pinned — a place to put something later without
+        // anyone noticing — was invisible to the test that claims the
+        // inventory is closed.
+        dirs.push(rel);
+        await walk(`${dir}${entry.name}/`, `${rel}/`);
+      } else if (entry.isFile) found.push(rel);
       else odd.push(`${rel} is not a regular file`);
     }
   };
@@ -139,6 +150,15 @@ Deno.test("conformance kit: its inventory is closed and holds no implementation"
     "tools/build_kit.py",
     "ts/kit_test.ts",
   ]);
+  const emptyDirs = dirs.filter(
+    (d) => ![...pinned].some((p) => p.startsWith(`${d}/`)),
+  );
+  assertEquals(
+    emptyDirs,
+    [],
+    `directories holding nothing pinned: ${emptyDirs}`,
+  );
+
   const unexpected = found.filter((f) => !ALLOWED.has(f));
   assertEquals(
     unexpected,

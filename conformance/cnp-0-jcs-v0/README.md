@@ -8,8 +8,15 @@ clauses, the interface your program must present, 63 cases with the exact bytes
 and digests each one expects, and a runner that scores _your_ program.
 
 ```sh
-python3 run_conformance.py --cmd './my-impl'
+cd ~/my-impl
+python3 /path/to/cnp-0-jcs-v0/run_conformance.py --cmd ./my-impl
+python3 /path/to/cnp-0-jcs-v0/run_conformance.py --cmd "python3 impl.py" \
+    --report ./report.json
 ```
+
+Run it from wherever your implementation lives, by absolute path to the runner.
+Keep your implementation and any `--report` file **outside** the kit: its
+inventory is closed, so a file written into it makes the next run refuse it.
 
 Python 3, standard library only. No network, no build step, no dependency on the
 repository this kit was cut from.
@@ -59,17 +66,21 @@ result is not a conformance result, and the JSON report records
 
 A runner that passes everything is indistinguishable from a runner that checks
 nothing. `python3 selftest.py` runs deliberately wrong implementations past it —
-20 controls — and asserts each is caught, and caught as the right _kind_ of
+26 controls — and asserts each is caught, and caught as the right _kind_ of
 failure. It also runs a correct implementation, so "fails everything" cannot
 masquerade as rigour.
 
-Half of those controls answer every case **correctly** and get the shape of the
-reply wrong: reversed order, a repeated id, an id nobody asked about, a wrong
-answer followed by a right one, a blank record, a whitespace record, a JSON
-object with `"id"` twice. Every one of them scored a perfect run against an
-earlier version of this runner, which keyed replies by id and let the last write
-win. They are here because that is how the interface was found not to be
-enforced.
+Many of them are not wrong about any answer at all: they differ only in the
+shape of the reply, or in what the kit contains. Several are here because they
+were demonstrated to score a perfect `126/126` against an earlier version of
+this runner — replies in reverse order; a wrong answer followed by a right one
+for every case; an id nobody asked about; output padded with blank lines; a JSON
+object carrying `"id"` twice; a reply correct in every scored field plus an
+`"extra": NaN`; a manifest entry pointing at a file outside the kit; and an
+unpinned implementation hidden in `__pycache__`.
+
+They are here because that is how this runner was found not to enforce its own
+interface. Each was reported by an outside reviewer, not by us.
 
 ## How a failure is reported
 

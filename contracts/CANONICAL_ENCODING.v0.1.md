@@ -11,9 +11,11 @@ status: "draft"
 > restates the encoding RFC-0003 Part 01 §5.1 selects, in the form an
 > implementer needs. It does **not** ratify Tranche A3, does not lift the
 > federation blocker, and is not evidence that any substrate has adopted it.
-> Part 01 §5.1.3 requires `CANONICAL_ENCODING.v0.1`, the corpus, **two
-> independent encoders**, and a third verifier-only path before A3 is closed.
-> One of those four exists as a candidate; see "What is still missing" below.
+> Part 01 §5.1.3 requires `CANONICAL_ENCODING.v0.1`, the corpus, a reference
+> encoder, a verifier-only path sharing no code with it, a reproducible
+> conformance kit, and steward ratification before A3 is closed. Independent
+> maintenance is a **higher** level, `interop-confirmed`, which does not block
+> A3. See "What is still missing" below.
 
 - **Normative source:**
   [RFC-0003 Part 01 §5.1.1–§5.1.3](../docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md).
@@ -178,24 +180,46 @@ of the external checkout cannot reach it.
 
 ## 7. What is still missing before A3 can be claimed
 
-§5.1.3 lists four artifacts. Their honest status:
+§5.1.3 was restated on 2026-08-26 into two levels. The old text required **two
+independent encoders** for A3 itself, which conflated a technical gate this
+project can meet with an organisational precondition it cannot create — an
+outside maintainer — and so blocked the whole RFC on someone else's decision.
 
-| Artifact                     | Status                                                                                                                                                                                                  |
-| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `CANONICAL_ENCODING.v0.1`    | this file, **candidate**                                                                                                                                                                                |
-| The CNP-0 corpus             | `probes/cnp-0-seed-v0/corpus/`, candidate, all eight §5.1.3 categories                                                                                                                                  |
-| **Two independent encoders** | **absent.** One reference encoder exists. A second code path (the Python authoring tool) has the same author, repository, and maintenance boundary, and is therefore not an independent implementation. |
-| A third verifier-only path   | present as a candidate, same author caveat                                                                                                                                                              |
+### A3 ratification — what this project must produce
 
-Also outstanding, and not addressed by this file:
+| Artifact                                               | Status                                                                                                                                                                                                                                             |
+| ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CANONICAL_ENCODING.v0.1`                              | this file, **candidate**                                                                                                                                                                                                                           |
+| The CNP-0 corpus                                       | `probes/cnp-0-seed-v0/corpus/`, candidate, all eight §5.1.3 categories                                                                                                                                                                             |
+| A reference encoder                                    | present as a candidate (`probes/cnp-0-seed-v0/ts/`)                                                                                                                                                                                                |
+| A verifier-only rejection path sharing no code with it | present as a candidate; `ts/reject.ts` imports nothing from the encoder, which is the property that matters — it cannot repair what it judges                                                                                                      |
+| A reproducible conformance kit                         | **absent.** Contract, corpus, expected bytes and digests, and a runner, packaged so a party outside this project can implement §5.1 and check itself without consulting or trusting this project. Most of the parts exist; the packaging does not. |
+| Steward ratification                                   | **absent.** Nothing here is accepted, signed, or ratified.                                                                                                                                                                                         |
+
+The same-author caveat that used to disqualify the second code path still
+applies to what it actually bears on — it is not evidence of independent
+_maintenance_ — but it no longer blocks A3, because A3 no longer asks for that.
+
+### Interop-confirmed — a higher level, not a blocker
+
+| Artifact                                                                    | Status                                                                                                                                                                                                              |
+| --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Two independently maintained implementations, **or** real external adoption | **absent.** One attempt at a second implementation (`probes/cnp-0-qwen-cleanroom-v0`) closed 2026-08-26 without producing an encoder, and deviated from its own accepted protocol; it is evidence for nothing here. |
+| Parity evidence in both directions                                          | absent for any second implementation. `warrant` parity exists for the JCS layer only, with a recorded UTF-16/code-point divergence.                                                                                 |
+
+Until this level holds, **no document may describe the encoding as
+"independently interoperable" or "multi-implementation confirmed"**, and this
+file may not be cited as showing implementation diversity.
+
+### Also outstanding, and not addressed by this file
 
 - **substrate adoption** — no substrate computes references under `hsp-jcs@v0`
   today;
-- **steward disposition** — nothing here is accepted, signed, or ratified;
 - **federation evidence** — no cross-substrate agreement has been measured;
   Warrant parity covers the wire layer only, and Warrant's fixtures predate and
   do not contain the `cnp-0` profile members, ratios, fixed-point domains, or
   the rejection corpus.
 
-The honest status remains what Part 01 already records: **A3 design selected; A3
-interop and ratification pending.**
+The honest status remains what Part 01 already records: **A3 ratification gate
+defined; single-implementation evidence present; conformance kit and steward
+ratification pending; independent interoperability unconfirmed.**

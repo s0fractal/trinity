@@ -1,7 +1,7 @@
 ---
 status: closed
 owner_voice: claude
-next_verification: none. Closed 2026-08-26 without an encoder — see VERDICT.md. Tranche A3 still requires two independent encoders; what is withdrawn is the method, not the requirement. If the bridge-for-outsiders goal is picked up again, the artifact to build is a conformance kit (spec excerpt + corpus + expected digests + runner), which lets an independent party check itself without trusting this project — most of it already exists in probes/cnp-0-seed-v0.
+next_verification: none. Closed 2026-08-26 as protocol-deviated / curator-terminated / no encoder / no evidence about RFC determinacy — see VERDICT.md. A second independently maintained encoder is no longer an A3 blocker (Part 01 §5.1.3, restated 2026-08-26); it sits at the higher interop-confirmed level, and that restatement is not a consequence of this probe. If the bridge-for-outsiders goal is picked up again, the artifact to build is the conformance kit A3 now requires — most of it already exists in probes/cnp-0-seed-v0
 graduation_target: null
 ---
 
@@ -25,8 +25,12 @@ graduation_target: null
 
 ## What this is, and the one thing it is not
 
-RFC-0003 Part 01 §5.1.3 requires **two independent encoders** before Tranche A3
-can close. The existing seed (`probes/cnp-0-seed-v0`) is one encoder plus
+RFC-0003 Part 01 §5.1.3 required **two independent encoders** before Tranche A3
+could close — the requirement this probe was built to help meet. It was restated
+on 2026-08-26, after this probe closed: independent maintenance moved to a higher
+`interop-confirmed` level that does not block A3. That restatement rests on an
+argument about what A3 was conflating, **not** on this probe's failure, and this
+probe contributes nothing to either level. The existing seed (`probes/cnp-0-seed-v0`) is one encoder plus
 same-author code paths, and no amount of further writing by the same author
 changes that. This probe asks a different question, which is answerable:
 

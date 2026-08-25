@@ -1,7 +1,7 @@
 ---
 status: active
 owner_voice: claude
-next_verification: obtain a genuinely independent second encoder — different implementer, different maintenance and custody boundary — reproduce this corpus with it, and measure a substrate computing real references under hsp-jcs@v0. One attempt at that second encoder (probes/cnp-0-qwen-cleanroom-v0, a sealed local-model clean room) was closed 2026-08-26 without producing one; the requirement is unchanged. If the goal is a bridge for outside implementers rather than a diversity claim, the cheaper artifact is a conformance kit built from this corpus — spec excerpt, cases, expected digests, runner — which lets an independent party check itself without trusting this project
+next_verification: package a reproducible conformance kit — this contract, this corpus, the expected bytes and digests, and a runner — so a party outside this project can implement §5.1 and check itself without consulting or trusting us. That is now an A3 ratification requirement (Part 01 §5.1.3, restated 2026-08-26); most of the parts are already here and the packaging is not. A second independently maintained encoder is no longer an A3 blocker — it sits at the higher interop-confirmed level, and until it holds this probe may not be cited as showing implementation diversity. One attempt at it (probes/cnp-0-qwen-cleanroom-v0) closed 2026-08-26 without an encoder
 graduation_target: null
 ---
 
@@ -18,11 +18,18 @@ graduation_target: null
 Can the encoding Part 01 §5.1.2.1 selects be run, and does its red state mean
 something?
 
-Part 01 selects CNP-0-JCS and then says, in §5.1.3, that
-`CANONICAL_ENCODING.v0.1`, the corpus, two independent encoders, and a third
-verifier-only path do not exist — so "§5.1 is specified but not yet
-implementable as a conforming cross-substrate protocol". This probe builds the
-executable part of that list and reports exactly which part it did not build.
+Part 01 selects CNP-0-JCS and then says, in §5.1.3, that the artifacts A3 needs
+do not exist — so "§5.1 is specified but not yet implementable as a conforming
+cross-substrate protocol". This probe builds the executable part of that list and
+reports exactly which part it did not build.
+
+§5.1.3 was restated on 2026-08-26 into two levels. A3 now asks for the contract,
+the corpus, a reference encoder, a verifier-only path sharing no code with it, a
+reproducible conformance kit, and steward ratification. Two independently
+maintained encoders moved up to `interop-confirmed`, which does not block A3.
+For this probe that changes one thing: the missing item is now the **conformance
+kit**, which is packaging work over what is already here, rather than an outside
+maintainer nobody could commission.
 
 ## What is here
 
@@ -246,8 +253,14 @@ Warrant's implementation as prior evidence — that evidence covers the
 
 ## What this probe does not establish
 
-- **Not two independent encoders.** One reference encoder, plus same-author code
-  paths. §5.1.3's requirement is unmet and this is the main open item.
+- **Not the conformance kit A3 requires.** The contract, corpus, expected bytes
+  and digests, and a runner exist as parts; they are not packaged so an outside
+  party can implement §5.1 and check itself without trusting this project. Since
+  the 2026-08-26 restatement this is the main open A3 item.
+- **Not independently maintained implementations.** One reference encoder, plus
+  same-author code paths. That is no longer an A3 blocker, but it is exactly what
+  `interop-confirmed` asks for, so this probe may not be cited as showing
+  implementation diversity or independent interoperability.
 - **Not conformance, adoption, or ratification.** No substrate computes
   references under `hsp-jcs@v0` today; nothing here is signed or accepted by the
   steward.

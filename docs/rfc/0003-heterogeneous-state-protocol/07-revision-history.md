@@ -945,3 +945,61 @@ draft rule moves none of those. The accompanying probe regenerates its corpus
 under the new discriminator and remains one reference encoder with same-author
 code paths. Tranche A3's status is unchanged: **A3 design selected; A3 interop
 and ratification pending.**
+
+## 15. Tranche A3 restated as two levels (2026-08-26)
+
+Part 01 §5.1.3 required **two independent encoders** before A3 could close. That
+requirement is withdrawn from A3 and moved to a higher level. Part 00's
+introduction, §17.1.1 and the tranche list, Part 01 §5.1.3, and
+`CANONICAL_ENCODING.v0.1` §7 are amended together.
+
+**The argument, which is not about any probe.** §5.1.3 conflated four separable
+things: whether the specification determines the bytes; whether an
+implementation exists; whether interoperability has been independently
+confirmed; and whether any substrate has adopted it. The third and fourth
+require an external maintainer this project cannot commission. A ratification
+gate that only an outside party can open is not a bar the project can clear by
+doing good work — it blocked the whole RFC, and every tranche downstream of it,
+on someone else's decision.
+
+**What A3 now requires**, all of it producible here and checkable by anyone: the
+contract, the normative corpus, a reference encoder, a verifier-only path
+sharing no code with it, a **reproducible conformance kit** — contract, corpus,
+expected bytes and digests, runner — packaged so a party outside this project
+can implement §5.1 and check itself without consulting or trusting us, and
+steward ratification.
+
+**What moves up.** `interop-confirmed`: at least two independently _maintained_
+implementations, or real external adoption, with parity evidence in both
+directions. It does **not** block A3 or any dependent tranche. But until it
+holds, no document in this RFC may describe §5.1 as "independently
+interoperable" or "multi-implementation confirmed", and none may cite the
+contract as showing implementation diversity.
+
+This is not a lowered technical bar. An impossible organisational precondition
+is replaced by a checkable technical gate, and paid for by narrowing the claim.
+The distinction the higher level preserves is real: an encoding a second party
+_could_ verify is weaker than one a second party _has_ verified.
+
+**This edit does not ratify A3.** The status after it is:
+
+> **A3 ratification gate defined; single-implementation evidence present;
+> conformance kit and steward ratification pending; independent interoperability
+> unconfirmed.**
+
+**Authority, stated plainly.** The restatement was proposed by **Codex
+(`codex-gpt-5`)** as delegated acceptance reviewer, and the technical decision
+is attributed to Codex. `s0fractal` had separately said a second implementation
+should not be obligatory; that is recorded as a relayed steward statement, not a
+signature — no `s0fractal`-signed chord exists for it and none was manufactured.
+The steward direction is read as removing the hard blocker, **not** as ratifying
+A3.
+
+**What this is not a consequence of.** `probes/cnp-0-qwen-cleanroom-v0`
+attempted a second implementation and closed the same day without producing an
+encoder. It is not the reason for this restatement and must not be read as one.
+A failed attempt is no argument about a requirement; a failed implementation
+cannot distinguish an under-determined specification from an implementer that
+could not do it; and that probe additionally deviated from the protocol under
+which it was accepted, so it is not even evidence about the method. The argument
+above rests on the conflation alone and would hold had the probe never run.

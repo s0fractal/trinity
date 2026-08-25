@@ -50,9 +50,17 @@ protocol exists to prevent. §22 maps every section range to its document.
 
 **Part 01 is the blocker.** The draft now selects CNP-0-JCS, but selection text
 is not interoperability evidence or federation ratification. Until the separate
-contract, CNP-0 corpus, two independent encoders, verifier-only rejection path,
-and substrate adoption exist, anything depending on cross-substrate reference
-equality is specified and not yet conformingly implementable.
+contract, the CNP-0 corpus, a reference encoder, a verifier-only rejection path,
+a reproducible conformance kit, steward ratification, and substrate adoption
+exist, anything depending on cross-substrate reference equality is specified and
+not yet conformingly implementable.
+
+A3 no longer waits on a second independently maintained encoder. That
+requirement conflated a technical gate this project can meet with an
+organisational precondition it cannot create, and so blocked the whole RFC on an
+outside maintainer's decision. It moves to a higher level, **interop-confirmed**
+(§5.1.3), which does not block A3 or anything downstream but which gates the
+right to describe the encoding as independently interoperable.
 
 ## 0. Abstract
 
@@ -679,8 +687,27 @@ rather than "proved" for that reason.
   vectors and Python/Go/Rust agreement are prior evidence for the JCS layer;
   they do not exercise CNP-0 identifiers, ratios, fixed scales, constants,
   circles, or quantization. A3 remains pending until `CANONICAL_ENCODING.v0.1`,
-  the CNP-0 corpus, two independent encoders, a third verifier-only rejection
-  path, and federation adoption exist.
+  the CNP-0 corpus, a reference encoder, a verifier-only rejection path sharing
+  no code with it, a reproducible conformance kit, steward ratification, and
+  federation adoption exist.
+
+  **Restated 2026-08-26: two levels, not one.** This entry previously required
+  **two independent encoders** for A3. That conflated four separable things —
+  normative determinacy of the bytes, the existence of an implementation,
+  independently confirmed interoperability, and actual adoption — and the third
+  and fourth depend on an external maintainer the project cannot commission. The
+  result was that the entire RFC sat blocked on someone else's decision.
+
+  A3 now requires only what the project can produce and anyone can check,
+  including a **conformance kit** that lets an outside party implement §5.1 and
+  verify itself without trusting this project. Independent maintenance moves to
+  **interop-confirmed** (Part 01 §5.1.3): two independently maintained
+  implementations, or real external adoption, with parity evidence both ways.
+
+  This is not a lowered technical bar. It replaces an impossible organisational
+  precondition with a checkable technical gate, and pays for it by narrowing the
+  claim: until interop-confirmed holds, nothing in this RFC may say
+  "independently interoperable" or "multi-implementation confirmed".
 
   **The second encoder was attempted and not obtained (2026-08-26).**
   `probes/cnp-0-qwen-cleanroom-v0` ran six sealed rounds against a local
@@ -690,11 +717,13 @@ rather than "proved" for that reason.
   of the specified behaviour. The probe is closed with no encoder and no
   diversity claim.
 
-  This changes nothing here. A3 still requires two independent encoders — a
-  failed attempt at the second one is not a reason to lower the bar, and a
-  failed implementation is evidence neither for nor against the specification,
-  since it cannot distinguish an under-determined spec from an implementer that
-  could not do it. What is withdrawn is the method, not the requirement.
+  That probe is not the reason A3 was restated, and must not be read as one. A
+  failed attempt is no argument about a requirement, and a failed implementation
+  is evidence neither for nor against the specification — it cannot distinguish
+  an under-determined spec from an implementer that could not do it. The probe
+  additionally deviated from the protocol under which it was accepted, so it is
+  not even evidence about the method. The restatement above rests on the
+  conflation argument alone.
 
   **Corrected 2026-08-03 by measurement.** This entry originally read as a
   choice between `warrant`'s profile and the federation's existing
@@ -1410,10 +1439,15 @@ where a reference resolves:
 - **A2.** Require a single canonical encoding meeting §5.1.1, with the float
   policy of §5.1.2 and cross-substrate parity fixtures per §5.1.3.
 - **A3.** Commission and ratify `CANONICAL_ENCODING.v0.1` for the draft-selected
-  CNP-0-JCS profile (§5.1.2.1), with its normative corpus (§5.1.3), at least two
-  independent encoders, and a third verifier-only path that rejects malformed
-  raw input and non-canonical ratios. The text selects the design; this tranche
-  is not satisfied until interoperability and adoption are evidenced.
+  CNP-0-JCS profile (§5.1.2.1), with its normative corpus (§5.1.3), a reference
+  encoder, a verifier-only path sharing no code with it that rejects malformed
+  raw input and non-canonical ratios, and a reproducible conformance kit. The
+  text selects the design; this tranche is not satisfied until those artifacts
+  exist and the substrates adopt them.
+- **Interop-confirmed** (a level above A3, not a tranche and not a blocker on
+  one). Two independently maintained implementations, or real external adoption,
+  with parity evidence in both directions. Until it holds, no document may claim
+  independent interoperability or multi-implementation confirmation.
 - **A4.** Require stable, verifiable key identity at Level 0.
 - **A5.** Ratification counts principals rather than public keys: bind keys to
   content-addressed principal and custody records, and fail unresolved or shared

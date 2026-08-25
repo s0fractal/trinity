@@ -50,6 +50,8 @@
       "why_it_ends": "the whole subsection"
     }
   ],
+  "sealed": "2026-08-26",
+  "sealed_note": "The probe closed. This capsule quotes RFC-0003 Part 01 at the source_sha256 recorded here, which is what the model was shown; Part 01 has since been amended (\u00a75.1.3 was restated into A3-ratification and interop-confirmed levels on 2026-08-26). Re-deriving the capsule from today's source would rewrite the record of what was given, so --check now verifies the committed capsule against this pin instead. That still catches a later hand-edit, which is the only property a sealed capsule can honestly claim.",
   "source": "docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md",
   "source_sha256": "0783fe57a13f7442578b9161dfd691e9d6f762f3e36718e9bca5f09d7eeea410"
 }

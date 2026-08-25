@@ -452,13 +452,42 @@ does not accept hopes as evidence anywhere else.
 
 **Design selected; conformance pending.** CNP-0-JCS resolves the draft's design
 choice. It does not ratify Tranche A3 and does not lift the federation blocker.
-That requires `CANONICAL_ENCODING.v0.1`, the corpus above, at least two
-independent encoders that reproduce its bytes and digests, and a third
-verifier-only path that rejects non-canonical ratios and malformed raw input.
 
-Until those artifacts exist and the substrates adopt them, §5.1 is specified but
-not yet implementable as a conforming cross-substrate protocol. The honest
-status is **A3 design selected; A3 interop and ratification pending**.
+Two levels are separated here, because an earlier version of this paragraph
+conflated them and thereby made the whole tranche wait on a party this project
+cannot create.
+
+**A3 ratification** requires artifacts the project can produce and anyone can
+check:
+
+1. `CANONICAL_ENCODING.v0.1` as a normative contract;
+2. the normative corpus above;
+3. one reference encoder that reproduces its bytes and digests;
+4. a verifier-only path that rejects non-canonical ratios and malformed raw
+   input, sharing no code with the encoder — the property that matters is that
+   it cannot repair what it is asked to judge, and that is a code-path property,
+   not an authorship one;
+5. a **reproducible conformance kit** — the contract, the corpus, the expected
+   bytes and digests, and a runner — such that a party outside this project can
+   implement §5.1 and check itself without consulting or trusting this project;
+6. steward ratification.
+
+**Interop-confirmed** is a strictly higher level and requires at least two
+independently _maintained_ implementations, or real external adoption, with
+parity evidence in both directions.
+
+Interop-confirmed does **not** block A3 or any tranche depending on it. But
+until it holds, no document in this RFC may describe §5.1 as "independently
+interoperable", "multi-implementation confirmed", or as having demonstrated
+implementation diversity. A single-implementation encoding that a second party
+_could_ verify is a different and weaker claim than one a second party _has_
+verified, and the difference is exactly what the higher level names.
+
+Until the A3 artifacts exist and the substrates adopt them, §5.1 is specified
+but not yet implementable as a conforming cross-substrate protocol. The honest
+status is **A3 ratification gate defined; single-implementation evidence
+present; conformance kit and steward ratification pending; independent
+interoperability unconfirmed**.
 
 #### 5.1.4 The selection is narrower than it looks
 

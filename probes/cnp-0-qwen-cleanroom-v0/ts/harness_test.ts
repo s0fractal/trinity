@@ -49,6 +49,10 @@ Deno.test("clean-room harness: isolation controls are run or explicitly skipped"
   }
 });
 
+// The probe is closed and its capsule is sealed, so the check verifies the
+// committed capsule against its pin rather than re-deriving it from a
+// specification that has since been amended. Either wording is a pass; a sealed
+// capsule that had been hand-edited afterwards would still fail.
 Deno.test("clean-room harness: the capsule is verbatim against the specification", async () => {
   const cmd = new Deno.Command("python3", {
     args: [`${HERE}harness/build_capsule.py`, "--check"],
@@ -58,7 +62,10 @@ Deno.test("clean-room harness: the capsule is verbatim against the specification
   const out = await cmd.output();
   const text = new TextDecoder().decode(out.stdout) + new TextDecoder().decode(out.stderr);
   assertEquals(out.code, 0, text);
-  assert(text.includes("capsule is verbatim"), text);
+  assert(
+    text.includes("capsule is verbatim") || text.includes("capsule sealed at"),
+    text,
+  );
 });
 
 Deno.test("clean-room harness: the pack names no implementation", async () => {

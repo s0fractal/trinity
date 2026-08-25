@@ -155,19 +155,28 @@ not a tree that builds.
 
 ### The budget is three rounds, and it ends
 
-Exactly three pre-freeze rounds. After the first `compiles=true` the only next
-step is the freeze — a further prompt round would be tuning the candidate before
-it is pinned. After a freeze, `round.py` refuses entirely.
+Exactly three pre-freeze rounds. Rounds end when a candidate is **freeze-ready**
+— not when one merely compiles. That distinction was a real deadlock: the next
+round was blocked on `compiles`, the freeze required `freeze_ready`, so a
+candidate whose `cargo check` passed and whose `test` failed could do neither.
+After a freeze, `round.py` refuses entirely.
 
-If the third round does not compile, an outcome is recorded, once and
-immutably:
+Every way a round can end goes through one place, including the ones that never
+reach cargo — a failed generation, or output with no usable `FILE:` blocks. Those
+leave the next round available with no feedback to carry, rather than stalling
+the budget on a missing `cargo.txt`.
 
-> INCONCLUSIVE: no compiling candidate within the agreed three-round
+If the third round ends without a freeze-ready candidate — for any reason — an
+outcome is recorded, once, with the digests of all three rounds' outputs:
+
+> INCONCLUSIVE: no freeze-ready candidate within the agreed three-round
 > model/capsule/tooling budget; not evidence of RFC failure
 
-That wording is deliberate. Nothing compiling inside a fixed budget says
-something about the budget, the model, and the capsule — not about whether the
-specification determines its bytes.
+That wording is deliberate. Nothing arriving inside a fixed budget says something
+about the budget, the model, and the capsule — not about whether the
+specification determines its bytes. `outcome.json` and the transcript are
+committed together, in their own commit, so git makes a later deletion or rewrite
+visible; there is no filesystem defence and none is claimed.
 
 ### The pack is re-derived, not trusted
 
@@ -223,11 +232,13 @@ category, an empty scope, an arbitrary feedback file, a second freeze, a symlink
 in the frozen tree, an edited quotation, a pack naming an implementation, a
 workdir inside Trinity, a `build.rs`, a `.cargo/config.toml`, a duplicated
 `FILE:` block, a path escape, a stale pack at round and at freeze, a round after
-something compiled, a round after the freeze, a fourth round, a freeze with no
+something compiled, a round after a freeze-ready candidate, a compiling-but-failing round still
+having a next round, a third non-ready round being the last, a failed generation
+not deadlocking the budget, a round after the freeze, a fourth round, a freeze with no
 transcript, a freeze on a round that was not freeze-ready, a freeze on a failed
 generation, a tree edited between the round and the freeze, a build that rewrites
 a source, scoring without a freeze, scoring a tree that no longer matches the
-freeze, and the isolation itself. **30 controls.**
+freeze, and the isolation itself. **33 controls.**
 
 The protocol refusals run **before** the sandbox is touched, on purpose: a budget
 check that only works where Docker is installed is one that silently stops being

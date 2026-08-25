@@ -82,7 +82,10 @@ def previous_feedback(prior: list[dict]) -> tuple[str | None, str | None]:
     n = last["round"]
     path = os.path.join(TRANSCRIPT, f"round-{n:02d}", "cargo.txt")
     if not os.path.exists(path):
-        raise SystemExit(f"round {n} recorded no cargo output at {path}")
+        # A round can fail before cargo ever runs — the generation failed, or it
+        # emitted nothing usable. There is no machine output to carry, and that
+        # must not deadlock the budget: the next round simply starts clean.
+        return None, None
     data = open(path, "rb").read()
     digest = sha(data)
     recorded = last.get("cargo_output_sha256")
@@ -149,7 +152,7 @@ OUTCOME = os.path.join(HERE, "provenance", "outcome.json")
 FREEZE = os.path.join(HERE, "provenance", "freeze.json")
 
 INCONCLUSIVE = (
-    "INCONCLUSIVE: no compiling candidate within the agreed three-round "
+    "INCONCLUSIVE: no freeze-ready candidate within the agreed three-round "
     "model/capsule/tooling budget; not evidence of RFC failure"
 )
 
@@ -183,11 +186,36 @@ def compute_freeze_ready(model_exit, exits: dict, modified: list, tree_error) ->
     )
 
 
-def write_outcome(status: str, detail: str, rounds: int) -> None:
+def finish(record: dict, n: int, prior: list[dict]) -> int:
+    """Write the round record, and the outcome if the budget is now spent.
+
+    Every way a round can end goes through here. An earlier version wrote
+    INCONCLUSIVE only when the third round failed to COMPILE, so a third round
+    that compiled but failed `test` — or that never reached cargo at all —
+    left the experiment with no outcome and no legal next step. A state machine
+    with a state nobody can leave is worse than one that ends badly.
+    """
+    json.dump(record, open(os.path.join(TRANSCRIPT, f"round-{n:02d}.json"), "w"),
+              indent=2, sort_keys=True)
+    if record.get("freeze_ready"):
+        return 0
+    if n >= MAX_PRE_FREEZE_ROUNDS:
+        digests = [r.get("output_sha256") for r in prior] + [record.get("output_sha256")]
+        write_outcome("INCONCLUSIVE", INCONCLUSIVE, n, digests)
+        print(f"  budget spent after {n} rounds with no freeze-ready candidate.")
+        print(f"  recorded: {INCONCLUSIVE}")
+        print("  There is no fourth round, and this is not a claim about the "
+              "specification.")
+    return 0
+
+
+def write_outcome(status: str, detail: str, rounds: int,
+                  round_output_digests: list | None = None) -> None:
     if os.path.exists(OUTCOME):
         return  # an outcome is written once
     json.dump(
         {"status": status, "detail": detail, "rounds": rounds,
+         "round_output_sha256": round_output_digests or [],
          "recorded": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())},
         open(OUTCOME, "w"), indent=2, sort_keys=True,
     )
@@ -220,10 +248,10 @@ def main() -> int:
         raise SystemExit(f"an outcome is already recorded: {rec['status']}")
 
     prior = rounds_so_far()
-    if any(r.get("compiles") for r in prior):
+    if any(r.get("freeze_ready") for r in prior):
         raise SystemExit(
-            "a previous round compiled. The only next step is the freeze — a "
-            "further prompt round would be tuning the candidate before it is "
+            "a previous round is freeze-ready. The only next step is the freeze — "
+            "a further prompt round would be tuning the candidate before it is "
             "pinned, which is the thing the freeze exists to prevent:\n"
             f"    python3 harness/freeze.py --workdir {workdir}"
         )
@@ -286,14 +314,20 @@ def main() -> int:
     open(os.path.join(raw_dir, "prompt.txt"), "w", encoding="utf-8").write(prompt)
     open(os.path.join(raw_dir, "output.txt"), "w", encoding="utf-8").write(output)
 
+    if proc.returncode != 0:
+        record["error"] = f"the model exited {proc.returncode}"
+        record["freeze_ready"] = False
+        print(f"round {n}: the model exited {proc.returncode}; nothing was written.")
+        return finish(record, n, prior)
+
     emitted = extract_files(output)
     try:
         tree.check_emitted([rel for rel, _ in emitted])
     except tree.TreeError as exc:
         record["error"] = f"refused emitted tree: {exc}"
-        json.dump(record, open(os.path.join(TRANSCRIPT, f"round-{n:02d}.json"), "w"),
-                  indent=2, sort_keys=True)
-        raise SystemExit(f"round {n}: {exc}")
+        record["freeze_ready"] = False
+        print(f"round {n}: {exc}")
+        return finish(record, n, prior)
 
     # Everything the model does not emit is gone, including cargo's own caches:
     # a stale `.cargo` could carry configuration that shapes a later build and
@@ -321,6 +355,7 @@ def main() -> int:
 
     if not sandbox.mount_is_visible(workdir):
         record["error"] = "the workdir is not visible inside the sandbox"
+        record["freeze_ready"] = False
         json.dump(record, open(os.path.join(TRANSCRIPT, f"round-{n:02d}.json"), "w"),
                   indent=2, sort_keys=True)
         raise SystemExit(
@@ -365,11 +400,9 @@ def main() -> int:
     open(cargo_path, "w", encoding="utf-8").write(cargo_text)
     record["cargo_output_sha256"] = sha(cargo_text.encode("utf-8"))
 
-    json.dump(record, open(os.path.join(TRANSCRIPT, f"round-{n:02d}.json"), "w"),
-              indent=2, sort_keys=True)
-
     print(f"round {n}/{MAX_PRE_FREEZE_ROUNDS}: {len(written)} file(s), "
-          f"compiles={record['compiles']}, {record['elapsed_s']}s")
+          f"compiles={record['compiles']}, freeze_ready={record['freeze_ready']}, "
+          f"{record['elapsed_s']}s")
     print(f"  transcript {os.path.relpath(raw_dir, HERE)}")
     if record["modified_by_build"]:
         print(f"  the build modified {record['modified_by_build']}, so the tree "
@@ -377,18 +410,10 @@ def main() -> int:
     if record["freeze_ready"]:
         print("  FREEZE-READY — fmt, check, build and test all clean:")
         print(f"    python3 harness/freeze.py --workdir {workdir}")
-    elif record["compiles"]:
-        print("  it compiles but is not freeze-ready; see the cargo exits above")
-    elif n >= MAX_PRE_FREEZE_ROUNDS:
-        write_outcome("INCONCLUSIVE", INCONCLUSIVE, n)
-        print(f"  budget spent after {n} rounds and nothing compiled.")
-        print(f"  recorded: {INCONCLUSIVE}")
-        print("  There is no fourth round, and this is not a claim about the "
-              "specification.")
-    else:
-        print("  next round carries this cargo output automatically; no flag, "
-              "no other file can be fed in")
-    return 0
+    elif n < MAX_PRE_FREEZE_ROUNDS:
+        print("  not freeze-ready; the next round carries this cargo output "
+              "automatically. No flag, no other file can be fed in.")
+    return finish(record, n, prior)
 
 
 if __name__ == "__main__":

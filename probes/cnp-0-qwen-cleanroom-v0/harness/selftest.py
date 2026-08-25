@@ -366,18 +366,83 @@ def t_stale_pack_refused():
                "both refused a stale pack" if ok else blob[-200:])
 
 
-def t_no_round_after_compile():
+def _round_record(probe: str, n: int, **fields) -> None:
+    tdir = os.path.join(probe, "provenance", "transcript")
+    os.makedirs(os.path.join(tdir, f"round-{n:02d}"), exist_ok=True)
+    rec = {"round": n, "model_exit": 0, "compiles": False, "freeze_ready": False}
+    rec.update(fields)
+    json.dump(rec, open(os.path.join(tdir, f"round-{n:02d}.json"), "w"))
+    if fields.get("with_cargo", True):
+        open(os.path.join(tdir, f"round-{n:02d}", "cargo.txt"), "w").write("output\n")
+
+
+def t_no_round_after_freeze_ready():
+    """Rounds end when a candidate is freeze-ready, not when one merely compiles."""
     with tempfile.TemporaryDirectory() as tmp:
         probe = _fake_probe(tmp)
-        tdir = os.path.join(probe, "provenance", "transcript")
-        os.makedirs(tdir)
-        json.dump({"round": 1, "compiles": True},
-                  open(os.path.join(tdir, "round-01.json"), "w"))
-        r = _run(probe, "round.py", "--workdir", os.path.expanduser("~/cnp0-selftest-workdir"), "--dry-run")
+        _round_record(probe, 1, compiles=True, freeze_ready=True)
+        r = _run(probe, "round.py", "--workdir",
+                 os.path.expanduser("~/cnp0-selftest-workdir"), "--dry-run")
         blob = r.stdout + r.stderr
-        ok = r.returncode != 0 and "only next step is the freeze" in blob
-        record("no-round-after-compile", 1, ok,
-               "refused a further round once something compiled" if ok else blob[-200:])
+        ok = r.returncode != 0 and "freeze-ready" in blob
+        record("no-round-after-freeze-ready", 1, ok,
+               "refused a round once a candidate was freeze-ready" if ok else blob[-200:])
+
+
+def t_check_passed_test_failed_allows_next_round():
+    """cargo check green but test red must leave a way forward, not a deadlock.
+
+    This was a real deadlock: the next round was blocked on `compiles`, and the
+    freeze required `freeze_ready`, so a candidate that compiled and failed its
+    tests could do neither.
+    """
+    with tempfile.TemporaryDirectory() as tmp:
+        probe = _fake_probe(tmp)
+        _round_record(probe, 1, compiles=True, freeze_ready=False,
+                      cargo={"fmt": 0, "check": 0, "build": 0, "test": 101})
+        r = _run(probe, "round.py", "--workdir",
+                 os.path.expanduser("~/cnp0-selftest-workdir"), "--dry-run")
+        blob = r.stdout + r.stderr
+        ok = r.returncode == 0 and "round 2" in blob
+        record("check-passed-test-failed-allows-next-round", 1, ok,
+               "a compiling but failing round leaves round 2 available" if ok
+               else blob[-200:])
+
+
+def t_third_not_ready_records_inconclusive():
+    """A third round that compiles but is not freeze-ready must end the experiment."""
+    with tempfile.TemporaryDirectory() as tmp:
+        probe = _fake_probe(tmp)
+        for i in (1, 2):
+            _round_record(probe, i, compiles=True, freeze_ready=False)
+        r = _run(probe, "round.py", "--workdir",
+                 os.path.expanduser("~/cnp0-selftest-workdir"), "--dry-run")
+        # The third round is permitted; the outcome is written when it ends.
+        permitted = r.returncode == 0 and "round 3" in (r.stdout + r.stderr)
+        _round_record(probe, 3, compiles=True, freeze_ready=False)
+        r4 = _run(probe, "round.py", "--workdir",
+                  os.path.expanduser("~/cnp0-selftest-workdir"), "--dry-run")
+        blob4 = r4.stdout + r4.stderr
+        no_fourth = r4.returncode != 0 and "no fourth round" in blob4
+        ok = permitted and no_fourth
+        record("third-not-ready-records-inconclusive", 1, ok,
+               "a third non-ready round is the last one" if ok
+               else f"permitted={permitted} no_fourth={no_fourth}: {blob4[-160:]}")
+
+
+def t_failed_generation_does_not_deadlock_budget():
+    """A round that never reached cargo must still allow the next one."""
+    with tempfile.TemporaryDirectory() as tmp:
+        probe = _fake_probe(tmp)
+        _round_record(probe, 1, model_exit=1, freeze_ready=False,
+                      error="the model exited 1", with_cargo=False)
+        r = _run(probe, "round.py", "--workdir",
+                 os.path.expanduser("~/cnp0-selftest-workdir"), "--dry-run")
+        blob = r.stdout + r.stderr
+        ok = r.returncode == 0 and "round 2" in blob and "feedback carried: none" in blob
+        record("failed-generation-does-not-deadlock-budget", 1, ok,
+               "a failed generation leaves round 2 available, with no feedback to carry"
+               if ok else blob[-200:])
 
 
 def t_no_round_after_freeze():
@@ -478,7 +543,10 @@ def main() -> int:
                t_stale_capsule_detected, t_pack_leak_check, t_workdir_inside_trinity,
                t_tree_refuses_build_script, t_tree_refuses_cargo_config,
                t_tree_refuses_duplicate_block, t_tree_refuses_escape,
-               t_stale_pack_refused, t_no_round_after_compile, t_no_round_after_freeze,
+               t_stale_pack_refused, t_no_round_after_freeze_ready,
+               t_check_passed_test_failed_allows_next_round,
+               t_third_not_ready_records_inconclusive,
+               t_failed_generation_does_not_deadlock_budget, t_no_round_after_freeze,
                t_no_fourth_round, t_evaluate_requires_freeze,
                t_evaluate_detects_tampered_tree, t_sandbox_isolation):
         fn()

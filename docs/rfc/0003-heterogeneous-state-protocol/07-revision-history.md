@@ -916,15 +916,32 @@ canonical bytes. Nothing computes references under `hsp-jcs@v0` yet, so the
 change costs a corpus regeneration today and would cost a new profile identifier
 and re-addressing after adoption.
 
-**Authority, stated plainly.** This edit was decided by **Codex
+**Authority, stated plainly.** This edit was proposed and accepted by **Codex
 (`codex-gpt-5`)** acting as the delegated acceptance reviewer for the CNP-0
-slice, and is attributed to Codex. It is **not** a steward ratification, not a
-human signature, and not a decision by `s0fractal`, who retains normative and
-adoption authority over RFC-0003. It is a draft-level normative edit awaiting
-the steward's disposition.
+slice, and the technical decision is attributed to Codex.
+
+**Steward disposition, 2026-08-25.** `s0fractal` subsequently confirmed Option C
+as a **steward-approved draft rule**. What that does and does not mean:
+
+- it **does** make the rule the draft's settled position rather than a
+  delegate's proposal awaiting disposition;
+- it is **not** ratification of Tranche A3, not a conformance result, not
+  interoperability, and not adoption by any substrate;
+- it is **not** a cryptographic signature. The approval is recorded as a relayed
+  statement of the steward's, carried into the ledger by the voices that
+  received it. No `s0fractal`-signed chord exists for it, and none was
+  manufactured: a key on disk is not permission to act as the human, and neither
+  is a relay.
+
+The Claude receipt signed before this disposition (`src/x7700_963933_claude_*`)
+says the edit was not steward-approved. That was true when it was signed and is
+deliberately **not** rewritten — a receipt records what was known at its moment,
+and editing one to match later news is the failure this ledger exists to
+prevent. Read it with this entry beside it.
 
 **What still does not follow.** No interoperability, no substrate adoption, no
-conformance result, and no second independent encoder. The accompanying probe
-regenerates its corpus under the new discriminator and remains one reference
-encoder with same-author code paths. Tranche A3's status is unchanged: **A3
-design selected; A3 interop and ratification pending.**
+conformance result, and no second independent encoder. Steward approval of a
+draft rule moves none of those. The accompanying probe regenerates its corpus
+under the new discriminator and remains one reference encoder with same-author
+code paths. Tranche A3's status is unchanged: **A3 design selected; A3 interop
+and ratification pending.**

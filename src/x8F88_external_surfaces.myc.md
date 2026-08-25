@@ -13,10 +13,10 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility abi |     56     |
 | compost           |     0      |
 | dynamic topology  |    833     |
-| experimental      |     53     |
+| experimental      |     54     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **959**   |
+| **Total**         |  **960**   |
 
 ## Runtime Cache Diagnostics
 
@@ -109,6 +109,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | experimental      | [probes/autonomy-kernel-transplant/README.md](../probes/autonomy-kernel-transplant/README.md)                                                                                                                                                               | experimental     |                                                                                                                            | keep        | active experiment            |
 | experimental      | [probes/blake3-fqdn-v0/README.md](../probes/blake3-fqdn-v0/README.md)                                                                                                                                                                                       | experimental     |                                                                                                                            | keep        | active experiment            |
 | experimental      | [probes/canonical-forms-inventory-v0/README.md](../probes/canonical-forms-inventory-v0/README.md)                                                                                                                                                           | experimental     |                                                                                                                            | keep        | active experiment            |
+| experimental      | [probes/cnp-0-qwen-cleanroom-v0/README.md](../probes/cnp-0-qwen-cleanroom-v0/README.md)                                                                                                                                                                     | experimental     |                                                                                                                            | keep        | active experiment            |
 | experimental      | [probes/cnp-0-seed-v0/README.md](../probes/cnp-0-seed-v0/README.md)                                                                                                                                                                                         | experimental     |                                                                                                                            | keep        | active experiment            |
 | experimental      | [probes/co-witnessed-selfhood-v0/SPEC.md](../probes/co-witnessed-selfhood-v0/SPEC.md)                                                                                                                                                                       | experimental     |                                                                                                                            | keep        | active experiment            |
 | experimental      | [probes/codeicide-flow-v0/SPEC.md](../probes/codeicide-flow-v0/SPEC.md)                                                                                                                                                                                     | experimental     |                                                                                                                            | keep        | active experiment            |

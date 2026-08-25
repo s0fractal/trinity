@@ -21,16 +21,16 @@ holding no key in this substrate.
 This index is navigational and non-normative. Section numbers point to the
 history entry, not a second copy of the current rule.
 
-| Topic                                                                | Main history entries                                                                                               |
-| -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| canonical bytes, references, numeric profiles, and migration         | §1 (`§5.1.0–§5.1.2`), §6, §7 P5, §8, §11                                                                           |
-| state domains, algebraic-law evidence, invariants, and composites    | §1 (`§6–§6.2.1`), §3, §7 P1/P6, §11                                                                                |
-| transformation kinds, loss, suitability, debt, and evidence bridges  | §1 (`§7.0–§7.2.2`, `§15.0`, `§16.7.1`), §7 P1/P4, §8, §11, §13                                                     |
-| conflicts, bottlenecks, mutation, admission, and budgets             | §1 (`§8.2.2`, `§10.1.3`, `§19.13`, `§19.16`), §8, §10–§11                                                          |
-| federation, execution floor, ordering, progress, and mapping domains | §1 (`§13.4.1–§13.4.3.2`), §7 P3/P8, §8, §10–§11                                                                    |
-| identity, disclosure, runtime paths, and performance                 | §1 (`§12`, `§14.1`, `§15.0`), §7 P2/P7, §8, §10–§11                                                                |
-| conformance, ratification, principal counting, and amendment         | §4, §7 P6/P7/P9, §9–§11                                                                                            |
-| relayed external inputs and their dispositions                       | §6 Grok, §7 Claude, §8 Qwen, §9 GLM-5-Turbo, §10 Kimi, §11 Mistral, §12 Kimi attribution dialogue, §13 Lean kernel |
+| Topic                                                                | Main history entries                                                                                                                            |
+| -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| canonical bytes, references, numeric profiles, and migration         | §1 (`§5.1.0–§5.1.2`), §6, §7 P5, §8, §11, §14                                                                                                   |
+| state domains, algebraic-law evidence, invariants, and composites    | §1 (`§6–§6.2.1`), §3, §7 P1/P6, §11                                                                                                             |
+| transformation kinds, loss, suitability, debt, and evidence bridges  | §1 (`§7.0–§7.2.2`, `§15.0`, `§16.7.1`), §7 P1/P4, §8, §11, §13                                                                                  |
+| conflicts, bottlenecks, mutation, admission, and budgets             | §1 (`§8.2.2`, `§10.1.3`, `§19.13`, `§19.16`), §8, §10–§11                                                                                       |
+| federation, execution floor, ordering, progress, and mapping domains | §1 (`§13.4.1–§13.4.3.2`), §7 P3/P8, §8, §10–§11                                                                                                 |
+| identity, disclosure, runtime paths, and performance                 | §1 (`§12`, `§14.1`, `§15.0`), §7 P2/P7, §8, §10–§11                                                                                             |
+| conformance, ratification, principal counting, and amendment         | §4, §7 P6/P7/P9, §9–§11                                                                                                                         |
+| relayed external inputs and their dispositions                       | §6 Grok, §7 Claude, §8 Qwen, §9 GLM-5-Turbo, §10 Kimi, §11 Mistral, §12 Kimi attribution dialogue, §13 Lean kernel, §14 tagged-form recognition |
 
 ---
 
@@ -863,3 +863,68 @@ adoption, or ratification follows from accepting these edits. The signed Claude
 receipt authenticates its contribution key, and the signed Codex critique gives
 a technical disposition over the proof candidate; neither signature is a
 substitute for the steward's normative decision or a principal vote.
+
+## 14. Tagged-form recognition: the shapes were given, the recognition was not
+
+The CNP-0 executable seed (PR
+[#17](https://github.com/s0fractal/trinity/pull/17), merged at
+`ff273f5253f17bc316e81ba226a1804704bc6ba5`) could not be written without
+answering a question §5.1.2.1 never asked: **how does a reader know that a map
+is a ratio?** The section gave the three shapes and no recognition rule. The
+seed implemented the obvious reading — a map whose `kind` member is `"bytes"`,
+`"ratio"`, or `"fixed"` — and recorded it as an implementation choice rather
+than a rule, in `contracts/CANONICAL_ENCODING.v0.1.md` §5.
+
+An adversarial disposition of three options followed
+([`proposals/rfc-0003/tagged-form-recognition-disposition-2026-08-25.md`](../../../proposals/rfc-0003/tagged-form-recognition-disposition-2026-08-25.md),
+merged at `5fe4db8`). Its two useful results were:
+
+1. **`kind` is this document's universal discriminator** — 39 distinct values
+   across at least twelve declared types, from `TransformationKind` to
+   `HandshakeMessage`. Reserving three of its _values_ for the numeric profile
+   would have made every future domain share a namespace with it, and the
+   collision would surface only after references existed.
+2. **The recognition question is a design choice, not a deduction.** An earlier
+   draft of the disposition claimed §5.1.2.1 and §5.1.3 already contradicted
+   each other. They do not. "Verifier-only" constrains what that path _does_ —
+   it does not encode — and says nothing about what it is _given_, and Part 02
+   places `deserialize(bytes)` inside `StateDomain` (§6, `StateDomain`), so a
+   domain-parameterized verifier was textually available. The claim was
+   withdrawn before the disposition was accepted.
+
+**Was:** raw bytes, ratios, and fixed-point values were spelled with a `kind`
+member, and nothing said whether `kind` was how a reader identified them, or
+whether a domain descriptor was required first.
+
+**Now:** the three forms carry the reserved member `cnp0`, whose value is one of
+`"bytes"`, `"ratio"`, `"fixed"`, with exactly the members that form defines.
+`cnp0` is reserved in every position; a map without it is an ordinary map
+whatever its member names, **including `kind`**. Recognition is a property of
+the bytes alone.
+
+**Why it mattered:** the choice fixes what "these bytes are valid CNP-0" means.
+Under byte-local recognition anyone holding the bytes can answer it, which is
+what §5.1.3 asks its verifier-only path to do. Under schema-directed recognition
+a document carrying no domain reference — which the profile permits, since only
+the two identifiers are required at the root — would be verifiable at the wire
+layer only. §5.1.2.1 now says which was chosen and records the alternative,
+including the sentence a future revision would have to write if it prefers the
+other trade.
+
+**Timing was part of the decision.** Changing the discriminator changes
+canonical bytes. Nothing computes references under `hsp-jcs@v0` yet, so the
+change costs a corpus regeneration today and would cost a new profile identifier
+and re-addressing after adoption.
+
+**Authority, stated plainly.** This edit was decided by **Codex
+(`codex-gpt-5`)** acting as the delegated acceptance reviewer for the CNP-0
+slice, and is attributed to Codex. It is **not** a steward ratification, not a
+human signature, and not a decision by `s0fractal`, who retains normative and
+adoption authority over RFC-0003. It is a draft-level normative edit awaiting
+the steward's disposition.
+
+**What still does not follow.** No interoperability, no substrate adoption, no
+conformance result, and no second independent encoder. The accompanying probe
+regenerates its corpus under the new discriminator and remains one reference
+encoder with same-author code paths. Tranche A3's status is unchanged: **A3
+design selected; A3 interop and ratification pending.**

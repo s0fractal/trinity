@@ -194,11 +194,12 @@ case for the leading Tranche A3 candidate (§17.1.1) and the one place §6.4's
 probability simplex collides with it.
 
 Two patterns are admissible. Both keep every number in the integer domain and
-both are exact:
+both are exact. Each is a **tagged form**, carrying the reserved discriminator
+member `cnp0` that §5.1.2.1 fixes:
 
 ```json
-{ "kind": "ratio", "num": <int>, "den": <int> }
-{ "kind": "fixed", "value": <int> }
+{ "cnp0": "ratio", "num": <int>, "den": <int> }
+{ "cnp0": "fixed", "value": <int> }
 ```
 
 For `ratio`, the canonical form MUST satisfy:
@@ -256,17 +257,50 @@ string-keyed maps, and integers in the inclusive range
 `[-(2^53 - 1), +(2^53 - 1)]`. Map member names MUST be unique in the raw input.
 Strings follow §5.1.1 rule 5. Floating-point numbers, decimal fractions,
 exponent notation, CBOR tags, and integers outside the range are not members of
-this profile. Raw bytes use exactly one tagged projection:
+this profile.
+
+Raw bytes, exact ratios, and fixed-point values are written as **tagged forms**.
+A tagged form is a map carrying the member name `cnp0`, whose value is exactly
+one of `"bytes"`, `"ratio"`, or `"fixed"`, and whose remaining members are
+exactly the ones that form defines and no others:
 
 ```json
-{ "kind": "bytes", "hex": "<even-length lowercase hexadecimal>" }
+{ "cnp0": "bytes", "hex": "<even-length lowercase hexadecimal>" }
+{ "cnp0": "ratio", "num": <int>, "den": <int> }
+{ "cnp0": "fixed", "value": <int> }
 ```
+
+The member name `cnp0` is **reserved in every position** of a `cnp-0` document
+and MUST NOT be used for any other purpose. **Recognition is therefore a
+property of the bytes alone**: a reader decides whether a value is a tagged
+form, and whether that form is canonical, without resolving a domain descriptor.
+This is what makes §5.1.3's verifier-only path able to do what that section asks
+of it — reject a non-canonical ratio — while holding nothing but the raw input.
+
+A map carrying `cnp0` with any other value, or with a member the form does not
+define, MUST be rejected rather than reinterpreted as an ordinary map. A map
+that does not carry `cnp0` **is** an ordinary map, whatever its other member
+names are, **including `kind`** — which this document uses as an ordinary
+discriminator in at least a dozen other types and which the numeric profile does
+not claim.
 
 Length is derived from `hex` and MUST NOT be repeated. A decoder MUST reject
 uppercase, odd-length, or non-hexadecimal content rather than normalize it.
-Ratio and fixed-point values use the forms and validation rules above. A domain
-MUST declare which numeric form it admits; it MUST NOT accept both forms for one
-semantic value and treat them as equal.
+Ratio and fixed-point values additionally satisfy the reduction and scale rules
+of §5.1.2. A domain MUST declare which numeric form it admits; it MUST NOT
+accept both forms for one semantic value and treat them as equal. The domain
+decides _which form is admissible_; the bytes decide _what form a value is_.
+
+The alternative considered was schema-directed recognition: no reserved name,
+and a value is a ratio only because a domain descriptor types that position as
+one. It is not adopted, and the reason is a property this section chooses rather
+than one the earlier draft implied. Under schema-directed recognition "these
+bytes are valid CNP-0" stops being answerable by anyone holding the bytes: a
+document that carries no domain reference — which this profile permits, since
+only the two identifiers of §5.1.2.1 are required at the root — becomes
+verifiable at the wire layer only. If a later revision prefers that trade, it
+MUST state §5.1.3's input contract explicitly, because "verifier-only" says what
+the path does not do and not what it is given.
 
 CNP-0-JCS reuses the already implemented Warrant JCS profile because its
 canonical bytes are pinned by a normative fixture artifact and independently

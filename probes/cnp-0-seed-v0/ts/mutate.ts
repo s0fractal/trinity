@@ -120,6 +120,26 @@ const MUTATIONS: Mutation[] = [
     },
   },
   {
+    id: "encoder-recognizes-kind-again",
+    target: "ts/cnp0.ts",
+    what: "make the encoder read `kind` as the discriminator again",
+    apply: (t) => {
+      const needle = 'export const TAG = "cnp0";';
+      if (!t.includes(needle)) return undefined;
+      return t.replace(needle, 'export const TAG = "kind";');
+    },
+  },
+  {
+    id: "verifier-drops-the-reservation",
+    target: "ts/reject.ts",
+    what: "stop treating an unknown reserved-member value as a rejection",
+    apply: (t) => {
+      const needle = '      s.bail("tagged-form-invalid", `${TAG} must be one of bytes, ratio, fixed`);';
+      if (!t.includes(needle)) return undefined;
+      return t.replace(needle, "      /* reservation dropped */;");
+    },
+  },
+  {
     id: "lut-byte",
     target: "corpus/circle256-lut.cnp0.json",
     what: "flip one byte of the pinned circle256 lookup table",

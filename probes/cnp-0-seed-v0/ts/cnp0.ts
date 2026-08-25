@@ -66,18 +66,33 @@ const HEX_LOWER = /^[0-9a-f]*$/;
 /** A full content digest: 64 lowercase hex characters, never truncated. */
 const FULL_DIGEST = /^[0-9a-f]{64}$/;
 
+/** §5.1.2.1: the reserved discriminator. `cnp0` is reserved in every position;
+    a map without it is an ordinary map whatever its member names are, including
+    `kind`, which this profile does not claim. */
+export const TAG = "cnp0";
+const TAGS = ["bytes", "ratio", "fixed"];
+
 /** §5.1.2.1: the tagged forms. Extra members are a second source of truth. */
 function validateTagged(m: JMap): void {
-  const kind = get(m, "kind");
-  if (typeof kind !== "string") return;
+  const tag = get(m, TAG);
+  if (tag === undefined) return; // an ordinary map
+  if (typeof tag !== "string" || !TAGS.includes(tag)) {
+    throw new ProfileError(
+      "tagged-form-invalid",
+      `${TAG} must be one of ${TAGS.join(", ")}; got ${JSON.stringify(tag)}. ` +
+        "The member name is reserved, so an unknown value is rejected rather " +
+        "than read as an ordinary map.",
+    );
+  }
+  const kind = tag;
 
   if (kind === "bytes") {
-    const expected = ["hex", "kind"];
+    const expected = [TAG, "hex"];
     const got = [...names(m)].sort();
     if (got.length !== 2 || got[0] !== expected[0] || got[1] !== expected[1]) {
       throw new ProfileError(
         "tagged-form-invalid",
-        `bytes takes exactly {kind, hex}, got {${got.join(", ")}}`,
+        `bytes takes exactly {${TAG}, hex}, got {${got.join(", ")}}`,
       );
     }
     const hex = get(m, "hex");
@@ -98,10 +113,10 @@ function validateTagged(m: JMap): void {
 
   if (kind === "ratio") {
     const got = [...names(m)].sort();
-    if (got.length !== 3 || got[0] !== "den" || got[1] !== "kind" || got[2] !== "num") {
+    if (got.length !== 3 || got[0] !== TAG || got[1] !== "den" || got[2] !== "num") {
       throw new ProfileError(
         "tagged-form-invalid",
-        `ratio takes exactly {kind, num, den}, got {${got.join(", ")}}`,
+        `ratio takes exactly {${TAG}, num, den}, got {${got.join(", ")}}`,
       );
     }
     const num = get(m, "num");
@@ -138,10 +153,10 @@ function validateTagged(m: JMap): void {
         "the scale descriptor is bound by the domain, never repeated per value",
       );
     }
-    if (got.length !== 2 || got[0] !== "kind" || got[1] !== "value") {
+    if (got.length !== 2 || got[0] !== TAG || got[1] !== "value") {
       throw new ProfileError(
         "tagged-form-invalid",
-        `fixed takes exactly {kind, value}, got {${got.join(", ")}}`,
+        `fixed takes exactly {${TAG}, value}, got {${got.join(", ")}}`,
       );
     }
     if (typeof get(m, "value") !== "bigint") {

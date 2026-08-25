@@ -30,48 +30,72 @@ Deno.test("conformance kit: the corpus and extract are derivable from the source
   assert(text.includes("MANIFEST.sha256 pins"), text);
 });
 
+// The closed set of the kit's own controls. Naming only some of them, or
+// asserting a floor, is a permissive seam: a control could be deleted and the
+// suite stayed green. The same defect was found in the clean-room harness next
+// door, so it is closed here in the same way and at the same time rather than
+// waiting to be reported.
+const CONTROLS = [
+  "a-NaN-value-fails",
+  "a-duplicated-json-member-fails",
+  "a-manifest-path-leaving-the-kit-is-refused",
+  "a-manifest-symlinked-to-a-fifo-is-refused",
+  "a-missing-line-fails",
+  "a-repeated-id-fails",
+  "a-report-inside-the-kit-is-refused",
+  "a-whitespace-only-record-fails",
+  "a-wrong-answer-followed-by-a-right-one-fails",
+  "accepting-everything-fails",
+  "an-empty-directory-is-refused",
+  "an-extra-line-fails",
+  "an-unasked-id-fails",
+  "an-undefined-output-field-fails",
+  "answers-in-the-wrong-order-fail",
+  "correct-implementation-passes",
+  "echoing-input-as-canonical-fails",
+  "edited-corpus-is-refused",
+  "output-not-matching-the-interface-fails",
+  "padding-with-blank-lines-fails",
+  "producing-nothing-fails",
+  "rejecting-everything-fails",
+  "right-bytes-wrong-digest-is-a-digest-failure",
+  "unpinned-file-in-pycache-is-refused",
+  "unpinned-file-is-refused",
+  "wrong-category-is-not-a-wrong-verdict",
+];
+
 Deno.test("conformance kit: the runner fails wrong implementations", async () => {
   const { code, text } = await py("selftest.py");
   assertEquals(code, 0, text);
-  // A runner that failed everything would satisfy every negative control, so
-  // the positive one is what makes the rest mean something.
-  assert(text.includes("ok   correct-implementation-passes"), text);
-  assert(text.includes("ok   edited-corpus-is-refused"), text);
-  // Reply-shape controls. Several of these were demonstrated to score a perfect
-  // 126/126 against earlier versions of this runner; the rest guard the same
-  // class of hole without having been exploited. Which is which is recorded in
-  // README.md rather than asserted here.
-  for (
-    const control of [
-      "answers-in-the-wrong-order-fail",
-      "a-repeated-id-fails",
-      "an-unasked-id-fails",
-      "a-wrong-answer-followed-by-a-right-one-fails",
-      "padding-with-blank-lines-fails",
-      "a-whitespace-only-record-fails",
-      "a-duplicated-json-member-fails",
-      "a-NaN-value-fails",
-      "an-undefined-output-field-fails",
-    ]
-  ) {
-    assert(
-      text.includes(`ok   ${control}`),
-      `${control} did not pass:\n${text}`,
-    );
-  }
-  assert(text.includes("ok   unpinned-file-is-refused"), text);
-  // An ignored path is a hole: __pycache__ was one.
-  assert(text.includes("ok   unpinned-file-in-pycache-is-refused"), text);
-  // A manifest is a claim about the kit; an entry that leaves it is not one.
+
+  const ran = [...text.matchAll(/^ {2}(?:ok {3}|FAIL )([a-zA-Z0-9-]+)/gm)]
+    .map((m) => m[1]).sort();
+  const passed = [...text.matchAll(/^ {2}ok {3}([a-zA-Z0-9-]+)/gm)]
+    .map((m) => m[1]).sort();
+
+  const missing = CONTROLS.filter((n) => !ran.includes(n));
+  const unnamed = ran.filter((n) => !CONTROLS.includes(n));
+  assertEquals(
+    missing,
+    [],
+    `controls vanished: ${missing}. A control that disappears takes its ` +
+      `guarantee with it; if removed on purpose, remove it from CONTROLS here.`,
+  );
+  assertEquals(
+    unnamed,
+    [],
+    `controls this test does not name: ${unnamed}. Add them to CONTROLS so the ` +
+      `set stays closed.`,
+  );
+  assertEquals(
+    passed,
+    CONTROLS.slice().sort(),
+    "not every named control passed",
+  );
   assert(
-    text.includes("ok   a-manifest-path-leaving-the-kit-is-refused"),
+    new RegExp(`\n${CONTROLS.length} passed, 0 failed`).test(text),
     text,
   );
-  assert(text.includes("ok   an-empty-directory-is-refused"), text);
-  assert(text.includes("ok   a-report-inside-the-kit-is-refused"), text);
-  // A refusal recorded and not acted on is not a refusal: this one used to hang.
-  assert(text.includes("ok   a-manifest-symlinked-to-a-fifo-is-refused"), text);
-  assert(/\n26 passed, 0 failed/.test(text), text);
 });
 
 Deno.test("conformance kit: the reference encoder satisfies it", async () => {

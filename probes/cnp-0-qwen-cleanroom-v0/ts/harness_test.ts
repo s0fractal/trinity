@@ -49,10 +49,82 @@ async function selftest(): Promise<{ results: Result[]; failed: number; skipped:
   }
 }
 
+// The lock is the closed set. `>= 41` was a floor, and a floor is a permissive
+// seam: a control could be deleted and all four of these tests stayed green, so
+// the suite could shrink silently — the exact failure it exists to prevent in
+// the harness it guards.
+const LOCK: { tier1: string[]; tier2: string[]; total: number } = JSON.parse(
+  await Deno.readTextFile(`${HERE}harness/controls.lock.json`),
+);
+
+function setDiff(got: string[], want: string[]) {
+  const g = new Set(got), w = new Set(want);
+  return {
+    missing: want.filter((n) => !g.has(n)),
+    unnamed: got.filter((n) => !w.has(n)),
+    duplicated: got.filter((n, i) => got.indexOf(n) !== i),
+  };
+}
+
+Deno.test("clean-room harness: the control set is exactly what the lock names", async () => {
+  const report = await selftest();
+  for (const tier of [1, 2] as const) {
+    const got = report.results.filter((r) => r.tier === tier).map((r) => r.name);
+    const want = tier === 1 ? LOCK.tier1 : LOCK.tier2;
+    const { missing, unnamed, duplicated } = setDiff(got, want);
+    assertEquals(
+      missing,
+      [],
+      `tier ${tier} controls vanished: ${missing}. A control that disappears ` +
+        `takes its guarantee with it; if removed on purpose, remove it from ` +
+        `controls.lock.json in the same diff.`,
+    );
+    assertEquals(
+      unnamed,
+      [],
+      `tier ${tier} controls the lock does not name: ${unnamed}. Add them to ` +
+        `controls.lock.json so the set stays closed.`,
+    );
+    assertEquals(duplicated, [], `tier ${tier} reports ${duplicated} twice`);
+  }
+  assertEquals(report.results.length, LOCK.total);
+});
+
+Deno.test("clean-room harness: a vanished control turns the lock red", async () => {
+  // Without this, the parity check above is a claim about a check nobody tested.
+  // A real report with one control removed — and one added under a name the lock
+  // does not know — must both be refused, by the same comparison CI runs.
+  const report = await selftest();
+  const tmp = await Deno.makeTempDir({ prefix: "cnp0-mutation-" });
+  try {
+    const check = async (results: unknown[], expect: string) => {
+      const path = `${tmp}/report.json`;
+      await Deno.writeTextFile(path, JSON.stringify({ ...report, results }));
+      const cmd = new Deno.Command("python3", {
+        args: [`${HERE}harness/controls.lock.py`, "--check", "--report", path],
+        stdout: "piped",
+        stderr: "piped",
+      });
+      const out = await cmd.output();
+      const text = new TextDecoder().decode(out.stdout) +
+        new TextDecoder().decode(out.stderr);
+      assert(out.code !== 0, `mutation was not caught:\n${text}`);
+      assert(text.includes(expect), `caught, but not as ${expect}:\n${text}`);
+    };
+
+    await check(report.results.slice(1), "is missing");
+    await check(
+      [...report.results, { ...report.results[0], name: "smuggled-in" }],
+      "has gained",
+    );
+  } finally {
+    await Deno.remove(tmp, { recursive: true });
+  }
+});
+
 Deno.test("clean-room harness: every tier-1 negative control refuses", async () => {
   const report = await selftest();
   const tier1 = report.results.filter((r) => r.tier === 1);
-  assert(tier1.length >= 41, `too few tier-1 controls: ${tier1.length}`);
   const bad = tier1.filter((r) => !r.ok || r.skipped);
   assertEquals(bad.map((r) => `${r.name}: ${r.detail}`), []);
 });
@@ -63,7 +135,7 @@ Deno.test("clean-room harness: isolation controls are run or explicitly skipped"
   // Docker is not on every runner. What must never happen is a tier-2 control
   // vanishing: it is either exercised or reported as skipped, and a skipped
   // control is never counted as a pass.
-  assert(tier2.length >= 3, "the isolation controls are missing entirely");
+  assertEquals(tier2.length, LOCK.tier2.length, "an isolation control vanished");
   for (const r of tier2) {
     assert(r.ok || r.skipped, `${r.name} neither passed nor declared skipped: ${r.detail}`);
     if (r.skipped) assert(r.detail.length > 0, `${r.name} skipped without a reason`);

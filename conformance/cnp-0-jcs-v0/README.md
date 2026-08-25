@@ -66,9 +66,9 @@ result is not a conformance result, and the JSON report records
 
 A runner that passes everything is indistinguishable from a runner that checks
 nothing. `python3 selftest.py` runs deliberately wrong implementations past it —
-26 controls — and asserts each is caught, and caught as the right _kind_ of
-failure. It also runs a correct implementation, so "fails everything" cannot
-masquerade as rigour.
+and asserts each is caught, and caught as the right _kind_ of failure. It also
+runs a correct implementation, so "fails everything" cannot masquerade as
+rigour.
 
 Many of them are not wrong about any answer at all: they differ only in the
 shape of the reply, or in what the kit contains. Several are here because they

@@ -115,7 +115,8 @@ had itself failed to write, once for a freeze criterion nothing could satisfy.
 
 ## What is kept
 
-* The apparatus, with its 44 negative controls, the contamination log, and the
+* The apparatus, with its negative controls (named exactly in
+  `harness/controls.lock.json`), the contamination log, and the
   refusal patterns. Its value is methodological, not evidential, and this file
   says so rather than letting the size of the harness imply otherwise.
 * The full transcript of all six rounds, including the proctor's own faults:

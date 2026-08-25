@@ -377,7 +377,15 @@ digests, an outcome reconstructed after a crash, a round after the freeze, a fou
 transcript, a freeze on a round that was not freeze-ready, a freeze on a failed
 generation, a tree edited between the round and the freeze, a build that rewrites
 a source, scoring without a freeze, scoring a tree that no longer matches the
-freeze, and the isolation itself. **37 controls.**
+freeze, and the isolation itself.
+
+**How many, exactly, is not written here.** Three documents carried three
+hand-maintained totals — 37, 44, and 45 — and all three drifted apart because
+nothing checked them. The count lives in `harness/controls.lock.json`, which
+names every control and is compared for exact set equality against a live run;
+`python3 harness/controls.lock.py --check` prints it. A floor was worse than a
+stale number: `harness_test.ts` asserted `tier1.length >= 41`, so a control could
+be deleted and every test stayed green.
 
 The protocol refusals run **before** the sandbox is touched, on purpose: a budget
 check that only works where Docker is installed is one that silently stops being

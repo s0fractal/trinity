@@ -329,7 +329,11 @@ def main() -> int:
 
     started = time.time()
     proc = subprocess.run(
-        ["ollama", "run", "--think", "high", "--hidethinking", args.model],
+        # `--think` takes its value with `=`. Written as two arguments, ollama
+        # read "high" as the model name and tried to pull it, exiting 1 in about
+        # a second with no output — a proctor bug that round 1 recorded as a
+        # failed generation.
+        ["ollama", "run", "--think=high", "--hidethinking", args.model],
         input=prompt, capture_output=True, text=True,
     )
     output = proc.stdout

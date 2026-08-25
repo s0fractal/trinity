@@ -30,7 +30,9 @@ import subprocess
 import sys
 import time
 
+import pack as packmod
 import sandbox
+import tree
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TRANSCRIPT = os.path.join(HERE, "provenance", "transcript")
@@ -114,8 +116,52 @@ def build_prompt(feedback: str | None) -> str:
     return "".join(parts)
 
 
-def extract_files(output: str) -> dict[str, str]:
-    return {m.group("path"): m.group("body") for m in FILE_BLOCK.finditer(output)}
+def extract_files(output: str) -> list[tuple[str, str]]:
+    """A LIST, not a dict: two blocks for one path must be visible, not silently
+    resolved in favour of the last one."""
+    return [(m.group("path"), m.group("body")) for m in FILE_BLOCK.finditer(output)]
+
+
+def assert_pack_is_current() -> str:
+    """The prompt is built from the capsule files; the pin must describe them.
+
+    An earlier version read the capsule live and the digest from pack.json
+    without comparing them, so a future run could have recorded a pin that
+    described a pack it never sent.
+    """
+    recorded = json.load(open(os.path.join(HERE, "provenance", "pack.json")))
+    problems = packmod.leak_check()
+    if problems:
+        raise SystemExit("the capsule leaks:\n  " + "\n  ".join(problems))
+    current = packmod.build()
+    if current["pack_sha256"] != recorded["pack_sha256"]:
+        raise SystemExit(
+            "the capsule has changed since the pack was pinned:\n"
+            f"  pinned  {recorded['pack_sha256']}\n"
+            f"  current {current['pack_sha256']}\n"
+            "Re-pin deliberately with `python3 harness/pack.py --write`; a prompt "
+            "must not be recorded under a digest that does not describe it."
+        )
+    return current["pack_sha256"]
+
+
+OUTCOME = os.path.join(HERE, "provenance", "outcome.json")
+FREEZE = os.path.join(HERE, "provenance", "freeze.json")
+
+INCONCLUSIVE = (
+    "INCONCLUSIVE: no compiling candidate within the agreed three-round "
+    "model/capsule/tooling budget; not evidence of RFC failure"
+)
+
+
+def write_outcome(status: str, detail: str, rounds: int) -> None:
+    if os.path.exists(OUTCOME):
+        return  # an outcome is written once
+    json.dump(
+        {"status": status, "detail": detail, "rounds": rounds,
+         "recorded": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())},
+        open(OUTCOME, "w"), indent=2, sort_keys=True,
+    )
 
 
 def main() -> int:
@@ -126,28 +172,48 @@ def main() -> int:
                     help="build and digest the prompt without calling the model")
     args = ap.parse_args()
 
-    workdir = sandbox.preflight(args.workdir)
+    workdir = os.path.realpath(os.path.expanduser(args.workdir))
+
+    # The protocol refusals come FIRST, deliberately. They are the ones that
+    # decide whether a round may happen at all, and they must not depend on
+    # Docker being installed: a budget check that only works where the sandbox
+    # works is a budget check that silently stops being enforced.
+    pack_sha = assert_pack_is_current()
+
+    if os.path.exists(FREEZE):
+        raise SystemExit(
+            "a freeze exists: the candidate is fixed and rounds are over. Anything "
+            "after the freeze is informed by the corpus and is not clean-room in "
+            "the same sense."
+        )
+    if os.path.exists(OUTCOME):
+        rec = json.load(open(OUTCOME))
+        raise SystemExit(f"an outcome is already recorded: {rec['status']}")
 
     prior = rounds_so_far()
-    n = len(prior) + 1
-    if n > MAX_PRE_FREEZE_ROUNDS and not os.path.exists(
-        os.path.join(HERE, "provenance", "freeze.json")
-    ):
+    if any(r.get("compiles") for r in prior):
         raise SystemExit(
-            f"round {n} would exceed the agreed limit of {MAX_PRE_FREEZE_ROUNDS} "
-            "rounds before the freeze. Freeze what exists, or record a new agreement."
+            "a previous round compiled. The only next step is the freeze — a "
+            "further prompt round would be tuning the candidate before it is "
+            "pinned, which is the thing the freeze exists to prevent:\n"
+            f"    python3 harness/freeze.py --workdir {workdir}"
+        )
+    n = len(prior) + 1
+    if n > MAX_PRE_FREEZE_ROUNDS:
+        raise SystemExit(
+            f"the agreed budget is {MAX_PRE_FREEZE_ROUNDS} rounds and they are "
+            "spent. The recorded outcome is INCONCLUSIVE; there is no fourth round."
         )
 
     feedback, feedback_sha = previous_feedback(prior)
     prompt = build_prompt(feedback)
-    pack = json.load(open(os.path.join(HERE, "provenance", "pack.json")))
 
     record = {
         "round": n,
         "started": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "model": args.model,
         "model_id_expected": EXPECTED_MODEL_ID,
-        "pack_sha256": pack["pack_sha256"],
+        "pack_sha256": pack_sha,
         "prompt_sha256": sha(prompt.encode("utf-8")),
         "prompt_bytes": len(prompt.encode("utf-8")),
         "feedback_sha256": feedback_sha,
@@ -161,6 +227,10 @@ def main() -> int:
               f"sha256 {record['prompt_sha256']}")
         print(f"feedback carried: {'the previous cargo output' if feedback else 'none'}")
         return 0
+
+    # Only now does the sandbox matter: from here on something actually runs.
+    workdir = sandbox.preflight(workdir)
+    record["workdir"] = workdir
 
     live = live_model_id(args.model)
     record["model_id_live"] = live
@@ -187,25 +257,26 @@ def main() -> int:
     open(os.path.join(raw_dir, "prompt.txt"), "w", encoding="utf-8").write(prompt)
     open(os.path.join(raw_dir, "output.txt"), "w", encoding="utf-8").write(output)
 
-    files = extract_files(output)
-    if not files:
-        record["error"] = "no FILE: blocks in the model output"
+    emitted = extract_files(output)
+    try:
+        tree.check_emitted([rel for rel, _ in emitted])
+    except tree.TreeError as exc:
+        record["error"] = f"refused emitted tree: {exc}"
         json.dump(record, open(os.path.join(TRANSCRIPT, f"round-{n:02d}.json"), "w"),
                   indent=2, sort_keys=True)
-        print("no FILE: blocks found; nothing written. See the transcript.")
-        return 1
+        raise SystemExit(f"round {n}: {exc}")
 
+    # Everything the model does not emit is gone, including cargo's own caches:
+    # a stale `.cargo` could carry configuration that shapes a later build and
+    # never appears in the frozen tree.
     for entry in os.listdir(workdir):
-        if entry in ("target", ".cargo"):
+        if entry == "target":
             continue
         p = os.path.join(workdir, entry)
         shutil.rmtree(p) if os.path.isdir(p) else os.remove(p)
 
     written = {}
-    for rel, body in files.items():
-        if rel.startswith("/") or ".." in rel.split("/"):
-            record.setdefault("refused_paths", []).append(rel)
-            continue
+    for rel, body in emitted:
         dest = os.path.join(workdir, rel)
         os.makedirs(os.path.dirname(dest), exist_ok=True)
         data = (body + "\n").encode("utf-8")
@@ -213,6 +284,7 @@ def main() -> int:
             fh.write(data)
         written[rel] = {"bytes": len(data), "sha256": sha(data)}
     record["written"] = written
+    tree.assert_no_build_hooks(workdir)
 
     if not sandbox.mount_is_visible(workdir):
         record["error"] = "the workdir is not visible inside the sandbox"
@@ -247,8 +319,14 @@ def main() -> int:
           f"compiles={record['compiles']}, {record['elapsed_s']}s")
     print(f"  transcript {os.path.relpath(raw_dir, HERE)}")
     if record["compiles"]:
-        print("  IT COMPILES — freeze before the corpus is run:")
+        print("  IT COMPILES — the only next step is the freeze:")
         print(f"    python3 harness/freeze.py --workdir {workdir}")
+    elif n >= MAX_PRE_FREEZE_ROUNDS:
+        write_outcome("INCONCLUSIVE", INCONCLUSIVE, n)
+        print(f"  budget spent after {n} rounds and nothing compiled.")
+        print(f"  recorded: {INCONCLUSIVE}")
+        print("  There is no fourth round, and this is not a claim about the "
+              "specification.")
     else:
         print("  next round carries this cargo output automatically; no flag, "
               "no other file can be fed in")

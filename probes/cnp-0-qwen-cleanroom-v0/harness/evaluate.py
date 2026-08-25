@@ -20,8 +20,14 @@ them, repeats an id, or emits `{"ok":true}` with no digest has not passed the
 cases it skipped, and scoring it as though it had would be the most flattering
 possible bug.
 
+What is scored is the FROZEN tree, rebuilt clean, never the working directory.
+An earlier version took a `--workdir` and scored whatever was in it, which meant
+a candidate edited after seeing the corpus could be presented as the clean-room
+result — the one thing this probe exists to rule out. The frozen tree is
+re-digested against `freeze.json` before anything runs.
+
 Usage:
-    python3 harness/evaluate.py --workdir ~/cnp0-cleanroom [--heldout extra.json]
+    python3 harness/evaluate.py [--heldout extra.json]
 """
 
 from __future__ import annotations
@@ -30,9 +36,13 @@ import argparse
 import hashlib
 import json
 import os
+import shutil
 import sys
+import tempfile
 
+import pack as packmod
 import sandbox
+import tree
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TRINITY = os.path.normpath(os.path.join(HERE, "..", ".."))
@@ -115,7 +125,9 @@ def run_subcommand(workdir: str, sub: str, cases: list[dict]) -> dict[str, dict]
     payload = "".join(
         json.dumps({"id": c["id"], "raw_hex": raw_hex_of(c)}) + "\n" for c in cases
     )
-    code, out = sandbox.run(workdir, [BINARY, sub], stdin=payload, timeout_s=300)
+    # Read-only: the candidate is being measured, not given a chance to write.
+    code, out = sandbox.run(workdir, [BINARY, sub], stdin=payload, timeout_s=300,
+                            read_only_mount=True)
     if code != 0:
         raise SystemExit(
             f"`candidate {sub}` exited {code}. A non-zero exit is the program "
@@ -143,14 +155,81 @@ def run_subcommand(workdir: str, sub: str, cases: list[dict]) -> dict[str, dict]
     return results
 
 
+def preconditions() -> dict:
+    """Refuse to score anything that is not the frozen candidate."""
+    freeze_path = os.path.join(HERE, "provenance", "freeze.json")
+    if not os.path.exists(freeze_path):
+        raise SystemExit(
+            "refusing: there is no freeze. A score means something only against the "
+            "candidate as it stood before the corpus was run.\n"
+            "    python3 harness/freeze.py --workdir <workdir>"
+        )
+    record = json.load(open(freeze_path))
+
+    dest = os.path.join(HERE, "candidate")
+    if not os.path.isdir(dest):
+        raise SystemExit(f"refusing: {dest} is missing though a freeze is recorded")
+    try:
+        files = tree.collect(dest)
+    except tree.TreeError as exc:
+        raise SystemExit(f"refusing: the frozen tree is not admissible: {exc}")
+    tree_sha, _ = tree.digest(files)
+    if tree_sha != record["tree_sha256"]:
+        raise SystemExit(
+            "refusing: the frozen tree has changed since it was frozen\n"
+            f"  frozen  {record['tree_sha256']}\n"
+            f"  now     {tree_sha}\n"
+            "What would be scored is not what was frozen."
+        )
+
+    recorded_pack = json.load(open(os.path.join(HERE, "provenance", "pack.json")))
+    current_pack = packmod.build()
+    if current_pack["pack_sha256"] != recorded_pack["pack_sha256"]:
+        raise SystemExit(
+            "refusing: the capsule has changed since the pack was pinned, so the "
+            "candidate would be scored against a specification it was not given"
+        )
+    if record["pack_sha256"] != recorded_pack["pack_sha256"]:
+        raise SystemExit(
+            "refusing: the freeze was taken under a different pack than the one "
+            f"pinned now ({record['pack_sha256']} vs {recorded_pack['pack_sha256']})"
+        )
+    return {"freeze": record, "files": files, "tree_sha256": tree_sha}
+
+
+def rebuild_frozen(files: list[tuple[str, bytes]]) -> str:
+    """Rebuild the frozen sources in a fresh directory, from nothing."""
+    workdir = tempfile.mkdtemp(prefix="cnp0-eval-", dir=os.path.expanduser("~"))
+    for rel, data in files:
+        dest = os.path.join(workdir, rel)
+        os.makedirs(os.path.dirname(dest), exist_ok=True)
+        with open(dest, "wb") as fh:
+            fh.write(data)
+    tree.assert_no_build_hooks(workdir)
+    if not sandbox.mount_is_visible(workdir):
+        raise SystemExit(
+            f"refusing: {workdir} is not visible inside the sandbox, so a build "
+            "failure here would be the harness's fault"
+        )
+    code, out = sandbox.cargo(workdir, "build")
+    if code != 0:
+        shutil.rmtree(workdir, ignore_errors=True)
+        raise SystemExit(
+            f"the frozen candidate does not build from a clean tree:\n{out[-4000:]}"
+        )
+    return workdir
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--workdir", required=True)
     ap.add_argument("--heldout", help="an additional manifest of held-out cases")
     ap.add_argument("--out", default="provenance/evaluation")
     args = ap.parse_args()
 
-    workdir = sandbox.preflight(args.workdir)
+    pre = preconditions()
+    workdir = rebuild_frozen(pre["files"])
+    print(f"rebuilt the frozen tree ({pre['tree_sha256'][:12]}…) in {workdir}")
+
     cases = load_cases(args.heldout)
     enc = run_subcommand(workdir, "encode", cases)
     ver = run_subcommand(workdir, "verify", cases)
@@ -253,7 +332,9 @@ def main() -> int:
             assert acc["canonical"] not in text, f"leak: canonical bytes of {c['id']}"
     open(os.path.join(outdir, "feedback.json"), "w").write(text + "\n")
 
+    shutil.rmtree(workdir, ignore_errors=True)
     print(f"scored {len(cases)} encode-kind case(s) in the sandbox")
+    print(f"  frozen tree     {pre['tree_sha256']}")
     for k, v in counts.items():
         print(f"  {k.replace('_', ' '):26}{v}")
     print(f"  proctor report  {os.path.relpath(outdir, HERE)}/proctor-report.json")

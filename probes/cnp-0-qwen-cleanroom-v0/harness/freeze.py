@@ -30,51 +30,28 @@ import shutil
 import sys
 import time
 
+import pack as packmod
+import tree
+
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEST = os.path.join(HERE, "candidate")
 FREEZE_JSON = os.path.join(HERE, "provenance", "freeze.json")
-
-ALLOWED_NAMES = {"Cargo.toml", "Cargo.lock", "NOTES.md", "README.md"}
-ALLOWED_SUFFIX = ".rs"
-MAX_FILE_BYTES = 1_000_000
-MAX_FILES = 64
-
 
 def sha(b: bytes) -> str:
     return hashlib.sha256(b).hexdigest()
 
 
-def collect(workdir: str) -> list[tuple[str, bytes]]:
-    """Every admissible source file, refusing anything surprising rather than skipping it."""
-    out: list[tuple[str, bytes]] = []
-    for root, dirs, names in os.walk(workdir):
-        dirs[:] = [d for d in dirs if d not in ("target", ".cargo", ".git")]
-        for name in sorted(names):
-            full = os.path.join(root, name)
-            rel = os.path.relpath(full, workdir)
-            if os.path.islink(full):
-                raise SystemExit(
-                    f"refusing: {rel} is a symlink. A frozen tree must be its own bytes."
-                )
-            admissible = name in ALLOWED_NAMES or (
-                name.endswith(ALLOWED_SUFFIX) and rel.split(os.sep)[0] in ("src", "tests")
-            )
-            if not admissible:
-                raise SystemExit(
-                    f"refusing: {rel} is outside the frozen source list "
-                    f"({', '.join(sorted(ALLOWED_NAMES))}, src/**{ALLOWED_SUFFIX}, "
-                    f"tests/**{ALLOWED_SUFFIX}). Nothing is silently skipped: decide "
-                    "deliberately whether it belongs."
-                )
-            size = os.path.getsize(full)
-            if size > MAX_FILE_BYTES:
-                raise SystemExit(f"refusing: {rel} is {size} bytes, over the cap")
-            out.append((rel, open(full, "rb").read()))
-    if not out:
-        raise SystemExit(f"refusing: nothing admissible to freeze in {workdir}")
-    if len(out) > MAX_FILES:
-        raise SystemExit(f"refusing: {len(out)} files, over the cap of {MAX_FILES}")
-    return sorted(out, key=lambda kv: kv[0])
+def assert_pack_is_current() -> str:
+    recorded = json.load(open(os.path.join(HERE, "provenance", "pack.json")))
+    current = packmod.build()
+    if current["pack_sha256"] != recorded["pack_sha256"]:
+        raise SystemExit(
+            "the capsule has changed since the pack was pinned; a freeze must "
+            "record the candidate against the capsule it was actually given:\n"
+            f"  pinned  {recorded['pack_sha256']}\n"
+            f"  current {current['pack_sha256']}"
+        )
+    return current["pack_sha256"]
 
 
 def main() -> int:
@@ -91,25 +68,26 @@ def main() -> int:
             "candidate, give it its own probe directory."
         )
 
-    files = collect(workdir)
+    pack_sha = assert_pack_is_current()
+    tree.assert_no_build_hooks(workdir)
+    try:
+        files = tree.collect(workdir)
+    except tree.TreeError as exc:
+        raise SystemExit(f"refusing: {exc}")
+    tree_sha, manifest = tree.digest(files)
 
-    joined = b""
-    manifest: dict[str, dict] = {}
     for rel, data in files:
-        joined += rel.encode("utf-8") + b"\n" + str(len(data)).encode() + b"\n" + data
-        manifest[rel] = {"bytes": len(data), "sha256": sha(data)}
         dst = os.path.join(DEST, rel)
         os.makedirs(os.path.dirname(dst), exist_ok=True)
         with open(dst, "wb") as fh:
             fh.write(data)
 
-    pack = json.load(open(os.path.join(HERE, "provenance", "pack.json")))
     record = {
         "frozen": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "workdir": workdir,
-        "pack_sha256": pack["pack_sha256"],
+        "pack_sha256": pack_sha,
         "files": manifest,
-        "tree_sha256": sha(joined),
+        "tree_sha256": tree_sha,
         "tree_digest_construction": "sha256 over `path\\n length\\n bytes` per file, sorted by path",
         "corpus_seen": False,
         "note": "Frozen before the corpus was run. Later revisions are informed by "

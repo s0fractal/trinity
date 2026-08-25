@@ -90,11 +90,11 @@ why it is allowed to:
 ## The protocol
 
 ```sh
-python3 harness/build_capsule.py --check                # the capsule is still verbatim
-python3 harness/pack.py --write                         # pin what may be shown
-python3 harness/round.py --workdir ~/cnp0-cleanroom      # rounds 1..3
-python3 harness/freeze.py --workdir ~/cnp0-cleanroom     # then commit, on its own
-python3 harness/evaluate.py --workdir ~/cnp0-cleanroom   # only after the freeze
+python3 harness/build_capsule.py --check               # the capsule is still verbatim
+python3 harness/pack.py --write                        # pin what may be shown
+python3 harness/round.py --workdir ~/cnp0-cleanroom     # rounds 1..3, no more
+python3 harness/freeze.py --workdir ~/cnp0-cleanroom    # then commit, on its own
+python3 harness/evaluate.py                            # scores the frozen tree only
 ```
 
 ### Isolation
@@ -120,6 +120,43 @@ only configured paths and mounts an unshared one as an **empty** directory, whic
 produced "could not find Cargo.toml" — a harness fault that a careless proctor
 would feed back to the model as its own compile error.
 
+### The tree is a closed list
+
+`harness/tree.py` holds it once, so `round.py` and `freeze.py` cannot disagree —
+they used to: round accepted any relative path, freeze silently skipped
+`.cargo`, so a `build.rs` or a `.cargo/config.toml` could shape the build and
+never reach the frozen tree.
+
+Allowed: `Cargo.toml`, optionally `Cargo.lock`, `NOTES.md`/`README.md`, and
+`src/**/*.rs`, `tests/**/*.rs`. **Hard refusal** for `build.rs`, `.cargo/**`, a
+path that escapes the directory, and a `FILE:` block emitted twice for one path
+— two blocks mean the last one silently wins and which was meant is unknowable.
+Nothing is skipped: a skipped file is one nobody records. Before any build, the
+tree is checked again for build hooks whoever created them.
+
+### The budget is three rounds, and it ends
+
+Exactly three pre-freeze rounds. After the first `compiles=true` the only next
+step is the freeze — a further prompt round would be tuning the candidate before
+it is pinned. After a freeze, `round.py` refuses entirely.
+
+If the third round does not compile, an outcome is recorded, once and
+immutably:
+
+> INCONCLUSIVE: no compiling candidate within the agreed three-round
+> model/capsule/tooling budget; not evidence of RFC failure
+
+That wording is deliberate. Nothing compiling inside a fixed budget says
+something about the budget, the model, and the capsule — not about whether the
+specification determines its bytes.
+
+### The pack is re-derived, not trusted
+
+Before every round and every freeze the capsule is re-hashed and compared with
+`pack.json`. The prompt was built from the live files while the digest came from
+the pin, and nothing compared them, so a future run could have recorded a pin
+that described a pack it never sent.
+
 ### The feedback channel is closed, not merely narrow
 
 Before the freeze the prompt is the pinned pack plus **the previous round's
@@ -144,20 +181,36 @@ checked against the recorded one before a round is attributed to that model.
 
 ### Scoring is strict
 
-`evaluate.py` runs the candidate **in the sandbox** and validates the protocol
-before scoring: exit status, one output line per input in order, no duplicate or
-unknown ids, a schema per record — and for `verify`, that the returned digest is
-the digest of the input bytes. An earlier version counted any `ok: true` as
-correct there, which is the most flattering possible bug.
+`evaluate.py` scores **the frozen tree, rebuilt clean**, never a working
+directory: it requires `freeze.json`, re-digests `candidate/` against it, checks
+the pack still matches the one the freeze was taken under, rebuilds from nothing
+in a fresh directory, and runs the binary with the mount **read-only**. An
+earlier version took a `--workdir` and scored whatever was in it, so a candidate
+edited after seeing the corpus could have been presented as the clean-room
+result.
+
+The protocol is validated before anything is scored: exit status, one output
+line per input in order, no duplicate or unknown ids, a schema per record — and
+for `verify`, that the returned digest is the digest of the input bytes. An
+earlier version counted any `ok: true` as correct there, which is the most
+flattering possible bug.
 
 ### Negative controls, wired into `./t check`
 
 `harness/selftest.py` (and `ts/harness_test.ts`, in `deno task test:unit`) makes
-each guard refuse on demand: a wrong `verify` digest, an encode digest that is
-not of its own bytes, an out-of-order id, a rejection with no category, an empty
-scope, an arbitrary feedback file, a second freeze, a symlink in the frozen tree,
-an edited quotation, a pack naming an implementation, a workdir inside Trinity,
-and the isolation itself. Tier-2 controls need Docker; where it is absent they
+each guard refuse on demand — **24 controls**: a wrong `verify` digest, an encode
+digest that is not of its own bytes, an out-of-order id, a rejection with no
+category, an empty scope, an arbitrary feedback file, a second freeze, a symlink
+in the frozen tree, an edited quotation, a pack naming an implementation, a
+workdir inside Trinity, a `build.rs`, a `.cargo/config.toml`, a duplicated
+`FILE:` block, a path escape, a stale pack at round and at freeze, a round after
+something compiled, a round after the freeze, a fourth round, scoring without a
+freeze, scoring a tree that no longer matches the freeze, and the isolation
+itself.
+
+The protocol refusals run **before** the sandbox is touched, on purpose: a budget
+check that only works where Docker is installed is one that silently stops being
+enforced. Tier-2 controls need Docker; where it is absent they
 report **SKIPPED**, and a skipped control is never counted as a pass.
 
 ## Scope of the score

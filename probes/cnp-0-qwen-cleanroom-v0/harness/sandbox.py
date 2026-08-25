@@ -28,6 +28,7 @@ change silently is not reproducible.
 from __future__ import annotations
 
 import os
+import secrets
 import shutil
 import subprocess
 
@@ -76,7 +77,8 @@ def preflight(workdir: str) -> str:
     return real
 
 
-def docker_argv(workdir: str, argv: list[str]) -> list[str]:
+def docker_argv(workdir: str, argv: list[str], read_only_mount: bool = False) -> list[str]:
+    mount = f"{workdir}:/work" + (":ro" if read_only_mount else "")
     return [
         "docker", "run", "--rm",
         "--network", "none",
@@ -86,7 +88,7 @@ def docker_argv(workdir: str, argv: list[str]) -> list[str]:
         "--tmpfs", "/tmp:rw,noexec,nosuid,size=256m",
         "--memory", "2g",
         "--pids-limit", "256",
-        "-v", f"{workdir}:/work",
+        "-v", mount,
         "-w", "/work",
         "-e", "CARGO_HOME=/work/.cargo",
         "-e", "CARGO_TARGET_DIR=/work/target",
@@ -100,10 +102,11 @@ def run(
     argv: list[str],
     stdin: str | None = None,
     timeout_s: int = DEFAULT_TIMEOUT_S,
+    read_only_mount: bool = False,
 ) -> tuple[int, str]:
     """Run argv inside the sandbox. Returns (exit code, combined output)."""
     real = preflight(workdir)
-    cmd = docker_argv(real, argv)
+    cmd = docker_argv(real, argv, read_only_mount=read_only_mount)
     try:
         proc = subprocess.run(
             cmd, input=stdin or "", capture_output=True, text=True, timeout=timeout_s,
@@ -138,19 +141,34 @@ def cargo(workdir: str, sub: str, timeout_s: int = DEFAULT_TIMEOUT_S) -> tuple[i
 
 
 def mount_is_visible(workdir: str) -> bool:
-    """Does the mount actually carry the project?
+    """Is THIS host directory the one the container sees?
 
-    Docker Desktop shares only configured paths; an unshared path mounts as an
-    EMPTY directory rather than failing. That produced "could not find
-    Cargo.toml", which a careless harness would feed back to the model as its
-    own compile error. Checked rather than assumed.
+    The first version compared a directory listing, which answers a weaker
+    question: any mount whose names happened to overlap would satisfy it, and it
+    could not tell a stale mount from the live one. This writes a fresh random
+    nonce on the host and reads it back inside the container, so the only way to
+    pass is for the bytes just written here to be visible there.
+
+    Docker Desktop shares only configured paths and mounts an unshared one as an
+    EMPTY directory rather than failing, which produced "could not find
+    Cargo.toml" — a harness fault a careless proctor would report as the model's
+    compile error.
     """
-    code, out = run(workdir, ["sh", "-c", "ls -A /work | head -50"], timeout_s=60)
-    if code != 0:
-        return False
-    listed = {line.strip() for line in out.splitlines() if line.strip()}
-    on_host = {e for e in os.listdir(os.path.expanduser(workdir))}
-    return bool(on_host) and bool(listed & on_host)
+    real = os.path.realpath(os.path.expanduser(workdir))
+    nonce = secrets.token_hex(16)
+    name = f".mount-probe-{secrets.token_hex(4)}"
+    path = os.path.join(real, name)
+    try:
+        with open(path, "w", encoding="utf-8") as fh:
+            fh.write(nonce)
+        code, out = run(real, ["sh", "-c", f"cat /work/{name} 2>/dev/null"], timeout_s=60)
+        return code == 0 and nonce in out
+    finally:
+        # The probe must not survive into a build or a freeze.
+        try:
+            os.remove(path)
+        except FileNotFoundError:
+            pass
 
 
 if __name__ == "__main__":

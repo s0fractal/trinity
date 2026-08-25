@@ -32,6 +32,7 @@ sys.path.insert(0, os.path.join(HERE, "harness"))
 
 import sandbox  # noqa: E402
 import evaluate  # noqa: E402
+import tree  # noqa: E402
 
 RESULTS: list[dict] = []
 
@@ -54,6 +55,24 @@ def expect_raises(name, tier, fn, needle):
 
 
 # ---------------------------------------------------------------- tier 1
+
+def _fake_probe(tmp: str, with_capsule: bool = False) -> str:
+    """A probe directory with the harness and its pins, for exercising refusals."""
+    probe = os.path.join(tmp, "probe")
+    os.makedirs(os.path.join(probe, "provenance"), exist_ok=True)
+    shutil.copytree(os.path.join(HERE, "harness"), os.path.join(probe, "harness"))
+    shutil.copytree(os.path.join(HERE, "capsule"), os.path.join(probe, "capsule"))
+    shutil.copy2(os.path.join(HERE, "provenance", "pack.json"),
+                 os.path.join(probe, "provenance", "pack.json"))
+    return probe
+
+
+def _run(probe: str, script: str, *args: str) -> subprocess.CompletedProcess:
+    return subprocess.run(
+        [sys.executable, os.path.join(probe, "harness", script), *args],
+        capture_output=True, text=True,
+    )
+
 
 def t_wrong_verify_digest():
     """`verify` accepting with a digest that is not of the input must be caught."""
@@ -117,44 +136,41 @@ def t_arbitrary_feedback():
 def t_freeze_once():
     """A second freeze must refuse rather than overwrite the one checkpoint."""
     with tempfile.TemporaryDirectory() as tmp:
-        probe = os.path.join(tmp, "probe")
-        os.makedirs(os.path.join(probe, "provenance"))
-        shutil.copytree(os.path.join(HERE, "harness"), os.path.join(probe, "harness"))
-        shutil.copy2(os.path.join(HERE, "provenance", "pack.json"),
-                     os.path.join(probe, "provenance", "pack.json"))
-        work = os.path.join(tmp, "work", "src")
-        os.makedirs(work)
-        open(os.path.join(tmp, "work", "Cargo.toml"), "w").write("[package]\n")
-        open(os.path.join(work, "main.rs"), "w").write("fn main(){}\n")
-        args = [sys.executable, os.path.join(probe, "harness", "freeze.py"),
-                "--workdir", os.path.join(tmp, "work")]
-        first = subprocess.run(args, capture_output=True, text=True)
-        second = subprocess.run(args, capture_output=True, text=True)
-        ok = first.returncode == 0 and second.returncode != 0 and \
-            "already exists" in (second.stdout + second.stderr)
-        record("freeze-once", 1, ok,
-               "second freeze refused" if ok
-               else f"first={first.returncode} second={second.returncode}: "
-                    f"{(second.stdout + second.stderr)[-200:]}")
+        probe = _fake_probe(tmp)
+        work = os.path.expanduser("~/cnp0-selftest-freeze")
+        shutil.rmtree(work, ignore_errors=True)
+        os.makedirs(os.path.join(work, "src"))
+        open(os.path.join(work, "Cargo.toml"), "w").write("[package]\n")
+        open(os.path.join(work, "src", "main.rs"), "w").write("fn main(){}\n")
+        try:
+            first = _run(probe, "freeze.py", "--workdir", work)
+            second = _run(probe, "freeze.py", "--workdir", work)
+            ok = first.returncode == 0 and second.returncode != 0 and \
+                "already exists" in (second.stdout + second.stderr)
+            record("freeze-once", 1, ok,
+                   "second freeze refused" if ok
+                   else f"first={first.returncode} second={second.returncode}: "
+                        f"{(first.stdout + first.stderr + second.stdout + second.stderr)[-200:]}")
+        finally:
+            shutil.rmtree(work, ignore_errors=True)
 
 
 def t_freeze_rejects_symlink():
     with tempfile.TemporaryDirectory() as tmp:
-        probe = os.path.join(tmp, "probe")
-        os.makedirs(os.path.join(probe, "provenance"))
-        shutil.copytree(os.path.join(HERE, "harness"), os.path.join(probe, "harness"))
-        shutil.copy2(os.path.join(HERE, "provenance", "pack.json"),
-                     os.path.join(probe, "provenance", "pack.json"))
-        work = os.path.join(tmp, "work")
+        probe = _fake_probe(tmp)
+        work = os.path.expanduser("~/cnp0-selftest-symlink")
+        shutil.rmtree(work, ignore_errors=True)
         os.makedirs(os.path.join(work, "src"))
         open(os.path.join(work, "Cargo.toml"), "w").write("[package]\n")
         os.symlink("/etc/hosts", os.path.join(work, "src", "sneaky.rs"))
-        proc = subprocess.run(
-            [sys.executable, os.path.join(probe, "harness", "freeze.py"),
-             "--workdir", work], capture_output=True, text=True)
-        ok = proc.returncode != 0 and "symlink" in (proc.stdout + proc.stderr)
-        record("freeze-rejects-symlink", 1, ok,
-               "refused a symlink" if ok else (proc.stdout + proc.stderr)[-200:])
+        try:
+            proc = _run(probe, "freeze.py", "--workdir", work)
+            blob = proc.stdout + proc.stderr
+            ok = proc.returncode != 0 and "symlink" in blob
+            record("freeze-rejects-symlink", 1, ok,
+                   "refused a symlink" if ok else blob[-200:])
+        finally:
+            shutil.rmtree(work, ignore_errors=True)
 
 
 def t_capsule_verbatim():
@@ -206,6 +222,114 @@ def t_workdir_inside_trinity():
                   "inside the Trinity checkout")
 
 
+def t_tree_refuses_build_script():
+    expect_raises("tree-refuses-build-script", 1,
+                  lambda: tree.check_emitted(["Cargo.toml", "build.rs"]),
+                  "build script")
+
+
+def t_tree_refuses_cargo_config():
+    expect_raises("tree-refuses-cargo-config", 1,
+                  lambda: tree.check_emitted(["Cargo.toml", ".cargo/config.toml"]),
+                  "configures cargo")
+
+
+def t_tree_refuses_duplicate_block():
+    expect_raises("tree-refuses-duplicate-file", 1,
+                  lambda: tree.check_emitted(["Cargo.toml", "src/main.rs", "src/main.rs"]),
+                  "more than once")
+
+
+def t_tree_refuses_escape():
+    expect_raises("tree-refuses-path-escape", 1,
+                  lambda: tree.check_emitted(["Cargo.toml", "../outside.rs"]),
+                  "escapes the working directory")
+
+
+def t_stale_pack_refused():
+    """A capsule edited after pinning must stop both round and freeze."""
+    with tempfile.TemporaryDirectory() as tmp:
+        probe = _fake_probe(tmp)
+        with open(os.path.join(probe, "capsule", "TASK.md"), "a", encoding="utf-8") as fh:
+            fh.write("\nan edit made after the pin\n")
+        r = _run(probe, "round.py", "--workdir", os.path.expanduser("~/cnp0-selftest-workdir"), "--dry-run")
+        f = _run(probe, "freeze.py", "--workdir", os.path.expanduser("~/cnp0-selftest-workdir"))
+        blob = r.stdout + r.stderr + f.stdout + f.stderr
+        ok = r.returncode != 0 and f.returncode != 0 and "since the pack was pinned" in blob
+        record("stale-pack-refused", 1, ok,
+               "both refused a stale pack" if ok else blob[-200:])
+
+
+def t_no_round_after_compile():
+    with tempfile.TemporaryDirectory() as tmp:
+        probe = _fake_probe(tmp)
+        tdir = os.path.join(probe, "provenance", "transcript")
+        os.makedirs(tdir)
+        json.dump({"round": 1, "compiles": True},
+                  open(os.path.join(tdir, "round-01.json"), "w"))
+        r = _run(probe, "round.py", "--workdir", os.path.expanduser("~/cnp0-selftest-workdir"), "--dry-run")
+        blob = r.stdout + r.stderr
+        ok = r.returncode != 0 and "only next step is the freeze" in blob
+        record("no-round-after-compile", 1, ok,
+               "refused a further round once something compiled" if ok else blob[-200:])
+
+
+def t_no_round_after_freeze():
+    with tempfile.TemporaryDirectory() as tmp:
+        probe = _fake_probe(tmp)
+        json.dump({"tree_sha256": "x"},
+                  open(os.path.join(probe, "provenance", "freeze.json"), "w"))
+        r = _run(probe, "round.py", "--workdir", os.path.expanduser("~/cnp0-selftest-workdir"), "--dry-run")
+        blob = r.stdout + r.stderr
+        ok = r.returncode != 0 and "a freeze exists" in blob
+        record("no-round-after-freeze", 1, ok,
+               "refused a round after the freeze" if ok else blob[-200:])
+
+
+def t_no_fourth_round():
+    with tempfile.TemporaryDirectory() as tmp:
+        probe = _fake_probe(tmp)
+        tdir = os.path.join(probe, "provenance", "transcript")
+        os.makedirs(tdir)
+        for i in (1, 2, 3):
+            json.dump({"round": i, "compiles": False},
+                      open(os.path.join(tdir, f"round-{i:02d}.json"), "w"))
+            os.makedirs(os.path.join(tdir, f"round-{i:02d}"), exist_ok=True)
+            open(os.path.join(tdir, f"round-{i:02d}", "cargo.txt"), "w").write("err\n")
+        r = _run(probe, "round.py", "--workdir", os.path.expanduser("~/cnp0-selftest-workdir"), "--dry-run")
+        blob = r.stdout + r.stderr
+        ok = r.returncode != 0 and "no fourth round" in blob
+        record("no-fourth-round", 1, ok,
+               "refused a fourth round" if ok else blob[-200:])
+
+
+def t_evaluate_requires_freeze():
+    with tempfile.TemporaryDirectory() as tmp:
+        probe = _fake_probe(tmp)
+        r = _run(probe, "evaluate.py")
+        blob = r.stdout + r.stderr
+        ok = r.returncode != 0 and "there is no freeze" in blob
+        record("evaluate-requires-freeze", 1, ok,
+               "refused to score without a freeze" if ok else blob[-200:])
+
+
+def t_evaluate_detects_tampered_tree():
+    with tempfile.TemporaryDirectory() as tmp:
+        probe = _fake_probe(tmp)
+        cand = os.path.join(probe, "candidate", "src")
+        os.makedirs(cand)
+        open(os.path.join(probe, "candidate", "Cargo.toml"), "w").write("[package]\n")
+        open(os.path.join(cand, "main.rs"), "w").write("fn main(){}\n")
+        pack = json.load(open(os.path.join(probe, "provenance", "pack.json")))
+        json.dump({"tree_sha256": "0" * 64, "pack_sha256": pack["pack_sha256"]},
+                  open(os.path.join(probe, "provenance", "freeze.json"), "w"))
+        r = _run(probe, "evaluate.py")
+        blob = r.stdout + r.stderr
+        ok = r.returncode != 0 and "has changed since it was frozen" in blob
+        record("evaluate-detects-tampered-tree", 1, ok,
+               "refused a tree that no longer matches the freeze" if ok else blob[-200:])
+
+
 # ---------------------------------------------------------------- tier 2
 
 def docker_available() -> tuple[bool, str]:
@@ -242,7 +366,11 @@ def main() -> int:
                t_rejection_without_category, t_empty_scope, t_arbitrary_feedback,
                t_freeze_once, t_freeze_rejects_symlink, t_capsule_verbatim,
                t_stale_capsule_detected, t_pack_leak_check, t_workdir_inside_trinity,
-               t_sandbox_isolation):
+               t_tree_refuses_build_script, t_tree_refuses_cargo_config,
+               t_tree_refuses_duplicate_block, t_tree_refuses_escape,
+               t_stale_pack_refused, t_no_round_after_compile, t_no_round_after_freeze,
+               t_no_fourth_round, t_evaluate_requires_freeze,
+               t_evaluate_detects_tampered_tree, t_sandbox_isolation):
         fn()
 
     failed = [r for r in RESULTS if not r["ok"] and not r["skipped"]]

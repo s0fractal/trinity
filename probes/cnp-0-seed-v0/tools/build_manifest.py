@@ -116,7 +116,7 @@ negative("c1-signed-zero", 1, "§5.1.2(2)", "negative zero spelling",
 # Category 2 — ratios and the rejections named in §5.1.3(2)
 # --------------------------------------------------------------------------
 C2 = "§5.1.3(2)"
-ratio = lambda n, d: {"kind": "ratio", "num": n, "den": d}  # noqa: E731
+ratio = lambda n, d: {"cnp0": "ratio", "num": n, "den": d}  # noqa: E731
 positive("c2-ratio-third", 2, C2, "one third", env(v=ratio(1, 3)))
 positive("c2-ratio-neg-third", 2, C2, "minus one third; sign lives in num",
          env(v=ratio(-1, 3)))
@@ -131,7 +131,7 @@ negative("c2-ratio-zero-den", 2, C2, "zero denominator",
          serialize(env(v=ratio(1, 0))), "ratio-non-positive-denominator")
 negative("c2-ratio-overflow", 2, C2, "ratio component outside the integer range",
          '{"canonical_encoding":"hsp-jcs@v0","numeric_profile":"cnp-0",'
-         '"v":{"den":3,"kind":"ratio","num":9007199254740992}}',
+         '"v":{"cnp0":"ratio","den":3,"num":9007199254740992}}',
          "integer-out-of-range")
 negative("c2-float", 2, C2, "float literal",
          '{"canonical_encoding":"hsp-jcs@v0","numeric_profile":"cnp-0","v":0.5}',
@@ -142,13 +142,28 @@ negative("c2-exponent", 2, C2, "exponent notation",
 negative("c2-decimal-integer", 2, C2, "integral value written with a fraction part",
          '{"canonical_encoding":"hsp-jcs@v0","numeric_profile":"cnp-0","v":1.0}',
          "number-not-cnp0-integer")
+positive("c2-kind-ratio-is-an-ordinary-map", 2, "§5.1.2.1",
+         "a map with kind:\"ratio\" is an ordinary map, unreduced and all: the "
+         "profile reserves cnp0, not kind",
+         env(v={"kind": "ratio", "num": 2, "den": 4}))
+negative("c2-cnp0-unknown-tag", 2, "§5.1.2.1",
+         "the reserved member with an unrecognized value is rejected, not read "
+         "as an ordinary map",
+         '{"canonical_encoding":"hsp-jcs@v0","numeric_profile":"cnp-0",'
+         '"v":{"cnp0":"decimal","value":1}}',
+         "tagged-form-invalid")
+negative("c6-cnp0-extra-member", 2, "§5.1.2.1",
+         "a tagged form with a member the form does not define",
+         '{"canonical_encoding":"hsp-jcs@v0","numeric_profile":"cnp-0",'
+         '"v":{"cnp0":"ratio","den":3,"note":"x","num":1}}',
+         "tagged-form-invalid")
 negative("c2-duplicate-root", 2, C2, "duplicate member name at the root",
          '{"canonical_encoding":"hsp-jcs@v0","numeric_profile":"cnp-0",'
          '"numeric_profile":"cnp-0","v":1}',
          "duplicate-member-name")
 negative("c2-duplicate-nested", 2, C2, "duplicate member name nested inside a ratio",
          '{"canonical_encoding":"hsp-jcs@v0","numeric_profile":"cnp-0",'
-         '"v":{"den":3,"kind":"ratio","num":1,"num":2}}',
+         '"v":{"cnp0":"ratio","den":3,"num":1,"num":2}}',
          "duplicate-member-name")
 
 # --------------------------------------------------------------------------
@@ -174,16 +189,16 @@ positive("c3-scale-10e3", 3, "§5.1.2.2", "scale descriptor radix 10 places 3",
          s3, group="scale-descriptors")
 positive("c3-point-at-10e6", 3, C3,
          "value 1500000 bound to the places-6 domain: 1.5",
-         env(point={"kind": "fixed", "value": 1500000}, scale_ref=s6_digest),
+         env(point={"cnp0": "fixed", "value": 1500000}, scale_ref=s6_digest),
          group="same-integer-two-domains")
 positive("c3-point-at-10e3", 3, C3,
          "the same integer bound to the places-3 domain: 1500.0",
-         env(point={"kind": "fixed", "value": 1500000}, scale_ref=s3_digest),
+         env(point={"cnp0": "fixed", "value": 1500000}, scale_ref=s3_digest),
          group="same-integer-two-domains")
 negative("c3-scale-in-value", 3, "§5.1.2.2",
          "a fixed value repeating its own scale is a second source of truth",
          '{"canonical_encoding":"hsp-jcs@v0","numeric_profile":"cnp-0",'
-         '"point":{"kind":"fixed","scale":6,"value":1500000}}',
+         '"point":{"cnp0":"fixed","scale":6,"value":1500000}}',
          "fixed-scale-in-value")
 other("c3-scale-radix-three", 3, "§5.1.2.2", "radix must be 2 or 10",
       "scale", descriptor=scale(3, 6), expect={"reject": "scale-descriptor-invalid"})
@@ -227,9 +242,9 @@ other("c4-ratio-simplex-negative", 4, C4, "negative ratio component",
       expect={"reject": "simplex-negative-weight"})
 positive("c4-fixed-simplex", 4, C4, "exact fixed-point simplex at places 6",
          env(scale_ref=s6_digest, simplex=[
-             {"kind": "fixed", "value": 500000},
-             {"kind": "fixed", "value": 300000},
-             {"kind": "fixed", "value": 200000},
+             {"cnp0": "fixed", "value": 500000},
+             {"cnp0": "fixed", "value": 300000},
+             {"cnp0": "fixed", "value": 200000},
          ]))
 other("c4-fixed-simplex-ok", 4, C4, "fixed simplex sums to radix^places",
       "fixed-simplex", weights=[500000, 300000, 200000], total=10**6,
@@ -310,23 +325,23 @@ positive("c5-pinned-constant-mutated", 5, C5,
 # --------------------------------------------------------------------------
 C6 = "§5.1.3(6)"
 positive("c6-bytes", 6, C6, "byte projection",
-         env(b={"kind": "bytes", "hex": "00ff10"}))
+         env(b={"cnp0": "bytes", "hex": "00ff10"}))
 positive("c6-bytes-empty", 6, C6, "empty byte string",
-         env(b={"kind": "bytes", "hex": ""}))
+         env(b={"cnp0": "bytes", "hex": ""}))
 negative("c6-bytes-uppercase", 6, C6, "uppercase hex is rejected, not normalized",
-         '{"b":{"hex":"00FF","kind":"bytes"},"canonical_encoding":"hsp-jcs@v0",'
+         '{"b":{"cnp0":"bytes","hex":"00FF"},"canonical_encoding":"hsp-jcs@v0",'
          '"numeric_profile":"cnp-0"}',
          "bytes-hex-invalid")
 negative("c6-bytes-odd-length", 6, C6, "odd-length hex",
-         '{"b":{"hex":"0f0","kind":"bytes"},"canonical_encoding":"hsp-jcs@v0",'
+         '{"b":{"cnp0":"bytes","hex":"0f0"},"canonical_encoding":"hsp-jcs@v0",'
          '"numeric_profile":"cnp-0"}',
          "bytes-hex-invalid")
 negative("c6-bytes-non-hex", 6, C6, "non-hexadecimal content",
-         '{"b":{"hex":"zz","kind":"bytes"},"canonical_encoding":"hsp-jcs@v0",'
+         '{"b":{"cnp0":"bytes","hex":"zz"},"canonical_encoding":"hsp-jcs@v0",'
          '"numeric_profile":"cnp-0"}',
          "bytes-hex-invalid")
 negative("c6-bytes-length-member", 6, C6, "length is derived and must not be repeated",
-         '{"b":{"hex":"00ff","kind":"bytes","len":2},'
+         '{"b":{"cnp0":"bytes","hex":"00ff","len":2},'
          '"canonical_encoding":"hsp-jcs@v0","numeric_profile":"cnp-0"}',
          "tagged-form-invalid")
 positive("c6-string-nfc", 6, C6, "precomposed e-acute (U+00E9)",

@@ -163,11 +163,11 @@
       "clause": "§5.1.3(2)",
       "title": "one third",
       "kind": "encode",
-      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"den\":3,\"kind\":\"ratio\",\"num\":1}}",
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"cnp0\":\"ratio\",\"den\":3,\"num\":1}}",
       "encoder": {
         "accept": {
-          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"den\":3,\"kind\":\"ratio\",\"num\":1}}",
-          "sha256": "dae8748f1d1709bf2c57861b5125b0b7c50fa521102eb550e13d225910470b34"
+          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"cnp0\":\"ratio\",\"den\":3,\"num\":1}}",
+          "sha256": "e1a7693f9fa64079b0c5e07ebc93fcb1cc8e18800a925b1260300fa0096c5b31"
         }
       },
       "verifier": "accept"
@@ -178,11 +178,11 @@
       "clause": "§5.1.3(2)",
       "title": "minus one third; sign lives in num",
       "kind": "encode",
-      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"den\":3,\"kind\":\"ratio\",\"num\":-1}}",
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"cnp0\":\"ratio\",\"den\":3,\"num\":-1}}",
       "encoder": {
         "accept": {
-          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"den\":3,\"kind\":\"ratio\",\"num\":-1}}",
-          "sha256": "d183e1c7d065013d40f19f9f3ad90ddce7fcd329c117c6d2d55794057932465a"
+          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"cnp0\":\"ratio\",\"den\":3,\"num\":-1}}",
+          "sha256": "69809902025f3709cafdc51e618cba3141f8957eb8fe0e3a092b17451625d9ac"
         }
       },
       "verifier": "accept"
@@ -193,11 +193,11 @@
       "clause": "§5.1.3(2)",
       "title": "canonical zero is 0/1",
       "kind": "encode",
-      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"den\":1,\"kind\":\"ratio\",\"num\":0}}",
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"cnp0\":\"ratio\",\"den\":1,\"num\":0}}",
       "encoder": {
         "accept": {
-          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"den\":1,\"kind\":\"ratio\",\"num\":0}}",
-          "sha256": "d7c7dea131dfbe3da72ce1d5d3071c594f7bd034391fc7cc498e73258e922e9d"
+          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"cnp0\":\"ratio\",\"den\":1,\"num\":0}}",
+          "sha256": "f8e5a5ac2d3984d368541fbca06b4273429408e5c5b58e304dd6c5aa23cf1bea"
         }
       },
       "verifier": "accept"
@@ -214,7 +214,7 @@
       "verifier": {
         "reject": "ratio-not-reduced"
       },
-      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"den\":4,\"kind\":\"ratio\",\"num\":2}}"
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"cnp0\":\"ratio\",\"den\":4,\"num\":2}}"
     },
     {
       "id": "c2-ratio-zero-den-two",
@@ -228,7 +228,7 @@
       "verifier": {
         "reject": "ratio-zero-not-canonical"
       },
-      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"den\":2,\"kind\":\"ratio\",\"num\":0}}"
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"cnp0\":\"ratio\",\"den\":2,\"num\":0}}"
     },
     {
       "id": "c2-ratio-negative-den",
@@ -242,7 +242,7 @@
       "verifier": {
         "reject": "ratio-non-positive-denominator"
       },
-      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"den\":-3,\"kind\":\"ratio\",\"num\":1}}"
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"cnp0\":\"ratio\",\"den\":-3,\"num\":1}}"
     },
     {
       "id": "c2-ratio-zero-den",
@@ -256,7 +256,7 @@
       "verifier": {
         "reject": "ratio-non-positive-denominator"
       },
-      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"den\":0,\"kind\":\"ratio\",\"num\":1}}"
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"cnp0\":\"ratio\",\"den\":0,\"num\":1}}"
     },
     {
       "id": "c2-ratio-overflow",
@@ -270,7 +270,7 @@
       "verifier": {
         "reject": "integer-out-of-range"
       },
-      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"den\":3,\"kind\":\"ratio\",\"num\":9007199254740992}}"
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"cnp0\":\"ratio\",\"den\":3,\"num\":9007199254740992}}"
     },
     {
       "id": "c2-float",
@@ -315,6 +315,49 @@
       "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":1.0}"
     },
     {
+      "id": "c2-kind-ratio-is-an-ordinary-map",
+      "category": 2,
+      "clause": "§5.1.2.1",
+      "title": "a map with kind:\"ratio\" is an ordinary map, unreduced and all: the profile reserves cnp0, not kind",
+      "kind": "encode",
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"den\":4,\"kind\":\"ratio\",\"num\":2}}",
+      "encoder": {
+        "accept": {
+          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"den\":4,\"kind\":\"ratio\",\"num\":2}}",
+          "sha256": "42d1d218ead0140dc05f6d1496fdb8179c0c7972d6c2eb147529e86db1dea664"
+        }
+      },
+      "verifier": "accept"
+    },
+    {
+      "id": "c2-cnp0-unknown-tag",
+      "category": 2,
+      "clause": "§5.1.2.1",
+      "title": "the reserved member with an unrecognized value is rejected, not read as an ordinary map",
+      "kind": "encode",
+      "encoder": {
+        "reject": "tagged-form-invalid"
+      },
+      "verifier": {
+        "reject": "tagged-form-invalid"
+      },
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"cnp0\":\"decimal\",\"value\":1}}"
+    },
+    {
+      "id": "c6-cnp0-extra-member",
+      "category": 2,
+      "clause": "§5.1.2.1",
+      "title": "a tagged form with a member the form does not define",
+      "kind": "encode",
+      "encoder": {
+        "reject": "tagged-form-invalid"
+      },
+      "verifier": {
+        "reject": "tagged-form-invalid"
+      },
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"cnp0\":\"ratio\",\"den\":3,\"note\":\"x\",\"num\":1}}"
+    },
+    {
       "id": "c2-duplicate-root",
       "category": 2,
       "clause": "§5.1.3(2)",
@@ -340,7 +383,7 @@
       "verifier": {
         "reject": "duplicate-member-name"
       },
-      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"den\":3,\"kind\":\"ratio\",\"num\":1,\"num\":2}}"
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"cnp0\":\"ratio\",\"den\":3,\"num\":1,\"num\":2}}"
     },
     {
       "id": "c3-scale-10e6",
@@ -380,11 +423,11 @@
       "clause": "§5.1.3(3)",
       "title": "value 1500000 bound to the places-6 domain: 1.5",
       "kind": "encode",
-      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"point\":{\"kind\":\"fixed\",\"value\":1500000},\"scale_ref\":\"2ba1363847289f21faa2438e2b5929019979e3a5b068b130aaa0e81a3b5c878d\"}",
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"point\":{\"cnp0\":\"fixed\",\"value\":1500000},\"scale_ref\":\"2ba1363847289f21faa2438e2b5929019979e3a5b068b130aaa0e81a3b5c878d\"}",
       "encoder": {
         "accept": {
-          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"point\":{\"kind\":\"fixed\",\"value\":1500000},\"scale_ref\":\"2ba1363847289f21faa2438e2b5929019979e3a5b068b130aaa0e81a3b5c878d\"}",
-          "sha256": "09a609478912ef140af4d71d9df94e90187e9be1089eb4a08386cb0a9da6f68b"
+          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"point\":{\"cnp0\":\"fixed\",\"value\":1500000},\"scale_ref\":\"2ba1363847289f21faa2438e2b5929019979e3a5b068b130aaa0e81a3b5c878d\"}",
+          "sha256": "1b1e0f89eb72f69118880dd73e4e0d6ce573ce5f9e9e7b3c96cf00eb9d1e5f7a"
         }
       },
       "verifier": "accept",
@@ -396,11 +439,11 @@
       "clause": "§5.1.3(3)",
       "title": "the same integer bound to the places-3 domain: 1500.0",
       "kind": "encode",
-      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"point\":{\"kind\":\"fixed\",\"value\":1500000},\"scale_ref\":\"7b8d154048981e6dceba96987eccd1dc8607563c9a7cd4bd0f26730a3a726c83\"}",
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"point\":{\"cnp0\":\"fixed\",\"value\":1500000},\"scale_ref\":\"7b8d154048981e6dceba96987eccd1dc8607563c9a7cd4bd0f26730a3a726c83\"}",
       "encoder": {
         "accept": {
-          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"point\":{\"kind\":\"fixed\",\"value\":1500000},\"scale_ref\":\"7b8d154048981e6dceba96987eccd1dc8607563c9a7cd4bd0f26730a3a726c83\"}",
-          "sha256": "4f7b73fa3fc760c48d10e194bbd13ec59d44d8abc7312227ee69d1decce8a7aa"
+          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"point\":{\"cnp0\":\"fixed\",\"value\":1500000},\"scale_ref\":\"7b8d154048981e6dceba96987eccd1dc8607563c9a7cd4bd0f26730a3a726c83\"}",
+          "sha256": "edd243e752f3b7b811561cb1740ea15c2415226cc36669b494f2e84d73ff7ee2"
         }
       },
       "verifier": "accept",
@@ -418,7 +461,7 @@
       "verifier": {
         "reject": "fixed-scale-in-value"
       },
-      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"point\":{\"kind\":\"fixed\",\"scale\":6,\"value\":1500000}}"
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"point\":{\"cnp0\":\"fixed\",\"scale\":6,\"value\":1500000}}"
     },
     {
       "id": "c3-scale-radix-three",
@@ -574,11 +617,11 @@
       "clause": "§5.1.3(4)",
       "title": "exact ratio simplex 1/2 + 1/3 + 1/6",
       "kind": "encode",
-      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"simplex\":[{\"den\":2,\"kind\":\"ratio\",\"num\":1},{\"den\":3,\"kind\":\"ratio\",\"num\":1},{\"den\":6,\"kind\":\"ratio\",\"num\":1}]}",
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"simplex\":[{\"cnp0\":\"ratio\",\"den\":2,\"num\":1},{\"cnp0\":\"ratio\",\"den\":3,\"num\":1},{\"cnp0\":\"ratio\",\"den\":6,\"num\":1}]}",
       "encoder": {
         "accept": {
-          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"simplex\":[{\"den\":2,\"kind\":\"ratio\",\"num\":1},{\"den\":3,\"kind\":\"ratio\",\"num\":1},{\"den\":6,\"kind\":\"ratio\",\"num\":1}]}",
-          "sha256": "34654cdb97d2a621feb55876d8ee55e2001b72242de5ca974777ed55fcc3cc1a"
+          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"simplex\":[{\"cnp0\":\"ratio\",\"den\":2,\"num\":1},{\"cnp0\":\"ratio\",\"den\":3,\"num\":1},{\"cnp0\":\"ratio\",\"den\":6,\"num\":1}]}",
+          "sha256": "1b163e2aacbd91b5987e329df7bba07b6036cdee0cc818a4fccfa11590d56545"
         }
       },
       "verifier": "accept"
@@ -657,11 +700,11 @@
       "clause": "§5.1.3(4)",
       "title": "exact fixed-point simplex at places 6",
       "kind": "encode",
-      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"scale_ref\":\"2ba1363847289f21faa2438e2b5929019979e3a5b068b130aaa0e81a3b5c878d\",\"simplex\":[{\"kind\":\"fixed\",\"value\":500000},{\"kind\":\"fixed\",\"value\":300000},{\"kind\":\"fixed\",\"value\":200000}]}",
+      "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"scale_ref\":\"2ba1363847289f21faa2438e2b5929019979e3a5b068b130aaa0e81a3b5c878d\",\"simplex\":[{\"cnp0\":\"fixed\",\"value\":500000},{\"cnp0\":\"fixed\",\"value\":300000},{\"cnp0\":\"fixed\",\"value\":200000}]}",
       "encoder": {
         "accept": {
-          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"scale_ref\":\"2ba1363847289f21faa2438e2b5929019979e3a5b068b130aaa0e81a3b5c878d\",\"simplex\":[{\"kind\":\"fixed\",\"value\":500000},{\"kind\":\"fixed\",\"value\":300000},{\"kind\":\"fixed\",\"value\":200000}]}",
-          "sha256": "33284302bc2be94127f999b8e3f2eace10408d472de3d891f43c9f20fc93ce3a"
+          "canonical": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"scale_ref\":\"2ba1363847289f21faa2438e2b5929019979e3a5b068b130aaa0e81a3b5c878d\",\"simplex\":[{\"cnp0\":\"fixed\",\"value\":500000},{\"cnp0\":\"fixed\",\"value\":300000},{\"cnp0\":\"fixed\",\"value\":200000}]}",
+          "sha256": "01e02ab4dc0977c982318d4a37c72006e83680b0e503df4c647769c2710cb805"
         }
       },
       "verifier": "accept"
@@ -1037,11 +1080,11 @@
       "clause": "§5.1.3(6)",
       "title": "byte projection",
       "kind": "encode",
-      "raw": "{\"b\":{\"hex\":\"00ff10\",\"kind\":\"bytes\"},\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\"}",
+      "raw": "{\"b\":{\"cnp0\":\"bytes\",\"hex\":\"00ff10\"},\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\"}",
       "encoder": {
         "accept": {
-          "canonical": "{\"b\":{\"hex\":\"00ff10\",\"kind\":\"bytes\"},\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\"}",
-          "sha256": "f66f090744001fe0016efdf7108c8ed649588778ee2e7d7bfc11b2263754f061"
+          "canonical": "{\"b\":{\"cnp0\":\"bytes\",\"hex\":\"00ff10\"},\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\"}",
+          "sha256": "e25c0c42a42f39d7ad99a9a86cc9bd6a78cf1b3fa92aad192d3a218796f68fef"
         }
       },
       "verifier": "accept"
@@ -1052,11 +1095,11 @@
       "clause": "§5.1.3(6)",
       "title": "empty byte string",
       "kind": "encode",
-      "raw": "{\"b\":{\"hex\":\"\",\"kind\":\"bytes\"},\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\"}",
+      "raw": "{\"b\":{\"cnp0\":\"bytes\",\"hex\":\"\"},\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\"}",
       "encoder": {
         "accept": {
-          "canonical": "{\"b\":{\"hex\":\"\",\"kind\":\"bytes\"},\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\"}",
-          "sha256": "0449b1c49cb18fd625938a029bcb95cdaf272f6701f877030cfd742e90597e92"
+          "canonical": "{\"b\":{\"cnp0\":\"bytes\",\"hex\":\"\"},\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\"}",
+          "sha256": "29ab97bb02a59e8aa64396004988ccc9ee22a7e1bbd2de25a5b4daf6a25f4165"
         }
       },
       "verifier": "accept"
@@ -1073,7 +1116,7 @@
       "verifier": {
         "reject": "bytes-hex-invalid"
       },
-      "raw": "{\"b\":{\"hex\":\"00FF\",\"kind\":\"bytes\"},\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\"}"
+      "raw": "{\"b\":{\"cnp0\":\"bytes\",\"hex\":\"00FF\"},\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\"}"
     },
     {
       "id": "c6-bytes-odd-length",
@@ -1087,7 +1130,7 @@
       "verifier": {
         "reject": "bytes-hex-invalid"
       },
-      "raw": "{\"b\":{\"hex\":\"0f0\",\"kind\":\"bytes\"},\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\"}"
+      "raw": "{\"b\":{\"cnp0\":\"bytes\",\"hex\":\"0f0\"},\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\"}"
     },
     {
       "id": "c6-bytes-non-hex",
@@ -1101,7 +1144,7 @@
       "verifier": {
         "reject": "bytes-hex-invalid"
       },
-      "raw": "{\"b\":{\"hex\":\"zz\",\"kind\":\"bytes\"},\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\"}"
+      "raw": "{\"b\":{\"cnp0\":\"bytes\",\"hex\":\"zz\"},\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\"}"
     },
     {
       "id": "c6-bytes-length-member",
@@ -1115,7 +1158,7 @@
       "verifier": {
         "reject": "tagged-form-invalid"
       },
-      "raw": "{\"b\":{\"hex\":\"00ff\",\"kind\":\"bytes\",\"len\":2},\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\"}"
+      "raw": "{\"b\":{\"cnp0\":\"bytes\",\"hex\":\"00ff\",\"len\":2},\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\"}"
     },
     {
       "id": "c6-string-nfc",

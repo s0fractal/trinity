@@ -351,6 +351,11 @@ function member(o: [string, RV][], name: string): RV | undefined {
   return undefined;
 }
 
+/** §5.1.2.1 recognition, implemented independently of the encoder: the reserved
+ *  member name is the discriminator, and it is reserved in every position. A map
+ *  that does not carry it is an ordinary map whatever else it is named. */
+const TAG = "cnp0";
+
 function checkTagged(s: Scanner, node: RV): void {
   if (node.t === "arr") {
     for (const x of node.v) checkTagged(s, x);
@@ -358,12 +363,16 @@ function checkTagged(s: Scanner, node: RV): void {
   }
   if (node.t !== "obj") return;
 
-  const kind = member(node.v, "kind");
-  if (kind !== undefined && kind.t === "str") {
+  const tag = member(node.v, TAG);
+  if (tag !== undefined) {
+    if (tag.t !== "str") {
+      s.bail("tagged-form-invalid", `${TAG} must be a string`);
+    }
+    const kind = (tag as { t: "str"; v: string }).v;
     const keys = node.v.map(([k]) => k).sort();
-    if (kind.v === "bytes") {
-      if (keys.join(",") !== "hex,kind") {
-        s.bail("tagged-form-invalid", "bytes takes exactly {kind, hex}");
+    if (kind === "bytes") {
+      if (keys.join(",") !== `${TAG},hex`) {
+        s.bail("tagged-form-invalid", `bytes takes exactly {${TAG}, hex}`);
       }
       const hex = member(node.v, "hex");
       if (hex === undefined || hex.t !== "str") {
@@ -376,9 +385,9 @@ function checkTagged(s: Scanner, node: RV): void {
           s.bail("bytes-hex-invalid", "hex must be lowercase hexadecimal");
         }
       }
-    } else if (kind.v === "ratio") {
-      if (keys.join(",") !== "den,kind,num") {
-        s.bail("tagged-form-invalid", "ratio takes exactly {kind, num, den}");
+    } else if (kind === "ratio") {
+      if (keys.join(",") !== `${TAG},den,num`) {
+        s.bail("tagged-form-invalid", `ratio takes exactly {${TAG}, num, den}`);
       }
       const num = member(node.v, "num");
       const den = member(node.v, "den");
@@ -388,23 +397,27 @@ function checkTagged(s: Scanner, node: RV): void {
       const n = (num as { t: "int"; v: bigint }).v;
       const d = (den as { t: "int"; v: bigint }).v;
       if (d <= 0n) s.bail("ratio-non-positive-denominator", "den must be > 0");
-      if (n === 0n && d !== 1n) s.bail("ratio-zero-not-canonical", "zero is {num:0,den:1}");
+      if (n === 0n && d !== 1n) s.bail("ratio-zero-not-canonical", `zero is {${TAG}:"ratio",num:0,den:1}`);
       if (n !== 0n) {
         let a = n < 0n ? -n : n;
         let b = d;
         while (b) [a, b] = [b, a % b];
         if (a !== 1n) s.bail("ratio-not-reduced", `${n}/${d} is not in lowest terms`);
       }
-    } else if (kind.v === "fixed") {
+    } else if (kind === "fixed") {
       if (keys.includes("scale") || keys.includes("scale_id")) {
         s.bail("fixed-scale-in-value", "scale is bound by the domain, not per value");
       }
-      if (keys.join(",") !== "kind,value") {
-        s.bail("tagged-form-invalid", "fixed takes exactly {kind, value}");
+      if (keys.join(",") !== `${TAG},value`) {
+        s.bail("tagged-form-invalid", `fixed takes exactly {${TAG}, value}`);
       }
       if (member(node.v, "value")?.t !== "int") {
         s.bail("tagged-form-invalid", "fixed value must be an integer");
       }
+    } else {
+      // The name is reserved, so an unrecognized value is a rejection rather
+      // than a licence to read the map as an ordinary one.
+      s.bail("tagged-form-invalid", `${TAG} must be one of bytes, ratio, fixed`);
     }
   }
   for (const [, v] of node.v) checkTagged(s, v);

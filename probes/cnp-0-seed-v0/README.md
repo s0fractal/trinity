@@ -36,7 +36,7 @@ executable part of that list and reports exactly which part it did not build.
 | `ts/mutate.ts` | negative controls: one mutation per protected class, each required to turn the gate red |
 | `ts/parity_warrant.ts` | external Warrant parity, both directions, over a materialized pinned tree |
 | `ts/cnp0_test.ts` | the gate, wired into `deno task test:unit` and therefore `./t check` |
-| `corpus/manifest.json` | 112 cases across all eight §5.1.3 categories |
+| `corpus/manifest.json` | 115 cases across all eight §5.1.3 categories |
 | `corpus/circle256-lut.cnp0.json` | the pinned `circle256` sine table (§5.1.2.3 `pinned` strategy) |
 | `tools/build_manifest.py` | the authoring tool: writes the manifest from an independent Python serializer |
 | `tools/jcs_py.py` | that serializer |
@@ -62,12 +62,12 @@ submodule members that are absent from a fresh clone.
 Expected counts from a clean checkout:
 
 ```text
-cases selected      112
-  circle            8     encode          60    file            1
+cases selected      115
+  circle            8     encode          63    file            1
   fixed-simplex     3     quantize        20    ratio-simplex   3
   renormalize       9     scale           8
-encoder  accepted   28      encoder  rejected   32
-verifier accepted   24      verifier rejected   36
+encoder  accepted   29      encoder  rejected   34
+verifier accepted   25      verifier rejected   38
 transform accepted  28      transform rejected  24
 digest groups       4
 ```
@@ -90,12 +90,16 @@ means something stronger, and this probe does not supply it.
 
 ## What the corpus covers
 
-All eight categories of §5.1.3, 112 cases:
+All eight categories of §5.1.3, 115 cases:
 
 1. zero, one, minus one, both integer bounds, and both overflow directions;
 2. `1/3`, `-1/3`, canonical zero, and rejection of `2/4`, `0/2`, a negative and
    a zero denominator, overflow, floats, exponent notation, `1.0`, and duplicate
-   member names at the root and nested;
+   member names at the root and nested; plus the three cases the reserved
+   discriminator makes testable — a map with `kind:"ratio"` **accepted** as an
+   ordinary map (unreduced and all, because the profile reserves `cnp0`, not
+   `kind`), an unrecognized `cnp0` value rejected, and a tagged form with an
+   extra member rejected;
 3. one fixed integer under two scale descriptors producing different references,
    plus radix, places, and overflow rejections, and `unit_ref` accepted as a
    full digest but rejected when it is an opaque handle, a truncated digest, or
@@ -142,7 +146,7 @@ skipped; and red is not enough — the run must reach the runner's own reporting
 path and print a `FAIL` line, because a mutation that merely crashes the process
 proves nothing about the property it was meant to test.
 
-**1 unmutated control + 10 mutations**, each of which went red on a reported
+**1 unmutated control + 12 mutations**, each of which went red on a reported
 expectation failure:
 
 ```text
@@ -152,6 +156,8 @@ corpus-byte                              one byte inside a pinned canonical stri
 expected-digest                          one pinned SHA-256 expectation
 expected-rejection-class                 a negative case's expected class
 encoder-drops-member-sort                the comparator stops ordering members
+encoder-recognizes-kind-again            the encoder reads `kind` as the tag
+verifier-drops-the-reservation           an unknown `cnp0` value stops failing
 circle-accepts-out-of-range-point        an out-of-range index becomes a point
 renormalize-allows-duplicate-coordinate  the unique-coordinate rule dropped
 encoder-accepts-unreduced-ratio          the ratio reduction rule removed
@@ -171,7 +177,7 @@ both directions, because one direction only proves we can reproduce inputs
   digests. Observed: **47 selected, 47 byte-identical, 0 skipped.**
 - **B — their canonicalizer, executed, over our corpus.**
   `tools/warrant_bridge.py` imports `impl/warrant.py` and calls `warrant.canon()`
-  on every positive case here. Observed: **28 selected, 27 byte-identical, 1
+  on every positive case here. Observed: **29 selected, 28 byte-identical, 1
   recorded divergence.**
 
 Two statements, reported separately, because collapsing them into one word would
@@ -182,7 +188,7 @@ hide the finding:
 | `status` — the **regression gate** | is the measurement exactly what is pinned? |
 | `parityState` — the **finding** | `IDENTICAL`, `BOUNDED`, `DIVERGENT`, or `UNMEASURED` |
 
-The current result is `status: PASS` with `parityState: BOUNDED`. **27 of 28 is
+The current result is `status: PASS` with `parityState: BOUNDED`. **28 of 29 is
 not parity.** It is agreement outside one recorded, byte-pinned disagreement.
 
 ### What is measured, and what cannot reach it

@@ -1,10 +1,10 @@
 {
   "api": "http://127.0.0.1:11434/api/generate",
-  "cargo": {
+  "cargo_exits_seen_in_proctor_log": {
     "check": 101,
     "fmt": 1
   },
-  "compiles": false,
+  "cargo_output": "Lost. cargo ran during this round \u2014 the proctor's terminal log recorded the exit codes above \u2014 but round.py writes cargo.txt at the end of a round and was killed before then, so the output text itself does not survive. It is therefore not recorded under `cargo`: the feedback guard treats recorded exits without a cargo.txt as a deleted channel and refuses the next round, which is exactly right, and the fix is to stop claiming evidence that is gone rather than to weaken the guard. There is no feedback to carry from this round. The turn-01 build output does survive inside provenance/transcript/round-04/turn-03-prompt.txt, which is the process's own output and was not edited.",
   "counts_toward_budget": "Yes. The model ran and produced work, and the rule forbidding such a round from being excused was written before this round started. The fault being the proctor's does not change that; budget.json cannot excuse it and is not being asked to.",
   "error": "Terminated mid-round by the proctor. The sandbox image rust:1.88-slim has no rustfmt component, so `cargo fmt` exited 1 with \"'cargo-fmt' is not installed\" for every input. Freezing requires fmt to exit 0, so no candidate in this image could ever have been freeze-ready: the round was unwinnable by construction. It was stopped rather than run to exhaustion because the feedback channel was carrying the model a compiler error it could not fix, which corrupts the measurement more than terminating does.",
   "freeze_ready": false,

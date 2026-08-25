@@ -37,14 +37,18 @@ Four files, content-addressed as a pack (`provenance/pack.json`):
 
 | file | what it is |
 | --- | --- |
-| `capsule/SPEC.md` | the specification, **75% verbatim quotation** of Part 01 §5.1.1–§5.1.2.2 |
+| `capsule/SPEC.md` | the specification, **verbatim quotation** of Part 01 §5.1.1–§5.1.2.2 — machine-checked, 69% of the capsule's bytes |
 | `capsule/INTERFACE.md` | the CLI/NDJSON contract and the closed rejection-category vocabulary |
 | `capsule/EXAMPLES.ndjson` | three teaching examples, none of them corpus cases |
 | `capsule/TASK.md` | the instruction and the file-emission protocol |
 
 The capsule quotes rather than paraphrases on purpose. A paraphrase would test
-whether the candidate agrees with the paraphraser, which is not the question.
-`harness/pack.py` refuses to build a pack that names any implementation.
+whether the candidate agrees with the paraphraser, which is not the question —
+and the claim is checkable, not asserted: `harness/build_capsule.py --check`
+re-extracts every quoted region from Part 01 by byte range and fails on a
+one-byte drift in either direction, with the source digest pinned in
+`provenance/verbatim.json`. `harness/pack.py` refuses to build a pack that names
+any implementation.
 
 ## What the candidate is not given
 
@@ -86,29 +90,75 @@ why it is allowed to:
 ## The protocol
 
 ```sh
-python3 harness/pack.py --write                       # pin what may be shown
-python3 harness/round.py --workdir ~/cnp0-cleanroom   # round 1
-python3 harness/round.py --workdir ~/cnp0-cleanroom --feedback provenance/transcript/round-01/cargo.txt
-# … repeat until it compiles …
-python3 harness/freeze.py --workdir ~/cnp0-cleanroom  # then commit, on its own
-python3 harness/evaluate.py --candidate ~/cnp0-cleanroom/target/release/candidate
+python3 harness/build_capsule.py --check                # the capsule is still verbatim
+python3 harness/pack.py --write                         # pin what may be shown
+python3 harness/round.py --workdir ~/cnp0-cleanroom      # rounds 1..3
+python3 harness/freeze.py --workdir ~/cnp0-cleanroom     # then commit, on its own
+python3 harness/evaluate.py --workdir ~/cnp0-cleanroom   # only after the freeze
 ```
 
-Rules the harness enforces rather than asks for:
+### Isolation
 
-- the working directory **must be outside** the Trinity checkout; `round.py`
-  refuses otherwise;
-- the proctor writes **only** files extracted from the model's output, byte for
-  byte, and records a digest of each — it never edits, patches, or completes
-  them;
-- the only commands run there are `cargo fmt`, `check`, `build`, `test`;
-- feedback before the freeze is **compiler and test output only**;
-- feedback after the freeze carries the failing input, the expected category and
-  the governing clause — never the expected bytes, never the expected digest.
-  `evaluate.py` asserts that redaction against the corpus rather than trusting it.
+Everything the candidate produces — its build, its tests, its binary — runs in a
+container, defined once in `harness/sandbox.py`:
 
-Claude's role is proctor: assemble the capsule, carry text one way and compiler
-output the other. Not to write, suggest, or repair the implementation.
+| | |
+| --- | --- |
+| image | `rust:1.88-slim@sha256:38bc5a86…` — pinned by digest, because a tag can be repointed |
+| network | `--network none` |
+| filesystem | one mount, the working directory; Trinity and the corpus are not mounted |
+| privileges | `--read-only`, `--cap-drop ALL`, `--security-opt no-new-privileges` |
+| limits | 2g memory, 256 pids, a `noexec` tmpfs, per-command timeout, output cap |
+
+Running a model-generated Cargo project on the host was the first version of
+this harness, and it was not a clean room at all: a `build.rs`, a test, or a
+`.cargo/config.toml` can read whatever the proctor can read — including the
+corpus this experiment exists to withhold.
+
+The mount is checked before a build failure is believed. Docker Desktop shares
+only configured paths and mounts an unshared one as an **empty** directory, which
+produced "could not find Cargo.toml" — a harness fault that a careless proctor
+would feed back to the model as its own compile error.
+
+### The feedback channel is closed, not merely narrow
+
+Before the freeze the prompt is the pinned pack plus **the previous round's
+cargo output and nothing else**, taken automatically and re-digested against
+what that round recorded. There is no flag that accepts a file: an earlier
+version had `--feedback <path>`, and a reviewer fed it a contract to prove the
+point.
+
+At most **three** rounds before the freeze. After round 1 the prompt changes only
+by the appended machine output, and `pack_sha256` in every round record shows it.
+
+### The proctor does not edit
+
+`round.py` writes only blocks it extracted, byte for byte, digesting each before
+anything else touches it. `cargo fmt` runs as `--check`; the earlier version ran
+the rewriting form *after* digesting, so the digest recorded what the model wrote
+and the tree held what the formatter produced.
+
+The model is run with `--think high --hidethinking`, so draft `FILE:` blocks
+inside reasoning cannot be mistaken for the answer, and the live ollama id is
+checked against the recorded one before a round is attributed to that model.
+
+### Scoring is strict
+
+`evaluate.py` runs the candidate **in the sandbox** and validates the protocol
+before scoring: exit status, one output line per input in order, no duplicate or
+unknown ids, a schema per record — and for `verify`, that the returned digest is
+the digest of the input bytes. An earlier version counted any `ok: true` as
+correct there, which is the most flattering possible bug.
+
+### Negative controls, wired into `./t check`
+
+`harness/selftest.py` (and `ts/harness_test.ts`, in `deno task test:unit`) makes
+each guard refuse on demand: a wrong `verify` digest, an encode digest that is
+not of its own bytes, an out-of-order id, a rejection with no category, an empty
+scope, an arbitrary feedback file, a second freeze, a symlink in the frozen tree,
+an edited quotation, a pack naming an implementation, a workdir inside Trinity,
+and the isolation itself. Tier-2 controls need Docker; where it is absent they
+report **SKIPPED**, and a skipped control is never counted as a pass.
 
 ## Scope of the score
 

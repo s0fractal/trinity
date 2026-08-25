@@ -5,6 +5,8 @@ What must be recorded for the result to mean anything, and where it lives.
 | item | where | status |
 | --- | --- | --- |
 | pack digest and per-file digests | `pack.json` | recorded |
+| capsule quoted ranges, source digest | `verbatim.json` | recorded |
+| sandbox image, pinned by digest | `harness/sandbox.py` | `rust:1.88-slim@sha256:38bc5a86…` |
 | withheld-file list | `pack.json` → `withheld` | recorded |
 | model identity | below, and in each round record | recorded |
 | per-round prompt digest, output digest, written-file digests, cargo exits | `transcript/round-NN.json` | pending the run |

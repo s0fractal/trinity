@@ -4,15 +4,18 @@
 does not refer to any existing implementation, and there is nothing else to
 consult.
 
-Everything between the horizontal rules below is **quoted verbatim** from the
-normative specification (RFC-0003 Part 01 §5.1.1–§5.1.2.2). The only text that
-is not quoted is this framing, and the clause labels used to cite it. That
-choice is deliberate: a paraphrase would test whether an implementation agrees
-with the paraphraser, which is not the question.
+The quoted regions below are **verbatim** from the normative specification, and
+that is machine-checked: each is delimited by a marker naming its clause and its
+byte range in the source, and `harness/build_capsule.py --check` re-extracts them
+and fails on a one-byte drift. The only text that is not quoted is this framing.
+A paraphrase would test whether an implementation agrees with the paraphraser,
+which is not the question.
 
 ---
 
 ## §5.1.1 — Canonical encoding is normative, not an implementation detail
+
+<!-- quoted §5.1.1 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:0783fe57a13f7442… bytes 8911..10131 region-sha256:f4b3f491e7c94a51… -->
 
 The encoding MUST satisfy:
 
@@ -36,9 +39,13 @@ The encoding MUST satisfy:
    digest binds an object _under an encoding_; changing the encoding MUST change
    the reference rather than silently rehoming it.
 
+<!-- end quoted §5.1.1 -->
+
 ---
 
 ## §5.1.2 — Floating point
+
+<!-- quoted §5.1.2 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:0783fe57a13f7442… bytes 10468..11642 region-sha256:223959e79c0a546e… -->
 
 In canonical form:
 
@@ -61,7 +68,13 @@ In canonical form:
 5. A state domain MAY use floating point internally. The obligation is at the
    canonical-encoding boundary, not inside the computation.
 
-### Non-integer values inside an integers-only domain
+<!-- end quoted §5.1.2 -->
+
+---
+
+## §5.1.2 — Non-integer values inside an integers-only domain
+
+<!-- quoted §5.1.2 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:0783fe57a13f7442… bytes 11975..13806 region-sha256:8fab8eaf939924bd… -->
 
 Two patterns are admissible. Both keep every number in the integer domain and
 both are exact. Each is a **tagged form**, carrying the reserved discriminator
@@ -100,9 +113,13 @@ This is a validation rule (§6), not an encoding rule, and it is the reason the
 simplex cannot use floats: "sums to one after rounding" is not a property two
 independent implementations will agree on.
 
+<!-- end quoted §5.1.2 -->
+
 ---
 
 ## §5.1.2.1 — CNP-0-JCS
+
+<!-- quoted §5.1.2.1 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:0783fe57a13f7442… bytes 14275..17818 region-sha256:4aedeb88d753b78e… -->
 
 This draft selects **CNP-0-JCS** as the Tranche A3 candidate. The selection is
 one package with two named layers:
@@ -167,9 +184,13 @@ verifiable at the wire layer only. If a later revision prefers that trade, it
 MUST state §5.1.3's input contract explicitly, because "verifier-only" says what
 the path does not do and not what it is given.
 
+<!-- end quoted §5.1.2.1 -->
+
 ---
 
 ## §5.1.2.2 — Fixed-point scale identity
+
+<!-- quoted §5.1.2.2 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:0783fe57a13f7442… bytes 18608..19486 region-sha256:142acb574999e19c… -->
 
 A fixed-point domain MUST bind one content-addressed scale descriptor of this
 shape:
@@ -195,6 +216,8 @@ never an in-place rewrite.
 Equality inside the domain compares integer `value`. Cross-scale comparison is
 available only through a declared translation. For a fixed-point probability
 simplex, `Σ value_i` MUST equal `radix^places` exactly.
+
+<!-- end quoted §5.1.2.2 -->
 
 ---
 

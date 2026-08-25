@@ -91,7 +91,11 @@ rejecting an input.
 
 ## Language and toolchain
 
-Rust, building with `cargo build --release` and producing a single binary. The
-crate may use only the Rust standard library and a SHA-256 implementation. No
-JSON library: parsing the input bytes is part of the task, and a permissive
-parser cannot see three of the failures above.
+Rust, building with `cargo build --release --offline` and producing a single
+binary named `candidate`.
+
+**The Rust standard library only.** No dependencies of any kind: the build runs
+with no network, so a crate cannot be fetched even if one were wanted. That
+includes SHA-256 — implement it (FIPS 180-4). It also includes JSON: parsing the
+input bytes is part of the task, and a permissive parser cannot see three of the
+failures above.

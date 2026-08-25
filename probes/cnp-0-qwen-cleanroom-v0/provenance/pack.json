@@ -5,12 +5,12 @@
       "sha256": "1f749cbbeea47f59199973ef134db4f5b25566207b9110ec6480089089d38449"
     },
     "capsule/INTERFACE.md": {
-      "bytes": 3778,
-      "sha256": "3091b7cc6ce95ab6cef7d4b1c48e512e9f2a05be262d13b108af243735bf3c62"
+      "bytes": 3938,
+      "sha256": "72bbe54b922231ce08578813e884d1ed6dfdb4de4c0064e8dafa6b0a9e2b7e53"
     },
     "capsule/SPEC.md": {
-      "bytes": 11251,
-      "sha256": "35a99ff26390c5167d97ca92c7b8a4ada58240d57ba75089228fee02ccce52b5"
+      "bytes": 12440,
+      "sha256": "2bcdc30743cd89a9da356557ae77537817aaa520bd2c0dd36d88c2bbd10346d3"
     },
     "capsule/TASK.md": {
       "bytes": 2227,
@@ -18,7 +18,7 @@
     }
   },
   "pack": "cnp-0-cleanroom-pack@v0",
-  "pack_sha256": "e3ac4cb1d25d3b1292d81f6a45365969b3a3abaf6b7a9824f7ee59e51fceafcd",
+  "pack_sha256": "fac360f6bda862db4247ae3583832d8d8890be68421bdc9c9187838e55f73d0a",
   "withheld": [
     "probes/cnp-0-seed-v0/ts/cnp0.ts",
     "probes/cnp-0-seed-v0/ts/jcs.ts",

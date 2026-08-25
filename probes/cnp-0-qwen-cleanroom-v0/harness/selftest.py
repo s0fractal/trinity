@@ -492,10 +492,18 @@ def t_refused_turn_feedback_is_transport_only():
 
 
 def t_sandbox_can_run_the_protocols_checks():
-    """Every cargo subcommand freezing requires must exist in the image."""
-    if shutil.which("docker") is None:
-        record("sandbox-can-run-the-protocols-checks", 2, False,
-               "docker is unavailable", skipped=True)
+    """Every cargo subcommand freezing requires must exist in the image.
+
+    The precondition is `docker_available()`, the same one the isolation
+    controls use. This asked only whether the docker CLI was on PATH, which is a
+    different question: a GitHub runner has the CLI and not the pinned image, so
+    `sandbox.run` raised before any JSON was written and the whole selftest died
+    without a report. Two preconditions for one requirement is one too many, and
+    the weaker of them decided.
+    """
+    ok, why = docker_available()
+    if not ok:
+        record("sandbox-can-run-the-protocols-checks", 2, False, why, skipped=True)
         return
     missing = []
     with tempfile.TemporaryDirectory(dir=os.path.expanduser("~")) as probe:
@@ -715,13 +723,67 @@ def t_evaluate_detects_tampered_tree():
 # ---------------------------------------------------------------- tier 2
 
 def docker_available() -> tuple[bool, str]:
+    """Can the isolation controls actually run here, and if not, why.
+
+    Both questions matter and they are different: a runner can have the docker
+    CLI and not the pinned image, which is exactly the CI state that killed this
+    selftest. The answer is one function so the two tier-2 groups cannot disagree
+    about it again.
+    """
     if shutil.which("docker") is None:
         return False, "docker is not on PATH"
-    probe = subprocess.run(["docker", "image", "inspect", sandbox.IMAGE],
-                           capture_output=True, text=True)
+    try:
+        probe = subprocess.run(["docker", "image", "inspect", sandbox.IMAGE],
+                               capture_output=True, text=True, timeout=120)
+    except (OSError, subprocess.SubprocessError) as exc:
+        return False, f"docker is on PATH but unusable: {exc}"
     if probe.returncode != 0:
-        return False, "the pinned image is not present locally"
+        return False, (f"the pinned image {sandbox.IMAGE[:24]}… is not present "
+                       "locally; build it with harness/image/Dockerfile")
     return True, ""
+
+
+def t_missing_image_skips_rather_than_crashes():
+    """CLI present, image absent — the state that took CI down.
+
+    Reproduced without needing Docker at all: a `docker` shim earlier on PATH
+    answers every invocation with a non-zero exit, which is precisely what a
+    runner that has the CLI and not the pinned image looks like. The selftest
+    must still finish, still emit its JSON report, and record the tier-2
+    controls as SKIPPED with a reason.
+
+    It failed here by crashing before the report existed, and the Deno test then
+    reported `Unexpected end of JSON input` — so the visible symptom named the
+    parser rather than the cause. This control fails loudly instead.
+    """
+    with tempfile.TemporaryDirectory() as tmp:
+        shim = os.path.join(tmp, "docker")
+        with open(shim, "w", encoding="utf-8") as fh:
+            fh.write("#!/bin/sh\necho 'no such image' >&2\nexit 1\n")
+        os.chmod(shim, 0o755)
+        env = dict(os.environ, PATH=tmp + os.pathsep + os.environ.get("PATH", ""))
+        proc = subprocess.run(
+            [sys.executable, os.path.join(HERE, "harness", "selftest.py"),
+             "--json", "--no-recursive"],
+            capture_output=True, text=True, env=env, timeout=900)
+    if proc.returncode != 0:
+        record("missing-image-skips-rather-than-crashes", 1, False,
+               f"selftest exited {proc.returncode}: {proc.stderr.strip()[-200:]}")
+        return
+    try:
+        report = json.loads(proc.stdout)
+    except json.JSONDecodeError as exc:
+        record("missing-image-skips-rather-than-crashes", 1, False,
+               f"no JSON report was produced ({exc}); stderr: "
+               f"{proc.stderr.strip()[-200:]}")
+        return
+    tier2 = [r for r in report["results"] if r["tier"] == 2]
+    ok = (len(tier2) >= 3
+          and all(r["skipped"] and r["detail"] for r in tier2)
+          and any("not present locally" in r["detail"] for r in tier2))
+    record("missing-image-skips-rather-than-crashes", 1, ok,
+           f"all {len(tier2)} tier-2 controls skipped with a reason, report intact"
+           if ok else f"tier-2 came back as {tier2}")
 
 
 def t_sandbox_isolation():
@@ -767,8 +829,14 @@ def main() -> int:
                t_model_is_called_over_the_api,
                t_refused_turn_feedback_is_transport_only,
                t_evaluate_requires_freeze,
-               t_evaluate_detects_tampered_tree, t_sandbox_isolation, t_sandbox_can_run_the_protocols_checks):
+               t_evaluate_detects_tampered_tree, t_sandbox_isolation,
+               t_sandbox_can_run_the_protocols_checks):
         fn()
+
+    # Runs the whole selftest again under a failing `docker` shim, so it must not
+    # run itself: --no-recursive is what the inner invocation is given.
+    if "--no-recursive" not in sys.argv:
+        t_missing_image_skips_rather_than_crashes()
 
     failed = [r for r in RESULTS if not r["ok"] and not r["skipped"]]
     skipped = [r for r in RESULTS if r["skipped"]]

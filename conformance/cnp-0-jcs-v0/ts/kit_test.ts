@@ -45,6 +45,9 @@ Deno.test("conformance kit: the runner fails wrong implementations", async () =>
       "a-repeated-id-fails",
       "an-unasked-id-fails",
       "a-wrong-answer-followed-by-a-right-one-fails",
+      "padding-with-blank-lines-fails",
+      "a-whitespace-only-record-fails",
+      "a-duplicated-json-member-fails",
     ]
   ) {
     assert(
@@ -53,7 +56,9 @@ Deno.test("conformance kit: the runner fails wrong implementations", async () =>
     );
   }
   assert(text.includes("ok   unpinned-file-is-refused"), text);
-  assert(/\n16 passed, 0 failed/.test(text), text);
+  // An ignored path is a hole: __pycache__ was one.
+  assert(text.includes("ok   unpinned-file-in-pycache-is-refused"), text);
+  assert(/\n20 passed, 0 failed/.test(text), text);
 });
 
 Deno.test("conformance kit: the reference encoder satisfies it", async () => {
@@ -78,16 +83,25 @@ Deno.test("conformance kit: its inventory is closed and holds no implementation"
     manifest.split("\n").filter((l) => l.trim()).map((l) => l.split("  ")[1]),
   );
 
+  // No exemption for any path. This walk used to skip __pycache__, and a file
+  // hidden there was unpinned, unnoticed, and scored a perfect run.
   const found: string[] = [];
+  const odd: string[] = [];
   const walk = async (dir: string, prefix = "") => {
     for await (const entry of Deno.readDir(dir)) {
-      if (entry.name === "__pycache__") continue;
       const rel = prefix + entry.name;
-      if (entry.isDirectory) await walk(`${dir}${entry.name}/`, `${rel}/`);
-      else found.push(rel);
+      if (entry.isSymlink) odd.push(`${rel} is a symlink`);
+      else if (entry.isDirectory) await walk(`${dir}${entry.name}/`, `${rel}/`);
+      else if (entry.isFile) found.push(rel);
+      else odd.push(`${rel} is not a regular file`);
     }
   };
   await walk(HERE);
+  assertEquals(
+    odd,
+    [],
+    `the kit holds entries that are not plain files: ${odd}`,
+  );
 
   const unpinned = found.filter((f) =>
     f !== "MANIFEST.sha256" && !pinned.has(f)

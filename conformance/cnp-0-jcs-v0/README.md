@@ -42,9 +42,14 @@ score. See **Disagreeing with this kit** below.
 ## The kit checks itself before it checks you
 
 `MANIFEST.sha256` pins every shipped file, and the runner verifies all of them
-before running a single case. A corpus that has been edited — by anyone,
-including us — produces a score that means nothing, and a runner that carried on
-regardless would report that meaningless score as a result.
+before running a single case — and refuses any file the manifest does **not**
+list, anywhere in the kit. There is no exempt path: `__pycache__` was one, and a
+file hidden in it was unpinned, unnoticed, and scored a perfect run. Symlinks
+and non-regular files are refused too, since a digest taken through a link
+describes whatever the link pointed at when it was taken. A corpus that has been
+edited — by anyone, including us — produces a score that means nothing, and a
+runner that carried on regardless would report that meaningless score as a
+result.
 
 `--skip-kit-check` exists for working on the kit itself. It prints that the
 result is not a conformance result, and the JSON report records
@@ -54,11 +59,17 @@ result is not a conformance result, and the JSON report records
 
 A runner that passes everything is indistinguishable from a runner that checks
 nothing. `python3 selftest.py` runs deliberately wrong implementations past it —
-one that echoes its input as canonical, one that accepts everything, one that
-rejects everything, one that returns the right verdict with the wrong digest,
-one that emits nothing — and asserts each is caught, and caught as the right
-kind of failure. It also runs an implementation that is correct on the subset it
-covers, so "fails everything" cannot masquerade as rigour.
+20 controls — and asserts each is caught, and caught as the right _kind_ of
+failure. It also runs a correct implementation, so "fails everything" cannot
+masquerade as rigour.
+
+Half of those controls answer every case **correctly** and get the shape of the
+reply wrong: reversed order, a repeated id, an id nobody asked about, a wrong
+answer followed by a right one, a blank record, a whitespace record, a JSON
+object with `"id"` twice. Every one of them scored a perfect run against an
+earlier version of this runner, which keyed replies by id and let the last write
+win. They are here because that is how the interface was found not to be
+enforced.
 
 ## How a failure is reported
 

@@ -52,7 +52,8 @@ for line in sys.stdin:
     if mode == "silent":
         continue
     if mode in ("reversed", "duplicated", "unknown-id", "extra-line", "short",
-                "wrong-then-right"):
+                "wrong-then-right", "blank-line", "whitespace-record",
+                "duplicate-id-member"):
         BUFFER.append((i, sub))
         continue
     if mode == "accept-all":
@@ -124,6 +125,20 @@ elif mode == "extra-line":
 elif mode == "short":
     for i, sub in BUFFER[:-1]:
         sys.stdout.write(answer(i, sub))
+elif mode == "blank-line":
+    # Correct answers, padded. Dropping blanks before counting made this free.
+    for i, sub in BUFFER:
+        sys.stdout.write(answer(i, sub))
+    sys.stdout.write("\n   \n")
+elif mode == "whitespace-record":
+    # Count preserved, so this reaches the empty-record check itself.
+    for n, (i, sub) in enumerate(BUFFER):
+        sys.stdout.write("   \n" if n == 1 else answer(i, sub))
+elif mode == "duplicate-id-member":
+    # `{"id":"unasked","id":"<expected>"}` — a standard parser keeps the last.
+    for i, sub in BUFFER:
+        body = answer(i, sub).strip()
+        sys.stdout.write('{"id":"unasked",' + body[1:] + "\n")
 '''
 
 PRELUDE = r'''
@@ -215,6 +230,10 @@ def main() -> int:
              "output line per input"),
             ("extra-line", "an-extra-line-fails", "output line per input"),
             ("short", "a-missing-line-fails", "output line per input"),
+            ("blank-line", "padding-with-blank-lines-fails", "is blank"),
+            ("whitespace-record", "a-whitespace-only-record-fails", "is blank"),
+            ("duplicate-id-member", "a-duplicated-json-member-fails",
+             "more than once"),
         ):
             r = run_fake(mode, tmp)
             blob = r["stdout"]
@@ -226,18 +245,25 @@ def main() -> int:
 
         # An unpinned file must be refused, not ignored: a listed-files-only check
         # lets an implementation ride along inside the kit.
-        rogue = os.path.join(tmp, "rogue")
-        shutil.copytree(HERE, rogue)
-        with open(os.path.join(rogue, "unlisted_reference_impl.py"), "w") as fh:
-            fh.write("# anything at all\n")
-        proc = subprocess.run(
-            [sys.executable, os.path.join(rogue, "run_conformance.py"), "--cmd", "true"],
-            capture_output=True, text=True, timeout=120)
-        blob = proc.stdout + proc.stderr
-        ok = proc.returncode != 0 and "pinned by nothing" in blob
-        record("unpinned-file-is-refused", ok,
-               "refused a kit carrying a file the manifest does not list" if ok
-               else blob[-200:])
+        # No path is exempt. `__pycache__` was, and a file hidden there scored a
+        # perfect run: an exclusion is a hole whoever knows about it walks through.
+        for where, name in (("", "unpinned-file-is-refused"),
+                            ("__pycache__", "unpinned-file-in-pycache-is-refused")):
+            rogue = os.path.join(tmp, f"rogue{where or 'top'}")
+            shutil.copytree(HERE, rogue)
+            target = os.path.join(rogue, where) if where else rogue
+            os.makedirs(target, exist_ok=True)
+            with open(os.path.join(target, "unlisted_reference_impl.py"), "w") as fh:
+                fh.write("# anything at all\n")
+            proc = subprocess.run(
+                [sys.executable, os.path.join(rogue, "run_conformance.py"),
+                 "--cmd", "true"], capture_output=True, text=True, timeout=120)
+            blob = proc.stdout + proc.stderr
+            ok = proc.returncode != 0 and "pinned by nothing" in blob
+            record(name, ok,
+                   f"refused a kit carrying an unlisted file in "
+                   f"{where + '/' if where else 'the kit root'}" if ok
+                   else blob[-200:])
 
         # The kit refuses to score against a corpus that has been edited.
         edited = os.path.join(tmp, "kit")

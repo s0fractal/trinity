@@ -1,0 +1,55 @@
+{
+  "capsule": "cnp-0-cleanroom-spec@v0",
+  "capsule_bytes": 12440,
+  "capsule_sha256": "2bcdc30743cd89a9da356557ae77537817aaa520bd2c0dd36d88c2bbd10346d3",
+  "quoted_bytes": 8684,
+  "regions": [
+    {
+      "bytes": 1222,
+      "clause": "\u00a75.1.1",
+      "end": 10131,
+      "heading": "Canonical encoding is normative, not an implementation detail",
+      "sha256": "f4b3f491e7c94a513bc4fa624b202d5fe218c77b1a6421c5e243dcd018f8ca30",
+      "start": 8911,
+      "why_it_ends": "stops before the pointer into the revision history"
+    },
+    {
+      "bytes": 1178,
+      "clause": "\u00a75.1.2",
+      "end": 11642,
+      "heading": "Floating point",
+      "sha256": "223959e79c0a546ef98b185bf9c6cf203b9fc9ba795f7bdc3f7a9e724b55937d",
+      "start": 10468,
+      "why_it_ends": "the five rules; the subsection follows separately"
+    },
+    {
+      "bytes": 1843,
+      "clause": "\u00a75.1.2",
+      "end": 13806,
+      "heading": "Non-integer values inside an integers-only domain",
+      "sha256": "8fab8eaf939924bdf70209dfc8e86830553f584531ba43403ec5bd5151fa3e11",
+      "start": 11975,
+      "why_it_ends": "stops before the string-form alternative, which the profile does not admit"
+    },
+    {
+      "bytes": 3562,
+      "clause": "\u00a75.1.2.1",
+      "end": 17818,
+      "heading": "CNP-0-JCS",
+      "sha256": "4aedeb88d753b78e2796e1c2975bc6d5ca2352fefffeb6c1a1504961cd2ef99e",
+      "start": 14275,
+      "why_it_ends": "EXCLUDES the paragraph naming an existing JCS implementation, and the i128 history after it"
+    },
+    {
+      "bytes": 879,
+      "clause": "\u00a75.1.2.2",
+      "end": 19486,
+      "heading": "Fixed-point scale identity",
+      "sha256": "142acb574999e19c1a335a96dc3f3357a25cc5ee2846db509053af53793491f9",
+      "start": 18608,
+      "why_it_ends": "the whole subsection"
+    }
+  ],
+  "source": "docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md",
+  "source_sha256": "0783fe57a13f7442578b9161dfd691e9d6f762f3e36718e9bca5f09d7eeea410"
+}

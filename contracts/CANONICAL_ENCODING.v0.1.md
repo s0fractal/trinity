@@ -104,9 +104,12 @@ decide, and where two conforming-looking implementations could diverge. Two of
 them have since been decided normatively; the rest have not, and the difference
 is load-bearing enough to state per entry rather than in a blanket sentence.
 
-**Resolved (1–2)** — now normative in Part 01 §5.1.2.1, recorded here for
-history. The decision is attributed to Codex as delegated acceptance reviewer
-for the CNP-0 slice; it is not a steward ratification. See Part 07 §14.
+**Resolved (1–2)** — normative in Part 01 §5.1.2.1 and, as of 2026-08-25, a
+**steward-approved draft rule**: the technical decision is attributed to Codex
+as delegated acceptance reviewer, and `s0fractal` has since confirmed it as the
+draft's settled position. That approval is a relayed statement, **not** an
+`s0fractal` cryptographic signature, and **not** ratification of Tranche A3, a
+conformance result, interoperability, or adoption. See Part 07 §14.
 
 **Open (3–7)** — still implementation choices. **None of them is proposed as a
 normative rule here.** They are open questions for the steward.
@@ -120,8 +123,9 @@ normative rule here.** They are open questions for the steward.
    three values of this document's universal discriminator — 39 values across at
    least twelve declared types. See Part 07 §14 and
    `proposals/rfc-0003/tagged-form-recognition-disposition-2026-08-25.md`. The
-   decision is attributed to Codex as delegated acceptance reviewer, and is not
-   a steward ratification.
+   technical decision is attributed to Codex as delegated acceptance reviewer;
+   `s0fractal` confirmed it as a steward-approved draft rule on 2026-08-25,
+   which is not ratification of A3.
 2. ~~**Whether a tagged form may carry extra members.**~~ **Resolved with it:**
    exactly the members the form defines. What remains an implementation choice
    is below.

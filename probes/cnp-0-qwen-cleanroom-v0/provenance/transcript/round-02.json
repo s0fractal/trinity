@@ -1,0 +1,17 @@
+{
+  "elapsed_s": 3600.1,
+  "error": "the model did not finish within 3600s",
+  "feedback_sha256": null,
+  "freeze_ready": false,
+  "image": "rust:1.88-slim@sha256:38bc5a86d998772d4aec2348656ed21438d20fcdce2795b56ca434cf21430d89",
+  "model": "qwen3.8:27b-mlx",
+  "model_exit": null,
+  "model_id_expected": "5642e97495e1",
+  "model_id_live": "5642e97495e1",
+  "pack_sha256": "fac360f6bda862db4247ae3583832d8d8890be68421bdc9c9187838e55f73d0a",
+  "prompt_bytes": 21610,
+  "prompt_sha256": "75018d1af5887705792ec66af5b843e5c8d1bfb22ea596541cf21ad19b9612e9",
+  "round": 2,
+  "started": "2026-08-25T16:55:07Z",
+  "workdir": "/Users/s0fractal/cnp0-cleanroom"
+}

@@ -341,13 +341,28 @@ def main() -> int:
             ["ollama", "run", "--think=high", "--hidethinking", args.model],
             input=prompt, capture_output=True, text=True, timeout=MODEL_TIMEOUT_S,
         )
-    except subprocess.TimeoutExpired:
+    except subprocess.TimeoutExpired as expired:
+        # Keep what was produced. The first version of this handler discarded it,
+        # so an hour of generation left no evidence of whether the model had
+        # written nothing or nearly everything — the one fact needed to know what
+        # the timeout actually measured.
+        partial = expired.stdout or ""
+        if isinstance(partial, bytes):
+            partial = partial.decode("utf-8", "replace")
+        raw_dir = os.path.join(TRANSCRIPT, f"round-{n:02d}")
+        os.makedirs(raw_dir, exist_ok=True)
+        open(os.path.join(raw_dir, "prompt.txt"), "w", encoding="utf-8").write(prompt)
+        open(os.path.join(raw_dir, "output.partial.txt"), "w",
+             encoding="utf-8").write(partial)
         record["elapsed_s"] = round(time.time() - started, 1)
         record["error"] = f"the model did not finish within {MODEL_TIMEOUT_S}s"
         record["model_exit"] = None
         record["freeze_ready"] = False
+        record["partial_output_bytes"] = len(partial.encode("utf-8"))
+        record["partial_output_sha256"] = sha(partial.encode("utf-8"))
+        record["partial_file_blocks"] = len(extract_files(partial))
         print(f"round {n}: no generation within {MODEL_TIMEOUT_S}s; recorded as a "
-              "failed generation.")
+              f"failed generation, {record['partial_output_bytes']} partial byte(s) kept.")
         return finish(record, n, prior)
 
     output = proc.stdout

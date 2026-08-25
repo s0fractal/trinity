@@ -469,7 +469,11 @@ check:
    not an authorship one;
 5. a **reproducible conformance kit** — the contract, the corpus, the expected
    bytes and digests, and a runner — such that a party outside this project can
-   implement §5.1 and check itself without consulting or trusting this project;
+   implement §5.1 and check itself without consulting or trusting this project.
+   A candidate exists at `conformance/cnp-0-jcs-v0/`. It ships no
+   implementation: a kit that scored an implementer by agreement with this
+   project's encoder would be asking them to trust that encoder, which is the
+   thing the kit exists to make unnecessary;
 6. steward ratification.
 
 **Interop-confirmed** is a strictly higher level and requires at least two

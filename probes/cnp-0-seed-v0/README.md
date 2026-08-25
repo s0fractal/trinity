@@ -1,7 +1,7 @@
 ---
 status: active
 owner_voice: claude
-next_verification: package a reproducible conformance kit — this contract, this corpus, the expected bytes and digests, and a runner — so a party outside this project can implement §5.1 and check itself without consulting or trusting us. That is now an A3 ratification requirement (Part 01 §5.1.3, restated 2026-08-26); most of the parts are already here and the packaging is not. A second independently maintained encoder is no longer an A3 blocker — it sits at the higher interop-confirmed level, and until it holds this probe may not be cited as showing implementation diversity. One attempt at it (probes/cnp-0-qwen-cleanroom-v0) closed 2026-08-26 without an encoder
+next_verification: get the candidate conformance kit (conformance/cnp-0-jcs-v0/, projected from this corpus) ratified, and measure a substrate computing real references under hsp-jcs@v0. A second independently maintained encoder is no longer an A3 blocker — it sits at the higher interop-confirmed level, and until it holds this probe may not be cited as showing implementation diversity. One attempt at it (probes/cnp-0-qwen-cleanroom-v0) closed 2026-08-26 without an encoder
 graduation_target: null
 ---
 
@@ -253,10 +253,12 @@ Warrant's implementation as prior evidence — that evidence covers the
 
 ## What this probe does not establish
 
-- **Not the conformance kit A3 requires.** The contract, corpus, expected bytes
-  and digests, and a runner exist as parts; they are not packaged so an outside
-  party can implement §5.1 and check itself without trusting this project. Since
-  the 2026-08-26 restatement this is the main open A3 item.
+- **Not ratification of the conformance kit.** The kit A3 requires now exists
+  as a candidate at `conformance/cnp-0-jcs-v0/`, projected from this corpus.
+  `ts/conformance_cli.ts` exposes this encoder behind the kit's interface and
+  scores 126/126, which shows the corpus is satisfiable by a real program — but
+  the encoder and the corpus were written by the same hand, so agreement there
+  is not evidence of anything except internal consistency.
 - **Not independently maintained implementations.** One reference encoder, plus
   same-author code paths. That is no longer an A3 blocker, but it is exactly what
   `interop-confirmed` asks for, so this probe may not be cited as showing

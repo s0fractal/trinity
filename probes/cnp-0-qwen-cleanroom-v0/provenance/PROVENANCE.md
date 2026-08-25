@@ -6,7 +6,7 @@ What must be recorded for the result to mean anything, and where it lives.
 | --- | --- | --- |
 | pack digest and per-file digests | `pack.json` | recorded |
 | capsule quoted ranges, source digest | `verbatim.json` | recorded |
-| sandbox image, pinned by digest | `harness/sandbox.py` | `rust:1.88-slim@sha256:38bc5a86…` |
+| sandbox image, pinned by id, built here | `harness/sandbox.py`, `harness/image/Dockerfile` | `sha256:c96a2a4f…` |
 | withheld-file list | `pack.json` → `withheld` | recorded |
 | model identity | below, and in each round record | recorded |
 | per-round and per-turn prompt/output digests, written-file digests, cargo exits, served context | `transcript/round-NN.json` | rounds 1–2 recorded; the rest pending |
@@ -45,6 +45,23 @@ truncated run is visible afterwards rather than inferred.
 Ollama reports an id, not a weights digest. That id pins the local blob and
 nothing about how it was produced; a different machine pulling the same tag is
 not guaranteed the same bytes. Recorded as what it is.
+
+## The sandbox image
+
+Rounds 1–4 ran in `rust:1.88-slim@sha256:38bc5a86…`, which has no rustfmt
+component. `cargo fmt` there exits 1 for every input, and freezing requires it to
+exit 0, so no candidate in those rounds could have been freeze-ready. Round 4 was
+terminated when its cargo output showed this; it counts against the budget.
+
+From round 5 the image is built from `harness/image/Dockerfile` — the official
+`rust:1.88` plus `rustup component add rustfmt` — and pinned by image id
+`sha256:c96a2a4f16c4f95c62726034df62bbee5553a8bf61196d4fbbace90ef422be13`. The
+Dockerfile is committed, which says more about how the image was produced than a
+registry tag would. The component is added at image build time, once, over the
+network; the sandbox that runs a candidate still gets `--network none`.
+
+`preflight` now asks each required tool for its version inside the sandbox before
+a round may start.
 
 ## How the model is invoked
 

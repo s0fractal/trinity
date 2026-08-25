@@ -463,6 +463,24 @@ def t_refused_turn_feedback_is_transport_only():
            if ok else "the refusal feedback carries more than the transport rule")
 
 
+def t_sandbox_can_run_the_protocols_checks():
+    """Every cargo subcommand freezing requires must exist in the image."""
+    if shutil.which("docker") is None:
+        record("sandbox-can-run-the-protocols-checks", 2, False,
+               "docker is unavailable", skipped=True)
+        return
+    missing = []
+    with tempfile.TemporaryDirectory(dir=os.path.expanduser("~")) as probe:
+        for sub in ("fmt", "check", "build", "test"):
+            code, out = sandbox.run(probe, ["cargo", sub, "--help"], timeout_s=120)
+            if code != 0 and "not installed" in out:
+                missing.append(f"cargo {sub}: {out.strip()[:80]}")
+    ok = not missing
+    record("sandbox-can-run-the-protocols-checks", 2, ok,
+           "the image can run fmt, check, build and test — a freeze is reachable"
+           if ok else "; ".join(missing))
+
+
 def t_deleted_feedback_is_refused():
     """A recorded cargo.txt that has been deleted must stop the next round."""
     with tempfile.TemporaryDirectory() as tmp:
@@ -721,7 +739,7 @@ def main() -> int:
                t_model_is_called_over_the_api,
                t_refused_turn_feedback_is_transport_only,
                t_evaluate_requires_freeze,
-               t_evaluate_detects_tampered_tree, t_sandbox_isolation):
+               t_evaluate_detects_tampered_tree, t_sandbox_isolation, t_sandbox_can_run_the_protocols_checks):
         fn()
 
     failed = [r for r in RESULTS if not r["ok"] and not r["skipped"]]

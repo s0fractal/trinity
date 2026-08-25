@@ -1,0 +1,1969 @@
+FILE: Cargo.toml
+```
+[package]
+name = "candidate"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+```
+
+FILE: src/main.rs
+```
+use std::collections::HashMap;
+use std::io::{self, BufRead, BufReader, Write};
+
+const INTEGER_MIN: i64 = -((1i64 << 53) - 1);
+const INTEGER_MAX: i64 = (1i64 << 53) - 1;
+
+#[derive(Debug, Clone)]
+enum Value {
+    Null,
+    Bool(bool),
+    String(String),
+    Array(Vec<Value>),
+    Object(HashMap<String, Value>),
+    Integer(i64),
+    Float(f64),
+    Bytes(Vec<u8>),
+    Ratio { num: i64, den: i64 },
+    Fixed { value: i64 },
+}
+
+#[derive(Debug)]
+enum Error {
+    IoError(std::io::Error),
+    InvalidUtf8,
+    SyntaxError,
+    TrailingBytes,
+    DuplicateMemberName,
+    MalformedEscape,
+    UnpairedSurrogate,
+    NumberNotCnp0Integer,
+    IntegerOutOfRange,
+    SignedZero,
+    NonCanonicalForm,
+    ProfileIdentifierInvalid,
+    BytesHexInvalid,
+    RatioNotReduced,
+    RatioNonPositiveDenominator,
+    RatioZeroNotCanonical,
+    FixedScaleInValue,
+    TaggedFormInvalid,
+    ScaleDescriptorInvalid,
+}
+
+impl From<std::io::Error> for Error {
+    fn from(err: std::io::Error) -> Self {
+        Error::IoError(err)
+    }
+}
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let args: Vec<String> = std::env::args().collect();
+    if args.len() < 2 {
+        eprintln!("Usage: candidate encode|verify");
+        std::process::exit(1);
+    }
+
+    let subcommand = &args[1];
+    let reader = BufReader::new(io::stdin());
+    let mut writer = io::stdout();
+
+    for line in reader.lines() {
+        let line = line?;
+        if line.trim().is_empty() {
+            continue;
+        }
+
+        // Parse input manually without serde_json
+        let input = parse_json_object(&line)?;
+        let id = input.get("id").and_then(|v| v.as_str()).unwrap_or("").to_string();
+        let raw_hex = input.get("raw_hex").and_then(|v| v.as_str()).unwrap_or("").to_string();
+
+        let bytes = hex::decode(&raw_hex)
+            .map_err(|_| Error::BytesHexInvalid)?;
+
+        let result = match subcommand.as_str() {
+            "encode" => encode(&bytes),
+            "verify" => verify(&bytes),
+            _ => {
+                eprintln!("Unknown subcommand: {}", subcommand);
+                std::process::exit(1);
+            }
+        };
+
+        let output = match result {
+            Ok(canonical_bytes) => {
+                let canonical_hex = hex::encode(&canonical_bytes);
+                let sha256_digest = sha256(&canonical_bytes);
+                serde_json::json!({
+                    "id": id,
+                    "ok": true,
+                    "canonical_hex": canonical_hex,
+                    "sha256": sha256_digest
+                })
+            }
+            Err(category) => {
+                serde_json::json!({
+                    "id": id,
+                    "ok": false,
+                    "category": category
+                })
+            }
+        };
+
+        writeln!(writer, "{}", output)?;
+    }
+
+    Ok(())
+}
+
+fn encode(bytes: &[u8]) -> Result<Vec<u8>, String> {
+    // Parse the bytes into a Value
+    let parsed_value = parse_bytes_to_value(bytes)
+        .map_err(|e| format!("{:?}", e))?;
+    
+    // Canonicalize the value
+    let canonical_value = canonicalize_value(parsed_value);
+    
+    // Serialize back to canonical bytes
+    let canonical_bytes = serialize_value_to_bytes(&canonical_value);
+    
+    Ok(canonical_bytes)
+}
+
+fn verify(bytes: &[u8]) -> Result<Vec<u8>, String> {
+    // Parse the bytes into a Value
+    let parsed_value = parse_bytes_to_value(bytes)
+        .map_err(|e| format!("{:?}", e))?;
+    
+    // Check if it's canonical by re-serializing and comparing
+    let canonicalized_value = canonicalize_value(parsed_value);
+    let canonical_bytes = serialize_value_to_bytes(&canonicalized_value);
+
+    // Compare bytes
+    if bytes == canonical_bytes {
+        Ok(bytes.to_vec())
+    } else {
+        Err("non-canonical-form".to_string())
+    }
+}
+
+fn parse_json_object(s: &str) -> Result<serde_json::Map<String, serde_json::Value>, Error> {
+    let s = s.trim_start();
+    if !s.starts_with('{') {
+        return Err(Error::SyntaxError);
+    }
+
+    let mut chars = s[1..].chars().peekable();
+    let mut map = serde_json::Map::new();
+    let mut key = String::new();
+    let mut value = None;
+    let mut in_key = false;
+    let mut in_value = false;
+    let mut in_string = false;
+    let mut escape_next = false;
+    let mut depth = 0;
+
+    while let Some(ch) = chars.next() {
+        if !in_string && ch == '{' || ch == '[' {
+            depth += 1;
+        } else if !in_string && ch == '}' || ch == ']' {
+            depth -= 1;
+        }
+
+        match (ch, in_key, in_value) {
+            ('"', _, _) if !escape_next => {
+                if !in_string {
+                    in_string = true;
+                } else {
+                    in_string = false;
+                }
+            },
+            ('\\', _, _) if in_string && !escape_next => {
+                escape_next = true;
+                continue;
+            },
+            (_, true, false) if ch == ':' => {
+                in_key = false;
+                in_value = true;
+                value = Some(String::new());
+            },
+            (_, false, true) if ch == ',' || ch == '}' && depth == 0 => {
+                // Finished value
+                if let (Some(k), Some(v)) = (key.pop(), value.as_ref()) {
+                    map.insert(k, parse_json_string(v)?);
+                }
+                in_value = false;
+                value = None;
+                key.clear();
+            },
+            (_, true, false) if !in_string => {
+                key.push(ch);
+            },
+            (_, _, true) if !in_string => {
+                if let Some(v) = &mut value {
+                    v.push(ch);
+                }
+            },
+            _ => {
+                // Regular character
+                if in_key {
+                    key.push(ch);
+                } else if in_value {
+                    if let Some(v) = &mut value {
+                        v.push(ch);
+                    }
+                }
+            }
+        }
+
+        escape_next = false;
+    }
+
+    Ok(map)
+}
+
+fn parse_bytes_to_value(bytes: &[u8]) -> Result<Value, Error> {
+    // We need to parse the JSON manually since we can't use a JSON library
+    let s = std::str::from_utf8(bytes)
+        .map_err(|_| Error::InvalidUtf8)?;
+    
+    parse_json_string(s)
+}
+
+fn parse_json_string(s: &str) -> Result<Value, Error> {
+    // This is a simplified parser that only handles what we need for the spec
+    let trimmed = s.trim_start();
+    if trimmed.starts_with('{') {
+        parse_object(trimmed)
+    } else if trimmed.starts_with('[') {
+        parse_array(trimmed)
+    } else if trimmed.starts_with('"') {
+        parse_string(trimmed)
+    } else if trimmed == "null" {
+        Ok(Value::Null)
+    } else if trimmed == "true" {
+        Ok(Value::Bool(true))
+    } else if trimmed == "false" {
+        Ok(Value::Bool(false))
+    } else {
+        // Try to parse as number
+        parse_number(trimmed)
+    }
+}
+
+fn parse_object(s: &str) -> Result<Value, Error> {
+    if !s.starts_with('{') {
+        return Err(Error::SyntaxError);
+    }
+
+    let mut chars = s[1..].chars().peekable();
+    let mut map = HashMap::new();
+    let mut key = String::new();
+    let mut value = None;
+    let mut in_key = false;
+    let mut in_value = false;
+    let mut in_string = false;
+    let mut escape_next = false;
+    let mut depth = 0;
+    let mut duplicate_check = std::collections::HashSet::new();
+
+    while let Some(ch) = chars.next() {
+        if !in_string && ch == '{' || ch == '[' {
+            depth += 1;
+        } else if !in_string && ch == '}' || ch == ']' {
+            depth -= 1;
+        }
+
+        match (ch, in_key, in_value) {
+            ('"', _, _) if !escape_next => {
+                if !in_string {
+                    in_string = true;
+                } else {
+                    in_string = false;
+                }
+            },
+            ('\\', _, _) if in_string && !escape_next => {
+                escape_next = true;
+                continue;
+            },
+            (_, true, false) if ch == ':' => {
+                in_key = false;
+                in_value = true;
+                value = Some(String::new());
+            },
+            (_, false, true) if ch == ',' || ch == '}' && depth == 0 => {
+                // Finished value
+                if let (Some(k), Some(v)) = (key.pop(), value.as_ref()) {
+                    if !duplicate_check.insert(k.clone()) {
+                        return Err(Error::DuplicateMemberName);
+                    }
+                    map.insert(k, parse_json_string(v)?);
+                }
+                in_value = false;
+                value = None;
+                key.clear();
+            },
+            (_, true, false) if !in_string => {
+                key.push(ch);
+            },
+            (_, _, true) if !in_string => {
+                if let Some(v) = &mut value {
+                    v.push(ch);
+                }
+            },
+            _ => {
+                // Regular character
+                if in_key {
+                    key.push(ch);
+                } else if in_value {
+                    if let Some(v) = &mut value {
+                        v.push(ch);
+                    }
+                }
+            }
+        }
+
+        escape_next = false;
+    }
+
+    Ok(Value::Object(map))
+}
+
+fn parse_array(s: &str) -> Result<Value, Error> {
+    if !s.starts_with('[') {
+        return Err(Error::SyntaxError);
+    }
+
+    let mut chars = s[1..].chars().peekable();
+    let mut arr = Vec::new();
+    let mut in_string = false;
+    let mut escape_next = false;
+    let mut depth = 0;
+    let mut current_value = String::new();
+
+    while let Some(ch) = chars.next() {
+        if !in_string && ch == '{' || ch == '[' {
+            depth += 1;
+        } else if !in_string && ch == '}' || ch == ']' {
+            depth -= 1;
+        }
+
+        match ch {
+            '"' => {
+                if !escape_next {
+                    in_string = !in_string;
+                }
+            },
+            '\\' => {
+                escape_next = true;
+                continue;
+            },
+            ',' | ']' if depth == 0 && !in_string => {
+                arr.push(parse_json_string(&current_value)?);
+                current_value.clear();
+            },
+            _ => {
+                if in_string || !ch.is_whitespace() || ch == '"' {
+                    current_value.push(ch);
+                }
+            }
+        }
+
+        escape_next = false;
+    }
+
+    Ok(Value::Array(arr))
+}
+
+fn parse_string(s: &str) -> Result<Value, Error> {
+    if !s.starts_with('"') {
+        return Err(Error::SyntaxError);
+    }
+
+    let mut chars = s[1..].chars().peekable();
+    let mut result = String::new();
+    let mut escape_next = false;
+    
+    while let Some(ch) = chars.next() {
+        if escape_next {
+            match ch {
+                'n' => result.push('\n'),
+                'r' => result.push('\r'),
+                't' => result.push('\t'),
+                '"' => result.push('"'),
+                '\\' => result.push('\\'),
+                '/' => result.push('/'),
+                'b' => result.push('\x08'),
+                'f' => result.push('\x0c'),
+                'u' => {
+                    // Handle Unicode escape sequences
+                    let mut hex = String::new();
+                    for _ in 0..4 {
+                        if let Some(digit) = chars.next() {
+                            hex.push(digit);
+                        } else {
+                            return Err(Error::MalformedEscape);
+                        }
+                    }
+                    let code_point = u32::from_str_radix(&hex, 16)
+                        .map_err(|_| Error::MalformedEscape)?;
+                    if (0xD800..=0xDBFF).contains(&code_point) {
+                        // Surrogate pair
+                        if chars.next() != Some('\\') || chars.next() != Some('u') {
+                            return Err(Error::UnpairedSurrogate);
+                        }
+                        let mut hex2 = String::new();
+                        for _ in 0..4 {
+                            if let Some(digit) = chars.next() {
+                                hex2.push(digit);
+                            } else {
+                                return Err(Error::MalformedEscape);
+                            }
+                        }
+                        let code_point2 = u32::from_str_radix(&hex2, 16)
+                            .map_err(|_| Error::MalformedEscape)?;
+                        if !(0xDC00..=0xDFFF).contains(&code_point2) {
+                            return Err(Error::UnpairedSurrogate);
+                        }
+                        // Combine surrogate pair
+                        let combined = ((code_point - 0xD800) << 10) + (code_point2 - 0xDC00) + 0x10000;
+                        result.push(std::char::from_u32(combined).unwrap());
+                    } else if (0xDC00..=0xDFFF).contains(&code_point) {
+                        return Err(Error::UnpairedSurrogate);
+                    } else {
+                        result.push(std::char::from_u32(code_point).unwrap_or('\u{FFFD}'));
+                    }
+                },
+                _ => return Err(Error::MalformedEscape),
+            }
+            escape_next = false;
+        } else if ch == '"' {
+            break;
+        } else if ch == '\\' {
+            escape_next = true;
+        } else {
+            result.push(ch);
+        }
+    }
+
+    Ok(Value::String(result))
+}
+
+fn parse_number(s: &str) -> Result<Value, Error> {
+    // Check for floating point
+    if s.contains('.') || s.contains('e') || s.contains('E') {
+        return Err(Error::NumberNotCnp0Integer);
+    }
+
+    // Parse as integer
+    let num = s.parse::<i64>()
+        .map_err(|_| Error::IntegerOutOfRange)?;
+    
+    Ok(Value::Integer(num))
+}
+
+fn canonicalize_value(value: Value) -> Value {
+    match value {
+        Value::Object(map) => {
+            let mut sorted_map = HashMap::new();
+            let mut keys: Vec<String> = map.keys().cloned().collect();
+            keys.sort();
+            
+            for key in keys {
+                if let Some(v) = map.get(&key) {
+                    sorted_map.insert(key, canonicalize_value(v.clone()));
+                }
+            }
+            
+            Value::Object(sorted_map)
+        },
+        Value::Array(arr) => {
+            let mut canonicalized_arr = Vec::new();
+            for item in arr {
+                canonicalized_arr.push(canonicalize_value(item));
+            }
+            Value::Array(canonicalized_arr)
+        },
+        _ => value,
+    }
+}
+
+fn serialize_value_to_bytes(value: &Value) -> Vec<u8> {
+    // Simplified serialization to bytes
+    match value {
+        Value::Null => b"null".to_vec(),
+        Value::Bool(b) => if *b { b"true".to_vec() } else { b"false".to_vec() },
+        Value::String(s) => format!("\"{}\"", s).into_bytes().to_vec(),
+        Value::Array(arr) => {
+            let mut result = vec![b'['];
+            for (i, item) in arr.iter().enumerate() {
+                if i > 0 {
+                    result.push(b',');
+                }
+                result.extend_from_slice(&serialize_value_to_bytes(item));
+            }
+            result.push(b']');
+            result
+        },
+        Value::Object(map) => {
+            let mut result = vec![b'{'];
+            let mut keys: Vec<String> = map.keys().cloned().collect();
+            keys.sort();
+            for (i, key) in keys.iter().enumerate() {
+                if i > 0 {
+                    result.push(b',');
+                }
+                result.extend_from_slice(format!("\"{}\"", key).as_bytes());
+                result.push(b':');
+                result.extend_from_slice(&serialize_value_to_bytes(map.get(key).unwrap()));
+            }
+            result.push(b'}');
+            result
+        },
+        Value::Integer(i) => format!("{}", i).into_bytes().to_vec(),
+        _ => panic!("Unexpected value type in serialization"),
+    }
+}
+
+fn sha256(data: &[u8]) -> String {
+    // FIPS 180-4 SHA-256 implementation
+    use std::convert::TryInto;
+    
+    let mut h = [0x6a09e667u32, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 
+                0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19];
+    
+    let mut padded_data = data.to_vec();
+    padded_data.push(0x80);
+    
+    while (padded_data.len() * 8) % 512 != 448 {
+        padded_data.push(0x00);
+    }
+    
+    let bit_len = (data.len() * 8) as u64;
+    padded_data.extend_from_slice(&(bit_len.to_be_bytes()).to_vec());
+    
+    for chunk in padded_data.chunks_exact(64) {
+        let mut w = [0u32; 64];
+        for i in 0..16 {
+            w[i] = u32::from_be_bytes(chunk[4*i..4*(i+1)].try_into().unwrap());
+        }
+        
+        for i in 16..64 {
+            let s0 = w[i-15].rotate_right(7) ^ w[i-15].rotate_right(18) ^ (w[i-15] >> 3);
+            let s1 = w[i-2].rotate_right(17) ^ w[i-2].rotate_right(19) ^ (w[i-2] >> 10);
+            w[i] = w[i-16].wrapping_add(s0).wrapping_add(w[i-7]).wrapping_add(s1);
+        }
+        
+        let mut a: u32 = h[0];
+        let mut b: u32 = h[1];
+        let mut c: u32 = h[2];
+        let mut d: u32 = h[3];
+        let mut e: u32 = h[4];
+        let mut f: u32 = h[5];
+        let mut g: u32 = h[6];
+        let mut h_val: u32 = h[7];
+        
+        for i in 0..64 {
+            let s1 = e.rotate_right(6) ^ e.rotate_right(11) ^ e.rotate_right(25);
+            let ch = (e & f) ^ (!e & g);
+            let temp1 = h_val.wrapping_add(s1).wrapping_add(ch).wrapping_add(K[i]).wrapping_add(w[i]);
+            let s0 = a.rotate_right(2) ^ a.rotate_right(13) ^ a.rotate_right(22);
+            let maj = (a & b) ^ (a & c) ^ (b & c);
+            let temp2 = s0.wrapping_add(maj);
+            
+            h_val = temp1;
+            g = f;
+            f = e;
+            e = d.wrapping_add(temp1);
+            d = c;
+            c = b;
+            b = a;
+            a = temp1.wrapping_add(temp2);
+        }
+        
+        h[0] = h[0].wrapping_add(a);
+        h[1] = h[1].wrapping_add(b);
+        h[2] = h[2].wrapping_add(c);
+        h[3] = h[3].wrapping_add(d);
+        h[4] = h[4].wrapping_add(e);
+        h[5] = h[5].wrapping_add(f);
+        h[6] = h[6].wrapping_add(g);
+        h[7] = h[7].wrapping_add(h_val);
+    }
+    
+    let mut result = String::new();
+    for &val in &h {
+        result.push_str(&format!("{:08x}", val));
+    }
+    
+    result
+}
+
+const K: [u32; 64] = [
+    0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+    0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+    0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+    0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+    0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+    0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+    0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+    0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
+];
+
+// Add hex crate dependency
+extern crate hex;
+extern crate serde_json;
+```
+
+Wait, I need to fix the approach. Let me re-read the task and make a proper implementation without external dependencies.
+
+FILE: src/main.rs
+```
+use std::collections::HashMap;
+use std::io::{self, BufRead, BufReader, Write};
+
+const INTEGER_MIN: i64 = -((1i64 << 53) - 1);
+const INTEGER_MAX: i64 = (1i64 << 53) - 1;
+
+#[derive(Debug, Clone)]
+enum Value {
+    Null,
+    Bool(bool),
+    String(String),
+    Array(Vec<Value>),
+    Object(HashMap<String, Value>),
+    Integer(i64),
+    Float(f64),
+    Bytes(Vec<u8>),
+    Ratio { num: i64, den: i64 },
+    Fixed { value: i64 },
+}
+
+#[derive(Debug)]
+enum Error {
+    IoError(std::io::Error),
+    InvalidUtf8,
+    SyntaxError,
+    TrailingBytes,
+    DuplicateMemberName,
+    MalformedEscape,
+    UnpairedSurrogate,
+    NumberNotCnp0Integer,
+    IntegerOutOfRange,
+    SignedZero,
+    NonCanonicalForm,
+    ProfileIdentifierInvalid,
+    BytesHexInvalid,
+    RatioNotReduced,
+    RatioNonPositiveDenominator,
+    RatioZeroNotCanonical,
+    FixedScaleInValue,
+    TaggedFormInvalid,
+    ScaleDescriptorInvalid,
+}
+
+impl From<std::io::Error> for Error {
+    fn from(err: std::io::Error) -> Self {
+        Error::IoError(err)
+    }
+}
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let args: Vec<String> = std::env::args().collect();
+    if args.len() < 2 {
+        eprintln!("Usage: candidate encode|verify");
+        std::process::exit(1);
+    }
+
+    let subcommand = &args[1];
+    let reader = BufReader::new(io::stdin());
+    let mut writer = io::stdout();
+
+    for line in reader.lines() {
+        let line = line?;
+        if line.trim().is_empty() {
+            continue;
+        }
+
+        // Parse input manually without serde_json
+        let input = parse_json_object(&line)?;
+        let id = input.get("id").and_then(|v| v.as_str()).unwrap_or("").to_string();
+        let raw_hex = input.get("raw_hex").and_then(|v| v.as_str()).unwrap_or("").to_string();
+
+        let bytes = hex::decode(&raw_hex)
+            .map_err(|_| Error::BytesHexInvalid)?;
+
+        let result = match subcommand.as_str() {
+            "encode" => encode(&bytes),
+            "verify" => verify(&bytes),
+            _ => {
+                eprintln!("Unknown subcommand: {}", subcommand);
+                std::process::exit(1);
+            }
+        };
+
+        let output = match result {
+            Ok(canonical_bytes) => {
+                let canonical_hex = hex::encode(&canonical_bytes);
+                let sha256_digest = sha256(&canonical_bytes);
+                serde_json::json!({
+                    "id": id,
+                    "ok": true,
+                    "canonical_hex": canonical_hex,
+                    "sha256": sha256_digest
+                })
+            }
+            Err(category) => {
+                serde_json::json!({
+                    "id": id,
+                    "ok": false,
+                    "category": category
+                })
+            }
+        };
+
+        writeln!(writer, "{}", output)?;
+    }
+
+    Ok(())
+}
+
+fn encode(bytes: &[u8]) -> Result<Vec<u8>, String> {
+    // Parse the bytes into a Value
+    let parsed_value = parse_bytes_to_value(bytes)
+        .map_err(|e| format!("{:?}", e))?;
+    
+    // Canonicalize the value
+    let canonical_value = canonicalize_value(parsed_value);
+    
+    // Serialize back to canonical bytes
+    let canonical_bytes = serialize_value_to_bytes(&canonical_value);
+    
+    Ok(canonical_bytes)
+}
+
+fn verify(bytes: &[u8]) -> Result<Vec<u8>, String> {
+    // Parse the bytes into a Value
+    let parsed_value = parse_bytes_to_value(bytes)
+        .map_err(|e| format!("{:?}", e))?;
+    
+    // Check if it's canonical by re-serializing and comparing
+    let canonicalized_value = canonicalize_value(parsed_value);
+    let canonical_bytes = serialize_value_to_bytes(&canonicalized_value);
+
+    // Compare bytes
+    if bytes == canonical_bytes {
+        Ok(bytes.to_vec())
+    } else {
+        Err("non-canonical-form".to_string())
+    }
+}
+
+fn parse_json_object(s: &str) -> Result<serde_json::Map<String, serde_json::Value>, Error> {
+    let s = s.trim_start();
+    if !s.starts_with('{') {
+        return Err(Error::SyntaxError);
+    }
+
+    let mut chars = s[1..].chars().peekable();
+    let mut map = serde_json::Map::new();
+    let mut key = String::new();
+    let mut value = None;
+    let mut in_key = false;
+    let mut in_value = false;
+    let mut in_string = false;
+    let mut escape_next = false;
+    let mut depth = 0;
+
+    while let Some(ch) = chars.next() {
+        if !in_string && ch == '{' || ch == '[' {
+            depth += 1;
+        } else if !in_string && ch == '}' || ch == ']' {
+            depth -= 1;
+        }
+
+        match (ch, in_key, in_value) {
+            ('"', _, _) if !escape_next => {
+                if !in_string {
+                    in_string = true;
+                } else {
+                    in_string = false;
+                }
+            },
+            ('\\', _, _) if in_string && !escape_next => {
+                escape_next = true;
+                continue;
+            },
+            (_, true, false) if ch == ':' => {
+                in_key = false;
+                in_value = true;
+                value = Some(String::new());
+            },
+            (_, false, true) if ch == ',' || ch == '}' && depth == 0 => {
+                // Finished value
+                if let (Some(k), Some(v)) = (key.pop(), value.as_ref()) {
+                    map.insert(k, parse_json_string(v)?);
+                }
+                in_value = false;
+                value = None;
+                key.clear();
+            },
+            (_, true, false) if !in_string => {
+                key.push(ch);
+            },
+            (_, _, true) if !in_string => {
+                if let Some(v) = &mut value {
+                    v.push(ch);
+                }
+            },
+            _ => {
+                // Regular character
+                if in_key {
+                    key.push(ch);
+                } else if in_value {
+                    if let Some(v) = &mut value {
+                        v.push(ch);
+                    }
+                }
+            }
+        }
+
+        escape_next = false;
+    }
+
+    Ok(map)
+}
+
+fn parse_bytes_to_value(bytes: &[u8]) -> Result<Value, Error> {
+    // We need to parse the JSON manually since we can't use a JSON library
+    let s = std::str::from_utf8(bytes)
+        .map_err(|_| Error::InvalidUtf8)?;
+    
+    parse_json_string(s)
+}
+
+fn parse_json_string(s: &str) -> Result<Value, Error> {
+    // This is a simplified parser that only handles what we need for the spec
+    let trimmed = s.trim_start();
+    if trimmed.starts_with('{') {
+        parse_object(trimmed)
+    } else if trimmed.starts_with('[') {
+        parse_array(trimmed)
+    } else if trimmed.starts_with('"') {
+        parse_string(trimmed)
+    } else if trimmed == "null" {
+        Ok(Value::Null)
+    } else if trimmed == "true" {
+        Ok(Value::Bool(true))
+    } else if trimmed == "false" {
+        Ok(Value::Bool(false))
+    } else {
+        // Try to parse as number
+        parse_number(trimmed)
+    }
+}
+
+fn parse_object(s: &str) -> Result<Value, Error> {
+    if !s.starts_with('{') {
+        return Err(Error::SyntaxError);
+    }
+
+    let mut chars = s[1..].chars().peekable();
+    let mut map = HashMap::new();
+    let mut key = String::new();
+    let mut value = None;
+    let mut in_key = false;
+    let mut in_value = false;
+    let mut in_string = false;
+    let mut escape_next = false;
+    let mut depth = 0;
+    let mut duplicate_check = std::collections::HashSet::new();
+
+    while let Some(ch) = chars.next() {
+        if !in_string && ch == '{' || ch == '[' {
+            depth += 1;
+        } else if !in_string && ch == '}' || ch == ']' {
+            depth -= 1;
+        }
+
+        match (ch, in_key, in_value) {
+            ('"', _, _) if !escape_next => {
+                if !in_string {
+                    in_string = true;
+                } else {
+                    in_string = false;
+                }
+            },
+            ('\\', _, _) if in_string && !escape_next => {
+                escape_next = true;
+                continue;
+            },
+            (_, true, false) if ch == ':' => {
+                in_key = false;
+                in_value = true;
+                value = Some(String::new());
+            },
+            (_, false, true) if ch == ',' || ch == '}' && depth == 0 => {
+                // Finished value
+                if let (Some(k), Some(v)) = (key.pop(), value.as_ref()) {
+                    if !duplicate_check.insert(k.clone()) {
+                        return Err(Error::DuplicateMemberName);
+                    }
+                    map.insert(k, parse_json_string(v)?);
+                }
+                in_value = false;
+                value = None;
+                key.clear();
+            },
+            (_, true, false) if !in_string => {
+                key.push(ch);
+            },
+            (_, _, true) if !in_string => {
+                if let Some(v) = &mut value {
+                    v.push(ch);
+                }
+            },
+            _ => {
+                // Regular character
+                if in_key {
+                    key.push(ch);
+                } else if in_value {
+                    if let Some(v) = &mut value {
+                        v.push(ch);
+                    }
+                }
+            }
+        }
+
+        escape_next = false;
+    }
+
+    Ok(Value::Object(map))
+}
+
+fn parse_array(s: &str) -> Result<Value, Error> {
+    if !s.starts_with('[') {
+        return Err(Error::SyntaxError);
+    }
+
+    let mut chars = s[1..].chars().peekable();
+    let mut arr = Vec::new();
+    let mut in_string = false;
+    let mut escape_next = false;
+    let mut depth = 0;
+    let mut current_value = String::new();
+
+    while let Some(ch) = chars.next() {
+        if !in_string && ch == '{' || ch == '[' {
+            depth += 1;
+        } else if !in_string && ch == '}' || ch == ']' {
+            depth -= 1;
+        }
+
+        match ch {
+            '"' => {
+                if !escape_next {
+                    in_string = !in_string;
+                }
+            },
+            '\\' => {
+                escape_next = true;
+                continue;
+            },
+            ',' | ']' if depth == 0 && !in_string => {
+                arr.push(parse_json_string(&current_value)?);
+                current_value.clear();
+            },
+            _ => {
+                if in_string || !ch.is_whitespace() || ch == '"' {
+                    current_value.push(ch);
+                }
+            }
+        }
+
+        escape_next = false;
+    }
+
+    Ok(Value::Array(arr))
+}
+
+fn parse_string(s: &str) -> Result<Value, Error> {
+    if !s.starts_with('"') {
+        return Err(Error::SyntaxError);
+    }
+
+    let mut chars = s[1..].chars().peekable();
+    let mut result = String::new();
+    let mut escape_next = false;
+    
+    while let Some(ch) = chars.next() {
+        if escape_next {
+            match ch {
+                'n' => result.push('\n'),
+                'r' => result.push('\r'),
+                't' => result.push('\t'),
+                '"' => result.push('"'),
+                '\\' => result.push('\\'),
+                '/' => result.push('/'),
+                'b' => result.push('\x08'),
+                'f' => result.push('\x0c'),
+                'u' => {
+                    // Handle Unicode escape sequences
+                    let mut hex = String::new();
+                    for _ in 0..4 {
+                        if let Some(digit) = chars.next() {
+                            hex.push(digit);
+                        } else {
+                            return Err(Error::MalformedEscape);
+                        }
+                    }
+                    let code_point = u32::from_str_radix(&hex, 16)
+                        .map_err(|_| Error::MalformedEscape)?;
+                    if (0xD800..=0xDBFF).contains(&code_point) {
+                        // Surrogate pair
+                        if chars.next() != Some('\\') || chars.next() != Some('u') {
+                            return Err(Error::UnpairedSurrogate);
+                        }
+                        let mut hex2 = String::new();
+                        for _ in 0..4 {
+                            if let Some(digit) = chars.next() {
+                                hex2.push(digit);
+                            } else {
+                                return Err(Error::MalformedEscape);
+                            }
+                        }
+                        let code_point2 = u32::from_str_radix(&hex2, 16)
+                            .map_err(|_| Error::MalformedEscape)?;
+                        if !(0xDC00..=0xDFFF).contains(&code_point2) {
+                            return Err(Error::UnpairedSurrogate);
+                        }
+                        // Combine surrogate pair
+                        let combined = ((code_point - 0xD800) << 10) + (code_point2 - 0xDC00) + 0x10000;
+                        result.push(std::char::from_u32(combined).unwrap());
+                    } else if (0xDC00..=0xDFFF).contains(&code_point) {
+                        return Err(Error::UnpairedSurrogate);
+                    } else {
+                        result.push(std::char::from_u32(code_point).unwrap_or('\u{FFFD}'));
+                    }
+                },
+                _ => return Err(Error::MalformedEscape),
+            }
+            escape_next = false;
+        } else if ch == '"' {
+            break;
+        } else if ch == '\\' {
+            escape_next = true;
+        } else {
+            result.push(ch);
+        }
+    }
+
+    Ok(Value::String(result))
+}
+
+fn parse_number(s: &str) -> Result<Value, Error> {
+    // Check for floating point
+    if s.contains('.') || s.contains('e') || s.contains('E') {
+        return Err(Error::NumberNotCnp0Integer);
+    }
+
+    // Parse as integer
+    let num = s.parse::<i64>()
+        .map_err(|_| Error::IntegerOutOfRange)?;
+    
+    Ok(Value::Integer(num))
+}
+
+fn canonicalize_value(value: Value) -> Value {
+    match value {
+        Value::Object(map) => {
+            let mut sorted_map = HashMap::new();
+            let mut keys: Vec<String> = map.keys().cloned().collect();
+            keys.sort();
+            
+            for key in keys {
+                if let Some(v) = map.get(&key) {
+                    sorted_map.insert(key, canonicalize_value(v.clone()));
+                }
+            }
+            
+            Value::Object(sorted_map)
+        },
+        Value::Array(arr) => {
+            let mut canonicalized_arr = Vec::new();
+            for item in arr {
+                canonicalized_arr.push(canonicalize_value(item));
+            }
+            Value::Array(canonicalized_arr)
+        },
+        _ => value,
+    }
+}
+
+fn serialize_value_to_bytes(value: &Value) -> Vec<u8> {
+    // Simplified serialization to bytes
+    match value {
+        Value::Null => b"null".to_vec(),
+        Value::Bool(b) => if *b { b"true".to_vec() } else { b"false".to_vec() },
+        Value::String(s) => format!("\"{}\"", s).into_bytes().to_vec(),
+        Value::Array(arr) => {
+            let mut result = vec![b'['];
+            for (i, item) in arr.iter().enumerate() {
+                if i > 0 {
+                    result.push(b',');
+                }
+                result.extend_from_slice(&serialize_value_to_bytes(item));
+            }
+            result.push(b']');
+            result
+        },
+        Value::Object(map) => {
+            let mut result = vec![b'{'];
+            let mut keys: Vec<String> = map.keys().cloned().collect();
+            keys.sort();
+            for (i, key) in keys.iter().enumerate() {
+                if i > 0 {
+                    result.push(b',');
+                }
+                result.extend_from_slice(format!("\"{}\"", key).as_bytes());
+                result.push(b':');
+                result.extend_from_slice(&serialize_value_to_bytes(map.get(key).unwrap()));
+            }
+            result.push(b'}');
+            result
+        },
+        Value::Integer(i) => format!("{}", i).into_bytes().to_vec(),
+        _ => panic!("Unexpected value type in serialization"),
+    }
+}
+
+fn sha256(data: &[u8]) -> String {
+    // FIPS 180-4 SHA-256 implementation
+    use std::convert::TryInto;
+    
+    let mut h = [0x6a09e667u32, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 
+                0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19];
+    
+    let mut padded_data = data.to_vec();
+    padded_data.push(0x80);
+    
+    while (padded_data.len() * 8) % 512 != 448 {
+        padded_data.push(0x00);
+    }
+    
+    let bit_len = (data.len() * 8) as u64;
+    padded_data.extend_from_slice(&(bit_len.to_be_bytes()).to_vec());
+    
+    for chunk in padded_data.chunks_exact(64) {
+        let mut w = [0u32; 64];
+        for i in 0..16 {
+            w[i] = u32::from_be_bytes(chunk[4*i..4*(i+1)].try_into().unwrap());
+        }
+        
+        for i in 16..64 {
+            let s0 = w[i-15].rotate_right(7) ^ w[i-15].rotate_right(18) ^ (w[i-15] >> 3);
+            let s1 = w[i-2].rotate_right(17) ^ w[i-2].rotate_right(19) ^ (w[i-2] >> 10);
+            w[i] = w[i-16].wrapping_add(s0).wrapping_add(w[i-7]).wrapping_add(s1);
+        }
+        
+        let mut a: u32 = h[0];
+        let mut b: u32 = h[1];
+        let mut c: u32 = h[2];
+        let mut d: u32 = h[3];
+        let mut e: u32 = h[4];
+        let mut f: u32 = h[5];
+        let mut g: u32 = h[6];
+        let mut h_val: u32 = h[7];
+        
+        for i in 0..64 {
+            let s1 = e.rotate_right(6) ^ e.rotate_right(11) ^ e.rotate_right(25);
+            let ch = (e & f) ^ (!e & g);
+            let temp1 = h_val.wrapping_add(s1).wrapping_add(ch).wrapping_add(K[i]).wrapping_add(w[i]);
+            let s0 = a.rotate_right(2) ^ a.rotate_right(13) ^ a.rotate_right(22);
+            let maj = (a & b) ^ (a & c) ^ (b & c);
+            let temp2 = s0.wrapping_add(maj);
+            
+            h_val = temp1;
+            g = f;
+            f = e;
+            e = d.wrapping_add(temp1);
+            d = c;
+            c = b;
+            b = a;
+            a = temp1.wrapping_add(temp2);
+        }
+        
+        h[0] = h[0].wrapping_add(a);
+        h[1] = h[1].wrapping_add(b);
+        h[2] = h[2].wrapping_add(c);
+        h[3] = h[3].wrapping_add(d);
+        h[4] = h[4].wrapping_add(e);
+        h[5] = h[5].wrapping_add(f);
+        h[6] = h[6].wrapping_add(g);
+        h[7] = h[7].wrapping_add(h_val);
+    }
+    
+    let mut result = String::new();
+    for &val in &h {
+        result.push_str(&format!("{:08x}", val));
+    }
+    
+    result
+}
+
+const K: [u32; 64] = [
+    0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+    0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+    0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+    0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+    0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+    0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+    0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+    0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
+];
+```
+
+I need to remove the external dependencies since I cannot use them. Let me create a complete implementation that works with only the standard library.
+
+FILE: src/main.rs
+```
+use std::collections::HashMap;
+use std::io::{self, BufRead, BufReader, Write};
+
+const INTEGER_MIN: i64 = -((1i64 << 53) - 1);
+const INTEGER_MAX: i64 = (1i64 << 53) - 1;
+
+#[derive(Debug, Clone)]
+enum Value {
+    Null,
+    Bool(bool),
+    String(String),
+    Array(Vec<Value>),
+    Object(HashMap<String, Value>),
+    Integer(i64),
+    Float(f64),
+    Bytes(Vec<u8>),
+    Ratio { num: i64, den: i64 },
+    Fixed { value: i64 },
+}
+
+#[derive(Debug)]
+enum Error {
+    IoError(std::io::Error),
+    InvalidUtf8,
+    SyntaxError,
+    TrailingBytes,
+    DuplicateMemberName,
+    MalformedEscape,
+    UnpairedSurrogate,
+    NumberNotCnp0Integer,
+    IntegerOutOfRange,
+    SignedZero,
+    NonCanonicalForm,
+    ProfileIdentifierInvalid,
+    BytesHexInvalid,
+    RatioNotReduced,
+    RatioNonPositiveDenominator,
+    RatioZeroNotCanonical,
+    FixedScaleInValue,
+    TaggedFormInvalid,
+    ScaleDescriptorInvalid,
+}
+
+impl From<std::io::Error> for Error {
+    fn from(err: std::io::Error) -> Self {
+        Error::IoError(err)
+    }
+}
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let args: Vec<String> = std::env::args().collect();
+    if args.len() < 2 {
+        eprintln!("Usage: candidate encode|verify");
+        std::process::exit(1);
+    }
+
+    let subcommand = &args[1];
+    let reader = BufReader::new(io::stdin());
+    let mut writer = io::stdout();
+
+    for line in reader.lines() {
+        let line = line?;
+        if line.trim().is_empty() {
+            continue;
+        }
+
+        // Parse input manually without external dependencies
+        let input = parse_json_object(&line)?;
+        let id = get_string_value(&input, "id").unwrap_or("").to_string();
+        let raw_hex = get_string_value(&input, "raw_hex").unwrap_or("").to_string();
+
+        let bytes = hex_decode(&raw_hex)
+            .map_err(|_| Error::BytesHexInvalid)?;
+
+        let result = match subcommand.as_str() {
+            "encode" => encode(&bytes),
+            "verify" => verify(&bytes),
+            _ => {
+                eprintln!("Unknown subcommand: {}", subcommand);
+                std::process::exit(1);
+            }
+        };
+
+        let output = match result {
+            Ok(canonical_bytes) => {
+                let canonical_hex = hex_encode(&canonical_bytes);
+                let sha256_digest = sha256(&canonical_bytes);
+                serde_json::json!({
+                    "id": id,
+                    "ok": true,
+                    "canonical_hex": canonical_hex,
+                    "sha256": sha256_digest
+                })
+            }
+            Err(category) => {
+                serde_json::json!({
+                    "id": id,
+                    "ok": false,
+                    "category": category
+                })
+            }
+        };
+
+        writeln!(writer, "{}", output)?;
+    }
+
+    Ok(())
+}
+
+fn get_string_value(map: &HashMap<String, Value>, key: &str) -> Option<&String> {
+    if let Some(Value::String(s)) = map.get(key) {
+        Some(s)
+    } else {
+        None
+    }
+}
+
+fn encode(bytes: &[u8]) -> Result<Vec<u8>, String> {
+    // Parse the bytes into a Value
+    let parsed_value = parse_bytes_to_value(bytes)
+        .map_err(|e| format!("{:?}", e))?;
+    
+    // Canonicalize the value
+    let canonical_value = canonicalize_value(parsed_value);
+    
+    // Serialize back to canonical bytes
+    let canonical_bytes = serialize_value_to_bytes(&canonical_value);
+    
+    Ok(canonical_bytes)
+}
+
+fn verify(bytes: &[u8]) -> Result<Vec<u8>, String> {
+    // Parse the bytes into a Value
+    let parsed_value = parse_bytes_to_value(bytes)
+        .map_err(|e| format!("{:?}", e))?;
+    
+    // Check if it's canonical by re-serializing and comparing
+    let canonicalized_value = canonicalize_value(parsed_value);
+    let canonical_bytes = serialize_value_to_bytes(&canonicalized_value);
+
+    // Compare bytes
+    if bytes == canonical_bytes {
+        Ok(bytes.to_vec())
+    } else {
+        Err("non-canonical-form".to_string())
+    }
+}
+
+fn parse_json_object(s: &str) -> Result<HashMap<String, Value>, Error> {
+    let s = s.trim_start();
+    if !s.starts_with('{') {
+        return Err(Error::SyntaxError);
+    }
+
+    let mut chars = s[1..].chars().peekable();
+    let mut map = HashMap::new();
+    let mut key = String::new();
+    let mut value = None;
+    let mut in_key = false;
+    let mut in_value = false;
+    let mut in_string = false;
+    let mut escape_next = false;
+    let mut depth = 0;
+
+    while let Some(ch) = chars.next() {
+        if !in_string && ch == '{' || ch == '[' {
+            depth += 1;
+        } else if !in_string && ch == '}' || ch == ']' {
+            depth -= 1;
+        }
+
+        match (ch, in_key, in_value) {
+            ('"', _, _) if !escape_next => {
+                if !in_string {
+                    in_string = true;
+                } else {
+                    in_string = false;
+                }
+            },
+            ('\\', _, _) if in_string && !escape_next => {
+                escape_next = true;
+                continue;
+            },
+            (_, true, false) if ch == ':' => {
+                in_key = false;
+                in_value = true;
+                value = Some(String::new());
+            },
+            (_, false, true) if ch == ',' || ch == '}' && depth == 0 => {
+                // Finished value
+                if let (Some(k), Some(v)) = (key.pop(), value.as_ref()) {
+                    map.insert(k, parse_json_string(v)?);
+                }
+                in_value = false;
+                value = None;
+                key.clear();
+            },
+            (_, true, false) if !in_string => {
+                key.push(ch);
+            },
+            (_, _, true) if !in_string => {
+                if let Some(v) = &mut value {
+                    v.push(ch);
+                }
+            },
+            _ => {
+                // Regular character
+                if in_key {
+                    key.push(ch);
+                } else if in_value {
+                    if let Some(v) = &mut value {
+                        v.push(ch);
+                    }
+                }
+            }
+        }
+
+        escape_next = false;
+    }
+
+    Ok(map)
+}
+
+fn parse_bytes_to_value(bytes: &[u8]) -> Result<Value, Error> {
+    // We need to parse the JSON manually since we can't use a JSON library
+    let s = std::str::from_utf8(bytes)
+        .map_err(|_| Error::InvalidUtf8)?;
+    
+    parse_json_string(s)
+}
+
+fn parse_json_string(s: &str) -> Result<Value, Error> {
+    // This is a simplified parser that only handles what we need for the spec
+    let trimmed = s.trim_start();
+    if trimmed.starts_with('{') {
+        parse_object(trimmed)
+    } else if trimmed.starts_with('[') {
+        parse_array(trimmed)
+    } else if trimmed.starts_with('"') {
+        parse_string(trimmed)
+    } else if trimmed == "null" {
+        Ok(Value::Null)
+    } else if trimmed == "true" {
+        Ok(Value::Bool(true))
+    } else if trimmed == "false" {
+        Ok(Value::Bool(false))
+    } else {
+        // Try to parse as number
+        parse_number(trimmed)
+    }
+}
+
+fn parse_object(s: &str) -> Result<Value, Error> {
+    if !s.starts_with('{') {
+        return Err(Error::SyntaxError);
+    }
+
+    let mut chars = s[1..].chars().peekable();
+    let mut map = HashMap::new();
+    let mut key = String::new();
+    let mut value = None;
+    let mut in_key = false;
+    let mut in_value = false;
+    let mut in_string = false;
+    let mut escape_next = false;
+    let mut depth = 0;
+    let mut duplicate_check = std::collections::HashSet::new();
+
+    while let Some(ch) = chars.next() {
+        if !in_string && ch == '{' || ch == '[' {
+            depth += 1;
+        } else if !in_string && ch == '}' || ch == ']' {
+            depth -= 1;
+        }
+
+        match (ch, in_key, in_value) {
+            ('"', _, _) if !escape_next => {
+                if !in_string {
+                    in_string = true;
+                } else {
+                    in_string = false;
+                }
+            },
+            ('\\', _, _) if in_string && !escape_next => {
+                escape_next = true;
+                continue;
+            },
+            (_, true, false) if ch == ':' => {
+                in_key = false;
+                in_value = true;
+                value = Some(String::new());
+            },
+            (_, false, true) if ch == ',' || ch == '}' && depth == 0 => {
+                // Finished value
+                if let (Some(k), Some(v)) = (key.pop(), value.as_ref()) {
+                    if !duplicate_check.insert(k.clone()) {
+                        return Err(Error::DuplicateMemberName);
+                    }
+                    map.insert(k, parse_json_string(v)?);
+                }
+                in_value = false;
+                value = None;
+                key.clear();
+            },
+            (_, true, false) if !in_string => {
+                key.push(ch);
+            },
+            (_, _, true) if !in_string => {
+                if let Some(v) = &mut value {
+                    v.push(ch);
+                }
+            },
+            _ => {
+                // Regular character
+                if in_key {
+                    key.push(ch);
+                } else if in_value {
+                    if let Some(v) = &mut value {
+                        v.push(ch);
+                    }
+                }
+            }
+        }
+
+        escape_next = false;
+    }
+
+    Ok(Value::Object(map))
+}
+
+fn parse_array(s: &str) -> Result<Value, Error> {
+    if !s.starts_with('[') {
+        return Err(Error::SyntaxError);
+    }
+
+    let mut chars = s[1..].chars().peekable();
+    let mut arr = Vec::new();
+    let mut in_string = false;
+    let mut escape_next = false;
+    let mut depth = 0;
+    let mut current_value = String::new();
+
+    while let Some(ch) = chars.next() {
+        if !in_string && ch == '{' || ch == '[' {
+            depth += 1;
+        } else if !in_string && ch == '}' || ch == ']' {
+            depth -= 1;
+        }
+
+        match ch {
+            '"' => {
+                if !escape_next {
+                    in_string = !in_string;
+                }
+            },
+            '\\' => {
+                escape_next = true;
+                continue;
+            },
+            ',' | ']' if depth == 0 && !in_string => {
+                arr.push(parse_json_string(&current_value)?);
+                current_value.clear();
+            },
+            _ => {
+                if in_string || !ch.is_whitespace() || ch == '"' {
+                    current_value.push(ch);
+                }
+            }
+        }
+
+        escape_next = false;
+    }
+
+    Ok(Value::Array(arr))
+}
+
+fn parse_string(s: &str) -> Result<Value, Error> {
+    if !s.starts_with('"') {
+        return Err(Error::SyntaxError);
+    }
+
+    let mut chars = s[1..].chars().peekable();
+    let mut result = String::new();
+    let mut escape_next = false;
+    
+    while let Some(ch) = chars.next() {
+        if escape_next {
+            match ch {
+                'n' => result.push('\n'),
+                'r' => result.push('\r'),
+                't' => result.push('\t'),
+                '"' => result.push('"'),
+                '\\' => result.push('\\'),
+                '/' => result.push('/'),
+                'b' => result.push('\x08'),
+                'f' => result.push('\x0c'),
+                'u' => {
+                    // Handle Unicode escape sequences
+                    let mut hex = String::new();
+                    for _ in 0..4 {
+                        if let Some(digit) = chars.next() {
+                            hex.push(digit);
+                        } else {
+                            return Err(Error::MalformedEscape);
+                        }
+                    }
+                    let code_point = u32::from_str_radix(&hex, 16)
+                        .map_err(|_| Error::MalformedEscape)?;
+                    if (0xD800..=0xDBFF).contains(&code_point) {
+                        // Surrogate pair
+                        if chars.next() != Some('\\') || chars.next() != Some('u') {
+                            return Err(Error::UnpairedSurrogate);
+                        }
+                        let mut hex2 = String::new();
+                        for _ in 0..4 {
+                            if let Some(digit) = chars.next() {
+                                hex2.push(digit);
+                            } else {
+                                return Err(Error::MalformedEscape);
+                            }
+                        }
+                        let code_point2 = u32::from_str_radix(&hex2, 16)
+                            .map_err(|_| Error::MalformedEscape)?;
+                        if !(0xDC00..=0xDFFF).contains(&code_point2) {
+                            return Err(Error::UnpairedSurrogate);
+                        }
+                        // Combine surrogate pair
+                        let combined = ((code_point - 0xD800) << 10) + (code_point2 - 0xDC00) + 0x10000;
+                        result.push(std::char::from_u32(combined).unwrap());
+                    } else if (0xDC00..=0xDFFF).contains(&code_point) {
+                        return Err(Error::UnpairedSurrogate);
+                    } else {
+                        result.push(std::char::from_u32(code_point).unwrap_or('\u{FFFD}'));
+                    }
+                },
+                _ => return Err(Error::MalformedEscape),
+            }
+            escape_next = false;
+        } else if ch == '"' {
+            break;
+        } else if ch == '\\' {
+            escape_next = true;
+        } else {
+            result.push(ch);
+        }
+    }
+
+    Ok(Value::String(result))
+}
+
+fn parse_number(s: &str) -> Result<Value, Error> {
+    // Check for floating point
+    if s.contains('.') || s.contains('e') || s.contains('E') {
+        return Err(Error::NumberNotCnp0Integer);
+    }
+
+    // Parse as integer
+    let num = s.parse::<i64>()
+        .map_err(|_| Error::IntegerOutOfRange)?;
+    
+    Ok(Value::Integer(num))
+}
+
+fn canonicalize_value(value: Value) -> Value {
+    match value {
+        Value::Object(map) => {
+            let mut sorted_map = HashMap::new();
+            let mut keys: Vec<String> = map.keys().cloned().collect();
+            keys.sort();
+            
+            for key in keys {
+                if let Some(v) = map.get(&key) {
+                    sorted_map.insert(key, canonicalize_value(v.clone()));
+                }
+            }
+            
+            Value::Object(sorted_map)
+        },
+        Value::Array(arr) => {
+            let mut canonicalized_arr = Vec::new();
+            for item in arr {
+                canonicalized_arr.push(canonicalize_value(item));
+            }
+            Value::Array(canonicalized_arr)
+        },
+        _ => value,
+    }
+}
+
+fn serialize_value_to_bytes(value: &Value) -> Vec<u8> {
+    // Simplified serialization to bytes
+    match value {
+        Value::Null => b"null".to_vec(),
+        Value::Bool(b) => if *b { b"true".to_vec() } else { b"false".to_vec() },
+        Value::String(s) => format!("\"{}\"", s).into_bytes().to_vec(),
+        Value::Array(arr) => {
+            let mut result = vec![b'['];
+            for (i, item) in arr.iter().enumerate() {
+                if i > 0 {
+                    result.push(b',');
+                }
+                result.extend_from_slice(&serialize_value_to_bytes(item));
+            }
+            result.push(b']');
+            result
+        },
+        Value::Object(map) => {
+            let mut result = vec![b'{'];
+            let mut keys: Vec<String> = map.keys().cloned().collect();
+            keys.sort();
+            for (i, key) in keys.iter().enumerate() {
+                if i > 0 {
+                    result.push(b',');
+                }
+                result.extend_from_slice(format!("\"{}\"", key).as_bytes());
+                result.push(b':');
+                result.extend_from_slice(&serialize_value_to_bytes(map.get(key).unwrap()));
+            }
+            result.push(b'}');
+            result
+        },
+        Value::Integer(i) => format!("{}", i).into_bytes().to_vec(),
+        _ => panic!("Unexpected value type in serialization"),
+    }
+}
+
+fn hex_decode(s: &str) -> Result<Vec<u8>, ()> {
+    if s.len() % 2 != 0 {
+        return Err(());
+    }
+
+    let mut result = Vec::new();
+    
+    for chunk in s.chars().collect::<Vec<char>>().chunks(2) {
+        let hex_byte = format!("{}{}", chunk[0], chunk[1]);
+        let byte = u8::from_str_radix(&hex_byte, 16).map_err(|_| ())?;
+        result.push(byte);
+    }
+    
+    Ok(result)
+}
+
+fn hex_encode(bytes: &[u8]) -> String {
+    let mut result = String::new();
+    for &byte in bytes {
+        result.push_str(&format!("{:02x}", byte));
+    }
+    result
+}
+
+fn sha256(data: &[u8]) -> String {
+    // FIPS 180-4 SHA-256 implementation
+    use std::convert::TryInto;
+    
+    let mut h = [0x6a09e667u32, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 
+                0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19];
+    
+    let mut padded_data = data.to_vec();
+    padded_data.push(0x80);
+    
+    while (padded_data.len() * 8) % 512 != 448 {
+        padded_data.push(0x00);
+    }
+    
+    let bit_len = (data.len() * 8) as u64;
+    padded_data.extend_from_slice(&(bit_len.to_be_bytes()).to_vec());
+    
+    for chunk in padded_data.chunks_exact(64) {
+        let mut w = [0u32; 64];
+        for i in 0..16 {
+            w[i] = u32::from_be_bytes(chunk[4*i..4*(i+1)].try_into().unwrap());
+        }
+        
+        for i in 16..64 {
+            let s0 = w[i-15].rotate_right(7) ^ w[i-15].rotate_right(18) ^ (w[i-15] >> 3);
+            let s1 = w[i-2].rotate_right(17) ^ w[i-2].rotate_right(19) ^ (w[i-2] >> 10);
+            w[i] = w[i-16].wrapping_add(s0).wrapping_add(w[i-7]).wrapping_add(s1);
+        }
+        
+        let mut a: u32 = h[0];
+        let mut b: u32 = h[1];
+        let mut c: u32 = h[2];
+        let mut d: u32 = h[3];
+        let mut e: u32 = h[4];
+        let mut f: u32 = h[5];
+        let mut g: u32 = h[6];
+        let mut h_val: u32 = h[7];
+        
+        for i in 0..64 {
+            let s1 = e.rotate_right(6) ^ e.rotate_right(11) ^ e.rotate_right(25);
+            let ch = (e & f) ^ (!e & g);
+            let temp1 = h_val.wrapping_add(s1).wrapping_add(ch).wrapping_add(K[i]).wrapping_add(w[i]);
+            let s0 = a.rotate_right(2) ^ a.rotate_right(13) ^ a.rotate_right(22);
+            let maj = (a & b) ^ (a & c) ^ (b & c);
+            let temp2 = s0.wrapping_add(maj);
+            
+            h_val = temp1;
+            g = f;
+            f = e;
+            e = d.wrapping_add(temp1);
+            d = c;
+            c = b;
+            b = a;
+            a = temp1.wrapping_add(temp2);
+        }
+        
+        h[0] = h[0].wrapping_add(a);
+        h[1] = h[1].wrapping_add(b);
+        h[2] = h[2].wrapping_add(c);
+        h[3] = h[3].wrapping_add(d);
+        h[4] = h[4].wrapping_add(e);
+        h[5] = h[5].wrapping_add(f);
+        h[6] = h[6].wrapping_add(g);
+        h[7] = h[7].wrapping_add(h_val);
+    }
+    
+    let mut result = String::new();
+    for &val in &h {
+        result.push_str(&format!("{:08x}", val));
+    }
+    
+    result
+}
+
+const K: [u32; 64] = [
+    0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+    0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+    0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+    0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+    0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+    0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+    0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+    0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
+];
+
+// Simple JSON serialization for output (since we can't use external dependencies)
+mod serde_json {
+    use std::collections::HashMap;
+    
+    #[derive(Debug)]
+    pub struct Value {
+        pub map: Option<HashMap<String, Value>>,
+        pub string: Option<String>,
+        pub array: Option<Vec<Value>>,
+        pub bool: Option<bool>,
+        pub null: bool,
+        pub integer: Option<i64>,
+    }
+    
+    impl Value {
+        pub fn as_str(&self) -> Option<&str> {
+            self.string.as_ref().map(|s| s.as_str())
+        }
+        
+        pub fn as_array(&self) -> Option<&Vec<Value>> {
+            self.array.as_ref()
+        }
+        
+        pub fn get(&self, key: &str) -> Option<&Value> {
+            self.map.as_ref().and_then(|m| m.get(key))
+        }
+    }
+    
+    pub fn json!(val: impl Into<super::Value>) -> Value {
+        val.into()
+    }
+    
+    impl From<super::Value> for Value {
+        fn from(v: super::Value) -> Self {
+            match v {
+                super::Value::Null => Value { 
+                    map: None, 
+                    string: None, 
+                    array: None, 
+                    bool: None, 
+                    null: true, 
+                    integer: None 
+                },
+                super::Value::Bool(b) => Value { 
+                    map: None, 
+                    string: None, 
+                    array: None, 
+                    bool: Some(b), 
+                    null: false, 
+                    integer: None 
+                },
+                super::Value::String(s) => Value { 
+                    map: None, 
+                    string: Some(s), 
+                    array: None, 
+                    bool: None, 
+                    null: false, 
+                    integer: None 
+                },
+                super::Value::Array(arr) => Value { 
+                    map: None, 
+                    string: None, 
+                    array: Some(arr.into_iter().map(|v| v.into()).collect()), 
+                    bool: None, 
+                    null: false, 
+                    integer: None 
+                },
+                super::Value::Object(map) => {
+                    let mut result_map = HashMap::new();
+                    for (k, v) in map {
+                        result_map.insert(k, v.into());
+                    }
+                    Value { 
+                        map: Some(result_map), 
+                        string: None, 
+                        array: None, 
+                        bool: None, 
+                        null: false, 
+                        integer: None 
+                    }
+                },
+                super::Value::Integer(i) => Value { 
+                    map: None, 
+                    string: None, 
+                    array: None, 
+                    bool: None, 
+                    null: false, 
+                    integer: Some(i) 
+                },
+                _ => Value { 
+                    map: None, 
+                    string: None, 
+                    array: None, 
+                    bool: None, 
+                    null: false, 
+                    integer: None 
+                }
+            }
+        }
+    }
+}
+```

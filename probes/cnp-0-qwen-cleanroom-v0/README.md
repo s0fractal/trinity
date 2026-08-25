@@ -104,7 +104,7 @@ container, defined once in `harness/sandbox.py`:
 
 | | |
 | --- | --- |
-| image | `rust:1.88-slim@sha256:38bc5a86…` — pinned by digest, because a tag can be repointed |
+| image | built from `harness/image/Dockerfile`, pinned by id `sha256:c96a2a4f…`, because a tag can be repointed |
 | network | `--network none` |
 | filesystem | one mount, the working directory; Trinity and the corpus are not mounted |
 | privileges | `--read-only`, `--cap-drop ALL`, `--security-opt no-new-privileges` |
@@ -249,6 +249,26 @@ This rule changed **after** a round failed on it, which is the shape of a
 self-serving change, so it is recorded as one: round 3 still counts against the
 budget, and the rule that forbids excusing a round the model ran was written
 before round 3 started.
+
+### The sandbox must be able to run the protocol's own checks
+
+`cargo fmt -- --check` has to exit 0 before a candidate can be frozen. No
+official rust image ships rustfmt — `rust:1.88-slim` and `rust:1.88` both install
+the minimal rustup profile, and `cargo fmt` in either resolves to a shim that
+reports the component missing and exits 1 for every input. So **no candidate
+could ever have been freeze-ready**, in any round, whatever it wrote. The
+harness had checked that the image was present and never that it could do the
+work.
+
+Round 4's own cargo output said so, and the round was stopped there. It counts
+against the budget anyway: the model ran and produced work, and the rule
+forbidding such a round from being excused was written before it started. That
+the fault was the proctor's does not change what the rule says.
+
+The image is now built from `harness/image/Dockerfile` and pinned by id, and
+`preflight` asks each required tool for its version, offline, before a round can
+start. A check that can never pass decides the experiment in the harness rather
+than in the model.
 
 ### The pack is re-derived, not trusted
 

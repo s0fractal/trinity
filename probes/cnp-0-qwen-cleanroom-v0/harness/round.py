@@ -73,23 +73,44 @@ def rounds_so_far() -> list[dict]:
 def previous_feedback(prior: list[dict]) -> tuple[str | None, str | None]:
     """The ONLY feedback channel before the freeze: the last round's cargo output.
 
-    Its digest was recorded when that round ran, and it is re-checked here, so a
-    file edited between rounds cannot enter the prompt unnoticed.
+    Absence is not evidence of a pre-cargo failure. Treating it that way was a
+    bypass: a recorded `cargo.txt` could simply be deleted and the next round ran
+    with no feedback and no complaint. So absence is legal only when the record
+    itself says cargo never ran — no digest, no exits, and an error on the record.
     """
     if not prior:
         return None, None
     last = prior[-1]
     n = last["round"]
     path = os.path.join(TRANSCRIPT, f"round-{n:02d}", "cargo.txt")
+    recorded = last.get("cargo_output_sha256")
+    exits = last.get("cargo")
+    reached_cargo = bool(recorded) or bool(exits)
+
     if not os.path.exists(path):
-        # A round can fail before cargo ever runs — the generation failed, or it
-        # emitted nothing usable. There is no machine output to carry, and that
-        # must not deadlock the budget: the next round simply starts clean.
-        return None, None
+        if reached_cargo:
+            raise SystemExit(
+                f"round {n} recorded cargo output"
+                + (f" (sha256 {recorded})" if recorded else f" (exits {exits})")
+                + f" but {path} is gone.\n"
+                "The pre-freeze feedback channel is the only thing carried between "
+                "rounds; a missing record of it is a refusal, not an empty channel."
+            )
+        if not last.get("error"):
+            raise SystemExit(
+                f"round {n} has no cargo output and no recorded error explaining "
+                "why cargo never ran. Refusing to proceed on an unexplained gap."
+            )
+        return None, None  # a genuine pre-cargo failure, recorded as one
+
     data = open(path, "rb").read()
     digest = sha(data)
-    recorded = last.get("cargo_output_sha256")
-    if recorded and recorded != digest:
+    if not recorded:
+        raise SystemExit(
+            f"round {n} has a cargo.txt but recorded no digest for it. Feedback "
+            "must be pinned when it is produced, or it cannot be checked later."
+        )
+    if recorded != digest:
         raise SystemExit(
             f"round {n} cargo output has been modified since it was produced\n"
             f"  recorded {recorded}\n  now      {digest}\n"
@@ -257,6 +278,14 @@ def main() -> int:
         )
     n = len(prior) + 1
     if n > MAX_PRE_FREEZE_ROUNDS:
+        # The budget is spent. If the process died between recording the last
+        # round and writing the outcome, reconstruct it here: the outcome is a
+        # function of the rounds, so it is deterministic, and leaving it unwritten
+        # would let a crash erase the experiment's conclusion.
+        if not os.path.exists(OUTCOME):
+            write_outcome("INCONCLUSIVE", INCONCLUSIVE, len(prior),
+                          [r.get("output_sha256") for r in prior])
+            print(f"recovered the outcome that was never written: {INCONCLUSIVE}")
         raise SystemExit(
             f"the agreed budget is {MAX_PRE_FREEZE_ROUNDS} rounds and they are "
             "spent. The recorded outcome is INCONCLUSIVE; there is no fourth round."

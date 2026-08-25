@@ -20,6 +20,7 @@ Usage:
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import shutil
@@ -369,11 +370,61 @@ def t_stale_pack_refused():
 def _round_record(probe: str, n: int, **fields) -> None:
     tdir = os.path.join(probe, "provenance", "transcript")
     os.makedirs(os.path.join(tdir, f"round-{n:02d}"), exist_ok=True)
-    rec = {"round": n, "model_exit": 0, "compiles": False, "freeze_ready": False}
+    with_cargo = fields.pop("with_cargo", True)
+    rec = {"round": n, "model_exit": 0, "compiles": False, "freeze_ready": False,
+           "output_sha256": f"{n:064d}"}
+    if with_cargo:
+        body = b"output\n"
+        open(os.path.join(tdir, f"round-{n:02d}", "cargo.txt"), "wb").write(body)
+        rec["cargo"] = {"fmt": 0, "check": 0, "build": 0, "test": 1}
+        rec["cargo_output_sha256"] = hashlib.sha256(body).hexdigest()
     rec.update(fields)
     json.dump(rec, open(os.path.join(tdir, f"round-{n:02d}.json"), "w"))
-    if fields.get("with_cargo", True):
-        open(os.path.join(tdir, f"round-{n:02d}", "cargo.txt"), "w").write("output\n")
+
+
+def t_deleted_feedback_is_refused():
+    """A recorded cargo.txt that has been deleted must stop the next round."""
+    with tempfile.TemporaryDirectory() as tmp:
+        probe = _fake_probe(tmp)
+        _round_record(probe, 1)
+        os.remove(os.path.join(probe, "provenance", "transcript", "round-01", "cargo.txt"))
+        r = _run(probe, "round.py", "--workdir",
+                 os.path.expanduser("~/cnp0-selftest-workdir"), "--dry-run")
+        blob = r.stdout + r.stderr
+        ok = r.returncode != 0 and "is gone" in blob
+        record("deleted-feedback-is-refused", 1, ok,
+               "refused a round whose recorded feedback had been deleted" if ok
+               else blob[-200:])
+
+
+def t_unpinned_feedback_is_refused():
+    """Feedback that exists but was never pinned cannot be checked, so it is refused."""
+    with tempfile.TemporaryDirectory() as tmp:
+        probe = _fake_probe(tmp)
+        _round_record(probe, 1)
+        rec_path = os.path.join(probe, "provenance", "transcript", "round-01.json")
+        rec = json.load(open(rec_path))
+        del rec["cargo_output_sha256"]
+        json.dump(rec, open(rec_path, "w"))
+        r = _run(probe, "round.py", "--workdir",
+                 os.path.expanduser("~/cnp0-selftest-workdir"), "--dry-run")
+        blob = r.stdout + r.stderr
+        ok = r.returncode != 0 and "recorded no digest" in blob
+        record("unpinned-feedback-is-refused", 1, ok,
+               "refused feedback that was never pinned" if ok else blob[-200:])
+
+
+def t_unexplained_missing_feedback_is_refused():
+    """No cargo output and no recorded reason is a gap, not a pre-cargo failure."""
+    with tempfile.TemporaryDirectory() as tmp:
+        probe = _fake_probe(tmp)
+        _round_record(probe, 1, with_cargo=False)
+        r = _run(probe, "round.py", "--workdir",
+                 os.path.expanduser("~/cnp0-selftest-workdir"), "--dry-run")
+        blob = r.stdout + r.stderr
+        ok = r.returncode != 0 and "unexplained gap" in blob
+        record("unexplained-missing-feedback-refused", 1, ok,
+               "refused an unexplained missing feedback file" if ok else blob[-200:])
 
 
 def t_no_round_after_freeze_ready():
@@ -410,24 +461,57 @@ def t_check_passed_test_failed_allows_next_round():
 
 
 def t_third_not_ready_records_inconclusive():
-    """A third round that compiles but is not freeze-ready must end the experiment."""
+    """A third non-ready round must WRITE the outcome, not merely end the budget."""
     with tempfile.TemporaryDirectory() as tmp:
         probe = _fake_probe(tmp)
-        for i in (1, 2):
-            _round_record(probe, i, compiles=True, freeze_ready=False)
+        _round_record(probe, 1)
+        _round_record(probe, 2)
+        # Drive the real terminal path rather than asserting around it.
+        script = (
+            "import sys, json; sys.path.insert(0, %r);"
+            "import round as r;"
+            "prior = r.rounds_so_far();"
+            "rec = {'round': 3, 'model_exit': 0, 'compiles': True,"
+            " 'freeze_ready': False, 'output_sha256': '3'*64,"
+            " 'cargo': {'fmt':0,'check':0,'build':0,'test':1}};"
+            "sys.exit(r.finish(rec, 3, prior))"
+        ) % os.path.join(probe, "harness")
+        proc = subprocess.run([sys.executable, "-c", script],
+                              capture_output=True, text=True)
+        outcome_path = os.path.join(probe, "provenance", "outcome.json")
+        ok = proc.returncode == 0 and os.path.exists(outcome_path)
+        detail = (proc.stdout + proc.stderr)[-160:]
+        if ok:
+            outcome = json.load(open(outcome_path))
+            ok = (
+                outcome["status"] == "INCONCLUSIVE"
+                and "no freeze-ready candidate" in outcome["detail"]
+                and outcome["rounds"] == 3
+                and len(outcome["round_output_sha256"]) == 3
+                and outcome["round_output_sha256"][-1] == "3" * 64
+            )
+            detail = ("outcome written with three round digests" if ok
+                      else f"outcome recorded oddly: {outcome}")
+        record("third-not-ready-records-inconclusive", 1, ok, detail)
+
+
+def t_lost_outcome_is_recovered():
+    """If the process died before writing the outcome, the next run reconstructs it."""
+    with tempfile.TemporaryDirectory() as tmp:
+        probe = _fake_probe(tmp)
+        for i in (1, 2, 3):
+            _round_record(probe, i)
         r = _run(probe, "round.py", "--workdir",
                  os.path.expanduser("~/cnp0-selftest-workdir"), "--dry-run")
-        # The third round is permitted; the outcome is written when it ends.
-        permitted = r.returncode == 0 and "round 3" in (r.stdout + r.stderr)
-        _round_record(probe, 3, compiles=True, freeze_ready=False)
-        r4 = _run(probe, "round.py", "--workdir",
-                  os.path.expanduser("~/cnp0-selftest-workdir"), "--dry-run")
-        blob4 = r4.stdout + r4.stderr
-        no_fourth = r4.returncode != 0 and "no fourth round" in blob4
-        ok = permitted and no_fourth
-        record("third-not-ready-records-inconclusive", 1, ok,
-               "a third non-ready round is the last one" if ok
-               else f"permitted={permitted} no_fourth={no_fourth}: {blob4[-160:]}")
+        blob = r.stdout + r.stderr
+        outcome_path = os.path.join(probe, "provenance", "outcome.json")
+        ok = r.returncode != 0 and "no fourth round" in blob and os.path.exists(outcome_path)
+        if ok:
+            outcome = json.load(open(outcome_path))
+            ok = outcome["status"] == "INCONCLUSIVE" and outcome["rounds"] == 3
+        record("lost-outcome-is-recovered", 1, ok,
+               "an outcome that was never written was reconstructed before refusing"
+               if ok else blob[-200:])
 
 
 def t_failed_generation_does_not_deadlock_budget():
@@ -543,9 +627,12 @@ def main() -> int:
                t_stale_capsule_detected, t_pack_leak_check, t_workdir_inside_trinity,
                t_tree_refuses_build_script, t_tree_refuses_cargo_config,
                t_tree_refuses_duplicate_block, t_tree_refuses_escape,
-               t_stale_pack_refused, t_no_round_after_freeze_ready,
+               t_stale_pack_refused, t_deleted_feedback_is_refused,
+               t_unpinned_feedback_is_refused,
+               t_unexplained_missing_feedback_is_refused,
+               t_no_round_after_freeze_ready,
                t_check_passed_test_failed_allows_next_round,
-               t_third_not_ready_records_inconclusive,
+               t_third_not_ready_records_inconclusive, t_lost_outcome_is_recovered,
                t_failed_generation_does_not_deadlock_budget, t_no_round_after_freeze,
                t_no_fourth_round, t_evaluate_requires_freeze,
                t_evaluate_detects_tampered_tree, t_sandbox_isolation):

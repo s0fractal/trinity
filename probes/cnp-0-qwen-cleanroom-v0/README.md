@@ -167,7 +167,10 @@ leave the next round available with no feedback to carry, rather than stalling
 the budget on a missing `cargo.txt`.
 
 If the third round ends without a freeze-ready candidate — for any reason — an
-outcome is recorded, once, with the digests of all three rounds' outputs:
+outcome is recorded, once, with the digests of all three rounds' outputs. The
+outcome is a function of the rounds, so if the process dies between recording the
+last round and writing it, the next invocation reconstructs it before refusing a
+fourth round: a crash must not erase the experiment's conclusion.
 
 > INCONCLUSIVE: no freeze-ready candidate within the agreed three-round
 > model/capsule/tooling budget; not evidence of RFC failure
@@ -192,6 +195,13 @@ cargo output and nothing else**, taken automatically and re-digested against
 what that round recorded. There is no flag that accepts a file: an earlier
 version had `--feedback <path>`, and a reviewer fed it a contract to prove the
 point.
+
+**Absence is not evidence of a pre-cargo failure.** Treating it that way was the
+last bypass found: a recorded `cargo.txt` could be deleted and the next round ran
+with no feedback and no complaint. A missing file is now legal only when the
+round record itself says cargo never ran — no digest, no exits, and a recorded
+error. A file that exists must have been pinned when it was produced, and must
+still match.
 
 At most **three** rounds before the freeze. After round 1 the prompt changes only
 by the appended machine output, and `pack_sha256` in every round record shows it.
@@ -234,11 +244,13 @@ workdir inside Trinity, a `build.rs`, a `.cargo/config.toml`, a duplicated
 `FILE:` block, a path escape, a stale pack at round and at freeze, a round after
 something compiled, a round after a freeze-ready candidate, a compiling-but-failing round still
 having a next round, a third non-ready round being the last, a failed generation
-not deadlocking the budget, a round after the freeze, a fourth round, a freeze with no
+not deadlocking the budget, deleted feedback, feedback that was never pinned, an
+unexplained missing feedback file, an outcome actually written with three round
+digests, an outcome reconstructed after a crash, a round after the freeze, a fourth round, a freeze with no
 transcript, a freeze on a round that was not freeze-ready, a freeze on a failed
 generation, a tree edited between the round and the freeze, a build that rewrites
 a source, scoring without a freeze, scoring a tree that no longer matches the
-freeze, and the isolation itself. **33 controls.**
+freeze, and the isolation itself. **37 controls.**
 
 The protocol refusals run **before** the sandbox is touched, on purpose: a budget
 check that only works where Docker is installed is one that silently stops being

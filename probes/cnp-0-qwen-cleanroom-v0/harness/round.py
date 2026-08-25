@@ -585,6 +585,17 @@ def main() -> int:
 
         emitted = extract_files(output)
         entry["files"] = [rel for rel, _ in emitted]
+        # Every block, including the ones a later block in the same reply
+        # supersedes. Last wins — as it already does across turns — but nothing
+        # is discarded from the record, so the transcript shows how many blocks
+        # a path got and which one was taken.
+        last_at = {rel: i for i, (rel, _) in enumerate(emitted)}
+        entry["blocks"] = [
+            {"path": rel, "bytes": len(body.encode("utf-8")),
+             "sha256": sha(body.encode("utf-8")),
+             "superseded": i != last_at[rel]}
+            for i, (rel, body) in enumerate(emitted)
+        ]
         try:
             tree.check_emitted([rel for rel, _ in emitted], require_complete=False)
             refused = None
@@ -619,6 +630,18 @@ def main() -> int:
             record["turns"] = turns
             record["error"] = f"turn {turn} produced nothing within {TURN_TIMEOUT_S}s"
             record["freeze_ready"] = False
+            return finish(record, n, prior)
+
+        try:
+            tree.check_emitted(sorted(accumulated), require_complete=False)
+        except tree.TreeError as exc:
+            # The per-turn check bounds one reply; this bounds the tree the turns
+            # have built up. Eight turns of sixty-four files each is not sixty-
+            # four files, and only this call can see that.
+            record["turns"] = turns
+            record["error"] = f"the accumulated tree is not admissible: {exc}"
+            record["freeze_ready"] = False
+            print(f"  turn {turn}: {exc}")
             return finish(record, n, prior)
 
         buildable = "Cargo.toml" in accumulated and any(

@@ -342,9 +342,37 @@ def t_tree_refuses_cargo_config():
 
 
 def t_tree_refuses_duplicate_block():
-    expect_raises("tree-refuses-duplicate-file", 1,
-                  lambda: tree.check_emitted(["Cargo.toml", "src/main.rs", "src/main.rs"]),
-                  "more than once")
+    """A revision inside one reply is accepted, and every block is recorded.
+
+    This control used to assert the opposite. The harness resolves a path
+    emitted in turn 3 and again in turn 5 silently in favour of the later one,
+    so refusing the same thing inside a single reply was an inconsistency, not a
+    principle — and it cost rounds 3, 4 and 5 fourteen turns.
+    """
+    ok = True
+    try:
+        tree.check_emitted(["Cargo.toml", "src/main.rs", "src/main.rs"])
+    except tree.TreeError:
+        ok = False
+    if ok:
+        sys.path.insert(0, os.path.join(HERE, "harness"))
+        import round as roundmod
+        blocks = roundmod.extract_files(
+            "FILE: src/main.rs\n```\nfirst\n```\n"
+            "FILE: src/main.rs\n```\nsecond\n```\n")
+        ok = len(blocks) == 2 and blocks[-1][1].strip() == "second"
+    record("duplicate-path-is-recorded-not-refused", 1, ok,
+           "a path emitted twice in one reply is accepted with the last winning, "
+           "and both blocks stay visible to the record"
+           if ok else "a revision inside one reply is still refused or collapsed")
+
+
+def t_tree_caps_the_accumulated_tree():
+    """The file cap must bind on the tree, not only on one reply."""
+    many = ["Cargo.toml"] + [f"src/m{i}.rs" for i in range(tree.MAX_FILES + 4)]
+    expect_raises("tree-caps-the-accumulated-tree", 1,
+                  lambda: tree.check_emitted(many, require_complete=False),
+                  "over the cap")
 
 
 def t_tree_refuses_escape():
@@ -725,7 +753,7 @@ def main() -> int:
                t_failed_generation_is_never_freeze_ready, t_capsule_verbatim,
                t_stale_capsule_detected, t_pack_leak_check, t_workdir_inside_trinity,
                t_tree_refuses_build_script, t_tree_refuses_cargo_config,
-               t_tree_refuses_duplicate_block, t_tree_refuses_escape,
+               t_tree_refuses_duplicate_block, t_tree_caps_the_accumulated_tree, t_tree_refuses_escape,
                t_stale_pack_refused, t_deleted_feedback_is_refused,
                t_unpinned_feedback_is_refused,
                t_unexplained_missing_feedback_is_refused,

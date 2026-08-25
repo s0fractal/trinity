@@ -231,24 +231,43 @@ than being recorded as an answer: a reply containing any control sequence at all
 whose token count reaches the served context, because ollama truncates an
 over-long prompt at the **front** — where the specification sits.
 
-### A malformed reply costs a turn, not the round
+### A malformed reply costs a turn — and a revision is not malformed
 
 Round 3 ended on turn 2 because the model emitted `src/main.rs` six times in one
-reply, revising it as it went. Refusing that emission is right — two blocks for
-one path means the last silently wins and which was meant is unknowable — but
-ending the round on it spent a budget round on a packaging slip, and left the
-model no way to correct something it was never told it had done.
+reply. The refusal now costs the turn, not the round: the model is shown,
+verbatim, the transport rule it broke, under a heading saying this is about the
+format of the reply and not its content. A control asserts that channel carries
+nothing about the specification, the corpus, or the design. If the last turn of a
+round is refused, the round ends there.
 
-The refusal now costs the turn. The model is shown, verbatim, the transport rule
-it broke, under a heading saying this is about the format of the reply and not
-its content. That channel carries nothing about the specification, the corpus, or
-the design; a control asserts as much. If the last turn of a round is refused,
-the round ends there.
+That rule changed **after** a round failed on it, which is the shape of a
+self-serving change, so it is recorded as one: round 3 still counts, and the rule
+forbidding a round the model actually ran from being excused was written before
+round 3 started.
 
-This rule changed **after** a round failed on it, which is the shape of a
-self-serving change, so it is recorded as one: round 3 still counts against the
-budget, and the rule that forbids excusing a round the model ran was written
-before round 3 started.
+**Then the refusal itself turned out to be wrong.** It rested on "the last block
+silently wins and which was meant is unknowable" — but the harness already
+resolves a path emitted in turn 3 and again in turn 5 that way, silently, in
+favour of the later one. Refusing within a reply what is accepted across replies
+is an inconsistency, not a principle. And nothing was unknowable: between the
+blocks the model said which it meant, every time —
+
+> Wait, I realize that I've made a significant error in my implementation
+> approach. … Let me correct this:
+
+Rounds 3, 4 and 5 lost fourteen turns between them to it, six of round 5's eight.
+What the original worry deserved was a record, not a refusal. Last wins
+everywhere now, and `round.py` digests **every** block including the superseded
+ones, so the transcript shows how many blocks a path got and which was taken.
+Round 5 counts.
+
+### A cap must bind where the files actually accumulate
+
+`check_emitted` bounds one reply. Adding turns meant nothing bounded the tree the
+turns built up: sixty-four files per reply, eight replies, and `tree.collect`
+counted bytes per file and never counted files. The accumulated set is now
+checked before every build, and `collect` enforces the cap on the whole tree —
+the check existed, it was just pointed at the set that could not exceed it.
 
 ### The sandbox must be able to run the protocol's own checks
 

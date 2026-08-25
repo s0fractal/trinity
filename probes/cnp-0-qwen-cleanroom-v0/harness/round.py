@@ -154,6 +154,35 @@ INCONCLUSIVE = (
 )
 
 
+def compare_trees(emitted: dict, final: dict) -> tuple[list[str], list[str]]:
+    """What the build changed, split into what cargo may change and what it may not.
+
+    Cargo writes `Cargo.lock` itself, so that one is attributed rather than
+    counted as tampering. Anything else appearing, changing, or vanishing means
+    the tree that was measured is not the tree the model emitted.
+    """
+    changed, cargo_generated = [], []
+    for rel, meta in final.items():
+        before = emitted.get(rel)
+        if before is None or before["sha256"] != meta["sha256"]:
+            (cargo_generated if rel == "Cargo.lock" else changed).append(rel)
+    for rel in emitted:
+        if rel not in final:
+            changed.append(rel)
+    return sorted(set(changed)), sorted(set(cargo_generated))
+
+
+def compute_freeze_ready(model_exit, exits: dict, modified: list, tree_error) -> bool:
+    """Freeze-ready means all four cargo commands clean, the generation itself
+    succeeded, and the build rewrote nothing of the model's."""
+    return (
+        model_exit == 0
+        and all(exits.get(sub) == 0 for sub in ("fmt", "check", "build", "test"))
+        and not modified
+        and not tree_error
+    )
+
+
 def write_outcome(status: str, detail: str, rounds: int) -> None:
     if os.path.exists(OUTCOME):
         return  # an outcome is written once
@@ -285,6 +314,10 @@ def main() -> int:
         written[rel] = {"bytes": len(data), "sha256": sha(data)}
     record["written"] = written
     tree.assert_no_build_hooks(workdir)
+    emitted_sha, emitted_manifest = tree.digest(
+        [(rel, open(os.path.join(workdir, rel), "rb").read()) for rel in sorted(written)]
+    )
+    record["emitted_tree_sha256"] = emitted_sha
 
     if not sandbox.mount_is_visible(workdir):
         record["error"] = "the workdir is not visible inside the sandbox"
@@ -303,9 +336,29 @@ def main() -> int:
         exits[sub] = code
         cargo_out.append(f"$ cargo {sub}  (exit {code})\n{out}\n")
         if sub == "check" and code != 0:
-            break
+            break  # build and test say nothing about code that does not compile
     record["cargo"] = exits
     record["compiles"] = exits.get("check") == 0
+
+    # What cargo left behind. A test can rewrite a source file, and then the tree
+    # that was measured is not the tree the model emitted — so the comparison is
+    # made rather than assumed.
+    try:
+        after = tree.collect(workdir)
+        record.pop("tree_error", None)
+    except tree.TreeError as exc:
+        record["tree_error"] = f"the tree is not admissible after the build: {exc}"
+        after = []
+    final_sha, final_manifest = tree.digest(after)
+    record["final_tree_sha256"] = final_sha
+    record["final_tree"] = final_manifest
+
+    changed, cargo_generated = compare_trees(emitted_manifest, final_manifest)
+    record["cargo_generated"] = cargo_generated
+    record["modified_by_build"] = changed
+    record["freeze_ready"] = compute_freeze_ready(
+        record.get("model_exit"), exits, changed, record.get("tree_error")
+    )
 
     cargo_text = "\n".join(cargo_out)
     cargo_path = os.path.join(raw_dir, "cargo.txt")
@@ -318,9 +371,14 @@ def main() -> int:
     print(f"round {n}/{MAX_PRE_FREEZE_ROUNDS}: {len(written)} file(s), "
           f"compiles={record['compiles']}, {record['elapsed_s']}s")
     print(f"  transcript {os.path.relpath(raw_dir, HERE)}")
-    if record["compiles"]:
-        print("  IT COMPILES — the only next step is the freeze:")
+    if record["modified_by_build"]:
+        print(f"  the build modified {record['modified_by_build']}, so the tree "
+              "measured is not the tree emitted; not freeze-ready")
+    if record["freeze_ready"]:
+        print("  FREEZE-READY — fmt, check, build and test all clean:")
         print(f"    python3 harness/freeze.py --workdir {workdir}")
+    elif record["compiles"]:
+        print("  it compiles but is not freeze-ready; see the cargo exits above")
     elif n >= MAX_PRE_FREEZE_ROUNDS:
         write_outcome("INCONCLUSIVE", INCONCLUSIVE, n)
         print(f"  budget spent after {n} rounds and nothing compiled.")

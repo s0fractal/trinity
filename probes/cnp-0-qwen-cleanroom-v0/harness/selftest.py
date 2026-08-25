@@ -33,6 +33,7 @@ sys.path.insert(0, os.path.join(HERE, "harness"))
 import sandbox  # noqa: E402
 import evaluate  # noqa: E402
 import tree  # noqa: E402
+import round as roundmod  # noqa: E402
 
 RESULTS: list[dict] = []
 
@@ -65,6 +66,35 @@ def _fake_probe(tmp: str, with_capsule: bool = False) -> str:
     shutil.copy2(os.path.join(HERE, "provenance", "pack.json"),
                  os.path.join(probe, "provenance", "pack.json"))
     return probe
+
+
+def _tiny_project(path: str) -> str:
+    work = os.path.expanduser(path)
+    shutil.rmtree(work, ignore_errors=True)
+    os.makedirs(os.path.join(work, "src"))
+    open(os.path.join(work, "Cargo.toml"), "w").write(
+        '[package]\nname="candidate"\nversion="0.1.0"\nedition="2021"\n')
+    open(os.path.join(work, "src", "main.rs"), "w").write("fn main(){}\n")
+    return work
+
+
+def _freeze_ready_round(probe: str, workdir: str, **overrides) -> None:
+    """Write a transcript that looks like a proctored round which passed."""
+    tdir = os.path.join(probe, "provenance", "transcript")
+    os.makedirs(tdir, exist_ok=True)
+    files = tree.collect(workdir) if os.path.isdir(workdir) else []
+    final_sha, manifest = tree.digest(files)
+    pack = json.load(open(os.path.join(probe, "provenance", "pack.json")))
+    rec = {
+        "round": 1, "model_exit": 0, "compiles": True, "freeze_ready": True,
+        "cargo": {"fmt": 0, "check": 0, "build": 0, "test": 0},
+        "modified_by_build": [], "cargo_generated": [],
+        "final_tree_sha256": final_sha, "final_tree": manifest,
+        "workdir": os.path.realpath(workdir), "pack_sha256": pack["pack_sha256"],
+        "prompt_sha256": "p" * 64, "output_sha256": "o" * 64,
+    }
+    rec.update(overrides)
+    json.dump(rec, open(os.path.join(tdir, "round-01.json"), "w"))
 
 
 def _run(probe: str, script: str, *args: str) -> subprocess.CompletedProcess:
@@ -133,24 +163,80 @@ def t_arbitrary_feedback():
            else f"accepted an arbitrary feedback file: {proc.stdout[-200:]}")
 
 
+def t_freeze_requires_transcript():
+    """A freeze records a proctored round, not the contents of a directory."""
+    with tempfile.TemporaryDirectory() as tmp:
+        probe = _fake_probe(tmp)
+        r = _run(probe, "freeze.py", "--workdir", os.path.expanduser("~/cnp0-selftest-none"))
+        blob = r.stdout + r.stderr
+        ok = r.returncode != 0 and "no transcript" in blob
+        record("freeze-requires-transcript", 1, ok,
+               "refused a freeze with no transcript" if ok else blob[-200:])
+
+
+def t_freeze_refuses_not_ready():
+    with tempfile.TemporaryDirectory() as tmp:
+        probe = _fake_probe(tmp)
+        work = _tiny_project("~/cnp0-selftest-notready")
+        try:
+            _freeze_ready_round(probe, work, freeze_ready=False,
+                                cargo={"fmt": 0, "check": 1})
+            r = _run(probe, "freeze.py", "--workdir", work)
+            blob = r.stdout + r.stderr
+            ok = r.returncode != 0 and "not freeze-ready" in blob
+            record("freeze-refuses-not-ready", 1, ok,
+                   "refused a round that did not build cleanly" if ok else blob[-200:])
+        finally:
+            shutil.rmtree(work, ignore_errors=True)
+
+
+def t_freeze_refuses_failed_generation():
+    with tempfile.TemporaryDirectory() as tmp:
+        probe = _fake_probe(tmp)
+        work = _tiny_project("~/cnp0-selftest-modelexit")
+        try:
+            _freeze_ready_round(probe, work, model_exit=1)
+            r = _run(probe, "freeze.py", "--workdir", work)
+            blob = r.stdout + r.stderr
+            ok = r.returncode != 0 and "model_exit" in blob
+            record("freeze-refuses-failed-generation", 1, ok,
+                   "refused a round whose generation failed" if ok else blob[-200:])
+        finally:
+            shutil.rmtree(work, ignore_errors=True)
+
+
+def t_freeze_detects_edit_after_round():
+    """A file changed between the round and the freeze must stop the freeze."""
+    with tempfile.TemporaryDirectory() as tmp:
+        probe = _fake_probe(tmp)
+        work = _tiny_project("~/cnp0-selftest-edited")
+        try:
+            _freeze_ready_round(probe, work)
+            with open(os.path.join(work, "src", "main.rs"), "a") as fh:
+                fh.write("// edited after the round\n")
+            r = _run(probe, "freeze.py", "--workdir", work)
+            blob = r.stdout + r.stderr
+            ok = r.returncode != 0 and "changed since the round" in blob
+            record("freeze-detects-edit-after-round", 1, ok,
+                   "refused a tree edited after its round" if ok else blob[-200:])
+        finally:
+            shutil.rmtree(work, ignore_errors=True)
+
+
 def t_freeze_once():
     """A second freeze must refuse rather than overwrite the one checkpoint."""
     with tempfile.TemporaryDirectory() as tmp:
         probe = _fake_probe(tmp)
-        work = os.path.expanduser("~/cnp0-selftest-freeze")
-        shutil.rmtree(work, ignore_errors=True)
-        os.makedirs(os.path.join(work, "src"))
-        open(os.path.join(work, "Cargo.toml"), "w").write("[package]\n")
-        open(os.path.join(work, "src", "main.rs"), "w").write("fn main(){}\n")
+        work = _tiny_project("~/cnp0-selftest-freeze")
         try:
-            first = _run(probe, "freeze.py", "--workdir", work)
-            second = _run(probe, "freeze.py", "--workdir", work)
-            ok = first.returncode == 0 and second.returncode != 0 and \
-                "already exists" in (second.stdout + second.stderr)
+            _freeze_ready_round(probe, work)
+            json.dump({"tree_sha256": "x"},
+                      open(os.path.join(probe, "provenance", "freeze.json"), "w"))
+            r = _run(probe, "freeze.py", "--workdir", work)
+            blob = r.stdout + r.stderr
+            ok = r.returncode != 0 and "already exists" in blob
             record("freeze-once", 1, ok,
-                   "second freeze refused" if ok
-                   else f"first={first.returncode} second={second.returncode}: "
-                        f"{(first.stdout + first.stderr + second.stdout + second.stderr)[-200:]}")
+                   "refused a second freeze" if ok else blob[-200:])
         finally:
             shutil.rmtree(work, ignore_errors=True)
 
@@ -158,19 +244,39 @@ def t_freeze_once():
 def t_freeze_rejects_symlink():
     with tempfile.TemporaryDirectory() as tmp:
         probe = _fake_probe(tmp)
-        work = os.path.expanduser("~/cnp0-selftest-symlink")
-        shutil.rmtree(work, ignore_errors=True)
-        os.makedirs(os.path.join(work, "src"))
-        open(os.path.join(work, "Cargo.toml"), "w").write("[package]\n")
-        os.symlink("/etc/hosts", os.path.join(work, "src", "sneaky.rs"))
+        work = _tiny_project("~/cnp0-selftest-symlink")
         try:
-            proc = _run(probe, "freeze.py", "--workdir", work)
-            blob = proc.stdout + proc.stderr
-            ok = proc.returncode != 0 and "symlink" in blob
+            _freeze_ready_round(probe, work)
+            os.symlink("/etc/hosts", os.path.join(work, "src", "sneaky.rs"))
+            r = _run(probe, "freeze.py", "--workdir", work)
+            blob = r.stdout + r.stderr
+            ok = r.returncode != 0 and "symlink" in blob
             record("freeze-rejects-symlink", 1, ok,
                    "refused a symlink" if ok else blob[-200:])
         finally:
             shutil.rmtree(work, ignore_errors=True)
+
+
+def t_build_rewriting_a_source_is_caught():
+    """A test that rewrites src/main.rs must be visible, and not freeze-ready."""
+    emitted = {"src/main.rs": {"sha256": "a"}, "Cargo.toml": {"sha256": "b"}}
+    final = {"src/main.rs": {"sha256": "REWRITTEN"}, "Cargo.toml": {"sha256": "b"},
+             "Cargo.lock": {"sha256": "c"}}
+    changed, generated = roundmod.compare_trees(emitted, final)
+    ok = changed == ["src/main.rs"] and generated == ["Cargo.lock"] and \
+        roundmod.compute_freeze_ready(0, {"fmt": 0, "check": 0, "build": 0, "test": 0},
+                                      changed, None) is False
+    record("build-rewriting-a-source-is-caught", 1, ok,
+           "a rewritten source is attributed to the build, Cargo.lock is not" if ok
+           else f"changed={changed} generated={generated}")
+
+
+def t_failed_generation_is_never_freeze_ready():
+    ok = roundmod.compute_freeze_ready(
+        1, {"fmt": 0, "check": 0, "build": 0, "test": 0}, [], None) is False
+    record("failed-generation-not-freeze-ready", 1, ok,
+           "a non-zero model exit can never be freeze-ready" if ok
+           else "a failed generation was treated as freeze-ready")
 
 
 def t_capsule_verbatim():
@@ -364,7 +470,11 @@ def t_sandbox_isolation():
 def main() -> int:
     for fn in (t_wrong_verify_digest, t_encode_digest_inconsistent, t_out_of_order,
                t_rejection_without_category, t_empty_scope, t_arbitrary_feedback,
-               t_freeze_once, t_freeze_rejects_symlink, t_capsule_verbatim,
+               t_freeze_requires_transcript, t_freeze_refuses_not_ready,
+               t_freeze_refuses_failed_generation, t_freeze_detects_edit_after_round,
+               t_freeze_once, t_freeze_rejects_symlink,
+               t_build_rewriting_a_source_is_caught,
+               t_failed_generation_is_never_freeze_ready, t_capsule_verbatim,
                t_stale_capsule_detected, t_pack_leak_check, t_workdir_inside_trinity,
                t_tree_refuses_build_script, t_tree_refuses_cargo_config,
                t_tree_refuses_duplicate_block, t_tree_refuses_escape,

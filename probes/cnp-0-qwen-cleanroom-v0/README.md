@@ -134,6 +134,25 @@ path that escapes the directory, and a `FILE:` block emitted twice for one path
 Nothing is skipped: a skipped file is one nobody records. Before any build, the
 tree is checked again for build hooks whoever created them.
 
+### A freeze records a round, not a directory
+
+`freeze.py` used to look at no transcript at all: it would freeze whatever was in
+the working directory, and the harness's own `freeze-once` test proved it by
+freezing an invalid `Cargo.toml` no model had written.
+
+A freeze now requires the last transcript round to have `model_exit == 0` and
+`freeze_ready == true`, where freeze-ready means **all four** of `fmt`, `check`,
+`build`, `test` exited 0 **and the build rewrote nothing of the model's**. Each
+round records the tree digest twice — as emitted, and again after cargo has run —
+so a test that rewrites `src/main.rs` is visible. `Cargo.lock` is the one file
+cargo may write, and it is attributed as such rather than counted as tampering.
+
+Before anything is copied, the current tree is compared byte-for-byte against
+the round's `final_tree_sha256`, so a file edited between the round and the
+freeze stops it; then the sources are rebuilt **from nothing**, without the
+round's `target/`, because a tree that only builds against an existing cache is
+not a tree that builds.
+
 ### The budget is three rounds, and it ends
 
 Exactly three pre-freeze rounds. After the first `compiles=true` the only next
@@ -198,15 +217,17 @@ flattering possible bug.
 ### Negative controls, wired into `./t check`
 
 `harness/selftest.py` (and `ts/harness_test.ts`, in `deno task test:unit`) makes
-each guard refuse on demand — **24 controls**: a wrong `verify` digest, an encode
+each guard refuse on demand: a wrong `verify` digest, an encode
 digest that is not of its own bytes, an out-of-order id, a rejection with no
 category, an empty scope, an arbitrary feedback file, a second freeze, a symlink
 in the frozen tree, an edited quotation, a pack naming an implementation, a
 workdir inside Trinity, a `build.rs`, a `.cargo/config.toml`, a duplicated
 `FILE:` block, a path escape, a stale pack at round and at freeze, a round after
-something compiled, a round after the freeze, a fourth round, scoring without a
-freeze, scoring a tree that no longer matches the freeze, and the isolation
-itself.
+something compiled, a round after the freeze, a fourth round, a freeze with no
+transcript, a freeze on a round that was not freeze-ready, a freeze on a failed
+generation, a tree edited between the round and the freeze, a build that rewrites
+a source, scoring without a freeze, scoring a tree that no longer matches the
+freeze, and the isolation itself. **30 controls.**
 
 The protocol refusals run **before** the sandbox is touched, on purpose: a budget
 check that only works where Docker is installed is one that silently stops being

@@ -72,8 +72,13 @@ def why_refused(rel: str) -> str:
     )
 
 
-def check_emitted(paths: list[str]) -> None:
-    """Validate the set of paths a model emitted, before anything is written."""
+def check_emitted(paths: list[str], require_complete: bool = True) -> None:
+    """Validate the set of paths a model emitted, before anything is written.
+
+    `require_complete` is False for a single turn inside a round: work arrives
+    across turns, so a turn that adds one module is legal. The accumulated set is
+    checked with it True before anything is built.
+    """
     seen: set[str] = set()
     for rel in paths:
         norm = rel.replace(os.sep, "/")
@@ -88,12 +93,13 @@ def check_emitted(paths: list[str]) -> None:
         seen.add(norm)
         if not is_allowed(norm):
             raise TreeError(why_refused(rel))
-    if not seen:
-        raise TreeError("no files were emitted")
     if len(seen) > MAX_FILES:
         raise TreeError(f"{len(seen)} files, over the cap of {MAX_FILES}")
-    if "Cargo.toml" not in seen:
-        raise TreeError("no Cargo.toml was emitted; there is nothing to build")
+    if require_complete:
+        if not seen:
+            raise TreeError("no files were emitted")
+        if "Cargo.toml" not in seen:
+            raise TreeError("no Cargo.toml was emitted; there is nothing to build")
 
 
 def collect(workdir: str) -> list[tuple[str, bytes]]:

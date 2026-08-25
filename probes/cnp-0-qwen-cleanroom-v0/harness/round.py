@@ -12,7 +12,8 @@ written so it cannot quietly do more:
   touches it. `cargo fmt` runs as `--check`, never as a rewrite;
 * every command runs in the sandbox of `sandbox.py`: no network, no host
   filesystem, pinned image;
-* at most three rounds before the freeze.
+* a bounded number of rounds before the freeze — three by default, and any
+  change to that a committed decision in `provenance/budget.json`.
 
 Usage:
     python3 harness/round.py --workdir ~/cnp0-cleanroom
@@ -39,8 +40,20 @@ TRANSCRIPT = os.path.join(HERE, "provenance", "transcript")
 
 PACK_FILES = ["capsule/SPEC.md", "capsule/INTERFACE.md", "capsule/EXAMPLES.ndjson",
               "capsule/TASK.md"]
-EXPECTED_MODEL_ID = "5642e97495e1"
+# Explicit rather than sniffed: `ollama show` does not report thinking support,
+# and a wrong guess either wastes an hour of hidden reasoning or errors out.
+MODELS = {
+    "qwen3.8:27b-mlx": {"id": "5642e97495e1", "think": True},
+    "qwen3-coder:30b": {"id": "06c1097efce0", "think": False},
+}
 MAX_PRE_FREEZE_ROUNDS = 3
+# A round is a conversation with itself, not a single shot. Requiring a whole
+# strict parser, a JCS serializer, a numeric profile and a hand-written SHA-256
+# in one uninterrupted generation was a property of my protocol, not of the
+# clean room: what must stay closed is the INFORMATION the model gets, not the
+# number of turns it takes to write the code.
+MAX_TURNS_PER_ROUND = 8
+TURN_TIMEOUT_S = 1200
 # Everything else in this harness has a deadline; the model call did not, and a
 # wedged ollama runner held one round open for two and a half hours without
 # writing anything. A generation that does not finish is a failed generation.
@@ -62,6 +75,27 @@ def live_model_id(model: str) -> str | None:
         parts = line.split()
         if parts and parts[0] == model:
             return parts[1] if len(parts) > 1 else None
+    return None
+
+
+def served_context(model: str) -> int | None:
+    """The context window the server actually gave this model, not the card's.
+
+    A model card advertises what the weights support; `ollama serve` loads a
+    `num_ctx` that may be far smaller, and a prompt over that limit is silently
+    truncated at the front — which in a multi-turn round is exactly where the
+    specification sits. Read while the model is resident, recorded per round, so
+    a truncated run is visible afterwards rather than inferred.
+    """
+    proc = subprocess.run(["ollama", "ps"], capture_output=True, text=True)
+    if proc.returncode != 0:
+        return None
+    for line in proc.stdout.splitlines()[1:]:
+        cols = line.split()
+        if cols and cols[0] == model:
+            for col in cols:
+                if col.isdigit() and int(col) >= 1024:
+                    return int(col)
     return None
 
 
@@ -123,7 +157,13 @@ def previous_feedback(prior: list[dict]) -> tuple[str | None, str | None]:
     return data.decode("utf-8", "replace"), digest
 
 
-def build_prompt(feedback: str | None) -> str:
+def build_prompt(feedback: str | None, accumulated: dict[str, str],
+                 cargo_now: str | None, turn: int) -> str:
+    """The pack, the model's own work so far, and machine output. Nothing else.
+
+    Everything added here is fixed scaffolding: no description of the task, no
+    hint about the bytes, nothing that varies with what the model got wrong.
+    """
     parts = [
         "You are implementing a specification from scratch. Everything you are "
         "given follows. There is no other source to consult.\n",
@@ -133,14 +173,30 @@ def build_prompt(feedback: str | None) -> str:
         parts.append(f"\n===== {os.path.basename(rel)} =====\n{body}\n")
     if feedback:
         parts.append(
-            "\n===== BUILD OUTPUT FROM THE LAST ROUND =====\n"
+            "\n===== BUILD OUTPUT FROM THE PREVIOUS ROUND =====\n"
             "This is compiler and test output, verbatim. No one has reviewed your "
             "design, and no one will.\n\n" + feedback + "\n"
         )
-    parts.append(
-        "\n===== NOW =====\nEmit the complete set of files, each preceded by its "
-        "`FILE: <path>` line and given whole inside a fenced block.\n"
-    )
+    if accumulated:
+        parts.append("\n===== THE FILES YOU HAVE WRITTEN SO FAR =====\n")
+        for rel in sorted(accumulated):
+            parts.append(f"\nFILE: {rel}\n```\n{accumulated[rel]}\n```\n")
+    if cargo_now:
+        parts.append(
+            "\n===== BUILD OUTPUT FOR THOSE FILES =====\n" + cargo_now + "\n"
+        )
+    if turn == 1 and not accumulated:
+        parts.append(
+            "\n===== NOW =====\nBegin. Emit files, each preceded by its "
+            "`FILE: <path>` line and given whole inside a fenced block. You may "
+            "work across several turns.\n"
+        )
+    else:
+        parts.append(
+            "\n===== NOW =====\nContinue. Emit any file you want to add or "
+            "replace, each whole, preceded by its `FILE: <path>` line. Say DONE "
+            "on a line of its own when the set is complete.\n"
+        )
     return "".join(parts)
 
 
@@ -173,13 +229,56 @@ def assert_pack_is_current() -> str:
     return current["pack_sha256"]
 
 
+BUDGET = os.path.join(HERE, "provenance", "budget.json")
 OUTCOME = os.path.join(HERE, "provenance", "outcome.json")
+
+
 FREEZE = os.path.join(HERE, "provenance", "freeze.json")
 
-INCONCLUSIVE = (
-    "INCONCLUSIVE: no freeze-ready candidate within the agreed three-round "
-    "model/capsule/tooling budget; not evidence of RFC failure"
-)
+
+def inconclusive(budget: int) -> str:
+    return (
+        f"INCONCLUSIVE: no freeze-ready candidate within the agreed {budget}-round "
+        "model/capsule/tooling budget; not evidence of RFC failure"
+    )
+
+
+def effective_budget(prior: list[dict] | None = None) -> tuple[int, list[int], str]:
+    """The round budget, and any recorded decision that changed it.
+
+    The default lives in code. A change to it lives in `provenance/budget.json`
+    as a committed artifact naming who decided and why — not as an edited
+    constant, because a budget quietly raised by the party it benefits is not a
+    budget.
+
+    A discounted round is the sharper risk, so the file cannot simply assert one.
+    A round may be excused only if the model **never produced anything and the
+    invocation itself failed** — a non-zero exit with no output, which is what a
+    proctor's bad flag looks like. A round the model actually ran, and a round it
+    ran out of time on, cannot be excused however the file is written: a bad
+    result is exactly what a budget is for.
+    """
+    if not os.path.exists(BUDGET):
+        return MAX_PRE_FREEZE_ROUNDS, [], "the default"
+    rec = json.load(open(BUDGET))
+    rounds = int(rec["rounds"])
+    excused = [int(x) for x in rec.get("not_counted", [])]
+    if prior is not None:
+        by_n = {r["round"]: r for r in prior}
+        for n in excused:
+            r = by_n.get(n)
+            if r is None:
+                continue
+            exit_code, produced = r.get("model_exit"), r.get("output_bytes") or 0
+            if exit_code == 0 or exit_code is None or produced:
+                raise SystemExit(
+                    f"refusing: provenance/budget.json discounts round {n}, but "
+                    f"that round recorded model_exit {exit_code!r} and "
+                    f"{produced} bytes of output. Only a failed invocation that "
+                    "produced nothing may be excused; a round the model ran is a "
+                    "round it spent."
+                )
+    return rounds, excused, rec.get("decided_by", "unrecorded") + ": " + rec.get("reason", "")
 
 
 def compare_trees(emitted: dict, final: dict) -> tuple[list[str], list[str]]:
@@ -224,11 +323,14 @@ def finish(record: dict, n: int, prior: list[dict]) -> int:
               indent=2, sort_keys=True)
     if record.get("freeze_ready"):
         return 0
-    if n >= MAX_PRE_FREEZE_ROUNDS:
-        digests = [r.get("output_sha256") for r in prior] + [record.get("output_sha256")]
-        write_outcome("INCONCLUSIVE", INCONCLUSIVE, n, digests)
-        print(f"  budget spent after {n} rounds with no freeze-ready candidate.")
-        print(f"  recorded: {INCONCLUSIVE}")
+    budget, not_counted, _ = effective_budget(prior)
+    counted = [r for r in prior if r["round"] not in not_counted] + [record]
+    if len(counted) >= budget:
+        digests = [r.get("output_sha256") for r in counted]
+        write_outcome("INCONCLUSIVE", inconclusive(budget), len(counted), digests)
+        print(f"  budget spent after {len(counted)} counted round(s) with no "
+              "freeze-ready candidate.")
+        print(f"  recorded: {inconclusive(budget)}")
         print("  There is no fourth round, and this is not a claim about the "
               "specification.")
     return 0
@@ -273,6 +375,8 @@ def main() -> int:
         raise SystemExit(f"an outcome is already recorded: {rec['status']}")
 
     prior = rounds_so_far()
+    budget, not_counted, budget_source = effective_budget(prior)
+    counted = [r for r in prior if r["round"] not in not_counted]
     if any(r.get("freeze_ready") for r in prior):
         raise SystemExit(
             "a previous round is freeze-ready. The only next step is the freeze — "
@@ -281,165 +385,210 @@ def main() -> int:
             f"    python3 harness/freeze.py --workdir {workdir}"
         )
     n = len(prior) + 1
-    if n > MAX_PRE_FREEZE_ROUNDS:
+    if len(counted) >= budget:
         # The budget is spent. If the process died between recording the last
         # round and writing the outcome, reconstruct it here: the outcome is a
         # function of the rounds, so it is deterministic, and leaving it unwritten
         # would let a crash erase the experiment's conclusion.
         if not os.path.exists(OUTCOME):
-            write_outcome("INCONCLUSIVE", INCONCLUSIVE, len(prior),
-                          [r.get("output_sha256") for r in prior])
-            print(f"recovered the outcome that was never written: {INCONCLUSIVE}")
+            write_outcome("INCONCLUSIVE", inconclusive(budget), len(counted),
+                          [r.get("output_sha256") for r in counted])
+            print("recovered the outcome that was never written: "
+                  f"{inconclusive(budget)}")
         raise SystemExit(
-            f"the agreed budget is {MAX_PRE_FREEZE_ROUNDS} rounds and they are "
-            "spent. The recorded outcome is INCONCLUSIVE; there is no fourth round."
+            f"the budget is {budget} counted round(s) ({budget_source}) and they "
+            "are spent. The recorded outcome is INCONCLUSIVE; there is no fourth "
+            "round."
         )
 
     feedback, feedback_sha = previous_feedback(prior)
-    prompt = build_prompt(feedback)
 
     record = {
         "round": n,
         "started": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "model": args.model,
-        "model_id_expected": EXPECTED_MODEL_ID,
         "pack_sha256": pack_sha,
-        "prompt_sha256": sha(prompt.encode("utf-8")),
-        "prompt_bytes": len(prompt.encode("utf-8")),
         "feedback_sha256": feedback_sha,
         "workdir": workdir,
         "image": sandbox.IMAGE,
+        "max_turns": MAX_TURNS_PER_ROUND,
+        "turn_timeout_s": TURN_TIMEOUT_S,
     }
 
     if args.dry_run:
-        record["dry_run"] = True
-        print(f"dry run: round {n}, prompt {record['prompt_bytes']} bytes, "
-              f"sha256 {record['prompt_sha256']}")
+        first = build_prompt(feedback, {}, None, 1)
+        print(f"dry run: round {n}, first-turn prompt {len(first.encode())} bytes, "
+              f"sha256 {sha(first.encode('utf-8'))}")
         print(f"feedback carried: {'the previous cargo output' if feedback else 'none'}")
+        print(f"model {args.model}, up to {MAX_TURNS_PER_ROUND} turns of "
+              f"{TURN_TIMEOUT_S}s")
+        print(f"budget: {len(counted)}/{budget} counted round(s) spent — "
+              f"{budget_source}")
         return 0
 
     # Only now does the sandbox matter: from here on something actually runs.
     workdir = sandbox.preflight(workdir)
     record["workdir"] = workdir
 
+    spec = MODELS.get(args.model)
+    if spec is None:
+        raise SystemExit(
+            f"{args.model} is not a recorded model. Add it to MODELS with its id "
+            "and whether it supports thinking, so a result can be attributed."
+        )
     live = live_model_id(args.model)
     record["model_id_live"] = live
-    if live != EXPECTED_MODEL_ID:
+    record["model_id_expected"] = spec["id"]
+    record["thinking"] = spec["think"]
+    if live != spec["id"]:
         raise SystemExit(
-            f"model id mismatch: {args.model} is {live}, expected "
-            f"{EXPECTED_MODEL_ID}. A tag can be repointed; refusing to attribute a "
-            "result to a model that is not the one recorded."
+            f"model id mismatch: {args.model} is {live}, expected {spec['id']}. "
+            "A tag can be repointed; refusing to attribute a result to a model "
+            "that is not the one recorded."
         )
 
-    started = time.time()
-    try:
-        proc = subprocess.run(
-            # `--think` takes its value with `=`. Written as two arguments, ollama
-            # read "high" as the model name and tried to pull it, exiting 1 in about
-            # a second with no output — a proctor bug that round 1 recorded as a
-            # failed generation.
-            ["ollama", "run", "--think=high", "--hidethinking", args.model],
-            input=prompt, capture_output=True, text=True, timeout=MODEL_TIMEOUT_S,
-        )
-    except subprocess.TimeoutExpired as expired:
-        # Keep what was produced. The first version of this handler discarded it,
-        # so an hour of generation left no evidence of whether the model had
-        # written nothing or nearly everything — the one fact needed to know what
-        # the timeout actually measured.
-        partial = expired.stdout or ""
-        if isinstance(partial, bytes):
-            partial = partial.decode("utf-8", "replace")
-        raw_dir = os.path.join(TRANSCRIPT, f"round-{n:02d}")
-        os.makedirs(raw_dir, exist_ok=True)
-        open(os.path.join(raw_dir, "prompt.txt"), "w", encoding="utf-8").write(prompt)
-        open(os.path.join(raw_dir, "output.partial.txt"), "w",
-             encoding="utf-8").write(partial)
-        record["elapsed_s"] = round(time.time() - started, 1)
-        record["error"] = f"the model did not finish within {MODEL_TIMEOUT_S}s"
-        record["model_exit"] = None
-        record["freeze_ready"] = False
-        record["partial_output_bytes"] = len(partial.encode("utf-8"))
-        record["partial_output_sha256"] = sha(partial.encode("utf-8"))
-        record["partial_file_blocks"] = len(extract_files(partial))
-        print(f"round {n}: no generation within {MODEL_TIMEOUT_S}s; recorded as a "
-              f"failed generation, {record['partial_output_bytes']} partial byte(s) kept.")
-        return finish(record, n, prior)
-
-    output = proc.stdout
-    record["elapsed_s"] = round(time.time() - started, 1)
-    record["output_sha256"] = sha(output.encode("utf-8"))
-    record["output_bytes"] = len(output.encode("utf-8"))
-    record["model_exit"] = proc.returncode
+    argv = ["ollama", "run"]
+    if spec["think"]:
+        # `--think` takes its value with `=`. Written as two arguments, ollama
+        # reads the value as the model name and tries to pull it.
+        argv += ["--think=high", "--hidethinking"]
+    argv.append(args.model)
 
     raw_dir = os.path.join(TRANSCRIPT, f"round-{n:02d}")
     os.makedirs(raw_dir, exist_ok=True)
-    open(os.path.join(raw_dir, "prompt.txt"), "w", encoding="utf-8").write(prompt)
-    open(os.path.join(raw_dir, "output.txt"), "w", encoding="utf-8").write(output)
 
-    if proc.returncode != 0:
-        record["error"] = f"the model exited {proc.returncode}"
-        record["freeze_ready"] = False
-        print(f"round {n}: the model exited {proc.returncode}; nothing was written.")
-        return finish(record, n, prior)
+    accumulated: dict[str, str] = {}
+    turns: list[dict] = []
+    cargo_now: str | None = None
+    exits: dict = {}
+    emitted_manifest: dict = {}
+    started_round = time.time()
 
-    emitted = extract_files(output)
-    try:
-        tree.check_emitted([rel for rel, _ in emitted])
-    except tree.TreeError as exc:
-        record["error"] = f"refused emitted tree: {exc}"
-        record["freeze_ready"] = False
-        print(f"round {n}: {exc}")
-        return finish(record, n, prior)
+    for turn in range(1, MAX_TURNS_PER_ROUND + 1):
+        prompt = build_prompt(feedback if turn == 1 else None, accumulated,
+                              cargo_now, turn)
+        t0 = time.time()
+        try:
+            proc = subprocess.run(argv, input=prompt, capture_output=True,
+                                  text=True, timeout=TURN_TIMEOUT_S)
+            output, model_exit = proc.stdout, proc.returncode
+            timed_out = False
+        except subprocess.TimeoutExpired as expired:
+            output = expired.stdout or ""
+            if isinstance(output, bytes):
+                output = output.decode("utf-8", "replace")
+            model_exit, timed_out = None, True
 
-    # Everything the model does not emit is gone, including cargo's own caches:
-    # a stale `.cargo` could carry configuration that shapes a later build and
-    # never appears in the frozen tree.
-    for entry in os.listdir(workdir):
-        if entry == "target":
+        entry = {
+            "turn": turn,
+            "elapsed_s": round(time.time() - t0, 1),
+            "prompt_sha256": sha(prompt.encode("utf-8")),
+            "prompt_bytes": len(prompt.encode("utf-8")),
+            "output_sha256": sha(output.encode("utf-8")),
+            "output_bytes": len(output.encode("utf-8")),
+            "model_exit": model_exit,
+            "timed_out": timed_out,
+        }
+        open(os.path.join(raw_dir, f"turn-{turn:02d}-prompt.txt"), "w",
+             encoding="utf-8").write(prompt)
+        open(os.path.join(raw_dir, f"turn-{turn:02d}-output.txt"), "w",
+             encoding="utf-8").write(output)
+
+        if turn == 1:
+            record["served_context"] = served_context(args.model)
+            print(f"    served context: {record['served_context']}")
+
+        emitted = extract_files(output)
+        entry["files"] = [rel for rel, _ in emitted]
+        try:
+            tree.check_emitted([rel for rel, _ in emitted], require_complete=False)
+        except tree.TreeError as exc:
+            entry["refused"] = str(exc)
+            turns.append(entry)
+            record["turns"] = turns
+            record["error"] = f"turn {turn}: {exc}"
+            record["freeze_ready"] = False
+            print(f"round {n}, turn {turn}: {exc}")
+            return finish(record, n, prior)
+
+        for rel, body in emitted:
+            accumulated[rel] = body
+        said_done = bool(re.search(r"^\s*DONE\s*$", output, re.M))
+        entry["said_done"] = said_done
+        turns.append(entry)
+        print(f"  turn {turn}: {len(emitted)} file(s), {entry['elapsed_s']}s"
+              + (", DONE" if said_done else "")
+              + (", TIMED OUT" if timed_out else ""))
+
+        if timed_out and not emitted:
+            record["turns"] = turns
+            record["error"] = f"turn {turn} produced nothing within {TURN_TIMEOUT_S}s"
+            record["freeze_ready"] = False
+            return finish(record, n, prior)
+
+        buildable = "Cargo.toml" in accumulated and any(
+            r.startswith("src/") and r.endswith(".rs") for r in accumulated)
+        if not buildable:
+            if not emitted and said_done:
+                record["turns"] = turns
+                record["error"] = "the model stopped before emitting a buildable set"
+                record["freeze_ready"] = False
+                return finish(record, n, prior)
             continue
-        p = os.path.join(workdir, entry)
-        shutil.rmtree(p) if os.path.isdir(p) else os.remove(p)
 
-    written = {}
-    for rel, body in emitted:
-        dest = os.path.join(workdir, rel)
-        os.makedirs(os.path.dirname(dest), exist_ok=True)
-        data = (body + "\n").encode("utf-8")
-        with open(dest, "wb") as fh:
-            fh.write(data)
-        written[rel] = {"bytes": len(data), "sha256": sha(data)}
-    record["written"] = written
-    tree.assert_no_build_hooks(workdir)
-    emitted_sha, emitted_manifest = tree.digest(
-        [(rel, open(os.path.join(workdir, rel), "rb").read()) for rel in sorted(written)]
-    )
-    record["emitted_tree_sha256"] = emitted_sha
+        # Write exactly what the model has written, and build it in the sandbox.
+        for entry_name in os.listdir(workdir):
+            if entry_name == "target":
+                continue
+            pth = os.path.join(workdir, entry_name)
+            shutil.rmtree(pth) if os.path.isdir(pth) else os.remove(pth)
+        written = {}
+        for rel, body in accumulated.items():
+            dest = os.path.join(workdir, rel)
+            os.makedirs(os.path.dirname(dest), exist_ok=True)
+            data = (body + "\n").encode("utf-8")
+            with open(dest, "wb") as fh:
+                fh.write(data)
+            written[rel] = {"bytes": len(data), "sha256": sha(data)}
+        record["written"] = written
+        tree.assert_no_build_hooks(workdir)
+        _, emitted_manifest = tree.digest(
+            [(rel, open(os.path.join(workdir, rel), "rb").read())
+             for rel in sorted(written)])
 
-    if not sandbox.mount_is_visible(workdir):
-        record["error"] = "the workdir is not visible inside the sandbox"
-        record["freeze_ready"] = False
-        json.dump(record, open(os.path.join(TRANSCRIPT, f"round-{n:02d}.json"), "w"),
-                  indent=2, sort_keys=True)
-        raise SystemExit(
-            "the sandbox mounted an empty directory, so any build failure would be "
-            "the harness's fault and not the model's. On Docker Desktop this means "
-            f"{workdir} is not a shared path. Refusing to report a false result."
-        )
+        if not sandbox.mount_is_visible(workdir):
+            record["turns"] = turns
+            record["error"] = "the workdir is not visible inside the sandbox"
+            record["freeze_ready"] = False
+            raise SystemExit(
+                "the sandbox mounted an empty directory, so any build failure "
+                "would be the harness's fault and not the model's."
+            )
 
-    cargo_out = []
-    exits = {}
-    for sub in ("fmt", "check", "build", "test"):
-        code, out = sandbox.cargo(workdir, sub)
-        exits[sub] = code
-        cargo_out.append(f"$ cargo {sub}  (exit {code})\n{out}\n")
-        if sub == "check" and code != 0:
-            break  # build and test say nothing about code that does not compile
+        cargo_out, exits = [], {}
+        for sub in ("fmt", "check", "build", "test"):
+            code, out = sandbox.cargo(workdir, sub)
+            exits[sub] = code
+            cargo_out.append(f"$ cargo {sub}  (exit {code})\n{out}\n")
+            if sub == "check" and code != 0:
+                break
+        cargo_now = "\n".join(cargo_out)
+        entry["cargo"] = exits
+        clean = all(exits.get(x) == 0 for x in ("fmt", "check", "build", "test"))
+        print(f"    cargo {exits}" + ("  → clean" if clean else ""))
+        if clean:
+            break
+        if said_done and not emitted:
+            break
+
+    record["turns"] = turns
+    record["elapsed_s"] = round(time.time() - started_round, 1)
+    record["model_exit"] = 0 if turns and turns[-1]["model_exit"] == 0 else (
+        turns[-1]["model_exit"] if turns else None)
+    record["output_sha256"] = turns[-1]["output_sha256"] if turns else None
     record["cargo"] = exits
     record["compiles"] = exits.get("check") == 0
 
-    # What cargo left behind. A test can rewrite a source file, and then the tree
-    # that was measured is not the tree the model emitted — so the comparison is
-    # made rather than assumed.
     try:
         after = tree.collect(workdir)
         record.pop("tree_error", None)
@@ -449,20 +598,24 @@ def main() -> int:
     final_sha, final_manifest = tree.digest(after)
     record["final_tree_sha256"] = final_sha
     record["final_tree"] = final_manifest
+    record["emitted_tree_sha256"] = tree.digest(
+        [(rel, (body + "\n").encode("utf-8")) for rel, body in sorted(accumulated.items())]
+    )[0] if accumulated else None
 
     changed, cargo_generated = compare_trees(emitted_manifest, final_manifest)
     record["cargo_generated"] = cargo_generated
     record["modified_by_build"] = changed
     record["freeze_ready"] = compute_freeze_ready(
-        record.get("model_exit"), exits, changed, record.get("tree_error")
-    )
+        record.get("model_exit"), exits, changed, record.get("tree_error"))
 
-    cargo_text = "\n".join(cargo_out)
+    budget_now, not_counted_now, _ = effective_budget(prior)
+    counted_now = [r for r in prior if r["round"] not in not_counted_now] + [record]
+    cargo_text = cargo_now or ""
     cargo_path = os.path.join(raw_dir, "cargo.txt")
     open(cargo_path, "w", encoding="utf-8").write(cargo_text)
     record["cargo_output_sha256"] = sha(cargo_text.encode("utf-8"))
 
-    print(f"round {n}/{MAX_PRE_FREEZE_ROUNDS}: {len(written)} file(s), "
+    print(f"round {n} (counted {len(counted_now)}/{budget_now}): {len(written)} file(s), "
           f"compiles={record['compiles']}, freeze_ready={record['freeze_ready']}, "
           f"{record['elapsed_s']}s")
     print(f"  transcript {os.path.relpath(raw_dir, HERE)}")
@@ -472,7 +625,7 @@ def main() -> int:
     if record["freeze_ready"]:
         print("  FREEZE-READY — fmt, check, build and test all clean:")
         print(f"    python3 harness/freeze.py --workdir {workdir}")
-    elif n < MAX_PRE_FREEZE_ROUNDS:
+    elif len(counted_now) < budget_now:
         print("  not freeze-ready; the next round carries this cargo output "
               "automatically. No flag, no other file can be fed in.")
     return finish(record, n, prior)

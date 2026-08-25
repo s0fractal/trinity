@@ -382,6 +382,62 @@ def _round_record(probe: str, n: int, **fields) -> None:
     json.dump(rec, open(os.path.join(tdir, f"round-{n:02d}.json"), "w"))
 
 
+def _budget_file(probe: str, **fields) -> None:
+    rec = {"rounds": 6, "not_counted": [], "decided_by": "a steward",
+           "reason": "recorded here so it is auditable"}
+    rec.update(fields)
+    json.dump(rec, open(os.path.join(probe, "provenance", "budget.json"), "w"))
+
+
+def t_budget_change_is_a_recorded_decision():
+    """A raised budget must come from a committed file that names who raised it."""
+    with tempfile.TemporaryDirectory() as tmp:
+        probe = _fake_probe(tmp)
+        for i in (1, 2, 3):
+            _round_record(probe, i)
+        _budget_file(probe, rounds=4, decided_by="a named steward")
+        r = _run(probe, "round.py", "--workdir",
+                 os.path.expanduser("~/cnp0-selftest-workdir"), "--dry-run")
+        blob = r.stdout + r.stderr
+        ok = (r.returncode == 0 and "round 4" in blob and "3/4" in blob
+              and "a named steward" in blob)
+        record("budget-change-is-a-recorded-decision", 1, ok,
+               "a fourth round ran only because a committed decision allowed it"
+               if ok else blob[-200:])
+
+
+def t_budget_cannot_discount_a_round_the_model_ran():
+    """A round the model actually spoke in is spent, however budget.json is written."""
+    with tempfile.TemporaryDirectory() as tmp:
+        probe = _fake_probe(tmp)
+        for i in (1, 2, 3):
+            _round_record(probe, i, model_exit=0, output_bytes=4096)
+        _budget_file(probe, rounds=3, not_counted=[2])
+        r = _run(probe, "round.py", "--workdir",
+                 os.path.expanduser("~/cnp0-selftest-workdir"), "--dry-run")
+        blob = r.stdout + r.stderr
+        ok = r.returncode != 0 and "a round the model ran is a round it spent" in blob
+        record("budget-cannot-discount-a-round-the-model-ran", 1, ok,
+               "refused to excuse a round that produced output" if ok else blob[-200:])
+
+
+def t_budget_may_discount_a_failed_invocation():
+    """A round where the launch failed and nothing was produced may be excused."""
+    with tempfile.TemporaryDirectory() as tmp:
+        probe = _fake_probe(tmp)
+        _round_record(probe, 1, model_exit=1, output_bytes=0, with_cargo=False)
+        for i in (2, 3):
+            _round_record(probe, i, model_exit=0, output_bytes=4096)
+        _budget_file(probe, rounds=3, not_counted=[1])
+        r = _run(probe, "round.py", "--workdir",
+                 os.path.expanduser("~/cnp0-selftest-workdir"), "--dry-run")
+        blob = r.stdout + r.stderr
+        ok = r.returncode == 0 and "round 4" in blob
+        record("budget-may-discount-a-failed-invocation", 1, ok,
+               "a round the model was never reached in did not count"
+               if ok else blob[-200:])
+
+
 def t_deleted_feedback_is_refused():
     """A recorded cargo.txt that has been deleted must stop the next round."""
     with tempfile.TemporaryDirectory() as tmp:
@@ -634,7 +690,10 @@ def main() -> int:
                t_check_passed_test_failed_allows_next_round,
                t_third_not_ready_records_inconclusive, t_lost_outcome_is_recovered,
                t_failed_generation_does_not_deadlock_budget, t_no_round_after_freeze,
-               t_no_fourth_round, t_evaluate_requires_freeze,
+               t_no_fourth_round, t_budget_change_is_a_recorded_decision,
+               t_budget_cannot_discount_a_round_the_model_ran,
+               t_budget_may_discount_a_failed_invocation,
+               t_evaluate_requires_freeze,
                t_evaluate_detects_tampered_tree, t_sandbox_isolation):
         fn()
 

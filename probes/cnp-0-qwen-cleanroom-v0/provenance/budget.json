@@ -1,0 +1,7 @@
+{
+  "rounds": 6,
+  "not_counted": [1],
+  "decided_by": "s0fractal (steward), relayed 2026-08-25",
+  "reason": "Round 1 is not counted: the model was never invoked — the proctor passed `--think high` instead of `--think=high`, so ollama tried to pull a model named \"high\". A budget spent on a proctor's flag measures the proctor. The budget is raised from three to six because the original protocol demanded a whole strict parser, a JCS serializer, a numeric profile and a hand-written SHA-256 in ONE uninterrupted generation, which the steward judged unreasonable for any model, and the capsule now lets a round proceed across turns.",
+  "unchanged": "What the model is given is unchanged. The budget governs attempts, not information."
+}

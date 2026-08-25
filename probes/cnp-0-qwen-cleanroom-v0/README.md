@@ -1,7 +1,7 @@
 ---
 status: active
 owner_voice: claude
-next_verification: run the proctored rounds with qwen3.8:27b-mlx, freeze the first compiling candidate as its own commit, then score it against the 63 encode-kind corpus cases and record every divergence with the clause it traces to
+next_verification: run the proctored rounds with qwen3-coder:30b, freeze the first compiling candidate as its own commit, then score it against the 63 encode-kind corpus cases and record every divergence with the clause it traces to
 graduation_target: null
 ---
 
@@ -153,26 +153,39 @@ freeze stops it; then the sources are rebuilt **from nothing**, without the
 round's `target/`, because a tree that only builds against an existing cache is
 not a tree that builds.
 
-### The budget is three rounds, and it ends
+### A round is a conversation; the budget bounds how many
 
-Exactly three pre-freeze rounds. Rounds end when a candidate is **freeze-ready**
-— not when one merely compiles. That distinction was a real deadlock: the next
-round was blocked on `compiles`, the freeze required `freeze_ready`, so a
-candidate whose `cargo check` passed and whose `test` failed could do neither.
-After a freeze, `round.py` refuses entirely.
+**Turns.** Inside a round the model works across turns. Each turn it is shown the
+files it has written so far, verbatim, and — once the set is buildable — the
+compiler and test output for exactly those files. It says `DONE` when it believes
+the set is complete.
+
+An earlier version demanded the whole program — a strict byte-level JSON parser,
+a JCS serializer, the numeric profile, and a hand-written SHA-256 — in one
+uninterrupted generation. That measured stamina, not whether the specification
+determines its bytes, and the steward judged it unreasonable for any model. What
+the model is *given* did not change: the pack is the same closed capsule, and
+between turns it sees only its own files and its own build output. Nothing about
+the corpus, and nothing from a human, crosses into a turn.
+
+**Rounds.** Three by default, and after a freeze `round.py` refuses entirely.
+Rounds end when a candidate is **freeze-ready** — not when one merely compiles.
+That distinction was a real deadlock: the next round was blocked on `compiles`,
+the freeze required `freeze_ready`, so a candidate whose `cargo check` passed and
+whose `test` failed could do neither.
 
 Every way a round can end goes through one place, including the ones that never
 reach cargo — a failed generation, or output with no usable `FILE:` blocks. Those
 leave the next round available with no feedback to carry, rather than stalling
 the budget on a missing `cargo.txt`.
 
-If the third round ends without a freeze-ready candidate — for any reason — an
-outcome is recorded, once, with the digests of all three rounds' outputs. The
-outcome is a function of the rounds, so if the process dies between recording the
-last round and writing it, the next invocation reconstructs it before refusing a
-fourth round: a crash must not erase the experiment's conclusion.
+If the budget ends without a freeze-ready candidate — for any reason — an outcome
+is recorded, once, with the digests of every counted round's output. The outcome
+is a function of the rounds, so if the process dies between recording the last
+round and writing it, the next invocation reconstructs it before refusing another
+round: a crash must not erase the experiment's conclusion.
 
-> INCONCLUSIVE: no freeze-ready candidate within the agreed three-round
+> INCONCLUSIVE: no freeze-ready candidate within the agreed N-round
 > model/capsule/tooling budget; not evidence of RFC failure
 
 That wording is deliberate. Nothing arriving inside a fixed budget says something
@@ -180,6 +193,22 @@ about the budget, the model, and the capsule — not about whether the
 specification determines its bytes. `outcome.json` and the transcript are
 committed together, in their own commit, so git makes a later deletion or rewrite
 visible; there is no filesystem defence and none is claimed.
+
+### A changed budget is a committed decision, and it cannot excuse a bad round
+
+The default lives in code. Changing it is `provenance/budget.json`, a committed
+artifact naming who decided and why — because a budget quietly raised by the
+party it benefits is not a budget. `round.py` prints that decision every time it
+runs.
+
+Discounting a round is the sharper risk, so the file cannot simply assert one. A
+round may be excused only if the **invocation itself failed and the model
+produced nothing** — a non-zero exit with zero bytes, which is what a proctor's
+bad flag looks like. Round 1 was exactly that: `--think high` written as two
+arguments, so ollama read `high` as a model name and exited in about a second. A
+round the model actually ran, and a round it ran out of time on, cannot be
+excused however the file is written; three controls hold that line, including one
+that tries to excuse a round with output and is refused.
 
 ### The pack is re-derived, not trusted
 
@@ -190,8 +219,8 @@ that described a pack it never sent.
 
 ### The feedback channel is closed, not merely narrow
 
-Before the freeze the prompt is the pinned pack plus **the previous round's
-cargo output and nothing else**, taken automatically and re-digested against
+Before the freeze the prompt is the pinned pack plus **the model's own files, the
+cargo output for them, and nothing else**, taken automatically and re-digested against
 what that round recorded. There is no flag that accepts a file: an earlier
 version had `--feedback <path>`, and a reviewer fed it a contract to prove the
 point.
@@ -271,13 +300,15 @@ Space is left for held-out and metamorphic cases supplied after the freeze:
 
 `provenance/` holds the pack digest, the model identity, and one record per
 round: prompt digest and size, output digest, the digest of every file written,
-cargo exit codes, elapsed time, and the full prompt and output text. `freeze.json`
+cargo exit codes, elapsed time, the served context window, and the full
+prompt and output text of every turn. `freeze.json`
 records the tree digest of the first compiling candidate and asserts
 `corpus_seen: false` at that moment.
 
 | | |
 | --- | --- |
-| model | `qwen3.8:27b-mlx` — ollama id `5642e97495e1`, qwen3_5, 27.8B, 262144 context, nvfp4 |
-| fallback | `qwen3-coder:30b` — ollama id `06c1097efce0` |
+| model | `qwen3-coder:30b` — ollama id `06c1097efce0`, qwen3moe, 30.5B, 262144 advertised context, Q4_K_M |
+| also attempted | `qwen3.8:27b-mlx` — ollama id `5642e97495e1`, round 2, no output within an hour |
+| served context | read from `ollama ps` while the model is resident and recorded per round; the server's `num_ctx` can be far below the card's number, and an over-long prompt is truncated at the front |
 | toolchain | cargo 1.88.0 |
 | specification | RFC-0003 Part 01 §5.1.1–§5.1.3 at trinity `main@937d61f` |

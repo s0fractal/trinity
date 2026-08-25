@@ -11,35 +11,67 @@
   implementation choice 1 — Part 01 §5.1.2.1 gives the shapes of the three
   tagged forms and never says how a decoder identifies one.
 
-## 0. The finding that reframes the question
+## 0. What the RFC says, what it leaves open, and the choice that follows
 
-This is not one clause with a gap. It is **two clauses that already answer the
-question differently**, and any option below must break one of them or leave
-both intact.
+An earlier draft of this section claimed the two clauses below **contradict**
+each other. That overstated the document, and Codex was right to refuse it: the
+contradiction only exists if you already assume the verifier receives bytes and
+nothing else, and §5.1.3 does not say that. Restated in three layers, with the
+premise separated from the reading.
 
-| line                                        | clause                                                                                     | what it implies                                                |
-| ------------------------------------------- | ------------------------------------------------------------------------------------------ | -------------------------------------------------------------- |
-| `01-canonical-identity-and-encoding.md:268` | "A domain MUST declare which numeric form it admits"                                       | the **domain** is where numeric form lives                     |
-| `01-canonical-identity-and-encoding.md:423` | "a third verifier-only path that **rejects non-canonical ratios** and malformed raw input" | a verifier **holding only bytes** must be able to reject `2/4` |
+### FACT — what the text says
 
-A verifier that holds only bytes can reject a non-canonical ratio only if it can
-tell that the value _is_ a ratio without asking a domain. So §5.1.3 requires
-context-free recognition, while §5.1.2.1 puts the numeric form under the
-domain's authority. Both sentences are load-bearing and both are already in the
-document.
+| line                                        | clause                                                                                     |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `01-canonical-identity-and-encoding.md:268` | "A domain MUST declare which numeric form it admits"                                       |
+| `01-canonical-identity-and-encoding.md:423` | "a third **verifier-only** path that rejects non-canonical ratios and malformed raw input" |
 
-Everything below is a way of resolving that, and the cost of each option is
-mostly the cost of which sentence it disturbs.
+"Verifier-only" is a statement about what the path **does not do** — it does not
+encode, and §5.1.3's surrounding sentence adds that it must not import or call
+the canonicalizer. It says nothing about what the path is **given**.
+
+### INTERPRETATION — two readings, both textually available
+
+**Reading 1, byte-local validity.** The verifier receives bytes. "Rejects
+non-canonical ratios" then requires it to identify a ratio from the bytes, so
+recognition must be context-free.
+
+**Reading 2, domain-parameterized validity.** The verifier receives bytes _and a
+resolved domain descriptor_. Recognition may be schema-directed.
+
+Reading 2 is not a stretch: **Part 02 places decoding inside the domain.**
+`StateDomain` declares `deserialize(bytes: CanonicalBytes): ValidationResult<P>`
+(`02-typed-state-domains.md:80`, and the same method on the Rust trait at
+`:373`). If turning canonical bytes into a validated point is a domain-scoped
+operation in Part 02, then a domain-parameterized verifier in §5.1.3 is the
+reading the document supports, not a workaround.
+
+So the honest description is **an unstated input contract**, not a
+contradiction. §5.1.3 never says which of the two the verifier gets.
+
+### DESIGN CHOICE — the question that actually decides this
+
+> Should "these bytes are valid CNP-0" be a property of the bytes alone?
+
+That is a choice, not a deduction, and it is the fork:
+
+- **choose byte-local validity** → recognition must be context-free → A or C;
+- **choose domain-parameterized validity** → B, and §5.1.3's input contract must
+  be written down, because today it is silent and two implementers can read it
+  two ways.
+
+Everything below is costed against that fork. Where a cost is a consequence of
+the choice rather than of the RFC, it is labelled as such.
 
 ## 1. Evidence gathered before arguing
 
-| measurement                                                       | result                                                                                                                                                                                                                                                 | how                                                                                   |
-| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------- |
-| distinct `kind` discriminator values in RFC-0003                  | **39**, across **≥12 declared types** (`TransformationKind`, `LossSubject`, `PreservationSet`, `DebtScope`, `ScopeRef`, `AmbiguityRecord`, `TransformationDependency`, `ConsistencyModel`, `Coupling`, `LawStatus`, `WitnessPair`, `HandshakeMessage`) | `grep -ohE '\bkind: "[a-zA-Z0-9-]+"' docs/rfc/0003-heterogeneous-state-protocol/*.md` |
-| is `cnp0` free as a **member name** anywhere in trinity?          | **yes — 0 occurrences.** The token appears twice as a _value_ (the `./t cnp0` command handle in the glossary and in the organ's JSON output); neither is a member name, and neither would collide.                                                     | `grep -rn '"cnp0"[[:space:]]*:'` — 0 hits; `grep -rn '"cnp0"'` — 2, both values       |
-| does any substrate already compute references under `hsp-jcs@v0`? | **no** — the identifier appears only in the RFC, the contract, the probe, and chords                                                                                                                                                                   | `grep -rln 'hsp-jcs@v0'`                                                              |
-| corpus cases whose expectation changes under option B             | **9 encoder-side, 9 verifier-side**; **6 rejection classes** become unreachable without a domain                                                                                                                                                       | computed from `corpus/manifest.json`                                                  |
-| corpus positive cases whose canonical bytes change under option C | **9** (plus the 9 tagged negatives' raw input)                                                                                                                                                                                                         | same                                                                                  |
+| measurement                                                       | result                                                                                                                                                                                                                                                                                                              | how                                                                                             |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| distinct `kind` discriminator values in RFC-0003                  | **39**, across **≥12 declared types** (`TransformationKind`, `LossSubject`, `PreservationSet`, `DebtScope`, `ScopeRef`, `AmbiguityRecord`, `TransformationDependency`, `ConsistencyModel`, `Coupling`, `LawStatus`, `WitnessPair`, `HandshakeMessage`)                                                              | `grep -ohE '\bkind: "[a-zA-Z0-9-]+"' docs/rfc/0003-heterogeneous-state-protocol/*.md`           |
+| is `cnp0` used as a **member name** in tracked sources?           | **no tracked use** — 0 hits in trinity at the exact base `cded487`, 0 in `warrant`, 0 in `sigma-glyph`. The bare token has 2 hits at that base, both the `./t cnp0` command handle as a _value_. This is absence of tracked adoption evidence, **not** proof that no external or persisted reference uses the name. | `git grep -n '"cnp0"[[:space:]]*:' cded487 -- .`, and `git -C <repo> grep` in the sibling roots |
+| does any substrate already compute references under `hsp-jcs@v0`? | **no tracked use beyond the artifact itself** — at `cded487` it appears only in the RFC, the contract, the probe, and chords. Same scope caveat as the row above.                                                                                                                                                   | `git grep -ln 'hsp-jcs@v0' cded487 -- .`                                                        |
+| corpus cases whose expectation changes under option B             | **9 encoder-side, 9 verifier-side**; **6 rejection classes** become unreachable without a domain                                                                                                                                                                                                                    | computed from `corpus/manifest.json`                                                            |
+| corpus positive cases whose canonical bytes change under option C | **9** (plus the 9 tagged negatives' raw input)                                                                                                                                                                                                                                                                      | same                                                                                            |
 
 The third row is time-sensitive and decides more than any argument below: a
 decision that changes canonical bytes is **free today and permanent after
@@ -77,7 +109,7 @@ has taken it.
 
 **Can the same JSON mean different things?** No. Recognition is context-free, so
 one byte sequence has exactly one reading. This is A's real strength and the
-reason it satisfies §5.1.3 without amendment.
+reason it satisfies §5.1.3 under either reading of its input contract.
 
 **Canonical bytes / corpus.** Unchanged; A is the status quo.
 
@@ -143,7 +175,7 @@ actually happens on domain change. It is a re-validation obligation B creates
 and A and C do not.
 
 **Canonical bytes / corpus.** Bytes unchanged. Corpus: 18 expectation changes
-plus an amendment to §5.1.3.
+plus one sentence stating §5.1.3's input contract.
 
 **Fail-closed.** Yes at the domain level, and "unknown" at the byte level, which
 is a different and weaker guarantee than the one §5.1.3 promises.
@@ -169,9 +201,10 @@ an ordinary map whatever its other members are named, **including `kind`**.
 the form defines.
 
 **Collision / counterexample.** Requires a domain to use `cnp0` as a member
-name. Measured: **zero occurrences** across trinity today. Unlike A, the
-reservation is one word rather than three values of a word the document uses 39
-ways, and it is greppable in one command.
+name. Measured: **no tracked use** in trinity, warrant, or sigma-glyph at the
+exact base — evidence of no adoption, not proof that no external or persisted
+reference exists. Unlike A, the reservation is one word rather than three values
+of a word the document uses 39 ways, and it is greppable in one command.
 
 **Can the same JSON mean different things?** No — context-free, like A.
 
@@ -211,11 +244,15 @@ recognition.
 
 The decision has two levels, and they should be taken in this order:
 
-1. **Context-free (A/C) or context-dependent (B)?** Choose context-free. B costs
-   an amendment to §5.1.3, 6 rejection classes that the corpus currently
-   exercises, and the portability of the sentence "these bytes are valid CNP-0".
-   A and C leave _both_ clauses of §0 true as written; B is the only option that
-   requires one of them to change.
+1. **Byte-local or domain-parameterized validity?** This is the design choice of
+   §0, and it must be made explicitly rather than read out of the RFC. I
+   recommend **byte-local**: "these bytes are valid CNP-0" should be answerable
+   by anyone holding the bytes. The cost of the alternative is measurable — 6
+   rejection classes the corpus exercises today become unreachable without a
+   descriptor, and a document carrying no domain reference (which §5.1.2.1
+   permits) becomes verifiable only at the wire layer. B does not _violate_
+   §5.1.3; it requires §5.1.3's input contract to be stated, since the clause is
+   silent and two implementers can read it two ways.
 2. **Which discriminator?** Choose `cnp0` over `kind`. Same semantics as A, same
    satisfaction of §5.1.3, without borrowing three values of the document's
    universal discriminator.
@@ -226,14 +263,16 @@ convention and readers will get it wrong. I judge that acceptable because the
 mistake fails closed (§4) and because the alternative is a reservation that
 cannot be withdrawn. If the steward weighs a single spelling convention above
 collision safety, **A is a defensible second choice** — it is already
-implemented, and its collision is latent rather than present. B is the only
-option I would argue against, and only because of §5.1.3.
+implemented, and its collision is latent rather than present. B is the option I
+would argue against, and only because of the design choice in §0 — not because
+the RFC forbids it.
 
-**If B is chosen anyway**, §5.1.3 must be amended in the same commit, saying
-plainly that the verifier-only path takes bytes _and a resolved domain
-descriptor_, and that a document without a domain is verifiable only at the wire
-layer. Leaving §5.1.3 as written while adopting B would be the worst outcome
-available: a promise in the specification that no implementation can keep.
+**If B is chosen**, §5.1.3's input contract must be written down in the same
+commit — that the verifier-only path takes bytes _and a resolved domain
+descriptor_, and that a document carrying no domain reference is verifiable only
+at the wire layer. That is not a correction of an error; §5.1.3 is silent today,
+and silence is what lets two implementers build two different verifiers and both
+believe they conform.
 
 ## 7. Exact proposed normative wording (for C)
 
@@ -305,10 +344,25 @@ Mechanical, ~21 of 112 cases, all inside `probes/cnp-0-seed-v0`:
 
 ## 9. Falsifiers for this disposition
 
-- **"`cnp0` is free."**
-  `grep -rn '"cnp0"' ~/Projects/{trinity,warrant,sigma-glyph}` and the other
-  ecosystem repos. A hit anywhere raises C's cost and the recommendation should
-  be re-taken.
+- **"`cnp0` has no tracked member-name use."** Measured at the exact
+  pre-disposition base, because this document now contains `cnp0` examples of
+  its own and searching `HEAD` would find them:
+
+  ```sh
+  git -C /Users/s0fractal/trinity              grep -n '"cnp0"[[:space:]]*:' cded487 -- .
+  git -C /Users/s0fractal/Projects/warrant     grep -n '"cnp0"[[:space:]]*:'
+  git -C /Users/s0fractal/Projects/sigma-glyph grep -n '"cnp0"[[:space:]]*:'
+  ```
+
+  All three return no matches — note that `git grep` exits 1 when it finds
+  nothing, so a non-zero exit here is the passing result, not a failure. The
+  scope, stated honestly: this is **absence of tracked adoption evidence in
+  three repositories**, not proof that no external ontology, no persisted state,
+  and no unchecked-out substrate uses the name. A hit anywhere raises C's cost
+  and the recommendation should be re-taken. An earlier draft searched
+  `~/Projects/trinity`, which does not exist — trinity is at
+  `/Users/s0fractal/trinity` — so the command exited 2 and proved nothing (found
+  by codex).
 - **"B loses exactly 9 verifier rejections."** Disable tagged-form validation in
   `ts/cnp0.ts` and `ts/reject.ts` and run `./t cnp0`. Fewer than 9 flipped
   expectations falsifies the measurement this recommendation leans on.

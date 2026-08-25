@@ -7,9 +7,12 @@ graduation_target: null
 
 # cnp-0-qwen-cleanroom-v0
 
-> **Closed 2026-08-26. No encoder was produced.** Six rounds against
-> `qwen3-coder:30b`; the only candidate that compiled returns its input
-> unchanged from `encode`, answers `ok:true` from `verify`, and computes
+> **Closed 2026-08-26: `protocol-deviated / curator-terminated / no encoder /
+> no evidence about RFC determinacy`.** Six rounds — 1–2 on `qwen3.8:27b-mlx`,
+> 3–6 on `qwen3-coder:30b`. The protocol changed substantially after it was
+> accepted at `2ddf4dad`, so this is a historical failed attempt rather than a
+> run of the accepted protocol. The only candidate that compiled returns its
+> input unchanged from `encode`, answers `ok:true` from `verify`, and computes
 > "SHA-256" with `DefaultHasher`. Read **[VERDICT.md](VERDICT.md)** before
 > anything else here — the size of this apparatus is not evidence that it
 > produced anything.

@@ -1,5 +1,5 @@
 {
-  "status": "CLOSED-NO-ENCODER",
+  "status": "protocol-deviated / curator-terminated / no encoder / no evidence about RFC determinacy",
   "detail": "Closed by the steward on the curator's reading of the candidate, not by budget exhaustion. Five of six counted rounds were spent; the sixth produced the only candidate that compiled, and that candidate returns its input unchanged from encode, answers ok:true from verify, and computes \"SHA-256\" with DefaultHasher. It implements none of the specified behaviour. A seventh round was about to be spent on a cargo fmt style gate over a program that does not implement the specification.",
   "rounds": 5,
   "rounds_counted_of_budget": "5/6",
@@ -77,5 +77,14 @@
   "supports_claim": null,
   "does_not_show": "anything about RFC-0003. A failed implementation cannot distinguish an under-determined specification from an implementer that could not do it, and here the second is plainly true. Neither evidence for nor against the specification.",
   "a3_unchanged": "Tranche A3 still requires two independent encoders. The method is withdrawn, not the requirement.",
-  "written_by": "the proctor, closing the probe at the steward's direction. round.py writes outcome.json only on budget exhaustion, which did not happen; this file is a curator's verdict and says so. See VERDICT.md."
+  "written_by": "the proctor, closing the probe at the steward's direction. round.py writes outcome.json only on budget exhaustion, which did not happen; this file is a curator's verdict and says so. See VERDICT.md.",
+  "protocol_deviation": "The apparatus was accepted at 2ddf4dad; what ran was not it. capsule/TASK.md was rewritten for multi-turn work (pack fac360f6\u2026 \u2192 ec6a6aee\u2026), the model changed from qwen3.8:27b-mlx to qwen3-coder:30b at round 3, the transport changed from `ollama run` to the HTTP API at round 4, the sandbox image was rebuilt at round 5, the duplicate-block rule was reversed, and the budget went 3 \u2192 6 with round 1 discounted. Each change is its own commit and each was made at the steward's direction, but their sum means no result here is an execution of the accepted protocol. The withheld boundary did not change.",
+  "models_by_round": {
+    "1": "qwen3.8:27b-mlx",
+    "2": "qwen3.8:27b-mlx",
+    "3": "qwen3-coder:30b",
+    "4": "qwen3-coder:30b",
+    "5": "qwen3-coder:30b",
+    "6": "qwen3-coder:30b"
+  }
 }

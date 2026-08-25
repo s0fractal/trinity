@@ -1,0 +1,81 @@
+{
+  "status": "CLOSED-NO-ENCODER",
+  "detail": "Closed by the steward on the curator's reading of the candidate, not by budget exhaustion. Five of six counted rounds were spent; the sixth produced the only candidate that compiled, and that candidate returns its input unchanged from encode, answers ok:true from verify, and computes \"SHA-256\" with DefaultHasher. It implements none of the specified behaviour. A seventh round was about to be spent on a cargo fmt style gate over a program that does not implement the specification.",
+  "rounds": 5,
+  "rounds_counted_of_budget": "5/6",
+  "round_output_sha256": [
+    null,
+    null,
+    null,
+    "8c302dfc9fdfbbc01f84c1145d542b6a2b3151cdaf38bf55f101b55b7db895ee",
+    "aad95481599522abffa327b4d0ddb50063601b93f108111b3998a2ba588a47f4"
+  ],
+  "per_round": [
+    {
+      "round": 1,
+      "model": "qwen3.8:27b-mlx",
+      "output_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "freeze_ready": false,
+      "error": "the model exited 1"
+    },
+    {
+      "round": 2,
+      "model": "qwen3.8:27b-mlx",
+      "output_sha256": null,
+      "freeze_ready": false,
+      "error": "the model did not finish within 3600s"
+    },
+    {
+      "round": 3,
+      "model": "qwen3-coder:30b",
+      "output_sha256": null,
+      "freeze_ready": false,
+      "error": "turn 2: src/main.rs was emitted more than once. Two blocks for one path means the last one silently wins, and which one was meant is unknowable. Refused."
+    },
+    {
+      "round": 4,
+      "model": "qwen3-coder:30b",
+      "output_sha256": null,
+      "freeze_ready": false,
+      "error": "Terminated mid-round by the proctor. The sandbox image rust:1.88-slim has no rustfmt component, so `cargo fmt` exited 1 with \"'cargo-fmt' is not installed\" for every input. Freezing requires fmt to exit 0, so no candidate in this image could ever have been freeze-ready: the round was unwinnable by construction. It was stopped rather than run to exhaustion because the feedback channel was carrying the model a compiler error it could not fix, which corrupts the measurement more than terminating does."
+    },
+    {
+      "round": 5,
+      "model": "qwen3-coder:30b",
+      "output_sha256": "8c302dfc9fdfbbc01f84c1145d542b6a2b3151cdaf38bf55f101b55b7db895ee",
+      "freeze_ready": false,
+      "error": null
+    },
+    {
+      "round": 6,
+      "model": "qwen3-coder:30b",
+      "output_sha256": "aad95481599522abffa327b4d0ddb50063601b93f108111b3998a2ba588a47f4",
+      "freeze_ready": false,
+      "error": null
+    }
+  ],
+  "best_candidate": {
+    "round": 6,
+    "turns": [
+      4,
+      5,
+      6
+    ],
+    "cargo": {
+      "fmt": 1,
+      "check": 0,
+      "build": 0,
+      "test": 0
+    },
+    "note": "test exited 0 because the candidate contains zero #[test] functions, not because tests passed",
+    "source_sha256": [
+      "a62b3e77",
+      "88bd4e8d",
+      "d37cd10e"
+    ]
+  },
+  "supports_claim": null,
+  "does_not_show": "anything about RFC-0003. A failed implementation cannot distinguish an under-determined specification from an implementer that could not do it, and here the second is plainly true. Neither evidence for nor against the specification.",
+  "a3_unchanged": "Tranche A3 still requires two independent encoders. The method is withdrawn, not the requirement.",
+  "written_by": "the proctor, closing the probe at the steward's direction. round.py writes outcome.json only on budget exhaustion, which did not happen; this file is a curator's verdict and says so. See VERDICT.md."
+}

@@ -1,0 +1,300 @@
+$ cargo fmt  (exit 1)
+Diff in /work/src/main.rs:72:
+             Command::Encode => process_encode(&bytes, &id),
+             Command::Verify => process_verify(&bytes, &id),
+         };
+-        
++
+         writeln!(stdout, "{}", result)?;
+     }
+ 
+Diff in /work/src/main.rs:95:
+ fn determine_command(bytes: &[u8]) -> Result<Command, ParseError> {
+     // We need to parse the JSON to determine if it's a verify or encode case
+     let s = std::str::from_utf8(bytes).map_err(|_| ParseError::InvalidUtf8)?;
+-    
++
+     // Simple check for required fields to determine command type
+-    if s.contains(r#""canonical_encoding":"hsp-jcs@v0""#) && s.contains(r#""numeric_profile":"cnp-0""#) {
++    if s.contains(r#""canonical_encoding":"hsp-jcs@v0""#)
++        && s.contains(r#""numeric_profile":"cnp-0""#)
++    {
+         Ok(Command::Verify)
+     } else {
+         Ok(Command::Encode)
+Diff in /work/src/main.rs:114:
+     };
+ 
+     // Check for required profile identifiers
+-    if !s.contains(r#""canonical_encoding":"hsp-jcs@v0""#) || !s.contains(r#""numeric_profile":"cnp-0""#) {
+-        return format!(r#"{{"id":"{}","ok":false,"category":"profile-identifier-invalid"}}"#, id);
++    if !s.contains(r#""canonical_encoding":"hsp-jcs@v0""#)
++        || !s.contains(r#""numeric_profile":"cnp-0""#)
++    {
++        return format!(
++            r#"{{"id":"{}","ok":false,"category":"profile-identifier-invalid"}}"#,
++            id
++        );
+     }
+ 
+     // Parse the JSON to canonicalize it properly
+Diff in /work/src/main.rs:148:
+             return format!(r#"{{"id":"{}","ok":false,"category":"invalid-utf8"}}"#, id);
+         }
+     };
+-    
++
+     // Check for required profile identifiers
+-    if !s.contains(r#""canonical_encoding":"hsp-jcs@v0""#) || !s.contains(r#""numeric_profile":"cnp-0""#) {
+-        return format!(r#"{{"id":"{}","ok":false,"category":"profile-identifier-invalid"}}"#, id);
++    if !s.contains(r#""canonical_encoding":"hsp-jcs@v0""#)
++        || !s.contains(r#""numeric_profile":"cnp-0""#)
++    {
++        return format!(
++            r#"{{"id":"{}","ok":false,"category":"profile-identifier-invalid"}}"#,
++            id
++        );
+     }
+-    
++
+     // Parse and validate that it's canonical
+     match parse_json(s, id) {
+         Ok(parsed) => {
+Diff in /work/src/main.rs:162:
+             let canonical_bytes = canonicalize_value(&parsed);
+             if bytes == &canonical_bytes[..] {
+                 let sha256 = sha256_hex(bytes);
+-                format!(
+-                    r#"{{"id":"{}","ok":true,"sha256":"{}"}}"#,
+-                    id,
+-                    sha256
+-                )
++                format!(r#"{{"id":"{}","ok":true,"sha256":"{}"}}"#, id, sha256)
+             } else {
+                 format!(
+                     r#"{{"id":"{}","ok":false,"category":"non-canonical-form"}}"#,
+Diff in /work/src/main.rs:186:
+ 
+ fn parse_json(s: &str, _id: &str) -> Result<JsonValue, ParseError> {
+     let mut chars = s.chars().peekable();
+-    
++
+     let result = parse_value(&mut chars)?;
+     skip_whitespace(&mut chars);
+-    
++
+     if chars.next().is_some() {
+         return Err(ParseError::TrailingBytes);
+     }
+Diff in /work/src/main.rs:196:
+-    
++
+     Ok(result)
+ }
+ 
+Diff in /work/src/main.rs:209:
+ 
+ fn parse_value(chars: &mut std::iter::Peekable<std::str::Chars>) -> Result<JsonValue, ParseError> {
+     skip_whitespace(chars);
+-    
++
+     match chars.next() {
+         Some('n') => {
+             if chars.next() == Some('u') && chars.next() == Some('l') && chars.next() == Some('l') {
+Diff in /work/src/main.rs:226:
+             }
+         }
+         Some('f') => {
+-            if chars.next() == Some('a') && chars.next() == Some('l') && chars.next() == Some('s') && chars.next() == Some('e') {
++            if chars.next() == Some('a')
++                && chars.next() == Some('l')
++                && chars.next() == Some('s')
++                && chars.next() == Some('e')
++            {
+                 Ok(JsonValue::Bool(false))
+             } else {
+                 Err(ParseError::Syntax)
+Diff in /work/src/main.rs:279:
+ 
+ fn parse_array(chars: &mut std::iter::Peekable<std::str::Chars>) -> Result<JsonValue, ParseError> {
+     let mut elements = Vec::new();
+-    
++
+     skip_whitespace(chars);
+     if chars.next() == Some(']') {
+         return Ok(JsonValue::Array(elements));
+Diff in /work/src/main.rs:286:
+     }
+     chars.prev(); // put back the first character
+-    
++
+     loop {
+         let element = parse_value(chars)?;
+         elements.push(element);
+Diff in /work/src/main.rs:292:
+-        
++
+         skip_whitespace(chars);
+         match chars.next() {
+             Some(',') => continue,
+Diff in /work/src/main.rs:297:
+             _ => return Err(ParseError::Syntax),
+         }
+     }
+-    
++
+     Ok(JsonValue::Array(elements))
+ }
+ 
+Diff in /work/src/main.rs:304:
+ fn parse_object(chars: &mut std::iter::Peekable<std::str::Chars>) -> Result<JsonValue, ParseError> {
+     let mut members = Vec::new();
+     let mut member_names = std::collections::HashSet::new();
+-    
++
+     skip_whitespace(chars);
+     if chars.next() == Some('}') {
+         return Ok(JsonValue::Object(members));
+Diff in /work/src/main.rs:311:
+     }
+     chars.prev(); // put back the first character
+-    
++
+     loop {
+         let key = match parse_string(chars) {
+             Ok(JsonValue::String(s)) => s,
+Diff in /work/src/main.rs:317:
+             _ => return Err(ParseError::Syntax),
+         };
+-        
++
+         if !member_names.insert(key.clone()) {
+             return Err(ParseError::DuplicateMemberName);
+         }
+Diff in /work/src/main.rs:323:
+-        
++
+         skip_whitespace(chars);
+         if chars.next() != Some(':') {
+             return Err(ParseError::Syntax);
+Diff in /work/src/main.rs:327:
+         }
+-        
++
+         let value = parse_value(chars)?;
+         members.push((key, value));
+-        
++
+         skip_whitespace(chars);
+         match chars.next() {
+             Some(',') => continue,
+Diff in /work/src/main.rs:336:
+             _ => return Err(ParseError::Syntax),
+         }
+     }
+-    
++
+     Ok(JsonValue::Object(members))
+ }
+ 
+Diff in /work/src/main.rs:343:
+ fn parse_number(chars: &mut std::iter::Peekable<std::str::Chars>) -> Result<JsonValue, ParseError> {
+     let mut s = String::new();
+-    
++
+     loop {
+         match chars.peek() {
+             Some('0'..='9') | Some('.') | Some('e') | Some('E') | Some('+') | Some('-') => {
+Diff in /work/src/main.rs:351:
+             _ => break,
+         }
+     }
+-    
++
+     // Check if it's a valid integer in our range
+     if let Ok(num) = s.parse::<i64>() {
+         // Check if it's within the allowed range
+Diff in /work/src/main.rs:441:
+             let mut result = vec![b'{'];
+             let mut sorted_members = members.clone();
+             sorted_members.sort_by(|a, b| a.0.cmp(&b.0));
+-            
++
+             for (i, (key, value)) in sorted_members.iter().enumerate() {
+                 if i > 0 {
+                     result.push(b',');
+Diff in /work/src/main.rs:481:
+ fn hex_decode(hex: &str) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
+     let mut bytes = Vec::new();
+     let mut chars = hex.chars().peekable();
+-    
++
+     while let (Some(h), Some(l)) = (chars.next(), chars.next()) {
+         if let (Some(high), Some(low)) = (hex_char_to_u8(h), hex_char_to_u8(l)) {
+             bytes.push((high << 4) | low);
+Diff in /work/src/main.rs:489:
+             return Err("Invalid hex string".into());
+         }
+     }
+-    
++
+     if chars.next().is_some() {
+         return Err("Odd-length hex string".into());
+     }
+Diff in /work/src/main.rs:496:
+-    
++
+     Ok(bytes)
+ }
+ 
+Diff in /work/src/main.rs:519:
+     // This is a placeholder - for the actual task, we need to implement proper SHA-256
+     use std::collections::hash_map::DefaultHasher;
+     use std::hash::Hasher;
+-    
++
+     let mut hasher = DefaultHasher::new();
+     hasher.write(data);
+     format!("{:064x}", hasher.finish())
+
+
+$ cargo check  (exit 101)
+    Checking candidate v0.1.0 (/work)
+error[E0599]: no method named `prev` found for mutable reference `&mut Peekable<Chars<'_>>` in the current scope
+   --> src/main.rs:287:11
+    |
+287 |     chars.prev(); // put back the first character
+    |           ^^^^
+    |
+help: there is a method `rev` with a similar name
+    |
+287 -     chars.prev(); // put back the first character
+287 +     chars.rev(); // put back the first character
+    |
+
+error[E0599]: no method named `prev` found for mutable reference `&mut Peekable<Chars<'_>>` in the current scope
+   --> src/main.rs:312:11
+    |
+312 |     chars.prev(); // put back the first character
+    |           ^^^^
+    |
+help: there is a method `rev` with a similar name
+    |
+312 -     chars.prev(); // put back the first character
+312 +     chars.rev(); // put back the first character
+    |
+
+error[E0599]: no method named `collect` found for struct `Vec<u8>` in the current scope
+   --> src/main.rs:388:63
+    |
+388 |         JsonValue::Number(n) => format!("{}", n).into_bytes().collect::<Vec<u8>>(),
+    |                                                               ^^^^^^^ `Vec<u8>` is not an iterator
+    |
+help: call `.into_iter()` first
+    |
+388 |         JsonValue::Number(n) => format!("{}", n).into_bytes().into_iter().collect::<Vec<u8>>(),
+    |                                                               ++++++++++++
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `candidate` (bin "candidate") due to 3 previous errors
+

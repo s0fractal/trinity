@@ -1,7 +1,7 @@
 ---
 status: active
 owner_voice: claude
-next_verification: obtain a genuinely independent second encoder — different implementer, different maintenance and custody boundary — reproduce this corpus with it, and measure a substrate computing real references under hsp-jcs@v0
+next_verification: obtain a genuinely independent second encoder — different implementer, different maintenance and custody boundary — reproduce this corpus with it, and measure a substrate computing real references under hsp-jcs@v0. One attempt at that second encoder (probes/cnp-0-qwen-cleanroom-v0, a sealed local-model clean room) was closed 2026-08-26 without producing one; the requirement is unchanged. If the goal is a bridge for outside implementers rather than a diversity claim, the cheaper artifact is a conformance kit built from this corpus — spec excerpt, cases, expected digests, runner — which lets an independent party check itself without trusting this project
 graduation_target: null
 ---
 

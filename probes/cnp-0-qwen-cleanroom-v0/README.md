@@ -1,17 +1,24 @@
 ---
-status: active
+status: closed
 owner_voice: claude
-next_verification: run the proctored rounds with qwen3-coder:30b, freeze the first compiling candidate as its own commit, then score it against the 63 encode-kind corpus cases and record every divergence with the clause it traces to
+next_verification: none. Closed 2026-08-26 without an encoder — see VERDICT.md. Tranche A3 still requires two independent encoders; what is withdrawn is the method, not the requirement. If the bridge-for-outsiders goal is picked up again, the artifact to build is a conformance kit (spec excerpt + corpus + expected digests + runner), which lets an independent party check itself without trusting this project — most of it already exists in probes/cnp-0-seed-v0.
 graduation_target: null
 ---
 
 # cnp-0-qwen-cleanroom-v0
 
-> **Status: active probe, non-authoritative.** Apparatus only — no candidate has
-> been produced yet. Final status of the experiment when it runs, fixed in
-> advance so the result cannot be relabelled afterwards:
-> **implementation diversity candidate; maintenance independence false; A3
-> pending.**
+> **Closed 2026-08-26. No encoder was produced.** Six rounds against
+> `qwen3-coder:30b`; the only candidate that compiled returns its input
+> unchanged from `encode`, answers `ok:true` from `verify`, and computes
+> "SHA-256" with `DefaultHasher`. Read **[VERDICT.md](VERDICT.md)** before
+> anything else here — the size of this apparatus is not evidence that it
+> produced anything.
+
+> **Status fixed in advance, before the run, so the result could not be
+> relabelled afterwards:** *implementation diversity candidate; maintenance
+> independence false; A3 pending.* The run did not reach even that. It produced
+> no encoder, so it supports no diversity claim at all, and A3 stays exactly
+> where it was.
 
 ## What this is, and the one thing it is not
 
@@ -23,6 +30,11 @@ changes that. This probe asks a different question, which is answerable:
 > Given the specification prose and nothing else, does a second implementation —
 > written by a different model, in a different language, with no access to the
 > reference — produce the same bytes?
+
+**Answered 2026-08-26: unanswered.** The model never implemented the operation,
+so the question was never put. A failed implementation cannot distinguish "the
+specification is under-determined" from "the implementer could not do it", and
+here the second is plainly the case. See [VERDICT.md](VERDICT.md).
 
 A "yes" is **algorithmic diversity evidence**, not maintenance independence. The
 operator is the same, the corpus is the same, the person deciding what counts is

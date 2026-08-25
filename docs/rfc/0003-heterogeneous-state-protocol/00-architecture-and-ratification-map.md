@@ -682,6 +682,20 @@ rather than "proved" for that reason.
   the CNP-0 corpus, two independent encoders, a third verifier-only rejection
   path, and federation adoption exist.
 
+  **The second encoder was attempted and not obtained (2026-08-26).**
+  `probes/cnp-0-qwen-cleanroom-v0` ran six sealed rounds against a local
+  `qwen3-coder:30b` under a capsule quoting Part 01 verbatim. The only candidate
+  that compiled returns its input unchanged from `encode`, answers `ok:true`
+  from `verify`, and computes "SHA-256" with `DefaultHasher`; it implements none
+  of the specified behaviour. The probe is closed with no encoder and no
+  diversity claim.
+
+  This changes nothing here. A3 still requires two independent encoders — a
+  failed attempt at the second one is not a reason to lower the bar, and a
+  failed implementation is evidence neither for nor against the specification,
+  since it cannot distinguish an under-determined spec from an implementer that
+  could not do it. What is withdrawn is the method, not the requirement.
+
   **Corrected 2026-08-03 by measurement.** This entry originally read as a
   choice between `warrant`'s profile and the federation's existing
   `CANONICAL_HASH`. An inventory of what actually exists

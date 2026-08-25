@@ -152,7 +152,7 @@ negative("c2-cnp0-unknown-tag", 2, "§5.1.2.1",
          '{"canonical_encoding":"hsp-jcs@v0","numeric_profile":"cnp-0",'
          '"v":{"cnp0":"decimal","value":1}}',
          "tagged-form-invalid")
-negative("c6-cnp0-extra-member", 2, "§5.1.2.1",
+negative("c2-cnp0-extra-member", 2, "§5.1.2.1",
          "a tagged form with a member the form does not define",
          '{"canonical_encoding":"hsp-jcs@v0","numeric_profile":"cnp-0",'
          '"v":{"cnp0":"ratio","den":3,"note":"x","num":1}}',

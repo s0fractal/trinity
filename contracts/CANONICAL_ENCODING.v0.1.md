@@ -64,8 +64,8 @@ separate because only the first is shared with prior art:
 | P10 | A named non-rational constant declares `symbolic`, `pinned`, or `discrete-surrogate`. Host `libm` output is not a canonical source.                                                                                                                                                                                                                                                                                                                           | §5.1.2.3            |
 | P11 | `circle2n@v0` is optional: a point **is** an integer index in `[0, 2^n)`, so an integer outside that interval is rejected rather than normalized; addition is modulo `2^n` over two valid points; equality is equality of indices; any LUT is fixed-point and content-addressed.                                                                                                                                                                              | §5.1.2.4            |
 | P12 | A boundary from approximate computation names the source float format, target domain, overflow behaviour, and one of `trunc_toward_zero`, `round_ties_even`, `reject`. `reject` is the default at an irreversible boundary.                                                                                                                                                                                                                                   | §5.1.2.5            |
-| P14 | **Recognition is byte-local.** A tagged form is a map carrying the reserved member `cnp0`, whose value is one of `"bytes"`, `"ratio"`, `"fixed"`, with exactly the members that form defines. `cnp0` is reserved in every position; an unrecognized value or an extra member is rejected, never reinterpreted. A map without `cnp0` is an ordinary map whatever its member names, **including `kind`**. Governs P5-P7.                                        | §5.1.2.1            |
 | P13 | `renormalize_largest_remainder@v0` allocates the residual by descending remainder, then by **ascending canonical bytes of the coordinate identifier** — never by array position, unless that position is the bound identifier. Every component binds a **unique** coordinate identifier, so a duplicate is rejected: without uniqueness the tie-break is not a function of the input. It rejects a negative weight or a zero sum, and validates `Σ q_i == T`. | §5.1.2.6            |
+| P14 | **Recognition is byte-local.** A tagged form is a map carrying the reserved member `cnp0`, whose value is one of `"bytes"`, `"ratio"`, `"fixed"`, with exactly the members that form defines. `cnp0` is reserved in every position; an unrecognized value or an extra member is rejected, never reinterpreted. A map without `cnp0` is an ordinary map whatever its member names, **including `kind`**. Governs P5-P7.                                        | §5.1.2.1            |
 
 ## 4. Rejection classes
 
@@ -97,12 +97,21 @@ resolves them silently. The verifier therefore receives the original bytes and
 performs its own UTF-8 validation and its own scan. This is why §5.1.3 asks for
 a _verifier-only_ path rather than a second encoder.
 
-## 5. Implementation choices this candidate makes, which Part 01 does not state
+## 5. Implementation choices and dispositions
 
-Recording these is the point of the exercise. Each is a place where an
-implementer must decide something the clause leaves open, and where two
-conforming-looking implementations could diverge. **None of them is proposed as
-a normative rule here.** They are open questions for the steward.
+Each entry below is a place where Part 01 left something for an implementer to
+decide, and where two conforming-looking implementations could diverge. Two of
+them have since been decided normatively; the rest have not, and the difference
+is load-bearing enough to state per entry rather than in a blanket sentence.
+
+**Resolved (1–2)** — now normative in Part 01 §5.1.2.1, recorded here for
+history. The decision is attributed to Codex as delegated acceptance reviewer
+for the CNP-0 slice; it is not a steward ratification. See Part 07 §14.
+
+**Open (3–7)** — still implementation choices. **None of them is proposed as a
+normative rule here.** They are open questions for the steward.
+
+### Resolved
 
 1. ~~**How a tagged form is recognized.**~~ **Resolved normatively on
    2026-08-25.** §5.1.2.1 now reserves the member name `cnp0` and makes
@@ -116,6 +125,9 @@ a normative rule here.** They are open questions for the steward.
 2. ~~**Whether a tagged form may carry extra members.**~~ **Resolved with it:**
    exactly the members the form defines. What remains an implementation choice
    is below.
+
+### Open
+
 3. **The `-0` literal.** §5.1.2(2) bars IEEE `-0.0` from the object model. `-0`
    is nevertheless an integer token in the JSON grammar, so this candidate
    rejects it as `signed-zero`. That is a derivation, not a quotation.
@@ -160,7 +172,7 @@ one, or a change to our own side all fail the check. The measurement runs
 against a tree materialized from the pinned revision, so a modified working copy
 of the external checkout cannot reach it.
 
-## 6. What is still missing before A3 can be claimed
+## 7. What is still missing before A3 can be claimed
 
 §5.1.3 lists four artifacts. Their honest status:
 

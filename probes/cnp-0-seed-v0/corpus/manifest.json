@@ -344,7 +344,7 @@
       "raw": "{\"canonical_encoding\":\"hsp-jcs@v0\",\"numeric_profile\":\"cnp-0\",\"v\":{\"cnp0\":\"decimal\",\"value\":1}}"
     },
     {
-      "id": "c6-cnp0-extra-member",
+      "id": "c2-cnp0-extra-member",
       "category": 2,
       "clause": "§5.1.2.1",
       "title": "a tagged form with a member the form does not define",

@@ -8,8 +8,13 @@ against expected bytes and digests that are written down, each carrying the
 clause it comes from, so a disagreement is a place in the specification you can
 go and read rather than a verdict you have to accept.
 
-    python3 run_conformance.py --cmd './my-impl'
-    python3 run_conformance.py --cmd 'python3 impl.py' --report report.json
+    python3 run_conformance.py --cmd ~/my-impl/target/release/my-impl
+    python3 run_conformance.py --cmd 'python3 ~/my-impl/impl.py' \
+        --report ~/my-impl/report.json
+
+Keep your implementation and your report outside this directory. The kit's
+inventory is closed, so a file written into it — a report, a build artefact —
+makes the next run refuse the kit.
 
 Your program is invoked twice: `<cmd> encode` and `<cmd> verify`, each reading
 NDJSON on stdin and writing one NDJSON line per input line, in order. See
@@ -29,7 +34,10 @@ import argparse
 import hashlib
 import json
 import os
+import posixpath
+import re
 import shlex
+import stat
 import subprocess
 import sys
 
@@ -42,56 +50,102 @@ def sha(b: bytes) -> str:
     return hashlib.sha256(b).hexdigest()
 
 
-def kit_inventory() -> tuple[list[str], list[str]]:
-    """Every filesystem entry in the kit, and every reason one is inadmissible.
+HEX64 = re.compile(r"^[0-9a-f]{64}$")
 
-    No path is exempt. An earlier version skipped `__pycache__`, which turned the
-    closed inventory back into an open one: `__pycache__/unlisted_reference_impl.py`
-    was unpinned, unnoticed, and scored 126/126. An exclusion is a hole whoever
-    knows about it can walk through, and "it is only generated files" is exactly
-    the sentence that hides one.
 
-    Symlinks and special files are refused before they are read: a pinned file
-    must be its own bytes, and a digest taken through a link describes whatever
-    the link happened to point at when it was taken.
+def scan_tree() -> tuple[set[str], set[str], list[str]]:
+    """lstat the whole kit before anything is opened.
+
+    Order matters and did not used to: the manifest was read and its paths
+    opened first, so a symlink was followed before the scan that was supposed to
+    refuse it, and an entry for `../outside.txt` was read from outside the kit
+    entirely. Nothing here opens a file. It returns what exists, as three sets,
+    and every later step works from those.
     """
-    files, refusals = [], []
-    for root, dirs, names in os.walk(HERE, followlinks=False):
-        for name in sorted(dirs):
-            full = os.path.join(root, name)
+    files: set[str] = set()
+    dirs: set[str] = set()
+    refusals: list[str] = []
+    stack = [HERE]
+    while stack:
+        current = stack.pop()
+        for name in sorted(os.listdir(current)):
+            full = os.path.join(current, name)
             rel = os.path.relpath(full, HERE).replace(os.sep, "/")
-            if os.path.islink(full):
-                refusals.append(f"{rel}/ is a symlink")
-                dirs.remove(name)
-        for name in sorted(names):
-            full = os.path.join(root, name)
-            rel = os.path.relpath(full, HERE).replace(os.sep, "/")
-            if os.path.islink(full):
-                refusals.append(f"{rel} is a symlink; a pinned file must be its own bytes")
-            elif not os.path.isfile(full):
-                refusals.append(f"{rel} is not a regular file")
+            st = os.lstat(full)
+            if stat.S_ISLNK(st.st_mode):
+                refusals.append(
+                    f"{rel} is a symlink; a pinned file must be its own bytes, and "
+                    "a digest taken through a link describes whatever it pointed at"
+                )
+            elif stat.S_ISDIR(st.st_mode):
+                dirs.add(rel)
+                stack.append(full)
+            elif stat.S_ISREG(st.st_mode):
+                files.add(rel)
             else:
-                files.append(rel)
-    return sorted(files), refusals
+                refusals.append(f"{rel} is not a regular file")
+    return files, dirs, refusals
+
+
+def read_manifest(present: set[str]) -> tuple[dict[str, str], list[str]]:
+    """Parse MANIFEST.sha256 without trusting a single path in it.
+
+    Every entry must be a relative, normalized path that the scan already found
+    inside the kit. An earlier version joined each entry to the kit directory and
+    opened it: an entry for `../outside.txt` with a correct digest was read from
+    outside the kit and scored 126/126. A manifest is a claim about the kit, so a
+    path that leaves it is not a manifest entry at all.
+    """
+    pinned: dict[str, str] = {}
+    problems: list[str] = []
+    raw = open(MANIFEST, "rb").read()
+    for n, line in enumerate(raw.decode("utf-8", "replace").splitlines(), 1):
+        if not line.strip():
+            continue
+        if "  " not in line:
+            problems.append(f"MANIFEST line {n} is not `<digest>  <path>`")
+            continue
+        digest, rel = line.split("  ", 1)
+        if not HEX64.match(digest):
+            problems.append(f"MANIFEST line {n} has a malformed digest")
+            continue
+        if rel != rel.strip():
+            problems.append(f"MANIFEST line {n} pads its path with whitespace")
+            continue
+        if os.path.isabs(rel) or rel.startswith("/") or ":" in rel.split("/")[0][1:2]:
+            problems.append(f"MANIFEST line {n} pins an absolute path {rel!r}")
+            continue
+        if rel != posixpath.normpath(rel) or rel.startswith("..") or "/../" in rel:
+            problems.append(
+                f"MANIFEST line {n} pins {rel!r}, which is not a normalized path "
+                "inside the kit"
+            )
+            continue
+        if rel in pinned:
+            problems.append(f"MANIFEST pins {rel!r} twice")
+            continue
+        if rel not in present:
+            problems.append(f"MANIFEST pins {rel!r}, which the kit does not contain")
+            continue
+        pinned[rel] = digest
+    return pinned, problems
 
 
 def verify_kit(skip: bool = False) -> str | None:
     """Refuse to score unless the kit is exactly what its manifest says it is.
 
-    Two properties, and an earlier version had only the first:
-
-    * every pinned file is present and matches its digest;
-    * **nothing else is present.** Verifying a list is an open surface — a file
-      nobody pinned rides along untouched, and an implementation dropped into
-      the kit is exactly the thing whose absence the no-trust claim rests on.
-      The inventory is therefore closed: an unpinned file is a hard stop.
+    Exact equality in both directions, over a tree scanned before anything was
+    opened: every regular file is pinned, every pin names a file, every digest
+    matches, and every directory is the parent of something pinned. No path is
+    exempt — `__pycache__` was, and a file hidden there scored a perfect run. An
+    exclusion is a hole whoever knows about it walks through.
 
     What this proves and what it does not: the manifest shows the kit is
-    internally consistent — it has not been edited since it was pinned. It does
-    **not** prove the kit is authentic, because an attacker who changes a file
-    can recompute the manifest. Authenticity needs the manifest's own digest to
-    be known from somewhere other than the kit, which is what the ratification
-    record will pin. It is printed for that purpose.
+    internally consistent — unchanged since it was pinned. It does **not** prove
+    the kit is authentic, because whoever edits a file can recompute the
+    manifest. Authenticity needs the manifest's own digest known from somewhere
+    other than the kit, which is what a ratification record must pin. It is
+    printed for that purpose.
     """
     if skip:
         print("!!  kit integrity check SKIPPED; this score is not a conformance "
@@ -102,42 +156,40 @@ def verify_kit(skip: bool = False) -> str | None:
             "refusing: MANIFEST.sha256 is missing, so nothing pins the corpus this "
             "score would be computed against."
         )
-    manifest_raw = open(MANIFEST, "rb").read()
-    pinned: dict[str, str] = {}
-    for line in manifest_raw.decode("utf-8").splitlines():
-        line = line.strip()
-        if not line:
-            continue
-        want, rel = line.split("  ", 1)
-        pinned[rel] = want
 
-    bad = []
-    for rel, want in sorted(pinned.items()):
-        path = os.path.join(HERE, rel)
-        if not os.path.exists(path):
-            bad.append(f"{rel} is pinned but missing")
-        elif sha(open(path, "rb").read()) != want:
-            bad.append(f"{rel} does not match its pin")
-    present, refusals = kit_inventory()
-    bad.extend(refusals)
-    for rel in present:
-        if rel == "MANIFEST.sha256":
-            continue
-        if rel not in pinned:
+    present, dirs, bad = scan_tree()
+    pinned, problems = read_manifest(present)
+    bad = list(bad) + problems
+
+    scoreable = present - {"MANIFEST.sha256"}
+    for rel in sorted(scoreable - set(pinned)):
+        bad.append(
+            f"{rel} is present but pinned by nothing. The inventory is closed: an "
+            "unlisted file could be anything, including the implementation this "
+            "kit is supposed not to contain."
+            + (" (Generated bytecode counts: delete it and re-run.)"
+               if "__pycache__" in rel else "")
+        )
+    for rel in sorted(set(pinned) - scoreable):
+        bad.append(f"{rel} is pinned but missing")
+    for rel in sorted(dirs):
+        if not any(p.startswith(rel + "/") for p in pinned):
             bad.append(
-                f"{rel} is present but pinned by nothing. The inventory is closed: "
-                "an unlisted file could be anything, including the implementation "
-                "this kit is supposed not to contain."
-                + (" (Generated bytecode counts: delete it and re-run.)"
-                   if "__pycache__" in rel else "")
+                f"{rel}/ holds nothing pinned. An empty directory is a place to "
+                "put something later without anyone noticing."
             )
+    # Only now is anything opened, and only paths the scan itself found.
+    for rel in sorted(set(pinned) & scoreable):
+        if sha(open(os.path.join(HERE, rel), "rb").read()) != pinned[rel]:
+            bad.append(f"{rel} does not match its pin")
+
     if bad:
         raise SystemExit(
             "refusing: this kit is not what its manifest says it is:\n  "
             + "\n  ".join(bad)
             + "\nA kit that has been altered produces a score that means nothing."
         )
-    digest = sha(manifest_raw)
+    digest = sha(open(MANIFEST, "rb").read())
     print(f"kit integrity ok: {len(pinned)} files pinned, none unlisted")
     print(f"  MANIFEST.sha256 itself hashes to {digest}")
     print("  That shows the kit is internally consistent, not that it is "
@@ -173,6 +225,26 @@ class ProtocolError(RuntimeError):
     """
 
 
+class NotJson(ValueError):
+    pass
+
+
+class DuplicateMember(ValueError):
+    pass
+
+
+def reject_constant(token: str):
+    """`json.loads` accepts NaN, Infinity and -Infinity. JSON has none of them.
+
+    Python's parser treats them as an extension, so a reply that was correct in
+    every scored field but carried an extra `"extra": NaN` parsed cleanly and
+    scored 126/126. The interface says JSON; this makes that true rather than
+    approximately true.
+    """
+    raise NotJson(f"{token} is not JSON; it is a Python extension that some "
+                  "parsers accept and the interface does not")
+
+
 def no_duplicate_members(pairs: list[tuple[str, object]]) -> dict:
     """`json.loads` resolves a repeated member in favour of the last one.
 
@@ -185,7 +257,7 @@ def no_duplicate_members(pairs: list[tuple[str, object]]) -> dict:
     seen = set()
     for key, _ in pairs:
         if key in seen:
-            raise ValueError(f"member {key!r} appears more than once")
+            raise DuplicateMember(f"member {key!r} appears more than once")
         seen.add(key)
     return dict(pairs)
 
@@ -197,6 +269,17 @@ def split_records(stdout: str, sub: str) -> list[str]:
     output with them was free. A trailing newline after the last record is
     allowed — that is how a line-oriented stream ends — and nothing else is.
     """
+    # LF or CRLF terminate a record — both, chosen explicitly so the transport
+    # works on either platform. Nothing else does. An earlier version captured
+    # with text=True, whose universal-newline translation silently turned every
+    # CR into an LF before this check could see one, so the check did nothing.
+    stdout = stdout.replace("\r\n", "\n")
+    if "\r" in stdout:
+        raise ProtocolError(
+            f"`{sub}` output contains a carriage return that does not terminate a "
+            "record. Records end with LF or CRLF; a bare CR makes what counts as "
+            "a line ambiguous."
+        )
     if stdout.endswith("\n"):
         stdout = stdout[:-1]
     if stdout == "":
@@ -208,11 +291,6 @@ def split_records(stdout: str, sub: str) -> list[str]:
                 f"`{sub}` record {n} is blank. NDJSON carries one JSON value per "
                 "line; an empty line is not a record, and skipping it would let "
                 "output be padded for free."
-            )
-        if "\r" in rec:
-            raise ProtocolError(
-                f"`{sub}` record {n} contains a carriage return, which makes what "
-                "counts as a line ambiguous."
             )
     return records
 
@@ -228,14 +306,17 @@ def parse_replies(stdout: str, cases: list[dict], sub: str) -> list[dict]:
     expected = [c["id"] for c in cases]
     for n, (line, want_id) in enumerate(zip(lines, expected), 1):
         try:
-            rec = json.loads(line, object_pairs_hook=no_duplicate_members)
+            rec = json.loads(line, object_pairs_hook=no_duplicate_members,
+                             parse_constant=reject_constant)
         except json.JSONDecodeError as exc:
             raise ProtocolError(f"`{sub}` line {n} is not JSON: {exc}")
-        except ValueError as exc:
+        except DuplicateMember as exc:
             raise ProtocolError(
                 f"`{sub}` line {n}: {exc}. A repeated member means the reply says "
                 "two things and which one is read is the parser's choice."
             )
+        except NotJson as exc:
+            raise ProtocolError(f"`{sub}` line {n}: {exc}.")
         if not isinstance(rec, dict):
             raise ProtocolError(f"`{sub}` line {n} is not a JSON object")
         got_id = rec.get("id")
@@ -257,8 +338,38 @@ def parse_replies(stdout: str, cases: list[dict], sub: str) -> list[dict]:
                 f"`{sub}` line {n} answers {got_id!r} where {want_id!r} was "
                 "expected. Output must be in input order."
             )
+        check_fields(rec, sub, n)
         replies.append(rec)
     return replies
+
+
+# Exactly what INTERFACE.md defines, and nothing else. An open schema lets a
+# reply carry anything alongside the answer — which is how an extra `NaN` field
+# came to be scored 126/126 — and diagnostics belong on stderr, not in the
+# record.
+FIELDS = {
+    ("encode", True): {"id", "ok", "canonical_hex", "sha256"},
+    ("encode", False): {"id", "ok", "category"},
+    ("verify", True): {"id", "ok", "sha256"},
+    ("verify", False): {"id", "ok", "category"},
+}
+
+
+def check_fields(rec: dict, sub: str, n: int) -> None:
+    ok = rec.get("ok")
+    if not isinstance(ok, bool):
+        raise ProtocolError(f"`{sub}` line {n} has no boolean `ok`")
+    allowed = FIELDS[(sub, ok)]
+    extra = sorted(set(rec) - allowed)
+    if extra:
+        raise ProtocolError(
+            f"`{sub}` line {n} carries {extra}, which INTERFACE.md does not "
+            f"define for an {'accepted' if ok else 'rejected'} {sub}. The reply "
+            "schema is closed; diagnostics go to stderr."
+        )
+    missing = sorted(allowed - set(rec))
+    if missing:
+        raise ProtocolError(f"`{sub}` line {n} is missing {missing}")
 
 
 def run_subcommand(cmd: str, sub: str, cases: list[dict],
@@ -270,8 +381,10 @@ def run_subcommand(cmd: str, sub: str, cases: list[dict],
     )
     argv = shlex.split(cmd) + [sub]
     try:
-        proc = subprocess.run(argv, input=payload, capture_output=True, text=True,
-                              timeout=timeout)
+        # Bytes, not text: universal-newline translation would rewrite the very
+        # bytes the newline policy is meant to check.
+        proc = subprocess.run(argv, input=payload.encode("utf-8"),
+                              capture_output=True, timeout=timeout)
     except FileNotFoundError:
         raise SystemExit(f"cannot run {argv[0]!r}")
     except subprocess.TimeoutExpired:
@@ -280,24 +393,25 @@ def run_subcommand(cmd: str, sub: str, cases: list[dict],
         raise ProtocolError(
             f"`{cmd} {sub}` exited {proc.returncode}. A non-zero exit is the program "
             "failing, which is not the same as rejecting an input.\n"
-            + proc.stderr[-2000:]
+            + proc.stderr.decode("utf-8", "replace")[-2000:]
         )
-    return parse_replies(proc.stdout, cases, sub)
+    try:
+        stdout = proc.stdout.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise ProtocolError(f"`{sub}` wrote output that is not UTF-8: {exc}")
+    return parse_replies(stdout, cases, sub)
 
 
-def score_one(sub: str, case: dict, got: dict | None) -> dict:
+def score_one(sub: str, case: dict, got: dict) -> dict:
     """Compare one reply with what the corpus expects, and say precisely how it differs."""
     want = case[sub]
     r = {"id": case["id"], "clause": case["clause"], "title": case["title"],
          "op": sub, "expected": want}
-    if got is None:
-        return {**r, "pass": False, "failure": "no-output",
-                "detail": "the program produced no line for this case"}
+    # `got` has already passed the protocol checks: it exists, it is in the right
+    # place, and it carries exactly the fields the interface defines. Only
+    # answers are compared here.
     r["got"] = {k: got.get(k) for k in ("ok", "category", "canonical_hex", "sha256")
                 if k in got}
-    if not isinstance(got.get("ok"), bool):
-        return {**r, "pass": False, "failure": "malformed-output",
-                "detail": "`ok` is missing or not a boolean"}
     if got["ok"] != want["ok"]:
         return {**r, "pass": False, "failure": "verdict",
                 "detail": f"expected ok={want['ok']}, got ok={got['ok']}"}
@@ -323,12 +437,30 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--cmd", required=True,
                     help="how to invoke your implementation, e.g. './my-impl'")
-    ap.add_argument("--report", help="write the full result as JSON to this path")
+    ap.add_argument("--report",
+                    help="write the full result as JSON to this path, which must "
+                         "be OUTSIDE the kit")
     ap.add_argument("--timeout", type=int, default=300)
     ap.add_argument("--skip-kit-check", action="store_true",
                     help="score against an unpinned kit; the result is not a "
                          "conformance result and is labelled as such")
     args = ap.parse_args()
+
+    if args.report:
+        # Writing the report into the kit adds an unpinned file, so the run after
+        # it refuses the kit — and the example in this docstring used to do
+        # exactly that. Checked before verification, so the failure names the
+        # cause rather than appearing one run later as a mysterious integrity
+        # error.
+        dest = os.path.realpath(args.report)
+        if dest == os.path.realpath(HERE) or dest.startswith(
+                os.path.realpath(HERE) + os.sep):
+            raise SystemExit(
+                f"refusing: --report {args.report} would write inside the kit, "
+                "whose inventory is closed. The next run would refuse the kit "
+                "because of a file this run created. Write the report somewhere "
+                "else."
+            )
 
     kit_digest = verify_kit(args.skip_kit_check)
     cases = load_cases(REQUIRED)

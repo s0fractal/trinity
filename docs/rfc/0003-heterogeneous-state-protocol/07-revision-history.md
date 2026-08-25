@@ -1071,8 +1071,18 @@ ride along inside the kit; and the test asserting the kit ships no
 implementation opened with a tautology and looked only inside `ts/`. The
 inventory is now closed in both the runner and the test.
 
-The kit's selftest grew from 9 controls to 16 — the added ones are the four
-protocol shapes above, a missing line, and the unpinned file.
+The kit's selftest grew from 9 controls to 25 over the review rounds that
+followed. Eleven of them answer every case correctly and get only the shape of
+the reply wrong — reversed order, a repeated id, an unasked id,
+wrong-then-right, an extra line, a missing line, a blank record, a whitespace
+record, `"id"` twice in one object, a `NaN` value, an undefined field. Each
+scored a perfect 126/126 against some earlier version of the runner.
+
+Later rounds of the same review closed four more bypasses of the same shape — an
+exempt `__pycache__` path, a manifest entry pointing outside the kit,
+`json.loads` accepting `NaN`, and `text=True` translating away the carriage
+returns the newline check was looking for. Every one was a lenient default that
+looked like tidiness.
 
 ### What the manifest proves
 

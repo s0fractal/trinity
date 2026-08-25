@@ -48,6 +48,8 @@ Deno.test("conformance kit: the runner fails wrong implementations", async () =>
       "padding-with-blank-lines-fails",
       "a-whitespace-only-record-fails",
       "a-duplicated-json-member-fails",
+      "a-NaN-value-fails",
+      "an-undefined-output-field-fails",
     ]
   ) {
     assert(
@@ -58,7 +60,14 @@ Deno.test("conformance kit: the runner fails wrong implementations", async () =>
   assert(text.includes("ok   unpinned-file-is-refused"), text);
   // An ignored path is a hole: __pycache__ was one.
   assert(text.includes("ok   unpinned-file-in-pycache-is-refused"), text);
-  assert(/\n20 passed, 0 failed/.test(text), text);
+  // A manifest is a claim about the kit; an entry that leaves it is not one.
+  assert(
+    text.includes("ok   a-manifest-path-leaving-the-kit-is-refused"),
+    text,
+  );
+  assert(text.includes("ok   an-empty-directory-is-refused"), text);
+  assert(text.includes("ok   a-report-inside-the-kit-is-refused"), text);
+  assert(/\n25 passed, 0 failed/.test(text), text);
 });
 
 Deno.test("conformance kit: the reference encoder satisfies it", async () => {

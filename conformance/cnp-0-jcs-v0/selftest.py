@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import json
 import os
+import hashlib
 import shutil
 import subprocess
 import sys
@@ -53,7 +54,7 @@ for line in sys.stdin:
         continue
     if mode in ("reversed", "duplicated", "unknown-id", "extra-line", "short",
                 "wrong-then-right", "blank-line", "whitespace-record",
-                "duplicate-id-member"):
+                "duplicate-id-member", "nan-field", "extra-field"):
         BUFFER.append((i, sub))
         continue
     if mode == "accept-all":
@@ -64,8 +65,9 @@ for line in sys.stdin:
         out = {"id": i, "ok": False, "category": "syntax"}
     elif mode == "echo-canonical":
         # Right on inputs that were already canonical, wrong on every other.
-        out = {"id": i, "ok": True, "sha256": hashlib.sha256(raw).hexdigest(),
-               "canonical_hex": raw.hex()}
+        out = {"id": i, "ok": True, "sha256": hashlib.sha256(raw).hexdigest()}
+        if sub == "encode":
+            out["canonical_hex"] = raw.hex()
     elif mode == "wrong-digest":
         out = dict(EXPECT[i][sub])
         out["id"] = i
@@ -134,6 +136,16 @@ elif mode == "whitespace-record":
     # Count preserved, so this reaches the empty-record check itself.
     for n, (i, sub) in enumerate(BUFFER):
         sys.stdout.write("   \n" if n == 1 else answer(i, sub))
+elif mode == "nan-field":
+    # Every scored field correct, plus a value JSON does not have.
+    for i, sub in BUFFER:
+        body = answer(i, sub).strip()
+        sys.stdout.write(body[:-1] + ',"extra":NaN}' + "\n")
+elif mode == "extra-field":
+    # Every scored field correct, plus one the interface does not define.
+    for i, sub in BUFFER:
+        body = answer(i, sub).strip()
+        sys.stdout.write(body[:-1] + ',"debug":"note to self"}' + "\n")
 elif mode == "duplicate-id-member":
     # `{"id":"unasked","id":"<expected>"}` — a standard parser keeps the last.
     for i, sub in BUFFER:
@@ -209,10 +221,10 @@ def main() -> int:
                else f"reported as {kinds}")
 
         r = run_fake("malformed", tmp)
-        kinds = r.get("failures_by_kind", {})
-        ok = r["exit"] != 0 and kinds.get("malformed-output", 0) > 0
+        ok = r["exit"] != 0 and "no boolean `ok`" in r.get("protocol_violation", "")
         record("output-not-matching-the-interface-fails", ok,
-               f"caught: {kinds}" if ok else f"NOT caught: {kinds}")
+               "refused before scoring" if ok
+               else f"NOT caught: {r.get('protocol_violation', r['stdout'][-160:])}")
 
         r = run_fake("silent", tmp)
         ok = r["exit"] != 0 and "protocol_violation" in r
@@ -234,6 +246,8 @@ def main() -> int:
             ("whitespace-record", "a-whitespace-only-record-fails", "is blank"),
             ("duplicate-id-member", "a-duplicated-json-member-fails",
              "more than once"),
+            ("nan-field", "a-NaN-value-fails", "not JSON"),
+            ("extra-field", "an-undefined-output-field-fails", "schema is closed"),
         ):
             r = run_fake(mode, tmp)
             blob = r["stdout"]
@@ -247,6 +261,49 @@ def main() -> int:
         # lets an implementation ride along inside the kit.
         # No path is exempt. `__pycache__` was, and a file hidden there scored a
         # perfect run: an exclusion is a hole whoever knows about it walks through.
+        # A manifest is a claim about the kit. An entry that leaves it is not a
+        # manifest entry, and one with a correct digest was read from outside and
+        # scored 126/126.
+        escape = os.path.join(tmp, "escape")
+        shutil.copytree(HERE, escape)
+        outside = os.path.join(os.path.dirname(escape), "outside.txt")
+        with open(outside, "w") as fh:
+            fh.write("read from beyond the kit\n")
+        digest = hashlib.sha256(open(outside, "rb").read()).hexdigest()
+        with open(os.path.join(escape, "MANIFEST.sha256"), "a") as fh:
+            fh.write(f"{digest}  ../outside.txt\n")
+        proc = subprocess.run(
+            [sys.executable, os.path.join(escape, "run_conformance.py"), "--cmd", "true"],
+            capture_output=True, text=True, timeout=120)
+        blob = proc.stdout + proc.stderr
+        ok = proc.returncode != 0 and "not a normalized path inside the kit" in blob
+        record("a-manifest-path-leaving-the-kit-is-refused", ok,
+               "refused a pin for ../outside.txt" if ok else blob[-200:])
+
+        # An empty directory is a place to put something later unnoticed.
+        hollow = os.path.join(tmp, "hollow")
+        shutil.copytree(HERE, hollow)
+        os.makedirs(os.path.join(hollow, "vendor"))
+        proc = subprocess.run(
+            [sys.executable, os.path.join(hollow, "run_conformance.py"), "--cmd", "true"],
+            capture_output=True, text=True, timeout=120)
+        blob = proc.stdout + proc.stderr
+        ok = proc.returncode != 0 and "holds nothing pinned" in blob
+        record("an-empty-directory-is-refused", ok,
+               "refused a directory pinning nothing" if ok else blob[-200:])
+
+        # The documented example used to poison the kit it had just verified.
+        proc = subprocess.run(
+            [sys.executable, RUNNER, "--cmd", "true",
+             "--report", os.path.join(HERE, "report.json")],
+            capture_output=True, text=True, timeout=120)
+        blob = proc.stdout + proc.stderr
+        ok = (proc.returncode != 0 and "would write inside the kit" in blob
+              and not os.path.exists(os.path.join(HERE, "report.json")))
+        record("a-report-inside-the-kit-is-refused", ok,
+               "refused to write a report into the closed inventory" if ok
+               else blob[-200:])
+
         for where, name in (("", "unpinned-file-is-refused"),
                             ("__pycache__", "unpinned-file-in-pycache-is-refused")):
             rogue = os.path.join(tmp, f"rogue{where or 'top'}")

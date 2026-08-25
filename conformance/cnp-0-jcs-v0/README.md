@@ -75,14 +75,18 @@ enforced.
 
 Failures are separated by kind, because they are different findings:
 
-| kind               | meaning                                            |
-| ------------------ | -------------------------------------------------- |
-| `verdict`          | accepted what must be rejected, or the reverse     |
-| `category`         | rejected correctly, but named a different category |
-| `canonical-bytes`  | accepted, but produced different canonical bytes   |
-| `digest`           | right bytes, wrong digest                          |
-| `malformed-output` | the reply did not match `INTERFACE.md`             |
-| `no-output`        | no line came back for that case                    |
+| kind              | meaning                                            |
+| ----------------- | -------------------------------------------------- |
+| `verdict`         | accepted what must be rejected, or the reverse     |
+| `category`        | rejected correctly, but named a different category |
+| `canonical-bytes` | accepted, but produced different canonical bytes   |
+| `digest`          | right bytes, wrong digest                          |
+
+A reply that does not match `INTERFACE.md` at all is not scored. It is reported
+as a **protocol violation** and the run ends there: a number computed from a
+reply stream whose shape is unknown is a number that means nothing. The reply
+schema is closed — exactly the fields the interface defines for that verdict, no
+others — and diagnostics belong on stderr.
 
 `category` is deliberately not counted as a wrong verdict. When more than one
 category applies to an input, a different but defensible ordering of checks is a

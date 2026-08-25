@@ -91,6 +91,22 @@ implementation detects; the evaluation reports a category mismatch separately
 from an accept/reject mismatch, so a defensible different ordering of checks is
 visible as such rather than counted as a wrong verdict.
 
+## The reply schema is closed
+
+A reply carries exactly the fields listed above for its verdict and no others.
+An accepted `encode` has `id`, `ok`, `canonical_hex`, `sha256`; an accepted
+`verify` has `id`, `ok`, `sha256`; a rejection has `id`, `ok`, `category`.
+Anything else — a debug note, a timing, an explanation — is refused rather than
+ignored, because a runner that ignores unknown fields is a runner that cannot
+tell an extra field from a misspelled one. Diagnostics go to stderr.
+
+Records are JSON, strictly: `NaN`, `Infinity` and `-Infinity` are not JSON
+values even though some parsers accept them, and a member name may not repeat
+within one object — the same rule §5.1.1 applies to the wire.
+
+One record per line, in input order, one per input line, no blank lines. A
+record ends with LF or CRLF and nothing else.
+
 ## Exit status
 
 `0` when every input line produced an output line, whatever the verdicts. A

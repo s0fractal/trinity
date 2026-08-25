@@ -13,7 +13,7 @@ addressed_to:
   - "s0fractal"
   - "codex-gpt-5"
 claim_kind: artifact
-signature_status: "UNSIGNED. ~/.trinity/keys/ exists on this host and holds codex.ed25519.json only; there is no claude key, and `./t chord sign` refuses this voice with `no local key for claude`. This receipt therefore authenticates nothing by signature. It states authorship of the contribution bytes named below and the commands by which anyone can check them; the artifact stands on its reproducibility, not on this voice's attestation."
+signature_status: "Signed with the registered `claude` ed25519 key (pubkey jf1D1bVxC+1GlL8NZ0AnyFlnIjK2n4w/8mxUMN9Qii0=, minted 2026-06-12). The key lives on a separate host and was NOT copied here: only the 71-character payload digest crossed the link, and only the signature came back, so the private half stayed where it was minted and this repository never held it. Custody was proved before signing by having that host sign a fixed probe string and verifying it locally against the committed registry — the same construction x2F37 uses so the private half is never derived, printed, or persisted. What this signature attests is control of the claude contribution key over these exact bytes: not runtime identity, not independent custody from the operator, not conformance, and not ratification."
 hears:
   - "s0fractal — assigned P0, the CNP-0 executable seed, in proposals/rfc-0003/claude-next-executable-slice-task-2026-08-25.md"
   - "codex-gpt-5 — four review rounds against exact SHAs; acceptance recorded in src/x7700_963924_codex_rfc-0003-cnp-0-seed-exact-sha-acceptance.myc.md"
@@ -40,6 +40,11 @@ expected_after_running:
   t_cnp0: "the read-only corpus gate, same counts, exit 0"
 claim:
   summary: "Authored the RFC-0003 CNP-0 executable seed: contracts/CANONICAL_ENCODING.v0.1.md (candidate restatement), probes/cnp-0-seed-v0 (reference encoder for hsp-jcs@v0 + cnp-0, a verifier-only rejection path that imports nothing, 112 corpus cases across all eight Part 01 §5.1.3 categories, 10 negative-control mutations, and a two-direction Warrant parity adapter), the ./t cnp0 organ at 6/C4, and its declared boundary adapter. Implementation head 7df1da6b70d6acf9f17aff0d96479e7d7cd5b274, merged as ff273f5253f17bc316e81ba226a1804704bc6ba5 via PR #17 after four Codex review rounds. Warrant parity at the pinned revision ac63e4e9180c5878aa27159eebe1c4007909dce9 is regression-gate PASS with parity state BOUNDED: 47 of 47 in direction A, 27 of 28 in direction B, the remainder being one recorded and byte-pinned divergence where RFC 8785 orders member names by UTF-16 code unit and Warrant's Python canon() orders by code point. This is NOT two independent encoders, NOT conformance, NOT substrate adoption, and NOT steward ratification of Tranche A3; Part 01's honest status is unchanged."
+content_sig:
+  voice: claude
+  alg: ed25519
+  payload: "sha256:ddf38d3e8c0a3d633fba4d93e069a4200a0d0884b682f8e1a529f20581220810"
+  sig: "RqF2q39X6GwsgJyilU7WDj0+AYlmnIW1xH8RvUBdYesdSprd1SME8y1a6RtI8zZ2qoyWnT5Zbj1XCsO/QyCuCQ=="
 ---
 
 # Receipt: RFC-0003 CNP-0 executable seed
@@ -103,7 +108,9 @@ names**.
 - **Not a normative change.** No file under
   `docs/rfc/0003-heterogeneous-state-protocol/` was modified by this work.
   Tagged-form recognition remains an open normative question for the steward.
-- **Not signed.** See `signature_status`.
+- **Not an attestation beyond authorship.** The signature proves control of the
+  claude contribution key over these bytes and nothing further; see
+  `signature_status`. Under one operator it is provenance, not independence.
 
 ## Falsifiers
 

@@ -41,6 +41,10 @@ PACK_FILES = ["capsule/SPEC.md", "capsule/INTERFACE.md", "capsule/EXAMPLES.ndjso
               "capsule/TASK.md"]
 EXPECTED_MODEL_ID = "5642e97495e1"
 MAX_PRE_FREEZE_ROUNDS = 3
+# Everything else in this harness has a deadline; the model call did not, and a
+# wedged ollama runner held one round open for two and a half hours without
+# writing anything. A generation that does not finish is a failed generation.
+MODEL_TIMEOUT_S = 3600
 FILE_BLOCK = re.compile(
     r"^FILE:\s*(?P<path>[A-Za-z0-9_./-]+)\s*\n+```[a-zA-Z]*\n(?P<body>.*?)\n```",
     re.M | re.S,
@@ -328,14 +332,24 @@ def main() -> int:
         )
 
     started = time.time()
-    proc = subprocess.run(
-        # `--think` takes its value with `=`. Written as two arguments, ollama
-        # read "high" as the model name and tried to pull it, exiting 1 in about
-        # a second with no output — a proctor bug that round 1 recorded as a
-        # failed generation.
-        ["ollama", "run", "--think=high", "--hidethinking", args.model],
-        input=prompt, capture_output=True, text=True,
-    )
+    try:
+        proc = subprocess.run(
+            # `--think` takes its value with `=`. Written as two arguments, ollama
+            # read "high" as the model name and tried to pull it, exiting 1 in about
+            # a second with no output — a proctor bug that round 1 recorded as a
+            # failed generation.
+            ["ollama", "run", "--think=high", "--hidethinking", args.model],
+            input=prompt, capture_output=True, text=True, timeout=MODEL_TIMEOUT_S,
+        )
+    except subprocess.TimeoutExpired:
+        record["elapsed_s"] = round(time.time() - started, 1)
+        record["error"] = f"the model did not finish within {MODEL_TIMEOUT_S}s"
+        record["model_exit"] = None
+        record["freeze_ready"] = False
+        print(f"round {n}: no generation within {MODEL_TIMEOUT_S}s; recorded as a "
+              "failed generation.")
+        return finish(record, n, prior)
+
     output = proc.stdout
     record["elapsed_s"] = round(time.time() - started, 1)
     record["output_sha256"] = sha(output.encode("utf-8"))

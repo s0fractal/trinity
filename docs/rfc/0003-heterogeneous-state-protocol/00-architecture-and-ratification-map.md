@@ -51,9 +51,17 @@ protocol exists to prevent. §22 maps every section range to its document.
 **Part 01 is the blocker.** The draft now selects CNP-0-JCS, but selection text
 is not interoperability evidence or federation ratification. Until the separate
 contract, the CNP-0 corpus, a reference encoder, a verifier-only rejection path,
-a reproducible conformance kit, steward ratification, and substrate adoption
-exist, anything depending on cross-substrate reference equality is specified and
-not yet conformingly implementable.
+a standalone conformance kit, and steward ratification exist, anything depending
+on cross-substrate reference equality is specified and not yet conformingly
+implementable.
+
+**Substrate adoption is not a ratification condition.** It is its own state,
+`adoption-evidenced`, for the same reason the second encoder stopped being one:
+ratifying a specification and running it are different acts, and folding the
+second into the first meant the document could not be finished until the
+substrates moved. A3 says the encoding is settled and checkable; adoption says
+somebody computes references with it. Both must be reported, and neither
+substitutes for the other.
 
 A3 no longer waits on a second independently maintained encoder. That
 requirement conflated a technical gate this project can meet with an
@@ -688,8 +696,9 @@ rather than "proved" for that reason.
   they do not exercise CNP-0 identifiers, ratios, fixed scales, constants,
   circles, or quantization. A3 remains pending until `CANONICAL_ENCODING.v0.1`,
   the CNP-0 corpus, a reference encoder, a verifier-only rejection path sharing
-  no code with it, a reproducible conformance kit, steward ratification, and
-  federation adoption exist.
+  no code with it, a standalone conformance kit, and steward ratification exist.
+  Federation adoption is **not** among them; it is tracked separately as
+  `adoption-evidenced`.
 
   **Restated 2026-08-26: two levels, not one.** This entry previously required
   **two independent encoders** for A3. That conflated four separable things —
@@ -700,9 +709,15 @@ rather than "proved" for that reason.
 
   A3 now requires only what the project can produce and anyone can check,
   including a **conformance kit** that lets an outside party implement §5.1 and
-  verify itself without trusting this project. Independent maintenance moves to
-  **interop-confirmed** (Part 01 §5.1.3): two independently maintained
-  implementations, or real external adoption, with parity evidence both ways.
+  verify itself without trusting this project. A candidate kit exists at
+  `conformance/cnp-0-jcs-v0/`.
+
+  Two things move out of A3. **Substrate adoption** becomes `adoption-evidenced`
+  — at least one substrate computing real references under `hsp-jcs@v0` —
+  because ratifying a specification and running it are different acts.
+  **Independent maintenance** becomes `interop-confirmed`: two independently
+  maintained implementations, or adoption by a party outside this project, with
+  parity evidence both ways. Neither blocks A3; both must be reported.
 
   This is not a lowered technical bar. It replaces an impossible organisational
   precondition with a checkable technical gate, and pays for it by narrowing the
@@ -1443,11 +1458,14 @@ where a reference resolves:
   encoder, a verifier-only path sharing no code with it that rejects malformed
   raw input and non-canonical ratios, and a reproducible conformance kit. The
   text selects the design; this tranche is not satisfied until those artifacts
-  exist and the substrates adopt them.
-- **Interop-confirmed** (a level above A3, not a tranche and not a blocker on
-  one). Two independently maintained implementations, or real external adoption,
-  with parity evidence in both directions. Until it holds, no document may claim
-  independent interoperability or multi-implementation confirmation.
+  exist and the steward ratifies them.
+- **Adoption-evidenced** (a state, not a tranche, and not a blocker on A3). At
+  least one substrate computing real references under `hsp-jcs@v0` on a path
+  that matters. Until it holds, no document may claim the encoding is in use.
+- **Interop-confirmed** (a level above both, and not a blocker on either). Two
+  independently maintained implementations, or adoption by a party outside this
+  project, with parity evidence in both directions. Until it holds, no document
+  may claim independent interoperability or multi-implementation confirmation.
 - **A4.** Require stable, verifiable key identity at Level 0.
 - **A5.** Ratification counts principals rather than public keys: bind keys to
   content-addressed principal and custody records, and fail unresolved or shared

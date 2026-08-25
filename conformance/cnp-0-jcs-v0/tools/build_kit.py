@@ -34,16 +34,30 @@ SEED = os.path.join(ROOT, "probes", "cnp-0-seed-v0", "corpus", "manifest.json")
 SPEC = os.path.join(ROOT, "docs", "rfc", "0003-heterogeneous-state-protocol",
                     "01-canonical-identity-and-encoding.md")
 SPEC_REL = "docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md"
-CONTRACT = os.path.join(ROOT, "contracts", "CANONICAL_ENCODING.v0.1.md")
+CONTRACT_SRC = os.path.join(ROOT, "contracts", "CANONICAL_ENCODING.v0.1.md")
+CONTRACT_REL = "contracts/CANONICAL_ENCODING.v0.1.md"
+CONTRACT_DST = os.path.join(HERE, "CONTRACT.md")
 
 REQUIRED = os.path.join(HERE, "corpus", "required.ndjson")
 EXTENDED = os.path.join(HERE, "corpus", "extended.ndjson")
 EXTRACT = os.path.join(HERE, "SPEC-EXTRACT.md")
 MANIFEST = os.path.join(HERE, "MANIFEST.sha256")
 
-PINNED = ["INTERFACE.md", "README.md", "SPEC-EXTRACT.md", "corpus/extended.ndjson",
-          "corpus/required.ndjson", "run_conformance.py", "selftest.py",
-          "tools/build_kit.py"]
+# The closed inventory. `run_conformance.py` refuses a kit containing anything
+# not on this list, so adding a file here is a deliberate act.
+PINNED = ["CONTRACT.md", "INTERFACE.md", "README.md", "SPEC-EXTRACT.md",
+          "corpus/extended.ndjson", "corpus/required.ndjson",
+          "run_conformance.py", "selftest.py", "tools/build_kit.py",
+          "ts/kit_test.ts"]
+
+CONTRACT_HEAD = """<!-- Verbatim copy of {rel} at sha256:{digest}.
+     §5.1.3 requires the contract inside the kit: a kit that cited a document it
+     did not carry would not be usable by someone who has only the kit, which is
+     the whole point. tools/build_kit.py --check fails on a one-byte drift.
+     Where this copy and the original disagree, the original governs; where the
+     original and Part 01 disagree, Part 01 governs. -->
+
+"""
 
 # (clause, heading, start anchor, end anchor, why it ends there)
 REGIONS = [
@@ -129,6 +143,13 @@ def build_corpus() -> tuple[str, str, dict]:
     return "\n".join(required) + "\n", "\n".join(extended) + "\n", seed
 
 
+def build_contract() -> tuple[str, str]:
+    raw = open(CONTRACT_SRC, "rb").read()
+    digest = sha(raw)
+    head = CONTRACT_HEAD.format(rel=CONTRACT_REL, digest=digest)
+    return head + raw.decode("utf-8"), digest
+
+
 def build_extract() -> tuple[str, list[dict], str]:
     raw = open(SPEC, "rb").read()
     source = raw.decode("utf-8")
@@ -167,16 +188,28 @@ def main() -> int:
     check = "--check" in sys.argv
     required, extended, seed = build_corpus()
     extract, regions, spec_digest = build_extract()
+    contract, contract_digest = build_contract()
 
     if check:
         problems = []
         for path, want, what in ((REQUIRED, required, "corpus/required.ndjson"),
                                  (EXTENDED, extended, "corpus/extended.ndjson"),
-                                 (EXTRACT, extract, "SPEC-EXTRACT.md")):
+                                 (EXTRACT, extract, "SPEC-EXTRACT.md"),
+                                 (CONTRACT_DST, contract, "CONTRACT.md")):
             if not os.path.exists(path):
                 problems.append(f"{what} is missing")
             elif open(path, encoding="utf-8").read() != want:
                 problems.append(f"{what} differs from what the sources produce")
+        listed = set(PINNED)
+        for root, dirs, names in os.walk(HERE):
+            dirs[:] = [d for d in dirs if d != "__pycache__"]
+            for name in names:
+                rel = os.path.relpath(os.path.join(root, name), HERE).replace(os.sep, "/")
+                if rel != "MANIFEST.sha256" and rel not in listed:
+                    problems.append(
+                        f"{rel} is in the kit but not in PINNED; the inventory is "
+                        "closed and the runner will refuse the kit"
+                    )
         if os.path.exists(MANIFEST):
             current = manifest_text()
             if open(MANIFEST, encoding="utf-8").read() != current:
@@ -197,16 +230,22 @@ def main() -> int:
               "the seed manifest")
         print(f"ok  extract: {len(regions)} regions verbatim from {SPEC_REL} "
               f"sha256 {spec_digest[:12]}…")
-        print(f"ok  MANIFEST.sha256 pins {len(PINNED)} files")
+        print(f"ok  contract carried verbatim, {CONTRACT_REL} sha256 "
+              f"{contract_digest[:12]}…")
+        print(f"ok  MANIFEST.sha256 pins {len(PINNED)} files, and nothing in the "
+              "kit is unpinned")
+        print(f"ok  MANIFEST.sha256 itself: {sha(open(MANIFEST, 'rb').read())}")
         return 0
 
     open(REQUIRED, "w", encoding="utf-8").write(required)
     open(EXTENDED, "w", encoding="utf-8").write(extended)
     open(EXTRACT, "w", encoding="utf-8").write(extract)
+    open(CONTRACT_DST, "w", encoding="utf-8").write(contract)
     open(MANIFEST, "w", encoding="utf-8").write(manifest_text())
     print(f"wrote corpus ({len(required.strip().splitlines())} required, "
           f"{len(extended.strip().splitlines())} extended), SPEC-EXTRACT.md, "
-          f"MANIFEST.sha256")
+          f"CONTRACT.md, MANIFEST.sha256")
+    print(f"MANIFEST.sha256 itself: {sha(open(MANIFEST, 'rb').read())}")
     return 0
 
 

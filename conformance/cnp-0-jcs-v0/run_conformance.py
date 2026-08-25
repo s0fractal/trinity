@@ -42,33 +42,83 @@ def sha(b: bytes) -> str:
     return hashlib.sha256(b).hexdigest()
 
 
-def verify_kit(skip: bool = False) -> None:
+def kit_inventory() -> list[str]:
+    """Every file actually present in the kit, as relative paths."""
+    found = []
+    for root, dirs, names in os.walk(HERE):
+        dirs[:] = [d for d in dirs if d != "__pycache__"]
+        for name in sorted(names):
+            rel = os.path.relpath(os.path.join(root, name), HERE).replace(os.sep, "/")
+            found.append(rel)
+    return sorted(found)
+
+
+def verify_kit(skip: bool = False) -> str | None:
+    """Refuse to score unless the kit is exactly what its manifest says it is.
+
+    Two properties, and an earlier version had only the first:
+
+    * every pinned file is present and matches its digest;
+    * **nothing else is present.** Verifying a list is an open surface — a file
+      nobody pinned rides along untouched, and an implementation dropped into
+      the kit is exactly the thing whose absence the no-trust claim rests on.
+      The inventory is therefore closed: an unpinned file is a hard stop.
+
+    What this proves and what it does not: the manifest shows the kit is
+    internally consistent — it has not been edited since it was pinned. It does
+    **not** prove the kit is authentic, because an attacker who changes a file
+    can recompute the manifest. Authenticity needs the manifest's own digest to
+    be known from somewhere other than the kit, which is what the ratification
+    record will pin. It is printed for that purpose.
+    """
     if skip:
         print("!!  kit integrity check SKIPPED; this score is not a conformance "
               "result", file=sys.stderr)
-        return
+        return None
     if not os.path.exists(MANIFEST):
         raise SystemExit(
             "refusing: MANIFEST.sha256 is missing, so nothing pins the corpus this "
             "score would be computed against."
         )
-    bad = []
-    for line in open(MANIFEST, encoding="utf-8"):
+    manifest_raw = open(MANIFEST, "rb").read()
+    pinned: dict[str, str] = {}
+    for line in manifest_raw.decode("utf-8").splitlines():
         line = line.strip()
         if not line:
             continue
         want, rel = line.split("  ", 1)
+        pinned[rel] = want
+
+    bad = []
+    for rel, want in sorted(pinned.items()):
         path = os.path.join(HERE, rel)
         if not os.path.exists(path):
-            bad.append(f"{rel} is missing")
+            bad.append(f"{rel} is pinned but missing")
         elif sha(open(path, "rb").read()) != want:
             bad.append(f"{rel} does not match its pin")
+    for rel in kit_inventory():
+        if rel == "MANIFEST.sha256":
+            continue
+        if rel not in pinned:
+            bad.append(
+                f"{rel} is present but pinned by nothing. The inventory is closed: "
+                "an unlisted file could be anything, including the implementation "
+                "this kit is supposed not to contain."
+            )
     if bad:
         raise SystemExit(
-            "refusing: this kit does not match its own manifest:\n  "
+            "refusing: this kit is not what its manifest says it is:\n  "
             + "\n  ".join(bad)
-            + "\nA corpus that has been edited produces a score that means nothing."
+            + "\nA kit that has been altered produces a score that means nothing."
         )
+    digest = sha(manifest_raw)
+    print(f"kit integrity ok: {len(pinned)} files pinned, none unlisted")
+    print(f"  MANIFEST.sha256 itself hashes to {digest}")
+    print("  That shows the kit is internally consistent, not that it is "
+          "authentic:\n  anyone who edits a file can recompute the manifest. "
+          "Compare this digest\n  with the one in the ratification record, which "
+          "does not live in the kit.\n")
+    return digest
 
 
 def load_cases(path: str) -> list[dict]:
@@ -81,9 +131,64 @@ def load_cases(path: str) -> list[dict]:
     return cases
 
 
+class ProtocolError(RuntimeError):
+    """The program did not answer in the shape INTERFACE.md defines.
+
+    This is separated from a wrong answer because it is a different finding, and
+    because collapsing it into one made the runner unsound. An earlier version
+    built a dict keyed by id and read the expected ids out of it: replies in
+    reverse order scored the same as replies in order, a duplicate id let a
+    later correct line overwrite an earlier wrong one, and an id nobody asked
+    about was never noticed. All three passed 126/126.
+
+    So the reply stream is checked positionally, before a single verdict is
+    compared: exactly one line per input, in input order, each carrying the id
+    it was asked about and no other.
+    """
+
+
+def parse_replies(stdout: str, cases: list[dict], sub: str) -> list[dict]:
+    lines = [ln for ln in stdout.splitlines() if ln.strip()]
+    if len(lines) != len(cases):
+        raise ProtocolError(
+            f"`{sub}` wrote {len(lines)} lines for {len(cases)} inputs. The "
+            "interface requires exactly one output line per input line."
+        )
+    replies, seen = [], set()
+    expected = [c["id"] for c in cases]
+    for n, (line, want_id) in enumerate(zip(lines, expected), 1):
+        try:
+            rec = json.loads(line)
+        except json.JSONDecodeError as exc:
+            raise ProtocolError(f"`{sub}` line {n} is not JSON: {exc}")
+        if not isinstance(rec, dict):
+            raise ProtocolError(f"`{sub}` line {n} is not a JSON object")
+        got_id = rec.get("id")
+        if not isinstance(got_id, str):
+            raise ProtocolError(f"`{sub}` line {n} has no string `id`")
+        if got_id in seen:
+            raise ProtocolError(
+                f"`{sub}` line {n} repeats id {got_id!r}. Two answers for one "
+                "input means the score depends on which one is read."
+            )
+        seen.add(got_id)
+        if got_id != want_id:
+            if got_id not in expected:
+                raise ProtocolError(
+                    f"`{sub}` line {n} answers {got_id!r}, which was not asked "
+                    "about."
+                )
+            raise ProtocolError(
+                f"`{sub}` line {n} answers {got_id!r} where {want_id!r} was "
+                "expected. Output must be in input order."
+            )
+        replies.append(rec)
+    return replies
+
+
 def run_subcommand(cmd: str, sub: str, cases: list[dict],
-                   timeout: int) -> tuple[list[dict | None], str]:
-    """Feed every case to `<cmd> <sub>` and return one parsed line per case."""
+                   timeout: int) -> list[dict]:
+    """Feed every case to `<cmd> <sub>` and return one reply per case, in order."""
     payload = "".join(
         json.dumps({"id": c["id"], "raw_hex": c["raw_hex"]}, sort_keys=True) + "\n"
         for c in cases
@@ -97,27 +202,12 @@ def run_subcommand(cmd: str, sub: str, cases: list[dict],
     except subprocess.TimeoutExpired:
         raise SystemExit(f"`{cmd} {sub}` did not finish within {timeout}s")
     if proc.returncode != 0:
-        raise SystemExit(
+        raise ProtocolError(
             f"`{cmd} {sub}` exited {proc.returncode}. A non-zero exit is the program "
             "failing, which is not the same as rejecting an input.\n"
             + proc.stderr[-2000:]
         )
-    by_id: dict[str, dict] = {}
-    malformed = []
-    for n, line in enumerate(proc.stdout.splitlines(), 1):
-        if not line.strip():
-            continue
-        try:
-            rec = json.loads(line)
-        except json.JSONDecodeError:
-            malformed.append(f"line {n} is not JSON")
-            continue
-        if not isinstance(rec, dict) or "id" not in rec:
-            malformed.append(f"line {n} has no id")
-            continue
-        by_id[rec["id"]] = rec
-    note = "; ".join(malformed[:5])
-    return [by_id.get(c["id"]) for c in cases], note
+    return parse_replies(proc.stdout, cases, sub)
 
 
 def score_one(sub: str, case: dict, got: dict | None) -> dict:
@@ -165,16 +255,30 @@ def main() -> int:
                          "conformance result and is labelled as such")
     args = ap.parse_args()
 
-    verify_kit(args.skip_kit_check)
+    kit_digest = verify_kit(args.skip_kit_check)
     cases = load_cases(REQUIRED)
 
     results, notes = [], {}
-    for sub in ("encode", "verify"):
-        replies, note = run_subcommand(args.cmd, sub, cases, args.timeout)
-        if note:
-            notes[sub] = note
-        for case, got in zip(cases, replies):
-            results.append(score_one(sub, case, got))
+    try:
+        for sub in ("encode", "verify"):
+            replies = run_subcommand(args.cmd, sub, cases, args.timeout)
+            for case, got in zip(cases, replies):
+                results.append(score_one(sub, case, got))
+    except ProtocolError as exc:
+        print(f"PROTOCOL VIOLATION\n  {exc}\n")
+        print("Not scored. A program that does not answer in the shape "
+              "INTERFACE.md defines\ncannot be measured against the corpus, and "
+              "reporting a number anyway would be\nreporting a number that means "
+              "nothing.")
+        if args.report:
+            json.dump({"kit": "cnp-0-jcs-conformance@v0",
+                       "kit_sha256": kit_digest,
+                       "kit_verified": not args.skip_kit_check,
+                       "cmd": args.cmd, "scored": False,
+                       "protocol_violation": str(exc)},
+                      open(args.report, "w"), indent=2, sort_keys=True)
+            print(f"  report written to {args.report}")
+        return 1
 
     passed = [r for r in results if r["pass"]]
     failed = [r for r in results if not r["pass"]]
@@ -186,8 +290,6 @@ def main() -> int:
           f"({len(cases)} cases × encode and verify)")
     for kind in sorted(by_failure):
         print(f"  {by_failure[kind]:>4} {kind}")
-    for sub, note in notes.items():
-        print(f"  note: {sub} wrote unusable output — {note}")
     for r in failed[:20]:
         print(f"  FAIL {r['op']:<6} {r['id']:<28} {r['clause']:<12} {r['detail']}")
     if len(failed) > 20:
@@ -196,8 +298,9 @@ def main() -> int:
     if args.report:
         json.dump({
             "kit": "cnp-0-jcs-conformance@v0",
+            "kit_sha256": kit_digest,
             "kit_verified": not args.skip_kit_check,
-            "cmd": args.cmd,
+            "cmd": args.cmd, "scored": True,
             "cases": len(cases), "checks": len(results),
             "passed": len(passed), "failed": len(failed),
             "failures_by_kind": by_failure,

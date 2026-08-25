@@ -476,22 +476,30 @@ check:
    thing the kit exists to make unnecessary;
 6. steward ratification.
 
-**Interop-confirmed** is a strictly higher level and requires at least two
-independently _maintained_ implementations, or real external adoption, with
-parity evidence in both directions.
+That list is the whole of A3. Two further states sit outside it, and neither
+blocks it, because ratifying a specification, running it, and having someone
+else run it are three different acts:
 
-Interop-confirmed does **not** block A3 or any tranche depending on it. But
-until it holds, no document in this RFC may describe §5.1 as "independently
-interoperable", "multi-implementation confirmed", or as having demonstrated
-implementation diversity. A single-implementation encoding that a second party
-_could_ verify is a different and weaker claim than one a second party _has_
-verified, and the difference is exactly what the higher level names.
+**Adoption-evidenced** — at least one substrate computing real references under
+`hsp-jcs@v0` on a path that matters. Until it holds, no document may claim the
+encoding is in use.
 
-Until the A3 artifacts exist and the substrates adopt them, §5.1 is specified
+**Interop-confirmed** — at least two independently _maintained_ implementations,
+or adoption by a party outside this project, with parity evidence in both
+directions. Until it holds, no document in this RFC may describe §5.1 as
+"independently interoperable", "multi-implementation confirmed", or as having
+demonstrated implementation diversity. A single-implementation encoding that a
+second party _could_ verify is a different and weaker claim than one a second
+party _has_ verified, and the difference is exactly what this level names.
+
+Until the A3 artifacts exist and the steward ratifies them, §5.1 is specified
 but not yet implementable as a conforming cross-substrate protocol. The honest
-status is **A3 ratification gate defined; single-implementation evidence
-present; conformance kit and steward ratification pending; independent
-interoperability unconfirmed**.
+status is:
+
+> **A3 ratification gate defined; contract, corpus, reference encoder,
+> verifier-only path and conformance kit present as candidates; steward
+> ratification pending; adoption not evidenced; independent interoperability
+> unconfirmed.**
 
 #### 5.1.4 The selection is narrower than it looks
 

@@ -1,3 +1,10 @@
+<!-- Verbatim copy of contracts/CANONICAL_ENCODING.v0.1.md at sha256:f5d6f23426b85ea42ef4f957c6d91d009f3de2ab4b426ce9c4014da07d2d24c1.
+     §5.1.3 requires the contract inside the kit: a kit that cited a document it
+     did not carry would not be usable by someone who has only the kit, which is
+     the whole point. tools/build_kit.py --check fails on a one-byte drift.
+     Where this copy and the original disagree, the original governs; where the
+     original and Part 01 disagree, Part 01 governs. -->
+
 ---
 type: "ContractDescriptor"
 version: "0.1"

@@ -12,11 +12,11 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility     |     17     |
 | compatibility abi |     56     |
 | compost           |     0      |
-| dynamic topology  |    833     |
+| dynamic topology  |    834     |
 | experimental      |     55     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **961**   |
+| **Total**         |  **962**   |
 
 ## Runtime Cache Diagnostics
 
@@ -967,6 +967,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | dynamic topology  | [src/x7700_963924_codex_rfc-0003-cnp-0-seed-exact-sha-acceptance.myc.md](../src/x7700_963924_codex_rfc-0003-cnp-0-seed-exact-sha-acceptance.myc.md)                                                                                                         | canonical        | src/x7700_963924_codex_rfc-0003-cnp-0-seed-exact-sha-acceptance.myc.md                                                     | keep        |                              |
 | dynamic topology  | [src/x7700_963925_claude_rfc-0003-cnp-0-executable-seed-authorship.myc.md](../src/x7700_963925_claude_rfc-0003-cnp-0-executable-seed-authorship.myc.md)                                                                                                     | canonical        | src/x7700_963925_claude_rfc-0003-cnp-0-executable-seed-authorship.myc.md                                                   | keep        |                              |
 | dynamic topology  | [src/x7700_963933_claude_rfc-0003-option-c-tagged-form-recognition.myc.md](../src/x7700_963933_claude_rfc-0003-option-c-tagged-form-recognition.myc.md)                                                                                                     | canonical        | src/x7700_963933_claude_rfc-0003-option-c-tagged-form-recognition.myc.md                                                   | keep        |                              |
+| dynamic topology  | [src/x7700_964145_claude_rfc-0003-qwen-probe-closure-and-conformance-kit.myc.md](../src/x7700_964145_claude_rfc-0003-qwen-probe-closure-and-conformance-kit.myc.md)                                                                                         | canonical        | src/x7700_964145_claude_rfc-0003-qwen-probe-closure-and-conformance-kit.myc.md                                             | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](../src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | canonical        | src/x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md                                                         | keep        |                              |
 | dynamic topology  | [src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](../src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | canonical        | src/x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md                                                     | keep        |                              |
 | dynamic topology  | [src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](../src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | canonical        | src/x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md                                                      | keep        |                              |

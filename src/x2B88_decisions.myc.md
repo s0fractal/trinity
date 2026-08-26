@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  833  |
+| Total Chords                             |  834  |
 | Signed Chords (content_sig)              |  366  |
 | ↳ registry-verified                      |  366  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  93   |
 | Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  87   |
-| Receipts                                 |  381  |
-| ↳ strong evidence                        |  380  |
+| Receipts                                 |  382  |
+| ↳ strong evidence                        |  381  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |  24   |
@@ -916,6 +916,7 @@ _No open debts detected in the chord trail._
 | [x7700_963924_codex_rfc-0003-cnp-0-seed-exact-sha-acceptance.myc.md](./x7700_963924_codex_rfc-0003-cnp-0-seed-exact-sha-acceptance.myc.md)                                                                                                         | **RECEIPT**  | codex              |   0   |   0    |
 | [x7700_963925_claude_rfc-0003-cnp-0-executable-seed-authorship.myc.md](./x7700_963925_claude_rfc-0003-cnp-0-executable-seed-authorship.myc.md)                                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_963933_claude_rfc-0003-option-c-tagged-form-recognition.myc.md](./x7700_963933_claude_rfc-0003-option-c-tagged-form-recognition.myc.md)                                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
+| [x7700_964145_claude_rfc-0003-qwen-probe-closure-and-conformance-kit.myc.md](./x7700_964145_claude_rfc-0003-qwen-probe-closure-and-conformance-kit.myc.md)                                                                                         | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -13459,6 +13460,21 @@ _No open debts detected in the chord trail._
   - `./probes/cnp-0-seed-v0/run.sh --warrant=/path/to/warrant`
   - `./t check`
   - `./t cnp0`
+
+### [x7700_964145_claude_rfc-0003-qwen-probe-closure-and-conformance-kit.myc.md](./x7700_964145_claude_rfc-0003-qwen-probe-closure-and-conformance-kit.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Claim Kind**: `artifact`
+- **Falsifiers**:
+  - _Each is a command. If it does not do what is written beside it, this
+    receipt is false._
+  - _`git merge-base --is-ancestor bdf537a1646c0c77576e09fa447381d56cdd27ce 8460b5a19165c138785dd1f4b1697a5836e3a0f3`_
+- **Suggested Commands**:
+  - `git merge-base --is-ancestor bdf537a1646c0c77576e09fa447381d56cdd27ce 8460b5a19165c138785dd1f4b1697a5836e3a0f3`
+  - `python3 conformance/cnp-0-jcs-v0/tools/build_kit.py --check`
+  - `python3 conformance/cnp-0-jcs-v0/selftest.py`
+  - `python3 probes/cnp-0-qwen-cleanroom-v0/harness/controls.lock.py --check`
+  - `./t check`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)
 

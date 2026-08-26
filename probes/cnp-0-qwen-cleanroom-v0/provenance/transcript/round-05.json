@@ -1,0 +1,224 @@
+{
+  "api": "http://127.0.0.1:11434/api/generate",
+  "cargo": {
+    "check": 101,
+    "fmt": 1
+  },
+  "cargo_generated": [
+    "Cargo.lock"
+  ],
+  "cargo_output_sha256": "b2cd6107378209452625f987593b06c74ca4be6f41c19232ac21a9a6f30d1e23",
+  "compiles": false,
+  "elapsed_s": 2890.6,
+  "emitted_tree_sha256": "a810a60c41c8aed2899f15e8789c929dfe6d88b91efb97998606ea65ef977214",
+  "feedback_sha256": null,
+  "final_tree": {
+    "Cargo.lock": {
+      "bytes": 153,
+      "sha256": "55003c3caad9522ca0c311fef27e959ad48f893fdaeef8aabc2a9a50aca7a16c"
+    },
+    "Cargo.toml": {
+      "bytes": 80,
+      "sha256": "009f8abb5fb53715629eebcf556472eeb54e6505d26dd745c1c7b309cbb9680d"
+    },
+    "src/main.rs": {
+      "bytes": 9898,
+      "sha256": "654c3dfaf3a88d4db33a63593ccd79898e2ac116c2af2676f0c518826bb0e80f"
+    }
+  },
+  "final_tree_sha256": "b94aec8c1a4a77d20e9acec174fe580220be5ae0e64b6ee0853fc16ec0f2dfcd",
+  "freeze_ready": false,
+  "image": "sha256:c96a2a4f16c4f95c62726034df62bbee5553a8bf61196d4fbbace90ef422be13",
+  "max_turns": 8,
+  "model": "qwen3-coder:30b",
+  "model_exit": 0,
+  "model_id_expected": "06c1097efce0",
+  "model_id_live": "06c1097efce0",
+  "modified_by_build": [],
+  "output_sha256": "8c302dfc9fdfbbc01f84c1145d542b6a2b3151cdaf38bf55f101b55b7db895ee",
+  "pack_sha256": "ec6a6aee30b7491a14b23e14ad8136762b872070e434c1549a5fa628fb042710",
+  "round": 5,
+  "served_context": 65536,
+  "started": "2026-08-25T19:15:48Z",
+  "thinking": false,
+  "turn_timeout_s": 1200,
+  "turns": [
+    {
+      "done_reason": "stop",
+      "elapsed_s": 1.8,
+      "eval_count": 41,
+      "files": [
+        "Cargo.toml"
+      ],
+      "model_exit": 0,
+      "output_bytes": 108,
+      "output_sha256": "71ae4474cd80d89ee867840f5bebdd3560a16477ed78417183ff4c65b0b5c10a",
+      "prompt_bytes": 21811,
+      "prompt_eval_count": 6633,
+      "prompt_sha256": "5490a331242176499de439e5e04b11df19628df3a926f38479db69ad268b094f",
+      "said_done": false,
+      "timed_out": false,
+      "turn": 1
+    },
+    {
+      "done_reason": "stop",
+      "elapsed_s": 742.0,
+      "eval_count": 20059,
+      "files": [
+        "src/main.rs",
+        "src/main.rs",
+        "src/main.rs",
+        "src/main.rs",
+        "src/main.rs",
+        "Cargo.toml",
+        "src/main.rs"
+      ],
+      "model_exit": 0,
+      "output_bytes": 94361,
+      "output_sha256": "ecc04b16ea3ad4c98f00d6394db2a8a06896c9b925f220338079f700a540be8b",
+      "prompt_bytes": 21987,
+      "prompt_eval_count": 6692,
+      "prompt_sha256": "00403ff4d84634cbcbb0275dd93e3dfea6143bb6c3f7b933dc707c915e16169b",
+      "refused": "src/main.rs was emitted more than once. Two blocks for one path means the last one silently wins, and which one was meant is unknowable. Refused.",
+      "timed_out": false,
+      "turn": 2
+    },
+    {
+      "done_reason": "stop",
+      "elapsed_s": 765.1,
+      "eval_count": 20220,
+      "files": [
+        "src/main.rs",
+        "src/main.rs",
+        "src/main.rs",
+        "src/main.rs",
+        "src/main.rs"
+      ],
+      "model_exit": 0,
+      "output_bytes": 86987,
+      "output_sha256": "69e01d0c15ad571b866024a4c486aabd78db63734bdc1930ec6e9d3f58861410",
+      "prompt_bytes": 22260,
+      "prompt_eval_count": 6755,
+      "prompt_sha256": "dbade3bdd05ac961e682a09e7b8d3c4c74b92f301560326de4647737d26d0e82",
+      "refused": "src/main.rs was emitted more than once. Two blocks for one path means the last one silently wins, and which one was meant is unknowable. Refused.",
+      "timed_out": false,
+      "turn": 3
+    },
+    {
+      "done_reason": "stop",
+      "elapsed_s": 261.6,
+      "eval_count": 8514,
+      "files": [
+        "src/main.rs",
+        "src/main.rs",
+        "Cargo.toml",
+        "src/main.rs"
+      ],
+      "model_exit": 0,
+      "output_bytes": 37146,
+      "output_sha256": "7e317d1f8894dc18976f8b785d4dd415b46bc66f2e968a43edc0488b59cca5da",
+      "prompt_bytes": 22260,
+      "prompt_eval_count": 6755,
+      "prompt_sha256": "dbade3bdd05ac961e682a09e7b8d3c4c74b92f301560326de4647737d26d0e82",
+      "refused": "src/main.rs was emitted more than once. Two blocks for one path means the last one silently wins, and which one was meant is unknowable. Refused.",
+      "timed_out": false,
+      "turn": 4
+    },
+    {
+      "done_reason": "stop",
+      "elapsed_s": 339.2,
+      "eval_count": 10409,
+      "files": [
+        "src/main.rs",
+        "src/main.rs",
+        "src/main.rs",
+        "Cargo.toml",
+        "src/main.rs"
+      ],
+      "model_exit": 0,
+      "output_bytes": 44091,
+      "output_sha256": "0540b9be421712827ce14a872f6fddefda95fda828a7f27d00c2368d1989f1ed",
+      "prompt_bytes": 22260,
+      "prompt_eval_count": 6755,
+      "prompt_sha256": "dbade3bdd05ac961e682a09e7b8d3c4c74b92f301560326de4647737d26d0e82",
+      "refused": "src/main.rs was emitted more than once. Two blocks for one path means the last one silently wins, and which one was meant is unknowable. Refused.",
+      "timed_out": false,
+      "turn": 5
+    },
+    {
+      "done_reason": "stop",
+      "elapsed_s": 616.5,
+      "eval_count": 16870,
+      "files": [
+        "src/main.rs",
+        "src/main.rs",
+        "src/main.rs",
+        "Cargo.toml",
+        "src/main.rs"
+      ],
+      "model_exit": 0,
+      "output_bytes": 75106,
+      "output_sha256": "c91d699a3107abc8eeca521630c75e8d3284b405b497f48cd14a6f9010cb698d",
+      "prompt_bytes": 22260,
+      "prompt_eval_count": 6755,
+      "prompt_sha256": "dbade3bdd05ac961e682a09e7b8d3c4c74b92f301560326de4647737d26d0e82",
+      "refused": "src/main.rs was emitted more than once. Two blocks for one path means the last one silently wins, and which one was meant is unknowable. Refused.",
+      "timed_out": false,
+      "turn": 6
+    },
+    {
+      "cargo": {
+        "check": 101,
+        "fmt": 1
+      },
+      "done_reason": "stop",
+      "elapsed_s": 64.1,
+      "eval_count": 2401,
+      "files": [
+        "src/main.rs"
+      ],
+      "model_exit": 0,
+      "output_bytes": 10131,
+      "output_sha256": "e240acb0628463075f3c6356ccb2f100ad6b8a5248fcc1e68055861d9be4c7ba",
+      "prompt_bytes": 22260,
+      "prompt_eval_count": 6755,
+      "prompt_sha256": "dbade3bdd05ac961e682a09e7b8d3c4c74b92f301560326de4647737d26d0e82",
+      "said_done": false,
+      "timed_out": false,
+      "turn": 7
+    },
+    {
+      "cargo": {
+        "check": 101,
+        "fmt": 1
+      },
+      "done_reason": "stop",
+      "elapsed_s": 99.1,
+      "eval_count": 2415,
+      "files": [
+        "Cargo.toml",
+        "src/main.rs"
+      ],
+      "model_exit": 0,
+      "output_bytes": 10029,
+      "output_sha256": "8c302dfc9fdfbbc01f84c1145d542b6a2b3151cdaf38bf55f101b55b7db895ee",
+      "prompt_bytes": 39206,
+      "prompt_eval_count": 11073,
+      "prompt_sha256": "c0aaf72aaf75a5497fc79c5fc237f6a2c67b7c4c17d64b2452318abd685cf168",
+      "said_done": false,
+      "timed_out": false,
+      "turn": 8
+    }
+  ],
+  "workdir": "/Users/s0fractal/cnp0-cleanroom",
+  "written": {
+    "Cargo.toml": {
+      "bytes": 80,
+      "sha256": "009f8abb5fb53715629eebcf556472eeb54e6505d26dd745c1c7b309cbb9680d"
+    },
+    "src/main.rs": {
+      "bytes": 9898,
+      "sha256": "654c3dfaf3a88d4db33a63593ccd79898e2ac116c2af2676f0c518826bb0e80f"
+    }
+  }
+}

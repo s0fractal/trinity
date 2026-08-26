@@ -11,9 +11,12 @@ status: "draft"
 > restates the encoding RFC-0003 Part 01 §5.1 selects, in the form an
 > implementer needs. It does **not** ratify Tranche A3, does not lift the
 > federation blocker, and is not evidence that any substrate has adopted it.
-> Part 01 §5.1.3 requires `CANONICAL_ENCODING.v0.1`, the corpus, **two
-> independent encoders**, and a third verifier-only path before A3 is closed.
-> One of those four exists as a candidate; see "What is still missing" below.
+> Part 01 §5.1.3 requires `CANONICAL_ENCODING.v0.1`, the corpus, a reference
+> encoder, a verifier-only path sharing no code with it, a standalone
+> conformance kit, and steward ratification before A3 is closed. Substrate
+> adoption (`adoption-evidenced`) and independent maintenance
+> (`interop-confirmed`) are separate states above it and do not block it. See
+> "What is still missing" below.
 
 - **Normative source:**
   [RFC-0003 Part 01 §5.1.1–§5.1.3](../docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md).
@@ -21,6 +24,9 @@ status: "draft"
   restatement, not an amendment, and adds no normative rule.
 - **Executable candidate:** [`probes/cnp-0-seed-v0/`](../probes/cnp-0-seed-v0/)
   — reference encoder, verifier-only rejection path, corpus, negative controls.
+- **Conformance kit:**
+  [`conformance/cnp-0-jcs-v0/`](../conformance/cnp-0-jcs-v0/) — implement §5.1
+  and score yourself, without running or trusting anything of ours.
 - **Identifiers:** `canonical_encoding` = `hsp-jcs@v0`, `numeric_profile` =
   `cnp-0`.
 
@@ -178,24 +184,53 @@ of the external checkout cannot reach it.
 
 ## 7. What is still missing before A3 can be claimed
 
-§5.1.3 lists four artifacts. Their honest status:
+§5.1.3 was restated on 2026-08-26 into two levels. The old text required **two
+independent encoders** for A3 itself, which conflated a technical gate this
+project can meet with an organisational precondition it cannot create — an
+outside maintainer — and so blocked the whole RFC on someone else's decision.
 
-| Artifact                     | Status                                                                                                                                                                                                  |
-| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `CANONICAL_ENCODING.v0.1`    | this file, **candidate**                                                                                                                                                                                |
-| The CNP-0 corpus             | `probes/cnp-0-seed-v0/corpus/`, candidate, all eight §5.1.3 categories                                                                                                                                  |
-| **Two independent encoders** | **absent.** One reference encoder exists. A second code path (the Python authoring tool) has the same author, repository, and maintenance boundary, and is therefore not an independent implementation. |
-| A third verifier-only path   | present as a candidate, same author caveat                                                                                                                                                              |
+### A3 ratification — what this project must produce
 
-Also outstanding, and not addressed by this file:
+| Artifact                                               | Status                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `CANONICAL_ENCODING.v0.1`                              | this file, **candidate**                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| The CNP-0 corpus                                       | `probes/cnp-0-seed-v0/corpus/`, candidate, all eight §5.1.3 categories                                                                                                                                                                                                                                                                                                                                                                                             |
+| A reference encoder                                    | present as a candidate (`probes/cnp-0-seed-v0/ts/`)                                                                                                                                                                                                                                                                                                                                                                                                                |
+| A verifier-only rejection path sharing no code with it | present as a candidate; `ts/reject.ts` imports nothing from the encoder, which is the property that matters — it cannot repair what it judges                                                                                                                                                                                                                                                                                                                      |
+| A reproducible conformance kit                         | **present as a candidate**, `conformance/cnp-0-jcs-v0/`. Normative extract quoted from Part 01 by byte range, 63 required cases with expected bytes and digests, a stdlib-only Python runner that scores an outside implementation, and `MANIFEST.sha256` pinning every file so an edited corpus is refused rather than quietly scored. It ships **no implementation**: scoring by agreement with our encoder would be asking an implementer to trust our encoder. |
+| Steward ratification                                   | **absent.** Nothing here is accepted, signed, or ratified.                                                                                                                                                                                                                                                                                                                                                                                                         |
 
-- **substrate adoption** — no substrate computes references under `hsp-jcs@v0`
-  today;
-- **steward disposition** — nothing here is accepted, signed, or ratified;
+The same-author caveat that used to disqualify the second code path still
+applies to what it actually bears on — it is not evidence of independent
+_maintenance_ — but it no longer blocks A3, because A3 no longer asks for that.
+
+### Interop-confirmed — a higher level, not a blocker
+
+| Artifact                                                                    | Status                                                                                                                                                                                                              |
+| --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Two independently maintained implementations, **or** real external adoption | **absent.** One attempt at a second implementation (`probes/cnp-0-qwen-cleanroom-v0`) closed 2026-08-26 without producing an encoder, and deviated from its own accepted protocol; it is evidence for nothing here. |
+| Parity evidence in both directions                                          | absent for any second implementation. `warrant` parity exists for the JCS layer only, with a recorded UTF-16/code-point divergence.                                                                                 |
+
+Until this level holds, **no document may describe the encoding as
+"independently interoperable" or "multi-implementation confirmed"**, and this
+file may not be cited as showing implementation diversity.
+
+### Adoption-evidenced — a separate state, not an A3 condition
+
+- **substrate adoption** — **absent.** No substrate computes references under
+  `hsp-jcs@v0` today. This no longer blocks A3: ratifying a specification and
+  running it are different acts, and folding the second into the first meant the
+  document could not be finished until the substrates moved. It still has to be
+  reported, and A3 closing would not license saying the encoding is in use.
+
+### Also outstanding, and not addressed by this file
+
 - **federation evidence** — no cross-substrate agreement has been measured;
   Warrant parity covers the wire layer only, and Warrant's fixtures predate and
   do not contain the `cnp-0` profile members, ratios, fixed-point domains, or
   the rejection corpus.
 
-The honest status remains what Part 01 already records: **A3 design selected; A3
-interop and ratification pending.**
+The honest status remains what Part 01 already records: **A3 ratification gate
+defined; contract, corpus, reference encoder, verifier-only path and conformance
+kit present as candidates; steward ratification pending; adoption not evidenced;
+independent interoperability unconfirmed.**

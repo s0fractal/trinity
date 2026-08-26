@@ -1,0 +1,439 @@
+{
+  "api": "http://127.0.0.1:11434/api/generate",
+  "cargo": {
+    "check": 101,
+    "fmt": 1
+  },
+  "cargo_generated": [
+    "Cargo.lock"
+  ],
+  "cargo_output_sha256": "164b40a5daaf762d3e8f87a67fe59b2cc5628f35ab22884dda56c86dc1d1cd75",
+  "compiles": false,
+  "elapsed_s": 2763.2,
+  "emitted_tree_sha256": "fbf2ba503590dfe2b689b2366cec43617c2f29e688ade90211ee0e5dfb7e1857",
+  "feedback_sha256": "b2cd6107378209452625f987593b06c74ca4be6f41c19232ac21a9a6f30d1e23",
+  "final_tree": {
+    "Cargo.lock": {
+      "bytes": 153,
+      "sha256": "55003c3caad9522ca0c311fef27e959ad48f893fdaeef8aabc2a9a50aca7a16c"
+    },
+    "Cargo.toml": {
+      "bytes": 80,
+      "sha256": "009f8abb5fb53715629eebcf556472eeb54e6505d26dd745c1c7b309cbb9680d"
+    },
+    "src/main.rs": {
+      "bytes": 17141,
+      "sha256": "fc40ad89d7b161fc7c7fd1ed7cc4120a29675f8db3f7b5d014be76aba942ec76"
+    }
+  },
+  "final_tree_sha256": "cd8e6094d39d75ad58cf35fc9ee3b2ed213fdbae4a4558afcf5ab78dad84dbe6",
+  "freeze_ready": false,
+  "image": "sha256:c96a2a4f16c4f95c62726034df62bbee5553a8bf61196d4fbbace90ef422be13",
+  "max_turns": 8,
+  "model": "qwen3-coder:30b",
+  "model_exit": 0,
+  "model_id_expected": "06c1097efce0",
+  "model_id_live": "06c1097efce0",
+  "modified_by_build": [],
+  "output_sha256": "aad95481599522abffa327b4d0ddb50063601b93f108111b3998a2ba588a47f4",
+  "pack_sha256": "ec6a6aee30b7491a14b23e14ad8136762b872070e434c1549a5fa628fb042710",
+  "round": 6,
+  "served_context": 65536,
+  "started": "2026-08-25T20:06:02Z",
+  "thinking": false,
+  "turn_timeout_s": 1200,
+  "turns": [
+    {
+      "blocks": [
+        {
+          "bytes": 79,
+          "path": "Cargo.toml",
+          "sha256": "42d444229758d269f5fddbeb24b05de33519580f83965f92570b321b41c3f195",
+          "superseded": false
+        }
+      ],
+      "done_reason": "stop",
+      "elapsed_s": 13.1,
+      "eval_count": 41,
+      "files": [
+        "Cargo.toml"
+      ],
+      "model_exit": 0,
+      "output_bytes": 108,
+      "output_sha256": "71ae4474cd80d89ee867840f5bebdd3560a16477ed78417183ff4c65b0b5c10a",
+      "prompt_bytes": 33514,
+      "prompt_eval_count": 9691,
+      "prompt_sha256": "4a30909c9acf5e7f46d09b4bd852605fbafb8601d599718ead83a80ad5ac183f",
+      "said_done": false,
+      "timed_out": false,
+      "turn": 1
+    },
+    {
+      "blocks": [
+        {
+          "bytes": 6973,
+          "path": "src/main.rs",
+          "sha256": "2ef7680b5045024cb13f6e7932cb5a6f2ee47736b7a68929ab73ef167bd8f368",
+          "superseded": true
+        },
+        {
+          "bytes": 10217,
+          "path": "src/main.rs",
+          "sha256": "5fa93cc8f26967eeb8562d5eb3a7aa2a4c10a93d1ebd9af3c17ecf6b143245db",
+          "superseded": true
+        },
+        {
+          "bytes": 8709,
+          "path": "src/main.rs",
+          "sha256": "0a5ac120131f7d0755edfc48ca392f4377c1b98ff87968d21ece142cd2854f4f",
+          "superseded": true
+        },
+        {
+          "bytes": 110,
+          "path": "Cargo.toml",
+          "sha256": "804b8d97d367f4d938809585113ba4ddb22280f0ec8e3b149e0bc8263d88606b",
+          "superseded": false
+        },
+        {
+          "bytes": 8778,
+          "path": "src/main.rs",
+          "sha256": "da3f04a82e81ea04dcb67747ecfcd6432a6409b0299696f4b531f99bfea26c63",
+          "superseded": false
+        }
+      ],
+      "cargo": {
+        "check": 101,
+        "fmt": 1
+      },
+      "done_reason": "stop",
+      "elapsed_s": 259.1,
+      "eval_count": 8434,
+      "files": [
+        "src/main.rs",
+        "src/main.rs",
+        "src/main.rs",
+        "Cargo.toml",
+        "src/main.rs"
+      ],
+      "model_exit": 0,
+      "output_bytes": 35426,
+      "output_sha256": "b8909af5e3855728e1f5f20d564f3c1f89ebe47153bb93b20247edf848b24620",
+      "prompt_bytes": 21987,
+      "prompt_eval_count": 6692,
+      "prompt_sha256": "00403ff4d84634cbcbb0275dd93e3dfea6143bb6c3f7b933dc707c915e16169b",
+      "said_done": false,
+      "timed_out": false,
+      "turn": 2
+    },
+    {
+      "blocks": [
+        {
+          "bytes": 79,
+          "path": "Cargo.toml",
+          "sha256": "42d444229758d269f5fddbeb24b05de33519580f83965f92570b321b41c3f195",
+          "superseded": false
+        },
+        {
+          "bytes": 12956,
+          "path": "src/main.rs",
+          "sha256": "642aa855ca181a55b37bbf1ae52208945bdd8a8a121c925615486a4328bdeedd",
+          "superseded": true
+        },
+        {
+          "bytes": 13523,
+          "path": "src/main.rs",
+          "sha256": "9712ef51f1ae40efdb192fb5553395a7ceb5aeb3eb90fe1079a9e29f7199667f",
+          "superseded": false
+        }
+      ],
+      "cargo": {
+        "check": 101,
+        "fmt": 1
+      },
+      "done_reason": "stop",
+      "elapsed_s": 229.8,
+      "eval_count": 6474,
+      "files": [
+        "Cargo.toml",
+        "src/main.rs",
+        "src/main.rs"
+      ],
+      "model_exit": 0,
+      "output_bytes": 26743,
+      "output_sha256": "6767825a9c1dd9ccc361ade7bf69eb1649260466f903835039115e2c9f562138",
+      "prompt_bytes": 32380,
+      "prompt_eval_count": 9198,
+      "prompt_sha256": "4b4ce7ba8a8a9cff83c0df7bc0a3da2d06d593af22c88e7618e013106cccca01",
+      "said_done": false,
+      "timed_out": false,
+      "turn": 3
+    },
+    {
+      "blocks": [
+        {
+          "bytes": 79,
+          "path": "Cargo.toml",
+          "sha256": "42d444229758d269f5fddbeb24b05de33519580f83965f92570b321b41c3f195",
+          "superseded": false
+        },
+        {
+          "bytes": 13399,
+          "path": "src/main.rs",
+          "sha256": "d35aa7655a9d82c0c44add285b1688c1c6a1047efee0cdc542697bc6918ecebf",
+          "superseded": true
+        },
+        {
+          "bytes": 13399,
+          "path": "src/main.rs",
+          "sha256": "d35aa7655a9d82c0c44add285b1688c1c6a1047efee0cdc542697bc6918ecebf",
+          "superseded": true
+        },
+        {
+          "bytes": 14206,
+          "path": "src/main.rs",
+          "sha256": "a5aeb75a2207f4b0c91850aebac1630611c5d6a6dfc3f548cd7697de8182e635",
+          "superseded": true
+        },
+        {
+          "bytes": 10592,
+          "path": "src/main.rs",
+          "sha256": "5cbf26e98a4b3de58ef0536e17cf8d763103c8f71949534ea48bcc9db6d5720d",
+          "superseded": true
+        },
+        {
+          "bytes": 9604,
+          "path": "src/main.rs",
+          "sha256": "9a61a976168e4cce40beefe0ee221b06778b96b4b6da71b576a923bb4ffab1c9",
+          "superseded": true
+        },
+        {
+          "bytes": 9800,
+          "path": "src/main.rs",
+          "sha256": "d46342999c506a7dc7f364ca35a5540faca787607709a1023d560914fc804cd5",
+          "superseded": true
+        },
+        {
+          "bytes": 6210,
+          "path": "src/main.rs",
+          "sha256": "a62b3e77349f8a74c8181184596a0e213e475d9d0097e0173b5753856d025d7d",
+          "superseded": false
+        }
+      ],
+      "cargo": {
+        "build": 0,
+        "check": 0,
+        "fmt": 1,
+        "test": 0
+      },
+      "done_reason": "stop",
+      "elapsed_s": 946.2,
+      "eval_count": 19405,
+      "files": [
+        "Cargo.toml",
+        "src/main.rs",
+        "src/main.rs",
+        "src/main.rs",
+        "src/main.rs",
+        "src/main.rs",
+        "src/main.rs",
+        "src/main.rs"
+      ],
+      "model_exit": 0,
+      "output_bytes": 78742,
+      "output_sha256": "a0e2a469b277aae7d564d3ca1ff6ca4f0367f9013916a92f075deba62ec53ceb",
+      "prompt_bytes": 60443,
+      "prompt_eval_count": 16566,
+      "prompt_sha256": "4bc5f82f77c6feed1c3e8a5848c728959340300b58381c4e44754904307b545e",
+      "said_done": false,
+      "timed_out": false,
+      "turn": 4
+    },
+    {
+      "blocks": [
+        {
+          "bytes": 8016,
+          "path": "src/main.rs",
+          "sha256": "734b8b6b1ffc112f5fc3bde8e0628f9229c7748dbf1ca152d89d1db57d9753da",
+          "superseded": true
+        },
+        {
+          "bytes": 7924,
+          "path": "src/main.rs",
+          "sha256": "5d0f37be66e342fe134932ed09515a67e6517338944570fef1bbae470c709fe0",
+          "superseded": true
+        },
+        {
+          "bytes": 7862,
+          "path": "src/main.rs",
+          "sha256": "f38b2df88e644c14b5d4c13b0f797f5b42b3cb743d3de87fe5254ac84247f47b",
+          "superseded": true
+        },
+        {
+          "bytes": 6919,
+          "path": "src/main.rs",
+          "sha256": "88bd4e8d060054419ed245949f87cbf8d6f33984e7244dcfbef1546cac6bd1a0",
+          "superseded": false
+        }
+      ],
+      "cargo": {
+        "build": 0,
+        "check": 0,
+        "fmt": 1,
+        "test": 0
+      },
+      "done_reason": "stop",
+      "elapsed_s": 338.9,
+      "eval_count": 8042,
+      "files": [
+        "src/main.rs",
+        "src/main.rs",
+        "src/main.rs",
+        "src/main.rs"
+      ],
+      "model_exit": 0,
+      "output_bytes": 31372,
+      "output_sha256": "59adf9c8023059507bd89aa45e3c5596e053d0ff857b93f0c472f20b37a41ac7",
+      "prompt_bytes": 40187,
+      "prompt_eval_count": 11976,
+      "prompt_sha256": "fa24242229c4900c6178306ae23baffe99d949242d536df067afbc3a98667a53",
+      "said_done": false,
+      "timed_out": false,
+      "turn": 5
+    },
+    {
+      "blocks": [
+        {
+          "bytes": 8185,
+          "path": "src/main.rs",
+          "sha256": "487a2e60715f90d7d47c035ef0c5534f96c56d374c17a6ed1201608e6b3f92c0",
+          "superseded": true
+        },
+        {
+          "bytes": 18585,
+          "path": "src/main.rs",
+          "sha256": "54c5a1a981f87cf30218ff39e058bcf020961f52eb0e3740b9900d2b4ff2cd76",
+          "superseded": true
+        },
+        {
+          "bytes": 6983,
+          "path": "src/main.rs",
+          "sha256": "8a26e60e2067a15d1edfc67fb45b4ae9e5dd19bf7d2bbe8b888b11ddc56f3a3e",
+          "superseded": true
+        },
+        {
+          "bytes": 6880,
+          "path": "src/main.rs",
+          "sha256": "d37cd10e09d67dc34fdffa3ed1a8cba91b82c2565c24281b87f86703d2cdaa4f",
+          "superseded": false
+        }
+      ],
+      "cargo": {
+        "build": 0,
+        "check": 0,
+        "fmt": 1,
+        "test": 0
+      },
+      "done_reason": "stop",
+      "elapsed_s": 421.2,
+      "eval_count": 10422,
+      "files": [
+        "src/main.rs",
+        "src/main.rs",
+        "src/main.rs",
+        "src/main.rs"
+      ],
+      "model_exit": 0,
+      "output_bytes": 41368,
+      "output_sha256": "62dd6ccf9a4886ac434e205fb9a71ab008e1e60f55b139c98e894c6f31d63042",
+      "prompt_bytes": 37014,
+      "prompt_eval_count": 10955,
+      "prompt_sha256": "1f9af2f908f71b6f4e65befb1048cb72b0605490ce4e504dd4676c06bcb03597",
+      "said_done": false,
+      "timed_out": false,
+      "turn": 6
+    },
+    {
+      "blocks": [
+        {
+          "bytes": 11200,
+          "path": "src/main.rs",
+          "sha256": "033ee45e6294ad9b81a0220202ce0e3058a3bf820ad5bf804e4810f6f276fd0a",
+          "superseded": true
+        },
+        {
+          "bytes": 6949,
+          "path": "src/main.rs",
+          "sha256": "cc741d6db3640e865a0f6f1739f129eec5d3175e1c14672170b65f6c15210345",
+          "superseded": true
+        },
+        {
+          "bytes": 16883,
+          "path": "src/main.rs",
+          "sha256": "7a37886481c90b5cecf84b26b88bbeb4fb610b1fbbda60e7bbb8454dd6c9bce0",
+          "superseded": false
+        }
+      ],
+      "cargo": {
+        "check": 101,
+        "fmt": 1
+      },
+      "done_reason": "stop",
+      "elapsed_s": 344.8,
+      "eval_count": 8760,
+      "files": [
+        "src/main.rs",
+        "src/main.rs",
+        "src/main.rs"
+      ],
+      "model_exit": 0,
+      "output_bytes": 35598,
+      "output_sha256": "db465fd1efe2d047ea642a809289824871de4b04aadd80eb1d93db1a23c914be",
+      "prompt_bytes": 36904,
+      "prompt_eval_count": 10925,
+      "prompt_sha256": "62f3cdfe2b0f68c8a0c0694ebd8755e1dbd3653e814567e43df3991d9276bca9",
+      "said_done": false,
+      "timed_out": false,
+      "turn": 7
+    },
+    {
+      "blocks": [
+        {
+          "bytes": 17140,
+          "path": "src/main.rs",
+          "sha256": "48b61df037dd38785caf3c4f75866e4e28190c7c45a071d759cec3c5febb6bec",
+          "superseded": false
+        }
+      ],
+      "cargo": {
+        "check": 101,
+        "fmt": 1
+      },
+      "done_reason": "stop",
+      "elapsed_s": 202.3,
+      "eval_count": 4016,
+      "files": [
+        "src/main.rs"
+      ],
+      "model_exit": 0,
+      "output_bytes": 17166,
+      "output_sha256": "aad95481599522abffa327b4d0ddb50063601b93f108111b3998a2ba588a47f4",
+      "prompt_bytes": 53703,
+      "prompt_eval_count": 14618,
+      "prompt_sha256": "4298378a3dba3c530b65ea7981173afbbefd38ace9b0f7f8567f2843e6c2cffa",
+      "said_done": false,
+      "timed_out": false,
+      "turn": 8
+    }
+  ],
+  "workdir": "/Users/s0fractal/cnp0-cleanroom",
+  "written": {
+    "Cargo.toml": {
+      "bytes": 80,
+      "sha256": "009f8abb5fb53715629eebcf556472eeb54e6505d26dd745c1c7b309cbb9680d"
+    },
+    "src/main.rs": {
+      "bytes": 17141,
+      "sha256": "fc40ad89d7b161fc7c7fd1ed7cc4120a29675f8db3f7b5d014be76aba942ec76"
+    }
+  }
+}

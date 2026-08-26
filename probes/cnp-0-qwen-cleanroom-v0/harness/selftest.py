@@ -342,9 +342,37 @@ def t_tree_refuses_cargo_config():
 
 
 def t_tree_refuses_duplicate_block():
-    expect_raises("tree-refuses-duplicate-file", 1,
-                  lambda: tree.check_emitted(["Cargo.toml", "src/main.rs", "src/main.rs"]),
-                  "more than once")
+    """A revision inside one reply is accepted, and every block is recorded.
+
+    This control used to assert the opposite. The harness resolves a path
+    emitted in turn 3 and again in turn 5 silently in favour of the later one,
+    so refusing the same thing inside a single reply was an inconsistency, not a
+    principle — and it cost rounds 3, 4 and 5 fourteen turns.
+    """
+    ok = True
+    try:
+        tree.check_emitted(["Cargo.toml", "src/main.rs", "src/main.rs"])
+    except tree.TreeError:
+        ok = False
+    if ok:
+        sys.path.insert(0, os.path.join(HERE, "harness"))
+        import round as roundmod
+        blocks = roundmod.extract_files(
+            "FILE: src/main.rs\n```\nfirst\n```\n"
+            "FILE: src/main.rs\n```\nsecond\n```\n")
+        ok = len(blocks) == 2 and blocks[-1][1].strip() == "second"
+    record("duplicate-path-is-recorded-not-refused", 1, ok,
+           "a path emitted twice in one reply is accepted with the last winning, "
+           "and both blocks stay visible to the record"
+           if ok else "a revision inside one reply is still refused or collapsed")
+
+
+def t_tree_caps_the_accumulated_tree():
+    """The file cap must bind on the tree, not only on one reply."""
+    many = ["Cargo.toml"] + [f"src/m{i}.rs" for i in range(tree.MAX_FILES + 4)]
+    expect_raises("tree-caps-the-accumulated-tree", 1,
+                  lambda: tree.check_emitted(many, require_complete=False),
+                  "over the cap")
 
 
 def t_tree_refuses_escape():
@@ -380,6 +408,113 @@ def _round_record(probe: str, n: int, **fields) -> None:
         rec["cargo_output_sha256"] = hashlib.sha256(body).hexdigest()
     rec.update(fields)
     json.dump(rec, open(os.path.join(tdir, f"round-{n:02d}.json"), "w"))
+
+
+def _budget_file(probe: str, **fields) -> None:
+    rec = {"rounds": 6, "not_counted": [], "decided_by": "a steward",
+           "reason": "recorded here so it is auditable"}
+    rec.update(fields)
+    json.dump(rec, open(os.path.join(probe, "provenance", "budget.json"), "w"))
+
+
+def t_budget_change_is_a_recorded_decision():
+    """A raised budget must come from a committed file that names who raised it."""
+    with tempfile.TemporaryDirectory() as tmp:
+        probe = _fake_probe(tmp)
+        for i in (1, 2, 3):
+            _round_record(probe, i)
+        _budget_file(probe, rounds=4, decided_by="a named steward")
+        r = _run(probe, "round.py", "--workdir",
+                 os.path.expanduser("~/cnp0-selftest-workdir"), "--dry-run")
+        blob = r.stdout + r.stderr
+        ok = (r.returncode == 0 and "round 4" in blob and "3/4" in blob
+              and "a named steward" in blob)
+        record("budget-change-is-a-recorded-decision", 1, ok,
+               "a fourth round ran only because a committed decision allowed it"
+               if ok else blob[-200:])
+
+
+def t_budget_cannot_discount_a_round_the_model_ran():
+    """A round the model actually spoke in is spent, however budget.json is written."""
+    with tempfile.TemporaryDirectory() as tmp:
+        probe = _fake_probe(tmp)
+        for i in (1, 2, 3):
+            _round_record(probe, i, model_exit=0, output_bytes=4096)
+        _budget_file(probe, rounds=3, not_counted=[2])
+        r = _run(probe, "round.py", "--workdir",
+                 os.path.expanduser("~/cnp0-selftest-workdir"), "--dry-run")
+        blob = r.stdout + r.stderr
+        ok = r.returncode != 0 and "a round the model ran is a round it spent" in blob
+        record("budget-cannot-discount-a-round-the-model-ran", 1, ok,
+               "refused to excuse a round that produced output" if ok else blob[-200:])
+
+
+def t_budget_may_discount_a_failed_invocation():
+    """A round where the launch failed and nothing was produced may be excused."""
+    with tempfile.TemporaryDirectory() as tmp:
+        probe = _fake_probe(tmp)
+        _round_record(probe, 1, model_exit=1, output_bytes=0, with_cargo=False)
+        for i in (2, 3):
+            _round_record(probe, i, model_exit=0, output_bytes=4096)
+        _budget_file(probe, rounds=3, not_counted=[1])
+        r = _run(probe, "round.py", "--workdir",
+                 os.path.expanduser("~/cnp0-selftest-workdir"), "--dry-run")
+        blob = r.stdout + r.stderr
+        ok = r.returncode == 0 and "round 4" in blob
+        record("budget-may-discount-a-failed-invocation", 1, ok,
+               "a round the model was never reached in did not count"
+               if ok else blob[-200:])
+
+
+def t_model_is_called_over_the_api():
+    """`ollama run` spliced terminal control codes into round 3's Rust."""
+    src = open(os.path.join(HERE, "harness", "round.py"), encoding="utf-8").read()
+    ok = '"ollama", "run"' not in src and "/api/generate" in src
+    record("model-is-called-over-the-api", 1, ok,
+           "the model is invoked over the HTTP API, which has no display layer"
+           if ok else "round.py still shells out to `ollama run`")
+
+
+def t_refused_turn_feedback_is_transport_only():
+    """A refused turn is told what the transport refused, and nothing else."""
+    sys.path.insert(0, os.path.join(HERE, "harness"))
+    import round as roundmod
+    refusal = "src/main.rs was emitted more than once."
+    prompt = roundmod.build_prompt(None, {"Cargo.toml": "x"}, None, 2, refusal)
+    ok = (refusal in prompt
+          and "not accepted" in prompt.lower()
+          and "format of the reply, not its content" in prompt
+          and "manifest.json" not in prompt
+          and "expected" not in prompt.split("NOT ACCEPTED")[1].lower())
+    record("refused-turn-feedback-is-transport-only", 1, ok,
+           "a refused turn is told the packaging rule it broke and nothing more"
+           if ok else "the refusal feedback carries more than the transport rule")
+
+
+def t_sandbox_can_run_the_protocols_checks():
+    """Every cargo subcommand freezing requires must exist in the image.
+
+    The precondition is `docker_available()`, the same one the isolation
+    controls use. This asked only whether the docker CLI was on PATH, which is a
+    different question: a GitHub runner has the CLI and not the pinned image, so
+    `sandbox.run` raised before any JSON was written and the whole selftest died
+    without a report. Two preconditions for one requirement is one too many, and
+    the weaker of them decided.
+    """
+    ok, why = docker_available()
+    if not ok:
+        record("sandbox-can-run-the-protocols-checks", 2, False, why, skipped=True)
+        return
+    missing = []
+    with tempfile.TemporaryDirectory(dir=os.path.expanduser("~")) as probe:
+        for sub in ("fmt", "check", "build", "test"):
+            code, out = sandbox.run(probe, ["cargo", sub, "--help"], timeout_s=120)
+            if code != 0 and "not installed" in out:
+                missing.append(f"cargo {sub}: {out.strip()[:80]}")
+    ok = not missing
+    record("sandbox-can-run-the-protocols-checks", 2, ok,
+           "the image can run fmt, check, build and test — a freeze is reachable"
+           if ok else "; ".join(missing))
 
 
 def t_deleted_feedback_is_refused():
@@ -588,13 +723,67 @@ def t_evaluate_detects_tampered_tree():
 # ---------------------------------------------------------------- tier 2
 
 def docker_available() -> tuple[bool, str]:
+    """Can the isolation controls actually run here, and if not, why.
+
+    Both questions matter and they are different: a runner can have the docker
+    CLI and not the pinned image, which is exactly the CI state that killed this
+    selftest. The answer is one function so the two tier-2 groups cannot disagree
+    about it again.
+    """
     if shutil.which("docker") is None:
         return False, "docker is not on PATH"
-    probe = subprocess.run(["docker", "image", "inspect", sandbox.IMAGE],
-                           capture_output=True, text=True)
+    try:
+        probe = subprocess.run(["docker", "image", "inspect", sandbox.IMAGE],
+                               capture_output=True, text=True, timeout=120)
+    except (OSError, subprocess.SubprocessError) as exc:
+        return False, f"docker is on PATH but unusable: {exc}"
     if probe.returncode != 0:
-        return False, "the pinned image is not present locally"
+        return False, (f"the pinned image {sandbox.IMAGE[:24]}… is not present "
+                       "locally; build it with harness/image/Dockerfile")
     return True, ""
+
+
+def t_missing_image_skips_rather_than_crashes():
+    """CLI present, image absent — the state that took CI down.
+
+    Reproduced without needing Docker at all: a `docker` shim earlier on PATH
+    answers every invocation with a non-zero exit, which is precisely what a
+    runner that has the CLI and not the pinned image looks like. The selftest
+    must still finish, still emit its JSON report, and record the tier-2
+    controls as SKIPPED with a reason.
+
+    It failed here by crashing before the report existed, and the Deno test then
+    reported `Unexpected end of JSON input` — so the visible symptom named the
+    parser rather than the cause. This control fails loudly instead.
+    """
+    with tempfile.TemporaryDirectory() as tmp:
+        shim = os.path.join(tmp, "docker")
+        with open(shim, "w", encoding="utf-8") as fh:
+            fh.write("#!/bin/sh\necho 'no such image' >&2\nexit 1\n")
+        os.chmod(shim, 0o755)
+        env = dict(os.environ, PATH=tmp + os.pathsep + os.environ.get("PATH", ""))
+        proc = subprocess.run(
+            [sys.executable, os.path.join(HERE, "harness", "selftest.py"),
+             "--json", "--no-recursive"],
+            capture_output=True, text=True, env=env, timeout=900)
+    if proc.returncode != 0:
+        record("missing-image-skips-rather-than-crashes", 1, False,
+               f"selftest exited {proc.returncode}: {proc.stderr.strip()[-200:]}")
+        return
+    try:
+        report = json.loads(proc.stdout)
+    except json.JSONDecodeError as exc:
+        record("missing-image-skips-rather-than-crashes", 1, False,
+               f"no JSON report was produced ({exc}); stderr: "
+               f"{proc.stderr.strip()[-200:]}")
+        return
+    tier2 = [r for r in report["results"] if r["tier"] == 2]
+    ok = (len(tier2) >= 3
+          and all(r["skipped"] and r["detail"] for r in tier2)
+          and any("not present locally" in r["detail"] for r in tier2))
+    record("missing-image-skips-rather-than-crashes", 1, ok,
+           f"all {len(tier2)} tier-2 controls skipped with a reason, report intact"
+           if ok else f"tier-2 came back as {tier2}")
 
 
 def t_sandbox_isolation():
@@ -626,7 +815,7 @@ def main() -> int:
                t_failed_generation_is_never_freeze_ready, t_capsule_verbatim,
                t_stale_capsule_detected, t_pack_leak_check, t_workdir_inside_trinity,
                t_tree_refuses_build_script, t_tree_refuses_cargo_config,
-               t_tree_refuses_duplicate_block, t_tree_refuses_escape,
+               t_tree_refuses_duplicate_block, t_tree_caps_the_accumulated_tree, t_tree_refuses_escape,
                t_stale_pack_refused, t_deleted_feedback_is_refused,
                t_unpinned_feedback_is_refused,
                t_unexplained_missing_feedback_is_refused,
@@ -634,9 +823,20 @@ def main() -> int:
                t_check_passed_test_failed_allows_next_round,
                t_third_not_ready_records_inconclusive, t_lost_outcome_is_recovered,
                t_failed_generation_does_not_deadlock_budget, t_no_round_after_freeze,
-               t_no_fourth_round, t_evaluate_requires_freeze,
-               t_evaluate_detects_tampered_tree, t_sandbox_isolation):
+               t_no_fourth_round, t_budget_change_is_a_recorded_decision,
+               t_budget_cannot_discount_a_round_the_model_ran,
+               t_budget_may_discount_a_failed_invocation,
+               t_model_is_called_over_the_api,
+               t_refused_turn_feedback_is_transport_only,
+               t_evaluate_requires_freeze,
+               t_evaluate_detects_tampered_tree, t_sandbox_isolation,
+               t_sandbox_can_run_the_protocols_checks):
         fn()
+
+    # Runs the whole selftest again under a failing `docker` shim, so it must not
+    # run itself: --no-recursive is what the inner invocation is given.
+    if "--no-recursive" not in sys.argv:
+        t_missing_image_skips_rather_than_crashes()
 
     failed = [r for r in RESULTS if not r["ok"] and not r["skipped"]]
     skipped = [r for r in RESULTS if r["skipped"]]

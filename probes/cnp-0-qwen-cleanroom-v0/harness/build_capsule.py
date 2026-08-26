@@ -144,6 +144,37 @@ def render(regions: list[dict], source_digest: str) -> str:
     return "".join(parts)
 
 
+def check_sealed(rec: dict, source_digest: str) -> int:
+    """A sealed capsule is checked against its pin, not against today's source."""
+    if not os.path.exists(SPEC):
+        print("FAIL capsule/SPEC.md is missing")
+        return 1
+    raw = open(SPEC, "rb").read()
+    problems = []
+    if sha(raw) != rec.get("capsule_sha256"):
+        problems.append(
+            "capsule/SPEC.md has been edited since it was sealed: "
+            f"recorded {rec.get('capsule_sha256')}, now {sha(raw)}"
+        )
+    current = raw.decode("utf-8")
+    for r in rec.get("regions", []):
+        start = current.find(f"region-sha256:{r['sha256'][:16]}")
+        if start < 0:
+            problems.append(f"{r['clause']}: its pinned region marker is gone")
+    if problems:
+        for p_ in problems:
+            print(f"FAIL {p_}")
+        return 1
+    print(f"ok  capsule sealed at {rec['sealed']}: {len(rec.get('regions', []))} "
+          f"regions, sha256 {rec['capsule_sha256'][:12]}… unchanged")
+    moved = rec.get("source_sha256") != source_digest
+    print(f"ok  quoted {SOURCE_REL} at sha256 {rec.get('source_sha256', '')[:12]}…"
+          + (f"; the source has since moved to {source_digest[:12]}… — expected, "
+             "the capsule records what the model was shown, not what the "
+             "specification says today" if moved else "; source unchanged"))
+    return 0
+
+
 def main() -> int:
     raw = open(SOURCE, "rb").read()
     source = raw.decode("utf-8")
@@ -153,6 +184,18 @@ def main() -> int:
 
     check = "--check" in sys.argv
     if check:
+        rec = json.load(open(VERBATIM)) if os.path.exists(VERBATIM) else {}
+        if rec.get("sealed"):
+            # The probe is closed. The capsule quoted the specification as it
+            # stood at the digest recorded here; the specification has since
+            # moved on, and re-deriving the capsule from today's source would
+            # rewrite the record of what the model was actually shown. So the
+            # question changes: not "does the capsule match the source now",
+            # which it must not be forced to, but "is the committed capsule
+            # still byte-for-byte what was pinned" — which still catches a
+            # later hand-edit, and is the only property a sealed capsule can
+            # honestly claim.
+            return check_sealed(rec, source_digest)
         problems = []
         if not os.path.exists(SPEC):
             problems.append("capsule/SPEC.md is missing")
@@ -168,18 +211,16 @@ def main() -> int:
                     problems.append(f"{r['clause']} is not present verbatim in the capsule")
                 if r["body"] not in source:
                     problems.append(f"{r['clause']} is no longer present in the source")
-        if os.path.exists(VERBATIM):
-            rec = json.load(open(VERBATIM))
-            if rec.get("source_sha256") != source_digest:
-                problems.append(
-                    "the specification has changed since the capsule was pinned: "
-                    f"recorded {rec.get('source_sha256')}, now {source_digest}"
-                )
-        else:
+        if not rec:
             problems.append("provenance/verbatim.json is missing")
+        elif rec.get("source_sha256") != source_digest:
+            problems.append(
+                "the specification has changed since the capsule was pinned: "
+                f"recorded {rec.get('source_sha256')}, now {source_digest}"
+            )
         if problems:
-            for p in problems:
-                print(f"FAIL {p}")
+            for p_ in problems:
+                print(f"FAIL {p_}")
             return 1
         quoted = sum(r["bytes"] for r in regions)
         total = len(text.encode("utf-8"))

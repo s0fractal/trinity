@@ -1,0 +1,1040 @@
+You are implementing a specification from scratch. Everything you are given follows. There is no other source to consult.
+
+===== SPEC.md =====
+# CNP-0-JCS — specification capsule
+
+**This document is the whole of what you are given.** It is self-contained: it
+does not refer to any existing implementation, and there is nothing else to
+consult.
+
+The quoted regions below are **verbatim** from the normative specification, and
+that is machine-checked: each is delimited by a marker naming its clause and its
+byte range in the source, and `harness/build_capsule.py --check` re-extracts them
+and fails on a one-byte drift. The only text that is not quoted is this framing.
+A paraphrase would test whether an implementation agrees with the paraphraser,
+which is not the question.
+
+---
+
+## §5.1.1 — Canonical encoding is normative, not an implementation detail
+
+<!-- quoted §5.1.1 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:0783fe57a13f7442… bytes 8911..10131 region-sha256:f4b3f491e7c94a51… -->
+
+The encoding MUST satisfy:
+
+1. **Determinism.** One object has exactly one canonical byte sequence. The
+   encoder is a function, not a policy.
+2. **Injectivity.** Two objects that differ observably MUST NOT encode to the
+   same bytes. Encodings that permit indistinguishable framing of distinct
+   values are inadmissible.
+3. **No optional forms.** No alternative integer widths, no optional length
+   prefixes, no permitted-but-discouraged variants. Where a format offers a
+   choice, the profile MUST remove it.
+4. **Total ordering of map keys**, with duplicate keys rejected rather than
+   last-wins.
+5. **No Unicode normalization (MUST NOT).** Strings are hashed as their exact
+   sequence of code points. A verifier MUST NOT apply NFC, NFD, or any other
+   normalization, and MUST NOT reject a string for not being normalized.
+   Producers SHOULD emit NFC so that content mangled by an external editor,
+   database, or filesystem still resolves — but that is producer discipline, not
+   a verifier rule.
+6. **A self-describing encoding identifier**, included in the digest input. A
+   digest binds an object _under an encoding_; changing the encoding MUST change
+   the reference rather than silently rehoming it.
+
+<!-- end quoted §5.1.1 -->
+
+---
+
+## §5.1.2 — Floating point
+
+<!-- quoted §5.1.2 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:0783fe57a13f7442… bytes 10468..11642 region-sha256:223959e79c0a546e… -->
+
+In canonical form:
+
+1. `NaN` and the infinities MUST be rejected. They are not values a state may
+   hold; a computation producing one has failed and MUST surface as a validation
+   error, not as bytes.
+2. IEEE floating-point values, including `-0.0` and `+0.0`, MUST NOT enter the
+   selected canonical object model. An exact integral result MAY be converted to
+   the integer `0` before that boundary; an encoder MUST NOT accept a float and
+   silently canonicalize it.
+3. Byte order and width MUST be fixed by the profile, not inherited from the
+   host.
+4. **Where equality of a value is load-bearing — simplex points, thresholds,
+   budget terms, invariant boundaries — IEEE binary floating point MUST NOT be
+   the canonical representation.** Such values MUST use exact rationals or
+   fixed-point with a declared precision. A probability vector whose components
+   were produced by different summation orders on different substrates is not
+   the same vector under any digest, and rounding mode is not part of any wire
+   format.
+5. A state domain MAY use floating point internally. The obligation is at the
+   canonical-encoding boundary, not inside the computation.
+
+<!-- end quoted §5.1.2 -->
+
+---
+
+## §5.1.2 — Non-integer values inside an integers-only domain
+
+<!-- quoted §5.1.2 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:0783fe57a13f7442… bytes 11975..13806 region-sha256:8fab8eaf939924bd… -->
+
+Two patterns are admissible. Both keep every number in the integer domain and
+both are exact. Each is a **tagged form**, carrying the reserved discriminator
+member `cnp0` that §5.1.2.1 fixes:
+
+```json
+{ "cnp0": "ratio", "num": <int>, "den": <int> }
+{ "cnp0": "fixed", "value": <int> }
+```
+
+For `ratio`, the canonical form MUST satisfy:
+
+1. `den > 0` — sign lives in `num` only, so `-1/3` has exactly one encoding;
+2. `gcd(|num|, den) == 1` — reduced to lowest terms, so `2/6` is not a second
+   encoding of `1/3`;
+3. zero is `{ num: 0, den: 1 }` and nothing else;
+4. both components lie inside the encoding's integer domain.
+
+For `fixed`, a content-addressed scale descriptor MUST be declared by the state
+domain rather than repeated per value, and all values in one domain MUST share
+it — otherwise comparing two points means rescaling, and rescaling reintroduces
+the rounding the rule exists to remove. The domain reference already binds the
+point to that descriptor; repeating `scale` or `scale_id` in each value would
+create two sources of truth.
+
+**Reduction rules are not optional decoration.** Without them the encoding is
+deterministic but not injective in the direction that matters: two byte
+sequences would denote one value, so two states that are equal would carry
+different references, and every equality check downstream would silently be
+comparing encodings rather than values.
+
+**The simplex additionally constrains the sum.** A probability vector MUST sum
+to exactly one under exact arithmetic — `Σ num_i / den_i == 1` for ratios, or
+`Σ value_i == radix^places` for fixed-point under the domain's scale descriptor.
+This is a validation rule (§6), not an encoding rule, and it is the reason the
+simplex cannot use floats: "sums to one after rounding" is not a property two
+independent implementations will agree on.
+
+<!-- end quoted §5.1.2 -->
+
+---
+
+## §5.1.2.1 — CNP-0-JCS
+
+<!-- quoted §5.1.2.1 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:0783fe57a13f7442… bytes 14275..17818 region-sha256:4aedeb88d753b78e… -->
+
+This draft selects **CNP-0-JCS** as the Tranche A3 candidate. The selection is
+one package with two named layers:
+
+- `hsp-jcs@v0` is the wire encoding: RFC 8785 JCS over strict I-JSON;
+- `cnp-0` is the numeric profile carried by that encoding.
+
+A profile identifier without a byte encoding does not determine a digest, and a
+choice between “binary or JCS” is not a choice. CNP-0-JCS therefore fixes both.
+Every root object MUST contain the exact members
+`"canonical_encoding":"hsp-jcs@v0"` and `"numeric_profile":"cnp-0"` inside the
+bytes being hashed; changing either member MUST change the reference. Nested
+values do not repeat them.
+
+The admissible object model is `null`, booleans, exact strings, arrays,
+string-keyed maps, and integers in the inclusive range
+`[-(2^53 - 1), +(2^53 - 1)]`. Map member names MUST be unique in the raw input.
+Strings follow §5.1.1 rule 5. Floating-point numbers, decimal fractions,
+exponent notation, CBOR tags, and integers outside the range are not members of
+this profile.
+
+Raw bytes, exact ratios, and fixed-point values are written as **tagged forms**.
+A tagged form is a map carrying the member name `cnp0`, whose value is exactly
+one of `"bytes"`, `"ratio"`, or `"fixed"`, and whose remaining members are
+exactly the ones that form defines and no others:
+
+```json
+{ "cnp0": "bytes", "hex": "<even-length lowercase hexadecimal>" }
+{ "cnp0": "ratio", "num": <int>, "den": <int> }
+{ "cnp0": "fixed", "value": <int> }
+```
+
+The member name `cnp0` is **reserved in every position** of a `cnp-0` document
+and MUST NOT be used for any other purpose. **Recognition is therefore a
+property of the bytes alone**: a reader decides whether a value is a tagged
+form, and whether that form is canonical, without resolving a domain descriptor.
+This is what makes §5.1.3's verifier-only path able to do what that section asks
+of it — reject a non-canonical ratio — while holding nothing but the raw input.
+
+A map carrying `cnp0` with any other value, or with a member the form does not
+define, MUST be rejected rather than reinterpreted as an ordinary map. A map
+that does not carry `cnp0` **is** an ordinary map, whatever its other member
+names are, **including `kind`** — which this document uses as an ordinary
+discriminator in at least a dozen other types and which the numeric profile does
+not claim.
+
+Length is derived from `hex` and MUST NOT be repeated. A decoder MUST reject
+uppercase, odd-length, or non-hexadecimal content rather than normalize it.
+Ratio and fixed-point values additionally satisfy the reduction and scale rules
+of §5.1.2. A domain MUST declare which numeric form it admits; it MUST NOT
+accept both forms for one semantic value and treat them as equal. The domain
+decides _which form is admissible_; the bytes decide _what form a value is_.
+
+The alternative considered was schema-directed recognition: no reserved name,
+and a value is a ratio only because a domain descriptor types that position as
+one. It is not adopted, and the reason is a property this section chooses rather
+than one the earlier draft implied. Under schema-directed recognition "these
+bytes are valid CNP-0" stops being answerable by anyone holding the bytes: a
+document that carries no domain reference — which this profile permits, since
+only the two identifiers of §5.1.2.1 are required at the root — becomes
+verifiable at the wire layer only. If a later revision prefers that trade, it
+MUST state §5.1.3's input contract explicitly, because "verifier-only" says what
+the path does not do and not what it is given.
+
+<!-- end quoted §5.1.2.1 -->
+
+---
+
+## §5.1.2.2 — Fixed-point scale identity
+
+<!-- quoted §5.1.2.2 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:0783fe57a13f7442… bytes 18608..19486 region-sha256:142acb574999e19c… -->
+
+A fixed-point domain MUST bind one content-addressed scale descriptor of this
+shape:
+
+```json
+{
+  "canonical_encoding": "hsp-jcs@v0",
+  "numeric_profile": "cnp-0",
+  "scale": "hsp-scale@v0",
+  "radix": 10,
+  "places": 6,
+  "unit_ref": null
+}
+```
+
+`radix` MUST be `2` or `10`; `places` MUST be a non-negative integer; and
+`radix^places` MUST lie inside the CNP-0 integer range. The represented value is
+`value / radix^places`. `unit_ref` is either `null` or a full content digest of
+a unit descriptor. A different scale descriptor produces a different domain
+reference. Changing scale is therefore a new domain plus a declared translation,
+never an in-place rewrite.
+
+Equality inside the domain compares integer `value`. Cross-scale comparison is
+available only through a declared translation. For a fixed-point probability
+simplex, `Σ value_i` MUST equal `radix^places` exactly.
+
+<!-- end quoted §5.1.2.2 -->
+
+---
+
+## What "canonical" means for each of the two operations
+
+The specification defines one canonical byte sequence per value. The two
+operations you implement differ in what they are asked about those bytes.
+
+**encode** is given input bytes that may or may not already be canonical. It
+either produces the canonical byte sequence for the value they denote, or
+rejects them. It never repairs a value that the rules forbid.
+
+**verify** is given input bytes and asked whether *those exact bytes* are the
+canonical encoding. It never produces bytes. Input that denotes a legal value
+but is not written canonically — different member order, insignificant
+whitespace, an escape the canonical form does not use — is a rejection for
+`verify` and ordinary input for `encode`.
+
+Three consequences of §5.1.1 rule 4 and §5.1.2.1 that are easy to lose if the
+input is decoded before it is examined: duplicate member names, ill-formed
+UTF-8, and bytes after the end of the value cannot be detected once a permissive
+parser has resolved them. Both operations receive the original bytes.
+
+## What will be measured
+
+A corpus of positive and negative cases drawn from the categories §5.1.3 of the
+specification requires: the integer bounds; ratios and their rejections; one
+fixed value under two scale descriptors; simplex sums; profile-identifier and
+pinned-constant mutation; byte strings, normalization-distinct strings, member
+order, and nested empty containers; and quantization boundaries.
+
+Only the encode/verify behaviour described here is measured. You are not asked
+to implement quantization, renormalization, or the optional discrete circle
+family.
+
+You will not be shown the corpus, the expected bytes, or the expected digests.
+
+
+===== INTERFACE.md =====
+# Interface contract
+
+Your program is a command-line tool with two subcommands. It reads NDJSON on
+stdin and writes NDJSON on stdout, one output line per input line, in the same
+order. It writes nothing else to stdout. Diagnostics, if any, go to stderr.
+
+```sh
+candidate encode < in.ndjson > out.ndjson
+candidate verify < in.ndjson > out.ndjson
+```
+
+## Input, both subcommands
+
+```json
+{ "id": "<opaque string>", "raw_hex": "<lowercase hex of the input bytes>" }
+```
+
+The input is given as hex, not as a JSON string, because part of what is tested
+is behaviour on byte sequences that are not valid UTF-8 and therefore cannot
+survive being written inside a JSON string. Decode `raw_hex` to bytes and work
+from those bytes.
+
+## Output — `encode`
+
+Accepted:
+
+```json
+{ "id": "…", "ok": true, "canonical_hex": "<lowercase hex>", "sha256": "<64 lowercase hex>" }
+```
+
+`canonical_hex` is the canonical byte sequence. `sha256` is the SHA-256 of those
+canonical bytes, lowercase hex.
+
+Rejected:
+
+```json
+{ "id": "…", "ok": false, "category": "<one of the categories below>" }
+```
+
+## Output — `verify`
+
+Accepted — the input bytes *are* the canonical encoding:
+
+```json
+{ "id": "…", "ok": true, "sha256": "<64 lowercase hex of the INPUT bytes>" }
+```
+
+Rejected:
+
+```json
+{ "id": "…", "ok": false, "category": "<one of the categories below>" }
+```
+
+## Rejection categories
+
+A rejection reports one category from this closed set. The specification
+requires a *stable rejection class* per rejected input; this list is that
+vocabulary, and it is part of the interface rather than of any implementation.
+
+| category | meaning |
+| --- | --- |
+| `invalid-utf8` | the input is not well-formed UTF-8 |
+| `syntax` | not well-formed JSON under the profile's grammar |
+| `trailing-bytes` | content after the end of the top-level value |
+| `duplicate-member-name` | a member name repeats within one map |
+| `malformed-escape` | a string escape is not one the grammar allows |
+| `unpaired-surrogate` | a surrogate escape without its pair |
+| `number-not-cnp0-integer` | a number with a fraction or an exponent |
+| `integer-out-of-range` | an integer outside the profile's inclusive range |
+| `signed-zero` | the literal `-0` |
+| `non-canonical-form` | legal input that is not written in canonical form (`verify` only) |
+| `profile-identifier-invalid` | the root does not carry the two required members with their exact values |
+| `bytes-hex-invalid` | a byte projection's `hex` is not even-length lowercase hexadecimal |
+| `ratio-not-reduced` | a ratio not in lowest terms |
+| `ratio-non-positive-denominator` | a ratio denominator that is not greater than zero |
+| `ratio-zero-not-canonical` | zero written other than as the specification requires |
+| `fixed-scale-in-value` | a fixed-point value carrying its own scale |
+| `tagged-form-invalid` | a tagged form whose tag or member set is not one the specification defines |
+| `scale-descriptor-invalid` | a scale descriptor that violates its own rules |
+
+When more than one category could apply to an input, report the one your
+implementation detects; the evaluation reports a category mismatch separately
+from an accept/reject mismatch, so a defensible different ordering of checks is
+visible as such rather than counted as a wrong verdict.
+
+## Exit status
+
+`0` when every input line produced an output line, whatever the verdicts. A
+non-zero exit means the program itself failed, which is not the same as
+rejecting an input.
+
+## Language and toolchain
+
+Rust, building with `cargo build --release --offline` and producing a single
+binary named `candidate`.
+
+**The Rust standard library only.** No dependencies of any kind: the build runs
+with no network, so a crate cannot be fetched even if one were wanted. That
+includes SHA-256 — implement it (FIPS 180-4). It also includes JSON: parsing the
+input bytes is part of the task, and a permissive parser cannot see three of the
+failures above.
+
+
+===== EXAMPLES.ndjson =====
+{"note":"Teaching examples. They show the interface and three behaviours; they are not the corpus and they are not a sample of it. Array order is data and is preserved; member order is imposed."}
+{"subcommand":"encode","in":{"id":"ex1","raw_hex":"7b2263616e6f6e6963616c5f656e636f64696e67223a226873702d6a6373407630222c226772656574696e67223a226869222c226e756d657269635f70726f66696c65223a22636e702d30227d"},"out":{"id":"ex1","ok":true,"canonical_hex":"7b2263616e6f6e6963616c5f656e636f64696e67223a226873702d6a6373407630222c226772656574696e67223a226869222c226e756d657269635f70726f66696c65223a22636e702d30227d","sha256":"bae4bcf4e72a01c68b82deeebcb6cb2673f2a5229afbe98278ea9babc7bc59c5"}}
+{"subcommand":"verify","in":{"id":"ex1","raw_hex":"7b2263616e6f6e6963616c5f656e636f64696e67223a226873702d6a6373407630222c226772656574696e67223a226869222c226e756d657269635f70726f66696c65223a22636e702d30227d"},"out":{"id":"ex1","ok":true,"sha256":"bae4bcf4e72a01c68b82deeebcb6cb2673f2a5229afbe98278ea9babc7bc59c5"}}
+{"subcommand":"encode","in":{"id":"ex2","raw_hex":"7b20226772656574696e67223a20226869222c0a2020226e756d657269635f70726f66696c65223a2022636e702d30222c0a20202263616e6f6e6963616c5f656e636f64696e67223a20226873702d6a637340763022207d"},"out":{"id":"ex2","ok":true,"canonical_hex":"7b2263616e6f6e6963616c5f656e636f64696e67223a226873702d6a6373407630222c226772656574696e67223a226869222c226e756d657269635f70726f66696c65223a22636e702d30227d","sha256":"bae4bcf4e72a01c68b82deeebcb6cb2673f2a5229afbe98278ea9babc7bc59c5"},"note":"the same value written with whitespace and a different member order: encode canonicalizes it to the very bytes of ex1"}
+{"subcommand":"verify","in":{"id":"ex2","raw_hex":"7b20226772656574696e67223a20226869222c0a2020226e756d657269635f70726f66696c65223a2022636e702d30222c0a20202263616e6f6e6963616c5f656e636f64696e67223a20226873702d6a637340763022207d"},"out":{"id":"ex2","ok":false,"category":"non-canonical-form"},"note":"verify is asked about THESE bytes, and these bytes are not the canonical ones"}
+{"subcommand":"encode","in":{"id":"ex3","raw_hex":"7b2263616e6f6e6963616c5f656e636f64696e67223a226873702d6a6373407630222c226e756d657269635f70726f66696c65223a22636e702d30222c2274616773223a5b2262222c2261225d2c226e223a2d377d"},"out":{"id":"ex3","ok":true,"canonical_hex":"7b2263616e6f6e6963616c5f656e636f64696e67223a226873702d6a6373407630222c226e223a2d372c226e756d657269635f70726f66696c65223a22636e702d30222c2274616773223a5b2262222c2261225d7d","sha256":"3119b36201c25033137d2e6da8a11689a6ea6108621326bb39051078dcb4a54f"},"note":"members are reordered; the array [\"b\",\"a\"] keeps its order, because an array is a sequence and a map is not"}
+
+
+===== TASK.md =====
+# Task
+
+Implement the specification in `SPEC.md` as a Rust program obeying
+`INTERFACE.md`. `EXAMPLES.ndjson` shows the interface and three behaviours.
+
+Write the whole program. There is no existing implementation to consult, adapt,
+or agree with, and none will be shown to you. Where the specification underdetermines
+something, decide it yourself and say so — a disagreement that traces to a
+genuine gap in the prose is a more useful result than a guess that happens to
+match, so record your reasoning in `NOTES.md` as you go.
+
+## Deliverables in the working directory
+
+```
+Cargo.toml
+src/main.rs          and any further modules you want
+NOTES.md             decisions you had to make, and what in the prose forced or
+                     failed to force each one
+```
+
+## How the work proceeds
+
+You do not have to produce the whole program in one reply. Work in turns.
+
+Each turn you are shown the files you have written so far, verbatim, and — once
+there is enough to build — the compiler and test output. Emit whatever you want
+to add or replace. A file you emit again replaces the earlier version; a file you
+do not mention is kept as it was.
+
+Nobody will correct your algorithm, suggest a design, or tell you what the right
+bytes are. The only thing fed back besides your own files is machine output. When
+you believe the set is complete and correct, say `DONE` on a line of its own.
+
+After the freeze, you may be given failing cases: the input bytes, the category
+that was expected, and the clause of the specification that governs it. Never
+the expected output bytes and never the expected digest. That restriction is the
+point of the exercise — a implementation that reproduces bytes it was shown has
+demonstrated nothing about the specification.
+
+## How to emit files
+
+Emit each file as a fenced code block immediately preceded by a line naming its
+path, exactly like this:
+
+```text
+FILE: Cargo.toml
+```
+
+followed by the fenced block holding that file's whole contents. Emit each file
+**whole** — a partial file replaces the previous one and will not compile.
+Nothing outside these blocks is written anywhere.
+
+## Constraints
+
+- Rust standard library plus a SHA-256 implementation. No JSON library.
+- The program reads only its stdin and writes only its stdout.
+- Do not attempt to read anything outside the working directory, and do not
+  attempt network access. Neither is available.
+
+
+===== THE FILES YOU HAVE WRITTEN SO FAR =====
+
+FILE: Cargo.toml
+```
+[package]
+name = "candidate"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+```
+
+FILE: src/main.rs
+```
+use std::io::{self, BufRead, BufReader, Write};
+use std::collections::HashMap;
+
+const CANONICAL_ENCODING: &str = "hsp-jcs@v0";
+const NUMERIC_PROFILE: &str = "cnp-0";
+
+#[derive(Debug)]
+enum ParseError {
+    InvalidUtf8,
+    Syntax,
+    TrailingBytes,
+    DuplicateMemberName,
+    MalformedEscape,
+    UnpairedSurrogate,
+    NumberNotCnp0Integer,
+    IntegerOutOfRange,
+    SignedZero,
+    ProfileIdentifierInvalid,
+    BytesHexInvalid,
+    RatioNotReduced,
+    RatioNonPositiveDenominator,
+    RatioZeroNotCanonical,
+    FixedScaleInValue,
+    TaggedFormInvalid,
+    ScaleDescriptorInvalid,
+}
+
+#[derive(Debug)]
+enum Command {
+    Encode,
+    Verify,
+}
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let stdin = io::stdin();
+    let reader = BufReader::new(stdin);
+    let mut stdout = io::stdout();
+
+    for line in reader.lines() {
+        let line = line?;
+        if line.is_empty() {
+            continue;
+        }
+
+        // Parse the input manually (no external libraries)
+        let id = extract_field(&line, "id").unwrap_or_default();
+        let raw_hex = extract_field(&line, "raw_hex").unwrap_or_default();
+
+        let bytes = hex_decode(&raw_hex)?;
+
+        // Determine command from the JSON structure
+        let command = match determine_command(&bytes) {
+            Ok(cmd) => cmd,
+            Err(e) => {
+                let output = format!(r#"{{"id":"{}","ok":false,"category":"{}"}}"#, id, error_category(&e));
+                writeln!(stdout, "{}", output)?;
+                continue;
+            }
+        };
+
+        let result = match command {
+            Command::Encode => process_encode(&bytes, &id),
+            Command::Verify => process_verify(&bytes, &id),
+        };
+        
+        writeln!(stdout, "{}", result)?;
+    }
+
+    Ok(())
+}
+
+// Simple manual parser to extract fields from NDJSON
+fn extract_field(json_str: &str, field_name: &str) -> Option<String> {
+    // Find the field in a simple way - this is just for parsing the input structure
+    let field_start = format!(r#""{}":"#, field_name);
+    if let Some(start) = json_str.find(&field_start) {
+        let start_pos = start + field_start.len();
+        if let Some(end_pos) = json_str[start_pos..].find('"') {
+            return Some(json_str[start_pos..start_pos + end_pos].to_string());
+        }
+    }
+    None
+}
+
+fn determine_command(bytes: &[u8]) -> Result<Command, ParseError> {
+    // We need to parse the JSON to determine if it's a verify or encode case
+    let s = std::str::from_utf8(bytes).map_err(|_| ParseError::InvalidUtf8)?;
+    
+    // Simple check for required fields to determine command type
+    if s.contains(r#""canonical_encoding":"hsp-jcs@v0""#) && s.contains(r#""numeric_profile":"cnp-0""#) {
+        Ok(Command::Verify)
+    } else {
+        Ok(Command::Encode)
+    }
+}
+
+fn process_encode(bytes: &[u8], id: &str) -> String {
+    // This is a placeholder - in a real implementation we would parse, validate, and canonicalize
+    format!(r#"{{"id":"{}","ok":false,"category":"syntax"}}"#, id)
+}
+
+fn process_verify(bytes: &[u8], id: &str) -> String {
+    // First, check if it's valid UTF-8
+    let s = match std::str::from_utf8(bytes) {
+        Ok(s) => s,
+        Err(_) => {
+            return format!(r#"{{"id":"{}","ok":false,"category":"invalid-utf8"}}"#, id);
+        }
+    };
+    
+    // Check for required profile identifiers
+    if !s.contains(r#""canonical_encoding":"hsp-jcs@v0""#) || !s.contains(r#""numeric_profile":"cnp-0""#) {
+        return format!(r#"{{"id":"{}","ok":false,"category":"profile-identifier-invalid"}}"#, id);
+    }
+    
+    // For now, just return that it's not canonical to avoid complex validation
+    format!(r#"{{"id":"{}","ok":false,"category":"non-canonical-form"}}"#, id)
+}
+
+fn error_category(err: &ParseError) -> &'static str {
+    match err {
+        ParseError::InvalidUtf8 => "invalid-utf8",
+        ParseError::Syntax => "syntax",
+        ParseError::TrailingBytes => "trailing-bytes",
+        ParseError::DuplicateMemberName => "duplicate-member-name",
+        ParseError::MalformedEscape => "malformed-escape",
+        ParseError::UnpairedSurrogate => "unpaired-surrogate",
+        ParseError::NumberNotCnp0Integer => "number-not-cnp0-integer",
+        ParseError::IntegerOutOfRange => "integer-out-of-range",
+        ParseError::SignedZero => "signed-zero",
+        ParseError::ProfileIdentifierInvalid => "profile-identifier-invalid",
+        ParseError::BytesHexInvalid => "bytes-hex-invalid",
+        ParseError::RatioNotReduced => "ratio-not-reduced",
+        ParseError::RatioNonPositiveDenominator => "ratio-non-positive-denominator",
+        ParseError::RatioZeroNotCanonical => "ratio-zero-not-canonical",
+        ParseError::FixedScaleInValue => "fixed-scale-in-value",
+        ParseError::TaggedFormInvalid => "tagged-form-invalid",
+        ParseError::ScaleDescriptorInvalid => "scale-descriptor-invalid",
+    }
+}
+
+fn hex_decode(hex: &str) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
+    let mut bytes = Vec::new();
+    let mut chars = hex.chars().peekable();
+    
+    while let (Some(h), Some(l)) = (chars.next(), chars.next()) {
+        if let (Some(high), Some(low)) = (hex_char_to_u8(h), hex_char_to_u8(l)) {
+            bytes.push((high << 4) | low);
+        } else {
+            return Err("Invalid hex string".into());
+        }
+    }
+    
+    if chars.next().is_some() {
+        return Err("Odd-length hex string".into());
+    }
+    
+    Ok(bytes)
+}
+
+fn hex_char_to_u8(c: char) -> Option<u8> {
+    match c {
+        '0'..='9' => Some(c as u8 - b'0'),
+        'a'..='f' => Some(c as u8 - b'a' + 10),
+        'A'..='F' => Some(c as u8 - b'A' + 10),
+        _ => None,
+    }
+}
+
+fn hex_encode(bytes: &[u8]) -> String {
+    let mut hex = String::new();
+    for &b in bytes {
+        hex.push_str(&format!("{:02x}", b));
+    }
+    hex
+}
+
+// Simple SHA-256 implementation (FIPS 180-4)
+fn sha256_hex(data: &[u8]) -> String {
+    // This is a placeholder - we'll implement the actual SHA-256 in a proper solution
+    use std::collections::hash_map::DefaultHasher;
+    use std::hash::{Hash, Hasher};
+    
+    let mut hasher = DefaultHasher::new();
+    hasher.write(data);
+    format!("{:064x}", hasher.finish())
+}
+```
+
+===== BUILD OUTPUT FOR THOSE FILES =====
+$ cargo fmt  (exit 1)
+Diff in /work/src/main.rs:1:
+-use std::io::{self, BufRead, BufReader, Write};
+ use std::collections::HashMap;
++use std::io::{self, BufRead, BufReader, Write};
+ 
+ const CANONICAL_ENCODING: &str = "hsp-jcs@v0";
+ const NUMERIC_PROFILE: &str = "cnp-0";
+Diff in /work/src/main.rs:52:
+         let command = match determine_command(&bytes) {
+             Ok(cmd) => cmd,
+             Err(e) => {
+-                let output = format!(r#"{{"id":"{}","ok":false,"category":"{}"}}"#, id, error_category(&e));
++                let output = format!(
++                    r#"{{"id":"{}","ok":false,"category":"{}"}}"#,
++                    id,
++                    error_category(&e)
++                );
+                 writeln!(stdout, "{}", output)?;
+                 continue;
+             }
+Diff in /work/src/main.rs:62:
+             Command::Encode => process_encode(&bytes, &id),
+             Command::Verify => process_verify(&bytes, &id),
+         };
+-        
++
+         writeln!(stdout, "{}", result)?;
+     }
+ 
+Diff in /work/src/main.rs:85:
+ fn determine_command(bytes: &[u8]) -> Result<Command, ParseError> {
+     // We need to parse the JSON to determine if it's a verify or encode case
+     let s = std::str::from_utf8(bytes).map_err(|_| ParseError::InvalidUtf8)?;
+-    
++
+     // Simple check for required fields to determine command type
+-    if s.contains(r#""canonical_encoding":"hsp-jcs@v0""#) && s.contains(r#""numeric_profile":"cnp-0""#) {
++    if s.contains(r#""canonical_encoding":"hsp-jcs@v0""#)
++        && s.contains(r#""numeric_profile":"cnp-0""#)
++    {
+         Ok(Command::Verify)
+     } else {
+         Ok(Command::Encode)
+Diff in /work/src/main.rs:107:
+             return format!(r#"{{"id":"{}","ok":false,"category":"invalid-utf8"}}"#, id);
+         }
+     };
+-    
++
+     // Check for required profile identifiers
+-    if !s.contains(r#""canonical_encoding":"hsp-jcs@v0""#) || !s.contains(r#""numeric_profile":"cnp-0""#) {
+-        return format!(r#"{{"id":"{}","ok":false,"category":"profile-identifier-invalid"}}"#, id);
++    if !s.contains(r#""canonical_encoding":"hsp-jcs@v0""#)
++        || !s.contains(r#""numeric_profile":"cnp-0""#)
++    {
++        return format!(
++            r#"{{"id":"{}","ok":false,"category":"profile-identifier-invalid"}}"#,
++            id
++        );
+     }
+-    
++
+     // For now, just return that it's not canonical to avoid complex validation
+-    format!(r#"{{"id":"{}","ok":false,"category":"non-canonical-form"}}"#, id)
++    format!(
++        r#"{{"id":"{}","ok":false,"category":"non-canonical-form"}}"#,
++        id
++    )
+ }
+ 
+ fn error_category(err: &ParseError) -> &'static str {
+Diff in /work/src/main.rs:142:
+ fn hex_decode(hex: &str) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
+     let mut bytes = Vec::new();
+     let mut chars = hex.chars().peekable();
+-    
++
+     while let (Some(h), Some(l)) = (chars.next(), chars.next()) {
+         if let (Some(high), Some(low)) = (hex_char_to_u8(h), hex_char_to_u8(l)) {
+             bytes.push((high << 4) | low);
+Diff in /work/src/main.rs:150:
+             return Err("Invalid hex string".into());
+         }
+     }
+-    
++
+     if chars.next().is_some() {
+         return Err("Odd-length hex string".into());
+     }
+Diff in /work/src/main.rs:157:
+-    
++
+     Ok(bytes)
+ }
+ 
+Diff in /work/src/main.rs:180:
+     // This is a placeholder - we'll implement the actual SHA-256 in a proper solution
+     use std::collections::hash_map::DefaultHasher;
+     use std::hash::{Hash, Hasher};
+-    
++
+     let mut hasher = DefaultHasher::new();
+     hasher.write(data);
+     format!("{:064x}", hasher.finish())
+
+
+$ cargo check  (exit 0)
+    Checking candidate v0.1.0 (/work)
+warning: unused import: `std::collections::HashMap`
+ --> src/main.rs:2:5
+  |
+2 | use std::collections::HashMap;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: unused import: `Hash`
+   --> src/main.rs:182:21
+    |
+182 |     use std::hash::{Hash, Hasher};
+    |                     ^^^^
+
+warning: unused variable: `bytes`
+  --> src/main.rs:97:19
+   |
+97 | fn process_encode(bytes: &[u8], id: &str) -> String {
+   |                   ^^^^^ help: if this is intentional, prefix it with an underscore: `_bytes`
+   |
+   = note: `#[warn(unused_variables)]` on by default
+
+warning: constant `CANONICAL_ENCODING` is never used
+ --> src/main.rs:4:7
+  |
+4 | const CANONICAL_ENCODING: &str = "hsp-jcs@v0";
+  |       ^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(dead_code)]` on by default
+
+warning: constant `NUMERIC_PROFILE` is never used
+ --> src/main.rs:5:7
+  |
+5 | const NUMERIC_PROFILE: &str = "cnp-0";
+  |       ^^^^^^^^^^^^^^^
+
+warning: multiple variants are never constructed
+  --> src/main.rs:10:5
+   |
+8  | enum ParseError {
+   |      ---------- variants in this enum
+9  |     InvalidUtf8,
+10 |     Syntax,
+   |     ^^^^^^
+11 |     TrailingBytes,
+   |     ^^^^^^^^^^^^^
+12 |     DuplicateMemberName,
+   |     ^^^^^^^^^^^^^^^^^^^
+13 |     MalformedEscape,
+   |     ^^^^^^^^^^^^^^^
+14 |     UnpairedSurrogate,
+   |     ^^^^^^^^^^^^^^^^^
+15 |     NumberNotCnp0Integer,
+   |     ^^^^^^^^^^^^^^^^^^^^
+16 |     IntegerOutOfRange,
+   |     ^^^^^^^^^^^^^^^^^
+17 |     SignedZero,
+   |     ^^^^^^^^^^
+18 |     ProfileIdentifierInvalid,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^
+19 |     BytesHexInvalid,
+   |     ^^^^^^^^^^^^^^^
+20 |     RatioNotReduced,
+   |     ^^^^^^^^^^^^^^^
+21 |     RatioNonPositiveDenominator,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+22 |     RatioZeroNotCanonical,
+   |     ^^^^^^^^^^^^^^^^^^^^^
+23 |     FixedScaleInValue,
+   |     ^^^^^^^^^^^^^^^^^
+24 |     TaggedFormInvalid,
+   |     ^^^^^^^^^^^^^^^^^
+25 |     ScaleDescriptorInvalid,
+   |     ^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `ParseError` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: function `hex_encode` is never used
+   --> src/main.rs:170:4
+    |
+170 | fn hex_encode(bytes: &[u8]) -> String {
+    |    ^^^^^^^^^^
+
+warning: function `sha256_hex` is never used
+   --> src/main.rs:179:4
+    |
+179 | fn sha256_hex(data: &[u8]) -> String {
+    |    ^^^^^^^^^^
+
+warning: `candidate` (bin "candidate") generated 8 warnings (run `cargo fix --bin "candidate"` to apply 2 suggestions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.07s
+
+
+$ cargo build  (exit 0)
+   Compiling candidate v0.1.0 (/work)
+warning: unused import: `std::collections::HashMap`
+ --> src/main.rs:2:5
+  |
+2 | use std::collections::HashMap;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: unused import: `Hash`
+   --> src/main.rs:182:21
+    |
+182 |     use std::hash::{Hash, Hasher};
+    |                     ^^^^
+
+warning: unused variable: `bytes`
+  --> src/main.rs:97:19
+   |
+97 | fn process_encode(bytes: &[u8], id: &str) -> String {
+   |                   ^^^^^ help: if this is intentional, prefix it with an underscore: `_bytes`
+   |
+   = note: `#[warn(unused_variables)]` on by default
+
+warning: constant `CANONICAL_ENCODING` is never used
+ --> src/main.rs:4:7
+  |
+4 | const CANONICAL_ENCODING: &str = "hsp-jcs@v0";
+  |       ^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(dead_code)]` on by default
+
+warning: constant `NUMERIC_PROFILE` is never used
+ --> src/main.rs:5:7
+  |
+5 | const NUMERIC_PROFILE: &str = "cnp-0";
+  |       ^^^^^^^^^^^^^^^
+
+warning: multiple variants are never constructed
+  --> src/main.rs:10:5
+   |
+8  | enum ParseError {
+   |      ---------- variants in this enum
+9  |     InvalidUtf8,
+10 |     Syntax,
+   |     ^^^^^^
+11 |     TrailingBytes,
+   |     ^^^^^^^^^^^^^
+12 |     DuplicateMemberName,
+   |     ^^^^^^^^^^^^^^^^^^^
+13 |     MalformedEscape,
+   |     ^^^^^^^^^^^^^^^
+14 |     UnpairedSurrogate,
+   |     ^^^^^^^^^^^^^^^^^
+15 |     NumberNotCnp0Integer,
+   |     ^^^^^^^^^^^^^^^^^^^^
+16 |     IntegerOutOfRange,
+   |     ^^^^^^^^^^^^^^^^^
+17 |     SignedZero,
+   |     ^^^^^^^^^^
+18 |     ProfileIdentifierInvalid,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^
+19 |     BytesHexInvalid,
+   |     ^^^^^^^^^^^^^^^
+20 |     RatioNotReduced,
+   |     ^^^^^^^^^^^^^^^
+21 |     RatioNonPositiveDenominator,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+22 |     RatioZeroNotCanonical,
+   |     ^^^^^^^^^^^^^^^^^^^^^
+23 |     FixedScaleInValue,
+   |     ^^^^^^^^^^^^^^^^^
+24 |     TaggedFormInvalid,
+   |     ^^^^^^^^^^^^^^^^^
+25 |     ScaleDescriptorInvalid,
+   |     ^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `ParseError` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: function `hex_encode` is never used
+   --> src/main.rs:170:4
+    |
+170 | fn hex_encode(bytes: &[u8]) -> String {
+    |    ^^^^^^^^^^
+
+warning: function `sha256_hex` is never used
+   --> src/main.rs:179:4
+    |
+179 | fn sha256_hex(data: &[u8]) -> String {
+    |    ^^^^^^^^^^
+
+warning: `candidate` (bin "candidate") generated 8 warnings (run `cargo fix --bin "candidate"` to apply 2 suggestions)
+    Finished `release` profile [optimized] target(s) in 0.46s
+
+
+$ cargo test  (exit 0)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Compiling candidate v0.1.0 (/work)
+warning: unused import: `std::collections::HashMap`
+ --> src/main.rs:2:5
+  |
+2 | use std::collections::HashMap;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: unused import: `Hash`
+   --> src/main.rs:182:21
+    |
+182 |     use std::hash::{Hash, Hasher};
+    |                     ^^^^
+
+warning: unused variable: `bytes`
+  --> src/main.rs:97:19
+   |
+97 | fn process_encode(bytes: &[u8], id: &str) -> String {
+   |                   ^^^^^ help: if this is intentional, prefix it with an underscore: `_bytes`
+   |
+   = note: `#[warn(unused_variables)]` on by default
+
+warning: constant `CANONICAL_ENCODING` is never used
+ --> src/main.rs:4:7
+  |
+4 | const CANONICAL_ENCODING: &str = "hsp-jcs@v0";
+  |       ^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(dead_code)]` on by default
+
+warning: constant `NUMERIC_PROFILE` is never used
+ --> src/main.rs:5:7
+  |
+5 | const NUMERIC_PROFILE: &str = "cnp-0";
+  |       ^^^^^^^^^^^^^^^
+
+warning: multiple variants are never constructed
+  --> src/main.rs:10:5
+   |
+8  | enum ParseError {
+   |      ---------- variants in this enum
+9  |     InvalidUtf8,
+10 |     Syntax,
+   |     ^^^^^^
+11 |     TrailingBytes,
+   |     ^^^^^^^^^^^^^
+12 |     DuplicateMemberName,
+   |     ^^^^^^^^^^^^^^^^^^^
+13 |     MalformedEscape,
+   |     ^^^^^^^^^^^^^^^
+14 |     UnpairedSurrogate,
+   |     ^^^^^^^^^^^^^^^^^
+15 |     NumberNotCnp0Integer,
+   |     ^^^^^^^^^^^^^^^^^^^^
+16 |     IntegerOutOfRange,
+   |     ^^^^^^^^^^^^^^^^^
+17 |     SignedZero,
+   |     ^^^^^^^^^^
+18 |     ProfileIdentifierInvalid,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^
+19 |     BytesHexInvalid,
+   |     ^^^^^^^^^^^^^^^
+20 |     RatioNotReduced,
+   |     ^^^^^^^^^^^^^^^
+21 |     RatioNonPositiveDenominator,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+22 |     RatioZeroNotCanonical,
+   |     ^^^^^^^^^^^^^^^^^^^^^
+23 |     FixedScaleInValue,
+   |     ^^^^^^^^^^^^^^^^^
+24 |     TaggedFormInvalid,
+   |     ^^^^^^^^^^^^^^^^^
+25 |     ScaleDescriptorInvalid,
+   |     ^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `ParseError` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: function `hex_encode` is never used
+   --> src/main.rs:170:4
+    |
+170 | fn hex_encode(bytes: &[u8]) -> String {
+    |    ^^^^^^^^^^
+
+warning: function `sha256_hex` is never used
+   --> src/main.rs:179:4
+    |
+179 | fn sha256_hex(data: &[u8]) -> String {
+    |    ^^^^^^^^^^
+
+warning: `candidate` (bin "candidate" test) generated 8 warnings (run `cargo fix --bin "candidate" --tests` to apply 2 suggestions)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.36s
+     Running unittests src/main.rs (target/debug/deps/candidate-849d8eddb4a09024)
+
+
+
+===== NOW =====
+Continue. Emit any file you want to add or replace, each whole, preceded by its `FILE: <path>` line. Say DONE on a line of its own when the set is complete.

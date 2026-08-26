@@ -31,14 +31,20 @@ import os
 import secrets
 import shutil
 import subprocess
+import tempfile
 
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TRINITY = os.path.normpath(os.path.join(HERE, "..", ".."))
 
-IMAGE = (
-    "rust:1.88-slim@sha256:"
-    "38bc5a86d998772d4aec2348656ed21438d20fcdce2795b56ca434cf21430d89"
-)
+# Built from harness/image/Dockerfile, not pulled: no official rust image ships
+# rustfmt, and `cargo fmt -- --check` is a freeze precondition. Pinned by image
+# id — for a locally built image that is the digest of its configuration, and
+# the Dockerfile that produced it is committed alongside, which says more about
+# provenance than a registry tag does.
+IMAGE = "sha256:c96a2a4f16c4f95c62726034df62bbee5553a8bf61196d4fbbace90ef422be13"
+IMAGE_SOURCE = "harness/image/Dockerfile"
+
+_TOOLCHAIN_CHECKED = False
 
 DEFAULT_TIMEOUT_S = 900
 MAX_OUTPUT_BYTES = 200_000
@@ -71,10 +77,52 @@ def preflight(workdir: str) -> str:
     if have.returncode != 0:
         raise SandboxError(
             f"the pinned image is not present locally:\n  {IMAGE}\n"
-            "Pull it once, deliberately, before running an isolated round:\n"
-            "  docker pull rust:1.88-slim   # then verify the digest matches"
+            "Build it once, deliberately, before running an isolated round:\n"
+            f"  docker build -t cnp0-cleanroom-rust:1.88 {IMAGE_SOURCE.rsplit('/', 1)[0]}\n"
+            "then pin the resulting id here."
         )
+    assert_toolchain()
     return real
+
+
+def assert_toolchain() -> None:
+    """Every cargo subcommand the protocol requires must actually exist.
+
+    `rust:1.88-slim` has no rustfmt component: `cargo fmt` resolves to a rustup
+    shim that reports the component missing and exits 1, every time, for every
+    input. Since a candidate cannot be frozen until `fmt` exits 0, no candidate
+    could ever have been freeze-ready — a criterion nothing could satisfy, which
+    decides the experiment in the harness rather than in the model. Round 4 was
+    stopped when its cargo output said so.
+
+    The harness had checked that the image was present and never that it could
+    do the work. This asks each tool for its version, offline, before a round
+    can start.
+    """
+    checks = {"cargo fmt": ["cargo", "fmt", "--version"],
+              "cargo": ["cargo", "--version"],
+              "rustc": ["rustc", "--version"]}
+    global _TOOLCHAIN_CHECKED
+    if _TOOLCHAIN_CHECKED:
+        return
+    _TOOLCHAIN_CHECKED = True  # set first: run() calls preflight(), which calls this
+    missing = []
+    probe = tempfile.mkdtemp(prefix="cnp0-toolchain-", dir=os.path.expanduser("~"))
+    try:
+        for name, argv in checks.items():
+            code, out = run(probe, argv, timeout_s=120)
+            if code != 0:
+                missing.append(f"{name}: exit {code}: {out.strip()[:200]}")
+    finally:
+        shutil.rmtree(probe, ignore_errors=True)
+    if missing:
+        _TOOLCHAIN_CHECKED = False
+    if missing:
+        raise SandboxError(
+            "the sandbox image cannot run the protocol's own checks:\n  "
+            + "\n  ".join(missing)
+            + "\nA check that can never pass is a harness fault, not a result."
+        )
 
 
 def docker_argv(workdir: str, argv: list[str], read_only_mount: bool = False) -> list[str]:

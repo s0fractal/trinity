@@ -945,3 +945,158 @@ draft rule moves none of those. The accompanying probe regenerates its corpus
 under the new discriminator and remains one reference encoder with same-author
 code paths. Tranche A3's status is unchanged: **A3 design selected; A3 interop
 and ratification pending.**
+
+## 15. Tranche A3 restated as two levels (2026-08-26)
+
+Part 01 §5.1.3 required **two independent encoders** before A3 could close. That
+requirement is withdrawn from A3 and moved to a higher level. Part 00's
+introduction, §17.1.1 and the tranche list, Part 01 §5.1.3, and
+`CANONICAL_ENCODING.v0.1` §7 are amended together.
+
+**The argument, which is not about any probe.** §5.1.3 conflated four separable
+things: whether the specification determines the bytes; whether an
+implementation exists; whether interoperability has been independently
+confirmed; and whether any substrate has adopted it. The third and fourth
+require an external maintainer this project cannot commission. A ratification
+gate that only an outside party can open is not a bar the project can clear by
+doing good work — it blocked the whole RFC, and every tranche downstream of it,
+on someone else's decision.
+
+**What A3 now requires**, all of it producible here and checkable by anyone: the
+contract, the normative corpus, a reference encoder, a verifier-only path
+sharing no code with it, a **reproducible conformance kit** — contract, corpus,
+expected bytes and digests, runner — packaged so a party outside this project
+can implement §5.1 and check itself without consulting or trusting us, and
+steward ratification.
+
+**What moves up.** `interop-confirmed`: at least two independently _maintained_
+implementations, or real external adoption, with parity evidence in both
+directions. It does **not** block A3 or any dependent tranche. But until it
+holds, no document in this RFC may describe §5.1 as "independently
+interoperable" or "multi-implementation confirmed", and none may cite the
+contract as showing implementation diversity.
+
+This is not a lowered technical bar. An impossible organisational precondition
+is replaced by a checkable technical gate, and paid for by narrowing the claim.
+The distinction the higher level preserves is real: an encoding a second party
+_could_ verify is weaker than one a second party _has_ verified.
+
+**This edit does not ratify A3.** The status after it is:
+
+> **A3 ratification gate defined; single-implementation evidence present;
+> conformance kit and steward ratification pending; independent interoperability
+> unconfirmed.**
+
+**Authority, stated plainly.** The restatement was proposed by **Codex
+(`codex-gpt-5`)** as delegated acceptance reviewer, and the technical decision
+is attributed to Codex. `s0fractal` had separately said a second implementation
+should not be obligatory; that is recorded as a relayed steward statement, not a
+signature — no `s0fractal`-signed chord exists for it and none was manufactured.
+The steward direction is read as removing the hard blocker, **not** as ratifying
+A3.
+
+**What this is not a consequence of.** `probes/cnp-0-qwen-cleanroom-v0`
+attempted a second implementation and closed the same day without producing an
+encoder. It is not the reason for this restatement and must not be read as one.
+A failed attempt is no argument about a requirement; a failed implementation
+cannot distinguish an under-determined specification from an implementer that
+could not do it; and that probe additionally deviated from the protocol under
+which it was accepted, so it is not even evidence about the method. The argument
+above rests on the conflation alone and would hold had the probe never run.
+
+## 16. The kit exists, adoption leaves A3, and the runner was unsound (2026-08-26)
+
+Three changes, recorded together because they arrived from one adversarial
+review of the artifact §15 called for. §15 is not rewritten; it recorded what
+was decided then, and this records what was found after.
+
+### The conformance kit is present as a candidate
+
+`conformance/cnp-0-jcs-v0/`: the normative clauses quoted from Part 01 by byte
+range, a verbatim copy of `CANONICAL_ENCODING.v0.1`, the CLI/NDJSON interface,
+63 required cases with the exact bytes and digests each expects, and a
+standard-library Python runner that scores an outside implementation.
+
+It carries **no implementation**. A kit that scored an implementer by agreement
+with this project's encoder would be asking them to trust that encoder, which is
+the thing the kit exists to make unnecessary. The inventory is closed and every
+file pinned, so an implementation dropped in later is refused rather than
+carried.
+
+§15's status line said "conformance kit … pending". That is superseded here.
+
+### Substrate adoption is no longer an A3 condition
+
+Part 00 still required federation adoption for A3 while Part 01 and §15 did not.
+The contradiction is resolved in favour of the narrower gate, for the reason
+that removed the second encoder: ratifying a specification and running it are
+different acts, and folding the second into the first meant the document could
+not be finished until the substrates moved.
+
+**A3** is now exactly: the contract, the normative corpus, a reference encoder,
+a verifier-only path sharing no code with it, a standalone conformance kit, and
+steward ratification.
+
+**Adoption-evidenced** is its own state: at least one substrate computing real
+references under `hsp-jcs@v0` on a path that matters. **Interop-confirmed**
+remains the higher level above both. Neither blocks A3; both must be reported,
+and A3 closing licenses no claim about either.
+
+The corrected status, carried in Part 00, Part 01 §5.1.3 and the contract:
+
+> **A3 ratification gate defined; contract, corpus, reference encoder,
+> verifier-only path and conformance kit present as candidates; steward
+> ratification pending; adoption not evidenced; independent interoperability
+> unconfirmed.**
+
+**A3 is not ratified by this entry.**
+
+### The runner accepted violations of its own interface
+
+Found by adversarial review, and the most serious of the three. The runner keyed
+replies by `id` and read the expected ones out of that map, which is
+last-write-wins. So an implementation could answer **in reverse order**, or emit
+a wrong answer followed by a right one for every case, or answer about an `id`
+nobody asked — and score a perfect 126/126, exit 0.
+
+The reply stream is now checked positionally before any verdict is compared:
+exactly one line per input, in input order, each carrying the id it was asked
+about and no other. A violation is refused and reported as a protocol violation
+rather than scored, because a number computed from a reply stream that does not
+match the interface is a number that means nothing.
+
+Two related defects from the same review: the manifest verified the files it
+listed without rejecting files it did not, so an unpinned implementation could
+ride along inside the kit; and the test asserting the kit ships no
+implementation opened with a tautology and looked only inside `ts/`. The
+inventory is now closed in both the runner and the test.
+
+The kit's selftest grew from 9 controls to 26 over the review rounds that
+followed. Most of the additions are not wrong about any answer: they differ only
+in the shape of the reply, or in what the kit contains.
+
+Several were demonstrated by the reviewer to score a perfect 126/126 against
+some earlier version of the runner before being closed — replies in reverse
+order; a wrong answer followed by a right one for every case; an id nobody asked
+about; output padded with blank lines; a JSON object carrying `"id"` twice; a
+reply correct in every scored field plus an `"extra": NaN`; a manifest entry
+pointing at a file outside the kit; and an unpinned implementation hidden in
+`__pycache__`. One more did not produce a wrong score but hung the runner
+outright: a `MANIFEST.sha256` symlinked to a FIFO, opened because the scan's
+refusal was recorded and then not acted on.
+
+An earlier version of this paragraph claimed a specific number of controls that
+"answer every case correctly", which was false — some replace or omit a case
+rather than answering all of them, and not all had been shown to score a perfect
+run. The claim is narrowed here to what was actually demonstrated.
+
+Every one of these was a lenient default that looked like tidiness, and every
+one was found by an outside reviewer rather than by us.
+
+### What the manifest proves
+
+`MANIFEST.sha256` shows the kit is **internally consistent** — unchanged since
+it was pinned. It does not show the kit is **authentic**: anyone who edits a
+file can recompute the manifest. Authenticity requires the manifest's own digest
+to be known from outside the kit, which is what a ratification record must pin.
+The runner prints that digest for exactly that purpose.

@@ -72,28 +72,41 @@ def why_refused(rel: str) -> str:
     )
 
 
-def check_emitted(paths: list[str]) -> None:
-    """Validate the set of paths a model emitted, before anything is written."""
+def check_emitted(paths: list[str], require_complete: bool = True) -> None:
+    """Validate the set of paths a model emitted, before anything is written.
+
+    `require_complete` is False for a single turn inside a round: work arrives
+    across turns, so a turn that adds one module is legal. The accumulated set is
+    checked with it True before anything is built.
+
+    A path emitted twice is NOT refused. It used to be, on the grounds that the
+    last block silently wins and which was meant is unknowable — but the harness
+    already resolves a path emitted in turn 3 and again in turn 5 the same way,
+    silently, in favour of the later one. Refusing within a turn what is accepted
+    across turns is an inconsistency, not a principle, and it cost rounds 3, 4
+    and 5 fourteen turns between them. The model announced each revision in plain
+    language ("Let me start over", "Let me create the final version"), so nothing
+    was unknowable.
+
+    What the original worry deserved was a record, not a refusal: `round.py`
+    digests every block including the superseded ones, so the transcript shows
+    how many a path got and which was taken.
+    """
     seen: set[str] = set()
     for rel in paths:
         norm = rel.replace(os.sep, "/")
         if norm.startswith("/") or ".." in norm.split("/"):
             raise TreeError(f"{rel} escapes the working directory. Refused.")
-        if norm in seen:
-            raise TreeError(
-                f"{rel} was emitted more than once. Two blocks for one path means "
-                "the last one silently wins, and which one was meant is unknowable. "
-                "Refused."
-            )
         seen.add(norm)
         if not is_allowed(norm):
             raise TreeError(why_refused(rel))
-    if not seen:
-        raise TreeError("no files were emitted")
     if len(seen) > MAX_FILES:
         raise TreeError(f"{len(seen)} files, over the cap of {MAX_FILES}")
-    if "Cargo.toml" not in seen:
-        raise TreeError("no Cargo.toml was emitted; there is nothing to build")
+    if require_complete:
+        if not seen:
+            raise TreeError("no files were emitted")
+        if "Cargo.toml" not in seen:
+            raise TreeError("no Cargo.toml was emitted; there is nothing to build")
 
 
 def collect(workdir: str) -> list[tuple[str, bytes]]:
@@ -112,6 +125,8 @@ def collect(workdir: str) -> list[tuple[str, bytes]]:
             if size > MAX_FILE_BYTES:
                 raise TreeError(f"{rel} is {size} bytes, over the cap")
             out.append((rel, open(full, "rb").read()))
+    if len(out) > MAX_FILES:
+        raise TreeError(f"{len(out)} files in the tree, over the cap of {MAX_FILES}")
     if not out:
         raise TreeError(f"nothing admissible in {workdir}")
     return sorted(out, key=lambda kv: kv[0])

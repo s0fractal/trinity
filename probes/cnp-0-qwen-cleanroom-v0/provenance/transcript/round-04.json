@@ -1,0 +1,66 @@
+{
+  "api": "http://127.0.0.1:11434/api/generate",
+  "cargo_exits_seen_in_proctor_log": {
+    "check": 101,
+    "fmt": 1
+  },
+  "cargo_output": "Lost. cargo ran during this round \u2014 the proctor's terminal log recorded the exit codes above \u2014 but round.py writes cargo.txt at the end of a round and was killed before then, so the output text itself does not survive. It is therefore not recorded under `cargo`: the feedback guard treats recorded exits without a cargo.txt as a deleted channel and refuses the next round, which is exactly right, and the fix is to stop claiming evidence that is gone rather than to weaken the guard. There is no feedback to carry from this round. The turn-01 build output does survive inside provenance/transcript/round-04/turn-03-prompt.txt, which is the process's own output and was not edited.",
+  "counts_toward_budget": "Yes. The model ran and produced work, and the rule forbidding such a round from being excused was written before this round started. The fault being the proctor's does not change that; budget.json cannot excuse it and is not being asked to.",
+  "error": "Terminated mid-round by the proctor. The sandbox image rust:1.88-slim has no rustfmt component, so `cargo fmt` exited 1 with \"'cargo-fmt' is not installed\" for every input. Freezing requires fmt to exit 0, so no candidate in this image could ever have been freeze-ready: the round was unwinnable by construction. It was stopped rather than run to exhaustion because the feedback channel was carrying the model a compiler error it could not fix, which corrupts the measurement more than terminating does.",
+  "freeze_ready": false,
+  "image": "rust:1.88-slim@sha256:38bc5a86d998772d4aec2348656ed21438d20fcdce2795b56ca434cf21430d89",
+  "max_turns": 8,
+  "model": "qwen3-coder:30b",
+  "model_id_expected": "06c1097efce0",
+  "model_id_live": "06c1097efce0",
+  "pack_sha256": "ec6a6aee30b7491a14b23e14ad8136762b872070e434c1549a5fa628fb042710",
+  "round": 4,
+  "served_context": 65536,
+  "started": "2026-08-25T19:05:00Z",
+  "terminated_by": "proctor",
+  "thinking": false,
+  "turn_timeout_s": 1200,
+  "turns": [
+    {
+      "files": [
+        "Cargo.toml",
+        "src/main.rs"
+      ],
+      "model_exit": 0,
+      "output_bytes": 17295,
+      "output_sha256": "8b6142a6a3b24ba199906e474fd6a721f30bde0b1cac5b8b3ebd7355983c7cfb",
+      "prompt_bytes": 21811,
+      "prompt_sha256": "5490a331242176499de439e5e04b11df19628df3a926f38479db69ad268b094f",
+      "turn": 1
+    },
+    {
+      "files": [
+        "Cargo.toml",
+        "src/main.rs",
+        "src/main.rs",
+        "src/main.rs"
+      ],
+      "model_exit": 0,
+      "output_bytes": 62328,
+      "output_sha256": "9d5becffd992127289c29572ac5789f8f0d4eeb2cdef7449d65e948f11ddde4b",
+      "prompt_bytes": 47343,
+      "prompt_sha256": "bd2c37f7bd4162715a7935a632121d8941b3333fffc6e9b47caf54aaf9f3bfbd",
+      "refused": "src/main.rs was emitted more than once. Two blocks for one path means the last one silently wins, and which one was meant is unknowable. Refused.",
+      "turn": 2
+    },
+    {
+      "files": [
+        "Cargo.toml",
+        "src/main.rs"
+      ],
+      "model_exit": 0,
+      "output_bytes": 17074,
+      "output_sha256": "2525cbc0cb44bd6bf82755ba556ff8fadc9821e07650045cc6f8961636071e63",
+      "prompt_bytes": 47616,
+      "prompt_sha256": "7205eaa50169ec25bba5195904ae23bd948e99b11315f4ea7a304109437f18e2",
+      "turn": 3
+    }
+  ],
+  "workdir": "/Users/s0fractal/cnp0-cleanroom",
+  "written_by": "the proctor by hand, after killing round.py. round.py writes its own record at the end of a round and never got there, so this file is a reconstruction from the raw turn files in provenance/transcript/round-04/, which are the process's own output and were not edited. Digests here are computed from those files. Trust this record less than one round.py wrote."
+}

@@ -1,0 +1,276 @@
+$ cargo fmt  (exit 1)
+Diff in /work/src/main.rs:75:
+                 Ok(Value::Object(sorted_map))
+             }
+             Value::Array(arr) => {
+-                let canonicalized_arr: Result<Vec<_>, _> = arr.iter().map(|v| v.canonicalize()).collect();
++                let canonicalized_arr: Result<Vec<_>, _> =
++                    arr.iter().map(|v| v.canonicalize()).collect();
+                 Ok(Value::Array(canonicalized_arr?))
+             }
+             _ => Ok(self.clone()),
+Diff in /work/src/main.rs:109:
+         }
+ 
+         // Parse the input JSON
+-        let input: serde_json::Value = serde_json::from_str(&line)
+-            .map_err(|_| Error::SyntaxError)?;
+-        
+-        let subcommand = input.get("subcommand")
++        let input: serde_json::Value =
++            serde_json::from_str(&line).map_err(|_| Error::SyntaxError)?;
++
++        let subcommand = input
++            .get("subcommand")
+             .and_then(|v| v.as_str())
+             .ok_or(Error::SyntaxError)?;
+-        
+-        let input_data = input.get("in")
+-            .ok_or(Error::SyntaxError)?;
+-        
+-        let id = input_data.get("id")
++
++        let input_data = input.get("in").ok_or(Error::SyntaxError)?;
++
++        let id = input_data
++            .get("id")
+             .and_then(|v| v.as_str())
+             .ok_or(Error::SyntaxError)?
+             .to_string();
+Diff in /work/src/main.rs:126:
+-        
+-        let raw_hex = input_data.get("raw_hex")
++
++        let raw_hex = input_data
++            .get("raw_hex")
+             .and_then(|v| v.as_str())
+             .ok_or(Error::SyntaxError)?
+             .to_string();
+Diff in /work/src/main.rs:137:
+                 let canonicalized = parsed_value.canonicalize()?;
+                 let canonical_bytes = serialize_to_jcs(&canonicalized)?;
+                 let sha256_digest = sha256(&canonical_bytes);
+-                
+-                println!(r#"{{"id":"{}","ok":true,"canonical_hex":"{}","sha256":"{}"}}"#, 
+-                         id, 
+-                         hex::encode(&canonical_bytes), 
+-                         sha256_digest);
++
++                println!(
++                    r#"{{"id":"{}","ok":true,"canonical_hex":"{}","sha256":"{}"}}"#,
++                    id,
++                    hex::encode(&canonical_bytes),
++                    sha256_digest
++                );
+             }
+             "verify" => {
+                 let parsed_value = parse_json_bytes(&bytes)?;
+Diff in /work/src/main.rs:148:
+                 if parsed_value.is_canonical() {
+                     let sha256_digest = sha256(&bytes);
+-                    println!(r#"{{"id":"{}","ok":true,"sha256":"{}"}}"#, id, sha256_digest);
++                    println!(
++                        r#"{{"id":"{}","ok":true,"sha256":"{}"}}"#,
++                        id, sha256_digest
++                    );
+                 } else {
+-                    println!(r#"{{"id":"{}","ok":false,"category":"non-canonical-form"}}"#, id);
++                    println!(
++                        r#"{{"id":"{}","ok":false,"category":"non-canonical-form"}}"#,
++                        id
++                    );
+                 }
+             }
+             _ => {
+Diff in /work/src/main.rs:164:
+ 
+ fn parse_json_bytes(bytes: &[u8]) -> Result<Value, Error> {
+     // Check for valid UTF-8
+-    let s = std::str::from_utf8(bytes)
+-        .map_err(|_| Error::InvalidUtf8)?;
+-    
++    let s = std::str::from_utf8(bytes).map_err(|_| Error::InvalidUtf8)?;
++
+     // Parse as JSON
+-    let json_value: serde_json::Value = serde_json::from_str(s)
+-        .map_err(|_| Error::SyntaxError)?;
+-    
++    let json_value: serde_json::Value = serde_json::from_str(s).map_err(|_| Error::SyntaxError)?;
++
+     convert_json_value(&json_value)
+ }
+ 
+Diff in /work/src/main.rs:237:
+         Value::String(s) => format!("\"{}\"", escape_json_string(s)),
+         Value::Array(arr) => {
+             let elements: Result<Vec<_>, _> = arr.iter().map(serialize_to_jcs).collect();
+-            format!("[{}]", elements?.iter().map(|v| std::str::from_utf8(v).unwrap()).collect::<Vec<_>>().join(","))
++            format!(
++                "[{}]",
++                elements?
++                    .iter()
++                    .map(|v| std::str::from_utf8(v).unwrap())
++                    .collect::<Vec<_>>()
++                    .join(",")
++            )
+         }
+         Value::Object(map) => {
+-            let mut pairs: Vec<String> = map.iter()
++            let mut pairs: Vec<String> = map
++                .iter()
+                 .map(|(k, v)| {
+                     let serialized_value = serialize_to_jcs(v).unwrap();
+-                    format!("\"{}\":{}", k, std::str::from_utf8(&serialized_value).unwrap())
++                    format!(
++                        "\"{}\":{}",
++                        k,
++                        std::str::from_utf8(&serialized_value).unwrap()
++                    )
+                 })
+                 .collect();
+             pairs.sort_unstable(); // Sort keys
+Diff in /work/src/main.rs:251:
+         }
+         Value::Integer(i) => i.to_string(),
+         Value::Bytes(bytes) => {
+-            let hex = bytes.iter().map(|b| format!("{:02x}", b)).collect::<String>();
++            let hex = bytes
++                .iter()
++                .map(|b| format!("{:02x}", b))
++                .collect::<String>();
+             format!("{{\"cnp0\":\"bytes\",\"hex\":\"{}\"}}", hex)
+         }
+         Value::Ratio { num, den } => {
+Diff in /work/src/main.rs:261:
+             format!("{{\"cnp0\":\"fixed\",\"value\":{}}}", value)
+         }
+     };
+-    
++
+     Ok(json_string.into_bytes().collect::<Vec<u8>>())
+ }
+ 
+Diff in /work/src/main.rs:286:
+ fn sha256(data: &[u8]) -> String {
+     use std::collections::hash_map::DefaultHasher;
+     use std::hash::{Hash, Hasher};
+-    
++
+     // This is a placeholder implementation for SHA-256
+     // In a real implementation we'd use the standard library's SHA-256
+     // but since we're not allowed to use external dependencies,
+
+
+$ cargo check  (exit 101)
+    Checking candidate v0.1.0 (/work)
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `serde_json`
+   --> src/main.rs:179:9
+    |
+179 |         serde_json::Value::Null => Ok(Value::Null),
+    |         ^^^^^^^^^^ use of unresolved module or unlinked crate `serde_json`
+    |
+    = help: if you wanted to use a crate named `serde_json`, use `cargo add serde_json` to add it to your `Cargo.toml`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `serde_json`
+   --> src/main.rs:180:9
+    |
+180 |         serde_json::Value::Bool(b) => Ok(Value::Bool(*b)),
+    |         ^^^^^^^^^^ use of unresolved module or unlinked crate `serde_json`
+    |
+    = help: if you wanted to use a crate named `serde_json`, use `cargo add serde_json` to add it to your `Cargo.toml`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `serde_json`
+   --> src/main.rs:181:9
+    |
+181 |         serde_json::Value::String(s) => Ok(Value::String(s.clone())),
+    |         ^^^^^^^^^^ use of unresolved module or unlinked crate `serde_json`
+    |
+    = help: if you wanted to use a crate named `serde_json`, use `cargo add serde_json` to add it to your `Cargo.toml`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `serde_json`
+   --> src/main.rs:182:9
+    |
+182 |         serde_json::Value::Array(arr) => {
+    |         ^^^^^^^^^^ use of unresolved module or unlinked crate `serde_json`
+    |
+    = help: if you wanted to use a crate named `serde_json`, use `cargo add serde_json` to add it to your `Cargo.toml`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `serde_json`
+   --> src/main.rs:189:9
+    |
+189 |         serde_json::Value::Object(map) => {
+    |         ^^^^^^^^^^ use of unresolved module or unlinked crate `serde_json`
+    |
+    = help: if you wanted to use a crate named `serde_json`, use `cargo add serde_json` to add it to your `Cargo.toml`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `serde_json`
+   --> src/main.rs:204:9
+    |
+204 |         serde_json::Value::Number(n) => {
+    |         ^^^^^^^^^^ use of unresolved module or unlinked crate `serde_json`
+    |
+    = help: if you wanted to use a crate named `serde_json`, use `cargo add serde_json` to add it to your `Cargo.toml`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `serde_json`
+   --> src/main.rs:112:40
+    |
+112 |         let input: serde_json::Value = serde_json::from_str(&line)
+    |                                        ^^^^^^^^^^ use of unresolved module or unlinked crate `serde_json`
+    |
+    = help: if you wanted to use a crate named `serde_json`, use `cargo add serde_json` to add it to your `Cargo.toml`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `hex`
+   --> src/main.rs:143:26
+    |
+143 |                          hex::encode(&canonical_bytes), 
+    |                          ^^^ use of unresolved module or unlinked crate `hex`
+    |
+    = help: if you wanted to use a crate named `hex`, use `cargo add hex` to add it to your `Cargo.toml`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `serde_json`
+   --> src/main.rs:171:41
+    |
+171 |     let json_value: serde_json::Value = serde_json::from_str(s)
+    |                                         ^^^^^^^^^^ use of unresolved module or unlinked crate `serde_json`
+    |
+    = help: if you wanted to use a crate named `serde_json`, use `cargo add serde_json` to add it to your `Cargo.toml`
+
+error[E0599]: no method named `collect` found for struct `Vec<u8>` in the current scope
+   --> src/main.rs:265:33
+    |
+265 |     Ok(json_string.into_bytes().collect::<Vec<u8>>())
+    |                                 ^^^^^^^ `Vec<u8>` is not an iterator
+    |
+help: call `.into_iter()` first
+    |
+265 |     Ok(json_string.into_bytes().into_iter().collect::<Vec<u8>>())
+    |                                 ++++++++++++
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `serde_json`
+   --> src/main.rs:112:20
+    |
+112 |         let input: serde_json::Value = serde_json::from_str(&line)
+    |                    ^^^^^^^^^^ use of unresolved module or unlinked crate `serde_json`
+    |
+    = help: if you wanted to use a crate named `serde_json`, use `cargo add serde_json` to add it to your `Cargo.toml`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `serde_json`
+   --> src/main.rs:177:36
+    |
+177 | fn convert_json_value(json_value: &serde_json::Value) -> Result<Value, Error> {
+    |                                    ^^^^^^^^^^ use of unresolved module or unlinked crate `serde_json`
+    |
+    = help: if you wanted to use a crate named `serde_json`, use `cargo add serde_json` to add it to your `Cargo.toml`
+
+error[E0433]: failed to resolve: use of unresolved module or unlinked crate `serde_json`
+   --> src/main.rs:171:21
+    |
+171 |     let json_value: serde_json::Value = serde_json::from_str(s)
+    |                     ^^^^^^^^^^ use of unresolved module or unlinked crate `serde_json`
+    |
+    = help: if you wanted to use a crate named `serde_json`, use `cargo add serde_json` to add it to your `Cargo.toml`
+
+Some errors have detailed explanations: E0433, E0599.
+For more information about an error, try `rustc --explain E0433`.
+error: could not compile `candidate` (bin "candidate") due to 13 previous errors
+

@@ -18,13 +18,18 @@ NOTES.md             decisions you had to make, and what in the prose forced or
                      failed to force each one
 ```
 
-## How the rounds work
+## How the work proceeds
 
-You will be asked for the program, and then you will be given **compiler and
-test output only**. Nobody will correct your algorithm, suggest a design, or
-tell you what the right bytes are. If the output says the code does not compile,
-fix the code. Nothing else is fed back until the implementation compiles and its
-first version has been frozen.
+You do not have to produce the whole program in one reply. Work in turns.
+
+Each turn you are shown the files you have written so far, verbatim, and — once
+there is enough to build — the compiler and test output. Emit whatever you want
+to add or replace. A file you emit again replaces the earlier version; a file you
+do not mention is kept as it was.
+
+Nobody will correct your algorithm, suggest a design, or tell you what the right
+bytes are. The only thing fed back besides your own files is machine output. When
+you believe the set is complete and correct, say `DONE` on a line of its own.
 
 After the freeze, you may be given failing cases: the input bytes, the category
 that was expected, and the clause of the specification that governs it. Never
@@ -41,10 +46,9 @@ path, exactly like this:
 FILE: Cargo.toml
 ```
 
-followed by the fenced block holding that file's whole contents. Emit every file
-you want written, whole, every round — the working directory is replaced with
-what you emit, and a file you do not emit is a file that disappears. Nothing
-outside these blocks is written anywhere.
+followed by the fenced block holding that file's whole contents. Emit each file
+**whole** — a partial file replaces the previous one and will not compile.
+Nothing outside these blocks is written anywhere.
 
 ## Constraints
 

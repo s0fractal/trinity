@@ -1,28 +1,47 @@
 ---
-status: active
+status: closed
 owner_voice: claude
-next_verification: run the proctored rounds with qwen3.8:27b-mlx, freeze the first compiling candidate as its own commit, then score it against the 63 encode-kind corpus cases and record every divergence with the clause it traces to
+next_verification: none. Closed 2026-08-26 as protocol-deviated / curator-terminated / no encoder / no evidence about RFC determinacy — see VERDICT.md. A second independently maintained encoder is no longer an A3 blocker (Part 01 §5.1.3, restated 2026-08-26); it sits at the higher interop-confirmed level, and that restatement is not a consequence of this probe. If the bridge-for-outsiders goal is picked up again, the artifact to build is the conformance kit A3 now requires — most of it already exists in probes/cnp-0-seed-v0
 graduation_target: null
 ---
 
 # cnp-0-qwen-cleanroom-v0
 
-> **Status: active probe, non-authoritative.** Apparatus only — no candidate has
-> been produced yet. Final status of the experiment when it runs, fixed in
-> advance so the result cannot be relabelled afterwards:
-> **implementation diversity candidate; maintenance independence false; A3
-> pending.**
+> **Closed 2026-08-26: `protocol-deviated / curator-terminated / no encoder /
+> no evidence about RFC determinacy`.** Six rounds — 1–2 on `qwen3.8:27b-mlx`,
+> 3–6 on `qwen3-coder:30b`. The protocol changed substantially after it was
+> accepted at `2ddf4dad`, so this is a historical failed attempt rather than a
+> run of the accepted protocol. The only candidate that compiled returns its
+> input unchanged from `encode`, answers `ok:true` from `verify`, and computes
+> "SHA-256" with `DefaultHasher`. Read **[VERDICT.md](VERDICT.md)** before
+> anything else here — the size of this apparatus is not evidence that it
+> produced anything.
+
+> **Status fixed in advance, before the run, so the result could not be
+> relabelled afterwards:** *implementation diversity candidate; maintenance
+> independence false; A3 pending.* The run did not reach even that. It produced
+> no encoder, so it supports no diversity claim at all, and A3 stays exactly
+> where it was.
 
 ## What this is, and the one thing it is not
 
-RFC-0003 Part 01 §5.1.3 requires **two independent encoders** before Tranche A3
-can close. The existing seed (`probes/cnp-0-seed-v0`) is one encoder plus
+RFC-0003 Part 01 §5.1.3 required **two independent encoders** before Tranche A3
+could close — the requirement this probe was built to help meet. It was restated
+on 2026-08-26, after this probe closed: independent maintenance moved to a higher
+`interop-confirmed` level that does not block A3. That restatement rests on an
+argument about what A3 was conflating, **not** on this probe's failure, and this
+probe contributes nothing to either level. The existing seed (`probes/cnp-0-seed-v0`) is one encoder plus
 same-author code paths, and no amount of further writing by the same author
 changes that. This probe asks a different question, which is answerable:
 
 > Given the specification prose and nothing else, does a second implementation —
 > written by a different model, in a different language, with no access to the
 > reference — produce the same bytes?
+
+**Answered 2026-08-26: unanswered.** The model never implemented the operation,
+so the question was never put. A failed implementation cannot distinguish "the
+specification is under-determined" from "the implementer could not do it", and
+here the second is plainly the case. See [VERDICT.md](VERDICT.md).
 
 A "yes" is **algorithmic diversity evidence**, not maintenance independence. The
 operator is the same, the corpus is the same, the person deciding what counts is
@@ -104,7 +123,7 @@ container, defined once in `harness/sandbox.py`:
 
 | | |
 | --- | --- |
-| image | `rust:1.88-slim@sha256:38bc5a86…` — pinned by digest, because a tag can be repointed |
+| image | built from `harness/image/Dockerfile`, pinned by id `sha256:c96a2a4f…`, because a tag can be repointed |
 | network | `--network none` |
 | filesystem | one mount, the working directory; Trinity and the corpus are not mounted |
 | privileges | `--read-only`, `--cap-drop ALL`, `--security-opt no-new-privileges` |
@@ -153,26 +172,39 @@ freeze stops it; then the sources are rebuilt **from nothing**, without the
 round's `target/`, because a tree that only builds against an existing cache is
 not a tree that builds.
 
-### The budget is three rounds, and it ends
+### A round is a conversation; the budget bounds how many
 
-Exactly three pre-freeze rounds. Rounds end when a candidate is **freeze-ready**
-— not when one merely compiles. That distinction was a real deadlock: the next
-round was blocked on `compiles`, the freeze required `freeze_ready`, so a
-candidate whose `cargo check` passed and whose `test` failed could do neither.
-After a freeze, `round.py` refuses entirely.
+**Turns.** Inside a round the model works across turns. Each turn it is shown the
+files it has written so far, verbatim, and — once the set is buildable — the
+compiler and test output for exactly those files. It says `DONE` when it believes
+the set is complete.
+
+An earlier version demanded the whole program — a strict byte-level JSON parser,
+a JCS serializer, the numeric profile, and a hand-written SHA-256 — in one
+uninterrupted generation. That measured stamina, not whether the specification
+determines its bytes, and the steward judged it unreasonable for any model. What
+the model is *given* did not change: the pack is the same closed capsule, and
+between turns it sees only its own files and its own build output. Nothing about
+the corpus, and nothing from a human, crosses into a turn.
+
+**Rounds.** Three by default, and after a freeze `round.py` refuses entirely.
+Rounds end when a candidate is **freeze-ready** — not when one merely compiles.
+That distinction was a real deadlock: the next round was blocked on `compiles`,
+the freeze required `freeze_ready`, so a candidate whose `cargo check` passed and
+whose `test` failed could do neither.
 
 Every way a round can end goes through one place, including the ones that never
 reach cargo — a failed generation, or output with no usable `FILE:` blocks. Those
 leave the next round available with no feedback to carry, rather than stalling
 the budget on a missing `cargo.txt`.
 
-If the third round ends without a freeze-ready candidate — for any reason — an
-outcome is recorded, once, with the digests of all three rounds' outputs. The
-outcome is a function of the rounds, so if the process dies between recording the
-last round and writing it, the next invocation reconstructs it before refusing a
-fourth round: a crash must not erase the experiment's conclusion.
+If the budget ends without a freeze-ready candidate — for any reason — an outcome
+is recorded, once, with the digests of every counted round's output. The outcome
+is a function of the rounds, so if the process dies between recording the last
+round and writing it, the next invocation reconstructs it before refusing another
+round: a crash must not erase the experiment's conclusion.
 
-> INCONCLUSIVE: no freeze-ready candidate within the agreed three-round
+> INCONCLUSIVE: no freeze-ready candidate within the agreed N-round
 > model/capsule/tooling budget; not evidence of RFC failure
 
 That wording is deliberate. Nothing arriving inside a fixed budget says something
@@ -180,6 +212,101 @@ about the budget, the model, and the capsule — not about whether the
 specification determines its bytes. `outcome.json` and the transcript are
 committed together, in their own commit, so git makes a later deletion or rewrite
 visible; there is no filesystem defence and none is claimed.
+
+### A changed budget is a committed decision, and it cannot excuse a bad round
+
+The default lives in code. Changing it is `provenance/budget.json`, a committed
+artifact naming who decided and why — because a budget quietly raised by the
+party it benefits is not a budget. `round.py` prints that decision every time it
+runs.
+
+Discounting a round is the sharper risk, so the file cannot simply assert one. A
+round may be excused only if the **invocation itself failed and the model
+produced nothing** — a non-zero exit with zero bytes, which is what a proctor's
+bad flag looks like. Round 1 was exactly that: `--think high` written as two
+arguments, so ollama read `high` as a model name and exited in about a second. A
+round the model actually ran, and a round it ran out of time on, cannot be
+excused however the file is written; three controls hold that line, including one
+that tries to excuse a round with output and is refused.
+
+### The model is called over the API, because `ollama run` is a display
+
+Round 3 came back with 118 cursor-movement and erase-line sequences spliced into
+the model's Rust — `"ratio-non-positive-denominat\x1b[29D\x1b[K"` recorded as the
+model's own bytes. `ollama run` draws to a terminal even when its stdout is a
+pipe. Re-deriving the intended text would mean emulating a terminal, which is
+exactly the quiet repair that makes a transcript worthless, so nothing is
+repaired: the round is recorded as it came back, and the transport was replaced.
+
+`http://127.0.0.1:11434/api/generate` has no display layer and reports how many
+tokens the prompt and the reply actually used, which is a better record than
+scraping a column out of `ollama ps`. No `options` are sent, so the server's own
+defaults govern and the result stays attributable to the model as configured
+rather than to the proctor.
+
+Three states the API makes visible, each of which now ends a round loudly rather
+than being recorded as an answer: a reply containing any control sequence at all;
+`done_reason: "length"`, which means the reply stops mid-token; and a prompt
+whose token count reaches the served context, because ollama truncates an
+over-long prompt at the **front** — where the specification sits.
+
+### A malformed reply costs a turn — and a revision is not malformed
+
+Round 3 ended on turn 2 because the model emitted `src/main.rs` six times in one
+reply. The refusal now costs the turn, not the round: the model is shown,
+verbatim, the transport rule it broke, under a heading saying this is about the
+format of the reply and not its content. A control asserts that channel carries
+nothing about the specification, the corpus, or the design. If the last turn of a
+round is refused, the round ends there.
+
+That rule changed **after** a round failed on it, which is the shape of a
+self-serving change, so it is recorded as one: round 3 still counts, and the rule
+forbidding a round the model actually ran from being excused was written before
+round 3 started.
+
+**Then the refusal itself turned out to be wrong.** It rested on "the last block
+silently wins and which was meant is unknowable" — but the harness already
+resolves a path emitted in turn 3 and again in turn 5 that way, silently, in
+favour of the later one. Refusing within a reply what is accepted across replies
+is an inconsistency, not a principle. And nothing was unknowable: between the
+blocks the model said which it meant, every time —
+
+> Wait, I realize that I've made a significant error in my implementation
+> approach. … Let me correct this:
+
+Rounds 3, 4 and 5 lost fourteen turns between them to it, six of round 5's eight.
+What the original worry deserved was a record, not a refusal. Last wins
+everywhere now, and `round.py` digests **every** block including the superseded
+ones, so the transcript shows how many blocks a path got and which was taken.
+Round 5 counts.
+
+### A cap must bind where the files actually accumulate
+
+`check_emitted` bounds one reply. Adding turns meant nothing bounded the tree the
+turns built up: sixty-four files per reply, eight replies, and `tree.collect`
+counted bytes per file and never counted files. The accumulated set is now
+checked before every build, and `collect` enforces the cap on the whole tree —
+the check existed, it was just pointed at the set that could not exceed it.
+
+### The sandbox must be able to run the protocol's own checks
+
+`cargo fmt -- --check` has to exit 0 before a candidate can be frozen. No
+official rust image ships rustfmt — `rust:1.88-slim` and `rust:1.88` both install
+the minimal rustup profile, and `cargo fmt` in either resolves to a shim that
+reports the component missing and exits 1 for every input. So **no candidate
+could ever have been freeze-ready**, in any round, whatever it wrote. The
+harness had checked that the image was present and never that it could do the
+work.
+
+Round 4's own cargo output said so, and the round was stopped there. It counts
+against the budget anyway: the model ran and produced work, and the rule
+forbidding such a round from being excused was written before it started. That
+the fault was the proctor's does not change what the rule says.
+
+The image is now built from `harness/image/Dockerfile` and pinned by id, and
+`preflight` asks each required tool for its version, offline, before a round can
+start. A check that can never pass decides the experiment in the harness rather
+than in the model.
 
 ### The pack is re-derived, not trusted
 
@@ -190,8 +317,8 @@ that described a pack it never sent.
 
 ### The feedback channel is closed, not merely narrow
 
-Before the freeze the prompt is the pinned pack plus **the previous round's
-cargo output and nothing else**, taken automatically and re-digested against
+Before the freeze the prompt is the pinned pack plus **the model's own files, the
+cargo output for them, and nothing else**, taken automatically and re-digested against
 what that round recorded. There is no flag that accepts a file: an earlier
 version had `--feedback <path>`, and a reviewer fed it a contract to prove the
 point.
@@ -250,7 +377,15 @@ digests, an outcome reconstructed after a crash, a round after the freeze, a fou
 transcript, a freeze on a round that was not freeze-ready, a freeze on a failed
 generation, a tree edited between the round and the freeze, a build that rewrites
 a source, scoring without a freeze, scoring a tree that no longer matches the
-freeze, and the isolation itself. **37 controls.**
+freeze, and the isolation itself.
+
+**How many, exactly, is not written here.** Three documents carried three
+hand-maintained totals — 37, 44, and 45 — and all three drifted apart because
+nothing checked them. The count lives in `harness/controls.lock.json`, which
+names every control and is compared for exact set equality against a live run;
+`python3 harness/controls.lock.py --check` prints it. A floor was worse than a
+stale number: `harness_test.ts` asserted `tier1.length >= 41`, so a control could
+be deleted and every test stayed green.
 
 The protocol refusals run **before** the sandbox is touched, on purpose: a budget
 check that only works where Docker is installed is one that silently stops being
@@ -271,13 +406,15 @@ Space is left for held-out and metamorphic cases supplied after the freeze:
 
 `provenance/` holds the pack digest, the model identity, and one record per
 round: prompt digest and size, output digest, the digest of every file written,
-cargo exit codes, elapsed time, and the full prompt and output text. `freeze.json`
+cargo exit codes, elapsed time, the served context window, and the full
+prompt and output text of every turn. `freeze.json`
 records the tree digest of the first compiling candidate and asserts
 `corpus_seen: false` at that moment.
 
 | | |
 | --- | --- |
-| model | `qwen3.8:27b-mlx` — ollama id `5642e97495e1`, qwen3_5, 27.8B, 262144 context, nvfp4 |
-| fallback | `qwen3-coder:30b` — ollama id `06c1097efce0` |
+| model | `qwen3-coder:30b` — ollama id `06c1097efce0`, qwen3moe, 30.5B, 262144 advertised context, Q4_K_M |
+| also attempted | `qwen3.8:27b-mlx` — ollama id `5642e97495e1`, round 2, no output within an hour |
+| served context | read from `ollama ps` while the model is resident and recorded per round; the server's `num_ctx` can be far below the card's number, and an over-long prompt is truncated at the front |
 | toolchain | cargo 1.88.0 |
 | specification | RFC-0003 Part 01 §5.1.1–§5.1.3 at trinity `main@937d61f` |

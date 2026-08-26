@@ -154,5 +154,12 @@ extract is quoted from Part 01 by byte range. `tools/build_kit.py --check`
 re-derives both and fails on a one-byte drift in either direction, so this kit
 cannot silently diverge from the specification it claims to carry.
 
-Status: **candidate**. This kit is itself an A3 ratification requirement and is
-not yet ratified.
+Status: **ratified**. This kit is one of the artifacts Tranche A3 required, and
+the steward ratified A3 on 2026-08-26.
+
+That settles the specification. It does not settle the world:
+`adoption-evidenced` is **false** — no substrate computes references under
+`hsp-jcs@v0` today — and `interop-confirmed` is **false** — no independently
+maintained implementation exists. If you build one and it passes, you move the
+second of those, and that is the evidence this project cannot produce for
+itself.

@@ -1,7 +1,7 @@
 ---
 status: active
 owner_voice: claude
-next_verification: get the candidate conformance kit (conformance/cnp-0-jcs-v0/, projected from this corpus) ratified, and measure a substrate computing real references under hsp-jcs@v0. A second independently maintained encoder is no longer an A3 blocker — it sits at the higher interop-confirmed level, and until it holds this probe may not be cited as showing implementation diversity. One attempt at it (probes/cnp-0-qwen-cleanroom-v0) closed 2026-08-26 without an encoder
+next_verification: move adoption-evidenced — get a substrate computing real references under hsp-jcs@v0 on a path that matters. A3 was ratified 2026-08-26 (Part 07 §17); adoption-evidenced and interop-confirmed are separate states and both are false, so this probe still may not be cited as showing the encoding is in use or independently interoperable
 graduation_target: null
 ---
 
@@ -25,7 +25,8 @@ reports exactly which part it did not build.
 
 §5.1.3 was restated on 2026-08-26 into two levels. A3 now asks for the contract,
 the corpus, a reference encoder, a verifier-only path sharing no code with it, a
-reproducible conformance kit, and steward ratification. Two independently
+reproducible conformance kit, and steward ratification — **all six exist, and the
+steward ratified A3 on 2026-08-26** (Part 07 §17). Two independently
 maintained encoders moved up to `interop-confirmed`, which does not block A3.
 For this probe that changes one thing: the missing item is now the **conformance
 kit**, which is packaging work over what is already here, rather than an outside
@@ -253,8 +254,9 @@ Warrant's implementation as prior evidence — that evidence covers the
 
 ## What this probe does not establish
 
-- **Not ratification of the conformance kit.** The kit A3 requires now exists
-  as a candidate at `conformance/cnp-0-jcs-v0/`, projected from this corpus.
+- **Not adoption, and not independent interoperability.** A3 is ratified; both
+  of those are separate states and both are false. The kit A3 required is at
+  `conformance/cnp-0-jcs-v0/`, projected from this corpus.
   `ts/conformance_cli.ts` exposes this encoder behind the kit's interface and
   scores 126/126, which shows the corpus is satisfiable by a real program — but
   the encoder and the corpus were written by the same hand, so agreement there

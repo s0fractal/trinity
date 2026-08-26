@@ -492,14 +492,16 @@ demonstrated implementation diversity. A single-implementation encoding that a
 second party _could_ verify is a different and weaker claim than one a second
 party _has_ verified, and the difference is exactly what this level names.
 
-Until the A3 artifacts exist and the steward ratifies them, §5.1 is specified
-but not yet implementable as a conforming cross-substrate protocol. The honest
-status is:
+§5.1 is now specified **and** ratified as a conforming cross-substrate protocol.
+That is a statement about the specification, not about the world it is meant to
+run in. The honest status is:
 
-> **A3 ratification gate defined; contract, corpus, reference encoder,
-> verifier-only path and conformance kit present as candidates; steward
-> ratification pending; adoption not evidenced; independent interoperability
-> unconfirmed.**
+> **A3: RATIFIED. adoption-evidenced: false. interop-confirmed: false.**
+
+Anything depending on cross-substrate reference _equality_ still depends on
+`adoption-evidenced`, which is false: no substrate computes references under
+`hsp-jcs@v0` today. Ratification removed the specification-side blocker and
+nothing else.
 
 #### 5.1.4 The selection is narrower than it looks
 

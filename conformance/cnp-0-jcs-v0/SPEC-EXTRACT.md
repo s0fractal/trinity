@@ -13,7 +13,7 @@ RFC, not so it can replace it.
 
 ## §5.1.1 — Canonical encoding is normative, not an implementation detail
 
-<!-- quoted §5.1.1 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:9c244fe2a7b4bc36… bytes 8911..10131 region-sha256:f4b3f491e7c94a51… -->
+<!-- quoted §5.1.1 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:d9067ec2a81691b3… bytes 8911..10131 region-sha256:f4b3f491e7c94a51… -->
 
 The encoding MUST satisfy:
 
@@ -43,7 +43,7 @@ The encoding MUST satisfy:
 
 ## §5.1.2 — Floating point
 
-<!-- quoted §5.1.2 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:9c244fe2a7b4bc36… bytes 10468..11642 region-sha256:223959e79c0a546e… -->
+<!-- quoted §5.1.2 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:d9067ec2a81691b3… bytes 10468..11642 region-sha256:223959e79c0a546e… -->
 
 In canonical form:
 
@@ -72,7 +72,7 @@ In canonical form:
 
 ## §5.1.2 — Non-integer values inside an integers-only domain
 
-<!-- quoted §5.1.2 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:9c244fe2a7b4bc36… bytes 11975..13806 region-sha256:8fab8eaf939924bd… -->
+<!-- quoted §5.1.2 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:d9067ec2a81691b3… bytes 11975..13806 region-sha256:8fab8eaf939924bd… -->
 
 Two patterns are admissible. Both keep every number in the integer domain and
 both are exact. Each is a **tagged form**, carrying the reserved discriminator
@@ -117,7 +117,7 @@ independent implementations will agree on.
 
 ## §5.1.2.1 — CNP-0-JCS
 
-<!-- quoted §5.1.2.1 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:9c244fe2a7b4bc36… bytes 14275..17818 region-sha256:4aedeb88d753b78e… -->
+<!-- quoted §5.1.2.1 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:d9067ec2a81691b3… bytes 14275..17818 region-sha256:4aedeb88d753b78e… -->
 
 This draft selects **CNP-0-JCS** as the Tranche A3 candidate. The selection is
 one package with two named layers:
@@ -188,7 +188,7 @@ the path does not do and not what it is given.
 
 ## §5.1.2.2 — Fixed-point scale identity
 
-<!-- quoted §5.1.2.2 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:9c244fe2a7b4bc36… bytes 18608..19486 region-sha256:142acb574999e19c… -->
+<!-- quoted §5.1.2.2 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:d9067ec2a81691b3… bytes 18608..19486 region-sha256:142acb574999e19c… -->
 
 A fixed-point domain MUST bind one content-addressed scale descriptor of this
 shape:
@@ -219,9 +219,35 @@ simplex, `Σ value_i` MUST equal `radix^places` exactly.
 
 ---
 
-## §5.1.3 — What conformance requires
+## §5.1.3 — Parity is proven, not assumed
 
-<!-- quoted §5.1.3 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:9c244fe2a7b4bc36… bytes 25115..27383 region-sha256:40d1af20265a5925… -->
+<!-- quoted §5.1.3 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:d9067ec2a81691b3… bytes 23791..27893 region-sha256:f24e30d86ecb3de4… -->
+
+#### 5.1.3 Parity is proven, not assumed
+
+Every substrate implementing the encoding MUST verify against a shared fixture
+set, in the manner `warrant/examples/canon-vectors.json` establishes for JCS.
+The CNP-0 corpus MUST pin canonical bytes and full SHA-256 digests for:
+
+1. zero, one, minus one, and both CNP-0 integer bounds;
+2. `1/3`, `-1/3`, canonical zero, and rejection of `2/4`, `0/2`, a negative
+   denominator, overflow, floats, exponent notation, and duplicate map names;
+3. the same fixed integer under two scale descriptors producing different domain
+   references;
+4. exact ratio and fixed-point simplexes, including invalid sums; largest-
+   remainder renormalization with a residual, a tie resolved by canonical
+   coordinate identifier, permutation of input presentation, zero-sum rejection,
+   and negative-weight rejection;
+5. profile-identifier mutation and one-byte pinned-constant mutation changing
+   the full digest;
+6. byte strings, normalization-distinct strings, key-order permutations, and
+   nested empty containers;
+7. `circle256` index equality and rotation, with LUT mutation if a LUT is
+   implemented;
+8. every quantization boundary named in §5.1.2.5–§5.1.2.6.
+
+Cross-substrate parity that has not been measured is a hope, and this document
+does not accept hopes as evidence anywhere else.
 
 **Design selected; conformance pending.** CNP-0-JCS resolves the draft's design
 choice. It does not ratify Tranche A3 and does not lift the federation blocker.
@@ -264,6 +290,17 @@ directions. Until it holds, no document in this RFC may describe §5.1 as
 demonstrated implementation diversity. A single-implementation encoding that a
 second party _could_ verify is a different and weaker claim than one a second
 party _has_ verified, and the difference is exactly what this level names.
+
+§5.1 is now specified **and** ratified as a conforming cross-substrate protocol.
+That is a statement about the specification, not about the world it is meant to
+run in. The honest status is:
+
+> **A3: RATIFIED. adoption-evidenced: false. interop-confirmed: false.**
+
+Anything depending on cross-substrate reference _equality_ still depends on
+`adoption-evidenced`, which is false: no substrate computes references under
+`hsp-jcs@v0` today. Ratification removed the specification-side blocker and
+nothing else.
 
 <!-- end quoted §5.1.3 -->
 

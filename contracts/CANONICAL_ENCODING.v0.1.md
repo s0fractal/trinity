@@ -2,28 +2,27 @@
 type: "ContractDescriptor"
 version: "0.1"
 title: "CNP-0-JCS Canonical Encoding"
-status: "draft"
+status: "ratified"
 ---
 
-# CNP-0-JCS Canonical Encoding — candidate
+# CNP-0-JCS Canonical Encoding — ratified
 
-> **Status: candidate / unratified / partial implementation.** This document
-> restates the encoding RFC-0003 Part 01 §5.1 selects, in the form an
-> implementer needs. It does **not** ratify Tranche A3, does not lift the
-> federation blocker, and is not evidence that any substrate has adopted it.
-> Part 01 §5.1.3 requires `CANONICAL_ENCODING.v0.1`, the corpus, a reference
-> encoder, a verifier-only path sharing no code with it, a standalone
-> conformance kit, and steward ratification before A3 is closed. Substrate
-> adoption (`adoption-evidenced`) and independent maintenance
-> (`interop-confirmed`) are separate states above it and do not block it. See
-> "What is still missing" below.
+> **Status: RATIFIED 2026-08-26.** This document restates the encoding RFC-0003
+> Part 01 §5.1 selects, in the form an implementer needs. Tranche A3 is ratified
+> and the specification-side federation blocker is lifted.
+>
+> **It is not evidence that any substrate has adopted the encoding, and not
+> evidence of independent interoperability.** Those are two separate states,
+> both false: `adoption-evidenced: false`, `interop-confirmed: false`. A3 being
+> closed moves neither.
 
 - **Normative source:**
   [RFC-0003 Part 01 §5.1.1–§5.1.3](../docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md).
   Where this document and Part 01 disagree, **Part 01 governs**; this file is a
   restatement, not an amendment, and adds no normative rule.
-- **Executable candidate:** [`probes/cnp-0-seed-v0/`](../probes/cnp-0-seed-v0/)
-  — reference encoder, verifier-only rejection path, corpus, negative controls.
+- **Reference implementation:**
+  [`probes/cnp-0-seed-v0/`](../probes/cnp-0-seed-v0/) — reference encoder,
+  verifier-only rejection path, corpus, negative controls.
 - **Conformance kit:**
   [`conformance/cnp-0-jcs-v0/`](../conformance/cnp-0-jcs-v0/) — implement §5.1
   and score yourself, without running or trusting anything of ours.
@@ -77,9 +76,9 @@ separate because only the first is shared with prior art:
 
 §5.1.3 requires a verifier-only path that "rejects non-canonical ratios and
 malformed raw input", and the corpus pins "a stable rejection class" per
-negative case. The class names below are this candidate's vocabulary. **The
-names are an implementation choice; the rejections they stand for are the
-clauses above.**
+negative case. The class names below are this contract's vocabulary. **The names
+are an implementation choice; the rejections they stand for are the clauses
+above.**
 
 `invalid-utf8`, `syntax`, `trailing-bytes`, `duplicate-member-name`,
 `malformed-escape`, `unpaired-surrogate`, `number-not-cnp0-integer`,
@@ -124,7 +123,7 @@ normative rule here.** They are open questions for the steward.
 
 1. ~~**How a tagged form is recognized.**~~ **Resolved normatively on
    2026-08-25.** §5.1.2.1 now reserves the member name `cnp0` and makes
-   recognition a property of the bytes. The earlier candidate read any map with
+   recognition a property of the bytes. An earlier draft read any map with
    `kind` in `{bytes, ratio, fixed}` as a tagged form, which would have reserved
    three values of this document's universal discriminator — 39 values across at
    least twelve declared types. See Part 07 §14 and
@@ -139,7 +138,7 @@ normative rule here.** They are open questions for the steward.
 ### Open
 
 3. **The `-0` literal.** §5.1.2(2) bars IEEE `-0.0` from the object model. `-0`
-   is nevertheless an integer token in the JSON grammar, so this candidate
+   is nevertheless an integer token in the JSON grammar, so this contract
    rejects it as `signed-zero`. That is a derivation, not a quotation.
 4. **What "canonical" means for a verifier.** The encoder canonicalizes member
    order and whitespace; the verifier is asked whether _these_ bytes are
@@ -148,13 +147,13 @@ normative rule here.** They are open questions for the steward.
    literally. Both expectations are pinned per case in the corpus.
 5. **The `circle256` LUT shape.** §5.1.2.4 requires a LUT to be fixed-point,
    content-addressed, and bound into the domain descriptor. Its member layout is
-   this candidate's.
+   this contract's.
 6. **Quantizing signed zero.** `-0.0` maps to the integer `0`, following
    §5.1.2(2)'s "an exact integral result MAY be converted to the integer `0`
    before that boundary".
 7. **How a full content digest is spelled.** §5.1.2.2 says `unit_ref` is "either
    `null` or a full content digest" without fixing the string form. This
-   candidate requires 64 lowercase hexadecimal characters and rejects an opaque
+   contract requires 64 lowercase hexadecimal characters and rejects an opaque
    handle, a truncated digest, or an uppercase one — fail-closed, and consistent
    with §5.1's refusal elsewhere to accept a truncated handle as a reference. A
    typed reference object would be the alternative, and choosing between them is
@@ -189,16 +188,16 @@ independent encoders** for A3 itself, which conflated a technical gate this
 project can meet with an organisational precondition it cannot create — an
 outside maintainer — and so blocked the whole RFC on someone else's decision.
 
-### A3 ratification — what this project must produce
+### A3 ratification — what this project produced, and did
 
-| Artifact                                               | Status                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `CANONICAL_ENCODING.v0.1`                              | this file, **candidate**                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| The CNP-0 corpus                                       | `probes/cnp-0-seed-v0/corpus/`, candidate, all eight §5.1.3 categories                                                                                                                                                                                                                                                                                                                                                                                             |
-| A reference encoder                                    | present as a candidate (`probes/cnp-0-seed-v0/ts/`)                                                                                                                                                                                                                                                                                                                                                                                                                |
-| A verifier-only rejection path sharing no code with it | present as a candidate; `ts/reject.ts` imports nothing from the encoder, which is the property that matters — it cannot repair what it judges                                                                                                                                                                                                                                                                                                                      |
-| A reproducible conformance kit                         | **present as a candidate**, `conformance/cnp-0-jcs-v0/`. Normative extract quoted from Part 01 by byte range, 63 required cases with expected bytes and digests, a stdlib-only Python runner that scores an outside implementation, and `MANIFEST.sha256` pinning every file so an edited corpus is refused rather than quietly scored. It ships **no implementation**: scoring by agreement with our encoder would be asking an implementer to trust our encoder. |
-| Steward ratification                                   | **absent.** Nothing here is accepted, signed, or ratified.                                                                                                                                                                                                                                                                                                                                                                                                         |
+| Artifact                                               | Status                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| ------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CANONICAL_ENCODING.v0.1`                              | this file, **ratified**                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| The CNP-0 corpus                                       | `probes/cnp-0-seed-v0/corpus/`, all eight §5.1.3 categories                                                                                                                                                                                                                                                                                                                                                                                         |
+| A reference encoder                                    | present (`probes/cnp-0-seed-v0/ts/`)                                                                                                                                                                                                                                                                                                                                                                                                                |
+| A verifier-only rejection path sharing no code with it | present; `ts/reject.ts` imports nothing from the encoder, which is the property that matters — it cannot repair what it judges                                                                                                                                                                                                                                                                                                                      |
+| A reproducible conformance kit                         | **present**, `conformance/cnp-0-jcs-v0/`. Normative extract quoted from Part 01 by byte range, 63 required cases with expected bytes and digests, a stdlib-only Python runner that scores an outside implementation, and `MANIFEST.sha256` pinning every file so an edited corpus is refused rather than quietly scored. It ships **no implementation**: scoring by agreement with our encoder would be asking an implementer to trust our encoder. |
+| Steward ratification                                   | **present.** Ratified by `s0fractal` as steward on 2026-08-26; the statement is recorded verbatim in Part 07 §17.                                                                                                                                                                                                                                                                                                                                   |
 
 The same-author caveat that used to disqualify the second code path still
 applies to what it actually bears on — it is not evidence of independent
@@ -230,7 +229,5 @@ file may not be cited as showing implementation diversity.
   do not contain the `cnp-0` profile members, ratios, fixed-point domains, or
   the rejection corpus.
 
-The honest status remains what Part 01 already records: **A3 ratification gate
-defined; contract, corpus, reference encoder, verifier-only path and conformance
-kit present as candidates; steward ratification pending; adoption not evidenced;
-independent interoperability unconfirmed.**
+The honest status remains what Part 01 already records: **A3: RATIFIED.
+adoption-evidenced: false. interop-confirmed: false.**

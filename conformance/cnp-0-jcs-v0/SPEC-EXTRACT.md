@@ -13,7 +13,7 @@ RFC, not so it can replace it.
 
 ## §5.1.1 — Canonical encoding is normative, not an implementation detail
 
-<!-- quoted §5.1.1 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:9c244fe2a7b4bc36… bytes 8911..10131 region-sha256:f4b3f491e7c94a51… -->
+<!-- quoted §5.1.1 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:474ffd5c40eceb59… bytes 8911..10131 region-sha256:f4b3f491e7c94a51… -->
 
 The encoding MUST satisfy:
 
@@ -43,7 +43,7 @@ The encoding MUST satisfy:
 
 ## §5.1.2 — Floating point
 
-<!-- quoted §5.1.2 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:9c244fe2a7b4bc36… bytes 10468..11642 region-sha256:223959e79c0a546e… -->
+<!-- quoted §5.1.2 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:474ffd5c40eceb59… bytes 10468..11642 region-sha256:223959e79c0a546e… -->
 
 In canonical form:
 
@@ -72,7 +72,7 @@ In canonical form:
 
 ## §5.1.2 — Non-integer values inside an integers-only domain
 
-<!-- quoted §5.1.2 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:9c244fe2a7b4bc36… bytes 11975..13806 region-sha256:8fab8eaf939924bd… -->
+<!-- quoted §5.1.2 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:474ffd5c40eceb59… bytes 11975..13806 region-sha256:8fab8eaf939924bd… -->
 
 Two patterns are admissible. Both keep every number in the integer domain and
 both are exact. Each is a **tagged form**, carrying the reserved discriminator
@@ -115,12 +115,14 @@ independent implementations will agree on.
 
 ---
 
-## §5.1.2.1 — CNP-0-JCS
+## §5.1.2.1 — CNP-0-JCS: the ratified selection
 
-<!-- quoted §5.1.2.1 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:9c244fe2a7b4bc36… bytes 14275..17818 region-sha256:4aedeb88d753b78e… -->
+<!-- quoted §5.1.2.1 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:474ffd5c40eceb59… bytes 14233..17860 region-sha256:40b14adf274f9acf… -->
 
-This draft selects **CNP-0-JCS** as the Tranche A3 candidate. The selection is
-one package with two named layers:
+##### 5.1.2.1 CNP-0-JCS: the ratified selection
+
+This document selects **CNP-0-JCS**, ratified as Tranche A3 on 2026-08-26
+(§5.1.3, Part 07 §17). The selection is one package with two named layers:
 
 - `hsp-jcs@v0` is the wire encoding: RFC 8785 JCS over strict I-JSON;
 - `cnp-0` is the numeric profile carried by that encoding.
@@ -188,7 +190,7 @@ the path does not do and not what it is given.
 
 ## §5.1.2.2 — Fixed-point scale identity
 
-<!-- quoted §5.1.2.2 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:9c244fe2a7b4bc36… bytes 18608..19486 region-sha256:142acb574999e19c… -->
+<!-- quoted §5.1.2.2 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:474ffd5c40eceb59… bytes 18650..19528 region-sha256:142acb574999e19c… -->
 
 A fixed-point domain MUST bind one content-addressed scale descriptor of this
 shape:
@@ -219,19 +221,58 @@ simplex, `Σ value_i` MUST equal `radix^places` exactly.
 
 ---
 
-## §5.1.3 — What conformance requires
+## §5.1.3 — Parity is proven, not assumed
 
-<!-- quoted §5.1.3 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:9c244fe2a7b4bc36… bytes 25115..27383 region-sha256:40d1af20265a5925… -->
+<!-- quoted §5.1.3 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:474ffd5c40eceb59… bytes 23833..28604 region-sha256:f37dce7dae936ef3… -->
 
-**Design selected; conformance pending.** CNP-0-JCS resolves the draft's design
-choice. It does not ratify Tranche A3 and does not lift the federation blocker.
+#### 5.1.3 Parity is proven, not assumed
 
-Two levels are separated here, because an earlier version of this paragraph
-conflated them and thereby made the whole tranche wait on a party this project
-cannot create.
+Every substrate implementing the encoding MUST verify against a shared fixture
+set, in the manner `warrant/examples/canon-vectors.json` establishes for JCS.
+The CNP-0 corpus MUST pin canonical bytes and full SHA-256 digests for:
 
-**A3 ratification** requires artifacts the project can produce and anyone can
-check:
+1. zero, one, minus one, and both CNP-0 integer bounds;
+2. `1/3`, `-1/3`, canonical zero, and rejection of `2/4`, `0/2`, a negative
+   denominator, overflow, floats, exponent notation, and duplicate map names;
+3. the same fixed integer under two scale descriptors producing different domain
+   references;
+4. exact ratio and fixed-point simplexes, including invalid sums; largest-
+   remainder renormalization with a residual, a tie resolved by canonical
+   coordinate identifier, permutation of input presentation, zero-sum rejection,
+   and negative-weight rejection;
+5. profile-identifier mutation and one-byte pinned-constant mutation changing
+   the full digest;
+6. byte strings, normalization-distinct strings, key-order permutations, and
+   nested empty containers;
+7. `circle256` index equality and rotation, with LUT mutation if a LUT is
+   implemented;
+8. every quantization boundary named in §5.1.2.5–§5.1.2.6.
+
+Cross-substrate parity that has not been measured is a hope, and this document
+does not accept hopes as evidence anywhere else.
+
+**Tranche A3 is RATIFIED (2026-08-26).** `s0fractal`, as steward, ratified
+Tranche A3 and CNP-0-JCS. The statement, verbatim:
+
+> Ратифікую Tranche A3 RFC-0003 і CNP-0-JCS як steward. Це не є
+> adoption-evidenced або interop-confirmed.
+>
+> _(I ratify Tranche A3 of RFC-0003 and CNP-0-JCS as steward. This is not
+> adoption-evidenced or interop-confirmed.)_
+
+The steward drew the boundary in the same breath as the ratification, and that
+half is as normative as the first. Ratification settles that the encoding is
+determined and checkable, and lifts the specification-side federation blocker.
+It licenses **no** claim that the encoding is in use, that a second
+implementation exists, that interoperability has been demonstrated, or that any
+federation evidence has been produced.
+
+Two levels were separated here on 2026-08-26, because an earlier version of this
+paragraph conflated them and thereby made the whole tranche wait on a party this
+project cannot create.
+
+**A3 ratification** required artifacts the project can produce and anyone can
+check, and all six exist at the ratified revision:
 
 1. `CANONICAL_ENCODING.v0.1` as a normative contract;
 2. the normative corpus above;
@@ -243,10 +284,10 @@ check:
 5. a **reproducible conformance kit** — the contract, the corpus, the expected
    bytes and digests, and a runner — such that a party outside this project can
    implement §5.1 and check itself without consulting or trusting this project.
-   A candidate exists at `conformance/cnp-0-jcs-v0/`. It ships no
-   implementation: a kit that scored an implementer by agreement with this
-   project's encoder would be asking them to trust that encoder, which is the
-   thing the kit exists to make unnecessary;
+   It exists at `conformance/cnp-0-jcs-v0/`. It ships no implementation: a kit
+   that scored an implementer by agreement with this project's encoder would be
+   asking them to trust that encoder, which is the thing the kit exists to make
+   unnecessary;
 6. steward ratification.
 
 That list is the whole of A3. Two further states sit outside it, and neither
@@ -264,6 +305,17 @@ directions. Until it holds, no document in this RFC may describe §5.1 as
 demonstrated implementation diversity. A single-implementation encoding that a
 second party _could_ verify is a different and weaker claim than one a second
 party _has_ verified, and the difference is exactly what this level names.
+
+§5.1 is now specified **and** ratified as a conforming cross-substrate protocol.
+That is a statement about the specification, not about the world it is meant to
+run in. The honest status is:
+
+> **A3: RATIFIED. adoption-evidenced: false. interop-confirmed: false.**
+
+Anything depending on cross-substrate reference _equality_ still depends on
+`adoption-evidenced`, which is false: no substrate computes references under
+`hsp-jcs@v0` today. Ratification removed the specification-side blocker and
+nothing else.
 
 <!-- end quoted §5.1.3 -->
 

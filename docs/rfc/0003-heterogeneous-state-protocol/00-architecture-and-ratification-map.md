@@ -48,14 +48,25 @@ now lives in Part 03. This is deliberate — ledger chords and prior receipts ci
 these numbers, and a citation that silently changes referent is the failure the
 protocol exists to prevent. §22 maps every section range to its document.
 
-**Part 01 is the blocker.** The draft now selects CNP-0-JCS, but selection text
-is not interoperability evidence or federation ratification. Until the separate
-contract, the CNP-0 corpus, a reference encoder, a verifier-only rejection path,
-a standalone conformance kit, and steward ratification exist, anything depending
-on cross-substrate reference equality is specified and not yet conformingly
-implementable.
+**Part 01 is no longer the blocker.** Tranche A3 was **ratified by the steward
+on 2026-08-26** (Part 01 §5.1.3, Part 07 §17): the contract, the CNP-0 corpus, a
+reference encoder, a verifier-only rejection path sharing no code with it, and a
+standalone conformance kit all exist, and the steward closed the tranche.
 
-**Substrate adoption is not a ratification condition.** It is its own state,
+**Three independent states, and only the first has changed:**
+
+| state                  | value        | what it licenses                                                                    |
+| ---------------------- | ------------ | ----------------------------------------------------------------------------------- |
+| **A3**                 | **RATIFIED** | the encoding is determined and checkable                                            |
+| **adoption-evidenced** | **false**    | nothing may claim the encoding is in use                                            |
+| **interop-confirmed**  | **false**    | nothing may claim independent interoperability or multi-implementation confirmation |
+
+Anything depending on cross-substrate reference _equality_ still depends on
+`adoption-evidenced`, which is false: no substrate computes references under
+`hsp-jcs@v0` today. Ratification removed the specification-side blocker and
+nothing else, and A3 being closed moves neither of the other two.
+
+**Substrate adoption was never a ratification condition.** It is its own state,
 `adoption-evidenced`, for the same reason the second encoder stopped being one:
 ratifying a specification and running it are different acts, and folding the
 second into the first meant the document could not be finished until the
@@ -63,12 +74,12 @@ substrates moved. A3 says the encoding is settled and checkable; adoption says
 somebody computes references with it. Both must be reported, and neither
 substitutes for the other.
 
-A3 no longer waits on a second independently maintained encoder. That
-requirement conflated a technical gate this project can meet with an
-organisational precondition it cannot create, and so blocked the whole RFC on an
-outside maintainer's decision. It moves to a higher level, **interop-confirmed**
-(§5.1.3), which does not block A3 or anything downstream but which gates the
-right to describe the encoding as independently interoperable.
+A3 stopped waiting on a second independently maintained encoder on the day it
+was restated. That requirement conflated a technical gate this project can meet
+with an organisational precondition it cannot create, and so blocked the whole
+RFC on an outside maintainer's decision. It sits at **interop-confirmed**
+(§5.1.3), which gates the right to describe the encoding as independently
+interoperable and blocks nothing.
 
 ## 0. Abstract
 
@@ -683,22 +694,23 @@ python3 tests/federation_differential.py   # FEDERATION-DIFFERENTIAL: ALL AGREE 
 The Lean proofs were not rebuilt. The `sigma-glyph/proofs/` row says "Lean"
 rather than "proved" for that reason.
 
-#### 17.1.1 Two decisions now have named candidates
+#### 17.1.1 One decision is ratified, one has a named candidate
 
-- **Tranche A3 (canonical encoding).** Part 01 §5.1.2.1 now selects
-  **CNP-0-JCS** in the draft: RFC 8785 JCS over strict I-JSON, integers bounded
-  to ±(2^53−1), IEEE floats forbidden, and exact ratio or domain-scoped
-  fixed-point selected per state domain. It also separates the wire identifier
-  `hsp-jcs@v0` from numeric profile `cnp-0`, with both inside digest input.
+- **Tranche A3 (canonical encoding). RATIFIED 2026-08-26.** Part 01 §5.1.2.1
+  selects **CNP-0-JCS**: RFC 8785 JCS over strict I-JSON, integers bounded to
+  ±(2^53−1), IEEE floats forbidden, and exact ratio or domain-scoped fixed-point
+  selected per state domain. It also separates the wire identifier `hsp-jcs@v0`
+  from numeric profile `cnp-0`, with both inside digest input.
 
   This resolves the design choice, not the tranche. Warrant's 47 canonical
   vectors and Python/Go/Rust agreement are prior evidence for the JCS layer;
   they do not exercise CNP-0 identifiers, ratios, fixed scales, constants,
-  circles, or quantization. A3 remains pending until `CANONICAL_ENCODING.v0.1`,
-  the CNP-0 corpus, a reference encoder, a verifier-only rejection path sharing
-  no code with it, a standalone conformance kit, and steward ratification exist.
-  Federation adoption is **not** among them; it is tracked separately as
-  `adoption-evidenced`.
+  circles, or quantization. A3 required `CANONICAL_ENCODING.v0.1`, the CNP-0
+  corpus, a reference encoder, a verifier-only rejection path sharing no code
+  with it, a standalone conformance kit, and steward ratification. All six
+  exist, and **the steward ratified A3 on 2026-08-26** — see Part 07 §17 for the
+  statement. Federation adoption was **not** among them and remains tracked
+  separately as `adoption-evidenced`, which is false.
 
   **Restated 2026-08-26: two levels, not one.** This entry previously required
   **two independent encoders** for A3. That conflated four separable things —
@@ -709,7 +721,7 @@ rather than "proved" for that reason.
 
   A3 now requires only what the project can produce and anyone can check,
   including a **conformance kit** that lets an outside party implement §5.1 and
-  verify itself without trusting this project. A candidate kit exists at
+  verify itself without trusting this project. That kit is at
   `conformance/cnp-0-jcs-v0/`.
 
   Two things move out of A3. **Substrate adoption** becomes `adoption-evidenced`
@@ -765,7 +777,8 @@ rather than "proved" for that reason.
 
 #### 17.1.2 What this does not settle
 
-Naming candidates is not ratifying them. Specifically:
+A3 is ratified; G4's evaluator is not. And ratifying a specification settles the
+specification, not the world it runs in. Specifically:
 
 1. **The two stacks have separate key identities.** The `claude` voice key in
    `src/x2F38_voice_pubkeys.json` and the `claude-fable-5` key in the dyad's
@@ -777,10 +790,12 @@ Naming candidates is not ratifying them. Specifically:
    pre-ratification identity gate, distinct from §20.17's still-open question of
    what an already-active compatibility contract does when its party later
    forks.
-2. **Draft selection is not adoption authority.** Part 01 chooses CNP-0-JCS as
-   the text's candidate. That does not make Warrant the owner of federation
-   encoding, import its governance, or bind substrates that have not ratified
-   and implemented the contract.
+2. **Ratification is not adoption authority.** Part 01 selects CNP-0-JCS and the
+   steward ratified it. That does not make Warrant the owner of federation
+   encoding, import its governance, or bind substrates that have not adopted and
+   implemented the contract. `adoption-evidenced` is **false**: no substrate
+   computes references under `hsp-jcs@v0` today, and A3 being closed does not
+   change that.
 3. **Version pinning is mandatory if adopted.** `ski@v1` names Book I v0.5
    specifically, and `GOV-ANCHORS` pins its dependencies by content hash for the
    stated reason that a STANDARD must not rest on a moving target. Any adoption
@@ -1453,19 +1468,21 @@ where a reference resolves:
   irreversible boundary, admission, identity amendment, or trust computation.
 - **A2.** Require a single canonical encoding meeting §5.1.1, with the float
   policy of §5.1.2 and cross-substrate parity fixtures per §5.1.3.
-- **A3.** Commission and ratify `CANONICAL_ENCODING.v0.1` for the draft-selected
-  CNP-0-JCS profile (§5.1.2.1), with its normative corpus (§5.1.3), a reference
+- **A3. RATIFIED 2026-08-26.** `CANONICAL_ENCODING.v0.1` for the draft-selected
+  CNP-0-JCS profile (§5.1.2.1), its normative corpus (§5.1.3), a reference
   encoder, a verifier-only path sharing no code with it that rejects malformed
-  raw input and non-canonical ratios, and a reproducible conformance kit. The
-  text selects the design; this tranche is not satisfied until those artifacts
-  exist and the steward ratifies them.
-- **Adoption-evidenced** (a state, not a tranche, and not a blocker on A3). At
-  least one substrate computing real references under `hsp-jcs@v0` on a path
-  that matters. Until it holds, no document may claim the encoding is in use.
-- **Interop-confirmed** (a level above both, and not a blocker on either). Two
-  independently maintained implementations, or adoption by a party outside this
-  project, with parity evidence in both directions. Until it holds, no document
-  may claim independent interoperability or multi-implementation confirmation.
+  raw input and non-canonical ratios, and a reproducible conformance kit all
+  exist, and the steward ratified the tranche. This settles the specification;
+  it settles neither of the two states below.
+- **Adoption-evidenced: false** (a state, not a tranche, and never a blocker on
+  A3). At least one substrate computing real references under `hsp-jcs@v0` on a
+  path that matters. Until it holds, no document may claim the encoding is in
+  use.
+- **Interop-confirmed: false** (a level above both, and never a blocker on
+  either). Two independently maintained implementations, or adoption by a party
+  outside this project, with parity evidence in both directions. Until it holds,
+  no document may claim independent interoperability or multi-implementation
+  confirmation.
 - **A4.** Require stable, verifiable key identity at Level 0.
 - **A5.** Ratification counts principals rather than public keys: bind keys to
   content-addressed principal and custody records, and fail unresolved or shared

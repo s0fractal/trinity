@@ -179,12 +179,24 @@ def main() -> int:
     raw = open(SOURCE, "rb").read()
     source = raw.decode("utf-8")
     source_digest = sha(raw)
+
+    check = "--check" in sys.argv
+    rec = json.load(open(VERBATIM)) if os.path.exists(VERBATIM) else {}
+
+    # Ask whether the capsule is sealed BEFORE trying to re-derive it. An earlier
+    # version extracted first and checked the seal after, so when Tranche A3 was
+    # ratified and §5.1.2.1's opening sentence changed, an anchor into the live
+    # specification went missing and this crashed — while re-deriving is exactly
+    # what a sealed capsule must never do. Work performed ahead of the guard that
+    # makes it unnecessary is work that can fail for reasons the guard exists to
+    # rule out.
+    if check and rec.get("sealed"):
+        return check_sealed(rec, source_digest)
+
     regions = extract(source)
     text = render(regions, source_digest)
 
-    check = "--check" in sys.argv
     if check:
-        rec = json.load(open(VERBATIM)) if os.path.exists(VERBATIM) else {}
         if rec.get("sealed"):
             # The probe is closed. The capsule quoted the specification as it
             # stood at the digest recorded here; the specification has since

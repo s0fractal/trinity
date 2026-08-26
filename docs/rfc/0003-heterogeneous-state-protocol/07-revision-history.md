@@ -1100,3 +1100,78 @@ it was pinned. It does not show the kit is **authentic**: anyone who edits a
 file can recompute the manifest. Authenticity requires the manifest's own digest
 to be known from outside the kit, which is what a ratification record must pin.
 The runner prints that digest for exactly that purpose.
+
+## 17. Tranche A3 ratified (2026-08-26)
+
+`s0fractal`, as steward, ratified Tranche A3 of RFC-0003 and CNP-0-JCS. The
+statement, verbatim:
+
+> Ратифікую Tranche A3 RFC-0003 і CNP-0-JCS як steward. Це не є
+> adoption-evidenced або interop-confirmed.
+>
+> _(I ratify Tranche A3 of RFC-0003 and CNP-0-JCS as steward. This is not
+> adoption-evidenced or interop-confirmed.)_
+
+The steward drew the boundary in the same breath as the ratification, and that
+half is as normative as the first.
+
+### Three states, independent of one another
+
+| state                  | value        |
+| ---------------------- | ------------ |
+| **A3**                 | **RATIFIED** |
+| **adoption-evidenced** | **false**    |
+| **interop-confirmed**  | **false**    |
+
+A3 being closed licenses **no** claim that the encoding is in use, that a second
+implementation exists, that interoperability has been demonstrated, or that any
+federation evidence has been produced. Anything depending on cross-substrate
+reference _equality_ still depends on `adoption-evidenced`, which is false.
+
+### What was ratified
+
+All six artifacts §5.1.3 required exist at the ratified revision:
+`CANONICAL_ENCODING.v0.1`, the CNP-0 corpus across all eight §5.1.3 categories,
+the reference encoder, the verifier-only rejection path that imports nothing
+from it, the standalone conformance kit at `conformance/cnp-0-jcs-v0/`, and now
+the steward's ratification.
+
+### Provenance of this statement, stated plainly
+
+The ratification reached the ledger **relayed**: the steward said it, and the
+voices that received it carried it here. At the moment this edit was written no
+`s0fractal`-signed chord existed for it, and none was manufactured — a key on
+disk is not permission to act as the human, and neither is a relay. A signed
+steward receipt pinning the accepted SHA, the merge SHA, the kit's manifest root
+and this verbatim statement is the separate act that follows acceptance of this
+change. Until that chord exists, this entry is the record and it says what it
+is.
+
+### What is not rewritten
+
+§15 and §16 said there was no ratification. **That was true when they were
+written**, and neither is edited. A ledger that revises its earlier entries to
+agree with later news is the failure this history exists to prevent. The same
+holds for the receipts in `src/`, for
+`probes/cnp-0-qwen-cleanroom-v0/VERDICT.md`, and for every earlier statement
+about the prior state: they are correct about their moment and superseded, not
+wrong.
+
+Two of them are worth reading beside this entry rather than through it. The
+restatement in §15 rests on an argument about what §5.1.3 was conflating and
+**not** on the Qwen probe's failure — ratification does not retroactively make
+that probe evidence of anything.
+
+And the Qwen `VERDICT.md`, read exactly: its **closing status**, in the
+"Subsequent steward disposition" section, already carries the two-level
+restatement and records the conformance kit and steward ratification as pending
+and independent interoperability as unconfirmed. Both were true at closure and
+are superseded by §16 and by this §17. Its earlier "recorded at closing" section
+does say A3 still required two independent encoders — correctly, for the moment
+that section names, and superseded inside the same document by the disposition
+that follows it. An earlier draft of this paragraph attributed that earlier
+sentence to the verdict's closing status, which misdescribed the document; the
+correction is here rather than in the verdict, which stays untouched.
+
+None of this changes what the probe produced, which was nothing, or what it is
+evidence of, which is nothing.

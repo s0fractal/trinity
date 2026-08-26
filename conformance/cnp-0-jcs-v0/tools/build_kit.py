@@ -61,6 +61,14 @@ CONTRACT_HEAD = """<!-- Verbatim copy of {rel} at sha256:{digest}.
 """
 
 # (clause, heading, start anchor, end anchor, why it ends there)
+#
+# Anchors are structural — headings — wherever a subsection is wanted whole.
+# §5.1.3's region used to start at the prose "**Design selected; conformance
+# pending.**", which is exactly the sentence a ratification rewrites: the anchor
+# moved with the status it described and the extraction broke. A boundary that
+# changes when the content changes is not a boundary. The two regions that still
+# stop mid-section stop at a following heading or at a named sentence that is
+# there to be excluded, and each says which below.
 REGIONS = [
     ("§5.1.1", "Canonical encoding is normative, not an implementation detail",
      "The encoding MUST satisfy:", "Rule 5 reverses",
@@ -71,14 +79,15 @@ REGIONS = [
     ("§5.1.2", "Non-integer values inside an integers-only domain",
      "Two patterns are admissible.", "A string form such as",
      "stops before the string form, which the profile does not admit"),
-    ("§5.1.2.1", "CNP-0-JCS",
-     "This draft selects", "CNP-0-JCS reuses the already implemented",
-     "stops before the paragraph naming an existing implementation"),
+    ("§5.1.2.1", "CNP-0-JCS: the ratified selection",
+     "##### 5.1.2.1", "CNP-0-JCS reuses the already implemented",
+     "starts at the heading; stops before the paragraph naming an existing "
+     "implementation, which is a deliberate exclusion and not a section end"),
     ("§5.1.2.2", "Fixed-point scale identity",
      "A fixed-point domain MUST bind", "##### 5.1.2.3", "the whole subsection"),
-    ("§5.1.3", "What conformance requires",
-     "**Design selected; conformance pending.**", "Until the A3 artifacts exist",
-     "the two-level gate this kit is an artifact of"),
+    ("§5.1.3", "Parity is proven, not assumed",
+     "#### 5.1.3 Parity is proven, not assumed", "#### 5.1.4",
+     "heading to heading — the whole subsection"),
 ]
 
 EXTRACT_HEAD = """# CNP-0-JCS — normative extract

@@ -13507,7 +13507,11 @@ _No open debts detected in the chord trail._
   - _Rename MYC's `numeric_profile` value and re-run: both the byte parity and
     the_
   - _stored-grant E2E must go red. If they do not, the live test is not live._
-  - _`./t check` — READY, 582 unit tests, 367 signed chords valid._
+  - *`./t check` — READY, and every reported chord signature valid, *_including_
+  - _this one_ _. An earlier draft asserted an exact global chord count, which
+    this receipt's own existence increments: it failed its own falsifier the
+    moment it landed. A falsifier over a number that moves when the artifact is
+    added is not a falsifier._
   - _Compare the frontmatter `pins` against the table above. They must agree._
   - _If anyone maintains a second implementation independently and it
     reproduces_

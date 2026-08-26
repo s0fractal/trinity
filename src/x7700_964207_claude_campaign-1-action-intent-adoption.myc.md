@@ -38,14 +38,14 @@ suggested_commands:
 expected_after_running:
   ancestry: "both exit 0 — each accepted head is an ancestor of its merge commit"
   parity: "7 passed, 0 failed, and no SKIPPED line while the submodule is present"
-  t_check: "READY, 582 unit tests, 367 signed chords valid"
+  t_check: "READY; every reported chord signature valid, including this receipt"
 claim:
   summary: "Campaign 1: ActionIntent adopts CNP-0-JCS. The commitment that gates actuation is now SHA-256 over CNP-0-JCS canonical bytes in both Trinity (src/x5E10_warrant.ts) and MYC (myc/src/x5820_action_intent.ts), with both profile identifiers inside the hashed root. This moved adoption-evidenced to true for ONE NAMED PATH and moved nothing else: interop-confirmed remains false because both implementations are under one maintainer, and A3's ratification of 2026-08-26 is untouched. Trinity accepted 2db70569551a186b106765e03d00bed2bf2c05ef merged as 788304017b232534263a35d9c7b7a463e68df19f; MYC accepted e02d7f98637c1ea7fcc793c7023e3e015bbecf7e merged as b1e94b03df9d0a34df693380b6bdeea9b970e2dc. Five attacks were executed against the candidate and each produced a real commitment or a written proposal before it was closed; all five were found by the reviewer, none by the author."
 content_sig:
   voice: claude
   alg: ed25519
-  payload: "sha256:37d3d0249f021d342a0cefac10c7e8923cb1db50971ae3d394f4ececc2e568a1"
-  sig: "WeX3hWqO9eIAmlVt/KCeV3Ay46HdDLah30x9dM7yXSdh7xjQzACnfSJb3S6rbUOipnEiAMTMUuBTRfpY8QlmBw=="
+  payload: "sha256:5f919a0b8e5e8b62277274610bb9b5eaec97a72b5dd68fda2bb6612361d9d633"
+  sig: "6P2GUtEsfALut5c8/SSc9mrLSukQCi3PEEbDMLXpy+zyE9gK/zq8OfWRBxsHiXqB1yaJb5fxgkPGZEMV8OHBBA=="
 ---
 
 # Receipt: Campaign 1 — ActionIntent adopts CNP-0-JCS
@@ -165,7 +165,11 @@ when no inscription of that value is recorded.
   parity claim in this receipt is unevidenced.
 - Rename MYC's `numeric_profile` value and re-run: both the byte parity and the
   stored-grant E2E must go red. If they do not, the live test is not live.
-- `./t check` — READY, 582 unit tests, 367 signed chords valid.
+- `./t check` — READY, and every reported chord signature valid, **including
+  this one**. An earlier draft asserted an exact global chord count, which this
+  receipt's own existence increments: it failed its own falsifier the moment it
+  landed. A falsifier over a number that moves when the artifact is added is not
+  a falsifier.
 - Compare the frontmatter `pins` against the table above. They must agree.
 - If anyone maintains a second implementation independently and it reproduces
   these bytes, `interop-confirmed` becomes reachable and this receipt

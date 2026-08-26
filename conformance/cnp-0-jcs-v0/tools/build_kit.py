@@ -79,9 +79,10 @@ REGIONS = [
     ("§5.1.2", "Non-integer values inside an integers-only domain",
      "Two patterns are admissible.", "A string form such as",
      "stops before the string form, which the profile does not admit"),
-    ("§5.1.2.1", "CNP-0-JCS",
-     "This draft selects", "CNP-0-JCS reuses the already implemented",
-     "stops before the paragraph naming an existing implementation"),
+    ("§5.1.2.1", "CNP-0-JCS: the ratified selection",
+     "##### 5.1.2.1", "CNP-0-JCS reuses the already implemented",
+     "starts at the heading; stops before the paragraph naming an existing "
+     "implementation, which is a deliberate exclusion and not a section end"),
     ("§5.1.2.2", "Fixed-point scale identity",
      "A fixed-point domain MUST bind", "##### 5.1.2.3", "the whole subsection"),
     ("§5.1.3", "Parity is proven, not assumed",

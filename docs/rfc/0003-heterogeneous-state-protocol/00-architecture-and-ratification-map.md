@@ -694,13 +694,13 @@ python3 tests/federation_differential.py   # FEDERATION-DIFFERENTIAL: ALL AGREE 
 The Lean proofs were not rebuilt. The `sigma-glyph/proofs/` row says "Lean"
 rather than "proved" for that reason.
 
-#### 17.1.1 Two decisions now have named candidates
+#### 17.1.1 One decision is ratified, one has a named candidate
 
-- **Tranche A3 (canonical encoding).** Part 01 §5.1.2.1 now selects
-  **CNP-0-JCS** in the draft: RFC 8785 JCS over strict I-JSON, integers bounded
-  to ±(2^53−1), IEEE floats forbidden, and exact ratio or domain-scoped
-  fixed-point selected per state domain. It also separates the wire identifier
-  `hsp-jcs@v0` from numeric profile `cnp-0`, with both inside digest input.
+- **Tranche A3 (canonical encoding). RATIFIED 2026-08-26.** Part 01 §5.1.2.1
+  selects **CNP-0-JCS**: RFC 8785 JCS over strict I-JSON, integers bounded to
+  ±(2^53−1), IEEE floats forbidden, and exact ratio or domain-scoped fixed-point
+  selected per state domain. It also separates the wire identifier `hsp-jcs@v0`
+  from numeric profile `cnp-0`, with both inside digest input.
 
   This resolves the design choice, not the tranche. Warrant's 47 canonical
   vectors and Python/Go/Rust agreement are prior evidence for the JCS layer;
@@ -721,7 +721,7 @@ rather than "proved" for that reason.
 
   A3 now requires only what the project can produce and anyone can check,
   including a **conformance kit** that lets an outside party implement §5.1 and
-  verify itself without trusting this project. A candidate kit exists at
+  verify itself without trusting this project. That kit is at
   `conformance/cnp-0-jcs-v0/`.
 
   Two things move out of A3. **Substrate adoption** becomes `adoption-evidenced`
@@ -777,7 +777,8 @@ rather than "proved" for that reason.
 
 #### 17.1.2 What this does not settle
 
-Naming candidates is not ratifying them. Specifically:
+A3 is ratified; G4's evaluator is not. And ratifying a specification settles the
+specification, not the world it runs in. Specifically:
 
 1. **The two stacks have separate key identities.** The `claude` voice key in
    `src/x2F38_voice_pubkeys.json` and the `claude-fable-5` key in the dyad's
@@ -789,10 +790,12 @@ Naming candidates is not ratifying them. Specifically:
    pre-ratification identity gate, distinct from §20.17's still-open question of
    what an already-active compatibility contract does when its party later
    forks.
-2. **Draft selection is not adoption authority.** Part 01 chooses CNP-0-JCS as
-   the text's candidate. That does not make Warrant the owner of federation
-   encoding, import its governance, or bind substrates that have not ratified
-   and implemented the contract.
+2. **Ratification is not adoption authority.** Part 01 selects CNP-0-JCS and the
+   steward ratified it. That does not make Warrant the owner of federation
+   encoding, import its governance, or bind substrates that have not adopted and
+   implemented the contract. `adoption-evidenced` is **false**: no substrate
+   computes references under `hsp-jcs@v0` today, and A3 being closed does not
+   change that.
 3. **Version pinning is mandatory if adopted.** `ski@v1` names Book I v0.5
    specifically, and `GOV-ANCHORS` pins its dependencies by content hash for the
    stated reason that a STANDARD must not rest on a moving target. Any adoption

@@ -7,11 +7,15 @@ graduation_target: null
 
 # cnp-0-seed-v0
 
-> **Status: active probe, non-authoritative.** This is the first executable
-> candidate for RFC-0003 Part 01 §5.1.2–§5.1.3. It does **not** close Tranche
-> A3, does not establish conformance, and is not evidence that any substrate has
-> adopted CNP-0-JCS. Part 01 §5.1.3 requires two **independent** encoders; this
-> probe contains one reference encoder plus code paths by the same author.
+> **Status: the reference implementation for RFC-0003 Part 01 §5.1.2–§5.1.3.**
+> Tranche A3 was ratified on 2026-08-26 and this encoder is one of the artifacts
+> it required.
+>
+> That settles the specification and **nothing else**. `adoption-evidenced` is
+> **false** — no substrate computes references under CNP-0-JCS today — and
+> `interop-confirmed` is **false** — this probe contains one reference encoder
+> plus code paths by the same author, which is not an independently maintained
+> implementation. Neither state blocks A3, and A3 being closed moves neither.
 
 ## Question
 

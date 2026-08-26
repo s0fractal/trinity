@@ -190,7 +190,7 @@ In canonical form:
 
 Rule 4 says what MUST NOT be used and leaves open how a non-integer value is
 actually written when the canonical encoding admits only integers — which is the
-case for the leading Tranche A3 candidate (§17.1.1) and the one place §6.4's
+case for the ratified Tranche A3 encoding (§17.1.1) and the one place §6.4's
 probability simplex collides with it.
 
 Two patterns are admissible. Both keep every number in the integer domain and
@@ -237,10 +237,10 @@ implementation must parse identically, which is more surface for the second
 independent implementation to diverge on, and divergence there is exactly what
 canonical encoding exists to prevent.
 
-##### 5.1.2.1 CNP-0-JCS: draft selection
+##### 5.1.2.1 CNP-0-JCS: the ratified selection
 
-This draft selects **CNP-0-JCS** as the Tranche A3 candidate. The selection is
-one package with two named layers:
+This document selects **CNP-0-JCS**, ratified as Tranche A3 on 2026-08-26
+(§5.1.3, Part 07 §17). The selection is one package with two named layers:
 
 - `hsp-jcs@v0` is the wire encoding: RFC 8785 JCS over strict I-JSON;
 - `cnp-0` is the numeric profile carried by that encoding.
@@ -450,15 +450,28 @@ The CNP-0 corpus MUST pin canonical bytes and full SHA-256 digests for:
 Cross-substrate parity that has not been measured is a hope, and this document
 does not accept hopes as evidence anywhere else.
 
-**Design selected; conformance pending.** CNP-0-JCS resolves the draft's design
-choice. It does not ratify Tranche A3 and does not lift the federation blocker.
+**Tranche A3 is RATIFIED (2026-08-26).** `s0fractal`, as steward, ratified
+Tranche A3 and CNP-0-JCS. The statement, verbatim:
 
-Two levels are separated here, because an earlier version of this paragraph
-conflated them and thereby made the whole tranche wait on a party this project
-cannot create.
+> Ратифікую Tranche A3 RFC-0003 і CNP-0-JCS як steward. Це не є
+> adoption-evidenced або interop-confirmed.
+>
+> _(I ratify Tranche A3 of RFC-0003 and CNP-0-JCS as steward. This is not
+> adoption-evidenced or interop-confirmed.)_
 
-**A3 ratification** requires artifacts the project can produce and anyone can
-check:
+The steward drew the boundary in the same breath as the ratification, and that
+half is as normative as the first. Ratification settles that the encoding is
+determined and checkable, and lifts the specification-side federation blocker.
+It licenses **no** claim that the encoding is in use, that a second
+implementation exists, that interoperability has been demonstrated, or that any
+federation evidence has been produced.
+
+Two levels were separated here on 2026-08-26, because an earlier version of this
+paragraph conflated them and thereby made the whole tranche wait on a party this
+project cannot create.
+
+**A3 ratification** required artifacts the project can produce and anyone can
+check, and all six exist at the ratified revision:
 
 1. `CANONICAL_ENCODING.v0.1` as a normative contract;
 2. the normative corpus above;
@@ -470,10 +483,10 @@ check:
 5. a **reproducible conformance kit** — the contract, the corpus, the expected
    bytes and digests, and a runner — such that a party outside this project can
    implement §5.1 and check itself without consulting or trusting this project.
-   A candidate exists at `conformance/cnp-0-jcs-v0/`. It ships no
-   implementation: a kit that scored an implementer by agreement with this
-   project's encoder would be asking them to trust that encoder, which is the
-   thing the kit exists to make unnecessary;
+   It exists at `conformance/cnp-0-jcs-v0/`. It ships no implementation: a kit
+   that scored an implementer by agreement with this project's encoder would be
+   asking them to trust that encoder, which is the thing the kit exists to make
+   unnecessary;
 6. steward ratification.
 
 That list is the whole of A3. Two further states sit outside it, and neither

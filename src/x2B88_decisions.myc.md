@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  835  |
-| Signed Chords (content_sig)              |  367  |
-| ↳ registry-verified                      |  367  |
+| Total Chords                             |  836  |
+| Signed Chords (content_sig)              |  368  |
+| ↳ registry-verified                      |  368  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  93   |
 | Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  87   |
-| Receipts                                 |  383  |
-| ↳ strong evidence                        |  382  |
+| Receipts                                 |  384  |
+| ↳ strong evidence                        |  383  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |  24   |
@@ -918,6 +918,7 @@ _No open debts detected in the chord trail._
 | [x7700_963933_claude_rfc-0003-option-c-tagged-form-recognition.myc.md](./x7700_963933_claude_rfc-0003-option-c-tagged-form-recognition.myc.md)                                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_964145_claude_rfc-0003-qwen-probe-closure-and-conformance-kit.myc.md](./x7700_964145_claude_rfc-0003-qwen-probe-closure-and-conformance-kit.myc.md)                                                                                         | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_964157_s0fractal_rfc-0003-a3-steward-ratification.myc.md](./x7700_964157_s0fractal_rfc-0003-a3-steward-ratification.myc.md)                                                                                                                 | **RECEIPT**  | s0fractal          |   0   |   0    |
+| [x7700_964207_claude_campaign-1-action-intent-adoption.myc.md](./x7700_964207_claude_campaign-1-action-intent-adoption.myc.md)                                                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -13490,6 +13491,36 @@ _No open debts detected in the chord trail._
   - `python3 conformance/cnp-0-jcs-v0/tools/build_kit.py --check`
   - `python3 conformance/cnp-0-jcs-v0/selftest.py`
   - `./t voice-keys verify-chord src/x7700_964157_s0fractal_rfc-0003-a3-steward-ratification.myc.md`
+  - `./t check`
+
+### [x7700_964207_claude_campaign-1-action-intent-adoption.myc.md](./x7700_964207_claude_campaign-1-action-intent-adoption.myc.md)
+
+- **Category**: `RECEIPT` (Author: `claude`)
+- **Claim Kind**: `artifact`
+- **Falsifiers**:
+  - _both ancestry commands exit 0. If either does not, an accepted head is not_
+  - _what was merged._
+  - _`deno test --allow-all src/action_intent_parity_test.ts` — 7 passed, and
+    no_
+  - _`SKIPPED` while the submodule is present. A SKIPPED line there means the
+    parity claim in this receipt is unevidenced._
+  - _Rename MYC's `numeric_profile` value and re-run: both the byte parity and
+    the_
+  - _stored-grant E2E must go red. If they do not, the live test is not live._
+  - *`./t check` — READY, and every reported chord signature valid, *_including_
+  - _this one_ _. An earlier draft asserted an exact global chord count, which
+    this receipt's own existence increments: it failed its own falsifier the
+    moment it landed. A falsifier over a number that moves when the artifact is
+    added is not a falsifier._
+  - _Compare the frontmatter `pins` against the table above. They must agree._
+  - _If anyone maintains a second implementation independently and it
+    reproduces_
+  - _these bytes, `interop-confirmed` becomes reachable and this receipt
+    understated the state. That is the one falsifier this voice cannot produce._
+- **Suggested Commands**:
+  - `git merge-base --is-ancestor 2db70569551a186b106765e03d00bed2bf2c05ef 788304017b232534263a35d9c7b7a463e68df19f`
+  - `git -C myc merge-base --is-ancestor e02d7f98637c1ea7fcc793c7023e3e015bbecf7e b1e94b03df9d0a34df693380b6bdeea9b970e2dc`
+  - `deno test --allow-all src/action_intent_parity_test.ts`
   - `./t check`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)

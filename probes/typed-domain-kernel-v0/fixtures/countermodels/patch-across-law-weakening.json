@@ -1,0 +1,19 @@
+{
+  "note": "The one conflict \u00a76.2.1 rule 3 names, executable.",
+  "releases": [
+    {
+      "address": "sha256:70456d3b030385c5d02e32037e45a3c704183a34d235a12ab3385c9e50b10896",
+      "predecessor": null,
+      "label": "1.0.0"
+    },
+    {
+      "address": "sha256:1e1e43e535efe2b4f743dfd1c46de334f6ac7aae362511241acfc7b7639fc8a5",
+      "predecessor": "sha256:70456d3b030385c5d02e32037e45a3c704183a34d235a12ab3385c9e50b10896",
+      "label": "1.0.1"
+    }
+  ],
+  "weakened_laws": [
+    "sha256:1e1e43e535efe2b4f743dfd1c46de334f6ac7aae362511241acfc7b7639fc8a5"
+  ],
+  "expected": "patch-across-law-weakening \u2014 a patch increment across a change that weakened a law."
+}

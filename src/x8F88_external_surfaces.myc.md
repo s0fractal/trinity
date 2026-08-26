@@ -13,10 +13,10 @@ documents, and local caches outside the core Deno flat-src code base._
 | compatibility abi |     56     |
 | compost           |     0      |
 | dynamic topology  |    836     |
-| experimental      |     55     |
+| experimental      |     56     |
 | live chord        |     0      |
 | local cache       |     0      |
-| **Total**         |  **964**   |
+| **Total**         |  **965**   |
 
 ## Runtime Cache Diagnostics
 
@@ -145,6 +145,7 @@ Run `./t external-surfaces --json` for live cache counts, or
 | experimental      | [probes/spore-runtime-adapter-v0/SPEC.md](../probes/spore-runtime-adapter-v0/SPEC.md)                                                                                                                                                                       | experimental     |                                                                                                                            | keep        | active experiment            |
 | experimental      | [probes/substrate-court-v0/SPEC.md](../probes/substrate-court-v0/SPEC.md)                                                                                                                                                                                   | experimental     |                                                                                                                            | keep        | active experiment            |
 | experimental      | [probes/swarm-action-density-v0/SPEC.md](../probes/swarm-action-density-v0/SPEC.md)                                                                                                                                                                         | experimental     |                                                                                                                            | keep        | active experiment            |
+| experimental      | [probes/typed-domain-kernel-v0/README.md](../probes/typed-domain-kernel-v0/README.md)                                                                                                                                                                       | experimental     |                                                                                                                            | keep        | active experiment            |
 | experimental      | [probes/voice-memory-v0/README.md](../probes/voice-memory-v0/README.md)                                                                                                                                                                                     | experimental     |                                                                                                                            | keep        | active experiment            |
 | experimental      | [probes/voice-tick-v0/SPEC.md](../probes/voice-tick-v0/SPEC.md)                                                                                                                                                                                             | experimental     |                                                                                                                            | keep        | active experiment            |
 | experimental      | [probes/voices-routing-falsifier-v0/SPEC.md](../probes/voices-routing-falsifier-v0/SPEC.md)                                                                                                                                                                 | experimental     |                                                                                                                            | keep        | active experiment            |

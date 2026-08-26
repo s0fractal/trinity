@@ -1,0 +1,26 @@
+{
+  "note": "The pair that makes `minimum status` ill-defined. Neither claim dominates.",
+  "why": "A proved claim restricted to a narrow precondition establishes the law only inside it. A tested claim whose generation domain strictly contains that precondition has been checked over inputs the proof says nothing about. Ranking `proved` above `tested` would let a boundary accept a proof about a region it does not operate in, over evidence about the region it does.",
+  "proved_but_narrow": {
+    "status": {
+      "kind": "proved",
+      "proof": "sha256:73719a3aa32db1b70cbfb9cb773786579ef06911fff46d5274e3104d411a2927",
+      "checker": "sha256:92756188df03e3fb67c60f645e6f4b0240cf691482d8cbcc3498eed80a83c84a"
+    },
+    "scope": "partial",
+    "precondition": "sha256:c6527138805b8a8027d13e540367c81b8a20cfbcdafa5823f6d8dacc9a834f64"
+  },
+  "tested_but_wider": {
+    "status": {
+      "kind": "tested",
+      "generator": "sha256:7fcdb92d6ff95bd2a67002400b846e8d535539997edde12d7eb4a46b4ee6ee93",
+      "domain": "sha256:8359ed1f2701c13998926920e34da2b971469824d304e5afb07941e5efe8bb5d",
+      "cases": 100000,
+      "seed": "0x5eed",
+      "ref": "sha256:d75339fb68bd66bd83026576068cc62eaaf08873336bbf611a228fc9c7cd192e"
+    },
+    "scope": "total"
+  },
+  "boundary_operates_over": "sha256:8359ed1f2701c13998926920e34da2b971469824d304e5afb07941e5efe8bb5d",
+  "expected": "Neither is `the minimum`. A policy stating a threshold cannot express this; a policy stating an ACCEPT SET can."
+}

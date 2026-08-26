@@ -1,0 +1,22 @@
+{
+  "note": "Why this kernel neither permits nor forbids scope widening.",
+  "why": "A predicate declaring reads:[state,world] evaluated inside a trace context may see a world snapshot taken at a different logical step than the state it judges. \u00a76.1.2 rule 2 requires reproducibility; the pairing of surfaces to logical steps is never pinned.",
+  "definition": {
+    "scope": "state",
+    "reads": [
+      "state",
+      "world"
+    ]
+  },
+  "evaluation_a": {
+    "state_at_step": 7,
+    "world_snapshot_at_step": 7,
+    "result": "held"
+  },
+  "evaluation_b": {
+    "state_at_step": 7,
+    "world_snapshot_at_step": 9,
+    "result": "failed"
+  },
+  "expected": "Same predicate, same state, DIFFERENT world snapshot \u2014 both are legal evaluations under the text as written. Reproducibility is a claim about a pairing the RFC does not pin."
+}

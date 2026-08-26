@@ -53,18 +53,19 @@ on 2026-08-26** (Part 01 §5.1.3, Part 07 §17): the contract, the CNP-0 corpus,
 reference encoder, a verifier-only rejection path sharing no code with it, and a
 standalone conformance kit all exist, and the steward closed the tranche.
 
-**Three independent states, and only the first has changed:**
+**Three independent states; the first two have now changed:**
 
 | state                  | value        | what it licenses                                                                    |
 | ---------------------- | ------------ | ----------------------------------------------------------------------------------- |
 | **A3**                 | **RATIFIED** | the encoding is determined and checkable                                            |
-| **adoption-evidenced** | **false**    | nothing may claim the encoding is in use                                            |
+| **adoption-evidenced** | **true**     | the named ActionIntent authority path may claim the encoding is in use              |
 | **interop-confirmed**  | **false**    | nothing may claim independent interoperability or multi-implementation confirmation |
 
-Anything depending on cross-substrate reference _equality_ still depends on
-`adoption-evidenced`, which is false: no substrate computes references under
-`hsp-jcs@v0` today. Ratification removed the specification-side blocker and
-nothing else, and A3 being closed moves neither of the other two.
+`adoption-evidenced` became **true** on 2026-08-27:
+`ActionIntent.intentCommitment` computes over CNP-0-JCS canonical bytes in both
+Trinity and MYC, and that value gates actuation. It says the encoding is in use
+on one named path, not that it is used everywhere. `interop-confirmed` stays
+**false** — both implementations are under one maintainer.
 
 **Substrate adoption was never a ratification condition.** It is its own state,
 `adoption-evidenced`, for the same reason the second encoder stopped being one:
@@ -710,7 +711,8 @@ rather than "proved" for that reason.
   with it, a standalone conformance kit, and steward ratification. All six
   exist, and **the steward ratified A3 on 2026-08-26** — see Part 07 §17 for the
   statement. Federation adoption was **not** among them and remains tracked
-  separately as `adoption-evidenced`, which is false.
+  separately as `adoption-evidenced`, which became true for the named
+  ActionIntent authority path on 2026-08-27.
 
   **Restated 2026-08-26: two levels, not one.** This entry previously required
   **two independent encoders** for A3. That conflated four separable things —
@@ -793,9 +795,9 @@ specification, not the world it runs in. Specifically:
 2. **Ratification is not adoption authority.** Part 01 selects CNP-0-JCS and the
    steward ratified it. That does not make Warrant the owner of federation
    encoding, import its governance, or bind substrates that have not adopted and
-   implemented the contract. `adoption-evidenced` is **false**: no substrate
-   computes references under `hsp-jcs@v0` today, and A3 being closed does not
-   change that.
+   implemented the contract. `adoption-evidenced` is **true only for the named
+   ActionIntent authority path**: it does not license a claim that either
+   substrate generally computes references under `hsp-jcs@v0`.
 3. **Version pinning is mandatory if adopted.** `ski@v1` names Book I v0.5
    specifically, and `GOV-ANCHORS` pins its dependencies by content hash for the
    stated reason that a STANDARD must not rest on a moving target. Any adoption
@@ -1474,10 +1476,10 @@ where a reference resolves:
   raw input and non-canonical ratios, and a reproducible conformance kit all
   exist, and the steward ratified the tranche. This settles the specification;
   it settles neither of the two states below.
-- **Adoption-evidenced: false** (a state, not a tranche, and never a blocker on
-  A3). At least one substrate computing real references under `hsp-jcs@v0` on a
-  path that matters. Until it holds, no document may claim the encoding is in
-  use.
+- **Adoption-evidenced: true** since 2026-08-27 (a state, not a tranche, and
+  never a blocker on A3). The named ActionIntent authority path computes real
+  references under `hsp-jcs@v0`; this licenses that bounded adoption claim and
+  no substrate-wide one.
 - **Interop-confirmed: false** (a level above both, and never a blocker on
   either). Two independently maintained implementations, or adoption by a party
   outside this project, with parity evidence in both directions. Until it holds,
@@ -1488,10 +1490,10 @@ where a reference resolves:
   content-addressed principal and custody records, and fail unresolved or shared
   custody closed against double-counting (§22.1).
 
-Tranche A is a prerequisite for every other tranche. Until A2 and A3 land,
-§5.1's guarantees do not hold across substrate boundaries and nothing that
-depends on cross-substrate reference equality should be claimed. A draft choice
-reduces design uncertainty; it does not weaken this gate.
+Tranche A is a prerequisite for every other tranche. A2 and A3 have landed, but
+their guarantees extend only as far as the separately reported adoption and
+interoperability evidence. The named ActionIntent path supplies bounded adoption
+evidence; independent interoperability remains unconfirmed.
 
 ### Tranche B — State-domain typing (depends on A)
 
@@ -1615,9 +1617,11 @@ What matters going forward rather than backward:
 1. **Ratification is per tranche, per document.** A ratified tranche constrains
    something. An unratified complete specification constrains nothing while
    looking as though it does, which is the more dangerous of the two states.
-2. **Part 01 still blocks conformance.** Its draft encoding is selected; the
-   missing contract, corpus, independent implementations, rejection path, and
-   adoption keep every later part non-conforming across substrate boundaries.
+2. **Part 01 no longer blocks conformance.** Its encoding is ratified and its
+   contract, corpus, rejection path, conformance kit, and one named adoption
+   path now exist. Independent interoperability remains unconfirmed and
+   therefore cannot be claimed, but it is not a prerequisite for A3 or bounded
+   adoption.
 3. **The first post-erratum artifact is code, not another prose-only revision.**
    `probes/hsp-fast-path-debt-scope-v0` makes the debt-locality term of §15.0
    executable with eleven fail-closed tests and a local benchmark. It is a

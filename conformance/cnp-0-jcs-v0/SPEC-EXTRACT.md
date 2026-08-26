@@ -13,7 +13,7 @@ RFC, not so it can replace it.
 
 ## §5.1.1 — Canonical encoding is normative, not an implementation detail
 
-<!-- quoted §5.1.1 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:474ffd5c40eceb59… bytes 8911..10131 region-sha256:f4b3f491e7c94a51… -->
+<!-- quoted §5.1.1 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:678f77e030afd225… bytes 8911..10131 region-sha256:f4b3f491e7c94a51… -->
 
 The encoding MUST satisfy:
 
@@ -43,7 +43,7 @@ The encoding MUST satisfy:
 
 ## §5.1.2 — Floating point
 
-<!-- quoted §5.1.2 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:474ffd5c40eceb59… bytes 10468..11642 region-sha256:223959e79c0a546e… -->
+<!-- quoted §5.1.2 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:678f77e030afd225… bytes 10468..11642 region-sha256:223959e79c0a546e… -->
 
 In canonical form:
 
@@ -72,7 +72,7 @@ In canonical form:
 
 ## §5.1.2 — Non-integer values inside an integers-only domain
 
-<!-- quoted §5.1.2 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:474ffd5c40eceb59… bytes 11975..13806 region-sha256:8fab8eaf939924bd… -->
+<!-- quoted §5.1.2 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:678f77e030afd225… bytes 11975..13806 region-sha256:8fab8eaf939924bd… -->
 
 Two patterns are admissible. Both keep every number in the integer domain and
 both are exact. Each is a **tagged form**, carrying the reserved discriminator
@@ -117,7 +117,7 @@ independent implementations will agree on.
 
 ## §5.1.2.1 — CNP-0-JCS: the ratified selection
 
-<!-- quoted §5.1.2.1 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:474ffd5c40eceb59… bytes 14233..17860 region-sha256:40b14adf274f9acf… -->
+<!-- quoted §5.1.2.1 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:678f77e030afd225… bytes 14233..17860 region-sha256:40b14adf274f9acf… -->
 
 ##### 5.1.2.1 CNP-0-JCS: the ratified selection
 
@@ -190,7 +190,7 @@ the path does not do and not what it is given.
 
 ## §5.1.2.2 — Fixed-point scale identity
 
-<!-- quoted §5.1.2.2 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:474ffd5c40eceb59… bytes 18650..19528 region-sha256:142acb574999e19c… -->
+<!-- quoted §5.1.2.2 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:678f77e030afd225… bytes 18650..19528 region-sha256:142acb574999e19c… -->
 
 A fixed-point domain MUST bind one content-addressed scale descriptor of this
 shape:
@@ -223,7 +223,7 @@ simplex, `Σ value_i` MUST equal `radix^places` exactly.
 
 ## §5.1.3 — Parity is proven, not assumed
 
-<!-- quoted §5.1.3 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:474ffd5c40eceb59… bytes 23833..28604 region-sha256:f37dce7dae936ef3… -->
+<!-- quoted §5.1.3 from docs/rfc/0003-heterogeneous-state-protocol/01-canonical-identity-and-encoding.md sha256:678f77e030afd225… bytes 23833..29137 region-sha256:118b4e42c2686f13… -->
 
 #### 5.1.3 Parity is proven, not assumed
 
@@ -294,9 +294,13 @@ That list is the whole of A3. Two further states sit outside it, and neither
 blocks it, because ratifying a specification, running it, and having someone
 else run it are three different acts:
 
-**Adoption-evidenced** — at least one substrate computing real references under
-`hsp-jcs@v0` on a path that matters. Until it holds, no document may claim the
-encoding is in use.
+**Adoption-evidenced — TRUE since 2026-08-27.** `ActionIntent.intentCommitment`
+computes its commitment over CNP-0-JCS canonical bytes in both Trinity
+(`src/x5E10_warrant.ts`) and MYC (`myc/src/x5820_action_intent.ts`), and that
+commitment is the authority gate: `actionBoundAuthority` permits actuation only
+when a committed proposal's `action_grant.intent_commitment` equals it exactly.
+A live end-to-end test authorizes the proposal MYC actually wrote to disk. This
+is one path, not the whole substrate, and it is named rather than generalised.
 
 **Interop-confirmed** — at least two independently _maintained_ implementations,
 or adoption by a party outside this project, with parity evidence in both
@@ -310,12 +314,14 @@ party _has_ verified, and the difference is exactly what this level names.
 That is a statement about the specification, not about the world it is meant to
 run in. The honest status is:
 
-> **A3: RATIFIED. adoption-evidenced: false. interop-confirmed: false.**
+> **A3: RATIFIED. adoption-evidenced: true (one authority path — ActionIntent).
+> interop-confirmed: false.**
 
-Anything depending on cross-substrate reference _equality_ still depends on
-`adoption-evidenced`, which is false: no substrate computes references under
-`hsp-jcs@v0` today. Ratification removed the specification-side blocker and
-nothing else.
+One authority path computes real references under `hsp-jcs@v0`; nothing else in
+either substrate does. `adoption-evidenced` says the encoding is in use, not
+that it is used everywhere, and no document may read it as the latter.
+`interop-confirmed` remains **false**: both implementations are under one
+maintainer, which is exactly what that level exists to distinguish.
 
 <!-- end quoted §5.1.3 -->
 

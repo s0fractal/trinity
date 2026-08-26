@@ -148,6 +148,23 @@ jobs:
         if: steps.subm.outputs.present == 'true'
         run: ./t court --live | jq -e '.law_bridge.omega_native != null and .law_bridge.trinity_witnessed != null and .law_bridge.consistent == true'
 
+      # With the submodule present the ActionIntent commitment must be verified by
+      # RUNNING both implementations, not by comparing two constants. Trinity
+      # vendors MYC's contract byte-for-byte; a vendored copy that drifted while
+      # both suites kept the same expected string would otherwise pass.
+      - name: Verify ActionIntent cross-substrate parity exercised
+        if: steps.subm.outputs.present == 'true'
+        run: |
+          out=$(deno test --allow-all src/action_intent_parity_test.ts 2>&1)
+          echo "$out"
+          # The live cases skip themselves when the submodule is absent; here it
+          # is present, so a SKIPPED line means the gate passed vacuously.
+          if echo "$out" | grep -q "SKIPPED"; then
+            echo "::error::parity skipped while submodules are present"
+            exit 1
+          fi
+          echo "$out" | grep -q "4 passed"
+
       - name: Verify recipes detail lookup
         run: ./t recipes show recipe.metacognition.field-cycle --json | jq -e '.type == "recipes" and .position == "3/C" and .action == "show" and .recipes[0].id == "recipe.metacognition.field-cycle"'
 

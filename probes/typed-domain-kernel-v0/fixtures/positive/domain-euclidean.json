@@ -1,0 +1,43 @@
+{
+  "note": "A domain that declares what it implements and implements what it declares.",
+  "domain": {
+    "id": "euclidean-r3",
+    "address": "sha256:58ff6665bdc00c2f9300d92cd2e291c84e5b38c37acc057642a7a1d406902345",
+    "version": "0.1.0",
+    "capabilities": [
+      "metric",
+      "interpolable",
+      "geometric"
+    ],
+    "implements": [
+      "distance",
+      "interpolate",
+      "move",
+      "transport",
+      "deltaDescriptor"
+    ],
+    "supportedOperations": [
+      {
+        "name": "move",
+        "address": "sha256:cdc1542682cf4a6e0b3c4cf59110a29a20984abb169633c31d4567a0800f8fe4"
+      }
+    ],
+    "forbiddenOperations": [
+      {
+        "name": "average",
+        "reason": "an average of three points is not a point of this domain under any declared law"
+      }
+    ],
+    "invariants": [
+      "sha256:b7865d368c65a54de447825863f548af2228019e7439fbd973282ebdd29af8aa"
+    ],
+    "deltaDescriptor": {
+      "address": "sha256:0ef3720916ab40c795bde93fed740e87e1f742d5117a73312a53fd1ca2f0a04d",
+      "validate": "sha256:928f7af05edc83b8822f2b6489dea8e6cb2ed0e50f56b9c2fe3486b6d9d28f51",
+      "encoding": "hsp-jcs@v0/delta-r3"
+    },
+    "laws": {
+      "metricAxioms": "sha256:631d131eccce74c3a09435170b1bd48772cb73efc6f6d7ab8c16467ba9453a15"
+    }
+  }
+}

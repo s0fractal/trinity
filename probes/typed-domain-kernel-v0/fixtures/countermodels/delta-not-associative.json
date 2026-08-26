@@ -1,0 +1,22 @@
+{
+  "note": "Typedness does not confer associativity. A DeltaDescriptor with no declared composition law supports NO claim about composing moves.",
+  "why": "Rotations in R3 compose associatively; a delta space of `clamped translations` (each move clipped to a bounding box) does not \u2014 clamping after each step differs from clamping after the sum. Both are well-typed delta spaces with valid content addresses.",
+  "delta": {
+    "address": "sha256:7fd0812e6e7956cf4026175f0a10910cea6135d7fa7348c81f9b70080bea01d7",
+    "validate": "sha256:05742b145988ec95e3de195b8b2a6b021cb5eaf2d1a31dfa57ba3967304ae099",
+    "encoding": "hsp-jcs@v0/delta-clamped"
+  },
+  "witness": {
+    "box": [
+      0,
+      10
+    ],
+    "start": 8,
+    "d1": 5,
+    "d2": -5,
+    "left_assoc": "clamp(clamp(8+5)-5) = clamp(10-5) = 5",
+    "right_assoc": "clamp(8 + clamp(5-5)) = clamp(8+0) = 8",
+    "equal": false
+  },
+  "expected": "A domain declaring this delta space MUST NOT be assumed composable; `composition` is absent, which means NO CLAIM, not `no law`."
+}

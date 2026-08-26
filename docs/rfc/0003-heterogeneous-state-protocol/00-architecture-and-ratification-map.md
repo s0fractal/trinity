@@ -61,10 +61,11 @@ standalone conformance kit all exist, and the steward closed the tranche.
 | **adoption-evidenced** | **false**    | nothing may claim the encoding is in use                                            |
 | **interop-confirmed**  | **false**    | nothing may claim independent interoperability or multi-implementation confirmation |
 
-Anything depending on cross-substrate reference _equality_ still depends on
-`adoption-evidenced`, which is false: no substrate computes references under
-`hsp-jcs@v0` today. Ratification removed the specification-side blocker and
-nothing else, and A3 being closed moves neither of the other two.
+`adoption-evidenced` became **true** on 2026-08-27:
+`ActionIntent.intentCommitment` computes over CNP-0-JCS canonical bytes in both
+Trinity and MYC, and that value gates actuation. It says the encoding is in use
+on one named path, not that it is used everywhere. `interop-confirmed` stays
+**false** — both implementations are under one maintainer.
 
 **Substrate adoption was never a ratification condition.** It is its own state,
 `adoption-evidenced`, for the same reason the second encoder stopped being one:
@@ -1474,10 +1475,10 @@ where a reference resolves:
   raw input and non-canonical ratios, and a reproducible conformance kit all
   exist, and the steward ratified the tranche. This settles the specification;
   it settles neither of the two states below.
-- **Adoption-evidenced: false** (a state, not a tranche, and never a blocker on
-  A3). At least one substrate computing real references under `hsp-jcs@v0` on a
-  path that matters. Until it holds, no document may claim the encoding is in
-  use.
+- **Adoption-evidenced: true** since 2026-08-27 (a state, not a tranche, and
+  never a blocker on A3). At least one substrate computing real references under
+  `hsp-jcs@v0` on a path that matters. Until it holds, no document may claim the
+  encoding is in use.
 - **Interop-confirmed: false** (a level above both, and never a blocker on
   either). Two independently maintained implementations, or adoption by a party
   outside this project, with parity evidence in both directions. Until it holds,

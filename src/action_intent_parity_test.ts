@@ -17,10 +17,12 @@
 // skipped parity check is never counted as a passing one.
 
 import { assert, assertEquals } from "@std/assert";
+import { actionBoundAuthority } from "./x5E10_warrant.ts";
 import {
   canonicalIntentBytes as trinityBytes,
   canonicalIntentText as trinityText,
   intentCommitment as trinityCommitment,
+  parseActionIntentBytes as trinityParse,
   validateIntent as trinityValidate,
 } from "./x5E10_warrant.ts";
 
@@ -32,6 +34,7 @@ const MYC_CONTRACT = new URL(
 type MycModule = {
   canonicalIntentText: (i: unknown) => string;
   canonicalIntentBytes: (i: unknown) => Uint8Array;
+  parseActionIntentBytes: (b: Uint8Array) => { ok: boolean; error?: string };
   intentCommitment: (i: unknown) => Promise<string>;
   validateIntent: (v: unknown) => { ok: boolean; error?: string };
 };
@@ -176,5 +179,176 @@ Deno.test("action_intent parity - a missing profile identifier moves the commitm
       b.toString(16).padStart(2, "0")
     ).join("");
     assert(hex !== EXPECTED, "removing " + id + " left the digest unchanged");
+  }
+});
+
+Deno.test("action_intent parity - LIVE E2E: Trinity authorizes the proposal MYC actually wrote", async () => {
+  // The gap this closes: MYC's own E2E proved storage, and Trinity's authority
+  // tests used a descriptor built in the test. Nothing fed the STORED proposal
+  // into the authority comparison, so the two halves could agree separately
+  // about different things.
+  const myc = await loadMyc();
+  if (!myc) {
+    console.log("  SKIPPED: myc submodule is not checked out");
+    return;
+  }
+  const { runCli } = await import(
+    new URL("../myc/src/x5800_propose.ts", import.meta.url).href
+  ) as { runCli: (a: string[]) => Promise<void> };
+
+  const root = await Deno.makeTempDir({ prefix: "e2e_intent_" });
+  try {
+    const intentPath = `${root}/intent.json`;
+    await Deno.writeTextFile(intentPath, JSON.stringify(VECTOR));
+
+    await runCli([
+      "--root",
+      root,
+      "--proposal",
+      "cross-substrate adoption e2e",
+      "--requires",
+      "trinity",
+      "--proposer",
+      "claude",
+      "--action-intent",
+      intentPath,
+      "--json",
+    ]);
+
+    // 2. Read what was actually written, not what a helper returned.
+    const dir = `${root}/public/proposals`;
+    const names: string[] = [];
+    for await (const e of Deno.readDir(dir)) if (e.isFile) names.push(e.name);
+    assertEquals(names.length, 1, `expected one proposal, got ${names}`);
+    const written = await Deno.readTextFile(`${dir}/${names[0]}`);
+    const body = JSON.parse(
+      written.match(/```json myc\s*\n([\s\S]*?)\n```/)![1],
+    );
+    // Read it exactly where readProposal reads it: the grant lives inside the
+    // descriptor's BODY, and the commitment is `commitment.value`. Mirroring the
+    // production reader matters — a test that invented its own shape would pass
+    // while the real path found nothing.
+    const storedGrant = body.body?.action_grant?.intent_commitment as string;
+    assert(
+      storedGrant,
+      `the stored proposal carries no action_grant: ${written.slice(0, 200)}`,
+    );
+
+    // 3. Compute the intent through TRINITY, independently of what MYC stored.
+    const trinityIC = await trinityCommitment(VECTOR);
+    assertEquals(
+      storedGrant,
+      trinityIC,
+      "the stored grant is not what Trinity computes for the same intent",
+    );
+
+    // 4. Pass the STORED descriptor to Trinity's authority gate.
+    const descriptor = {
+      fqdn: String(body.fqdn),
+      commitment: String(body.commitment?.value ?? body.commitment),
+      action_grant: { intent_commitment: storedGrant },
+    };
+    const ok = actionBoundAuthority(trinityIC, descriptor, "implemented");
+    assertEquals(ok.authorized, true, `denied: ${ok.reason_code} ${ok.reason}`);
+
+    // 5. And the superseded commitment does not authorize the same proposal.
+    const denied = actionBoundAuthority(SUPERSEDED, descriptor, "implemented");
+    assertEquals(denied.authorized, false);
+    assertEquals(denied.reason_code, "intent_mismatch");
+  } finally {
+    await Deno.remove(root, { recursive: true });
+  }
+});
+
+Deno.test("action_intent parity - LIVE: both boundaries refuse duplicate names and invalid UTF-8 from raw bytes", async () => {
+  const myc = await loadMyc();
+  if (!myc) {
+    console.log("  SKIPPED: myc submodule is not checked out");
+    return;
+  }
+  const enc = (s: string) => new TextEncoder().encode(s);
+  const attacks: [string, Uint8Array, string][] = [
+    [
+      "duplicate member name",
+      enc(
+        '{"verb":"deny","verb":"apply","target_substrate":"myc",' +
+          '"args_commitment":"c1","input_commitments":["a"],' +
+          '"requested_effects":["write"]}',
+      ),
+      "duplicate-member-name",
+    ],
+    [
+      "escaped duplicate name",
+      enc(
+        '{"verb":"deny","ve\\u0072b":"apply","target_substrate":"myc",' +
+          '"args_commitment":"c1","input_commitments":["a"],' +
+          '"requested_effects":["write"]}',
+      ),
+      "duplicate-member-name",
+    ],
+    [
+      "invalid UTF-8",
+      new Uint8Array([
+        ...enc('{"verb":"ap'),
+        0xff,
+        ...enc(
+          'ly","target_substrate":"myc","args_commitment":"c1",' +
+            '"input_commitments":["a"],"requested_effects":["write"]}',
+        ),
+      ]),
+      "invalid-utf8",
+    ],
+  ];
+  for (const [name, bytes, expect] of attacks) {
+    const t = trinityParse(bytes);
+    const m = myc.parseActionIntentBytes(bytes);
+    assertEquals(t.ok, false, `${name}: trinity admitted it`);
+    assertEquals(m.ok, false, `${name}: myc admitted it`);
+    if (!t.ok) assert(t.error.includes(expect), `${name}: trinity: ${t.error}`);
+    if (!m.ok) {
+      assert(String(m.error).includes(expect), `${name}: myc: ${m.error}`);
+    }
+  }
+});
+
+Deno.test("action_intent parity - LIVE: a changing getter cannot reach canonical bytes on either side", async () => {
+  const myc = await loadMyc();
+  if (!myc) {
+    console.log("  SKIPPED: myc submodule is not checked out");
+    return;
+  }
+  const mk = (badFrom: number) => {
+    let reads = 0;
+    const evil: Record<string, unknown> = {
+      verb: "apply",
+      target_substrate: "myc",
+      args_commitment: "c1",
+      input_commitments: ["a"],
+    };
+    Object.defineProperty(evil, "requested_effects", {
+      enumerable: true,
+      get() {
+        reads++;
+        return reads >= badFrom ? [1] : ["write"];
+      },
+    });
+    return evil;
+  };
+  for (const from of [1, 2, 3]) {
+    for (
+      const [who, text] of [
+        ["trinity", trinityText],
+        ["myc", myc.canonicalIntentText],
+      ] as const
+    ) {
+      let out = "";
+      try {
+        out = (text as (i: unknown) => string)(mk(from));
+      } catch { /* refusing is the other correct answer */ }
+      assert(
+        !out.includes("[1]"),
+        `${who}: canonical text carried a number: ${out}`,
+      );
+    }
   }
 });

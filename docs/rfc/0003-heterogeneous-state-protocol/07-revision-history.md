@@ -1175,3 +1175,66 @@ correction is here rather than in the verdict, which stays untouched.
 
 None of this changes what the probe produced, which was nothing, or what it is
 evidence of, which is nothing.
+
+## 18. adoption-evidenced becomes true on one named path (2026-08-27)
+
+`ActionIntent.intentCommitment` computes its commitment over CNP-0-JCS canonical
+bytes in both substrates. This is the first path in either to compute a real
+`hsp-jcs@v0` reference rather than an ad-hoc stable stringification.
+
+    {"args_commitment":"c1","canonical_encoding":"hsp-jcs@v0",
+     "input_commitments":["a","b"],"numeric_profile":"cnp-0",
+     "requested_effects":["receipt","write"],"target_substrate":"myc",
+     "verb":"apply"}
+    → ccc26b8b460fe2debf0ad069d55ec170a78b7b70861f1f54c03e401e4576c3be
+
+Chosen because it is an authority gate rather than a convenient hash:
+`actionBoundAuthority` permits actuation only when a committed proposal's
+`action_grant.intent_commitment` equals this value exactly.
+
+### What the state now says, and what it does not
+
+**`adoption-evidenced: true`** means the encoding is in use on **one named
+path**. It does not mean the substrates have adopted it generally: the
+proposal-body digest in the same file still uses the old stringification, and so
+do the other `stable()` copies. Nothing may read this state as "Trinity computes
+references under `hsp-jcs@v0`".
+
+**`interop-confirmed` remains false.** Both implementations are under one
+maintainer, which is exactly what that level exists to distinguish. Trinity
+vendors MYC's contract byte-for-byte; agreement between them is internal
+consistency, not independent interoperability.
+
+**A3 is unaffected.** It was ratified on 2026-08-26 and this changes nothing
+about it. Adoption is a separate state precisely so that running a specification
+and ratifying it stay distinguishable.
+
+### The implementation evidence
+
+- both boundaries parse **raw bytes** strictly — UTF-8 decoded fatally,
+  duplicate member names detected before `JSON.parse` collapses them last-wins,
+  including escape-equivalent spellings such as `"verb"`;
+- one normalization reads every property exactly once into owned copies, and the
+  encoder uses only that snapshot;
+- a **live** parity test executes both implementations and compares canonical
+  text, canonical bytes and digests across eight divergence-prone inputs;
+- a **live end-to-end** test authorizes the proposal MYC actually wrote to disk,
+  rather than a descriptor built in a test;
+- the canonical bytes are judged canonical by the ratified verifier-only path,
+  which shares no code with the encoder.
+
+### How this was found to be wrong three times first
+
+The reviewer's executed attacks, each of which produced a real commitment or a
+written proposal before it was closed: a duplicate `verb` accepted last-wins; an
+escape-equivalent duplicate; a `0xff` byte becoming U+FFFD; a getter answering
+the validator and the encoder differently; and an encoder that accepted
+`requested_effects: [1]` while its own comment said it refused everything
+outside the domain.
+
+The first three are the rejection classes §5.1.1 rule 4 exists for, and this
+project's own conformance kit documents them as "properties of the input bytes
+that a permissive JSON parser resolves before you can see them" — while the
+authority boundary used a permissive parser. Adoption is recorded here together
+with that, because a state that records only the success is a state that teaches
+nothing.

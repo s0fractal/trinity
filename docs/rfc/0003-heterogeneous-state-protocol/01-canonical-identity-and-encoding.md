@@ -493,9 +493,13 @@ That list is the whole of A3. Two further states sit outside it, and neither
 blocks it, because ratifying a specification, running it, and having someone
 else run it are three different acts:
 
-**Adoption-evidenced** — at least one substrate computing real references under
-`hsp-jcs@v0` on a path that matters. Until it holds, no document may claim the
-encoding is in use.
+**Adoption-evidenced — TRUE since 2026-08-27.** `ActionIntent.intentCommitment`
+computes its commitment over CNP-0-JCS canonical bytes in both Trinity
+(`src/x5E10_warrant.ts`) and MYC (`myc/src/x5820_action_intent.ts`), and that
+commitment is the authority gate: `actionBoundAuthority` permits actuation only
+when a committed proposal's `action_grant.intent_commitment` equals it exactly.
+A live end-to-end test authorizes the proposal MYC actually wrote to disk. This
+is one path, not the whole substrate, and it is named rather than generalised.
 
 **Interop-confirmed** — at least two independently _maintained_ implementations,
 or adoption by a party outside this project, with parity evidence in both
@@ -509,12 +513,14 @@ party _has_ verified, and the difference is exactly what this level names.
 That is a statement about the specification, not about the world it is meant to
 run in. The honest status is:
 
-> **A3: RATIFIED. adoption-evidenced: false. interop-confirmed: false.**
+> **A3: RATIFIED. adoption-evidenced: true (one authority path — ActionIntent).
+> interop-confirmed: false.**
 
-Anything depending on cross-substrate reference _equality_ still depends on
-`adoption-evidenced`, which is false: no substrate computes references under
-`hsp-jcs@v0` today. Ratification removed the specification-side blocker and
-nothing else.
+One authority path computes real references under `hsp-jcs@v0`; nothing else in
+either substrate does. `adoption-evidenced` says the encoding is in use, not
+that it is used everywhere, and no document may read it as the latter.
+`interop-confirmed` remains **false**: both implementations are under one
+maintainer, which is exactly what that level exists to distinguish.
 
 #### 5.1.4 The selection is narrower than it looks
 

@@ -65,64 +65,99 @@ const MEMBERS = [
   "requested_effects",
 ] as const;
 
-/** The ONE domain check. `validateIntent` and the canonical encoder both call
- *  it, because two guards that are supposed to agree and are written twice are
- *  two guards that will disagree.
+/** Normalize an untrusted value into an OWNED ActionIntent, or say why not.
  *
- *  An earlier version repeated only the surrogate check inside the encoder and
- *  described itself as "refusing anything else". It did not: a runtime value
- *  with `requested_effects: [1]` was encoded as the JSON number `1` and given a
- *  digest, despite `validateIntent` rejecting it. In an authority path a
- *  commitment must be unreachable for any value the boundary would refuse. */
-function domainError(v: unknown): string | null {
+ *  One operation, and it reads every property EXACTLY ONCE into a local. The
+ *  previous shape was check-then-reread: `domainError(intent)` validated the
+ *  properties and `canonicalIntentText` read them again, so an accessor could
+ *  return `["write"]` to the validator and `[1]` to the encoder. That produced
+ *  canonical bytes containing a JSON number and a digest over them. Anything
+ *  built from a re-read of caller-controlled input is built from a value the
+ *  check never saw.
+ *
+ *  Arrays are copied, not aliased, for the same reason: a caller keeping a
+ *  reference could mutate one after validation.
+ *
+ *  It is also the ONE domain check — `validateIntent` and the canonical encoder
+ *  both go through it. Two guards meant to agree, written twice, disagree: an
+ *  earlier encoder repeated only the surrogate check while calling itself
+ *  "refusing anything else", and encoded `requested_effects: [1]`. */
+function normalizeIntent(
+  v: unknown,
+): { ok: true; intent: ActionIntent } | { ok: false; error: string } {
+  const no = (error: string) => ({ ok: false as const, error });
+
   if (!v || typeof v !== "object" || Array.isArray(v)) {
-    return "intent must be an object";
+    return no("intent must be an object");
   }
   const o = v as Record<string, unknown>;
 
   // Extra members are REJECTED, not dropped. Silently discarding an unknown
-  // member means two different callers can commit to the same digest while
-  // believing they asked for different things.
-  const extra = Object.keys(o).filter(
-    (k) => !(MEMBERS as readonly string[]).includes(k),
-  ).sort();
+  // member lets two callers commit to one digest believing they asked for
+  // different things.
+  const keys = Object.keys(o);
+  const extra = keys.filter((k) => !(MEMBERS as readonly string[]).includes(k))
+    .sort();
   if (extra.length) {
-    return `unknown member(s): ${
-      extra.join(", ")
-    }; the ActionIntent schema is closed`;
+    return no(
+      `unknown member(s): ${
+        extra.join(", ")
+      }; the ActionIntent schema is closed`,
+    );
   }
   for (const k of MEMBERS) {
-    if (!(k in o)) return `${k} is missing`;
+    if (!keys.includes(k)) return no(`${k} is missing`);
   }
 
-  if (typeof o.verb !== "string" || !o.verb.trim()) {
-    return "verb must be a non-empty string";
+  // ONE read per property, into a local. Everything below uses the local.
+  const verb = o.verb;
+  const target_substrate = o.target_substrate;
+  const args_commitment = o.args_commitment;
+  const input_raw = o.input_commitments;
+  const effects_raw = o.requested_effects;
+
+  if (typeof verb !== "string" || !verb.trim()) {
+    return no("verb must be a non-empty string");
   }
   if (
-    typeof o.target_substrate !== "string" ||
-    !SUBSTRATES.includes(o.target_substrate)
+    typeof target_substrate !== "string" ||
+    !SUBSTRATES.includes(target_substrate)
   ) {
-    return `target_substrate must be one of: ${SUBSTRATES.join(", ")}`;
+    return no(`target_substrate must be one of: ${SUBSTRATES.join(", ")}`);
   }
-  if (typeof o.args_commitment !== "string") {
-    return "args_commitment must be a string";
+  if (typeof args_commitment !== "string") {
+    return no("args_commitment must be a string");
   }
-  for (const k of ["input_commitments", "requested_effects"] as const) {
-    const a = o[k];
-    if (!Array.isArray(a) || !a.every((e) => typeof e === "string")) {
-      return `${k} must be an array of strings`;
+  if (!Array.isArray(input_raw)) {
+    return no("input_commitments must be an array of strings");
+  }
+  if (!Array.isArray(effects_raw)) {
+    return no("requested_effects must be an array of strings");
+  }
+  // Copy first, then check the COPY. Checking the original and copying after
+  // would re-read every element.
+  const input_commitments = Array.from(input_raw) as unknown[];
+  const requested_effects = Array.from(effects_raw) as unknown[];
+  for (
+    const [name, arr] of [
+      ["input_commitments", input_commitments],
+      ["requested_effects", requested_effects],
+    ] as const
+  ) {
+    if (!arr.every((e) => typeof e === "string")) {
+      return no(`${name} must be an array of strings`);
     }
   }
 
-  // Surrogates last, so a shape error is reported as a shape error.
+  // Surrogates last, so a shape error reports as a shape error.
   const strings: [string, string][] = [
-    ["verb", o.verb as string],
-    ["args_commitment", o.args_commitment as string],
-    ...(o.input_commitments as string[]).map((
+    ["verb", verb],
+    ["args_commitment", args_commitment],
+    ...(input_commitments as string[]).map((
       x,
       i,
     ): [string, string] => [`input_commitments[${i}]`, x]),
-    ...(o.requested_effects as string[]).map((
+    ...(requested_effects as string[]).map((
       x,
       i,
     ): [string, string] => [`requested_effects[${i}]`, x]),
@@ -130,33 +165,32 @@ function domainError(v: unknown): string | null {
   for (const [where, value] of strings) {
     const bad = unpairedSurrogateIndex(value);
     if (bad >= 0) {
-      return `${where} contains an unpaired UTF-16 surrogate at index ${bad}; ` +
-        `strict I-JSON admits only Unicode scalar values, and the string has no ` +
-        `UTF-8 encoding a second implementation could reproduce`;
+      return no(
+        `${where} contains an unpaired UTF-16 surrogate at index ${bad}; ` +
+          `strict I-JSON admits only Unicode scalar values, and the string has ` +
+          `no UTF-8 encoding a second implementation could reproduce`,
+      );
     }
   }
-  return null;
-}
 
-/** Validate an untrusted value as an ActionIntent. Fail closed: anything
- *  missing, mistyped, carrying an unknown member, or holding an unpaired
- *  surrogate is rejected with a reason. */
-export function validateIntent(
-  v: unknown,
-): { ok: true; intent: ActionIntent } | { ok: false; error: string } {
-  const err = domainError(v);
-  if (err) return { ok: false, error: err };
-  const o = v as Record<string, unknown>;
   return {
     ok: true,
     intent: {
-      verb: o.verb as string,
-      target_substrate: o.target_substrate as ActionIntent["target_substrate"],
-      args_commitment: o.args_commitment as string,
-      input_commitments: o.input_commitments as string[],
-      requested_effects: o.requested_effects as string[],
+      verb,
+      target_substrate: target_substrate as ActionIntent["target_substrate"],
+      args_commitment,
+      input_commitments: input_commitments as string[],
+      requested_effects: requested_effects as string[],
     },
   };
+}
+
+/** Validate an untrusted value as an ActionIntent. Fail closed, and return an
+ *  OWNED normalization the caller can encode from safely. */
+export function validateIntent(
+  v: unknown,
+): { ok: true; intent: ActionIntent } | { ok: false; error: string } {
+  return normalizeIntent(v);
 }
 
 /** RFC-0003 Part 01 §5.1.2.1: the wire encoding and the numeric profile are
@@ -245,19 +279,22 @@ function canonicalEffects(effects: string[]): string[] {
  *  that agree on a wrong encoding, and says nothing about which bytes either
  *  produced. */
 export function canonicalIntentText(intent: ActionIntent): string {
-  // The SAME domain check the boundary uses. Not a repeat of part of it.
-  const err = domainError(intent);
-  if (err) {
-    throw new RangeError(`ActionIntent is outside its domain: ${err}`);
+  // Normalize ONCE, then encode only from the snapshot. The caller's object is
+  // never read again: a getter that answered the validator and then answered the
+  // encoder differently is how `requested_effects: [1]` reached canonical bytes.
+  const n = normalizeIntent(intent);
+  if (!n.ok) {
+    throw new RangeError(`ActionIntent is outside its domain: ${n.error}`);
   }
+  const i = n.intent;
   const root: Record<string, string | string[]> = {
-    args_commitment: intent.args_commitment,
+    args_commitment: i.args_commitment,
     canonical_encoding: CANONICAL_ENCODING,
-    input_commitments: intent.input_commitments, // ORDER PRESERVED
+    input_commitments: i.input_commitments, // ORDER PRESERVED
     numeric_profile: NUMERIC_PROFILE,
-    requested_effects: canonicalEffects(intent.requested_effects),
-    target_substrate: intent.target_substrate,
-    verb: intent.verb,
+    requested_effects: canonicalEffects(i.requested_effects),
+    target_substrate: i.target_substrate,
+    verb: i.verb,
   };
   const names = Object.keys(root).sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
   return `{${
@@ -315,6 +352,113 @@ async function sha256(s: string): Promise<string> {
  *  the constants match; only running both proves the implementations do. */
 export async function intentCommitment(intent: ActionIntent): Promise<string> {
   return await sha256Bytes(canonicalIntentBytes(intent));
+}
+
+/** Parse ActionIntent JSON from RAW BYTES, strictly.
+ *
+ *  `JSON.parse(await Deno.readTextFile(p))` destroys the evidence two ratified
+ *  rejection classes are about, before any validator can see it:
+ *
+ *  * **duplicate member names** collapse last-wins, so
+ *    `{"verb":"deny","verb":"apply"}` parses as `apply` and a proposal is
+ *    written for an intent that also said `deny`;
+ *  * **invalid UTF-8** becomes U+FFFD during decoding, so a commitment is made
+ *    over a replacement character the caller never wrote.
+ *
+ *  RFC-0003 §5.1.1 rule 4 exists for exactly this, and the conformance kit's own
+ *  interface says three rejection categories "describe properties of the input
+ *  BYTES that a permissive JSON parser resolves before you can see them". This
+ *  boundary was using a permissive parser anyway.
+ *
+ *  Escape-equivalence matters: `"verb"` and `"verb"` are the same member
+ *  name, so names are decoded before they are compared. Only the top-level
+ *  object is scanned, which is the whole of this schema — nested objects are
+ *  refused by the domain check that follows. */
+export function parseActionIntentBytes(
+  bytes: Uint8Array,
+): { ok: true; intent: ActionIntent } | { ok: false; error: string } {
+  let text: string;
+  try {
+    text = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+  } catch {
+    return {
+      ok: false,
+      error:
+        "invalid-utf8: the input is not well-formed UTF-8; a permissive decode " +
+        "would commit to a replacement character nobody wrote",
+    };
+  }
+
+  const dup = duplicateTopLevelMember(text);
+  if (dup) {
+    return {
+      ok: false,
+      error:
+        `duplicate-member-name: ${
+          JSON.stringify(dup)
+        } appears more than once; ` +
+        "a permissive parser keeps the last one and the other becomes invisible",
+    };
+  }
+
+  let raw: unknown;
+  try {
+    raw = JSON.parse(text);
+  } catch (e) {
+    return { ok: false, error: `syntax: ${(e as Error).message}` };
+  }
+  return normalizeIntent(raw);
+}
+
+/** The first top-level member name that appears twice, or null.
+ *
+ *  A minimal scanner rather than a JSON parser: it tracks string literals and
+ *  nesting depth, collects names at depth 1, and decodes each before comparing,
+ *  so an escaped spelling cannot smuggle a second copy past the check. */
+function duplicateTopLevelMember(text: string): string | null {
+  const seen = new Set<string>();
+  let depth = 0;
+  let i = 0;
+  let expectName = false;
+
+  while (i < text.length) {
+    const c = text[i];
+    if (c === '"') {
+      const start = i;
+      i++;
+      while (i < text.length) {
+        if (text[i] === "\\") i += 2;
+        else if (text[i] === '"') break;
+        else i++;
+      }
+      const literal = text.slice(start, i + 1);
+      i++;
+      // A member name is a string followed (after whitespace) by ':'.
+      let j = i;
+      while (j < text.length && /\s/.test(text[j])) j++;
+      const isName = text[j] === ":";
+      if (isName && depth === 1 && expectName) {
+        let name: string;
+        try {
+          name = JSON.parse(literal) as string;
+        } catch {
+          return null; // malformed; JSON.parse below will report it
+        }
+        if (seen.has(name)) return name;
+        seen.add(name);
+      }
+      continue;
+    }
+    if (c === "{" || c === "[") {
+      depth++;
+      expectName = c === "{";
+    } else if (c === "}" || c === "]") {
+      depth--;
+      expectName = depth === 1;
+    }
+    i++;
+  }
+  return null;
 }
 
 /** The committed proposal descriptor — the PROOF (not the lifecycle summary, which
@@ -469,21 +613,24 @@ async function runCli(args: string[] = Deno.args): Promise<void> {
     // says the bytes are JSON; it says nothing about whether they are an
     // ActionIntent. Without this the encoder throws a bare RangeError at the
     // caller, which is a failure but not a reason.
+    // RAW BYTES, strictly: reading text and calling JSON.parse erases duplicate
+    // member names and invalid UTF-8 before any validator can refuse them.
     let intent: ActionIntent;
+    let bytes: Uint8Array;
     try {
-      const raw = JSON.parse(await Deno.readTextFile(fqdn));
-      const v = validateIntent(raw);
-      if (!v.ok) {
-        console.error(`# error: invalid intent: ${v.error}`);
-        Deno.exitCode = 1;
-        return;
-      }
-      intent = v.intent;
+      bytes = await Deno.readFile(fqdn);
     } catch {
       console.error(`# error: could not read intent from ${fqdn}`);
       Deno.exitCode = 1;
       return;
     }
+    const parsed = parseActionIntentBytes(bytes);
+    if (!parsed.ok) {
+      console.error(`# error: invalid intent: ${parsed.error}`);
+      Deno.exitCode = 1;
+      return;
+    }
+    intent = parsed.intent;
     console.log(JSON.stringify(
       {
         type: "intent_commitment",
@@ -525,20 +672,21 @@ async function runCli(args: string[] = Deno.args): Promise<void> {
       return;
     }
     let intent: ActionIntent;
+    let ibytes: Uint8Array;
     try {
-      const raw = JSON.parse(await Deno.readTextFile(ipath));
-      const v = validateIntent(raw);
-      if (!v.ok) {
-        console.error(`# error: invalid intent: ${v.error}`);
-        Deno.exitCode = 1;
-        return;
-      }
-      intent = v.intent;
+      ibytes = await Deno.readFile(ipath);
     } catch {
       console.error(`# error: could not read intent from ${ipath}`);
       Deno.exitCode = 1;
       return;
     }
+    const parsedAdmit = parseActionIntentBytes(ibytes);
+    if (!parsedAdmit.ok) {
+      console.error(`# error: invalid intent: ${parsedAdmit.error}`);
+      Deno.exitCode = 1;
+      return;
+    }
+    intent = parsedAdmit.intent;
     const [descriptor, fs, ic] = await Promise.all([
       readProposal(fqdn),
       finalState(fqdn),

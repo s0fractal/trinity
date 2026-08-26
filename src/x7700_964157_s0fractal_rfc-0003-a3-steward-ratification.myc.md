@@ -14,7 +14,7 @@ addressed_to:
   - "claude"
   - "any substrate or implementer downstream of RFC-0003 Part 01 §5.1"
 claim_kind: authority
-signature_status: "Signed with the registered `s0fractal` ed25519 key (pubkey j+QsSe0gExRd0G12NGfnAeebGBjlrYpglWtJJRcWAlA=, minted 2026-06-12). **The steward ran the signing command personally.** No voice invoked the key on the steward's behalf: the private half lives on a host neither this repository nor any model process reaches, only the 71-character payload digest was handed over, and only the signature came back. This matters more here than on a voice receipt — a voice signature attests control of a contribution key over bytes, and this one attests a human's ratification decision. Access to a key is not authority to speak as the person who holds it, and a ratification signed by anyone other than the steward would be exactly the substitution this ledger's custody rules exist to prevent. The bytes below were drafted by `claude` at the steward's direction; the signature is the steward's assent to these exact bytes and to nothing else."
+signature_status: "Signed with the registered `s0fractal` ed25519 key (pubkey j+QsSe0gExRd0G12NGfnAeebGBjlrYpglWtJJRcWAlA=, minted 2026-06-12). **The steward ran the signing command personally.** No voice invoked the key on the steward's behalf: the private key never left the Mac mini that holds it, no model read or invoked it for this act, only the finalized 71-character payload digest was handed to the steward, who ran the command personally, and only the signature came back. The drafting voice does have shell access to that host — the boundary honoured here is deliberate restraint, not an absent capability, which is why it is worth recording at all. This matters more here than on a voice receipt — a voice signature attests control of a contribution key over bytes, and this one attests a human's ratification decision. Access to a key is not authority to speak as the person who holds it, and a ratification signed by anyone other than the steward would be exactly the substitution this ledger's custody rules exist to prevent. The bytes below were drafted by `claude` at the steward's direction; the signature is the steward's assent to the body of this chord — see "What the signature attests" below for exactly which bytes that is — and to nothing beyond them."
 hears:
   - "s0fractal — ratified Tranche A3 and CNP-0-JCS, and drew the boundary in the same statement"
   - "codex-gpt-5 — reviewed and merged the ratification as PR #23, after two rounds of status-contradiction findings"
@@ -47,8 +47,8 @@ claim:
 content_sig:
   voice: s0fractal
   alg: ed25519
-  payload: "sha256:8a2188ed33356e9ec1c5e590c6cf2e3e524bffcd43b57f7beef18b29c1cbe3d2"
-  sig: "4HQ2VdhUXXhoXlNle6rOYGhUf+nb7++WmkPTILAQAVFsKULHsvGOu+VOPlA+OijVEShIAd4XSq3m1nOL8j4aDw=="
+  payload: "sha256:5fa5e99332f85e10c35bd20a0b02a71d9961f91ef62c9a565d0d285b1c10d06a"
+  sig: "MEvE8YJ94roGuwntuPzxyMQgz7WtlVFWvMaXK5+scWenkLtSwN1Bs0iWVeQgP+L6AJs/Mh1JPfkrE2xNLtAtDA=="
 ---
 
 # Ratification: Tranche A3 and CNP-0-JCS
@@ -64,9 +64,13 @@ content_sig:
 The boundary arrived in the same breath as the ratification, and that half is as
 normative as the first.
 
-`statement_utf8_sha256` pins the Ukrainian sentence alone, as one line of UTF-8
-with no trailing newline and the English gloss excluded — the gloss is a
-translation and a translation is an interpretation. Reproduce it with:
+Its digest is
+`94f178a5123b15ad20813b3caeba9aad6d3b9035d65b70302f68b6d71b07f0ff`, over the
+Ukrainian sentence alone, as one line of UTF-8 with no trailing newline and the
+English gloss excluded — the gloss is a translation and a translation is an
+interpretation. The same value appears as `statement_utf8_sha256` in the
+frontmatter, which is **not** signed; this line is the signed one. Reproduce it
+with:
 
 ```sh
 printf '%s' 'Ратифікую Tranche A3 RFC-0003 і CNP-0-JCS як steward. Це не є adoption-evidenced або interop-confirmed.' | shasum -a 256
@@ -135,8 +139,26 @@ All six artifacts §5.1.3 required exist at the ratified revision:
 
 ## What the signature attests, and what it does not
 
-The steward ran the signing command personally, on the host that holds the key.
-No voice invoked it on the steward's behalf.
+**Which bytes are signed.** `chordPayloadHash` in `src/x2F37_voice_keys.ts`
+hashes `filename\n` plus the chord **body** — everything after the closing `---`
+of the frontmatter — and nothing from the frontmatter itself. So `pins`,
+`claim`, `voice` and `signature_status` are outside what this or any chord
+signature attests. Rewriting `merge_commit` in the frontmatter of a signed chord
+leaves the payload, and therefore the validity, unchanged; that was measured,
+not assumed.
+
+Every value this receipt rests on is therefore restated **in this body**, where
+the signature does reach it: the accepted head, the merge commit, the manifest
+root, the statement digest, and the three states. A frontmatter that disagrees
+with this body is a tampered frontmatter, and the falsifiers below say how to
+tell.
+
+That the frontmatter is unsigned is a property of the chord format rather than
+of this receipt, it applies to every signed chord in `src/`, and it was found
+while correcting this one. It is reported separately rather than fixed here.
+
+**Who signed.** The steward ran the signing command personally, on the host that
+holds the key. No voice invoked it on the steward's behalf.
 
 That distinction is the point of this receipt rather than a footnote to it. A
 voice receipt attests control of a contribution key over exact bytes. This one
@@ -163,6 +185,11 @@ false.
   ratified here is not the kit on disk.
 - `python3 conformance/cnp-0-jcs-v0/selftest.py` — 26 passed, 0 failed.
 - `./t check` — 573 unit tests pass.
+- Compare the frontmatter `pins` with the "What is pinned" table and the
+  statement digest in this body. They must agree. The signature covers the body
+  and not the frontmatter, so a disagreement means the frontmatter was edited
+  after signing — and `verify-chord` will still report `valid:true`, because it
+  is telling the truth about a narrower claim than a reader expects.
 - Any document in this repository describing §5.1 as adopted, in use,
   independently interoperable, or multi-implementation confirmed falsifies the
   boundary this ratification was given with, whatever it says about A3.

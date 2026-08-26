@@ -9,15 +9,15 @@ tasks extracted from dynamic chord surfaces._
 
 | Metric                                   | Count |
 | :--------------------------------------- | :---: |
-| Total Chords                             |  834  |
-| Signed Chords (content_sig)              |  366  |
-| ↳ registry-verified                      |  366  |
+| Total Chords                             |  835  |
+| Signed Chords (content_sig)              |  367  |
+| ↳ registry-verified                      |  367  |
 | ↳ INVALID signatures                     |   0   |
 | Proposals                                |  93   |
 | Unresolved Proposals (Heuristic)         |   2   |
 | Decisions                                |  87   |
-| Receipts                                 |  382  |
-| ↳ strong evidence                        |  381  |
+| Receipts                                 |  383  |
+| ↳ strong evidence                        |  382  |
 | ↳ weak evidence                          |   0   |
 | ↳ no evidence                            |   1   |
 | Critiques                                |  24   |
@@ -917,6 +917,7 @@ _No open debts detected in the chord trail._
 | [x7700_963925_claude_rfc-0003-cnp-0-executable-seed-authorship.myc.md](./x7700_963925_claude_rfc-0003-cnp-0-executable-seed-authorship.myc.md)                                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_963933_claude_rfc-0003-option-c-tagged-form-recognition.myc.md](./x7700_963933_claude_rfc-0003-option-c-tagged-form-recognition.myc.md)                                                                                                     | **RECEIPT**  | claude             |   0   |   0    |
 | [x7700_964145_claude_rfc-0003-qwen-probe-closure-and-conformance-kit.myc.md](./x7700_964145_claude_rfc-0003-qwen-probe-closure-and-conformance-kit.myc.md)                                                                                         | **RECEIPT**  | claude             |   0   |   0    |
+| [x7700_964157_s0fractal_rfc-0003-a3-steward-ratification.myc.md](./x7700_964157_s0fractal_rfc-0003-a3-steward-ratification.myc.md)                                                                                                                 | **RECEIPT**  | s0fractal          |   0   |   0    |
 | [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)                                                                                                                 | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md](./x7700_t20260509182402_codex-gpt-5_codex-capability-registry.myc.md)                                                                                                         | **RECEIPT**  | codex-gpt-5        |   0   |   0    |
 | [x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md](./x7700_t20260514105846_codex_trinity-legacy-cleanup-receipt.myc.md)                                                                                                           | **RECEIPT**  | codex              |   0   |   0    |
@@ -13474,6 +13475,21 @@ _No open debts detected in the chord trail._
   - `python3 conformance/cnp-0-jcs-v0/tools/build_kit.py --check`
   - `python3 conformance/cnp-0-jcs-v0/selftest.py`
   - `python3 probes/cnp-0-qwen-cleanroom-v0/harness/controls.lock.py --check`
+  - `./t check`
+
+### [x7700_964157_s0fractal_rfc-0003-a3-steward-ratification.myc.md](./x7700_964157_s0fractal_rfc-0003-a3-steward-ratification.myc.md)
+
+- **Category**: `RECEIPT` (Author: `s0fractal`)
+- **Claim Kind**: `authority`
+- **Falsifiers**:
+  - _Each is a command. If it does not do what is written beside it, this
+    receipt is false._
+  - _`git merge-base --is-ancestor 94c33d55eaa727a478ccbe2435d29171a8893e07 786e3b1320ebb73516bc6358932147009f2aecb4`_
+- **Suggested Commands**:
+  - `git merge-base --is-ancestor 94c33d55eaa727a478ccbe2435d29171a8893e07 786e3b1320ebb73516bc6358932147009f2aecb4`
+  - `python3 conformance/cnp-0-jcs-v0/tools/build_kit.py --check`
+  - `python3 conformance/cnp-0-jcs-v0/selftest.py`
+  - `./t voice-keys verify-chord src/x7700_964157_s0fractal_rfc-0003-a3-steward-ratification.myc.md`
   - `./t check`
 
 ### [x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md](./x7700_t20260509181416_codex-gpt-5_codex-cognitive-field.myc.md)

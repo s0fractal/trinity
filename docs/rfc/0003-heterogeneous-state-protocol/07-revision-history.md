@@ -1160,7 +1160,18 @@ wrong.
 Two of them are worth reading beside this entry rather than through it. The
 restatement in §15 rests on an argument about what §5.1.3 was conflating and
 **not** on the Qwen probe's failure — ratification does not retroactively make
-that probe evidence of anything. And the qwen VERDICT's closing line, that A3
-still required two independent encoders, was accurate on the day it was written
-and was superseded by §15 the same day; ratification does not change what that
-probe produced, which was nothing.
+that probe evidence of anything.
+
+And the Qwen `VERDICT.md`, read exactly: its **closing status**, in the
+"Subsequent steward disposition" section, already carries the two-level
+restatement and records the conformance kit and steward ratification as pending
+and independent interoperability as unconfirmed. Both were true at closure and
+are superseded by §16 and by this §17. Its earlier "recorded at closing" section
+does say A3 still required two independent encoders — correctly, for the moment
+that section names, and superseded inside the same document by the disposition
+that follows it. An earlier draft of this paragraph attributed that earlier
+sentence to the verdict's closing status, which misdescribed the document; the
+correction is here rather than in the verdict, which stays untouched.
+
+None of this changes what the probe produced, which was nothing, or what it is
+evidence of, which is nothing.
